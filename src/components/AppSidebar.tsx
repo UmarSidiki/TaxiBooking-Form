@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
-import Link from "next/link"
-import { Calendar, Home, Inbox, Search, Settings } from "lucide-react"
+import Link from "next/link";
+import { Calendar, Car, Home, PersonStanding, Settings } from "lucide-react";
 
 import {
   Sidebar,
@@ -14,8 +14,8 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from "@/components/ui/sidebar"
-import LogoutButton from "@/components/auth/LogoutButton"
+} from "@/components/ui/sidebar";
+import LogoutButton from "@/components/auth/LogoutButton";
 
 const items = [
   {
@@ -29,21 +29,21 @@ const items = [
     icon: Calendar,
   },
   {
-    title: "Inbox",
-    href: (locale: string) => `/${locale}/dashboard/inbox`,
-    icon: Inbox,
+    title: "Fleet",
+    href: (locale: string) => `/${locale}/dashboard/fleet`,
+    icon: Car,
   },
   {
-    title: "Search",
-    href: (locale: string) => `/${locale}/dashboard/search`,
-    icon: Search,
+    title: "Partners",
+    href: (locale: string) => `/${locale}/dashboard/partners`,
+    icon: PersonStanding,
   },
   {
     title: "Settings",
     href: (locale: string) => `/${locale}/dashboard/settings`,
     icon: Settings,
   },
-]
+];
 
 export function AppSidebar({ locale }: { locale: string }) {
   return (
@@ -74,5 +74,5 @@ export function AppSidebar({ locale }: { locale: string }) {
         <LogoutButton callbackUrl={`/${locale}/dashboard/signin`} />
       </SidebarFooter>
     </Sidebar>
-  )
+  );
 }

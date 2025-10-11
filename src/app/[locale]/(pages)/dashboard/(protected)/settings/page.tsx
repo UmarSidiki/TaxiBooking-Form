@@ -64,7 +64,7 @@ const SettingsPage = () => {
     setSettings(prev => ({ ...prev, borderRadius: value }));
   };
 
-  const handleMapSettingsChange = (key: keyof ISetting, value: string | number | string[]) => {
+  const handleMapSettingsChange = (key: keyof ISetting, value: string | number | string[] | boolean) => {
     setSettings(prev => ({ ...prev, [key]: value }));
   };
 
@@ -242,28 +242,125 @@ const SettingsPage = () => {
             <CardContent className="space-y-6">
               {/* Stripe API Keys */}
               <div className="space-y-4">
-                <h3 className="text-lg font-medium">Stripe API Keys</h3>
+                <div className="flex items-center justify-between">
+                  <h3 className="text-lg font-medium">Stripe Configuration</h3>
+                  <div className="flex items-center gap-2">
+                    <label className="flex items-center gap-2 text-sm">
+                      <input
+                        type="checkbox"
+                        checked={settings.stripeTestMode ?? true}
+                        onChange={(e) => handleMapSettingsChange('stripeTestMode', e.target.checked)}
+                        className="w-4 h-4"
+                      />
+                      <span className={settings.stripeTestMode ? 'text-orange-600 font-medium' : 'text-green-600 font-medium'}>
+                        {settings.stripeTestMode ? '🧪 Test Mode' : '🔴 Live Mode'}
+                      </span>
+                    </label>
+                  </div>
+                </div>
+                
                 <div className="grid grid-cols-1 gap-4">
                   <div>
                     <label className="block text-sm font-medium mb-2">Publishable Key</label>
                     <Input
                       type="text"
-                      placeholder="pk_test_..."
+                      placeholder={settings.stripeTestMode ? "pk_test_..." : "pk_live_..."}
                       value={settings.stripePublishableKey ?? ''}
                       onChange={(e) => handleMapSettingsChange('stripePublishableKey', e.target.value)}
                     />
-                    <p className="text-xs text-gray-500 mt-1">Your Stripe publishable key (starts with pk_)</p>
+                    <p className="text-xs text-gray-500 mt-1">
+                      Your Stripe {settings.stripeTestMode ? 'test' : 'live'} publishable key (starts with pk_)
+                    </p>
                   </div>
                   <div>
                     <label className="block text-sm font-medium mb-2">Secret Key</label>
                     <Input
                       type="password"
-                      placeholder="sk_test_..."
+                      placeholder={settings.stripeTestMode ? "sk_test_..." : "sk_live_..."}
                       value={settings.stripeSecretKey ?? ''}
                       onChange={(e) => handleMapSettingsChange('stripeSecretKey', e.target.value)}
                     />
-                    <p className="text-xs text-gray-500 mt-1">Your Stripe secret key (starts with sk_) - Keep this secure!</p>
+                    <p className="text-xs text-gray-500 mt-1">
+                      Your Stripe {settings.stripeTestMode ? 'test' : 'live'} secret key (starts with sk_) - Keep this secure!
+                    </p>
                   </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Webhook Secret (Optional)</label>
+                    <Input
+                      type="password"
+                      placeholder="whsec_..."
+                      value={settings.stripeWebhookSecret ?? ''}
+                      onChange={(e) => handleMapSettingsChange('stripeWebhookSecret', e.target.value)}
+                    />
+                    <p className="text-xs text-gray-500 mt-1">
+                      Webhook signing secret for secure payment status updates
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Stripe Settings */}
+              <div className="space-y-4 border-t pt-4">
+                <h3 className="text-lg font-medium">Payment Settings</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Currency</label>
+                    <select
+                      value={settings.stripeCurrency ?? 'eur'}
+                      onChange={(e) => handleMapSettingsChange('stripeCurrency', e.target.value)}
+                      className="w-full px-3 py-2 border rounded-md"
+                    >
+                      <option value="eur">EUR (€) - Euro</option>
+                      <option value="usd">USD ($) - US Dollar</option>
+                      <option value="gbp">GBP (£) - British Pound</option>
+                      <option value="chf">CHF (Fr) - Swiss Franc</option>
+                      <option value="jpy">JPY (¥) - Japanese Yen</option>
+                      <option value="cad">CAD ($) - Canadian Dollar</option>
+                      <option value="aud">AUD ($) - Australian Dollar</option>
+                    </select>
+                    <p className="text-xs text-gray-500 mt-1">Default currency for payments</p>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Statement Descriptor Suffix</label>
+                    <Input
+                      type="text"
+                      placeholder="BOOKING"
+                      maxLength={22}
+                      value={settings.stripeStatementDescriptor ?? ''}
+                      onChange={(e) => handleMapSettingsChange('stripeStatementDescriptor', e.target.value)}
+                    />
+                    <p className="text-xs text-gray-500 mt-1">
+                      Suffix shown on customer&apos;s statement (e.g., &quot;COMPANY* BOOKING&quot;) - max 22 chars
+                    </p>
+                  </div>
+                </div>
+                
+                <div className="space-y-3">
+                  <label className="flex items-center gap-3 p-3 border rounded-lg cursor-pointer hover:bg-gray-50">
+                    <input
+                      type="checkbox"
+                      checked={settings.stripeSaveCards ?? false}
+                      onChange={(e) => handleMapSettingsChange('stripeSaveCards', e.target.checked)}
+                      className="w-4 h-4"
+                    />
+                    <div>
+                      <p className="text-sm font-medium">Allow customers to save cards</p>
+                      <p className="text-xs text-gray-500">Customers can save cards for future bookings</p>
+                    </div>
+                  </label>
+                  
+                  <label className="flex items-center gap-3 p-3 border rounded-lg cursor-pointer hover:bg-gray-50">
+                    <input
+                      type="checkbox"
+                      checked={settings.stripeAutomaticTax ?? false}
+                      onChange={(e) => handleMapSettingsChange('stripeAutomaticTax', e.target.checked)}
+                      className="w-4 h-4"
+                    />
+                    <div>
+                      <p className="text-sm font-medium">Enable Stripe Tax (Automatic Tax Calculation)</p>
+                      <p className="text-xs text-gray-500">Automatically calculate and collect sales tax</p>
+                    </div>
+                  </label>
                 </div>
               </div>
 

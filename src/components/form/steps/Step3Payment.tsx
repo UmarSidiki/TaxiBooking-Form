@@ -136,7 +136,13 @@ export default function Step3Payment() {
       const response = await fetch('/api/create-payment-intent', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ amount: totalPrice, currency: 'eur' }),
+        body: JSON.stringify({ 
+          amount: totalPrice, 
+          currency: paymentSettings?.stripeCurrency || 'eur',
+          customerEmail: formData.email,
+          customerName: `${formData.firstName} ${formData.lastName}`,
+          description: `Booking from ${formData.pickup} to ${formData.dropoff}`,
+        }),
       });
 
       const data = await response.json();
@@ -390,18 +396,31 @@ export default function Step3Payment() {
                   <button
                     type="button"
                     onClick={() => setSelectedPaymentMethod('card')}
-                    className={`p-4 border-2 rounded-lg text-left transition-all ${
+                    className={`p-4 border-2 rounded-xl text-left transition-all relative overflow-hidden ${
                       selectedPaymentMethod === 'card'
-                        ? 'border-primary bg-primary/5'
-                        : 'border-gray-200 hover:border-gray-300'
+                        ? 'border-blue-500 bg-blue-50 shadow-md'
+                        : 'border-gray-200 hover:border-gray-300 hover:shadow-sm'
                     }`}
                   >
-                    <div className="flex items-center gap-3">
-                      <CreditCard className="h-5 w-5" />
-                      <div>
-                        <p className="font-medium">Credit/Debit Card</p>
-                        <p className="text-xs text-gray-500">Pay securely with Stripe</p>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className={`p-2 rounded-lg ${
+                          selectedPaymentMethod === 'card' ? 'bg-blue-100' : 'bg-gray-100'
+                        }`}>
+                          <CreditCard className={`h-5 w-5 ${
+                            selectedPaymentMethod === 'card' ? 'text-blue-600' : 'text-gray-600'
+                          }`} />
+                        </div>
+                        <div>
+                          <p className="font-semibold text-gray-900">Credit/Debit Card</p>
+                          <p className="text-xs text-gray-500">Visa, Mastercard, Amex & more</p>
+                        </div>
                       </div>
+                      {selectedPaymentMethod === 'card' && (
+                        <div className="flex items-center gap-1 text-blue-600 text-sm font-medium">
+                          <CheckCircle2 className="h-4 w-4" />
+                        </div>
+                      )}
                     </div>
                   </button>
                 )}
@@ -410,18 +429,31 @@ export default function Step3Payment() {
                   <button
                     type="button"
                     onClick={() => setSelectedPaymentMethod('cash')}
-                    className={`p-4 border-2 rounded-lg text-left transition-all ${
+                    className={`p-4 border-2 rounded-xl text-left transition-all ${
                       selectedPaymentMethod === 'cash'
-                        ? 'border-primary bg-primary/5'
-                        : 'border-gray-200 hover:border-gray-300'
+                        ? 'border-green-500 bg-green-50 shadow-md'
+                        : 'border-gray-200 hover:border-gray-300 hover:shadow-sm'
                     }`}
                   >
-                    <div className="flex items-center gap-3">
-                      <Wallet className="h-5 w-5" />
-                      <div>
-                        <p className="font-medium">Cash Payment</p>
-                        <p className="text-xs text-gray-500">Pay in cash to the driver</p>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className={`p-2 rounded-lg ${
+                          selectedPaymentMethod === 'cash' ? 'bg-green-100' : 'bg-gray-100'
+                        }`}>
+                          <Wallet className={`h-5 w-5 ${
+                            selectedPaymentMethod === 'cash' ? 'text-green-600' : 'text-gray-600'
+                          }`} />
+                        </div>
+                        <div>
+                          <p className="font-semibold text-gray-900">Cash Payment</p>
+                          <p className="text-xs text-gray-500">Pay in cash to the driver</p>
+                        </div>
                       </div>
+                      {selectedPaymentMethod === 'cash' && (
+                        <div className="flex items-center gap-1 text-green-600 text-sm font-medium">
+                          <CheckCircle2 className="h-4 w-4" />
+                        </div>
+                      )}
                     </div>
                   </button>
                 )}
@@ -430,18 +462,31 @@ export default function Step3Payment() {
                   <button
                     type="button"
                     onClick={() => setSelectedPaymentMethod('bank_transfer')}
-                    className={`p-4 border-2 rounded-lg text-left transition-all ${
+                    className={`p-4 border-2 rounded-xl text-left transition-all ${
                       selectedPaymentMethod === 'bank_transfer'
-                        ? 'border-primary bg-primary/5'
-                        : 'border-gray-200 hover:border-gray-300'
+                        ? 'border-indigo-500 bg-indigo-50 shadow-md'
+                        : 'border-gray-200 hover:border-gray-300 hover:shadow-sm'
                     }`}
                   >
-                    <div className="flex items-center gap-3">
-                      <Building2 className="h-5 w-5" />
-                      <div>
-                        <p className="font-medium">Bank Transfer</p>
-                        <p className="text-xs text-gray-500">Transfer to our bank account</p>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className={`p-2 rounded-lg ${
+                          selectedPaymentMethod === 'bank_transfer' ? 'bg-indigo-100' : 'bg-gray-100'
+                        }`}>
+                          <Building2 className={`h-5 w-5 ${
+                            selectedPaymentMethod === 'bank_transfer' ? 'text-indigo-600' : 'text-gray-600'
+                          }`} />
+                        </div>
+                        <div>
+                          <p className="font-semibold text-gray-900">Bank Transfer</p>
+                          <p className="text-xs text-gray-500">Transfer to our bank account</p>
+                        </div>
                       </div>
+                      {selectedPaymentMethod === 'bank_transfer' && (
+                        <div className="flex items-center gap-1 text-indigo-600 text-sm font-medium">
+                          <CheckCircle2 className="h-4 w-4" />
+                        </div>
+                      )}
                     </div>
                   </button>
                 )}
@@ -479,6 +524,7 @@ export default function Step3Payment() {
                     >
                       <StripePaymentForm
                         amount={totalPrice}
+                        currency={(paymentSettings?.stripeCurrency || 'eur').toUpperCase()}
                         onSuccess={handleStripePaymentSuccess}
                         onError={handleStripePaymentError}
                       />

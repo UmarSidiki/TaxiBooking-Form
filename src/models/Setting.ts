@@ -10,6 +10,12 @@ export interface ISetting {
   mapCountryRestrictions?: string[];
   stripePublishableKey?: string;
   stripeSecretKey?: string;
+  stripeWebhookSecret?: string;
+  stripeCurrency?: string;
+  stripeTestMode?: boolean;
+  stripeStatementDescriptor?: string;
+  stripeSaveCards?: boolean;
+  stripeAutomaticTax?: boolean;
   acceptedPaymentMethods: string[];
   bankName?: string;
   bankAccountName?: string;
@@ -53,6 +59,30 @@ const SettingSchema = new Schema<ISetting>(
     stripeSecretKey: {
       type: String,
       default: "",
+    },
+    stripeWebhookSecret: {
+      type: String,
+      default: "",
+    },
+    stripeCurrency: {
+      type: String,
+      default: "eur",
+    },
+    stripeTestMode: {
+      type: Boolean,
+      default: true,
+    },
+    stripeStatementDescriptor: {
+      type: String,
+      default: "BOOKING", // Suffix for statement (will show as "COMPANY* BOOKING")
+    },
+    stripeSaveCards: {
+      type: Boolean,
+      default: false,
+    },
+    stripeAutomaticTax: {
+      type: Boolean,
+      default: false,
     },
     acceptedPaymentMethods: {
       type: [String],

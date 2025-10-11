@@ -285,7 +285,7 @@ export default function Step3Payment() {
             <ArrowLeft className="mr-2 h-4 w-4" /> Back to Vehicles
           </Button>
           <Button 
-            className="flex-1 bg-yellow-500 hover:bg-yellow-600 text-white font-semibold py-6 text-lg"
+            className="flex-1 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold py-6 text-lg"
             disabled={isLoading}
             onClick={handleSubmit}
           >
@@ -357,7 +357,7 @@ export default function Step3Payment() {
           {selectedVehicle && (
             <div className="border-t pt-3">
               <div className="flex items-center gap-2 mb-2">
-                <Car className="h-4 w-4 text-yellow-600" />
+                <Car className="h-4 w-4 text-primary" />
                 <span className="font-semibold text-sm">Selected Vehicle</span>
               </div>
               <div className="bg-gray-50 p-3 rounded-lg">
@@ -396,7 +396,7 @@ export default function Step3Payment() {
           <div className="border-t pt-3">
             <div className="flex justify-between items-center text-lg font-bold">
               <span>TOTAL</span>
-              <span className="text-2xl text-yellow-600">€{totalPrice.toFixed(2)}</span>
+              <span className="text-2xl text-primary">€{totalPrice.toFixed(2)}</span>
             </div>
           </div>
 
@@ -435,13 +435,13 @@ export default function Step3Payment() {
             </div>
             <div className="flex items-center gap-2 text-gray-700">
               <Mail className="h-4 w-4 text-gray-500" />
-              <a href="mailto:booking@swissride-sarl.ch" className="hover:text-yellow-600">
+              <a href="mailto:booking@swissride-sarl.ch" className="hover:text-primary">
                 booking@swissride-sarl.ch
               </a>
             </div>
             <div className="flex items-center gap-2 text-gray-700">
               <Phone className="h-4 w-4 text-gray-500" />
-              <a href="tel:+41763868121" className="hover:text-yellow-600">
+              <a href="tel:+41763868121" className="hover:text-primary">
                 +41 76 3868121
               </a>
             </div>

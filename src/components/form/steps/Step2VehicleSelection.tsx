@@ -7,12 +7,14 @@ import { Card } from '@/components/ui/card';
 import { useBookingForm } from '@/contexts/BookingFormContext';
 import Image from 'next/image';
 import { importLibrary, setOptions } from '@googlemaps/js-api-loader';
+import { useTheme } from '@/contexts/ThemeContext';
 
 export default function Step2VehicleSelection() {
   const [mapLoaded, setMapLoaded] = useState(false);
   const mapRef = useRef<HTMLDivElement>(null);
   const googleMapRef = useRef<google.maps.Map | null>(null);
   const directionsRendererRef = useRef<google.maps.DirectionsRenderer | null>(null);
+  const { settings } = useTheme();
   
   const {
     formData,
@@ -38,15 +40,20 @@ export default function Step2VehicleSelection() {
           v: "weekly",
         });
 
-        await Promise.all([
-          importLibrary("core"),
+        const [maps, routes] = await Promise.all([
           importLibrary("maps"),
+          importLibrary("routes"),
         ]);
 
         // Initialize map
         if (mapRef.current && !googleMapRef.current) {
-          googleMapRef.current = new google.maps.Map(mapRef.current, {
-            center: { lat: 48.8566, lng: 2.3522 }, // Paris default
+          const initialCenter =
+            settings && settings.mapInitialLat && settings.mapInitialLng
+              ? { lat: settings.mapInitialLat, lng: settings.mapInitialLng }
+              : { lat: 46.2044, lng: 6.1432 }; // Default to Geneva
+
+          googleMapRef.current = new maps.Map(mapRef.current, {
+            center: initialCenter,
             zoom: 8,
             disableDefaultUI: false,
             zoomControl: true,
@@ -58,7 +65,7 @@ export default function Step2VehicleSelection() {
 
           // If we have pickup and dropoff, show the route
           if (formData.pickup && formData.dropoff) {
-            const directionsService = new google.maps.DirectionsService();
+            const directionsService = new routes.DirectionsService();
             
             directionsService.route(
               {
@@ -66,19 +73,21 @@ export default function Step2VehicleSelection() {
                 destination: formData.dropoff,
                 travelMode: google.maps.TravelMode.DRIVING,
               },
-              (result, status) => {
+              (result: google.maps.DirectionsResult | null, status: google.maps.DirectionsStatus) => {
                 if (status === 'OK' && result && googleMapRef.current) {
                   if (!directionsRendererRef.current) {
-                    directionsRendererRef.current = new google.maps.DirectionsRenderer({
+                    directionsRendererRef.current = new routes.DirectionsRenderer({
                       map: googleMapRef.current,
                       suppressMarkers: false,
                       polylineOptions: {
-                        strokeColor: '#EAB308',
+                        strokeColor: 'var(--primary-color)',
                         strokeWeight: 4,
                       },
                     });
                   }
-                  directionsRendererRef.current.setDirections(result);
+                  if (directionsRendererRef.current) {
+                    directionsRendererRef.current.setDirections(result);
+                  }
                 }
               }
             );
@@ -89,8 +98,10 @@ export default function Step2VehicleSelection() {
       }
     };
 
-    initGoogleMaps();
-  }, [formData.pickup, formData.dropoff]);
+    if (settings) {
+      initGoogleMaps();
+    }
+  }, [settings, formData.pickup, formData.dropoff]);
 
   useEffect(() => {
     const fetchVehicles = async () => {
@@ -131,7 +142,7 @@ export default function Step2VehicleSelection() {
           <div ref={mapRef} className="w-full h-full" />
           {!mapLoaded && (
             <div className="absolute inset-0 flex items-center justify-center bg-gray-100">
-              <Loader2 className="h-8 w-8 animate-spin text-yellow-500" />
+                            <Loader2 className="h-8 w-8 animate-spin text-primary" />
             </div>
           )}
         </div>
@@ -143,7 +154,7 @@ export default function Step2VehicleSelection() {
 
         {vehicles.length === 0 ? (
           <div className="text-center py-12">
-            <Loader2 className="h-8 w-8 animate-spin mx-auto text-yellow-500 mb-2" />
+            <Loader2 className="h-8 w-8 animate-spin mx-auto text-primary mb-2" />
             <p className="text-gray-500 text-sm">Loading available vehicles...</p>
           </div>
         ) : (
@@ -156,7 +167,7 @@ export default function Step2VehicleSelection() {
                 <Card
                   key={vehicle._id}
                   className={`relative overflow-hidden transition-all ${
-                    isSelected ? 'border-yellow-500 border-2 shadow-lg' : 'border-gray-200 hover:border-yellow-300'
+                    isSelected ? 'border-primary border-2 shadow-lg' : 'border-gray-200 hover:border-primary/70'
                   }`}
                 >
                   <div className="p-3 sm:p-4">
@@ -184,7 +195,7 @@ export default function Step2VehicleSelection() {
                           <div>
                             <h3 className="font-bold text-base">{vehicle.name}</h3>
                             {vehicle.category && (
-                              <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-yellow-100 text-yellow-800 mt-0.5">
+                                                            <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-primary/10 text-primary mt-0.5">
                                 {vehicle.category === 'economy' && '⭐ Best price'}
                                 {vehicle.category === 'standard' && '✨ Standard'}
                                 {vehicle.category === 'premium' && '👑 Premium'}
@@ -241,8 +252,8 @@ export default function Step2VehicleSelection() {
                           onClick={() => handleVehicleSelect(vehicle._id!)}
                           className={`w-full py-2 ${
                             isSelected
-                              ? 'bg-yellow-500 hover:bg-yellow-600'
-                              : 'bg-gray-900 hover:bg-gray-800'
+                              ? 'bg-primary hover:bg-primary/90'
+                              : 'bg-secondary hover:bg-secondary/90'
                           } text-white`}
                         >
                           {isSelected ? '✓ Selected' : 'Select'}
@@ -388,13 +399,13 @@ export default function Step2VehicleSelection() {
             </div>
             <div className="flex items-center gap-2 text-gray-700">
               <Mail className="h-4 w-4 text-gray-500" />
-              <a href="mailto:booking@swissride-sarl.ch" className="hover:text-yellow-600">
+              <a href="mailto:booking@swissride-sarl.ch" className="hover:text-primary">
                 booking@swissride-sarl.ch
               </a>
             </div>
             <div className="flex items-center gap-2 text-gray-700">
               <Phone className="h-4 w-4 text-gray-500" />
-              <a href="tel:+41763868121" className="hover:text-yellow-600">
+              <a href="tel:+41763868121" className="hover:text-primary">
                 +41 76 3868121
               </a>
             </div>

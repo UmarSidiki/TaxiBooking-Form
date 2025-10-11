@@ -190,7 +190,7 @@ const FleetPage = () => {
         <h1 className="text-2xl sm:text-3xl font-bold">Fleet Management</h1>
         <Button
           onClick={() => setShowForm(!showForm)}
-          className="bg-yellow-500 hover:bg-yellow-600"
+          className="bg-primary hover:bg-primary/90 text-primary-foreground"
         >
           {showForm ? (
             <>
@@ -375,7 +375,7 @@ const FleetPage = () => {
                 <Button
                   type="submit"
                   disabled={isLoading}
-                  className="bg-yellow-500 hover:bg-yellow-600"
+                  className="bg-primary hover:bg-primary/90 text-primary-foreground"
                 >
                   {isLoading ? (
                     <>
@@ -400,7 +400,7 @@ const FleetPage = () => {
 
       {isLoading && !showForm ? (
         <div className="flex justify-center items-center py-12">
-          <Loader2 className="h-8 w-8 animate-spin text-yellow-500" />
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
         </div>
       ) : (
         // NOTE: This grid is also already responsive. It's 1 column on mobile, 2 on medium, and 3 on large screens.
@@ -464,7 +464,7 @@ const FleetPage = () => {
                     </div>
                     {/* RESPONSIVE CHANGE: Added flex-wrap and gap to allow price and status to stack if needed */}
                     <div className="flex flex-wrap justify-between items-center gap-2 pt-3 border-t">
-                      <span className="text-2xl font-bold text-yellow-600">€{vehicle.price}</span>
+                      <span className="text-2xl font-bold text-primary">€{vehicle.price}</span>
                       <span className={`text-sm px-2 py-1 rounded ${vehicle.isActive ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'}`}>
                         {vehicle.isActive ? 'Active' : 'Inactive'}
                       </span>

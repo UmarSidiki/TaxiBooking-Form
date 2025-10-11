@@ -64,9 +64,9 @@ export default function BookingFormContainer() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <Car className="text-yellow-500 h-8 w-8" />
+              <Car className="text-primary h-8 w-8" />
               <div>
-                <h1 className="text-xl sm:text-2xl font-bold text-gray-900">Swiss Ride SARL</h1>
+                <h1 className="text-xl sm:text-2xl font-bold text-secondary">Swiss Ride SARL</h1>
                 <p className="text-xs text-gray-500">Premium Transport Service</p>
               </div>
             </div>
@@ -77,9 +77,9 @@ export default function BookingFormContainer() {
                 <span className="text-sm text-gray-600">{getStepTitle()}</span>
               </div>
               <div className="flex gap-2">
-                <div className={`h-2 w-2 sm:h-3 sm:w-8 rounded-full transition-all ${currentStep >= 1 ? 'bg-yellow-500' : 'bg-gray-300'}`}></div>
-                <div className={`h-2 w-2 sm:h-3 sm:w-8 rounded-full transition-all ${currentStep >= 2 ? 'bg-yellow-500' : 'bg-gray-300'}`}></div>
-                <div className={`h-2 w-2 sm:h-3 sm:w-8 rounded-full transition-all ${currentStep >= 3 ? 'bg-yellow-500' : 'bg-gray-300'}`}></div>
+                <div className={`h-2 w-2 sm:h-3 sm:w-8 rounded-full transition-all ${currentStep >= 1 ? 'bg-primary' : 'bg-gray-300'}`}></div>
+                <div className={`h-2 w-2 sm:h-3 sm:w-8 rounded-full transition-all ${currentStep >= 2 ? 'bg-primary' : 'bg-gray-300'}`}></div>
+                <div className={`h-2 w-2 sm:h-3 sm:w-8 rounded-full transition-all ${currentStep >= 3 ? 'bg-primary' : 'bg-gray-300'}`}></div>
               </div>
             </div>
           </div>
@@ -112,9 +112,9 @@ export default function BookingFormContainer() {
           <div className="text-center text-sm text-gray-600">
             <p className="mb-2">© 2025 Swiss Ride SARL. All rights reserved.</p>
             <p className="text-xs">
-              24/7 Support: <a href="tel:+41763868121" className="text-yellow-600 hover:text-yellow-700">+41 76 3868121</a>
+              24/7 Support: <a href="tel:+41763868121" className="text-primary-600 hover:text-primary-700">+41 76 3868121</a>
               {' | '}
-              <a href="mailto:booking@swissride-sarl.ch" className="text-yellow-600 hover:text-yellow-700">booking@swissride-sarl.ch</a>
+              <a href="mailto:booking@swissride-sarl.ch" className="text-primary-600 hover:text-primary-700">booking@swissride-sarl.ch</a>
             </p>
           </div>
         </div>

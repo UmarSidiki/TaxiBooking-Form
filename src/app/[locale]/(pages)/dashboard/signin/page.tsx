@@ -90,7 +90,7 @@ export default function SignInPage() {
               />
             </div>
             {error ? <p className="text-sm text-destructive">{error}</p> : null}
-            <Button type="submit" disabled={loading} className="w-full">
+            <Button type="submit" disabled={loading} className="w-full bg-primary hover:bg-primary/90 text-primary-foreground">
               {loading ? "Signing in..." : "Sign in"}
             </Button>
           </form>

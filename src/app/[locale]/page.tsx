@@ -1,13 +1,10 @@
-import { LanguageSwitcher } from "@/components/LanguageSwitcher";
-import { useTranslations } from "next-intl";
+import Form_v1 from "@/components/form/variants/Form_v1";
 
 export default function Home() {
-  const t = useTranslations("HomePage");
   return (
     <>
       <div className="flex justify-center items-center p-4">
-        <h1>{t("title")}</h1>
-        <LanguageSwitcher />
+        <Form_v1 />
       </div>
     </>
   );

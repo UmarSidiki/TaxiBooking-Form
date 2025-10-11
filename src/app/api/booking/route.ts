@@ -114,8 +114,9 @@ export async function POST(request: NextRequest) {
       lastName: formData.lastName,
       email: formData.email,
       phone: formData.phone,
-      paymentStatus: "completed",
-      totalAmount,
+      paymentMethod: formData.paymentMethod || 'stripe',
+      paymentStatus: (formData.paymentStatus as "pending" | "completed" | "failed") || 'completed',
+      totalAmount: formData.totalAmount || totalAmount,
       createdAt: new Date(),
       updatedAt: new Date(),
     };

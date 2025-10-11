@@ -8,6 +8,14 @@ export interface ISetting {
   mapInitialLat?: number;
   mapInitialLng?: number;
   mapCountryRestrictions?: string[];
+  stripePublishableKey?: string;
+  stripeSecretKey?: string;
+  acceptedPaymentMethods: string[];
+  bankName?: string;
+  bankAccountName?: string;
+  bankAccountNumber?: string;
+  bankIBAN?: string;
+  bankSwiftBIC?: string;
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -37,6 +45,38 @@ const SettingSchema = new Schema<ISetting>(
     mapCountryRestrictions: {
       type: [String],
       default: [], // No restrictions by default
+    },
+    stripePublishableKey: {
+      type: String,
+      default: "",
+    },
+    stripeSecretKey: {
+      type: String,
+      default: "",
+    },
+    acceptedPaymentMethods: {
+      type: [String],
+      default: ["card", "paypal", "apple_pay", "google_pay"], // Default payment methods
+    },
+    bankName: {
+      type: String,
+      default: "",
+    },
+    bankAccountName: {
+      type: String,
+      default: "",
+    },
+    bankAccountNumber: {
+      type: String,
+      default: "",
+    },
+    bankIBAN: {
+      type: String,
+      default: "",
+    },
+    bankSwiftBIC: {
+      type: String,
+      default: "",
     },
   },
   {

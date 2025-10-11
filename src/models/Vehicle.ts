@@ -9,7 +9,11 @@ export interface IVehicle {
   baggages: number;
   price: number;
   pricePerKm: number;
+  pricePerHour: number;
   minimumFare: number;
+  minimumHours: number;
+  returnPricePercentage: number;
+  discount: number;
   category: string;
   childSeatPrice: number;
   babySeatPrice: number;
@@ -58,11 +62,36 @@ const VehicleSchema = new Schema<IVehicle>(
       min: [0, "Price per km must be positive"],
       default: 2,
     },
+    pricePerHour: {
+      type: Number,
+      required: [true, "Price per hour is required"],
+      min: [0, "Price per hour must be positive"],
+      default: 30,
+    },
     minimumFare: {
       type: Number,
       required: [true, "Minimum fare is required"],
-      min: [0, "Minimum fare must be positive"],
+      min: [0, "Minimum fare must be a positive number"],
       default: 20,
+    },
+    minimumHours: {
+      type: Number,
+      required: [true, "Minimum hours is required"],
+      min: [1, "Minimum hours must be at least 1"],
+      default: 2,
+    },
+    returnPricePercentage: {
+      type: Number,
+      required: [true, "Return price percentage is required"],
+      min: [0, "Return price percentage cannot be negative"],
+      default: 100, // 100% means double the price for a return trip
+    },
+    discount: {
+      type: Number,
+      required: false,
+      min: [0, "Discount cannot be negative"],
+      max: [100, "Discount cannot exceed 100%"],
+      default: 0, // 0% means no discount
     },
     category: {
       type: String,

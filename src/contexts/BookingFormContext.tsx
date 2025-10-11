@@ -4,9 +4,11 @@ import React, { createContext, useContext, useState, useEffect, ReactNode } from
 import { IVehicle } from '@/models/Vehicle';
 
 export interface FormData {
+  bookingType: "destination" | "hourly";
   pickup: string;
   dropoff: string;
-  tripType: "oneway" | "return";
+  tripType: "oneway" | "roundtrip";
+  duration: number;
   date: string;
   time: string;
   passengers: number;
@@ -75,9 +77,11 @@ const TIMESTAMP_KEY = 'booking_form_timestamp';
 const EXPIRATION_TIME = 10 * 60 * 1000; // 10 minutes in milliseconds
 
 const defaultFormData: FormData = {
+  bookingType: "destination",
   pickup: "",
   dropoff: "",
   tripType: "oneway",
+  duration: 2,
   date: "",
   time: "",
   passengers: 1,

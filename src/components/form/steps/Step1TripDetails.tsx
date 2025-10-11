@@ -38,7 +38,7 @@ export default function Step1TripDetails() {
     formDataRef.current = formData;
   }, [formData]);
 
-  const calculateDistance = useCallback(async (origin: string, destination: string) => {
+  const calculateDistance = useCallback(async (origin: string, destination: string, isRoundTrip: boolean = false) => {
     if (!origin || !destination) return;
 
     setCalculatingDistance(true);
@@ -48,7 +48,7 @@ export default function Step1TripDetails() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ origin, destination }),
+        body: JSON.stringify({ origin, destination, isRoundTrip }),
       });
 
       const data = await response.json();
@@ -145,7 +145,7 @@ export default function Step1TripDetails() {
             const newPickup = place.formatted_address || place.name || '';
             setFormData(prev => ({ ...prev, pickup: newPickup }));
             if (formDataRef.current.dropoff) {
-              calculateDistance(newPickup, formDataRef.current.dropoff);
+              calculateDistance(newPickup, formDataRef.current.dropoff, formDataRef.current.tripType === 'roundtrip');
             }
           });
         }
@@ -160,14 +160,14 @@ export default function Step1TripDetails() {
             const newDropoff = place.formatted_address || place.name || '';
             setFormData(prev => ({ ...prev, dropoff: newDropoff }));
             if (formDataRef.current.pickup) {
-              calculateDistance(formDataRef.current.pickup, newDropoff);
+              calculateDistance(formDataRef.current.pickup, newDropoff, formDataRef.current.tripType === 'roundtrip');
             }
           });
         }
 
         // If we have pickup and dropoff from context, show the route
         if (formData.pickup && formData.dropoff) {
-          calculateDistance(formData.pickup, formData.dropoff);
+          calculateDistance(formData.pickup, formData.dropoff, formData.tripType === 'roundtrip');
         }
       } catch (error) {
         console.error("Error loading Google Maps:", error);
@@ -177,7 +177,7 @@ export default function Step1TripDetails() {
     if (settings) {
       initGoogleMaps();
     }
-  }, [settings, calculateDistance, formData.pickup, formData.dropoff, setFormData]);
+  }, [settings, calculateDistance, formData.pickup, formData.dropoff, formData.tripType, setFormData]);
 
   const validateStep = (): boolean => {
     const newErrors: typeof errors = {};
@@ -185,9 +185,12 @@ export default function Step1TripDetails() {
     if (!formData.pickup.trim()) {
       newErrors.pickup = "Pickup location is required";
     }
-    if (!formData.dropoff.trim()) {
+    
+    // Dropoff is only required for destination-based bookings
+    if (formData.bookingType === 'destination' && !formData.dropoff.trim()) {
       newErrors.dropoff = "Dropoff location is required";
     }
+    
     if (!formData.date) {
       newErrors.date = "Date is required";
     }
@@ -265,6 +268,50 @@ export default function Step1TripDetails() {
             <p className="text-sm text-gray-600">Enter your trip details to get started</p>
           </div>
 
+          {/* Booking Type */}
+          <div>
+            <label className="block text-sm font-medium mb-1.5 text-gray-700">Booking Type</label>
+            <div className="grid grid-cols-2 gap-2">
+              <Button
+                type="button"
+                onClick={() => {
+                  setFormData(prev => ({ ...prev, bookingType: "destination" }));
+                  setErrors(prev => ({ ...prev, dropoff: undefined }));
+                }}
+                variant="outline"
+                className={`${
+                  formData.bookingType === "destination"
+                    ? "bg-primary text-primary-foreground border-primary hover:bg-primary/90"
+                    : "bg-white hover:bg-gray-50"
+                }`}
+              >
+                <MapPin className="mr-2 h-4 w-4" />
+                Destination Based
+              </Button>
+              <Button
+                type="button"
+                onClick={() => {
+                  setFormData(prev => ({ ...prev, bookingType: "hourly", dropoff: "" }));
+                  setErrors(prev => ({ ...prev, dropoff: undefined }));
+                }}
+                variant="outline"
+                className={`${
+                  formData.bookingType === "hourly"
+                    ? "bg-primary text-primary-foreground border-primary hover:bg-primary/90"
+                    : "bg-white hover:bg-gray-50"
+                }`}
+              >
+                <Clock className="mr-2 h-4 w-4" />
+                Time Based
+              </Button>
+            </div>
+            <p className="text-xs text-gray-500 mt-1">
+              {formData.bookingType === "destination" 
+                ? "Price based on distance traveled" 
+                : "Price based on hourly rate"}
+            </p>
+          </div>
+
           {/* Pickup Location */}
           <div>
             <label className="block text-sm font-medium mb-1.5 text-gray-700">
@@ -282,50 +329,80 @@ export default function Step1TripDetails() {
               }}
               onBlur={() => {
                 if (formData.pickup && formData.dropoff) {
-                  calculateDistance(formData.pickup, formData.dropoff);
+                  calculateDistance(formData.pickup, formData.dropoff, formData.tripType === 'roundtrip');
                 }
               }}
             />
             {errors.pickup && <p className="text-red-500 text-xs mt-1">{errors.pickup}</p>}
           </div>
 
-          {/* Dropoff Location */}
-          <div>
-            <label className="block text-sm font-medium mb-1.5 text-gray-700">
-              <MapPin className="inline h-4 w-4 mr-1 text-red-600" />
-              Dropoff Location *
-            </label>
-            <Input 
-              ref={dropoffInputRef}
-              placeholder="Enter destination address" 
-              className={`${errors.dropoff ? 'border-red-500' : 'border-gray-300'} focus:border-primary-500 focus:ring-primary-500`}
-              value={formData.dropoff}
-              onChange={(e) => {
-                setFormData(prev => ({ ...prev, dropoff: e.target.value }));
-                if (errors.dropoff) setErrors(prev => ({ ...prev, dropoff: undefined }));
-              }}
-              onBlur={() => {
-                if (formData.pickup && formData.dropoff) {
-                  calculateDistance(formData.pickup, formData.dropoff);
-                }
-              }}
-            />
-            {errors.dropoff && <p className="text-red-500 text-xs mt-1">{errors.dropoff}</p>}
-            {calculatingDistance && (
-              <p className="text-xs text-gray-500 mt-1 flex items-center">
-                <Loader2 className="inline h-3 w-3 animate-spin mr-1" />
-                Calculating route...
-              </p>
-            )}
-          </div>
+          {/* Dropoff Location - Only for destination-based bookings */}
+          {formData.bookingType === 'destination' && (
+            <div>
+              <label className="block text-sm font-medium mb-1.5 text-gray-700">
+                <MapPin className="inline h-4 w-4 mr-1 text-red-600" />
+                Dropoff Location *
+              </label>
+              <Input 
+                ref={dropoffInputRef}
+                placeholder="Enter destination address" 
+                className={`${errors.dropoff ? 'border-red-500' : 'border-gray-300'} focus:border-primary-500 focus:ring-primary-500`}
+                value={formData.dropoff}
+                onChange={(e) => {
+                  setFormData(prev => ({ ...prev, dropoff: e.target.value }));
+                  if (errors.dropoff) setErrors(prev => ({ ...prev, dropoff: undefined }));
+                }}
+                onBlur={() => {
+                  if (formData.pickup && formData.dropoff) {
+                    calculateDistance(formData.pickup, formData.dropoff, formData.tripType === 'roundtrip');
+                  }
+                }}
+              />
+              {errors.dropoff && <p className="text-red-500 text-xs mt-1">{errors.dropoff}</p>}
+              {calculatingDistance && (
+                <p className="text-xs text-gray-500 mt-1 flex items-center">
+                  <Loader2 className="inline h-3 w-3 animate-spin mr-1" />
+                  Calculating route...
+                </p>
+              )}
+            </div>
+          )}
 
-          {/* Trip Type */}
-          <div>
+          {/* Duration - Only for hourly bookings */}
+          {formData.bookingType === 'hourly' && (
+            <div>
+              <label className="block text-sm font-medium mb-1.5 text-gray-700">
+                <Clock className="inline h-4 w-4 mr-1" />
+                Duration (Hours) *
+              </label>
+              <Input 
+                type="number"
+                min="1"
+                step="1"
+                placeholder="2"
+                className="focus:border-primary-500 focus:ring-primary-500"
+                value={formData.duration}
+                onChange={(e) => {
+                  setFormData(prev => ({ ...prev, duration: parseInt(e.target.value) || 1 }));
+                }}
+              />
+              <p className="text-xs text-gray-500 mt-1">How many hours do you need the vehicle?</p>
+            </div>
+          )}
+
+          {/* Trip Type - Only for destination-based bookings */}
+          {formData.bookingType === 'destination' && (
+            <div>
             <label className="block text-sm font-medium mb-1.5 text-gray-700">Trip Type</label>
             <div className="grid grid-cols-2 gap-2">
               <Button
                 type="button"
-                onClick={() => setFormData(prev => ({ ...prev, tripType: "oneway" }))}
+                onClick={() => {
+                  setFormData(prev => ({ ...prev, tripType: "oneway" }));
+                  if (formData.pickup && formData.dropoff) {
+                    calculateDistance(formData.pickup, formData.dropoff, false);
+                  }
+                }}
                 variant="outline"
                 className={`${
                   formData.tripType === "oneway"
@@ -337,10 +414,15 @@ export default function Step1TripDetails() {
               </Button>
               <Button
                 type="button"
-                onClick={() => setFormData(prev => ({ ...prev, tripType: "return" }))}
+                onClick={() => {
+                  setFormData(prev => ({ ...prev, tripType: "roundtrip" }));
+                  if (formData.pickup && formData.dropoff) {
+                    calculateDistance(formData.pickup, formData.dropoff, true);
+                  }
+                }}
                 variant="outline"
                 className={`${
-                  formData.tripType === "return"
+                  formData.tripType === "roundtrip"
                     ? "bg-primary text-primary-foreground border-primary hover:bg-primary/90"
                     : "bg-white hover:bg-gray-50"
                 }`}
@@ -348,7 +430,8 @@ export default function Step1TripDetails() {
                 Round Trip
               </Button>
             </div>
-          </div>
+            </div>
+          )}
 
           {/* Date & Time */}
           <div className="grid grid-cols-2 gap-3">

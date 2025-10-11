@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Save, Loader2, Palette, Square, Circle, MapPin } from 'lucide-react';
+import { Save, Loader2, Palette, Square, Circle, MapPin, CreditCard, Banknote, Building2, Wallet } from 'lucide-react';
 import { ISetting } from '@/models/Setting';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
@@ -100,7 +100,7 @@ const SettingsPage = () => {
       </div>
       
       <Tabs defaultValue="appearance">
-        <TabsList className="grid w-full grid-cols-2">
+        <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="appearance">
             <Palette className="mr-2 h-4 w-4" />
             Appearance
@@ -108,6 +108,10 @@ const SettingsPage = () => {
           <TabsTrigger value="map">
             <MapPin className="mr-2 h-4 w-4" />
             Map
+          </TabsTrigger>
+          <TabsTrigger value="payment">
+            <CreditCard className="mr-2 h-4 w-4" />
+            Payment
           </TabsTrigger>
         </TabsList>
         <TabsContent value="appearance">
@@ -226,6 +230,150 @@ const SettingsPage = () => {
                   />
                   <p className="text-xs text-gray-500 mt-1">Limit address autocomplete to specific countries. Leave empty for no restrictions.</p>
                 </div>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+        <TabsContent value="payment">
+          <Card>
+            <CardHeader>
+              <CardTitle>Payment Configuration</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              {/* Stripe API Keys */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-medium">Stripe API Keys</h3>
+                <div className="grid grid-cols-1 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Publishable Key</label>
+                    <Input
+                      type="text"
+                      placeholder="pk_test_..."
+                      value={settings.stripePublishableKey ?? ''}
+                      onChange={(e) => handleMapSettingsChange('stripePublishableKey', e.target.value)}
+                    />
+                    <p className="text-xs text-gray-500 mt-1">Your Stripe publishable key (starts with pk_)</p>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Secret Key</label>
+                    <Input
+                      type="password"
+                      placeholder="sk_test_..."
+                      value={settings.stripeSecretKey ?? ''}
+                      onChange={(e) => handleMapSettingsChange('stripeSecretKey', e.target.value)}
+                    />
+                    <p className="text-xs text-gray-500 mt-1">Your Stripe secret key (starts with sk_) - Keep this secure!</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Payment Methods */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-medium">Accepted Payment Methods</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  {[
+                    { id: 'card', label: 'Credit/Debit Card', Icon: CreditCard },
+                    { id: 'paypal', label: 'PayPal', Icon: Wallet },
+                    { id: 'apple_pay', label: 'Apple Pay', Icon: CreditCard },
+                    { id: 'google_pay', label: 'Google Pay', Icon: CreditCard },
+                    { id: 'cash', label: 'Cash Payment', Icon: Banknote },
+                    { id: 'bank_transfer', label: 'Bank Transfer', Icon: Building2 },
+                  ].map((method) => (
+                    <label
+                      key={method.id}
+                      className="flex items-center gap-3 p-3 border rounded-lg cursor-pointer hover:bg-gray-50"
+                    >
+                      <input
+                        type="checkbox"
+                        checked={settings.acceptedPaymentMethods?.includes(method.id) ?? false}
+                        onChange={(e) => {
+                          const current = settings.acceptedPaymentMethods || [];
+                          const updated = e.target.checked
+                            ? [...current, method.id]
+                            : current.filter((m) => m !== method.id);
+                          handleMapSettingsChange('acceptedPaymentMethods', updated);
+                        }}
+                        className="w-4 h-4"
+                      />
+                      <method.Icon className="h-5 w-5 text-gray-600" />
+                      <span className="text-sm font-medium">{method.label}</span>
+                    </label>
+                  ))}
+                </div>
+                <p className="text-xs text-gray-500">
+                  Select which payment methods customers can use. Card payments require Stripe configuration.
+                </p>
+              </div>
+
+              {/* Bank Account Details */}
+              {settings.acceptedPaymentMethods?.includes('bank_transfer') && (
+                <div className="space-y-4 border-t pt-4">
+                  <h3 className="text-lg font-medium flex items-center gap-2">
+                    <Building2 className="h-5 w-5" />
+                    Bank Account Details
+                  </h3>
+                  <p className="text-xs text-gray-600 mb-4">
+                    These details will be shown to customers who choose bank transfer payment
+                  </p>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium mb-2">Bank Name</label>
+                      <Input
+                        type="text"
+                        placeholder="UBS Switzerland AG"
+                        value={settings.bankName ?? ''}
+                        onChange={(e) => handleMapSettingsChange('bankName', e.target.value)}
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium mb-2">Account Name</label>
+                      <Input
+                        type="text"
+                        placeholder="Company Name"
+                        value={settings.bankAccountName ?? ''}
+                        onChange={(e) => handleMapSettingsChange('bankAccountName', e.target.value)}
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium mb-2">Account Number</label>
+                      <Input
+                        type="text"
+                        placeholder="123456789"
+                        value={settings.bankAccountNumber ?? ''}
+                        onChange={(e) => handleMapSettingsChange('bankAccountNumber', e.target.value)}
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium mb-2">IBAN</label>
+                      <Input
+                        type="text"
+                        placeholder="CH93 0076 2011 6238 5295 7"
+                        value={settings.bankIBAN ?? ''}
+                        onChange={(e) => handleMapSettingsChange('bankIBAN', e.target.value)}
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium mb-2">SWIFT/BIC</label>
+                      <Input
+                        type="text"
+                        placeholder="UBSWCHZH80A"
+                        value={settings.bankSwiftBIC ?? ''}
+                        onChange={(e) => handleMapSettingsChange('bankSwiftBIC', e.target.value)}
+                      />
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Info Notice */}
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                <p className="text-sm text-blue-800">
+                  <strong>Note:</strong> To use Stripe payments, you need to create a Stripe account at{' '}
+                  <a href="https://stripe.com" target="_blank" rel="noopener noreferrer" className="underline">
+                    stripe.com
+                  </a>
+                  {' '}and get your API keys from the dashboard.
+                </p>
               </div>
             </CardContent>
           </Card>

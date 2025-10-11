@@ -21,6 +21,8 @@ export default function BookingFormContainer() {
     const time = searchParams.get('time');
     const passengers = searchParams.get('passengers');
     const tripType = searchParams.get('tripType');
+    const bookingType = searchParams.get('bookingType');
+    const duration = searchParams.get('duration');
 
     // If step parameter is provided, navigate to that step
     if (step) {
@@ -31,7 +33,7 @@ export default function BookingFormContainer() {
     }
 
     // Pre-fill form data from URL parameters
-    if (pickup || dropoff || date || time || passengers || tripType) {
+    if (pickup || dropoff || date || time || passengers || tripType || bookingType || duration) {
       setFormData(prev => ({
         ...prev,
         ...(pickup && { pickup }),
@@ -39,7 +41,9 @@ export default function BookingFormContainer() {
         ...(date && { date }),
         ...(time && { time }),
         ...(passengers && { passengers: parseInt(passengers) || 1 }),
-        ...(tripType && { tripType: tripType as 'oneway' | 'return' }),
+        ...(tripType && { tripType: tripType as 'oneway' | 'roundtrip' }),
+        ...(bookingType && { bookingType: bookingType as 'destination' | 'hourly' }),
+        ...(duration && { duration: parseInt(duration) || 2 }),
       }));
     }
   }, [searchParams, setCurrentStep, setFormData]);

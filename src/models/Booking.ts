@@ -22,6 +22,7 @@ export interface Booking {
   lastName: string;
   email: string;
   phone: string;
+  paymentMethod?: string;
   paymentStatus: "pending" | "completed" | "failed";
   totalAmount?: number;
   createdAt: Date;
@@ -46,4 +47,7 @@ export interface BookingInput {
   cardNumber: string;
   expiry: string;
   cvv: string;
+  paymentMethod?: string;
+  paymentStatus?: string;
+  totalAmount?: number;
 }

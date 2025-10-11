@@ -8,20 +8,8 @@ import { Plus, Edit, Trash2, Save, X, Loader2 } from 'lucide-react';
 import { IVehicle } from '@/models/Vehicle';
 import Image from 'next/image';
 
-interface VehicleForm {
+interface VehicleForm extends Omit<IVehicle, '_id' | 'createdAt' | 'updatedAt'> {
   _id?: string;
-  name: string;
-  description: string;
-  image: string;
-  persons: number;
-  baggages: number;
-  price: number;
-  pricePerKm: number;
-  minimumFare: number;
-  category: string;
-  childSeatPrice: number;
-  babySeatPrice: number;
-  isActive: boolean;
 }
 
 const FleetPage = () => {
@@ -37,7 +25,11 @@ const FleetPage = () => {
     baggages: 2,
     price: 0,
     pricePerKm: 2,
+    pricePerHour: 30,
     minimumFare: 20,
+    minimumHours: 2,
+    returnPricePercentage: 100,
+    discount: 0,
     category: 'economy',
     childSeatPrice: 10,
     babySeatPrice: 10,
@@ -117,18 +109,13 @@ const FleetPage = () => {
 
   const handleEdit = (vehicle: IVehicle) => {
     setFormData({
-      name: vehicle.name,
-      description: vehicle.description,
-      image: vehicle.image,
-      persons: vehicle.persons,
-      baggages: vehicle.baggages,
-      price: vehicle.price,
-      pricePerKm: vehicle.pricePerKm,
-      minimumFare: vehicle.minimumFare,
-      category: vehicle.category,
+      ...vehicle,
       childSeatPrice: vehicle.childSeatPrice || 10,
       babySeatPrice: vehicle.babySeatPrice || 10,
-      isActive: vehicle.isActive,
+      pricePerHour: vehicle.pricePerHour || 30,
+      minimumHours: vehicle.minimumHours || 2,
+      returnPricePercentage: vehicle.returnPricePercentage === undefined ? 100 : vehicle.returnPricePercentage,
+      discount: vehicle.discount === undefined ? 0 : vehicle.discount,
     });
     setEditingId(vehicle._id!);
     setShowForm(true);
@@ -171,7 +158,11 @@ const FleetPage = () => {
       baggages: 2,
       price: 0,
       pricePerKm: 2,
+      pricePerHour: 30,
       minimumFare: 20,
+      minimumHours: 2,
+      returnPricePercentage: 100,
+      discount: 0,
       category: 'economy',
       childSeatPrice: 10,
       babySeatPrice: 10,
@@ -288,7 +279,21 @@ const FleetPage = () => {
                     value={formData.pricePerKm}
                     onChange={(e) => setFormData({ ...formData, pricePerKm: parseFloat(e.target.value) || 0 })}
                   />
-                  <p className="text-xs text-gray-500 mt-1">Rate charged per kilometer</p>
+                  <p className="text-xs text-gray-500 mt-1">Rate charged per kilometer (for destination-based bookings)</p>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium mb-1">Price per Hour (€) *</label>
+                  <Input
+                    required
+                    type="number"
+                    min="0"
+                    step="0.01"
+                    placeholder="30"
+                    value={formData.pricePerHour}
+                    onChange={(e) => setFormData({ ...formData, pricePerHour: parseFloat(e.target.value) || 0 })}
+                  />
+                  <p className="text-xs text-gray-500 mt-1">Rate charged per hour (for time-based bookings)</p>
                 </div>
                 
                 <div>
@@ -302,7 +307,47 @@ const FleetPage = () => {
                     value={formData.minimumFare}
                     onChange={(e) => setFormData({ ...formData, minimumFare: parseFloat(e.target.value) || 0 })}
                   />
-                   <p className="text-xs text-gray-500 mt-1">Minimum charge for any trip</p>
+                   <p className="text-xs text-gray-500 mt-1">Minimum charge for destination-based trips</p>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium mb-1">Minimum Hours *</label>
+                  <Input
+                    required
+                    type="number"
+                    min="1"
+                    step="1"
+                    placeholder="2"
+                    value={formData.minimumHours}
+                    onChange={(e) => setFormData({ ...formData, minimumHours: parseInt(e.target.value) || 1 })}
+                  />
+                   <p className="text-xs text-gray-500 mt-1">Minimum hours required for time-based bookings</p>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium mb-1">Return Trip Price (%)</label>
+                  <Input
+                    required
+                    type="number"
+                    min="0"
+                    placeholder="100"
+                    value={formData.returnPricePercentage}
+                    onChange={(e) => setFormData({ ...formData, returnPricePercentage: parseInt(e.target.value) || 0 })}
+                  />
+                  <p className="text-xs text-gray-500 mt-1">Percentage of one-way price for the return leg. 100% means double price for a round trip.</p>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium mb-1">Discount (%)</label>
+                  <Input
+                    type="number"
+                    min="0"
+                    max="100"
+                    placeholder="0"
+                    value={formData.discount}
+                    onChange={(e) => setFormData({ ...formData, discount: parseInt(e.target.value) || 0 })}
+                  />
+                  <p className="text-xs text-gray-500 mt-1">Discount percentage applied to the final price (0-100%)</p>
                 </div>
 
                 <div>

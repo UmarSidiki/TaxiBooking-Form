@@ -120,12 +120,63 @@ export default function Step2VehicleSelection() {
   }, [setVehicles]);
 
   const calculatePrice = (vehicle: typeof vehicles[0]) => {
+    let totalPrice = 0;
+
+    // Hourly booking calculation
+    if (formData.bookingType === 'hourly') {
+      const pricePerHour = vehicle.pricePerHour || 30;
+      const minimumHours = vehicle.minimumHours || 2;
+      const hours = Math.max(formData.duration, minimumHours);
+      totalPrice = pricePerHour * hours;
+    } 
+    // Destination-based booking calculation
+    else {
+      if (!distanceData) {
+        return vehicle.price;
+      }
+      const distancePrice = vehicle.pricePerKm * distanceData.distance.km;
+      let oneWayPrice = vehicle.price + distancePrice;
+      oneWayPrice = Math.max(oneWayPrice, vehicle.minimumFare);
+
+      totalPrice = oneWayPrice;
+      if (formData.tripType === 'roundtrip') {
+        const returnPercentage = vehicle.returnPricePercentage === undefined ? 100 : vehicle.returnPricePercentage;
+        totalPrice = oneWayPrice + (oneWayPrice * (returnPercentage / 100));
+      }
+    }
+
+    // Apply discount after all other calculations
+    const discount = vehicle.discount === undefined ? 0 : vehicle.discount;
+    if (discount > 0) {
+      totalPrice = totalPrice * (1 - discount / 100);
+    }
+
+    return totalPrice;
+  };
+
+  const calculateOriginalPrice = (vehicle: typeof vehicles[0]) => {
+    // Hourly booking - show price without discount
+    if (formData.bookingType === 'hourly') {
+      const pricePerHour = vehicle.pricePerHour || 30;
+      const minimumHours = vehicle.minimumHours || 2;
+      const hours = Math.max(formData.duration, minimumHours);
+      return pricePerHour * hours;
+    }
+    
+    // Destination-based booking
     if (!distanceData) {
       return vehicle.price;
     }
+    // Calculate without minimum fare applied - just base + distance
     const distancePrice = vehicle.pricePerKm * distanceData.distance.km;
-    const totalPrice = vehicle.price + distancePrice;
-    return Math.max(totalPrice, vehicle.minimumFare);
+    const oneWayPrice = vehicle.price + distancePrice;
+
+    if (formData.tripType === 'roundtrip') {
+      // For round trip, show what it would cost at full price (200% of one-way)
+      return oneWayPrice * 2;
+    }
+
+    return oneWayPrice;
   };
 
   const handleVehicleSelect = (vehicleId: string) => {
@@ -161,6 +212,7 @@ export default function Step2VehicleSelection() {
           <div className="space-y-3">
             {vehicles.map((vehicle) => {
               const calculatedPrice = calculatePrice(vehicle);
+              const originalPrice = calculateOriginalPrice(vehicle);
               const isSelected = formData.selectedVehicle === vehicle._id;
 
               return (
@@ -194,23 +246,34 @@ export default function Step2VehicleSelection() {
                         <div className="flex items-start justify-between mb-1.5">
                           <div>
                             <h3 className="font-bold text-base">{vehicle.name}</h3>
-                            {vehicle.category && (
-                                                            <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-primary/10 text-primary mt-0.5">
-                                {vehicle.category === 'economy' && '⭐ Best price'}
-                                {vehicle.category === 'standard' && '✨ Standard'}
-                                {vehicle.category === 'premium' && '👑 Premium'}
-                              </span>
-                            )}
+                            <div className="flex gap-1.5 mt-0.5">
+                              {vehicle.category && (
+                                <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-primary/10 text-primary">
+                                  {vehicle.category === 'economy' && '⭐ Best price'}
+                                  {vehicle.category === 'standard' && '✨ Standard'}
+                                  {vehicle.category === 'premium' && '👑 Premium'}
+                                </span>
+                              )}
+                              {vehicle.discount && vehicle.discount > 0 && (
+                                <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-700">
+                                  🎉 {vehicle.discount}% OFF
+                                </span>
+                              )}
+                            </div>
                           </div>
                           <div className="text-right">
-                            {distanceData && calculatedPrice !== vehicle.price && (
-                              <p className="text-xs text-gray-500 line-through">€{vehicle.price.toFixed(2)}</p>
+                            {distanceData && originalPrice > calculatedPrice && (
+                              <p className="text-xs text-gray-500 line-through">€{originalPrice.toFixed(2)}</p>
                             )}
                             <p className="text-xl font-bold text-gray-900">
                               €{calculatedPrice.toFixed(2)}
                             </p>
                             <p className="text-xs text-gray-500">
-                              {distanceData ? 'Total One Way' : 'Starting from'}
+                              {formData.bookingType === 'hourly' 
+                                ? `${Math.max(formData.duration, vehicle.minimumHours || 2)} hours` 
+                                : distanceData 
+                                  ? (formData.tripType === 'roundtrip' ? 'Total Round Trip' : 'Total One Way') 
+                                  : 'Starting from'}
                             </p>
                           </div>
                         </div>
@@ -241,7 +304,13 @@ export default function Step2VehicleSelection() {
                           )}
                         </div>
 
-                        {distanceData && (
+                        {/* Pricing breakdown */}
+                        {formData.bookingType === 'hourly' ? (
+                          <p className="text-xs text-gray-500 mb-2">
+                            €{vehicle.pricePerHour || 30}/hour × {Math.max(formData.duration, vehicle.minimumHours || 2)} hours
+                            {formData.duration < (vehicle.minimumHours || 2) && ` (Minimum ${vehicle.minimumHours || 2} hours)`}
+                          </p>
+                        ) : distanceData && (
                           <p className="text-xs text-gray-500 mb-2">
                             Base fare: €{vehicle.price} + €{vehicle.pricePerKm}/km × {distanceData.distance.km.toFixed(1)} km
                             {calculatedPrice === vehicle.minimumFare && ` (Minimum fare applied: €${vehicle.minimumFare})`}
@@ -290,27 +359,36 @@ export default function Step2VehicleSelection() {
               </div>
             </div>
 
-            <div className="flex items-start gap-2">
-              <MapPin className="h-5 w-5 text-red-600 flex-shrink-0 mt-0.5" />
-              <div>
-                <p className="font-medium text-gray-900">{formData.dropoff || 'Dropoff location'}</p>
-              </div>
-            </div>
-
-            {distanceData && (
+            {formData.bookingType === 'destination' ? (
               <>
-                <div className="flex items-center gap-2">
-                  <Clock className="h-4 w-4 text-gray-600" />
-                  <span className="text-gray-700">{distanceData.duration.text}</span>
+                <div className="flex items-start gap-2">
+                  <MapPin className="h-5 w-5 text-red-600 flex-shrink-0 mt-0.5" />
+                  <div>
+                    <p className="font-medium text-gray-900">{formData.dropoff || 'Dropoff location'}</p>
+                  </div>
                 </div>
 
-                <div className="flex items-center gap-2">
-                  <svg className="h-4 w-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
-                  </svg>
-                  <span className="text-gray-700">{distanceData.distance.text} - {formData.tripType === 'oneway' ? 'One Way' : 'Return'}</span>
-                </div>
+                {distanceData && (
+                  <>
+                    <div className="flex items-center gap-2">
+                      <Clock className="h-4 w-4 text-gray-600" />
+                      <span className="text-gray-700">{distanceData.duration.text}</span>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      <svg className="h-4 w-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
+                      </svg>
+                      <span className="text-gray-700">{distanceData.distance.text} - {formData.tripType === 'oneway' ? 'One Way' : 'Round Trip'}</span>
+                    </div>
+                  </>
+                )}
               </>
+            ) : (
+              <div className="flex items-center gap-2">
+                <Clock className="h-4 w-4 text-gray-600" />
+                <span className="text-gray-700">{formData.duration} {formData.duration === 1 ? 'hour' : 'hours'} - Hourly Booking</span>
+              </div>
             )}
 
             <div className="flex items-center gap-2">

@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: NextRequest) {
   try {
-    const { origin, destination } = await request.json();
+    const { origin, destination, isRoundTrip } = await request.json();
 
     if (!origin || !destination) {
       return NextResponse.json(
@@ -44,22 +44,40 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const distanceInMeters = element.distance.value;
-    const distanceInKm = distanceInMeters / 1000;
-    const durationInSeconds = element.duration.value;
-    const durationInMinutes = Math.round(durationInSeconds / 60);
+    let distanceInMeters = element.distance.value;
+    let distanceInKm = distanceInMeters / 1000;
+    let durationInSeconds = element.duration.value;
+    let durationInMinutes = Math.round(durationInSeconds / 60);
+
+    // If it's a round trip, double the distance and time
+    if (isRoundTrip) {
+      distanceInMeters *= 2;
+      distanceInKm *= 2;
+      durationInSeconds *= 2;
+      durationInMinutes *= 2;
+    }
+
+    // Format duration text for round trips
+    const formatDuration = (minutes: number) => {
+      const hours = Math.floor(minutes / 60);
+      const mins = minutes % 60;
+      if (hours > 0) {
+        return `${hours} hour${hours > 1 ? 's' : ''} ${mins} min${mins !== 1 ? 's' : ''}`;
+      }
+      return `${mins} min${mins !== 1 ? 's' : ''}`;
+    };
 
     return NextResponse.json({
       success: true,
       data: {
         distance: {
           value: distanceInMeters,
-          text: element.distance.text,
+          text: isRoundTrip ? `${distanceInKm.toFixed(1)} km (round trip)` : element.distance.text,
           km: parseFloat(distanceInKm.toFixed(2)),
         },
         duration: {
           value: durationInSeconds,
-          text: element.duration.text,
+          text: isRoundTrip ? formatDuration(durationInMinutes) : element.duration.text,
           minutes: durationInMinutes,
         },
         origin: data.origin_addresses[0],

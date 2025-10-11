@@ -1,12 +1,17 @@
 "use client";
 
-import React from 'react';
-import { ArrowLeft, Check, Loader2, MapPin, Clock, Calendar, Users, CheckCircle2, Shield, CreditCard, Phone, Mail, Car } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { ArrowLeft, Loader2, MapPin, Clock, Calendar, Users, CheckCircle2, Shield, CreditCard, Phone, Mail, Car, Wallet, Building2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card } from '@/components/ui/card';
 import { useBookingForm } from '@/contexts/BookingFormContext';
-import Image from 'next/image';
+import dynamic from 'next/dynamic';
+
+import { ISetting } from '@/models/Setting';
+
+const StripeProvider = dynamic(() => import('@/components/providers/stripe-provider'), { ssr: false });
+const StripePaymentForm = dynamic(() => import('@/components/payment/StripePaymentForm'), { ssr: false });
 
 export default function Step3Payment() {
   const {
@@ -22,7 +27,83 @@ export default function Step3Payment() {
     resetForm,
   } = useBookingForm();
 
-  const validateStep = (): boolean => {
+  const [stripeConfig, setStripeConfig] = useState<{ enabled: boolean; publishableKey: string | null }>({ 
+    enabled: false, 
+    publishableKey: null 
+  });
+  const [paymentSettings, setPaymentSettings] = useState<ISetting | null>(null);
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<string>('');
+  const [clientSecret, setClientSecret] = useState<string | null>(null);
+  const [creatingPaymentIntent, setCreatingPaymentIntent] = useState(false);
+
+  // Fetch payment configuration
+  useEffect(() => {
+    const fetchPaymentConfig = async () => {
+      try {
+        const response = await fetch('/api/settings');
+        const data = await response.json();
+        if (data.success) {
+          setPaymentSettings(data.data);
+          if (data.data.stripePublishableKey) {
+            setStripeConfig({
+              enabled: true,
+              publishableKey: data.data.stripePublishableKey,
+            });
+          }
+          // Set default payment method
+          if (data.data.acceptedPaymentMethods?.length > 0) {
+            setSelectedPaymentMethod(data.data.acceptedPaymentMethods[0]);
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching payment config:', error);
+      }
+    };
+    fetchPaymentConfig();
+  }, []);
+
+  const selectedVehicle = vehicles.find(v => v._id === formData.selectedVehicle);
+  
+  const calculateVehiclePrice = () => {
+    if (!selectedVehicle) return 0;
+
+    // Hourly booking calculation
+    if (formData.bookingType === 'hourly') {
+      const pricePerHour = selectedVehicle.pricePerHour || 30;
+      const minimumHours = selectedVehicle.minimumHours || 2;
+      const hours = Math.max(formData.duration, minimumHours);
+      return pricePerHour * hours;
+    } 
+    // Destination-based booking calculation
+    else {
+      if (!distanceData) {
+        return selectedVehicle.price;
+      }
+      const distancePrice = selectedVehicle.pricePerKm * distanceData.distance.km;
+      let oneWayPrice = selectedVehicle.price + distancePrice;
+      oneWayPrice = Math.max(oneWayPrice, selectedVehicle.minimumFare);
+
+      let totalPrice = oneWayPrice;
+      if (formData.tripType === 'roundtrip') {
+        const returnPercentage = selectedVehicle.returnPricePercentage === undefined ? 100 : selectedVehicle.returnPricePercentage;
+        totalPrice = oneWayPrice + (oneWayPrice * (returnPercentage / 100));
+      }
+      return totalPrice;
+    }
+  };
+
+  const vehiclePrice = calculateVehiclePrice();
+  
+  // Apply discount
+  const discount = selectedVehicle?.discount || 0;
+  const discountedVehiclePrice = discount > 0 ? vehiclePrice * (1 - discount / 100) : vehiclePrice;
+  
+  const childSeatPrice = selectedVehicle?.childSeatPrice || 10;
+  const babySeatPrice = selectedVehicle?.babySeatPrice || 10;
+  const extrasPrice = (formData.childSeats * childSeatPrice) + (formData.babySeats * babySeatPrice);
+  const totalPrice = discountedVehiclePrice + extrasPrice;
+
+  const validatePersonalDetails = (): boolean => {
     const newErrors: typeof errors = {};
     
     if (!formData.firstName.trim()) {
@@ -39,26 +120,78 @@ export default function Step3Payment() {
     if (!formData.phone.trim()) {
       newErrors.phone = "Phone number is required";
     }
-    if (!formData.cardNumber.trim()) {
-      newErrors.cardNumber = "Card number is required";
-    } else if (formData.cardNumber.replace(/\s/g, "").length < 13) {
-      newErrors.cardNumber = "Card number is invalid";
-    }
-    if (!formData.expiry.trim()) {
-      newErrors.expiry = "Expiry date is required";
-    }
-    if (!formData.cvv.trim()) {
-      newErrors.cvv = "CVV is required";
-    } else if (formData.cvv.length < 3) {
-      newErrors.cvv = "CVV must be at least 3 digits";
-    }
     
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = async () => {
-    if (!validateStep()) {
+  const createPaymentIntent = async () => {
+    if (!validatePersonalDetails()) {
+      alert('Please fill in all personal details first');
+      return;
+    }
+
+    setCreatingPaymentIntent(true);
+    try {
+      const response = await fetch('/api/create-payment-intent', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ amount: totalPrice, currency: 'eur' }),
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        setClientSecret(data.clientSecret);
+      } else {
+        alert('Failed to initialize payment');
+      }
+    } catch (error) {
+      console.error('Error creating payment intent:', error);
+      alert('Failed to initialize payment');
+    } finally {
+      setCreatingPaymentIntent(false);
+    }
+  };
+
+  const handleStripePaymentSuccess = async () => {
+    setIsLoading(true);
+    try {
+      const response = await fetch('/api/booking', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...formData, paymentMethod: 'stripe', totalAmount: totalPrice }),
+      });
+      
+      const data = await response.json();
+      
+      if (response.ok) {
+        alert(`Booking confirmed! Trip ID: ${data.tripId}\nTotal Amount: €${totalPrice.toFixed(2)}\n\nConfirmation emails have been sent.`);
+        resetForm();
+      } else {
+        alert(`Booking failed: ${data.message}`);
+      }
+    } catch (error) {
+      console.error("Booking error:", error);
+      alert("Booking failed. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleStripePaymentError = (error: string) => {
+    alert(`Payment failed: ${error}`);
+  };
+
+  const handleCashBooking = async () => {
+    // Validate required fields
+    const newErrors: typeof errors = {};
+    if (!formData.firstName.trim()) newErrors.firstName = 'First name is required';
+    if (!formData.lastName.trim()) newErrors.lastName = 'Last name is required';
+    if (!formData.email.trim()) newErrors.email = 'Email is required';
+    if (!formData.phone.trim()) newErrors.phone = 'Phone is required';
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
       return;
     }
 
@@ -66,39 +199,72 @@ export default function Step3Payment() {
     try {
       const response = await fetch('/api/booking', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          ...formData, 
+          paymentMethod: 'cash', 
+          paymentStatus: 'pending',
+          totalAmount: totalPrice 
+        }),
       });
       
       const data = await response.json();
       
       if (response.ok) {
-        alert(`Booking confirmed! Trip ID: ${data.tripId}\nTotal Amount: €${data.totalAmount}\n\nConfirmation emails have been sent to both you and the owner.`);
+        alert(`Booking confirmed! Trip ID: ${data.tripId}\n\nTotal Amount: €${totalPrice.toFixed(2)}\nPayment Method: Cash on Arrival\n\nPlease have the exact amount ready. Confirmation email has been sent.`);
         resetForm();
       } else {
         alert(`Booking failed: ${data.message}`);
       }
     } catch (error) {
-      console.error("Payment error:", error);
-      alert("Payment failed. Please check your connection and try again.");
+      console.error("Booking error:", error);
+      alert("Booking failed. Please try again.");
     } finally {
       setIsLoading(false);
     }
   };
 
-  const selectedVehicle = vehicles.find(v => v._id === formData.selectedVehicle);
-  const vehiclePrice = selectedVehicle ? (
-    distanceData ? 
-    Math.max(selectedVehicle.price + (selectedVehicle.pricePerKm * distanceData.distance.km), selectedVehicle.minimumFare) :
-    selectedVehicle.price
-  ) : 0;
-  
-  const childSeatPrice = selectedVehicle?.childSeatPrice || 10;
-  const babySeatPrice = selectedVehicle?.babySeatPrice || 10;
-  const extrasPrice = (formData.childSeats * childSeatPrice) + (formData.babySeats * babySeatPrice);
-  const totalPrice = vehiclePrice + extrasPrice;
+  const handleBankTransferBooking = async () => {
+    // Validate required fields
+    const newErrors: typeof errors = {};
+    if (!formData.firstName.trim()) newErrors.firstName = 'First name is required';
+    if (!formData.lastName.trim()) newErrors.lastName = 'Last name is required';
+    if (!formData.email.trim()) newErrors.email = 'Email is required';
+    if (!formData.phone.trim()) newErrors.phone = 'Phone is required';
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      const response = await fetch('/api/booking', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          ...formData, 
+          paymentMethod: 'bank_transfer', 
+          paymentStatus: 'pending',
+          totalAmount: totalPrice 
+        }),
+      });
+      
+      const data = await response.json();
+      
+      if (response.ok) {
+        alert(`Booking confirmed! Trip ID: ${data.tripId}\n\nTotal Amount: €${totalPrice.toFixed(2)}\nPayment Method: Bank Transfer\n\nYour booking will be confirmed once payment is received. Bank transfer details have been sent to your email.`);
+        resetForm();
+      } else {
+        alert(`Booking failed: ${data.message}`);
+      }
+    } catch (error) {
+      console.error("Booking error:", error);
+      alert("Booking failed. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -211,67 +377,221 @@ export default function Step3Payment() {
 
         {/* Payment Details */}
         <Card className="p-5">
-          <h3 className="font-semibold mb-4 text-lg">Payment Details</h3>
-          <div className="space-y-4">
-            <div>
-              <label className="text-sm font-medium block mb-2">Card Number *</label>
-              <Input
-                placeholder="1234 5678 9012 3456"
-                className={errors.cardNumber ? 'border-red-500' : ''}
-                maxLength={19}
-                value={formData.cardNumber}
-                onChange={(e) => {
-                  const value = e.target.value.replace(/\D/g, '').replace(/(\d{4})/g, '$1 ').trim();
-                  setFormData(prev => ({ ...prev, cardNumber: value }));
-                  if (errors.cardNumber) setErrors(prev => ({ ...prev, cardNumber: undefined }));
-                }}
-              />
-              {errors.cardNumber && <p className="text-red-500 text-xs mt-1">{errors.cardNumber}</p>}
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="text-sm font-medium block mb-2">Expiry Date *</label>
-                <Input
-                  placeholder="MM/YY"
-                  className={errors.expiry ? 'border-red-500' : ''}
-                  maxLength={5}
-                  value={formData.expiry}
-                  onChange={(e) => {
-                    let value = e.target.value.replace(/\D/g, '');
-                    if (value.length >= 2) {
-                      value = value.slice(0, 2) + '/' + value.slice(2, 4);
-                    }
-                    setFormData(prev => ({ ...prev, expiry: value }));
-                    if (errors.expiry) setErrors(prev => ({ ...prev, expiry: undefined }));
-                  }}
-                />
-                {errors.expiry && <p className="text-red-500 text-xs mt-1">{errors.expiry}</p>}
+          <h3 className="font-semibold mb-4 text-lg flex items-center gap-2">
+            <CreditCard className="h-5 w-5" />
+            Payment Method
+          </h3>
+          
+          {/* Payment Method Selection */}
+          {paymentSettings?.acceptedPaymentMethods && paymentSettings.acceptedPaymentMethods.length > 0 ? (
+            <div className="space-y-4">
+              <div className="grid grid-cols-1 gap-3">
+                {paymentSettings.acceptedPaymentMethods.includes('card') && stripeConfig.enabled && (
+                  <button
+                    type="button"
+                    onClick={() => setSelectedPaymentMethod('card')}
+                    className={`p-4 border-2 rounded-lg text-left transition-all ${
+                      selectedPaymentMethod === 'card'
+                        ? 'border-primary bg-primary/5'
+                        : 'border-gray-200 hover:border-gray-300'
+                    }`}
+                  >
+                    <div className="flex items-center gap-3">
+                      <CreditCard className="h-5 w-5" />
+                      <div>
+                        <p className="font-medium">Credit/Debit Card</p>
+                        <p className="text-xs text-gray-500">Pay securely with Stripe</p>
+                      </div>
+                    </div>
+                  </button>
+                )}
+                
+                {paymentSettings.acceptedPaymentMethods.includes('cash') && (
+                  <button
+                    type="button"
+                    onClick={() => setSelectedPaymentMethod('cash')}
+                    className={`p-4 border-2 rounded-lg text-left transition-all ${
+                      selectedPaymentMethod === 'cash'
+                        ? 'border-primary bg-primary/5'
+                        : 'border-gray-200 hover:border-gray-300'
+                    }`}
+                  >
+                    <div className="flex items-center gap-3">
+                      <Wallet className="h-5 w-5" />
+                      <div>
+                        <p className="font-medium">Cash Payment</p>
+                        <p className="text-xs text-gray-500">Pay in cash to the driver</p>
+                      </div>
+                    </div>
+                  </button>
+                )}
+                
+                {paymentSettings.acceptedPaymentMethods.includes('bank_transfer') && (
+                  <button
+                    type="button"
+                    onClick={() => setSelectedPaymentMethod('bank_transfer')}
+                    className={`p-4 border-2 rounded-lg text-left transition-all ${
+                      selectedPaymentMethod === 'bank_transfer'
+                        ? 'border-primary bg-primary/5'
+                        : 'border-gray-200 hover:border-gray-300'
+                    }`}
+                  >
+                    <div className="flex items-center gap-3">
+                      <Building2 className="h-5 w-5" />
+                      <div>
+                        <p className="font-medium">Bank Transfer</p>
+                        <p className="text-xs text-gray-500">Transfer to our bank account</p>
+                      </div>
+                    </div>
+                  </button>
+                )}
               </div>
-              <div>
-                <label className="text-sm font-medium block mb-2">CVV *</label>
-                <Input
-                  placeholder="123"
-                  className={errors.cvv ? 'border-red-500' : ''}
-                  maxLength={4}
-                  value={formData.cvv}
-                  onChange={(e) => {
-                    const value = e.target.value.replace(/\D/g, '');
-                    setFormData(prev => ({ ...prev, cvv: value }));
-                    if (errors.cvv) setErrors(prev => ({ ...prev, cvv: undefined }));
-                  }}
-                />
-                {errors.cvv && <p className="text-red-500 text-xs mt-1">{errors.cvv}</p>}
-              </div>
-            </div>
 
-            <div className="flex justify-center gap-2 pt-3 border-t">
-              <Image src="/visa.webp" alt="Visa" width={40} height={28} className="h-7 w-auto" />
-              <Image src="/mastercard.webp" alt="MasterCard" width={40} height={28} className="h-7 w-auto" />
-              <Image src="/paypal.webp" alt="PayPal" width={40} height={28} className="h-7 w-auto" />
-              <Image src="/twint.webp" alt="Twint" width={40} height={28} className="h-7 w-auto" />
-              <Image src="/applepay.webp" alt="Apple Pay" width={40} height={28} className="h-7 w-auto" />
+              {/* Stripe Card Payment */}
+              {selectedPaymentMethod === 'card' && stripeConfig.publishableKey && (
+                <div className="mt-4">
+                  {!clientSecret ? (
+                    <div>
+                      <p className="text-sm text-gray-600 mb-4">
+                        Click below to proceed with secure card payment
+                      </p>
+                      <Button
+                        onClick={createPaymentIntent}
+                        disabled={creatingPaymentIntent}
+                        className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold py-6"
+                      >
+                        {creatingPaymentIntent ? (
+                          <>
+                            <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                            Initializing Payment...
+                          </>
+                        ) : (
+                          <>
+                            Proceed to Card Payment - €{totalPrice.toFixed(2)}
+                          </>
+                        )}
+                      </Button>
+                    </div>
+                  ) : (
+                    <StripeProvider
+                      publishableKey={stripeConfig.publishableKey}
+                      clientSecret={clientSecret}
+                    >
+                      <StripePaymentForm
+                        amount={totalPrice}
+                        onSuccess={handleStripePaymentSuccess}
+                        onError={handleStripePaymentError}
+                      />
+                    </StripeProvider>
+                  )}
+                </div>
+              )}
+
+              {/* Cash Payment Info */}
+              {selectedPaymentMethod === 'cash' && (
+                <div className="mt-4 bg-green-50 border border-green-200 rounded-lg p-4">
+                  <div className="flex items-start gap-3">
+                    <CheckCircle2 className="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" />
+                    <div>
+                      <p className="font-medium text-green-900 mb-1">Cash Payment Selected</p>
+                      <p className="text-sm text-green-800">
+                        You will pay €{totalPrice.toFixed(2)} in cash directly to the driver at pickup.
+                      </p>
+                    </div>
+                  </div>
+                  <Button
+                    onClick={handleCashBooking}
+                    disabled={isLoading}
+                    className="w-full mt-4 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold py-6"
+                  >
+                    {isLoading ? (
+                      <>
+                        <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                        Confirming Booking...
+                      </>
+                    ) : (
+                      <>
+                        Confirm Booking - Pay Cash on Arrival
+                      </>
+                    )}
+                  </Button>
+                </div>
+              )}
+
+              {/* Bank Transfer Info */}
+              {selectedPaymentMethod === 'bank_transfer' && (
+                <div className="mt-4 bg-blue-50 border border-blue-200 rounded-lg p-4">
+                  <div className="flex items-start gap-3 mb-4">
+                    <Building2 className="h-5 w-5 text-blue-600 flex-shrink-0 mt-0.5" />
+                    <div>
+                      <p className="font-medium text-blue-900 mb-1">Bank Transfer Instructions</p>
+                      <p className="text-sm text-blue-800">
+                        Please transfer €{totalPrice.toFixed(2)} to the account below. Your booking will be confirmed once payment is received.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="bg-white rounded-lg p-4 space-y-3 text-sm">
+                    {paymentSettings.bankName && (
+                      <div>
+                        <p className="text-gray-500 text-xs">Bank Name</p>
+                        <p className="font-medium">{paymentSettings.bankName}</p>
+                      </div>
+                    )}
+                    {paymentSettings.bankAccountName && (
+                      <div>
+                        <p className="text-gray-500 text-xs">Account Name</p>
+                        <p className="font-medium">{paymentSettings.bankAccountName}</p>
+                      </div>
+                    )}
+                    {paymentSettings.bankAccountNumber && (
+                      <div>
+                        <p className="text-gray-500 text-xs">Account Number</p>
+                        <p className="font-medium">{paymentSettings.bankAccountNumber}</p>
+                      </div>
+                    )}
+                    {paymentSettings.bankIBAN && (
+                      <div>
+                        <p className="text-gray-500 text-xs">IBAN</p>
+                        <p className="font-medium font-mono">{paymentSettings.bankIBAN}</p>
+                      </div>
+                    )}
+                    {paymentSettings.bankSwiftBIC && (
+                      <div>
+                        <p className="text-gray-500 text-xs">SWIFT/BIC</p>
+                        <p className="font-medium">{paymentSettings.bankSwiftBIC}</p>
+                      </div>
+                    )}
+                  </div>
+
+                  <Button
+                    onClick={handleBankTransferBooking}
+                    disabled={isLoading}
+                    className="w-full mt-4 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold py-6"
+                  >
+                    {isLoading ? (
+                      <>
+                        <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                        Confirming Booking...
+                      </>
+                    ) : (
+                      <>
+                        Confirm Booking - I Will Transfer Payment
+                      </>
+                    )}
+                  </Button>
+                </div>
+              )}
             </div>
-          </div>
+          ) : (
+            <div className="text-center py-8">
+              <CreditCard className="h-12 w-12 mx-auto text-gray-400 mb-3" />
+              <p className="text-gray-600 mb-2">No payment methods configured</p>
+              <p className="text-sm text-gray-500">
+                Please contact the administrator to set up payment processing
+              </p>
+            </div>
+          )}
         </Card>
 
         {/* Action Buttons */}
@@ -280,25 +600,9 @@ export default function Step3Payment() {
             onClick={() => setCurrentStep(2)}
             variant="outline"
             className="flex-1"
-            disabled={isLoading}
+            disabled={isLoading || creatingPaymentIntent}
           >
             <ArrowLeft className="mr-2 h-4 w-4" /> Back to Vehicles
-          </Button>
-          <Button 
-            className="flex-1 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold py-6 text-lg"
-            disabled={isLoading}
-            onClick={handleSubmit}
-          >
-            {isLoading ? (
-              <>
-                <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                Processing Payment...
-              </>
-            ) : (
-              <>
-                <Check className="mr-2 h-5 w-5" /> Pay €{totalPrice.toFixed(2)}
-              </>
-            )}
           </Button>
         </div>
       </div>
@@ -318,28 +622,37 @@ export default function Step3Payment() {
               </div>
             </div>
 
-            <div className="flex items-start gap-2">
-              <MapPin className="h-5 w-5 text-red-600 flex-shrink-0 mt-0.5" />
-              <div>
-                <p className="text-xs text-gray-500">Dropoff</p>
-                <p className="font-medium text-gray-900">{formData.dropoff}</p>
-              </div>
-            </div>
-
-            {distanceData && (
+            {formData.bookingType === 'destination' ? (
               <>
-                <div className="flex items-center gap-2">
-                  <Clock className="h-4 w-4 text-gray-600" />
-                  <span className="text-gray-700">{distanceData.duration.text}</span>
+                <div className="flex items-start gap-2">
+                  <MapPin className="h-5 w-5 text-red-600 flex-shrink-0 mt-0.5" />
+                  <div>
+                    <p className="text-xs text-gray-500">Dropoff</p>
+                    <p className="font-medium text-gray-900">{formData.dropoff}</p>
+                  </div>
                 </div>
 
-                <div className="flex items-center gap-2">
-                  <svg className="h-4 w-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
-                  </svg>
-                  <span className="text-gray-700">{distanceData.distance.text} - {formData.tripType === 'oneway' ? 'One Way' : 'Return'}</span>
-                </div>
+                {distanceData && (
+                  <>
+                    <div className="flex items-center gap-2">
+                      <Clock className="h-4 w-4 text-gray-600" />
+                      <span className="text-gray-700">{distanceData.duration.text}</span>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      <svg className="h-4 w-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
+                      </svg>
+                      <span className="text-gray-700">{distanceData.distance.text} - {formData.tripType === 'oneway' ? 'One Way' : 'Round Trip'}</span>
+                    </div>
+                  </>
+                )}
               </>
+            ) : (
+              <div className="flex items-center gap-2">
+                <Clock className="h-4 w-4 text-gray-600" />
+                <span className="text-gray-700">{formData.duration} {formData.duration === 1 ? 'hour' : 'hours'} - Hourly Booking</span>
+              </div>
             )}
 
             <div className="flex items-center gap-2">

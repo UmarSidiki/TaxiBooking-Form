@@ -37,6 +37,7 @@ export default function Step3Payment() {
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<string>('');
   const [clientSecret, setClientSecret] = useState<string | null>(null);
   const [creatingPaymentIntent, setCreatingPaymentIntent] = useState(false);
+  const [paymentError, setPaymentError] = useState<string | null>(null);
 
   // Fetch payment configuration
   useEffect(() => {
@@ -107,8 +108,12 @@ export default function Step3Payment() {
 
   // Auto-initiate Stripe payment intent when 'card' is selected
   useEffect(() => {
-    if (selectedPaymentMethod === 'card' && stripeConfig.publishableKey && !clientSecret) {
+    if (selectedPaymentMethod === 'card' && stripeConfig.publishableKey && !clientSecret && !creatingPaymentIntent) {
       setCreatingPaymentIntent(true);
+      setPaymentError(null);
+      
+      console.log('Creating payment intent with amount:', totalPrice);
+      
       fetch('/api/create-payment-intent', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -122,13 +127,23 @@ export default function Step3Payment() {
       })
         .then(res => res.json())
         .then(data => {
-          if (data.success) setClientSecret(data.clientSecret);
-          else console.error('Payment intent init failed');
+          console.log('Payment intent response:', data);
+          if (data.success && data.clientSecret) {
+            setClientSecret(data.clientSecret);
+            setPaymentError(null);
+          } else {
+            const errorMsg = data.message || 'Failed to initialize payment';
+            console.error('Payment intent init failed:', errorMsg);
+            setPaymentError(errorMsg);
+          }
         })
-        .catch(err => console.error('Error initializing payment intent:', err))
+        .catch(err => {
+          console.error('Error initializing payment intent:', err);
+          setPaymentError(err.message || 'Network error occurred');
+        })
         .finally(() => setCreatingPaymentIntent(false));
     }
-  }, [selectedPaymentMethod, stripeConfig.publishableKey, clientSecret, totalPrice, paymentSettings?.stripeCurrency, formData.email, formData.firstName, formData.lastName, formData.pickup, formData.dropoff]);
+  }, [selectedPaymentMethod, stripeConfig.publishableKey, clientSecret, creatingPaymentIntent, totalPrice, paymentSettings?.stripeCurrency, formData.email, formData.firstName, formData.lastName, formData.pickup, formData.dropoff]);
 
   const handleStripePaymentSuccess = async (paymentIntentId: string) => {
     setIsLoading(true);
@@ -474,10 +489,31 @@ export default function Step3Payment() {
               {/* Stripe Card Payment */}
               {selectedPaymentMethod === 'card' && stripeConfig.publishableKey && (
                 <div className="mt-4">
-                  {!clientSecret ? (
-                    <div className="flex items-center justify-center text-sm text-gray-600">
-                      <Loader2 className="mr-2 h-5 w-5 animate-spin text-primary" />
-                      Loading payment options...
+                  {paymentError ? (
+                    <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+                      <div className="flex items-start gap-3">
+                        <CheckCircle2 className="h-5 w-5 text-red-600 flex-shrink-0 mt-0.5" />
+                        <div>
+                          <p className="font-medium text-red-900 mb-1">Payment Initialization Error</p>
+                          <p className="text-sm text-red-800 mb-3">{paymentError}</p>
+                          <Button
+                            onClick={() => {
+                              setClientSecret(null);
+                              setPaymentError(null);
+                            }}
+                            variant="outline"
+                            className="text-sm"
+                          >
+                            Try Again
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  ) : !clientSecret ? (
+                    <div className="flex flex-col items-center justify-center py-8 text-sm text-gray-600">
+                      <Loader2 className="mb-3 h-8 w-8 animate-spin text-primary" />
+                      <p>Loading payment options...</p>
+                      <p className="text-xs text-gray-500 mt-2">This may take a few seconds</p>
                     </div>
                   ) : (
                     <StripeProvider publishableKey={stripeConfig.publishableKey} clientSecret={clientSecret}>

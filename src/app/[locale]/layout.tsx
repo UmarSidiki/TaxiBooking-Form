@@ -1,3 +1,4 @@
+import type { CSSProperties } from "react";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "@/style/globals.css";
@@ -6,6 +7,8 @@ import { notFound } from "next/navigation";
 import AuthSessionProvider from "@/components/providers/session-provider";
 import { routing } from "@/i18n/routing";
 import { ThemeProvider } from "@/contexts/ThemeContext";
+import { getThemeSettings } from "@/lib/theme-settings";
+import type { ThemeSettings } from "@/lib/theme-settings";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -33,13 +36,25 @@ export default async function RootLayout({ children, params }: Props) {
     notFound();
   }
 
+  const themeSettings = await getThemeSettings();
+  const serializedThemeSettings = JSON.parse(
+    JSON.stringify(themeSettings)
+  ) as ThemeSettings;
+
+  const cssVariables = {
+    "--primary-color": themeSettings.primaryColor,
+    "--secondary-color": themeSettings.secondaryColor,
+    "--border-radius": `${themeSettings.borderRadius}rem`,
+  } as CSSProperties;
+
   return (
     <html lang={locale}>
       <body
+        style={cssVariables}
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <AuthSessionProvider>
-          <ThemeProvider>
+          <ThemeProvider initialSettings={serializedThemeSettings}>
             <NextIntlClientProvider>{children}</NextIntlClientProvider>
           </ThemeProvider>
         </AuthSessionProvider>

@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button';
 export default function ThankYouPage() {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const [countdown, setCountdown] = useState(3);
+  const [countdown, setCountdown] = useState(10);
   const [redirectUrl, setRedirectUrl] = useState<string>('/');
 
   const tripId = searchParams.get('tripId');

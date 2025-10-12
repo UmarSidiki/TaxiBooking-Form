@@ -410,19 +410,6 @@ const SettingsPage = () => {
                       <p className="text-xs text-gray-500">Customers can save cards for future bookings</p>
                     </div>
                   </label>
-                  
-                  <label className="flex items-center gap-3 p-3 border rounded-lg cursor-pointer hover:bg-gray-50">
-                    <input
-                      type="checkbox"
-                      checked={settings.stripeAutomaticTax ?? false}
-                      onChange={(e) => handleMapSettingsChange('stripeAutomaticTax', e.target.checked)}
-                      className="w-4 h-4"
-                    />
-                    <div>
-                      <p className="text-sm font-medium">Enable Stripe Tax (Automatic Tax Calculation)</p>
-                      <p className="text-xs text-gray-500">Automatically calculate and collect sales tax</p>
-                    </div>
-                  </label>
                 </div>
               </div>
 

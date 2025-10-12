@@ -16,7 +16,6 @@ export interface ISetting {
   stripeTestMode?: boolean;
   stripeStatementDescriptor?: string;
   stripeSaveCards?: boolean;
-  stripeAutomaticTax?: boolean;
   acceptedPaymentMethods: string[];
   bankName?: string;
   bankAccountName?: string;
@@ -82,10 +81,6 @@ const SettingSchema = new Schema<ISetting>(
       default: "BOOKING", // Suffix for statement (will show as "COMPANY* BOOKING")
     },
     stripeSaveCards: {
-      type: Boolean,
-      default: false,
-    },
-    stripeAutomaticTax: {
       type: Boolean,
       default: false,
     },

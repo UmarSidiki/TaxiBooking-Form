@@ -11,6 +11,23 @@ export default function PaymentSuccessPage() {
   const router = useRouter();
   const [status, setStatus] = useState<'loading' | 'success' | 'failed' | 'processing'>('loading');
   const [message, setMessage] = useState('');
+  const [redirectUrl, setRedirectUrl] = useState<string>('/');
+
+  useEffect(() => {
+    // Fetch redirect URL from settings
+    const fetchRedirectUrl = async () => {
+      try {
+        const response = await fetch('/api/settings');
+        const data = await response.json();
+        if (data.success && data.data.redirectUrl) {
+          setRedirectUrl(data.data.redirectUrl);
+        }
+      } catch (error) {
+        console.error('Error fetching redirect URL:', error);
+      }
+    };
+    fetchRedirectUrl();
+  }, []);
 
   useEffect(() => {
     const paymentIntentId = searchParams.get('payment_intent');
@@ -27,16 +44,16 @@ export default function PaymentSuccessPage() {
       setStatus('success');
       setMessage('Payment successful! Your booking has been confirmed.');
       
-      // Redirect to home page after 3 seconds
+      // Redirect after 3 seconds
       setTimeout(() => {
-        router.push('/');
+        router.push(redirectUrl);
       }, 3000);
     } else if (redirectStatus === 'processing') {
       setStatus('processing');
       setMessage('Your payment is being processed. You will receive a confirmation email shortly.');
       
       setTimeout(() => {
-        router.push('/');
+        router.push(redirectUrl);
       }, 5000);
     } else if (redirectStatus === 'failed') {
       setStatus('failed');
@@ -45,10 +62,10 @@ export default function PaymentSuccessPage() {
       setStatus('failed');
       setMessage('Payment status unknown. Please contact support with your payment ID: ' + paymentIntentId);
     }
-  }, [searchParams, router]);
+  }, [searchParams, router, redirectUrl]);
 
   const handleReturnHome = () => {
-    router.push('/');
+    router.push(redirectUrl);
   };
 
   const handleRetry = () => {
@@ -57,7 +74,7 @@ export default function PaymentSuccessPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-      <Card className="max-w-md w-full p-8">
+      <Card className="w-full p-8">
         <div className="text-center">
           {status === 'loading' && (
             <>

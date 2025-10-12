@@ -115,7 +115,9 @@ export async function POST(request: NextRequest) {
       email: formData.email,
       phone: formData.phone,
       paymentMethod: formData.paymentMethod || 'stripe',
-      paymentStatus: (formData.paymentStatus as "pending" | "completed" | "failed") || 'completed',
+      paymentStatus: (formData.paymentStatus as "pending" | "completed" | "failed" | "refunded") || 'completed',
+      stripePaymentIntentId: formData.stripePaymentIntentId,
+      status: 'upcoming',
       totalAmount: formData.totalAmount || totalAmount,
       createdAt: new Date(),
       updatedAt: new Date(),
@@ -151,7 +153,9 @@ export async function POST(request: NextRequest) {
       lastName: formData.lastName,
       email: formData.email,
       phone: formData.phone,
-      totalAmount,
+      totalAmount: formData.totalAmount || totalAmount,
+      paymentMethod: formData.paymentMethod,
+      paymentStatus: formData.paymentStatus,
     };
 
     await Promise.all([

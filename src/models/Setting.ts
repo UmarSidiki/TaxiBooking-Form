@@ -5,6 +5,7 @@ export interface ISetting {
   primaryColor: string;
   secondaryColor: string;
   borderRadius: number;
+  redirectUrl?: string;
   mapInitialLat?: number;
   mapInitialLng?: number;
   mapCountryRestrictions?: string[];
@@ -39,6 +40,10 @@ const SettingSchema = new Schema<ISetting>(
     borderRadius: {
       type: Number,
       default: 0.5, // Corresponds to Tailwind's 'lg' radius
+    },
+    redirectUrl: {
+      type: String,
+      default: "", // Redirect URL after successful booking
     },
     mapInitialLat: {
       type: Number,

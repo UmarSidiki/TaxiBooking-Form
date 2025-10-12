@@ -24,7 +24,7 @@ export default async function DashboardProtectedLayout({
 
   return (
     <SidebarProvider>
-      <div className="flex min-h-screen">
+      <div className="flex h-screen w-screen">
         <AppSidebar locale={locale} />
         <SidebarTrigger />
         <main className="flex-1 overflow-auto">{children}</main>

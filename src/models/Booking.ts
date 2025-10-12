@@ -23,8 +23,13 @@ export interface Booking {
   email: string;
   phone: string;
   paymentMethod?: string;
-  paymentStatus: "pending" | "completed" | "failed";
+  paymentStatus: "pending" | "completed" | "failed" | "refunded";
+  stripePaymentIntentId?: string;
+  status?: "upcoming" | "completed" | "canceled";
   totalAmount?: number;
+  refundAmount?: number;
+  refundPercentage?: number;
+  canceledAt?: Date;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -49,5 +54,6 @@ export interface BookingInput {
   cvv: string;
   paymentMethod?: string;
   paymentStatus?: string;
+  stripePaymentIntentId?: string;
   totalAmount?: number;
 }

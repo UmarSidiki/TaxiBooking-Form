@@ -6,7 +6,7 @@ export default async function DashboardPage() {
   const session = await getServerSession(authOptions);
 
   return (
-    <>
+    <div className="w-full">
       <div className="flex items-center gap-4 border-b p-4">
         <h1 className="text-3xl font-semibold">Dashboard</h1>
       </div>
@@ -16,6 +16,6 @@ export default async function DashboardPage() {
           {session?.user?.email}.
         </p>
       </section>
-    </>
+    </div>
   );
 }

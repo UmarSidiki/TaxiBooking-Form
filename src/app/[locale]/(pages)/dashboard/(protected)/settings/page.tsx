@@ -77,7 +77,7 @@ const SettingsPage = () => {
   }
 
   return (
-    <div className="container mx-auto p-4 md:p-6">
+    <div className="w-full p-4 md:p-6">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
         <h1 className="text-2xl sm:text-3xl font-bold">Settings</h1>
         <Button
@@ -100,10 +100,14 @@ const SettingsPage = () => {
       </div>
       
       <Tabs defaultValue="appearance">
-        <TabsList className="grid w-full grid-cols-3">
+        <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="appearance">
             <Palette className="mr-2 h-4 w-4" />
             Appearance
+          </TabsTrigger>
+          <TabsTrigger value="booking">
+            <CreditCard className="mr-2 h-4 w-4" />
+            Booking
           </TabsTrigger>
           <TabsTrigger value="map">
             <MapPin className="mr-2 h-4 w-4" />
@@ -180,6 +184,43 @@ const SettingsPage = () => {
                     <Circle className="h-5 w-5" />
                   </div>
                   <p className="text-xs text-gray-500 mt-1">Controls the roundness of buttons, inputs, and cards.</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+        <TabsContent value="booking">
+          <Card>
+            <CardHeader>
+              <CardTitle>Booking Settings</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              {/* Redirect URL Settings */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-medium">Post-Booking Redirect</h3>
+                <div>
+                  <label className="block text-sm font-medium mb-2">Redirect URL</label>
+                  <Input
+                    type="url"
+                    placeholder="https://yourwebsite.com or leave empty for home page"
+                    value={settings.redirectUrl || ''}
+                    onChange={(e) => handleMapSettingsChange('redirectUrl', e.target.value)}
+                    className="w-full"
+                  />
+                  <p className="text-xs text-gray-500 mt-2">
+                    After a successful booking, customers will be redirected to this URL after 3 seconds.
+                    <br />
+                    Leave empty to redirect to the home page (/).
+                  </p>
+                  <div className="mt-3 p-3 bg-blue-50 rounded-lg border border-blue-200">
+                    <p className="text-xs text-blue-800">
+                      <strong>💡 Tip:</strong> You can redirect to:
+                      <br />• Your main website homepage
+                      <br />• A custom thank you page on your site
+                      <br />• A special offers page
+                      <br />• Or any other URL you choose
+                    </p>
+                  </div>
                 </div>
               </div>
             </CardContent>

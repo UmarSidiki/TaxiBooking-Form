@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Card } from '@/components/ui/card';
 import { useBookingForm } from '@/contexts/BookingFormContext';
 import dynamic from 'next/dynamic';
+import { useRouter } from 'next/navigation';
 
 import { ISetting } from '@/models/Setting';
 
@@ -14,6 +15,7 @@ const StripeProvider = dynamic(() => import('@/components/providers/stripe-provi
 const StripePaymentForm = dynamic(() => import('@/components/payment/StripePaymentForm'), { ssr: false });
 
 export default function Step3Payment() {
+  const router = useRouter();
   const {
     formData,
     setFormData,
@@ -159,20 +161,26 @@ export default function Step3Payment() {
     }
   };
 
-  const handleStripePaymentSuccess = async () => {
+  const handleStripePaymentSuccess = async (paymentIntentId: string) => {
     setIsLoading(true);
     try {
       const response = await fetch('/api/booking', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...formData, paymentMethod: 'stripe', totalAmount: totalPrice }),
+        body: JSON.stringify({ 
+          ...formData, 
+          paymentMethod: 'stripe', 
+          totalAmount: totalPrice,
+          stripePaymentIntentId: paymentIntentId 
+        }),
       });
       
       const data = await response.json();
       
       if (response.ok) {
-        alert(`Booking confirmed! Trip ID: ${data.tripId}\nTotal Amount: €${totalPrice.toFixed(2)}\n\nConfirmation emails have been sent.`);
         resetForm();
+        // Redirect to thank you page with booking details
+        router.push(`/thank-you?tripId=${data.tripId}&amount=${totalPrice.toFixed(2)}&method=stripe`);
       } else {
         alert(`Booking failed: ${data.message}`);
       }
@@ -217,8 +225,9 @@ export default function Step3Payment() {
       const data = await response.json();
       
       if (response.ok) {
-        alert(`Booking confirmed! Trip ID: ${data.tripId}\n\nTotal Amount: €${totalPrice.toFixed(2)}\nPayment Method: Cash on Arrival\n\nPlease have the exact amount ready. Confirmation email has been sent.`);
         resetForm();
+        // Redirect to thank you page with booking details
+        router.push(`/thank-you?tripId=${data.tripId}&amount=${totalPrice.toFixed(2)}&method=cash`);
       } else {
         alert(`Booking failed: ${data.message}`);
       }
@@ -259,8 +268,9 @@ export default function Step3Payment() {
       const data = await response.json();
       
       if (response.ok) {
-        alert(`Booking confirmed! Trip ID: ${data.tripId}\n\nTotal Amount: €${totalPrice.toFixed(2)}\nPayment Method: Bank Transfer\n\nYour booking will be confirmed once payment is received. Bank transfer details have been sent to your email.`);
         resetForm();
+        // Redirect to thank you page with booking details
+        router.push(`/thank-you?tripId=${data.tripId}&amount=${totalPrice.toFixed(2)}&method=bank_transfer`);
       } else {
         alert(`Booking failed: ${data.message}`);
       }

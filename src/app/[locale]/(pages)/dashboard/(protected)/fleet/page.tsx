@@ -174,7 +174,7 @@ const FleetPage = () => {
 
   return (
     // RESPONSIVE CHANGE: Reduced padding on small screens (p-4) and increased on medium and up (md:p-6)
-    <div className="container mx-auto p-4 md:p-6">
+    <div className="w-full p-4 md:p-6">
       {/* RESPONSIVE CHANGE: Stack header vertically on small screens (flex-col) and horizontally on larger screens (sm:flex-row) */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
         {/* RESPONSIVE CHANGE: Reduced font size on small screens (text-2xl) and increased on larger (sm:text-3xl) */}

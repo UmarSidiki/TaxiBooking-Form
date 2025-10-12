@@ -8,7 +8,7 @@ import { Loader2, Shield, Lock, CreditCard, CheckCircle2, AlertCircle } from 'lu
 interface StripePaymentFormProps {
   amount: number;
   currency?: string;
-  onSuccess: () => void;
+  onSuccess: (paymentIntentId: string) => void;
   onError: (error: string) => void;
 }
 
@@ -66,11 +66,11 @@ export default function StripePaymentForm({
         onError(errorMessage || 'Payment failed');
       } else if (paymentIntent && paymentIntent.status === 'succeeded') {
         setMessage({ type: 'success', text: 'Payment successful! Processing your booking...' });
-        setTimeout(() => onSuccess(), 1000);
+        setTimeout(() => onSuccess(paymentIntent.id), 1000);
       } else if (paymentIntent && paymentIntent.status === 'processing') {
         setMessage({ type: 'info', text: 'Payment is processing. You will receive a confirmation shortly.' });
         // Still call success callback for processing status
-        setTimeout(() => onSuccess(), 1500);
+        setTimeout(() => onSuccess(paymentIntent.id), 1500);
       } else if (paymentIntent && paymentIntent.status === 'requires_action') {
         setMessage({ type: 'info', text: 'Additional authentication required. Please follow the prompts.' });
       } else {

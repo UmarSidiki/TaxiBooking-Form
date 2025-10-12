@@ -2,26 +2,26 @@
 
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from '@/components/ui/badge';
-import { 
-  Calendar, 
-  Clock, 
-  User, 
-  Phone, 
-  Mail, 
-  Car, 
-  Users, 
-  CreditCard, 
+import {
+  Calendar,
+  Clock,
+  User,
+  Phone,
+  Mail,
+  Car,
+  Users,
+  CreditCard,
   Loader2,
   X,
   CheckCircle,
   AlertCircle,
   RefreshCw,
   DollarSign,
-  Baby
-} from 'lucide-react';
+  Baby,
+} from "lucide-react";
 import { Booking } from '@/models/Booking';
 import { Input } from '@/components/ui/input';
 import {
@@ -42,6 +42,19 @@ export default function RidesPage() {
   const [showCancelDialog, setShowCancelDialog] = useState(false);
   const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
   const [refundPercentage, setRefundPercentage] = useState(100);
+  const [detailBooking, setDetailBooking] = useState<Booking | null>(null);
+
+  const MapLine = ({ start, end }: { start: string; end: string }) => (
+    <span className="flex items-center gap-1 truncate">
+      <span className="max-w-[6rem] truncate" title={start}>
+        {start}
+      </span>
+      <span className="text-gray-400 dark:text-gray-600">-&gt;</span>
+      <span className="max-w-[6rem] truncate" title={end}>
+        {end}
+      </span>
+    </span>
+  );
 
   useEffect(() => {
     fetchBookings();
@@ -176,191 +189,84 @@ export default function RidesPage() {
   };
 
   const BookingCard = ({ booking }: { booking: Booking }) => (
-    <Card className="mb-3 hover:shadow-lg transition-all duration-200 border-l-4 border-l-primary overflow-hidden w-full">
-      <CardHeader className="pb-2 bg-gradient-to-r from-gray-50 to-white dark:from-gray-900 dark:to-gray-800">
-        <div className="flex flex-col sm:flex-row justify-between items-start gap-2">
-          <div className="flex-1 min-w-0">
-            <CardTitle className="text-sm sm:text-base flex items-center gap-2 mb-1">
-              <div className="p-1.5 bg-primary/10 rounded-md">
-                <Car className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
-              </div>
-              <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 min-w-0">
-                <span className="font-semibold truncate">Trip #{booking.tripId.slice(0, 8)}</span>
-                <span className="text-[11px] sm:text-xs text-gray-500 font-medium">
-                  {booking.vehicleDetails?.name}
-                </span>
-              </div>
-            </CardTitle>
+    <Card className="mb-3 hover:shadow-lg transition-all duration-200 border border-gray-200 dark:border-gray-800 w-full">
+      <CardContent className="p-3 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-4">
+          <div className="flex items-center gap-2 min-w-0">
+            <div className="p-1.5 bg-primary/10 rounded-md">
+              <Car className="w-4 h-4 text-primary" />
+            </div>
+            <div className="min-w-0">
+              <p className="text-sm font-semibold text-gray-900 dark:text-gray-100 truncate">
+                Trip #{booking.tripId.slice(0, 8)}
+              </p>
+              <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
+                {booking.vehicleDetails?.name || booking.selectedVehicle}
+              </p>
+            </div>
           </div>
-          <div className="flex flex-row sm:flex-col gap-1.5 items-start sm:items-end">
+          <div className="hidden sm:flex sm:flex-row sm:items-center sm:gap-2">
             {getStatusBadge(booking)}
             {getPaymentStatusBadge(booking.paymentStatus)}
           </div>
         </div>
-      </CardHeader>
-      
-      <CardContent className="pt-3 space-y-3">
-        {/* Journey Route */}
-        <div className="p-2.5 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-md border border-blue-100 dark:border-blue-800">
-          <div className="flex items-start gap-2.5">
-            <div className="flex flex-col items-center mt-0.5">
-              <div className="w-2.5 h-2.5 rounded-full bg-green-500 border-2 border-white shadow"></div>
-              <div className="w-0.5 h-6 bg-gradient-to-b from-green-500 to-red-500"></div>
-              <div className="w-2.5 h-2.5 rounded-full bg-red-500 border-2 border-white shadow"></div>
-            </div>
-            <div className="flex-1 space-y-2 min-w-0">
-              <div>
-                <p className="text-[11px] font-medium text-green-700 dark:text-green-400 mb-0.5">Pickup</p>
-                <p className="text-xs font-semibold text-gray-900 dark:text-gray-100 truncate">{booking.pickup}</p>
-              </div>
-              <div>
-                <p className="text-[11px] font-medium text-red-700 dark:text-red-400 mb-0.5">Dropoff</p>
-                <p className="text-xs font-semibold text-gray-900 dark:text-gray-100 truncate">{booking.dropoff}</p>
-              </div>
-            </div>
+
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-4 text-xs text-gray-600 dark:text-gray-300">
+          <div className="flex items-center gap-1">
+            <Calendar className="w-3.5 h-3.5 text-blue-500" />
+            <span>
+              {new Date(booking.date).toLocaleDateString("en-US", {
+                month: "short",
+                day: "numeric",
+              })}
+            </span>
+          </div>
+          <div className="flex items-center gap-1">
+            <Clock className="w-3.5 h-3.5 text-purple-500" />
+            <span>{booking.time}</span>
+          </div>
+          <div className="flex items-center gap-1 min-w-0">
+            <MapLine start={booking.pickup} end={booking.dropoff} />
+          </div>
+          <div className="flex items-center gap-1 text-green-600 dark:text-green-400 font-semibold">
+            <DollarSign className="w-3.5 h-3.5" />
+            <span>€{booking.totalAmount?.toFixed(2)}</span>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
-          {/* Trip Details */}
-          <div className="space-y-2.5 p-2.5 bg-gray-50 dark:bg-gray-800/50 rounded-md">
-            <h4 className="font-semibold text-[11px] uppercase tracking-wide text-gray-600 dark:text-gray-400 flex items-center gap-2">
-              <Clock className="w-4 h-4" /> Trip Details
-            </h4>
-            <div className="space-y-1.5">
-              <div className="flex items-center gap-2 text-sm">
-                <Calendar className="w-4 h-4 text-blue-500 flex-shrink-0" />
-                <span className="text-xs font-medium text-gray-900 dark:text-gray-100">
-                  {new Date(booking.date).toLocaleDateString('en-US', { 
-                    weekday: 'short', 
-                    year: 'numeric', 
-                    month: 'short', 
-                    day: 'numeric' 
-                  })}
-                </span>
-              </div>
-              <div className="flex items-center gap-2 text-sm">
-                <Clock className="w-4 h-4 text-purple-500 flex-shrink-0" />
-                <span className="text-xs font-medium text-gray-900 dark:text-gray-100">{booking.time}</span>
-              </div>
-              <div className="flex items-center gap-2 text-sm">
-                <Users className="w-4 h-4 text-green-500 flex-shrink-0" />
-                <span className="text-xs font-medium text-gray-900 dark:text-gray-100">
-                  {booking.passengers} passenger{booking.passengers > 1 ? 's' : ''}
-                </span>
-              </div>
-              {(booking.childSeats > 0 || booking.babySeats > 0) && (
-                <div className="flex items-start gap-2 text-xs pt-1.5 border-t border-gray-200 dark:border-gray-700">
-                  <Baby className="w-3.5 h-3.5 text-pink-500 flex-shrink-0 mt-0.5" />
-                  <span className="text-gray-700 dark:text-gray-300">
-                    {booking.childSeats > 0 && `${booking.childSeats} child seat${booking.childSeats > 1 ? 's' : ''}`}
-                    {booking.childSeats > 0 && booking.babySeats > 0 && ' • '}
-                    {booking.babySeats > 0 && `${booking.babySeats} baby seat${booking.babySeats > 1 ? 's' : ''}`}
-                  </span>
-                </div>
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-2">
+          <div className="sm:hidden flex gap-2">
+            {getStatusBadge(booking)}
+            {getPaymentStatusBadge(booking.paymentStatus)}
+          </div>
+          <Button
+            variant="outline"
+            size="sm"
+            className="w-full sm:w-auto text-primary hover:text-primary"
+            onClick={() => setDetailBooking(booking)}
+          >
+            View details
+          </Button>
+          {booking.status !== "canceled" && (
+            <Button
+              onClick={() => handleCancelClick(booking)}
+              variant="destructive"
+              size="sm"
+              disabled={cancelingId === booking._id?.toString()}
+              className="w-full sm:w-auto"
+            >
+              {cancelingId === booking._id?.toString() ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" /> Canceling...
+                </>
+              ) : (
+                <>
+                  <X className="w-4 h-4 mr-2" /> Cancel
+                </>
               )}
-            </div>
-          </div>
-
-          {/* Customer Details */}
-          <div className="space-y-2.5 p-2.5 bg-gray-50 dark:bg-gray-800/50 rounded-md">
-            <h4 className="font-semibold text-[11px] uppercase tracking-wide text-gray-600 dark:text-gray-400 flex items-center gap-2">
-              <User className="w-4 h-4" /> Customer Info
-            </h4>
-            <div className="space-y-1.5">
-              <div>
-                <p className="text-[11px] text-gray-500 dark:text-gray-400 mb-0.5">Full Name</p>
-                <p className="text-xs font-semibold text-gray-900 dark:text-gray-100">
-                  {booking.firstName} {booking.lastName}
-                </p>
-              </div>
-              <div className="flex items-center gap-2 text-sm group">
-                <Mail className="w-4 h-4 text-blue-500 flex-shrink-0" />
-                <a 
-                  href={`mailto:${booking.email}`} 
-                  className="hover:underline text-blue-600 dark:text-blue-400 font-medium text-xs truncate group-hover:text-blue-700 dark:group-hover:text-blue-300 transition-colors"
-                >
-                  {booking.email}
-                </a>
-              </div>
-              <div className="flex items-center gap-2 text-sm group">
-                <Phone className="w-4 h-4 text-green-500 flex-shrink-0" />
-                <a 
-                  href={`tel:${booking.phone}`} 
-                  className="hover:underline text-green-600 dark:text-green-400 font-medium text-xs group-hover:text-green-700 dark:group-hover:text-green-300 transition-colors"
-                >
-                  {booking.phone}
-                </a>
-              </div>
-            </div>
-          </div>
+            </Button>
+          )}
         </div>
-
-        {booking.notes && (
-          <div className="p-2.5 bg-amber-50 dark:bg-amber-900/20 rounded-md border border-amber-200 dark:border-amber-800">
-            <p className="text-[11px] font-semibold text-amber-800 dark:text-amber-300 mb-1 flex items-center gap-1">
-              <AlertCircle className="w-3 h-3" /> Special Notes
-            </p>
-            <p className="text-xs text-amber-900 dark:text-amber-200">{booking.notes}</p>
-          </div>
-        )}
-
-        {/* Payment & Actions */}
-        <div className="pt-3 border-t border-gray-200 dark:border-gray-700">
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
-            <div className="space-y-1.5 flex-1">
-              <div className="flex items-center gap-2 text-sm">
-                <CreditCard className="w-4 h-4 text-gray-500 flex-shrink-0" />
-                <span className="text-xs text-gray-600 dark:text-gray-400">Payment Method:</span>
-                <span className="text-xs font-semibold text-gray-900 dark:text-gray-100 capitalize">
-                  {booking.paymentMethod?.replace('_', ' ') || 'N/A'}
-                </span>
-              </div>
-              <div className="flex items-center gap-2">
-                <DollarSign className="w-5 h-5 text-green-600 flex-shrink-0" />
-                <span className="text-xl sm:text-2xl font-semibold text-green-600 dark:text-green-500">
-                  €{booking.totalAmount?.toFixed(2)}
-                </span>
-              </div>
-              {booking.refundAmount && booking.refundAmount > 0 && (
-                <div className="flex items-center gap-2 p-1.5 bg-blue-50 dark:bg-blue-900/20 rounded-md border border-blue-200 dark:border-blue-800">
-                  <RefreshCw className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
-                  <span className="text-xs text-blue-700 dark:text-blue-300">
-                    <span className="font-bold">€{booking.refundAmount.toFixed(2)}</span> refunded 
-                    <span className="text-[10px] ml-1">({booking.refundPercentage}%)</span>
-                  </span>
-                </div>
-              )}
-            </div>
-
-            <div className="flex gap-2 w-full sm:w-auto">
-              {booking.status !== 'canceled' && (
-                <Button
-                  onClick={() => handleCancelClick(booking)}
-                  variant="destructive"
-                  size="sm"
-                  disabled={cancelingId === booking._id?.toString()}
-                  className="w-full sm:w-auto shadow-md hover:shadow-lg transition-all"
-                >
-                  {cancelingId === booking._id?.toString() ? (
-                    <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Canceling...</>
-                  ) : (
-                    <><X className="w-4 h-4 mr-2" /> Cancel Ride</>
-                  )}
-                </Button>
-              )}
-            </div>
-          </div>
-        </div>
-
-        {booking.status === 'canceled' && booking.canceledAt && (
-          <div className="p-2.5 bg-red-50 dark:bg-red-900/20 rounded-md border border-red-200 dark:border-red-800">
-            <p className="text-xs font-medium text-red-800 dark:text-red-300 flex items-center gap-1.5">
-              <AlertCircle className="w-3.5 h-3.5 flex-shrink-0" />
-              <span>Canceled on {new Date(booking.canceledAt).toLocaleString()}</span>
-            </p>
-          </div>
-        )}
       </CardContent>
     </Card>
   );
@@ -485,6 +391,153 @@ export default function RidesPage() {
           )}
         </TabsContent>
       </Tabs>
+
+      <Dialog
+        open={Boolean(detailBooking)}
+        onOpenChange={(open) => {
+          if (!open) {
+            setDetailBooking(null);
+          }
+        }}
+      >
+        <DialogContent className="sm:max-w-[620px]">
+          {detailBooking && (
+            <div className="space-y-4">
+              <DialogHeader>
+                <DialogTitle className="text-xl font-semibold flex items-center gap-2">
+                  <div className="p-2 bg-primary/10 rounded-md">
+                    <Car className="w-4 h-4 text-primary" />
+                  </div>
+                  <span>Trip #{detailBooking.tripId.slice(0, 8)}</span>
+                </DialogTitle>
+                <DialogDescription>
+                  Scheduled for {new Date(detailBooking.date).toLocaleDateString("en-US", {
+                    weekday: "short",
+                    month: "short",
+                    day: "numeric",
+                    year: "numeric",
+                  })} at {detailBooking.time}
+                </DialogDescription>
+              </DialogHeader>
+
+              <div className="grid gap-3 sm:grid-cols-2">
+                <div className="rounded-md border border-gray-200 dark:border-gray-700 p-3 space-y-2">
+                  <h4 className="text-xs font-semibold uppercase text-gray-500 dark:text-gray-400 flex items-center gap-1">
+                    <Calendar className="w-4 h-4" /> Journey
+                  </h4>
+                  <div className="text-sm">
+                    <p className="font-medium text-gray-700 dark:text-gray-200">Pickup</p>
+                    <p className="text-gray-600 dark:text-gray-300">{detailBooking.pickup}</p>
+                  </div>
+                  <div className="text-sm">
+                    <p className="font-medium text-gray-700 dark:text-gray-200">Dropoff</p>
+                    <p className="text-gray-600 dark:text-gray-300">{detailBooking.dropoff}</p>
+                  </div>
+                  <div className="text-sm flex items-center gap-2">
+                    <Clock className="w-4 h-4 text-purple-500" />
+                    <span>{detailBooking.time}</span>
+                  </div>
+                  <div className="text-sm flex items-center gap-2">
+                    <Users className="w-4 h-4 text-green-500" />
+                    <span>
+                      {detailBooking.passengers} passenger{detailBooking.passengers > 1 ? "s" : ""}
+                    </span>
+                  </div>
+                  {(detailBooking.childSeats > 0 || detailBooking.babySeats > 0) && (
+                    <div className="text-sm flex items-center gap-2 text-pink-600 dark:text-pink-300">
+                      <Baby className="w-4 h-4" />
+                      <span>
+                        {detailBooking.childSeats > 0 && `${detailBooking.childSeats} child seat${detailBooking.childSeats > 1 ? "s" : ""}`}
+                        {detailBooking.childSeats > 0 && detailBooking.babySeats > 0 && " • "}
+                        {detailBooking.babySeats > 0 && `${detailBooking.babySeats} baby seat${detailBooking.babySeats > 1 ? "s" : ""}`}
+                      </span>
+                    </div>
+                  )}
+                </div>
+
+                <div className="rounded-md border border-gray-200 dark:border-gray-700 p-3 space-y-2">
+                  <h4 className="text-xs font-semibold uppercase text-gray-500 dark:text-gray-400 flex items-center gap-1">
+                    <User className="w-4 h-4" /> Customer
+                  </h4>
+                  <div className="text-sm">
+                    <p className="font-medium text-gray-700 dark:text-gray-200">Name</p>
+                    <p className="text-gray-600 dark:text-gray-300">
+                      {detailBooking.firstName} {detailBooking.lastName}
+                    </p>
+                  </div>
+                  <div className="text-sm flex items-center gap-2">
+                    <Mail className="w-4 h-4 text-blue-500" />
+                    <a
+                      href={`mailto:${detailBooking.email}`}
+                      className="text-blue-600 dark:text-blue-400 hover:underline"
+                    >
+                      {detailBooking.email}
+                    </a>
+                  </div>
+                  <div className="text-sm flex items-center gap-2">
+                    <Phone className="w-4 h-4 text-green-500" />
+                    <a
+                      href={`tel:${detailBooking.phone}`}
+                      className="text-green-600 dark:text-green-400 hover:underline"
+                    >
+                      {detailBooking.phone}
+                    </a>
+                  </div>
+                  <div className="text-sm">
+                    <p className="font-medium text-gray-700 dark:text-gray-200">Vehicle</p>
+                    <p className="text-gray-600 dark:text-gray-300">
+                      {detailBooking.vehicleDetails?.name || detailBooking.selectedVehicle}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {detailBooking.notes && (
+                <div className="rounded-md border border-amber-200 dark:border-amber-700 bg-amber-50 dark:bg-amber-900/20 p-3 text-sm text-amber-800 dark:text-amber-200">
+                  <p className="font-semibold flex items-center gap-2 mb-1">
+                    <AlertCircle className="w-4 h-4" /> Special notes
+                  </p>
+                  <p>{detailBooking.notes}</p>
+                </div>
+              )}
+
+              <div className="rounded-md border border-gray-200 dark:border-gray-700 p-3 space-y-2">
+                <h4 className="text-xs font-semibold uppercase text-gray-500 dark:text-gray-400 flex items-center gap-1">
+                  <CreditCard className="w-4 h-4" /> Billing
+                </h4>
+                <div className="flex flex-wrap gap-4 text-sm">
+                  <div className="flex items-center gap-2">
+                    <DollarSign className="w-4 h-4 text-green-600" />
+                    <span className="font-semibold text-green-600 dark:text-green-400">
+                      €{detailBooking.totalAmount?.toFixed(2)}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <CreditCard className="w-4 h-4 text-gray-500" />
+                    <span className="capitalize">
+                      {detailBooking.paymentMethod?.replace("_", " ") || "N/A"}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <RefreshCw className="w-4 h-4 text-blue-500" />
+                    <span>{detailBooking.paymentStatus}</span>
+                  </div>
+                </div>
+                {detailBooking.status === "canceled" && detailBooking.canceledAt && (
+                  <div className="rounded border border-red-200 dark:border-red-700 bg-red-50 dark:bg-red-900/20 p-2 text-xs text-red-700 dark:text-red-300">
+                    Canceled on {new Date(detailBooking.canceledAt).toLocaleString()}
+                  </div>
+                )}
+                {detailBooking.refundAmount && detailBooking.refundAmount > 0 && (
+                  <div className="rounded border border-blue-200 dark:border-blue-700 bg-blue-50 dark:bg-blue-900/20 p-2 text-xs text-blue-700 dark:text-blue-300">
+                    Refund: €{detailBooking.refundAmount.toFixed(2)} ({detailBooking.refundPercentage}%)
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
 
       {/* Cancel/Refund Dialog */}
       <Dialog open={showCancelDialog} onOpenChange={setShowCancelDialog}>

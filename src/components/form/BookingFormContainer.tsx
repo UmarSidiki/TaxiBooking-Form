@@ -21,8 +21,6 @@ export default function BookingFormContainer() {
     const time = searchParams.get('time');
     const passengers = searchParams.get('passengers');
     const tripType = searchParams.get('tripType');
-    const bookingType = searchParams.get('bookingType');
-    const duration = searchParams.get('duration');
 
     // If step parameter is provided, navigate to that step
     if (step) {
@@ -33,7 +31,7 @@ export default function BookingFormContainer() {
     }
 
     // Pre-fill form data from URL parameters
-    if (pickup || dropoff || date || time || passengers || tripType || bookingType || duration) {
+    if (pickup || dropoff || date || time || passengers || tripType) {
       setFormData(prev => ({
         ...prev,
         ...(pickup && { pickup }),
@@ -42,8 +40,6 @@ export default function BookingFormContainer() {
         ...(time && { time }),
         ...(passengers && { passengers: parseInt(passengers) || 1 }),
         ...(tripType && { tripType: tripType as 'oneway' | 'roundtrip' }),
-        ...(bookingType && { bookingType: bookingType as 'destination' | 'hourly' }),
-        ...(duration && { duration: parseInt(duration) || 2 }),
       }));
     }
   }, [searchParams, setCurrentStep, setFormData]);
@@ -65,7 +61,7 @@ export default function BookingFormContainer() {
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100">
       {/* Header */}
       <header className="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm">
-        <div className="w-full px-4 sm:px-6 lg:px-8 py-4">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <Car className="text-primary h-8 w-8" />
@@ -91,7 +87,7 @@ export default function BookingFormContainer() {
       </header>
 
       {/* Main Content */}
-      <main className="w-full px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
         <div className="w-full">
           {/* Step Title - Mobile */}
           <div className="sm:hidden text-center mb-4">
@@ -112,7 +108,7 @@ export default function BookingFormContainer() {
 
       {/* Footer */}
       <footer className="bg-white border-t border-gray-200 mt-12">
-        <div className="w-full px-4 sm:px-6 lg:px-8 py-6">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="text-center text-sm text-gray-600">
             <p className="mb-2">© 2025 Swiss Ride SARL. All rights reserved.</p>
             <p className="text-xs">

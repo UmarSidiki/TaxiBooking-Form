@@ -123,7 +123,11 @@ export default function StripePaymentForm({
               defaultCollapsed: false,
               radios: true,
               spacedAccordionItems: true
-            }
+            },
+            wallets: {
+              applePay: 'auto',
+              googlePay: 'auto',
+            },
           }}
         />
       </div>

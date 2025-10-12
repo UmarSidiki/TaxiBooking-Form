@@ -39,10 +39,8 @@ export async function POST(request: NextRequest) {
     const paymentIntentOptions: Stripe.PaymentIntentCreateParams = {
       amount: Math.round(amount * 100), // Convert to cents
       currency: stripeCurrency.toLowerCase(),
-      automatic_payment_methods: {
-        enabled: true,
-        allow_redirects: 'always',
-      },
+      // Specify payment method types explicitly to include more options
+      payment_method_types: ['card', 'paypal', 'klarna', 'affirm', 'cashapp', 'link'],
       statement_descriptor_suffix: statementDescriptor.substring(0, 22), // Max 22 characters
       description: description || 'Booking payment',
       metadata: {

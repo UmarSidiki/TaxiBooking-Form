@@ -91,7 +91,7 @@ const SettingSchema = new Schema<ISetting>(
     },
     acceptedPaymentMethods: {
       type: [String],
-      default: ["card", "paypal", "apple_pay", "google_pay"], // Default payment methods
+      default: ["card"], // Default to Stripe payment (includes cards, PayPal, wallets, etc.)
     },
     bankName: {
       type: String,

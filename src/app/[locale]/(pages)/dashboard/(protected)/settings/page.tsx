@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Save, Loader2, Palette, Square, Circle, MapPin, CreditCard, Banknote, Building2, Wallet } from 'lucide-react';
+import { Save, Loader2, Palette, Square, Circle, MapPin, CreditCard, Banknote, Building2 } from 'lucide-react';
 import { ISetting } from '@/models/Setting';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
@@ -69,14 +69,24 @@ const SettingsPage = () => {
   };
 
   const paymentMethods = [
-    { id: 'card', label: 'Stripe Payment', Icon: CreditCard },
-    ...(settings.stripePublishableKey ? [
-      { id: 'paypal', label: 'PayPal', Icon: Wallet },
-      { id: 'apple_pay', label: 'Apple Pay', Icon: CreditCard },
-      { id: 'google_pay', label: 'Google Pay', Icon: CreditCard },
-    ] : []),
-    { id: 'cash', label: 'Cash Payment', Icon: Banknote },
-    { id: 'bank_transfer', label: 'Bank Transfer', Icon: Building2 },
+    { 
+      id: 'card', 
+      label: 'Stripe Payment', 
+      Icon: CreditCard,
+      description: 'Cards, PayPal, Apple Pay, Google Pay, and more'
+    },
+    { 
+      id: 'cash', 
+      label: 'Cash Payment', 
+      Icon: Banknote,
+      description: 'Pay with cash on delivery'
+    },
+    { 
+      id: 'bank_transfer', 
+      label: 'Bank Transfer', 
+      Icon: Building2,
+      description: 'Direct bank transfer'
+    },
   ];
 
   if (isFetching) {
@@ -419,32 +429,64 @@ const SettingsPage = () => {
               {/* Payment Methods */}
               <div className="space-y-4">
                 <h3 className="text-lg font-medium">Accepted Payment Methods</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 gap-3">
                   {paymentMethods.map((method) => (
                     <label
                       key={method.id}
-                      className="flex items-center gap-3 p-3 border rounded-lg cursor-pointer hover:bg-gray-50"
+                      className={`flex items-start gap-3 p-4 border rounded-lg cursor-pointer transition-colors ${
+                        settings.acceptedPaymentMethods?.includes(method.id)
+                          ? 'border-blue-500 bg-blue-50'
+                          : 'border-gray-200 hover:bg-gray-50'
+                      } ${method.id === 'card' && !settings.stripePublishableKey ? 'opacity-50 cursor-not-allowed' : ''}`}
                     >
                       <input
                         type="checkbox"
                         checked={settings.acceptedPaymentMethods?.includes(method.id) ?? false}
                         onChange={(e) => {
+                          if (method.id === 'card' && !settings.stripePublishableKey) {
+                            alert('Please configure Stripe settings first before enabling card payments.');
+                            return;
+                          }
                           const current = settings.acceptedPaymentMethods || [];
                           const updated = e.target.checked
                             ? [...current, method.id]
                             : current.filter((m) => m !== method.id);
                           handleMapSettingsChange('acceptedPaymentMethods', updated);
                         }}
-                        className="w-4 h-4"
+                        disabled={method.id === 'card' && !settings.stripePublishableKey}
+                        className="w-4 h-4 mt-0.5"
                       />
-                      <method.Icon className="h-5 w-5 text-gray-600" />
-                      <span className="text-sm font-medium">{method.label}</span>
+                      <method.Icon className="h-5 w-5 text-gray-600 flex-shrink-0 mt-0.5" />
+                      <div className="flex-1">
+                        <div className="text-sm font-medium text-gray-900">{method.label}</div>
+                        <div className="text-xs text-gray-500 mt-0.5">{method.description}</div>
+                      </div>
                     </label>
                   ))}
                 </div>
-                <p className="text-xs text-gray-500">
-                  Select which payment methods customers can use. Card payments require Stripe configuration.
-                </p>
+                <div className="space-y-2">
+                  {!settings.stripePublishableKey && (
+                    <div className="bg-amber-50 border border-amber-200 rounded-lg p-3">
+                      <p className="text-xs text-amber-800">
+                        ⚠️ <strong>Configure Stripe first:</strong> Add your Stripe API keys above to enable card payments.
+                      </p>
+                    </div>
+                  )}
+                  {settings.stripePublishableKey && (
+                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                      <p className="text-xs text-blue-800">
+                        <strong>💳 Stripe Payment includes:</strong>
+                        <br />• Credit/Debit Cards (Visa, Mastercard, Amex, etc.)
+                        <br />• PayPal (if enabled in your Stripe account)
+                        <br />• Apple Pay & Google Pay (shown automatically on supported devices)
+                        <br />• Buy Now Pay Later options (Klarna, Affirm, Afterpay - based on region)
+                        <br />• Cash App, Link, and more payment methods
+                        <br /><br />
+                        <em>Available methods depend on your Stripe account settings and customer location.</em>
+                      </p>
+                    </div>
+                  )}
+                </div>
               </div>
 
               {/* Bank Account Details */}

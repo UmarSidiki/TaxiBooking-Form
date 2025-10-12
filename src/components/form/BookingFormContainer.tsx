@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Car } from 'lucide-react';
 import { useBookingForm } from '@/contexts/BookingFormContext';
 import { useSearchParams } from 'next/navigation';
@@ -11,6 +11,8 @@ import Step3Payment from './steps/Step3Payment';
 
 export default function BookingFormContainer() {
   const { currentStep, setCurrentStep, setFormData } = useBookingForm();
+  // Prevent flash of default step when deep linking
+  const [initialized, setInitialized] = useState(false);
   const searchParams = useSearchParams();
 
   // Prefill form data and set step based on URL parameters
@@ -56,6 +58,8 @@ export default function BookingFormContainer() {
         setCurrentStep(2);
       }
     }
+    // Mark initialization complete after processing params
+    setInitialized(true);
   }, [searchParams, setFormData, setCurrentStep]);
 
   const getStepTitle = () => {
@@ -71,6 +75,8 @@ export default function BookingFormContainer() {
     }
   };
 
+  // Wait until URL params are processed
+  if (!initialized) return null;
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100">
       {/* Header */}

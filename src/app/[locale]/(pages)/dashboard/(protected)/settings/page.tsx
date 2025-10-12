@@ -68,6 +68,17 @@ const SettingsPage = () => {
     setSettings(prev => ({ ...prev, [key]: value }));
   };
 
+  const paymentMethods = [
+    { id: 'card', label: 'Stripe Payment', Icon: CreditCard },
+    ...(settings.stripePublishableKey ? [
+      { id: 'paypal', label: 'PayPal', Icon: Wallet },
+      { id: 'apple_pay', label: 'Apple Pay', Icon: CreditCard },
+      { id: 'google_pay', label: 'Google Pay', Icon: CreditCard },
+    ] : []),
+    { id: 'cash', label: 'Cash Payment', Icon: Banknote },
+    { id: 'bank_transfer', label: 'Bank Transfer', Icon: Building2 },
+  ];
+
   if (isFetching) {
     return (
       <div className="flex justify-center items-center py-12">
@@ -409,14 +420,7 @@ const SettingsPage = () => {
               <div className="space-y-4">
                 <h3 className="text-lg font-medium">Accepted Payment Methods</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                  {[
-                    { id: 'card', label: 'Stripe Payment', Icon: CreditCard },
-                    { id: 'paypal', label: 'PayPal', Icon: Wallet },
-                    { id: 'apple_pay', label: 'Apple Pay', Icon: CreditCard },
-                    { id: 'google_pay', label: 'Google Pay', Icon: CreditCard },
-                    { id: 'cash', label: 'Cash Payment', Icon: Banknote },
-                    { id: 'bank_transfer', label: 'Bank Transfer', Icon: Building2 },
-                  ].map((method) => (
+                  {paymentMethods.map((method) => (
                     <label
                       key={method.id}
                       className="flex items-center gap-3 p-3 border rounded-lg cursor-pointer hover:bg-gray-50"

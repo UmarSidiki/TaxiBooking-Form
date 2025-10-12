@@ -410,7 +410,7 @@ const SettingsPage = () => {
                 <h3 className="text-lg font-medium">Accepted Payment Methods</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                   {[
-                    { id: 'card', label: 'Credit/Debit Card', Icon: CreditCard },
+                    { id: 'card', label: 'Stripe Payment', Icon: CreditCard },
                     { id: 'paypal', label: 'PayPal', Icon: Wallet },
                     { id: 'apple_pay', label: 'Apple Pay', Icon: CreditCard },
                     { id: 'google_pay', label: 'Google Pay', Icon: CreditCard },

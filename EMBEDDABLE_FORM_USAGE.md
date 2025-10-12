@@ -15,6 +15,8 @@ The booking form now supports URL parameters, allowing you to pre-fill form data
 - `time` - Pre-fill the pickup time (format: HH:MM)
 - `passengers` - Pre-fill number of passengers (1-8)
 - `tripType` - Pre-fill trip type (`oneway` or `return`)
+- `bookingType` - Choose pricing mode (`destination` or `hourly`)
+- `duration` - When using hourly pricing, pre-fill the number of hours (integer)
 
 ## Usage Examples
 
@@ -53,6 +55,17 @@ This will:
 - Jump directly to Step 2
 - User must go back to Step 1 to enter trip details
 
+### Example 4: Hourly Booking Prefilled
+```
+https://your-domain.com/en/embeddable?bookingType=hourly&duration=4&pickup=Zurich+Airport&date=2025-10-15&time=09:00&passengers=2
+```
+
+This will:
+- Enable hourly pricing
+- Pre-fill duration with 4 hours
+- Pre-fill pickup, date, time, and passengers
+- Hide the dropoff field because hourly bookings do not require it
+
 ## Embedding in iFrame
 
 ### Basic iFrame
@@ -89,7 +102,9 @@ function swissride_booking_form_shortcode($atts) {
         'date' => '',
         'time' => '',
         'passengers' => '1',
-        'triptype' => 'oneway',
+  'triptype' => 'oneway',
+  'bookingtype' => 'destination',
+  'duration' => '',
     ), $atts);
     
     $params = array();
@@ -100,6 +115,8 @@ function swissride_booking_form_shortcode($atts) {
     if ($atts['time']) $params[] = 'time=' . urlencode($atts['time']);
     if ($atts['passengers']) $params[] = 'passengers=' . urlencode($atts['passengers']);
     if ($atts['triptype']) $params[] = 'tripType=' . urlencode($atts['triptype']);
+  if ($atts['bookingtype']) $params[] = 'bookingType=' . urlencode($atts['bookingtype']);
+  if ($atts['duration']) $params[] = 'duration=' . urlencode($atts['duration']);
     
     $query_string = !empty($params) ? '?' . implode('&', $params) : '';
     $url = 'https://your-domain.com/en/embeddable' . $query_string;
@@ -129,6 +146,8 @@ function generateBookingLink(params) {
   if (params.time) queryParams.append('time', params.time);
   if (params.passengers) queryParams.append('passengers', params.passengers);
   if (params.tripType) queryParams.append('tripType', params.tripType);
+  if (params.bookingType) queryParams.append('bookingType', params.bookingType);
+  if (params.duration) queryParams.append('duration', params.duration);
   
   return `${baseUrl}?${queryParams.toString()}`;
 }
@@ -141,7 +160,8 @@ const bookingUrl = generateBookingLink({
   date: '2025-10-15',
   time: '14:00',
   passengers: 2,
-  tripType: 'oneway'
+  tripType: 'oneway',
+  bookingType: 'destination'
 });
 
 console.log(bookingUrl);
@@ -190,7 +210,9 @@ const BookingWidget = ({
   date = '', 
   time = '', 
   passengers = 1, 
-  tripType = 'oneway' 
+  tripType = 'oneway',
+  bookingType = 'destination',
+  duration = 2
 }) => {
   const params = new URLSearchParams();
   
@@ -201,6 +223,8 @@ const BookingWidget = ({
   if (time) params.append('time', time);
   if (passengers) params.append('passengers', passengers.toString());
   if (tripType) params.append('tripType', tripType);
+  if (bookingType) params.append('bookingType', bookingType);
+  if (bookingType === 'hourly' && duration) params.append('duration', duration.toString());
   
   const iframeUrl = `https://your-domain.com/en/embeddable?${params.toString()}`;
   

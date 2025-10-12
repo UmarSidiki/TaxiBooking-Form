@@ -3,46 +3,60 @@
 import React, { useEffect } from 'react';
 import { Car } from 'lucide-react';
 import { useBookingForm } from '@/contexts/BookingFormContext';
+import { useSearchParams } from 'next/navigation';
+import type { FormData } from '@/contexts/BookingFormContext';
 import Step1TripDetails from './steps/Step1TripDetails';
 import Step2VehicleSelection from './steps/Step2VehicleSelection';
 import Step3Payment from './steps/Step3Payment';
-import { useSearchParams } from 'next/navigation';
 
 export default function BookingFormContainer() {
   const { currentStep, setCurrentStep, setFormData } = useBookingForm();
   const searchParams = useSearchParams();
 
-  // Handle URL parameters for embeddable form
+  // Prefill form data and set step based on URL parameters
   useEffect(() => {
-    const step = searchParams.get('step');
-    const pickup = searchParams.get('pickup');
-    const dropoff = searchParams.get('dropoff');
-    const date = searchParams.get('date');
-    const time = searchParams.get('time');
-    const passengers = searchParams.get('passengers');
-    const tripType = searchParams.get('tripType');
+    const params = searchParams;
+    const stepRaw = params.get('step');
+    const bookingRaw = params.get('bookingType') ?? params.get('bookingtype');
+    const pickupRaw = params.get('pickup');
+    const dropoffRaw = params.get('dropoff');
+    const dateRaw = params.get('date');
+    const timeRaw = params.get('time');
+    const paxRaw = params.get('passengers');
+    const tripRaw = params.get('tripType') ?? params.get('triptype');
+    const durationRaw = params.get('duration') ?? params.get('hours');
 
-    // If step parameter is provided, navigate to that step
-    if (step) {
-      const stepNumber = parseInt(step);
-      if (stepNumber === 1 || stepNumber === 2 || stepNumber === 3) {
-        setCurrentStep(stepNumber);
+    // Build updates
+    const updates: Partial<FormData> = {};
+    if (bookingRaw === 'destination' || bookingRaw === 'hourly') {
+      updates.bookingType = bookingRaw as 'destination' | 'hourly';
+      if (bookingRaw === 'hourly') updates.dropoff = '';
+    }
+    if (pickupRaw) updates.pickup = pickupRaw;
+    if (dropoffRaw && updates.bookingType !== 'hourly') updates.dropoff = dropoffRaw;
+    if (dateRaw) updates.date = dateRaw;
+    if (timeRaw) updates.time = timeRaw;
+    if (paxRaw) updates.passengers = parseInt(paxRaw, 10) || 1;
+    // Only accept 'oneway' or 'return' (mapped to 'roundtrip')
+    if (tripRaw === 'oneway' || tripRaw === 'return') {
+      updates.tripType = tripRaw === 'return' ? 'roundtrip' : 'oneway';
+    }
+    if (bookingRaw === 'hourly' && durationRaw) {
+      const d = parseInt(durationRaw, 10);
+      if (!isNaN(d) && d > 0) updates.duration = d;
+    }
+
+    // Apply updates if any form params exist
+    if (Object.keys(updates).length > 0) {
+      setFormData(prev => ({ ...prev, ...updates }));
+      // Determine step
+      if (stepRaw && ['1', '2', '3'].includes(stepRaw)) {
+        setCurrentStep(parseInt(stepRaw, 10) as 1 | 2 | 3);
+      } else {
+        setCurrentStep(2);
       }
     }
-
-    // Pre-fill form data from URL parameters
-    if (pickup || dropoff || date || time || passengers || tripType) {
-      setFormData(prev => ({
-        ...prev,
-        ...(pickup && { pickup }),
-        ...(dropoff && { dropoff }),
-        ...(date && { date }),
-        ...(time && { time }),
-        ...(passengers && { passengers: parseInt(passengers) || 1 }),
-        ...(tripType && { tripType: tripType as 'oneway' | 'roundtrip' }),
-      }));
-    }
-  }, [searchParams, setCurrentStep, setFormData]);
+  }, [searchParams, setFormData, setCurrentStep]);
 
   const getStepTitle = () => {
     switch (currentStep) {

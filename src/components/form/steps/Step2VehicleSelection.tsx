@@ -23,7 +23,36 @@ export default function Step2VehicleSelection() {
     setVehicles,
     distanceData,
     setCurrentStep,
+    setDistanceData,
+    setCalculatingDistance,
   } = useBookingForm();
+
+  // Fetch distance if landing directly on step 2 with pickup/dropoff
+  useEffect(() => {
+    if (formData.bookingType === 'destination' && formData.pickup && formData.dropoff && !distanceData) {
+      const fetchDistance = async () => {
+        setCalculatingDistance(true);
+        try {
+          const res = await fetch('/api/distance', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              origin: formData.pickup,
+              destination: formData.dropoff,
+              isRoundTrip: formData.tripType === 'roundtrip',
+            }),
+          });
+          const data = await res.json();
+          if (data.success) setDistanceData(data.data);
+        } catch (err) {
+          console.error('Error fetching distance in Step2:', err);
+        } finally {
+          setCalculatingDistance(false);
+        }
+      };
+      fetchDistance();
+    }
+  }, [formData.bookingType, formData.pickup, formData.dropoff, formData.tripType, distanceData, setDistanceData, setCalculatingDistance]);
 
   // Initialize Google Maps
   useEffect(() => {

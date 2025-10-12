@@ -105,61 +105,30 @@ export default function Step3Payment() {
   const extrasPrice = (formData.childSeats * childSeatPrice) + (formData.babySeats * babySeatPrice);
   const totalPrice = discountedVehiclePrice + extrasPrice;
 
-  const validatePersonalDetails = (): boolean => {
-    const newErrors: typeof errors = {};
-    
-    if (!formData.firstName.trim()) {
-      newErrors.firstName = "First name is required";
-    }
-    if (!formData.lastName.trim()) {
-      newErrors.lastName = "Last name is required";
-    }
-    if (!formData.email.trim()) {
-      newErrors.email = "Email is required";
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = "Email is invalid";
-    }
-    if (!formData.phone.trim()) {
-      newErrors.phone = "Phone number is required";
-    }
-    
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const createPaymentIntent = async () => {
-    if (!validatePersonalDetails()) {
-      alert('Please fill in all personal details first');
-      return;
-    }
-
-    setCreatingPaymentIntent(true);
-    try {
-      const response = await fetch('/api/create-payment-intent', {
+  // Auto-initiate Stripe payment intent when 'card' is selected
+  useEffect(() => {
+    if (selectedPaymentMethod === 'card' && stripeConfig.publishableKey && !clientSecret) {
+      setCreatingPaymentIntent(true);
+      fetch('/api/create-payment-intent', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          amount: totalPrice, 
+        body: JSON.stringify({
+          amount: totalPrice,
           currency: paymentSettings?.stripeCurrency || 'eur',
           customerEmail: formData.email,
           customerName: `${formData.firstName} ${formData.lastName}`,
           description: `Booking from ${formData.pickup} to ${formData.dropoff}`,
         }),
-      });
-
-      const data = await response.json();
-      if (data.success) {
-        setClientSecret(data.clientSecret);
-      } else {
-        alert('Failed to initialize payment');
-      }
-    } catch (error) {
-      console.error('Error creating payment intent:', error);
-      alert('Failed to initialize payment');
-    } finally {
-      setCreatingPaymentIntent(false);
+      })
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) setClientSecret(data.clientSecret);
+          else console.error('Payment intent init failed');
+        })
+        .catch(err => console.error('Error initializing payment intent:', err))
+        .finally(() => setCreatingPaymentIntent(false));
     }
-  };
+  }, [selectedPaymentMethod, stripeConfig.publishableKey, clientSecret, totalPrice, paymentSettings?.stripeCurrency, formData.email, formData.firstName, formData.lastName, formData.pickup, formData.dropoff]);
 
   const handleStripePaymentSuccess = async (paymentIntentId: string) => {
     setIsLoading(true);
@@ -506,32 +475,12 @@ export default function Step3Payment() {
               {selectedPaymentMethod === 'card' && stripeConfig.publishableKey && (
                 <div className="mt-4">
                   {!clientSecret ? (
-                    <div>
-                      <p className="text-sm text-gray-600 mb-4">
-                        Click below to proceed with secure card payment
-                      </p>
-                      <Button
-                        onClick={createPaymentIntent}
-                        disabled={creatingPaymentIntent}
-                        className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold py-6"
-                      >
-                        {creatingPaymentIntent ? (
-                          <>
-                            <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                            Initializing Payment...
-                          </>
-                        ) : (
-                          <>
-                            Proceed to Card Payment - €{totalPrice.toFixed(2)}
-                          </>
-                        )}
-                      </Button>
+                    <div className="flex items-center justify-center text-sm text-gray-600">
+                      <Loader2 className="mr-2 h-5 w-5 animate-spin text-primary" />
+                      Loading payment options...
                     </div>
                   ) : (
-                    <StripeProvider
-                      publishableKey={stripeConfig.publishableKey}
-                      clientSecret={clientSecret}
-                    >
+                    <StripeProvider publishableKey={stripeConfig.publishableKey} clientSecret={clientSecret}>
                       <StripePaymentForm
                         amount={totalPrice}
                         currency={(paymentSettings?.stripeCurrency || 'eur').toUpperCase()}

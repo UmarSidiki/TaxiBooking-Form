@@ -12,9 +12,17 @@ export async function POST(request: NextRequest) {
     const formData: BookingInput = await request.json();
 
     // Validate required fields
-    if (!formData.pickup || !formData.dropoff || !formData.date || !formData.time) {
+    if (!formData.pickup || !formData.date || !formData.time) {
       return NextResponse.json(
         { success: false, message: "Missing required trip details" },
+        { status: 400 }
+      );
+    }
+    
+    // Dropoff is required for destination bookings, optional for hourly
+    if (formData.bookingType === 'destination' && !formData.dropoff) {
+      return NextResponse.json(
+        { success: false, message: "Dropoff location is required for destination bookings" },
         { status: 400 }
       );
     }
@@ -52,41 +60,61 @@ export async function POST(request: NextRequest) {
     }
 
     // Calculate total amount
-    let totalAmount = vehicle.price;
+    let totalAmount = 0;
     
-    // If we have distance data, calculate distance-based pricing
-    if (formData.pickup && formData.dropoff) {
-      try {
-        const distanceResponse = await fetch(`${request.nextUrl.origin}/api/distance`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ 
-            origin: formData.pickup, 
-            destination: formData.dropoff 
-          }),
-        });
+    if (formData.bookingType === 'hourly') {
+      // Hourly booking calculation
+      const pricePerHour = vehicle.pricePerHour || 30;
+      const minimumHours = vehicle.minimumHours || 2;
+      const hours = Math.max(formData.duration || 2, minimumHours);
+      totalAmount = pricePerHour * hours;
+    } else {
+      // Destination-based booking
+      totalAmount = vehicle.price;
+      
+      // If we have distance data, calculate distance-based pricing
+      if (formData.pickup && formData.dropoff) {
+        try {
+          const distanceResponse = await fetch(`${request.nextUrl.origin}/api/distance`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ 
+              origin: formData.pickup, 
+              destination: formData.dropoff 
+            }),
+          });
 
-        if (distanceResponse.ok) {
-          const distanceData = await distanceResponse.json();
-          if (distanceData.success) {
-            const distanceKm = distanceData.data.distance.km;
-            const distancePrice = vehicle.pricePerKm * distanceKm;
-            totalAmount = vehicle.price + distancePrice;
-            
-            // Apply minimum fare
-            totalAmount = Math.max(totalAmount, vehicle.minimumFare);
+          if (distanceResponse.ok) {
+            const distanceData = await distanceResponse.json();
+            if (distanceData.success) {
+              const distanceKm = distanceData.data.distance.km;
+              const distancePrice = vehicle.pricePerKm * distanceKm;
+              let oneWayPrice = vehicle.price + distancePrice;
+              
+              // Apply minimum fare
+              oneWayPrice = Math.max(oneWayPrice, vehicle.minimumFare);
+              
+              // For roundtrip, add the return percentage
+              if (formData.tripType === 'roundtrip') {
+                const returnPercentage = vehicle.returnPricePercentage || 100;
+                totalAmount = oneWayPrice + (oneWayPrice * (returnPercentage / 100));
+              } else {
+                totalAmount = oneWayPrice;
+              }
+            }
           }
+        } catch (error) {
+          console.error("Error calculating distance for pricing:", error);
+          // Fallback to base price if distance calculation fails
+          totalAmount = vehicle.price;
         }
-      } catch (error) {
-        console.error("Error calculating distance for pricing:", error);
-        // Fallback to base price if distance calculation fails
       }
     }
     
-    const childSeatsCost = formData.childSeats * 10;
-    const babySeatsCost = formData.babySeats * 10;
+    const childSeatsCost = formData.childSeats * (vehicle.childSeatPrice || 10);
+    const babySeatsCost = formData.babySeats * (vehicle.babySeatPrice || 10);
     totalAmount += childSeatsCost + babySeatsCost;
 
     // Generate unique trip ID
@@ -96,7 +124,7 @@ export async function POST(request: NextRequest) {
     const booking: Omit<Booking, "_id"> = {
       tripId,
       pickup: formData.pickup,
-      dropoff: formData.dropoff,
+      dropoff: formData.dropoff || '',
       tripType: formData.tripType,
       date: formData.date,
       time: formData.time,
@@ -135,7 +163,7 @@ export async function POST(request: NextRequest) {
     const emailData = {
       tripId,
       pickup: formData.pickup,
-      dropoff: formData.dropoff,
+      dropoff: formData.dropoff || 'N/A (Hourly booking)',
       tripType: formData.tripType,
       date: formData.date,
       time: formData.time,

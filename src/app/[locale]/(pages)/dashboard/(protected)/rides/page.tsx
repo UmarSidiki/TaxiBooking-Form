@@ -226,7 +226,7 @@ export default function RidesPage() {
             <span>{booking.time}</span>
           </div>
           <div className="flex items-center gap-1 min-w-0">
-            <MapLine start={booking.pickup} end={booking.dropoff} />
+            <MapLine start={booking.pickup} end={booking.dropoff || 'N/A'} />
           </div>
           <div className="flex items-center gap-1 text-green-600 dark:text-green-400 font-semibold">
             <DollarSign className="w-3.5 h-3.5" />

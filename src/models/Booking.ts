@@ -4,8 +4,8 @@ export interface Booking {
   _id?: ObjectId;
   tripId: string;
   pickup: string;
-  dropoff: string;
-  tripType: "oneway" | "return";
+  dropoff?: string;
+  tripType: "oneway" | "roundtrip";
   date: string;
   time: string;
   passengers: number;
@@ -35,9 +35,11 @@ export interface Booking {
 }
 
 export interface BookingInput {
+  bookingType?: "destination" | "hourly";
   pickup: string;
-  dropoff: string;
-  tripType: "oneway" | "return";
+  dropoff?: string;
+  tripType: "oneway" | "roundtrip";
+  duration?: number;
   date: string;
   time: string;
   passengers: number;
@@ -49,9 +51,9 @@ export interface BookingInput {
   lastName: string;
   email: string;
   phone: string;
-  cardNumber: string;
-  expiry: string;
-  cvv: string;
+  cardNumber?: string;
+  expiry?: string;
+  cvv?: string;
   paymentMethod?: string;
   paymentStatus?: string;
   stripePaymentIntentId?: string;

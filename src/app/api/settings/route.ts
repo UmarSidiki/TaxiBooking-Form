@@ -1,10 +1,10 @@
 import { NextResponse } from "next/server";
-import dbConnect from "@/lib/mongodb";
+import { connectDB } from "@/lib/mongoose";
 import Setting from "@/models/Setting";
 
 // GET settings
 export async function GET() {
-  await dbConnect;
+  await connectDB();
   try {
     // There should only be one settings document
     const settings = await Setting.findOne();
@@ -22,7 +22,7 @@ export async function GET() {
 
 // UPDATE settings
 export async function POST(request: Request) {
-  await dbConnect;
+  await connectDB();
   try {
     const body = await request.json();
     // Find one and update, or create if it doesn't exist (upsert)

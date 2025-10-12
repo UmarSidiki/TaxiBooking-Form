@@ -247,7 +247,7 @@ export async function PATCH(
       const cancellationPayload = {
         tripId: updatedBooking.tripId,
         pickup: updatedBooking.pickup,
-        dropoff: updatedBooking.dropoff,
+        dropoff: updatedBooking.dropoff || 'N/A (Hourly booking)',
         tripType: updatedBooking.tripType,
         date: updatedBooking.date,
         time: updatedBooking.time,

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Embed Code Generator - Booking Form</title>
+    <title>Embeddable Widget Generator - Booking Form</title>
     <style>
         * {
             margin: 0;
@@ -16,6 +16,22 @@
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             padding: 40px 20px;
+        }
+
+        iframe {
+            opacity: 0;
+            visibility: hidden;
+            animation-name: Show2Sec;
+            animation-duration: 0.5s;
+            animation-delay: 1500ms;
+            animation-fill-mode: forwards;
+        }
+
+        @keyframes Show2Sec {
+            to {
+                opacity: 1;
+                visibility: visible;
+            }
         }
 
         .container {
@@ -212,8 +228,8 @@
 </head>
 <body>
     <div class="container">
-        <h1>🚀 Embed Code Generator</h1>
-        <p class="subtitle">Create custom embed codes for your booking form in seconds</p>
+        <h1>🚀 Embeddable Widget Generator</h1>
+        <p class="subtitle">Create custom embed codes for your booking widget in seconds</p>
 
         <form id="embedForm">
             <!-- Domain -->
@@ -240,85 +256,32 @@
                 </select>
             </div>
 
-            <div class="divider"></div>
-
-            <!-- Booking Type -->
+            <!-- iframe Options -->
             <div class="form-group">
-                <label>Booking Type</label>
-                <div class="radio-group">
-                    <div class="radio-option">
-                        <input type="radio" id="typeDestination" name="bookingType" value="destination" checked>
-                        <label for="typeDestination" style="margin: 0;">Destination-based</label>
-                    </div>
-                    <div class="radio-option">
-                        <input type="radio" id="typeHourly" name="bookingType" value="hourly">
-                        <label for="typeHourly" style="margin: 0;">Hourly booking</label>
-                    </div>
-                </div>
+                <label for="iframeWidth">iframe Width</label>
+                <input type="text" id="iframeWidth" value="400" placeholder="e.g., 400 or 100%">
+                <div class="input-hint">Use pixels (400) or percentage (100%)</div>
             </div>
 
-            <!-- Pre-fill Options -->
+            <div class="form-group">
+                <label for="iframeHeight">iframe Height</label>
+                <input type="text" id="iframeHeight" value="500" placeholder="e.g., 700px">
+                <div class="input-hint">Recommended: 500 for optimal display</div>
+            </div>
+
             <div class="form-group">
                 <label>
-                    <input type="checkbox" id="enablePrefill" style="width: auto; display: inline;">
-                    Pre-fill form with default values
+                    <input type="checkbox" id="enableAnimation" style="width: auto; display: inline;" checked>
+                    Enable fade-in animation (1.5s delay)
                 </label>
             </div>
 
-            <div id="prefillOptions" style="display: none;">
-                <!-- Pickup -->
-                <div class="form-group">
-                    <label for="pickup">Pickup Location</label>
-                    <input type="text" id="pickup" placeholder="e.g., Zurich Airport">
-                </div>
-
-                <!-- Destination-specific fields -->
-                <div id="destinationFields">
-                    <div class="form-group">
-                        <label for="dropoff">Drop-off Location</label>
-                        <input type="text" id="dropoff" placeholder="e.g., Geneva City Center">
-                    </div>
-
-                    <div class="form-group">
-                        <label for="tripType">Trip Type</label>
-                        <select id="tripType">
-                            <option value="oneway">One-way</option>
-                            <option value="roundtrip">Round-trip</option>
-                        </select>
-                    </div>
-                </div>
-
-                <!-- Hourly-specific fields -->
-                <div id="hourlyFields" style="display: none;">
-                    <div class="form-group">
-                        <label for="duration">Duration (hours)</label>
-                        <input type="number" id="duration" min="2" max="24" value="4">
-                    </div>
-                </div>
-
-                <!-- Common fields -->
-                <div class="form-group">
-                    <label for="date">Date</label>
-                    <input type="date" id="date">
-                </div>
-
-                <div class="form-group">
-                    <label for="time">Time</label>
-                    <input type="time" id="time">
-                </div>
-
-                <div class="form-group">
-                    <label for="passengers">Passengers</label>
-                    <input type="number" id="passengers" min="1" max="16" value="1">
-                </div>
-            </div>
-
-            <div class="divider"></div>
-
-            <!-- iframe Options -->
             <div class="form-group">
-                <label for="iframeHeight">iframe Height</label>
-                <input type="text" id="iframeHeight" value="900px" placeholder="e.g., 900px or 100vh">
+                <label>
+                    <input type="checkbox" id="enableSandbox" style="width: auto; display: inline;" checked>
+                    Enable security sandbox
+                </label>
+                <div class="input-hint">Recommended for security. Allows scripts, forms, and same-origin access.</div>
             </div>
 
             <button type="submit" class="generate-btn">✨ Generate Embed Code</button>
@@ -326,12 +289,21 @@
 
         <div id="outputSection" class="output-section">
             <div class="output-title">
-                <span>📋</span> Your Embed Code
+                <span>📋</span> Your Embed Code (HTML)
             </div>
             
             <div class="code-output">
                 <button class="copy-btn" onclick="copyCode()">Copy</button>
                 <pre id="embedCode"></pre>
+            </div>
+
+            <div class="output-title">
+                <span>🎨</span> CSS Styles (Add to your stylesheet)
+            </div>
+            
+            <div class="code-output">
+                <button class="copy-btn" onclick="copyCss()">Copy</button>
+                <pre id="cssCode"></pre>
             </div>
 
             <div class="output-title">
@@ -355,30 +327,7 @@
     <script>
         // Form elements
         const embedForm = document.getElementById('embedForm');
-        const enablePrefill = document.getElementById('enablePrefill');
-        const prefillOptions = document.getElementById('prefillOptions');
-        const bookingTypeRadios = document.getElementsByName('bookingType');
-        const destinationFields = document.getElementById('destinationFields');
-        const hourlyFields = document.getElementById('hourlyFields');
         const outputSection = document.getElementById('outputSection');
-
-        // Toggle prefill options
-        enablePrefill.addEventListener('change', (e) => {
-            prefillOptions.style.display = e.target.checked ? 'block' : 'none';
-        });
-
-        // Toggle booking type fields
-        bookingTypeRadios.forEach(radio => {
-            radio.addEventListener('change', (e) => {
-                if (e.target.value === 'hourly') {
-                    destinationFields.style.display = 'none';
-                    hourlyFields.style.display = 'block';
-                } else {
-                    destinationFields.style.display = 'block';
-                    hourlyFields.style.display = 'none';
-                }
-            });
-        });
 
         // Generate embed code
         embedForm.addEventListener('submit', (e) => {
@@ -386,57 +335,62 @@
             
             const domain = document.getElementById('domain').value.trim();
             const locale = document.getElementById('locale').value;
-            const bookingType = document.querySelector('input[name="bookingType"]:checked').value;
+            const iframeWidth = document.getElementById('iframeWidth').value;
             const iframeHeight = document.getElementById('iframeHeight').value;
+            const enableAnimation = document.getElementById('enableAnimation').checked;
+            const enableSandbox = document.getElementById('enableSandbox').checked;
             
-            // Build URL
-            let url = `${domain}/${locale}/Embeddable/v1`;
-            const params = new URLSearchParams();
+            // Build URL - Fixed path (lowercase 'embeddable')
+            let url = `${domain}/${locale}/embeddable/v1`;
 
-            // Add prefill params if enabled
-            if (enablePrefill.checked) {
-                const pickup = document.getElementById('pickup').value.trim();
-                const date = document.getElementById('date').value;
-                const time = document.getElementById('time').value;
-                const passengers = document.getElementById('passengers').value;
+            // Determine width value
+            const widthValue = iframeWidth.includes('%') ? iframeWidth : `${iframeWidth}px`;
+            const heightValue = iframeHeight.includes('px') ? iframeHeight : `${iframeHeight}px`;
 
-                if (bookingType === 'hourly') {
-                    params.set('bookingType', 'hourly');
-                    const duration = document.getElementById('duration').value;
-                    if (pickup) params.set('pickup', pickup);
-                    if (duration) params.set('duration', duration);
-                    if (date) params.set('date', date);
-                    if (time) params.set('time', time);
-                    if (passengers) params.set('passengers', passengers);
-                } else {
-                    const dropoff = document.getElementById('dropoff').value.trim();
-                    const tripType = document.getElementById('tripType').value;
-                    
-                    if (pickup) params.set('pickup', pickup);
-                    if (dropoff) params.set('dropoff', dropoff);
-                    if (date) params.set('date', date);
-                    if (time) params.set('time', time);
-                    if (passengers) params.set('passengers', passengers);
-                    if (tripType) params.set('tripType', tripType);
-                }
-            }
+            // Build sandbox attribute
+            const sandboxAttr = enableSandbox 
+                ? '\n  sandbox="allow-scripts allow-same-origin allow-forms"\n  allow="payment"' 
+                : '';
 
-            const paramsString = params.toString();
-            if (paramsString) {
-                url += '?' + paramsString;
-            }
+            // Build class attribute for animation
+            const classAttr = enableAnimation ? ' class="booking-widget-iframe"' : '';
 
             // Generate embed code
-            const embedCode = `<iframe 
-  src="${url}" 
-  width="100%" 
-  height="${iframeHeight}" 
-  frameborder="0"
-  style="border: none;"
-></iframe>`;
+            const embedCode = `<iframe${classAttr}
+  src="${url}"
+  title="Interactive Booking Widget"
+  width="${widthValue}"
+  height="${heightValue}"
+  loading="lazy"
+  style="border: none"${sandboxAttr}
+  scrolling="no"
+>
+  <p>
+    Your browser does not support this interactive content. Please visit our
+    <a href="${domain}/${locale}">booking page</a> directly.
+  </p>
+</iframe>`;
+
+            // Generate CSS code (only if animation is enabled)
+            const cssCode = enableAnimation ? `.booking-widget-iframe {
+  opacity: 0;
+  visibility: hidden;
+  animation-name: Show2Sec;
+  animation-duration: 0.5s;
+  animation-delay: 1500ms;
+  animation-fill-mode: forwards;
+}
+
+@keyframes Show2Sec {
+  to {
+    opacity: 1;
+    visibility: visible;
+  }
+}` : '/* No animation styles needed */';
 
             // Display outputs
             document.getElementById('embedCode').textContent = embedCode;
+            document.getElementById('cssCode').textContent = cssCode;
             document.getElementById('directLink').textContent = url;
             document.getElementById('previewIframe').src = url;
             
@@ -449,6 +403,20 @@
         function copyCode() {
             const code = document.getElementById('embedCode').textContent;
             navigator.clipboard.writeText(code).then(() => {
+                const btn = event.target;
+                const originalText = btn.textContent;
+                btn.textContent = '✓ Copied!';
+                btn.classList.add('copied');
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.classList.remove('copied');
+                }, 2000);
+            });
+        }
+
+        function copyCss() {
+            const css = document.getElementById('cssCode').textContent;
+            navigator.clipboard.writeText(css).then(() => {
                 const btn = event.target;
                 const originalText = btn.textContent;
                 btn.textContent = '✓ Copied!';
@@ -474,8 +442,7 @@
             });
         }
 
-        // Set default date to today
-        document.getElementById('date').valueAsDate = new Date();
+        // No need to set default date anymore
     </script>
 </body>
 </html>

@@ -45,25 +45,35 @@ export function LanguageSwitcher() {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button
-          variant="ghost"
-          size="icon"
+          variant="outline"
+          size="default"
           disabled={isPending}
+          className="w-full h-12 justify-start gap-3 px-4 bg-background hover:bg-accent border-border/50"
           aria-label="Switch Language"
         >
-          <Globe className="h-5 w-5" />
+          <Globe className="h-5 w-5 text-primary" />
+          <span className="font-medium">{languages[locale]}</span>
+          <div className="ml-auto text-xs text-muted-foreground bg-muted px-2 py-1 rounded">
+            {locale.toUpperCase()}
+          </div>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
+      <DropdownMenuContent align="start" className="w-48">
         {Object.keys(languages).map((lang) => (
           <DropdownMenuItem
             key={lang}
             onClick={() => onSelectLocale(lang)}
             disabled={locale === lang ? true : false}
-            className={`cursor-pointer ${
-              locale === lang ? "font-semibold" : "font-normal"
+            className={`cursor-pointer py-3 px-4 ${
+              locale === lang ? "bg-accent font-semibold" : "font-normal"
             }`}
           >
-            {languages[lang]}
+            <div className="flex items-center justify-between w-full">
+              <span>{languages[lang]}</span>
+              {locale === lang && (
+                <div className="h-2 w-2 bg-primary rounded-full"></div>
+              )}
+            </div>
           </DropdownMenuItem>
         ))}
       </DropdownMenuContent>

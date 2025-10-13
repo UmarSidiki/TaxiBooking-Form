@@ -1,10 +1,31 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
+import { useTranslations } from "next-intl";
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Plus, Edit, Trash2, Save, X, Loader2 } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Separator } from '@/components/ui/separator';
+import {
+  Plus,
+  Edit,
+  Trash2,
+  Save,
+  X,
+  Loader2,
+  Search,
+  Filter,
+  Car,
+  Users,
+  Package,
+  Euro,
+  CheckCircle,
+  XCircle
+} from 'lucide-react';
 import { IVehicle } from '@/models/Vehicle';
 import Image from 'next/image';
 
@@ -13,10 +34,14 @@ interface VehicleForm extends Omit<IVehicle, '_id' | 'createdAt' | 'updatedAt'> 
 }
 
 const FleetPage = () => {
+  const t = useTranslations("Dashboard.Fleet");
   const [vehicles, setVehicles] = useState<IVehicle[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [categoryFilter, setCategoryFilter] = useState<string>('all');
+  const [statusFilter, setStatusFilter] = useState<string>('all');
   const [formData, setFormData] = useState<VehicleForm>({
     name: '',
     description: '',
@@ -172,356 +197,512 @@ const FleetPage = () => {
     setShowForm(false);
   };
 
+  // Filter and search logic
+  const filteredVehicles = useMemo(() => {
+    return vehicles.filter(vehicle => {
+      const matchesSearch = vehicle.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                          vehicle.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                          vehicle.category.toLowerCase().includes(searchQuery.toLowerCase());
+
+      const matchesCategory = categoryFilter === 'all' || vehicle.category === categoryFilter;
+      const matchesStatus = statusFilter === 'all' ||
+                          (statusFilter === 'active' && vehicle.isActive) ||
+                          (statusFilter === 'inactive' && !vehicle.isActive);
+
+      return matchesSearch && matchesCategory && matchesStatus;
+    });
+  }, [vehicles, searchQuery, categoryFilter, statusFilter]);
+
   return (
-    // RESPONSIVE CHANGE: Reduced padding on small screens (p-4) and increased on medium and up (md:p-6)
-    <div className="w-full p-4 md:p-6">
-      {/* RESPONSIVE CHANGE: Stack header vertically on small screens (flex-col) and horizontally on larger screens (sm:flex-row) */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
-        {/* RESPONSIVE CHANGE: Reduced font size on small screens (text-2xl) and increased on larger (sm:text-3xl) */}
-        <h1 className="text-2xl sm:text-3xl font-bold">Fleet Management</h1>
-        <Button
-          onClick={() => setShowForm(!showForm)}
-          className="bg-primary hover:bg-primary/90 text-primary-foreground"
-        >
-          {showForm ? (
-            <>
-              {/* RESPONSIVE CHANGE: Hide button text on small screens for a compact look */}
-              <X className="h-4 w-4 sm:mr-2" />
-              <span className="hidden sm:inline">Cancel</span>
-            </>
-          ) : (
-            <>
+    <div className="w-full min-h-screen bg-background p-4 sm:p-6 lg:p-8 space-y-4 sm:space-y-6 lg:space-y-8">
+      {/* Header Section */}
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4 lg:mb-6">
+        <div>
+          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-foreground">
+            Fleet Management
+          </h1>
+          <p className="text-muted-foreground mt-1 text-sm sm:text-base">
+            Manage your vehicle fleet and pricing
+          </p>
+        </div>
+        <Dialog open={showForm} onOpenChange={setShowForm}>
+          <DialogTrigger asChild>
+            <Button className="bg-primary hover:bg-primary/90 text-primary-foreground w-full sm:w-auto">
               <Plus className="h-4 w-4 sm:mr-2" />
               <span className="hidden sm:inline">Add Vehicle</span>
-            </>
-          )}
-        </Button>
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle>{editingId ? 'Edit Vehicle' : 'Add New Vehicle'}</DialogTitle>
+            </DialogHeader>
+            <VehicleForm
+              formData={formData}
+              setFormData={setFormData}
+              onSubmit={handleSubmit}
+              onCancel={resetForm}
+              isLoading={isLoading}
+              editingId={editingId}
+            />
+          </DialogContent>
+        </Dialog>
       </div>
 
-      {showForm && (
-        <Card className="mb-6">
-          <CardHeader>
-            <CardTitle>{editingId ? 'Edit Vehicle' : 'Add New Vehicle'}</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-4">
-              {/* NOTE: This grid is already responsive. It's 1 column on mobile and 2 on medium screens. */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium mb-1">Vehicle Name *</label>
-                  <Input
-                    required
-                    placeholder="e.g., Mercedes E-Class"
-                    value={formData.name}
-                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium mb-1">Category *</label>
-                  <select
-                    required
-                    className="w-full h-10 px-3 rounded-md border border-input bg-background"
-                    value={formData.category}
-                    onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                  >
-                    <option value="economy">Economy</option>
-                    <option value="comfort">Comfort</option>
-                    <option value="business">Business</option>
-                    <option value="van">Van</option>
-                    <option value="luxury">Luxury</option>
-                    <option value="suv">SUV</option>
-                  </select>
-                </div>
-
-                <div className="md:col-span-2">
-                  <label className="block text-sm font-medium mb-1">Description *</label>
-                  <textarea
-                    required
-                    placeholder="Describe the vehicle features..."
-                    className="w-full min-h-[80px] px-3 py-2 rounded-md border border-input bg-background"
-                    value={formData.description}
-                    onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium mb-1">Image URL</label>
-                  <Input
-                    placeholder="/images/car.jpg"
-                    value={formData.image}
-                    onChange={(e) => setFormData({ ...formData, image: e.target.value })}
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium mb-1">Base Price (€) *</label>
-                  <Input
-                    required
-                    type="number"
-                    min="0"
-                    step="0.01"
-                    placeholder="50"
-                    value={formData.price}
-                    onChange={(e) => setFormData({ ...formData, price: parseFloat(e.target.value) || 0 })}
-                  />
-                   <p className="text-xs text-gray-500 mt-1">Starting fare before distance calculation</p>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium mb-1">Price per KM (€) *</label>
-                  <Input
-                    required
-                    type="number"
-                    min="0"
-                    step="0.01"
-                    placeholder="2"
-                    value={formData.pricePerKm}
-                    onChange={(e) => setFormData({ ...formData, pricePerKm: parseFloat(e.target.value) || 0 })}
-                  />
-                  <p className="text-xs text-gray-500 mt-1">Rate charged per kilometer (for destination-based bookings)</p>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium mb-1">Price per Hour (€) *</label>
-                  <Input
-                    required
-                    type="number"
-                    min="0"
-                    step="0.01"
-                    placeholder="30"
-                    value={formData.pricePerHour}
-                    onChange={(e) => setFormData({ ...formData, pricePerHour: parseFloat(e.target.value) || 0 })}
-                  />
-                  <p className="text-xs text-gray-500 mt-1">Rate charged per hour (for time-based bookings)</p>
-                </div>
-                
-                <div>
-                  <label className="block text-sm font-medium mb-1">Minimum Fare (€) *</label>
-                  <Input
-                    required
-                    type="number"
-                    min="0"
-                    step="0.01"
-                    placeholder="20"
-                    value={formData.minimumFare}
-                    onChange={(e) => setFormData({ ...formData, minimumFare: parseFloat(e.target.value) || 0 })}
-                  />
-                   <p className="text-xs text-gray-500 mt-1">Minimum charge for destination-based trips</p>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium mb-1">Minimum Hours *</label>
-                  <Input
-                    required
-                    type="number"
-                    min="1"
-                    step="1"
-                    placeholder="2"
-                    value={formData.minimumHours}
-                    onChange={(e) => setFormData({ ...formData, minimumHours: parseInt(e.target.value) || 1 })}
-                  />
-                   <p className="text-xs text-gray-500 mt-1">Minimum hours required for time-based bookings</p>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium mb-1">Return Trip Price (%)</label>
-                  <Input
-                    required
-                    type="number"
-                    min="0"
-                    placeholder="100"
-                    value={formData.returnPricePercentage}
-                    onChange={(e) => setFormData({ ...formData, returnPricePercentage: parseInt(e.target.value) || 0 })}
-                  />
-                  <p className="text-xs text-gray-500 mt-1">Percentage of one-way price for the return leg. 100% means double price for a round trip.</p>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium mb-1">Discount (%)</label>
-                  <Input
-                    type="number"
-                    min="0"
-                    max="100"
-                    placeholder="0"
-                    value={formData.discount}
-                    onChange={(e) => setFormData({ ...formData, discount: parseInt(e.target.value) || 0 })}
-                  />
-                  <p className="text-xs text-gray-500 mt-1">Discount percentage applied to the final price (0-100%)</p>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium mb-1">Persons Capacity *</label>
-                  <Input
-                    required
-                    type="number"
-                    min="1"
-                    max="50"
-                    placeholder="4"
-                    value={formData.persons}
-                    onChange={(e) => setFormData({ ...formData, persons: parseInt(e.target.value) || 1 })}
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium mb-1">Baggages Capacity *</label>
-                  <Input
-                    required
-                    type="number"
-                    min="0"
-                    max="20"
-                    placeholder="2"
-                    value={formData.baggages}
-                    onChange={(e) => setFormData({ ...formData, baggages: parseInt(e.target.value) || 0 })}
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium mb-1">Child Seat Price (€)</label>
-                  <Input
-                    type="number"
-                    min="0"
-                    step="0.01"
-                    placeholder="10"
-                    value={formData.childSeatPrice}
-                    onChange={(e) => setFormData({ ...formData, childSeatPrice: parseFloat(e.target.value) || 0 })}
-                  />
-                  <p className="text-xs text-gray-500 mt-1">Price per child seat</p>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium mb-1">Baby Seat Price (€)</label>
-                  <Input
-                    type="number"
-                    min="0"
-                    step="0.01"
-                    placeholder="10"
-                    value={formData.babySeatPrice}
-                    onChange={(e) => setFormData({ ...formData, babySeatPrice: parseFloat(e.target.value) || 0 })}
-                  />
-                  <p className="text-xs text-gray-500 mt-1">Price per baby seat</p>
-                </div>
-
-                <div className="flex items-center space-x-2">
-                  <input
-                    type="checkbox"
-                    id="isActive"
-                    checked={formData.isActive}
-                    onChange={(e) => setFormData({ ...formData, isActive: e.target.checked })}
-                    className="h-4 w-4"
-                  />
-                  <label htmlFor="isActive" className="text-sm font-medium">
-                    Active (Available for booking)
-                  </label>
-                </div>
+      {/* Search and Filter Controls */}
+      <Card className="border border-border bg-card">
+        <CardContent className="p-3 sm:p-4">
+          <div className="flex flex-col space-y-3 sm:space-y-0 sm:flex-row sm:gap-4">
+            <div className="flex-1">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input
+                  placeholder="Search vehicles by name, description, or category..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-10 h-10 sm:h-9"
+                />
               </div>
+            </div>
+            <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
+              <Select value={categoryFilter} onValueChange={setCategoryFilter}>
+                <SelectTrigger className="w-full sm:w-40 h-10 sm:h-9">
+                  <SelectValue placeholder="Category" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Categories</SelectItem>
+                  <SelectItem value="economy">Economy</SelectItem>
+                  <SelectItem value="comfort">Comfort</SelectItem>
+                  <SelectItem value="business">Business</SelectItem>
+                  <SelectItem value="van">Van</SelectItem>
+                  <SelectItem value="luxury">Luxury</SelectItem>
+                  <SelectItem value="suv">SUV</SelectItem>
+                </SelectContent>
+              </Select>
+              <Select value={statusFilter} onValueChange={setStatusFilter}>
+                <SelectTrigger className="w-full sm:w-32 h-10 sm:h-9">
+                  <SelectValue placeholder="Status" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Status</SelectItem>
+                  <SelectItem value="active">Active</SelectItem>
+                  <SelectItem value="inactive">Inactive</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
 
-              <div className="flex gap-3">
-                <Button
-                  type="submit"
-                  disabled={isLoading}
-                  className="bg-primary hover:bg-primary/90 text-primary-foreground"
-                >
-                  {isLoading ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Saving...
-                    </>
-                  ) : (
-                    <>
-                      <Save className="mr-2 h-4 w-4" />
-                      {editingId ? 'Update Vehicle' : 'Add Vehicle'}
-                    </>
-                  )}
-                </Button>
-                <Button type="button" variant="outline" onClick={resetForm}>
-                  Cancel
-                </Button>
-              </div>
-            </form>
-          </CardContent>
-        </Card>
-      )}
-
-      {isLoading && !showForm ? (
+      {/* Vehicle Grid */}
+      {isLoading ? (
         <div className="flex justify-center items-center py-12">
           <Loader2 className="h-8 w-8 animate-spin text-primary" />
         </div>
       ) : (
-        // NOTE: This grid is also already responsive. It's 1 column on mobile, 2 on medium, and 3 on large screens.
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {vehicles.length === 0 ? (
-            <div className="col-span-full text-center py-12 text-gray-500">
-              No vehicles found. Add your first vehicle to get started!
-            </div>
-          ) : (
-            vehicles.map((vehicle) => (
-              <Card key={vehicle._id} className={!vehicle.isActive ? 'opacity-60' : ''}>
-                <CardHeader>
-                  {/* RESPONSIVE CHANGE: Added gap to prevent title and buttons from touching on wrap */}
-                  <div className="flex justify-between items-start gap-4">
-                    <div>
-                      <CardTitle className="text-xl">{vehicle.name}</CardTitle>
-                      <p className="text-sm text-gray-500 capitalize">{vehicle.category}</p>
-                    </div>
-                    <div className="flex gap-2">
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => handleEdit(vehicle)}
-                      >
-                        <Edit className="h-4 w-4" />
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant="destructive"
-                        onClick={() => handleDelete(vehicle._id!)}
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-3">
-                    {vehicle.image && (
-                      <div className="relative w-full h-40 bg-gray-200 rounded-md overflow-hidden">
-                        {/* BEST PRACTICE: Added width and height props to prevent layout shift */}
-                        <Image
-                          src={resolveImageSrc(vehicle.image)}
-                          alt={vehicle.name}
-                          width={400}
-                          height={225}
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
-                    )}
-                    <p className="text-sm text-gray-600">{vehicle.description}</p>
-                    <div className="grid grid-cols-2 gap-2 text-sm">
-                      <div className="flex items-center">
-                        <span className="font-medium">👥 Persons:</span>
-                        <span className="ml-2">{vehicle.persons}</span>
-                      </div>
-                      <div className="flex items-center">
-                        <span className="font-medium">🧳 Baggages:</span>
-                        <span className="ml-2">{vehicle.baggages}</span>
-                      </div>
-                    </div>
-                    {/* RESPONSIVE CHANGE: Added flex-wrap and gap to allow price and status to stack if needed */}
-                    <div className="flex flex-wrap justify-between items-center gap-2 pt-3 border-t">
-                      <span className="text-2xl font-bold text-primary">€{vehicle.price}</span>
-                      <span className={`text-sm px-2 py-1 rounded ${vehicle.isActive ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'}`}>
-                        {vehicle.isActive ? 'Active' : 'Inactive'}
-                      </span>
-                    </div>
-                  </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
+          {filteredVehicles.length === 0 ? (
+            <div className="col-span-full">
+              <Card className="border-2 border-dashed border-border bg-card">
+                <CardContent className="p-8 sm:p-12 text-center">
+                  <Car className="h-12 sm:h-16 w-12 sm:w-16 text-muted-foreground mx-auto mb-4" />
+                  <h3 className="text-lg font-semibold mb-2 text-foreground">
+                    {vehicles.length === 0 ? 'No vehicles yet' : 'No vehicles match your filters'}
+                  </h3>
+                  <p className="text-muted-foreground mb-4 text-sm sm:text-base">
+                    {vehicles.length === 0
+                      ? 'Get started by adding your first vehicle to the fleet.'
+                      : 'Try adjusting your search or filter criteria.'
+                    }
+                  </p>
+                  {vehicles.length === 0 && (
+                    <Button onClick={() => setShowForm(true)} className="bg-primary hover:bg-primary/90 text-primary-foreground">
+                      <Plus className="h-4 w-4 mr-2" />
+                      Add Your First Vehicle
+                    </Button>
+                  )}
                 </CardContent>
               </Card>
+            </div>
+          ) : (
+            filteredVehicles.map((vehicle) => (
+              <VehicleCard
+                key={vehicle._id}
+                vehicle={vehicle}
+                onEdit={handleEdit}
+                onDelete={handleDelete}
+                resolveImageSrc={resolveImageSrc}
+              />
             ))
           )}
         </div>
       )}
     </div>
+  );
+};
+
+// Vehicle Card Component
+const VehicleCard = ({
+  vehicle,
+  onEdit,
+  onDelete,
+  resolveImageSrc
+}: {
+  vehicle: IVehicle;
+  onEdit: (vehicle: IVehicle) => void;
+  onDelete: (id: string) => void;
+  resolveImageSrc: (src: string) => string;
+}) => {
+  return (
+    <Card className={`group hover:shadow-lg transition-all duration-300 border border-border hover:border-primary/20 bg-card ${!vehicle.isActive ? 'opacity-60' : ''}`}>
+      <CardHeader className="pb-3">
+        <div className="flex justify-between items-start gap-3 sm:gap-4">
+          <div className="flex-1 min-w-0">
+            <CardTitle className="text-base sm:text-lg truncate text-foreground">{vehicle.name}</CardTitle>
+            <Badge variant="secondary" className="mt-1 capitalize bg-primary/10 text-primary hover:bg-primary/20">
+              {vehicle.category}
+            </Badge>
+          </div>
+          <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => onEdit(vehicle)}
+              className="h-8 w-8 p-0 hover:bg-primary/10 hover:text-primary hover:border-primary/20"
+            >
+              <Edit className="h-3 w-3" />
+            </Button>
+            <Button
+              size="sm"
+              variant="destructive"
+              onClick={() => onDelete(vehicle._id!)}
+              className="h-8 w-8 p-0"
+            >
+              <Trash2 className="h-3 w-3" />
+            </Button>
+          </div>
+        </div>
+      </CardHeader>
+      <CardContent className="space-y-3 sm:space-y-4">
+        {vehicle.image && (
+          <div className="relative w-full h-28 sm:h-32 bg-muted rounded-lg overflow-hidden">
+            <Image
+              src={resolveImageSrc(vehicle.image)}
+              alt={vehicle.name}
+              fill
+              className="object-cover"
+            />
+          </div>
+        )}
+
+        <p className="text-sm text-muted-foreground line-clamp-2">{vehicle.description}</p>
+
+        <div className="grid grid-cols-2 gap-3 text-sm">
+          <div className="flex items-center gap-2">
+            <Users className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+            <span className="text-foreground">{vehicle.persons} seats</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <Package className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+            <span className="text-foreground">{vehicle.baggages} bags</span>
+          </div>
+        </div>
+
+        <Separator className="bg-border" />
+
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 sm:gap-4">
+          <div className="flex items-center gap-2">
+            <Euro className="h-4 w-4 text-primary flex-shrink-0" />
+            <span className="text-xl font-bold text-primary">€{vehicle.price}</span>
+          </div>
+          <Badge variant={vehicle.isActive ? "default" : "secondary"} className={vehicle.isActive ? "bg-primary hover:bg-primary/90 text-primary-foreground" : ""}>
+            {vehicle.isActive ? (
+              <>
+                <CheckCircle className="h-3 w-3 mr-1" />
+                Active
+              </>
+            ) : (
+              <>
+                <XCircle className="h-3 w-3 mr-1" />
+                Inactive
+              </>
+            )}
+          </Badge>
+        </div>
+      </CardContent>
+    </Card>
+  );
+};
+
+// Vehicle Form Component
+const VehicleForm = ({
+  formData,
+  setFormData,
+  onSubmit,
+  onCancel,
+  isLoading,
+  editingId
+}: {
+  formData: VehicleForm;
+  setFormData: (data: VehicleForm) => void;
+  onSubmit: (e: React.FormEvent) => void;
+  onCancel: () => void;
+  isLoading: boolean;
+  editingId: string | null;
+}) => {
+  return (
+    <form onSubmit={onSubmit} className="space-y-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Basic Information */}
+        <div className="md:col-span-2">
+          <h3 className="text-lg font-semibold mb-4">Basic Information</h3>
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium mb-2">Vehicle Name *</label>
+          <Input
+            required
+            placeholder="e.g., Mercedes E-Class"
+            value={formData.name}
+            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium mb-2">Category *</label>
+          <Select
+            value={formData.category}
+            onValueChange={(value) => setFormData({ ...formData, category: value })}
+          >
+            <SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="economy">Economy</SelectItem>
+              <SelectItem value="comfort">Comfort</SelectItem>
+              <SelectItem value="business">Business</SelectItem>
+              <SelectItem value="van">Van</SelectItem>
+              <SelectItem value="luxury">Luxury</SelectItem>
+              <SelectItem value="suv">SUV</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
+        <div className="md:col-span-2">
+          <label className="block text-sm font-medium mb-2">Description *</label>
+          <textarea
+            required
+            placeholder="Describe the vehicle features..."
+            className="w-full min-h-[80px] px-3 py-2 rounded-md border border-input bg-background resize-none"
+            value={formData.description}
+            onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+          />
+        </div>
+
+        <div className="md:col-span-2">
+          <label className="block text-sm font-medium mb-2">Image URL</label>
+          <Input
+            placeholder="/images/car.jpg"
+            value={formData.image}
+            onChange={(e) => setFormData({ ...formData, image: e.target.value })}
+          />
+        </div>
+
+        {/* Pricing Section */}
+        <div className="md:col-span-2">
+          <h3 className="text-lg font-semibold mb-4">Pricing</h3>
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium mb-2">Base Price (€) *</label>
+          <Input
+            required
+            type="number"
+            min="0"
+            step="0.01"
+            placeholder="50"
+            value={formData.price}
+            onChange={(e) => setFormData({ ...formData, price: parseFloat(e.target.value) || 0 })}
+          />
+          <p className="text-xs text-muted-foreground mt-1">Starting fare before distance calculation</p>
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium mb-2">Price per KM (€) *</label>
+          <Input
+            required
+            type="number"
+            min="0"
+            step="0.01"
+            placeholder="2"
+            value={formData.pricePerKm}
+            onChange={(e) => setFormData({ ...formData, pricePerKm: parseFloat(e.target.value) || 0 })}
+          />
+          <p className="text-xs text-muted-foreground mt-1">Rate charged per kilometer</p>
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium mb-2">Price per Hour (€) *</label>
+          <Input
+            required
+            type="number"
+            min="0"
+            step="0.01"
+            placeholder="30"
+            value={formData.pricePerHour}
+            onChange={(e) => setFormData({ ...formData, pricePerHour: parseFloat(e.target.value) || 0 })}
+          />
+          <p className="text-xs text-muted-foreground mt-1">Rate charged per hour</p>
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium mb-2">Minimum Fare (€) *</label>
+          <Input
+            required
+            type="number"
+            min="0"
+            step="0.01"
+            placeholder="20"
+            value={formData.minimumFare}
+            onChange={(e) => setFormData({ ...formData, minimumFare: parseFloat(e.target.value) || 0 })}
+          />
+          <p className="text-xs text-muted-foreground mt-1">Minimum charge for trips</p>
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium mb-2">Minimum Hours *</label>
+          <Input
+            required
+            type="number"
+            min="1"
+            step="1"
+            placeholder="2"
+            value={formData.minimumHours}
+            onChange={(e) => setFormData({ ...formData, minimumHours: parseInt(e.target.value) || 1 })}
+          />
+          <p className="text-xs text-muted-foreground mt-1">Minimum hours for bookings</p>
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium mb-2">Return Trip Price (%)</label>
+          <Input
+            required
+            type="number"
+            min="0"
+            placeholder="100"
+            value={formData.returnPricePercentage}
+            onChange={(e) => setFormData({ ...formData, returnPricePercentage: parseInt(e.target.value) || 0 })}
+          />
+          <p className="text-xs text-muted-foreground mt-1">Percentage for return trips</p>
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium mb-2">Discount (%)</label>
+          <Input
+            type="number"
+            min="0"
+            max="100"
+            placeholder="0"
+            value={formData.discount}
+            onChange={(e) => setFormData({ ...formData, discount: parseInt(e.target.value) || 0 })}
+          />
+          <p className="text-xs text-muted-foreground mt-1">Discount percentage</p>
+        </div>
+
+        {/* Capacity Section */}
+        <div className="md:col-span-2">
+          <h3 className="text-lg font-semibold mb-4">Capacity & Features</h3>
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium mb-2">Persons Capacity *</label>
+          <Input
+            required
+            type="number"
+            min="1"
+            max="50"
+            placeholder="4"
+            value={formData.persons}
+            onChange={(e) => setFormData({ ...formData, persons: parseInt(e.target.value) || 1 })}
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium mb-2">Baggages Capacity *</label>
+          <Input
+            required
+            type="number"
+            min="0"
+            max="20"
+            placeholder="2"
+            value={formData.baggages}
+            onChange={(e) => setFormData({ ...formData, baggages: parseInt(e.target.value) || 0 })}
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium mb-2">Child Seat Price (€)</label>
+          <Input
+            type="number"
+            min="0"
+            step="0.01"
+            placeholder="10"
+            value={formData.childSeatPrice}
+            onChange={(e) => setFormData({ ...formData, childSeatPrice: parseFloat(e.target.value) || 0 })}
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium mb-2">Baby Seat Price (€)</label>
+          <Input
+            type="number"
+            min="0"
+            step="0.01"
+            placeholder="10"
+            value={formData.babySeatPrice}
+            onChange={(e) => setFormData({ ...formData, babySeatPrice: parseFloat(e.target.value) || 0 })}
+          />
+        </div>
+
+        {/* Status */}
+        <div className="md:col-span-2">
+          <div className="flex items-center space-x-2">
+            <input
+              type="checkbox"
+              id="isActive"
+              checked={formData.isActive}
+              onChange={(e) => setFormData({ ...formData, isActive: e.target.checked })}
+              className="h-4 w-4 rounded border-gray-300"
+            />
+            <label htmlFor="isActive" className="text-sm font-medium">
+              Active (Available for booking)
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div className="flex gap-3 pt-6 border-t">
+        <Button
+          type="submit"
+          disabled={isLoading}
+          className="flex-1"
+        >
+          {isLoading ? (
+            <>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              Saving...
+            </>
+          ) : (
+            <>
+              <Save className="mr-2 h-4 w-4" />
+              {editingId ? 'Update Vehicle' : 'Add Vehicle'}
+            </>
+          )}
+        </Button>
+        <Button type="button" variant="outline" onClick={onCancel}>
+          Cancel
+        </Button>
+      </div>
+    </form>
   );
 };
 

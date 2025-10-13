@@ -9,7 +9,7 @@
     "booking": "Booking"
   },
   "Footer": {
-    "Copyright": "© 2025 Swiss Ride SARL. All rights reserved.",
+    "Copyright": "© 2025 {websiteName} All rights reserved.",
     "Support": "24/7 Support:",
     "Support2": "24/7 Support Available • Secure Payment • Licensed Drivers"
   },
@@ -176,5 +176,52 @@
     "redirecting": "Redirecting...",
     "round-trip": "Round-trip",
     "one-way": "One-way"
+  },
+  "Dashboard": {
+    "Rides": {
+      "Title": "Rides Management",
+      "Description": "Manage and track all your booking requests",
+      "Refresh": "Refresh",
+      "SearchPlaceholder": "Search by trip ID, customer name, email, phone, or location...",
+      "Status": "Status",
+      "AllStatus": "All Status",
+      "Upcoming": "Upcoming",
+      "Completed": "Completed",
+      "Canceled": "Canceled",
+      "Payment": "Payment",
+      "AllPayments": "All Payments",
+      "Paid": "Paid",
+      "Pending": "Pending",
+      "Failed": "Failed",
+      "Refunded": "Refunded",
+      "ViewDetails": "View Details",
+      "Details": "Details",
+      "Cancel": "Cancel",
+      "Canceling": "Canceling...",
+      "Trip": "Trip",
+      "Passenger": "passenger",
+      "Passengers": "passengers",
+      "ConfirmCancelTitle": "Cancel Booking",
+      "ConfirmCancelMessage": "Are you sure you want to cancel this booking? This action cannot be undone.",
+      "CancelBooking": "Cancel Booking",
+      "KeepBooking": "Keep Booking",
+      "BookingCanceled": "Booking canceled successfully",
+      "CancelError": "Failed to cancel booking",
+      "LoadingBookings": "Loading bookings...",
+      "NoBookings": "No bookings found",
+      "ErrorLoading": "Error loading bookings",
+      "CancelBookingError": "Failed to cancel booking. Please try again.",
+      "UpcomingRides": "Upcoming Rides",
+      "CompletedRides": "Completed Rides",
+      "CanceledRides": "Canceled Rides",
+      "LoadingRides": "Loading Rides",
+      "LoadingRidesDescription": "Please wait while we fetch your upcoming rides...",
+      "NoUpcomingRides": "No Upcoming Rides",
+      "NoUpcomingRidesDescription": "You don't have any upcoming rides scheduled. New bookings will appear here when customers make reservations.",
+      "NoCompletedRides": "No Completed Rides",
+      "NoCompletedRidesDescription": "You don't have any completed rides yet. Rides will move here after their scheduled date and time.",
+      "NoCanceledRides": "No Canceled Rides",
+      "NoCanceledRidesDescription": "You don't have any canceled rides. Canceled bookings will appear here for your records."
+    }
   }
 }

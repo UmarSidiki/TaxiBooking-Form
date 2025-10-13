@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { Calendar, Car, Home, PersonStanding, Settings } from "lucide-react";
 
 import {
@@ -15,7 +16,9 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import LogoutButton from "@/components/auth/LogoutButton";
+import { Separator } from "@/components/ui/separator";
 
 const items = [
   {
@@ -47,21 +50,48 @@ const items = [
 
 export function AppSidebar({ locale }: { locale: string }) {
   return (
-    <Sidebar>
-      <SidebarHeader>
-        <h2 className="text-lg font-semibold">Dashboard Menu</h2>
+    <Sidebar className="border-r-2 border-border/50">
+      <SidebarHeader className="border-b border-border/50 bg-gradient-to-r from-primary/5 to-primary/10 p-6">
+        <div className="flex items-center gap-4">
+          <div className="relative h-12 w-12 overflow-hidden rounded-xl bg-primary/10 border border-primary/20">
+            <Image
+              src="/icon.png"
+              alt="TaxiBooking Logo"
+              fill
+              className="object-cover"
+              onError={(e) => {
+                // Fallback to building icon if image fails to load
+                e.currentTarget.style.display = 'none';
+                const parent = e.currentTarget.parentElement;
+                if (parent) {
+                  parent.innerHTML = '<div class="flex h-full w-full items-center justify-center"><svg class="h-6 w-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg></div>';
+                }
+              }}
+            />
+          </div>
+          <div>
+            <h1 className="text-xl font-bold text-foreground">TaxiBooking</h1>
+            <p className="text-xs text-muted-foreground">Management Portal</p>
+          </div>
+        </div>
       </SidebarHeader>
-      <SidebarContent>
+
+      <SidebarContent className="px-3 py-4">
         <SidebarGroup>
-          <SidebarGroupLabel>Application</SidebarGroupLabel>
+          <SidebarGroupLabel className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">
+            Navigation
+          </SidebarGroupLabel>
           <SidebarGroupContent>
-            <SidebarMenu>
+            <SidebarMenu className="space-y-1">
               {items.map((item) => (
                 <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
-                    <Link href={item.href(locale)}>
-                      <item.icon className="h-4 w-4" />
-                      <span>{item.title}</span>
+                  <SidebarMenuButton
+                    asChild
+                    className="h-11 px-3 rounded-lg hover:bg-primary/10 hover:text-primary transition-all duration-200 group"
+                  >
+                    <Link href={item.href(locale)} className="flex items-center gap-3">
+                      <item.icon className="h-5 w-5 text-muted-foreground group-hover:text-primary transition-colors" />
+                      <span className="font-medium">{item.title}</span>
                     </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
@@ -69,9 +99,28 @@ export function AppSidebar({ locale }: { locale: string }) {
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
+
+        <Separator className="my-6" />
+
+        <SidebarGroup>
+          <SidebarGroupLabel className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">
+            Preferences
+          </SidebarGroupLabel>
+          <SidebarGroupContent>
+            <div className="px-3">
+              <LanguageSwitcher />
+            </div>
+          </SidebarGroupContent>
+        </SidebarGroup>
       </SidebarContent>
-      <SidebarFooter>
-        <LogoutButton callbackUrl={`/${locale}/dashboard/signin`} />
+
+      <SidebarFooter className="border-t border-border/50 bg-muted/30 p-4">
+        <div className="flex items-center justify-between">
+          <div className="text-xs text-muted-foreground">
+            © 2025 TaxiBooking
+          </div>
+          <LogoutButton callbackUrl={`/${locale}/dashboard/signin`} />
+        </div>
       </SidebarFooter>
     </Sidebar>
   );

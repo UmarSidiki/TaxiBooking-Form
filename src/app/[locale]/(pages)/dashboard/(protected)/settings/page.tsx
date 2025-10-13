@@ -7,11 +7,14 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Save, Loader2, Palette, Square, Circle, MapPin, CreditCard, Banknote, Building2 } from 'lucide-react';
 import { ISetting } from '@/models/Setting';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useTranslations } from 'next-intl';
 
 const SettingsPage = () => {
   const [settings, setSettings] = useState<Partial<ISetting>>({});
   const [isLoading, setIsLoading] = useState(false);
   const [isFetching, setIsFetching] = useState(true);
+
+  const t = useTranslations();
 
   useEffect(() => {
     const fetchSettings = async () => {
@@ -24,13 +27,13 @@ const SettingsPage = () => {
         }
       } catch (error) {
         console.error('Error fetching settings:', error);
-        alert('Failed to load settings.');
+        alert(t('Dashboard.Settings.failed-to-load-settings'));
       } finally {
         setIsFetching(false);
       }
     };
     fetchSettings();
-  }, []);
+  });
 
   const handleSubmit = async () => {
     setIsLoading(true);
@@ -42,7 +45,7 @@ const SettingsPage = () => {
       });
       const data = await response.json();
       if (data.success) {
-        alert('Settings saved successfully!');
+        alert(t('Dashboard.Settings.settings-saved-successfully'));
         // Optional: trigger a global state update or page reload to apply changes
         window.location.reload();
       } else {
@@ -50,7 +53,7 @@ const SettingsPage = () => {
       }
     } catch (error) {
       console.error('Error saving settings:', error);
-      alert('Failed to save settings.');
+      alert(t('Dashboard.Settings.failed-to-save-settings'));
     } finally {
       setIsLoading(false);
     }
@@ -71,21 +74,21 @@ const SettingsPage = () => {
   const paymentMethods = [
     { 
       id: 'card', 
-      label: 'Stripe Payment', 
+      label: t('Dashboard.Settings.stripe-payment'), 
       Icon: CreditCard,
-      description: 'Cards, PayPal, Apple Pay, Google Pay, and more'
+      description: t('Dashboard.Settings.cards-paypal-apple-pay-google-pay-and-more')
     },
     { 
       id: 'cash', 
-      label: 'Cash Payment', 
+      label: t('Dashboard.Settings.cash-payment'), 
       Icon: Banknote,
-      description: 'Pay with cash on delivery'
+      description: t('Dashboard.Settings.pay-with-cash-on-delivery')
     },
     { 
       id: 'bank_transfer', 
-      label: 'Bank Transfer', 
+      label: t('Dashboard.Settings.bank-transfer'), 
       Icon: Building2,
-      description: 'Direct bank transfer'
+      description: t('Dashboard.Settings.direct-bank-transfer')
     },
   ];
 
@@ -100,7 +103,7 @@ const SettingsPage = () => {
   return (
     <div className="w-full p-4 md:p-6">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
-        <h1 className="text-2xl sm:text-3xl font-bold">Settings</h1>
+        <h1 className="text-2xl sm:text-3xl font-bold">{t('Dashboard.Settings.settings')}</h1>
         <Button
           onClick={handleSubmit}
           disabled={isLoading}
@@ -114,8 +117,7 @@ const SettingsPage = () => {
           ) : (
             <>
               <Save className="mr-2 h-4 w-4" />
-              Save All Settings
-            </>
+              {t('Dashboard.Settings.save-all-settings')} </>
           )}
         </Button>
       </div>
@@ -124,33 +126,29 @@ const SettingsPage = () => {
         <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="appearance">
             <Palette className="mr-2 h-4 w-4" />
-            Appearance
-          </TabsTrigger>
+            {t('Dashboard.Settings.appearance')} </TabsTrigger>
           <TabsTrigger value="booking">
             <CreditCard className="mr-2 h-4 w-4" />
-            Booking
-          </TabsTrigger>
+            {t('Dashboard.Settings.booking')} </TabsTrigger>
           <TabsTrigger value="map">
             <MapPin className="mr-2 h-4 w-4" />
-            Map
-          </TabsTrigger>
+            {t('Dashboard.Settings.map')} </TabsTrigger>
           <TabsTrigger value="payment">
             <CreditCard className="mr-2 h-4 w-4" />
-            Payment
-          </TabsTrigger>
+            {t('Dashboard.Settings.payment')} </TabsTrigger>
         </TabsList>
         <TabsContent value="appearance">
           <Card>
             <CardHeader>
-              <CardTitle>Theme & Appearance</CardTitle>
+              <CardTitle>{t('Dashboard.Settings.theme-and-appearance')}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
               {/* Color Settings */}
               <div className="space-y-4">
-                <h3 className="text-lg font-medium">Color Scheme</h3>
+                <h3 className="text-lg font-medium">{t('Dashboard.Settings.color-scheme')}</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium mb-2">Primary Color</label>
+                    <label className="block text-sm font-medium mb-2">{t('Dashboard.Settings.primary-color')}</label>
                     <div className="flex items-center gap-2">
                       <Input
                         type="color"
@@ -164,10 +162,10 @@ const SettingsPage = () => {
                         onChange={(e) => handleColorChange('primaryColor', e.target.value)}
                       />
                     </div>
-                    <p className="text-xs text-gray-500 mt-1">Used for buttons, highlights, and main actions.</p>
+                    <p className="text-xs text-gray-500 mt-1">{t('Dashboard.Settings.used-for-buttons-highlights-and-main-actions')}</p>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium mb-2">Secondary Color</label>
+                    <label className="block text-sm font-medium mb-2">{t('Dashboard.Settings.secondary-color')}</label>
                     <div className="flex items-center gap-2">
                       <Input
                         type="color"
@@ -181,16 +179,16 @@ const SettingsPage = () => {
                         onChange={(e) => handleColorChange('secondaryColor', e.target.value)}
                       />
                     </div>
-                    <p className="text-xs text-gray-500 mt-1">Used for text, backgrounds, and secondary elements.</p>
+                    <p className="text-xs text-gray-500 mt-1">{t('Dashboard.Settings.used-for-text-backgrounds-and-secondary-elements')}</p>
                   </div>
                 </div>
               </div>
 
               {/* Border Radius Settings */}
               <div className="space-y-4">
-                <h3 className="text-lg font-medium">Border Radius</h3>
+                <h3 className="text-lg font-medium">{t('Dashboard.Settings.border-radius')}</h3>
                 <div>
-                  <label className="block text-sm font-medium mb-2">Corner Sharpness</label>
+                  <label className="block text-sm font-medium mb-2">{t('Dashboard.Settings.corner-sharpness')}</label>
                   <div className="flex items-center gap-4">
                     <Square className="h-5 w-5" />
                     <Input
@@ -204,7 +202,7 @@ const SettingsPage = () => {
                     />
                     <Circle className="h-5 w-5" />
                   </div>
-                  <p className="text-xs text-gray-500 mt-1">Controls the roundness of buttons, inputs, and cards.</p>
+                  <p className="text-xs text-gray-500 mt-1">{t('Dashboard.Settings.controls-the-roundness-of-buttons-inputs-and-cards')}</p>
                 </div>
               </div>
             </CardContent>
@@ -213,33 +211,31 @@ const SettingsPage = () => {
         <TabsContent value="booking">
           <Card>
             <CardHeader>
-              <CardTitle>Booking Settings</CardTitle>
+              <CardTitle>{t('Dashboard.Settings.booking-settings')}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
               {/* Redirect URL Settings */}
               <div className="space-y-4">
-                <h3 className="text-lg font-medium">Post-Booking Redirect</h3>
+                <h3 className="text-lg font-medium">{t('Dashboard.Settings.post-booking-redirect')}</h3>
                 <div>
-                  <label className="block text-sm font-medium mb-2">Redirect URL</label>
+                  <label className="block text-sm font-medium mb-2">{t('Dashboard.Settings.redirect-url')}</label>
                   <Input
                     type="url"
-                    placeholder="https://yourwebsite.com or leave empty for home page"
+                    placeholder={t('Dashboard.Settings.https-yourwebsite-com-or-leave-empty-for-home-page')}
                     value={settings.redirectUrl || ''}
                     onChange={(e) => handleMapSettingsChange('redirectUrl', e.target.value)}
                     className="w-full"
                   />
                   <p className="text-xs text-gray-500 mt-2">
-                    After a successful booking, customers will be redirected to this URL after 3 seconds.
-                    <br />
-                    Leave empty to redirect to the home page (/).
-                  </p>
+                    {t('Dashboard.Settings.after-a-successful-booking-customers-will-be-redirected-to-this-url-after-3-seconds')} <br />
+                    {t('Dashboard.Settings.leave-empty-to-redirect-to-the-home-page')} </p>
                   <div className="mt-3 p-3 bg-blue-50 rounded-lg border border-blue-200">
                     <p className="text-xs text-blue-800">
-                      <strong>💡 Tip:</strong> You can redirect to:
-                      <br />• Your main website homepage
-                      <br />• A custom thank you page on your site
-                      <br />• A special offers page
-                      <br />• Or any other URL you choose
+                      <strong>{t('Dashboard.Settings.tip')}</strong> {t('Dashboard.Settings.you-can-redirect-to')}
+                      <br />{t('Dashboard.Settings.your-main-website-homepage')}
+                      <br />{t('Dashboard.Settings.a-custom-thank-you-page-on-your-site')}
+                      <br />{t('Dashboard.Settings.a-special-offers-page')}
+                      <br />{t('Dashboard.Settings.or-any-other-url-you-choose')}
                     </p>
                   </div>
                 </div>
@@ -250,15 +246,15 @@ const SettingsPage = () => {
         <TabsContent value="map">
           <Card>
             <CardHeader>
-              <CardTitle>Map Configuration</CardTitle>
+              <CardTitle>{t('Dashboard.Settings.map-configuration')}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
               {/* Map Settings */}
               <div className="space-y-4">
-                <h3 className="text-lg font-medium">Initial Location</h3>
+                <h3 className="text-lg font-medium">{t('Dashboard.Settings.initial-location')}</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium mb-2">Initial Latitude</label>
+                    <label className="block text-sm font-medium mb-2">{t('Dashboard.Settings.initial-latitude')}</label>
                     <Input
                       type="number"
                       step="any"
@@ -266,10 +262,10 @@ const SettingsPage = () => {
                       value={settings.mapInitialLat ?? ''}
                       onChange={(e) => handleMapSettingsChange('mapInitialLat', parseFloat(e.target.value))}
                     />
-                    <p className="text-xs text-gray-500 mt-1">Default latitude for the map center.</p>
+                    <p className="text-xs text-gray-500 mt-1">{t('Dashboard.Settings.default-latitude-for-the-map-center')}</p>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium mb-2">Initial Longitude</label>
+                    <label className="block text-sm font-medium mb-2">{t('Dashboard.Settings.initial-longitude')}</label>
                     <Input
                       type="number"
                       step="any"
@@ -277,20 +273,20 @@ const SettingsPage = () => {
                       value={settings.mapInitialLng ?? ''}
                       onChange={(e) => handleMapSettingsChange('mapInitialLng', parseFloat(e.target.value))}
                     />
-                    <p className="text-xs text-gray-500 mt-1">Default longitude for the map center.</p>
+                    <p className="text-xs text-gray-500 mt-1">{t('Dashboard.Settings.default-longitude-for-the-map-center')}</p>
                   </div>
                 </div>
               </div>
               <div className="space-y-4">
-                <h3 className="text-lg font-medium">Restrictions</h3>
+                <h3 className="text-lg font-medium">{t('Dashboard.Settings.restrictions')}</h3>
                 <div>
-                  <label className="block text-sm font-medium mb-2">Country Restrictions</label>
+                  <label className="block text-sm font-medium mb-2">{t('Dashboard.Settings.country-restrictions')}</label>
                   <Input
-                    placeholder="CH, FR, DE (2-letter country codes, comma-separated)"
+                    placeholder={t('Dashboard.Settings.ch-fr-de-2-letter-country-codes-comma-separated')}
                     value={settings.mapCountryRestrictions?.join(', ') ?? ''}
-                    onChange={(e) => handleMapSettingsChange('mapCountryRestrictions', e.target.value.split(',').map(c => c.trim().toUpperCase()))}
+                    onChange={(e) => handleMapSettingsChange('mapCountryRestrictions', e.target.value.split('Dashboard.Settings.,').map(c => c.trim().toUpperCase()))}
                   />
-                  <p className="text-xs text-gray-500 mt-1">Limit address autocomplete to specific countries. Leave empty for no restrictions.</p>
+                  <p className="text-xs text-gray-500 mt-1">{t('Dashboard.Settings.limit-address-autocomplete-to-specific-countries-leave-empty-for-no-restrictions')}</p>
                 </div>
               </div>
             </CardContent>
@@ -299,13 +295,13 @@ const SettingsPage = () => {
         <TabsContent value="payment">
           <Card>
             <CardHeader>
-              <CardTitle>Payment Configuration</CardTitle>
+              <CardTitle>{t('Dashboard.Settings.payment-configuration')}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
               {/* Stripe API Keys */}
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
-                  <h3 className="text-lg font-medium">Stripe Configuration</h3>
+                  <h3 className="text-lg font-medium">{t('Dashboard.Settings.stripe-configuration')}</h3>
                   <div className="flex items-center gap-2">
                     <label className="flex items-center gap-2 text-sm">
                       <input
@@ -315,7 +311,7 @@ const SettingsPage = () => {
                         className="w-4 h-4"
                       />
                       <span className={settings.stripeTestMode ? 'text-orange-600 font-medium' : 'text-green-600 font-medium'}>
-                        {settings.stripeTestMode ? '🧪 Test Mode' : '🔴 Live Mode'}
+                        {settings.stripeTestMode ? t('Dashboard.Settings.test-mode') : t('Dashboard.Settings.live-mode')}
                       </span>
                     </label>
                   </div>
@@ -323,7 +319,7 @@ const SettingsPage = () => {
                 
                 <div className="grid grid-cols-1 gap-4">
                   <div>
-                    <label className="block text-sm font-medium mb-2">Publishable Key</label>
+                    <label className="block text-sm font-medium mb-2">{t('Dashboard.Settings.publishable-key')}</label>
                     <Input
                       type="text"
                       placeholder={settings.stripeTestMode ? "pk_test_..." : "pk_live_..."}
@@ -331,11 +327,11 @@ const SettingsPage = () => {
                       onChange={(e) => handleMapSettingsChange('stripePublishableKey', e.target.value)}
                     />
                     <p className="text-xs text-gray-500 mt-1">
-                      Your Stripe {settings.stripeTestMode ? 'test' : 'live'} publishable key (starts with pk_)
+                      {t('Dashboard.Settings.your-stripe')} {settings.stripeTestMode ? 'test' : 'live'} {t('Dashboard.Settings.publishable-key-starts-with-pk_')}
                     </p>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium mb-2">Secret Key</label>
+                    <label className="block text-sm font-medium mb-2">{t('Dashboard.Settings.secret-key')}</label>
                     <Input
                       type="password"
                       placeholder={settings.stripeTestMode ? "sk_test_..." : "sk_live_..."}
@@ -343,11 +339,11 @@ const SettingsPage = () => {
                       onChange={(e) => handleMapSettingsChange('stripeSecretKey', e.target.value)}
                     />
                     <p className="text-xs text-gray-500 mt-1">
-                      Your Stripe {settings.stripeTestMode ? 'test' : 'live'} secret key (starts with sk_) - Keep this secure!
+                      {t('Dashboard.Settings.your-stripe-0')} {settings.stripeTestMode ? 'test' : 'live'} {t('Dashboard.Settings.secret-key-starts-with-sk_-keep-this-secure')}
                     </p>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium mb-2">Webhook Secret (Optional)</label>
+                    <label className="block text-sm font-medium mb-2">{t('Dashboard.Settings.webhook-secret-optional')}</label>
                     <Input
                       type="password"
                       placeholder="whsec_..."
@@ -355,35 +351,34 @@ const SettingsPage = () => {
                       onChange={(e) => handleMapSettingsChange('stripeWebhookSecret', e.target.value)}
                     />
                     <p className="text-xs text-gray-500 mt-1">
-                      Webhook signing secret for secure payment status updates
-                    </p>
+                      {t('Dashboard.Settings.webhook-signing-secret-for-secure-payment-status-updates')} </p>
                   </div>
                 </div>
               </div>
 
               {/* Stripe Settings */}
               <div className="space-y-4 border-t pt-4">
-                <h3 className="text-lg font-medium">Payment Settings</h3>
+                <h3 className="text-lg font-medium">{t('Dashboard.Settings.payment-settings')}</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium mb-2">Currency</label>
+                    <label className="block text-sm font-medium mb-2">{t('Dashboard.Settings.currency')}</label>
                     <select
                       value={settings.stripeCurrency ?? 'eur'}
                       onChange={(e) => handleMapSettingsChange('stripeCurrency', e.target.value)}
                       className="w-full px-3 py-2 border rounded-md"
                     >
-                      <option value="eur">EUR (€) - Euro</option>
-                      <option value="usd">USD ($) - US Dollar</option>
-                      <option value="gbp">GBP (£) - British Pound</option>
-                      <option value="chf">CHF (Fr) - Swiss Franc</option>
-                      <option value="jpy">JPY (¥) - Japanese Yen</option>
-                      <option value="cad">CAD ($) - Canadian Dollar</option>
-                      <option value="aud">AUD ($) - Australian Dollar</option>
+                      <option value="eur">{t('Dashboard.Settings.eur-eur-euro')}</option>
+                      <option value="usd">{t('Dashboard.Settings.usd-us-dollar')}</option>
+                      <option value="gbp">{t('Dashboard.Settings.gbp-gbp-british-pound')}</option>
+                      <option value="chf">{t('Dashboard.Settings.chf-fr-swiss-franc')}</option>
+                      <option value="jpy">{t('Dashboard.Settings.jpy-cny-japanese-yen')}</option>
+                      <option value="cad">{t('Dashboard.Settings.cad-canadian-dollar')}</option>
+                      <option value="aud">{t('Dashboard.Settings.aud-australian-dollar')}</option>
                     </select>
-                    <p className="text-xs text-gray-500 mt-1">Default currency for payments</p>
+                    <p className="text-xs text-gray-500 mt-1">{t('Dashboard.Settings.default-currency-for-payments')}</p>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium mb-2">Statement Descriptor Suffix</label>
+                    <label className="block text-sm font-medium mb-2">{t('Dashboard.Settings.statement-descriptor-suffix')}</label>
                     <Input
                       type="text"
                       placeholder="BOOKING"
@@ -392,8 +387,7 @@ const SettingsPage = () => {
                       onChange={(e) => handleMapSettingsChange('stripeStatementDescriptor', e.target.value)}
                     />
                     <p className="text-xs text-gray-500 mt-1">
-                      Suffix shown on customer&apos;s statement (e.g., &quot;COMPANY* BOOKING&quot;) - max 22 chars
-                    </p>
+                      {t('Dashboard.Settings.suffix-shown-on-customer-and-apos-s-statement-e-g-and-quot-company-booking-and-quot-max-22-chars')} </p>
                   </div>
                 </div>
                 
@@ -406,8 +400,8 @@ const SettingsPage = () => {
                       className="w-4 h-4"
                     />
                     <div>
-                      <p className="text-sm font-medium">Allow customers to save cards</p>
-                      <p className="text-xs text-gray-500">Customers can save cards for future bookings</p>
+                      <p className="text-sm font-medium">{t('Dashboard.Settings.allow-customers-to-save-cards')}</p>
+                      <p className="text-xs text-gray-500">{t('Dashboard.Settings.customers-can-save-cards-for-future-bookings')}</p>
                     </div>
                   </label>
                 </div>
@@ -415,7 +409,7 @@ const SettingsPage = () => {
 
               {/* Payment Methods */}
               <div className="space-y-4">
-                <h3 className="text-lg font-medium">Accepted Payment Methods</h3>
+                <h3 className="text-lg font-medium">{t('Dashboard.Settings.accepted-payment-methods')}</h3>
                 <div className="grid grid-cols-1 gap-3">
                   {paymentMethods.map((method) => (
                     <label
@@ -431,7 +425,7 @@ const SettingsPage = () => {
                         checked={settings.acceptedPaymentMethods?.includes(method.id) ?? false}
                         onChange={(e) => {
                           if (method.id === 'card' && !settings.stripePublishableKey) {
-                            alert('Please configure Stripe settings first before enabling card payments.');
+                            alert(t('Dashboard.Settings.please-configure-stripe-settings-first-before-enabling-card-payments'));
                             return;
                           }
                           const current = settings.acceptedPaymentMethods || [];
@@ -455,21 +449,21 @@ const SettingsPage = () => {
                   {!settings.stripePublishableKey && (
                     <div className="bg-amber-50 border border-amber-200 rounded-lg p-3">
                       <p className="text-xs text-amber-800">
-                        ⚠️ <strong>Configure Stripe first:</strong> Add your Stripe API keys above to enable card payments.
+                        ⚠️ <strong>{t('Dashboard.Settings.configure-stripe-first')}</strong> {t('Dashboard.Settings.add-your-stripe-api-keys-above-to-enable-card-payments')}
                       </p>
                     </div>
                   )}
                   {settings.stripePublishableKey && (
                     <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
                       <p className="text-xs text-blue-800">
-                        <strong>💳 Stripe Payment includes:</strong>
-                        <br />• Credit/Debit Cards (Visa, Mastercard, Amex, etc.)
-                        <br />• PayPal (if enabled in your Stripe account)
-                        <br />• Apple Pay & Google Pay (shown automatically on supported devices)
-                        <br />• Buy Now Pay Later options (Klarna, Affirm, Afterpay - based on region)
-                        <br />• Cash App, Link, and more payment methods
+                        <strong>{t('Dashboard.Settings.stripe-payment-includes')}</strong>
+                        <br />{t('Dashboard.Settings.credit-debit-cards-visa-mastercard-amex-etc')}
+                        <br />{t('Dashboard.Settings.paypal-if-enabled-in-your-stripe-account')}
+                        <br />{t('Dashboard.Settings.apple-pay-and-google-pay-shown-automatically-on-supported-devices')}
+                        <br />{t('Dashboard.Settings.buy-now-pay-later-options-klarna-affirm-afterpay-based-on-region')}
+                        <br />{t('Dashboard.Settings.cash-app-link-and-more-payment-methods')}
                         <br /><br />
-                        <em>Available methods depend on your Stripe account settings and customer location.</em>
+                        <em>{t('Dashboard.Settings.available-methods-depend-on-your-stripe-account-settings-and-customer-location')}</em>
                       </p>
                     </div>
                   )}
@@ -481,32 +475,30 @@ const SettingsPage = () => {
                 <div className="space-y-4 border-t pt-4">
                   <h3 className="text-lg font-medium flex items-center gap-2">
                     <Building2 className="h-5 w-5" />
-                    Bank Account Details
-                  </h3>
+                    {t('Dashboard.Settings.bank-account-details')} </h3>
                   <p className="text-xs text-gray-600 mb-4">
-                    These details will be shown to customers who choose bank transfer payment
-                  </p>
+                    {t('Dashboard.Settings.these-details-will-be-shown-to-customers-who-choose-bank-transfer-payment')} </p>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-sm font-medium mb-2">Bank Name</label>
+                      <label className="block text-sm font-medium mb-2">{t('Dashboard.Settings.bank-name')}</label>
                       <Input
                         type="text"
-                        placeholder="UBS Switzerland AG"
+                        placeholder={t('Dashboard.Settings.ubs-switzerland-ag')}
                         value={settings.bankName ?? ''}
                         onChange={(e) => handleMapSettingsChange('bankName', e.target.value)}
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium mb-2">Account Name</label>
+                      <label className="block text-sm font-medium mb-2">{t('Dashboard.Settings.account-name')}</label>
                       <Input
                         type="text"
-                        placeholder="Company Name"
+                        placeholder={t('Dashboard.Settings.company-name')}
                         value={settings.bankAccountName ?? ''}
                         onChange={(e) => handleMapSettingsChange('bankAccountName', e.target.value)}
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium mb-2">Account Number</label>
+                      <label className="block text-sm font-medium mb-2">{t('Dashboard.Settings.account-number')}</label>
                       <Input
                         type="text"
                         placeholder="123456789"
@@ -518,7 +510,7 @@ const SettingsPage = () => {
                       <label className="block text-sm font-medium mb-2">IBAN</label>
                       <Input
                         type="text"
-                        placeholder="CH93 0076 2011 6238 5295 7"
+                        placeholder={t('Dashboard.Settings.ch93-0076-2011-6238-5295-7')}
                         value={settings.bankIBAN ?? ''}
                         onChange={(e) => handleMapSettingsChange('bankIBAN', e.target.value)}
                       />
@@ -539,11 +531,11 @@ const SettingsPage = () => {
               {/* Info Notice */}
               <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
                 <p className="text-sm text-blue-800">
-                  <strong>Note:</strong> To use Stripe payments, you need to create a Stripe account at{' '}
-                  <a href="https://stripe.com" target="_blank" rel="noopener noreferrer" className="underline">
+                  <strong>Note:</strong> {t('Dashboard.Settings.to-use-stripe-payments-you-need-to-create-a-stripe-account-at')}{' '}
+                  <a href="https://stripe.com" target="_blank" rel={t('Dashboard.Settings.noopener-noreferrer')} className="underline">
                     stripe.com
                   </a>
-                  {' '}and get your API keys from the dashboard.
+                  {' '}{t('Dashboard.Settings.and-get-your-api-keys-from-the-dashboard')}
                 </p>
               </div>
             </CardContent>

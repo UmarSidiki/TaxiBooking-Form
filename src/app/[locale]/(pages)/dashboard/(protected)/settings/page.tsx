@@ -33,7 +33,7 @@ const SettingsPage = () => {
       }
     };
     fetchSettings();
-  });
+  },[]);
 
   const handleSubmit = async () => {
     setIsLoading(true);

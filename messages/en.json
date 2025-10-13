@@ -176,7 +176,8 @@
     "redirecting": "Redirecting...",
     "round-trip": "Round-trip",
     "one-way": "One-way",
-    "book-your-ride-in-seconds": "Book your ride in seconds"
+    "book-your-ride-in-seconds": "Book your ride in seconds",
+    "date-cannot-be-in-the-past": "Date cannot be in the past"
   },
   "Dashboard": {
     "Rides": {

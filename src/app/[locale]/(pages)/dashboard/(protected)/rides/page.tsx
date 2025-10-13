@@ -337,9 +337,7 @@ export default function RidesPage() {
               </div>
               <div className="flex items-center gap-2 text-sm">
                 <Clock className="w-4 h-4 text-muted-foreground flex-shrink-0" />
-                <span className="text-muted-foreground">
-                  {booking.time}
-                </span>
+                <span className="text-muted-foreground">{booking.time}</span>
               </div>
               <div className="flex items-center gap-2 text-sm min-w-0 col-span-1 sm:col-span-2 lg:col-span-1">
                 <MapPin className="w-4 h-4 text-muted-foreground flex-shrink-0" />
@@ -351,7 +349,10 @@ export default function RidesPage() {
               <div className="flex items-center gap-2 text-sm">
                 <Users className="w-4 h-4 text-muted-foreground flex-shrink-0" />
                 <span className="text-muted-foreground">
-                  {booking.passengers} {booking.passengers > 1 ? t("Dashboard.Rides.Passengers") : t("Dashboard.Rides.Passenger")}
+                  {booking.passengers}{" "}
+                  {booking.passengers > 1
+                    ? t("Dashboard.Rides.Passengers")
+                    : t("Dashboard.Rides.Passenger")}
                 </span>
               </div>
             </div>
@@ -372,9 +373,7 @@ export default function RidesPage() {
               </div>
               <div className="flex items-center gap-2">
                 <PhoneCall className="w-4 h-4 text-muted-foreground" />
-                <span className="text-muted-foreground">
-                  {booking.phone}
-                </span>
+                <span className="text-muted-foreground">{booking.phone}</span>
               </div>
             </div>
           </div>
@@ -385,7 +384,6 @@ export default function RidesPage() {
               <DollarSign className="w-5 h-5 sm:w-6 sm:h-6" />
               <span>€{booking.totalAmount?.toFixed(2)}</span>
             </div>
-
             <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto lg:w-full">
               <Button
                 variant="outline"
@@ -394,8 +392,12 @@ export default function RidesPage() {
                 className="flex items-center gap-2 hover:bg-primary/10 hover:text-primary hover:border-primary/20"
               >
                 <Eye className="w-4 h-4" />
-                <span className="hidden sm:inline">{t("Dashboard.Rides.ViewDetails")}</span>
-                <span className="sm:hidden">{t("Dashboard.Rides.Details")}</span>
+                <span className="hidden sm:inline">
+                  {t("Dashboard.Rides.ViewDetails")}
+                </span>
+                <span className="sm:hidden">
+                  {t("Dashboard.Rides.Details")}
+                </span>
               </Button>
 
               {booking.status !== "canceled" && (
@@ -409,14 +411,20 @@ export default function RidesPage() {
                   {cancelingId === booking._id?.toString() ? (
                     <>
                       <Loader2 className="w-4 h-4 animate-spin" />
-                      <span className="hidden sm:inline">{t("Dashboard.Rides.Canceling")}</span>
+                      <span className="hidden sm:inline">
+                        {t("Dashboard.Rides.Canceling")}
+                      </span>
                       <span className="sm:hidden">...</span>
                     </>
                   ) : (
                     <>
                       <Trash2 className="w-4 h-4" />
-                      <span className="hidden sm:inline">{t("Dashboard.Rides.Cancel")}</span>
-                      <span className="sm:hidden">{t("Dashboard.Rides.Cancel")}</span>
+                      <span className="hidden sm:inline">
+                        {t("Dashboard.Rides.Cancel")}
+                      </span>
+                      <span className="sm:hidden">
+                        {t("Dashboard.Rides.Cancel")}
+                      </span>
                     </>
                   )}
                 </Button>
@@ -453,7 +461,9 @@ export default function RidesPage() {
                 <RefreshCw
                   className={`w-4 h-4 ${isLoading ? "animate-spin" : ""}`}
                 />
-                <span className="hidden sm:inline">{t("Dashboard.Rides.Refresh")}</span>
+                <span className="hidden sm:inline">
+                  {t("Dashboard.Rides.Refresh")}
+                </span>
               </Button>
             </div>
           </div>
@@ -479,10 +489,18 @@ export default function RidesPage() {
                     <SelectValue placeholder={t("Dashboard.Rides.Status")} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="all">{t("Dashboard.Rides.AllStatus")}</SelectItem>
-                    <SelectItem value="upcoming">{t("Dashboard.Rides.Upcoming")}</SelectItem>
-                    <SelectItem value="completed">{t("Dashboard.Rides.Completed")}</SelectItem>
-                    <SelectItem value="canceled">{t("Dashboard.Rides.Canceled")}</SelectItem>
+                    <SelectItem value="all">
+                      {t("Dashboard.Rides.AllStatus")}
+                    </SelectItem>
+                    <SelectItem value="upcoming">
+                      {t("Dashboard.Rides.Upcoming")}
+                    </SelectItem>
+                    <SelectItem value="completed">
+                      {t("Dashboard.Rides.Completed")}
+                    </SelectItem>
+                    <SelectItem value="canceled">
+                      {t("Dashboard.Rides.Canceled")}
+                    </SelectItem>
                   </SelectContent>
                 </Select>
 
@@ -492,11 +510,21 @@ export default function RidesPage() {
                     <SelectValue placeholder={t("Dashboard.Rides.Payment")} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="all">{t("Dashboard.Rides.AllPayments")}</SelectItem>
-                    <SelectItem value="completed">{t("Dashboard.Rides.Paid")}</SelectItem>
-                    <SelectItem value="pending">{t("Dashboard.Rides.Pending")}</SelectItem>
-                    <SelectItem value="failed">{t("Dashboard.Rides.Failed")}</SelectItem>
-                    <SelectItem value="refunded">{t("Dashboard.Rides.Refunded")}</SelectItem>
+                    <SelectItem value="all">
+                      {t("Dashboard.Rides.AllPayments")}
+                    </SelectItem>
+                    <SelectItem value="completed">
+                      {t("Dashboard.Rides.Paid")}
+                    </SelectItem>
+                    <SelectItem value="pending">
+                      {t("Dashboard.Rides.Pending")}
+                    </SelectItem>
+                    <SelectItem value="failed">
+                      {t("Dashboard.Rides.Failed")}
+                    </SelectItem>
+                    <SelectItem value="refunded">
+                      {t("Dashboard.Rides.Refunded")}
+                    </SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -513,7 +541,10 @@ export default function RidesPage() {
             >
               <CalendarDays className="w-3 h-3 sm:w-4 sm:h-4" />
               <span className="font-medium text-center">
-                <span className="hidden sm:inline">{t("Dashboard.Rides.UpcomingRides").split(" ")[0]} </span>{t("Dashboard.Rides.UpcomingRides").split(" ")[1]}
+                <span className="hidden sm:inline">
+                  {t("Dashboard.Rides.UpcomingRides").split(" ")[0]}{" "}
+                </span>
+                {t("Dashboard.Rides.UpcomingRides").split(" ")[1]}
               </span>
               {filteredBookings.length > 0 && activeTab === "upcoming" && (
                 <Badge
@@ -530,7 +561,10 @@ export default function RidesPage() {
             >
               <CheckCircle className="w-3 h-3 sm:w-4 sm:h-4" />
               <span className="font-medium text-center">
-                <span className="hidden sm:inline">{t("Dashboard.Rides.CompletedRides").split(" ")[0]} </span>{t("Dashboard.Rides.CompletedRides").split(" ")[1]}
+                <span className="hidden sm:inline">
+                  {t("Dashboard.Rides.CompletedRides").split(" ")[0]}{" "}
+                </span>
+                {t("Dashboard.Rides.CompletedRides").split(" ")[1]}
               </span>
               {filteredBookings.length > 0 && activeTab === "passed" && (
                 <Badge
@@ -547,9 +581,14 @@ export default function RidesPage() {
             >
               <Ban className="w-3 h-3 sm:w-4 sm:h-4" />
               <span className="font-medium text-center">
-                <span className="hidden sm:inline">{t("Dashboard.Rides.CanceledRides").split(" ")[0]} </span>{t("Dashboard.Rides.CanceledRides").split(" ")[1]}
+                <span className="hidden sm:inline">
+                  {t("Dashboard.Rides.CanceledRides").split(" ")[0]}{" "}
+                </span>
+                {t("Dashboard.Rides.CanceledRides").split(" ")[1]}
               </span>
-              <span className="sm:hidden font-medium">{t("Dashboard.Rides.CanceledRides").split(" ")[0]}</span>
+              <span className="sm:hidden font-medium">
+                {t("Dashboard.Rides.CanceledRides").split(" ")[0]}
+              </span>
               {filteredBookings.length > 0 && activeTab === "canceled" && (
                 <Badge
                   variant="secondary"
@@ -592,7 +631,7 @@ export default function RidesPage() {
                     className="flex items-center gap-2"
                   >
                     <RefreshCw className="w-4 h-4" />
-                    Refresh List
+                    {t("Dashboard.Rides.refresh-list")}{" "}
                   </Button>
                 </CardContent>
               </Card>
@@ -615,10 +654,12 @@ export default function RidesPage() {
                   <Loader2 className="w-8 h-8 animate-spin text-gray-600 dark:text-gray-400" />
                 </div>
                 <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">
-                  Loading Rides
+                  {t("Dashboard.Rides.loading-rides")}{" "}
                 </h3>
                 <p className="text-gray-600 dark:text-gray-400">
-                  Please wait while we fetch your completed rides...
+                  {t(
+                    "Dashboard.Rides.please-wait-while-we-fetch-your-completed-rides"
+                  )}{" "}
                 </p>
               </div>
             ) : filteredBookings.length === 0 ? (
@@ -639,7 +680,7 @@ export default function RidesPage() {
                     className="flex items-center gap-2"
                   >
                     <RefreshCw className="w-4 h-4" />
-                    Refresh List
+                    {t("Dashboard.Rides.refresh-list")}{" "}
                   </Button>
                 </CardContent>
               </Card>
@@ -662,10 +703,12 @@ export default function RidesPage() {
                   <Loader2 className="w-8 h-8 animate-spin text-red-600 dark:text-red-400" />
                 </div>
                 <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">
-                  Loading Rides
+                  {t("Dashboard.Rides.loading-rides")}{" "}
                 </h3>
                 <p className="text-gray-600 dark:text-gray-400">
-                  Please wait while we fetch your canceled rides...
+                  {t(
+                    "Dashboard.Rides.please-wait-while-we-fetch-your-canceled-rides"
+                  )}{" "}
                 </p>
               </div>
             ) : filteredBookings.length === 0 ? (
@@ -686,7 +729,7 @@ export default function RidesPage() {
                     className="flex items-center gap-2"
                   >
                     <RefreshCw className="w-4 h-4" />
-                    Refresh List
+                    {t("Dashboard.Rides.refresh-list")}{" "}
                   </Button>
                 </CardContent>
               </Card>
@@ -721,10 +764,11 @@ export default function RidesPage() {
                     </div>
                     <div>
                       <DialogTitle className="text-2xl font-bold text-gray-900 dark:text-gray-100">
-                        Trip #{detailBooking.tripId.slice(0, 8)}
+                        {t("Dashboard.Rides.trip")}#
+                        {detailBooking.tripId.slice(0, 8)}
                       </DialogTitle>
                       <DialogDescription className="text-gray-600 dark:text-gray-400 mt-1">
-                        Scheduled for{" "}
+                        {t("Dashboard.Rides.scheduled-for")}r{" "}
                         {new Date(detailBooking.date).toLocaleDateString(
                           "en-US",
                           {
@@ -746,7 +790,7 @@ export default function RidesPage() {
                     <CardHeader className="pb-3">
                       <CardTitle className="text-lg flex items-center gap-2 text-gray-900 dark:text-gray-100">
                         <Navigation className="w-5 h-5 text-blue-600" />
-                        Journey Details
+                        {t("Dashboard.Rides.journey-details")}{" "}
                       </CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-4">
@@ -754,7 +798,7 @@ export default function RidesPage() {
                         <div className="flex items-center gap-2 text-sm">
                           <MapPin className="w-4 h-4 text-green-600" />
                           <span className="font-medium text-gray-700 dark:text-gray-200">
-                            Pickup Location
+                            {t("Dashboard.Rides.pickup-location")}{" "}
                           </span>
                         </div>
                         <p className="text-gray-600 dark:text-gray-300 ml-6">
@@ -766,11 +810,12 @@ export default function RidesPage() {
                         <div className="flex items-center gap-2 text-sm">
                           <MapPin className="w-4 h-4 text-red-600" />
                           <span className="font-medium text-gray-700 dark:text-gray-200">
-                            Dropoff Location
+                            {t("Dashboard.Rides.dropoff-location")}{" "}
                           </span>
                         </div>
                         <p className="text-gray-600 dark:text-gray-300 ml-6">
-                          {detailBooking.dropoff || "Not specified"}
+                          {detailBooking.dropoff ||
+                            t("Dashboard.Rides.not-specified")}
                         </p>
                       </div>
 
@@ -779,7 +824,7 @@ export default function RidesPage() {
                           <Clock className="w-4 h-4 text-purple-600" />
                           <div>
                             <p className="font-medium text-gray-700 dark:text-gray-200">
-                              Time
+                              {t("Dashboard.Rides.time")}{" "}
                             </p>
                             <p className="text-gray-600 dark:text-gray-300">
                               {detailBooking.time}
@@ -790,7 +835,7 @@ export default function RidesPage() {
                           <Users className="w-4 h-4 text-green-600" />
                           <div>
                             <p className="font-medium text-gray-700 dark:text-gray-200">
-                              Passengers
+                              {t("Dashboard.Rides.passengers")}{" "}
                             </p>
                             <p className="text-gray-600 dark:text-gray-300">
                               {detailBooking.passengers}
@@ -805,16 +850,24 @@ export default function RidesPage() {
                           <Baby className="w-4 h-4" />
                           <span>
                             {detailBooking.childSeats > 0 &&
-                              `${detailBooking.childSeats} child seat${
-                                detailBooking.childSeats > 1 ? "s" : ""
-                              }`}
+                              t(
+                                "Dashboard.Rides.detailbooking-childseats-child-seat-detailbooking-childseats-greater-than-1-s",
+                                {
+                                  0: detailBooking.childSeats,
+                                  1: detailBooking.childSeats > 1 ? "s" : "",
+                                }
+                              )}{" "}
                             {detailBooking.childSeats > 0 &&
                               detailBooking.babySeats > 0 &&
                               " • "}
                             {detailBooking.babySeats > 0 &&
-                              `${detailBooking.babySeats} baby seat${
-                                detailBooking.babySeats > 1 ? "s" : ""
-                              }`}
+                              t(
+                                "Dashboard.Rides.detailbooking-babyseats-baby-seat-detailbooking-babyseats-greater-than-1-s",
+                                {
+                                  0: detailBooking.babySeats,
+                                  1: detailBooking.babySeats > 1 ? "s" : "",
+                                }
+                              )}
                           </span>
                         </div>
                       )}
@@ -826,8 +879,7 @@ export default function RidesPage() {
                     <CardHeader className="pb-3">
                       <CardTitle className="text-lg flex items-center gap-2 text-gray-900 dark:text-gray-100">
                         <UserCheck className="w-5 h-5 text-green-600" />
-                        Customer Information
-                      </CardTitle>
+                        {t('Dashboard.Rides.customer-information')} </CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-4">
                       <div>
@@ -860,8 +912,7 @@ export default function RidesPage() {
 
                       <div className="pt-4 border-t border-gray-200 dark:border-gray-700">
                         <p className="font-medium text-gray-700 dark:text-gray-200 mb-2">
-                          Vehicle
-                        </p>
+                          {t('Dashboard.Rides.vehicle')} </p>
                         <p className="text-gray-600 dark:text-gray-300">
                           {detailBooking.vehicleDetails?.name ||
                             detailBooking.selectedVehicle}
@@ -879,8 +930,7 @@ export default function RidesPage() {
                         <AlertCircle className="w-5 h-5 text-amber-600 dark:text-amber-400 flex-shrink-0 mt-0.5" />
                         <div>
                           <p className="font-semibold text-amber-800 dark:text-amber-200 mb-1">
-                            Special Notes
-                          </p>
+                            {t('Dashboard.Rides.special-notes')} </p>
                           <p className="text-amber-700 dark:text-amber-300">
                             {detailBooking.notes}
                           </p>
@@ -895,15 +945,13 @@ export default function RidesPage() {
                   <CardHeader className="pb-3">
                     <CardTitle className="text-lg flex items-center gap-2 text-gray-900 dark:text-gray-100">
                       <CreditCard className="w-5 h-5 text-green-600" />
-                      Billing & Payment
-                    </CardTitle>
+                      {t('Dashboard.Rides.billing-and-payment')} </CardTitle>
                   </CardHeader>
                   <CardContent>
                     <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
                       <div className="text-center p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
                         <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">
-                          Total Amount
-                        </p>
+                          {t('Dashboard.Rides.total-amount')} </p>
                         <p className="text-2xl font-bold text-green-600 dark:text-green-400">
                           €{detailBooking.totalAmount?.toFixed(2)}
                         </p>
@@ -911,8 +959,7 @@ export default function RidesPage() {
 
                       <div className="text-center p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
                         <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">
-                          Payment Method
-                        </p>
+                          {t('Dashboard.Rides.payment-method')} </p>
                         <p className="text-lg font-semibold text-gray-900 dark:text-gray-100 capitalize">
                           {detailBooking.paymentMethod?.replace("_", " ") ||
                             "N/A"}
@@ -921,8 +968,7 @@ export default function RidesPage() {
 
                       <div className="text-center p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
                         <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">
-                          Payment Status
-                        </p>
+                          {t('Dashboard.Rides.payment-status')} </p>
                         <div className="flex justify-center">
                           {getPaymentStatusBadge(detailBooking.paymentStatus)}
                         </div>
@@ -930,8 +976,7 @@ export default function RidesPage() {
 
                       <div className="text-center p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
                         <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">
-                          Trip Status
-                        </p>
+                          {t('Dashboard.Rides.trip-status')} </p>
                         <div className="flex justify-center">
                           {getStatusBadge(detailBooking)}
                         </div>
@@ -947,7 +992,7 @@ export default function RidesPage() {
                             <div className="flex items-center gap-2 text-red-700 dark:text-red-300 mb-2">
                               <Ban className="w-4 h-4" />
                               <span className="font-medium">
-                                Canceled on{" "}
+                                {t('Dashboard.Rides.canceled-on')}n{" "}
                                 {new Date(
                                   detailBooking.canceledAt
                                 ).toLocaleString()}
@@ -959,8 +1004,7 @@ export default function RidesPage() {
                             <div className="flex items-center justify-between text-red-700 dark:text-red-300">
                               <span className="flex items-center gap-2">
                                 <RefreshCw className="w-4 h-4" />
-                                Refund Processed
-                              </span>
+                                {t('Dashboard.Rides.refund-processed')} </span>
                               <span className="font-bold">
                                 €{detailBooking.refundAmount.toFixed(2)}
                                 {detailBooking.refundPercentage && (
@@ -988,11 +1032,10 @@ export default function RidesPage() {
                 <div className="p-2 bg-red-100 dark:bg-red-900/30 rounded-full">
                   <AlertCircle className="w-5 h-5 text-red-600 dark:text-red-400" />
                 </div>
-                Cancel Ride & Process Refund
-              </DialogTitle>
+                {t('Dashboard.Rides.cancel-ride-and-process-refund')} </DialogTitle>
               <DialogDescription className="text-base pt-2">
                 <span className="font-semibold">
-                  Trip #{selectedBooking?.tripId.slice(0, 8)}
+                  {t('Dashboard.Rides.trip')}#{selectedBooking?.tripId.slice(0, 8)}
                 </span>
                 <span className="text-gray-500 mx-2">•</span>
                 <span>
@@ -1007,12 +1050,11 @@ export default function RidesPage() {
                   <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5" />
                   <span>
                     <span className="font-semibold block mb-1">
-                      Warning: This action cannot be undone
-                    </span>
-                    This will permanently cancel the ride.{" "}
+                      {t('Dashboard.Rides.warning-this-action-cannot-be-undone')} </span>
+                    {t('Dashboard.Rides.this-will-permanently-cancel-the-ride')}.{" "}
                     {selectedBooking &&
                       canRefund(selectedBooking) &&
-                      "A refund will be processed automatically to the customer."}
+                      t('Dashboard.Rides.a-refund-will-be-processed-automatically-to-the-customer')}
                   </span>
                 </p>
               </div>
@@ -1021,8 +1063,7 @@ export default function RidesPage() {
                 <div className="space-y-3 p-4 bg-gray-50 dark:bg-gray-800/50 rounded-lg border border-gray-200 dark:border-gray-700">
                   <label className="text-sm font-semibold text-gray-900 dark:text-gray-100 flex items-center gap-2">
                     <RefreshCw className="w-4 h-4 text-blue-600" />
-                    Refund Percentage
-                  </label>
+                    {t('Dashboard.Rides.refund-percentage')} </label>
                   <div className="flex items-center gap-3">
                     <Input
                       type="number"
@@ -1058,8 +1099,7 @@ export default function RidesPage() {
                   <div className="p-3 bg-green-50 dark:bg-green-900/20 rounded-md border border-green-200 dark:border-green-800">
                     <div className="flex justify-between items-center text-sm">
                       <span className="text-gray-700 dark:text-gray-300">
-                        Refund Amount:
-                      </span>
+                        {t('Dashboard.Rides.refund-amount')} </span>
                       <span className="font-bold text-xl text-green-600 dark:text-green-500">
                         €
                         {(
@@ -1069,7 +1109,7 @@ export default function RidesPage() {
                       </span>
                     </div>
                     <div className="flex justify-between items-center text-xs text-gray-500 mt-1">
-                      <span>Total Amount:</span>
+                      <span>{t('Dashboard.Rides.total-amount2')}</span>
                       <span>€{selectedBooking?.totalAmount?.toFixed(2)}</span>
                     </div>
                   </div>
@@ -1082,11 +1122,8 @@ export default function RidesPage() {
                     <CreditCard className="w-5 h-5 flex-shrink-0 mt-0.5" />
                     <span>
                       <span className="font-semibold block mb-1">
-                        Cash Payment
-                      </span>
-                      Payment method is cash. No online refund will be
-                      processed. You may need to handle the refund manually.
-                    </span>
+                        {t('Dashboard.Rides.cash-payment')} </span>
+                      {t('Dashboard.Rides.payment-method-is-cash-no-online-refund-will-be-processed-you-may-need-to-handle-the-refund-manually')} </span>
                   </p>
                 </div>
               )}
@@ -1098,8 +1135,7 @@ export default function RidesPage() {
                 onClick={() => setShowCancelDialog(false)}
                 className="w-full sm:w-auto"
               >
-                Keep Ride
-              </Button>
+                {t('Dashboard.Rides.keep-ride')} </Button>
               <Button
                 variant="destructive"
                 onClick={handleCancelBooking}
@@ -1113,7 +1149,7 @@ export default function RidesPage() {
                   </>
                 ) : (
                   <>
-                    <X className="w-4 h-4 mr-2" /> Confirm Cancellation
+                    <X className="w-4 h-4 mr-2" /> {t('Dashboard.Rides.confirm-cancellation')}
                   </>
                 )}
               </Button>

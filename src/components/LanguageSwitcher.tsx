@@ -48,7 +48,7 @@ export function LanguageSwitcher() {
           variant="outline"
           size="default"
           disabled={isPending}
-          className="w-full h-12 justify-start gap-3 px-4 bg-background hover:bg-accent border-border/50"
+          className="max-w-[200px] h-12 justify-start gap-3 px-4 bg-background hover:bg-accent border-border/50"
           aria-label="Switch Language"
         >
           <Globe className="h-5 w-5 text-primary" />

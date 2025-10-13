@@ -9,6 +9,7 @@ import Step1TripDetails from "./steps/Step1TripDetails";
 import Step2VehicleSelection from "./steps/Step2VehicleSelection";
 import Step3Payment from "./steps/Step3Payment";
 import { useTranslations } from "next-intl";
+import { LanguageSwitcher } from "../LanguageSwitcher";
 
 export default function BookingFormContainer() {
   const { currentStep, setCurrentStep, setFormData } = useBookingForm();
@@ -121,6 +122,7 @@ export default function BookingFormContainer() {
                   }`}
                 ></div>
               </div>
+              <LanguageSwitcher />
             </div>
           </div>
         </div>

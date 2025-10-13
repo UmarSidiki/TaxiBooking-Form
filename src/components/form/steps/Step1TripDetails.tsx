@@ -9,6 +9,7 @@ import { useBookingForm } from '@/contexts/BookingFormContext';
 import { importLibrary, setOptions } from '@googlemaps/js-api-loader';
 import Image from 'next/image';
 import { useTheme } from '@/contexts/ThemeContext';
+import { useTranslations } from 'next-intl';
 
 export default function Step1TripDetails() {
   const [mapLoaded, setMapLoaded] = useState(false);
@@ -28,6 +29,8 @@ export default function Step1TripDetails() {
     setCurrentStep,
     isLoading,
   } = useBookingForm();
+
+  const t = useTranslations();
 
   const pickupInputRef = useRef<HTMLInputElement>(null);
   const dropoffInputRef = useRef<HTMLInputElement>(null);
@@ -183,19 +186,19 @@ export default function Step1TripDetails() {
     const newErrors: typeof errors = {};
     
     if (!formData.pickup.trim()) {
-      newErrors.pickup = "Pickup location is required";
+      newErrors.pickup = t('Step1.pickup-location-is-required');
     }
     
     // Dropoff is only required for destination-based bookings
     if (formData.bookingType === 'destination' && !formData.dropoff.trim()) {
-      newErrors.dropoff = "Dropoff location is required";
+      newErrors.dropoff = t('Step1.dropoff-location-is-required');
     }
     
     if (!formData.date) {
-      newErrors.date = "Date is required";
+      newErrors.date = t('Step1.date-is-required');
     }
     if (!formData.time) {
-      newErrors.time = "Time is required";
+      newErrors.time = t('Step1.time-is-required');
     }
     
     setErrors(newErrors);
@@ -228,28 +231,28 @@ export default function Step1TripDetails() {
                   <div className="flex items-center gap-2">
                     <MapPin className="h-4 w-4 text-primary" />
                     <div>
-                      <p className="text-xs text-gray-500">Distance</p>
+                      <p className="text-xs text-gray-500">{t("Step1.Distance")}</p>
                       <p className="font-semibold">{distanceData.distance.text}</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
                     <Clock className="h-4 w-4 text-primary" />
                     <div>
-                      <p className="text-xs text-gray-500">Duration</p>
+                      <p className="text-xs text-gray-500">{t("Step1.Duration")}</p>
                       <p className="font-semibold">{distanceData.duration.text}</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
                     <CalendarDays className="h-4 w-4 text-primary" />
                     <div>
-                      <p className="text-xs text-gray-500">Date</p>
-                      <p className="font-semibold">{formData.date || 'Not set'}</p>
+                      <p className="text-xs text-gray-500">{t("Step1.Date")}</p>
+                      <p className="font-semibold">{formData.date || t('not-set')}</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
                     <Users className="h-4 w-4 text-primary" />
                     <div>
-                      <p className="text-xs text-gray-500">Passengers</p>
+                      <p className="text-xs text-gray-500">{t("Step1.Passengers")}</p>
                       <p className="font-semibold">{formData.passengers}</p>
                     </div>
                   </div>
@@ -264,13 +267,13 @@ export default function Step1TripDetails() {
       <div className="lg:col-span-4">
         <div className="space-y-4">
           <div>
-            <h2 className="text-xl font-semibold mb-2">Plan Your Journey</h2>
-            <p className="text-sm text-gray-600">Enter your trip details to get started</p>
+            <h2 className="text-xl font-semibold mb-2">{t("Step1.Title")}</h2>
+            <p className="text-sm text-gray-600">{t("Step1.Description")}</p>
           </div>
 
           {/* Booking Type */}
           <div>
-            <label className="block text-sm font-medium mb-1.5 text-gray-700">Booking Type</label>
+            <label className="block text-sm font-medium mb-1.5 text-gray-700">{t("Step1.BookingType")}</label>
             <div className="grid grid-cols-2 gap-2">
               <Button
                 type="button"
@@ -286,7 +289,7 @@ export default function Step1TripDetails() {
                 }`}
               >
                 <MapPin className="mr-2 h-4 w-4" />
-                Destination Based
+                {t("Step1.DestinationBased")}
               </Button>
               <Button
                 type="button"
@@ -302,13 +305,13 @@ export default function Step1TripDetails() {
                 }`}
               >
                 <Clock className="mr-2 h-4 w-4" />
-                Time Based
+                {t("Step1.TimeBased")}
               </Button>
             </div>
             <p className="text-xs text-gray-500 mt-1">
               {formData.bookingType === "destination" 
-                ? "Price based on distance traveled" 
-                : "Price based on hourly rate"}
+                ? t('Step1.price-based-on-distance-traveled') 
+                : t('Step1.price-based-on-hourly-rate')}
             </p>
           </div>
 
@@ -316,11 +319,11 @@ export default function Step1TripDetails() {
           <div>
             <label className="block text-sm font-medium mb-1.5 text-gray-700">
               <MapPin className="inline h-4 w-4 mr-1 text-green-600" />
-              Pickup Location *
+              {t("Step1.PickupLocation")} *
             </label>
             <Input 
               ref={pickupInputRef}
-              placeholder="Enter pickup address or airport" 
+              placeholder={t("Step1.PickupPlaceholder")} 
               className={`${errors.pickup ? 'border-red-500' : 'border-gray-300'} focus:border-primary-500 focus:ring-primary-500`}
               value={formData.pickup}
               onChange={(e) => {
@@ -341,11 +344,11 @@ export default function Step1TripDetails() {
             <div>
               <label className="block text-sm font-medium mb-1.5 text-gray-700">
                 <MapPin className="inline h-4 w-4 mr-1 text-red-600" />
-                Dropoff Location *
+                {t("Step1.DropoffLocation")} *
               </label>
               <Input 
                 ref={dropoffInputRef}
-                placeholder="Enter destination address" 
+                placeholder={t("Step1.DropoffPlaceholder")} 
                 className={`${errors.dropoff ? 'border-red-500' : 'border-gray-300'} focus:border-primary-500 focus:ring-primary-500`}
                 value={formData.dropoff}
                 onChange={(e) => {
@@ -362,7 +365,7 @@ export default function Step1TripDetails() {
               {calculatingDistance && (
                 <p className="text-xs text-gray-500 mt-1 flex items-center">
                   <Loader2 className="inline h-3 w-3 animate-spin mr-1" />
-                  Calculating route...
+                  {t("Step1.CalculatingDistance")}
                 </p>
               )}
             </div>
@@ -373,7 +376,7 @@ export default function Step1TripDetails() {
             <div>
               <label className="block text-sm font-medium mb-1.5 text-gray-700">
                 <Clock className="inline h-4 w-4 mr-1" />
-                Duration (Hours) *
+                {t("Step1.Duration")} *
               </label>
               <Input 
                 type="number"
@@ -386,7 +389,7 @@ export default function Step1TripDetails() {
                   setFormData(prev => ({ ...prev, duration: parseInt(e.target.value) || 1 }));
                 }}
               />
-              <p className="text-xs text-gray-500 mt-1">How many hours do you need the vehicle?</p>
+              <p className="text-xs text-gray-500 mt-1">{t("Step1.DurationDescription")}</p>
             </div>
           )}
 
@@ -410,7 +413,7 @@ export default function Step1TripDetails() {
                     : "bg-white hover:bg-gray-50"
                 }`}
               >
-                One Way
+                {t("Step1.OneWay")}
               </Button>
               <Button
                 type="button"
@@ -427,7 +430,7 @@ export default function Step1TripDetails() {
                     : "bg-white hover:bg-gray-50"
                 }`}
               >
-                Round Trip
+                {t("Step1.RoundTrip")}
               </Button>
             </div>
             </div>
@@ -438,7 +441,7 @@ export default function Step1TripDetails() {
             <div>
               <label className="block text-sm font-medium mb-1.5 text-gray-700">
                 <CalendarDays className="inline h-4 w-4 mr-1" />
-                Date *
+                {t("Step1.Date")} *
               </label>
               <Input 
                 type="date"
@@ -454,7 +457,7 @@ export default function Step1TripDetails() {
             <div>
               <label className="block text-sm font-medium mb-1.5 text-gray-700">
                 <Clock className="inline h-4 w-4 mr-1" />
-                Time *
+                {t("Step1.Time")} *
               </label>
               <Input 
                 type="time"
@@ -473,7 +476,7 @@ export default function Step1TripDetails() {
           <div>
             <label className="block text-sm font-medium mb-1.5 text-gray-700">
               <Users className="inline h-4 w-4 mr-1" />
-              Number of Passengers
+              {t("Step1.Passengers")}
             </label>
             <Input 
               type="number"
@@ -489,7 +492,7 @@ export default function Step1TripDetails() {
           <div className="flex items-start gap-2 p-3 bg-blue-50 border border-blue-200 rounded-lg text-sm">
             <Info className="h-4 w-4 text-blue-600 mt-0.5 flex-shrink-0" />
             <p className="text-blue-700">
-              <strong>Free cancellation</strong> up to 24 hours before pickup. Instant booking confirmation.
+              <strong>{t("Step1.FreeCancellation")}</strong> {t("Step1.FreeCancellationDescription")}
             </p>
           </div>
 
@@ -502,11 +505,11 @@ export default function Step1TripDetails() {
             {isLoading || calculatingDistance ? (
               <>
                 <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                Processing...
+                {t("Step1.Processing")}
               </>
             ) : (
               <>
-                Continue to Vehicle Selection
+                {t("Step1.ContinueToVehicleSelection")}
                 <ArrowRight className="ml-2 h-5 w-5" />
               </>
             )}
@@ -523,11 +526,11 @@ export default function Step1TripDetails() {
 
           {/* Support Info */}
           <div className="text-center text-xs text-gray-500 space-y-1 pt-2">
-            <p>24/7 Support Available • Secure Payment • Licensed Drivers</p>
+            <p>{t("Footer.Support2")}</p>
             <p className="flex items-center justify-center gap-2 flex-wrap">
-              <span>📞 +41 76 386 8121</span>
+              <span>{process.env.NEXT_PUBLIC_PHONE_NUMBER}</span>
               <span>•</span>
-              <span>✉️ booking@swissride-sarl.ch</span>
+              <span>{process.env.NEXT_PUBLIC_SUPPORT_EMAIL}</span>
             </p>
           </div>
         </div>

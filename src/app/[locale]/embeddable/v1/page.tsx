@@ -14,6 +14,7 @@ import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import type { FormData, FormErrors } from "@/contexts/BookingFormContext";
 import { importLibrary, setOptions } from "@googlemaps/js-api-loader";
+import { useTranslations } from "next-intl";
 
 const initialFormData: FormData = {
   bookingType: "destination",
@@ -37,14 +38,15 @@ const initialFormData: FormData = {
   cvv: "",
 };
 
-const progressSteps = [
-  { label: "Trip", icon: MapPin },
-  { label: "Vehicle", icon: Car },
-  { label: "Payment", icon: CheckCircle },
-];
-
 export default function EmbeddableWidget() {
   const [isMounted, setIsMounted] = useState(false);
+  const t = useTranslations();
+
+  const progressSteps = [
+    { label: t("embeddable.trip"), icon: MapPin },
+    { label: t('embeddable.vehicle'), icon: Car },
+    { label: t('embeddable.payment'), icon: CheckCircle },
+  ];
 
   // Animation effect
   useEffect(() => {
@@ -116,11 +118,11 @@ export default function EmbeddableWidget() {
   const validate = () => {
     const nextErrors: FormErrors = {};
     if (!formData.pickup.trim())
-      nextErrors.pickup = "Pickup location is required";
+      nextErrors.pickup = t('embeddable.pickup-location-is-required');
     if (!isHourly && !formData.dropoff.trim())
-      nextErrors.dropoff = "Destination is required";
-    if (!formData.date) nextErrors.date = "Date is required";
-    if (!formData.time) nextErrors.time = "Time is required";
+      nextErrors.dropoff = t('embeddable.destination-is-required');
+    if (!formData.date) nextErrors.date = t('embeddable.date-is-required');
+    if (!formData.time) nextErrors.time = t('embeddable.time-is-required');
     setErrors(nextErrors);
     return Object.keys(nextErrors).length === 0;
   };
@@ -151,7 +153,7 @@ export default function EmbeddableWidget() {
     }
 
     // Return absolute path without origin for same-site navigation
-    return `?${params.toString()}`;
+    return t('embeddable.params-tostring');
   };
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -205,8 +207,7 @@ export default function EmbeddableWidget() {
         <header className="mb-3 text-center">
           <h1 className="text-sm font-bold uppercase tracking-wider text-slate-600">
             <Car className="inline h-4 w-4 mr-1.5" />
-            Trip Booking
-          </h1>
+            {t('embeddable.trip-booking')} </h1>
         </header>
 
         <form onSubmit={handleSubmit} className="space-y-2">
@@ -235,7 +236,7 @@ export default function EmbeddableWidget() {
                   ) : (
                     <Clock className="h-3.5 w-3.5" />
                   )}
-                  {type === "destination" ? "Destination" : "Hourly"}
+                  {type === "destination" ? t('embeddable.destination') : t('embeddable.hourly')}
                 </span>
               </button>
             ))}
@@ -245,7 +246,7 @@ export default function EmbeddableWidget() {
           <div className="space-y-2 pt-1">
             <Input
               ref={pickupInputRef}
-              placeholder="Pickup Location"
+              placeholder={t('embeddable.pickup-location')}
               value={formData.pickup}
               onChange={(e) =>
                 setFormData((prev) => ({ ...prev, pickup: e.target.value }))
@@ -257,7 +258,7 @@ export default function EmbeddableWidget() {
             {!isHourly && (
               <Input
                 ref={dropoffInputRef}
-                placeholder="Destination"
+                placeholder={t('embeddable.destination')}
                 value={formData.dropoff}
                 onChange={(e) =>
                   setFormData((prev) => ({ ...prev, dropoff: e.target.value }))
@@ -270,7 +271,7 @@ export default function EmbeddableWidget() {
             {isHourly && (
               <Input
                 type="number"
-                placeholder="Duration (hours)"
+                placeholder={t('embeddable.duration-hours')}
                 min={1}
                 value={formData.duration}
                 onChange={(e) =>
@@ -297,7 +298,7 @@ export default function EmbeddableWidget() {
                       : "text-slate-500"
                   }`}
                 >
-                  <ArrowRight className="h-3 w-3" /> One-way
+                  <ArrowRight className="h-3 w-3" /> {t('embeddable.one-way')}
                 </button>
                 <button
                   type="button"
@@ -310,7 +311,7 @@ export default function EmbeddableWidget() {
                       : "text-slate-500"
                   }`}
                 >
-                  <RefreshCw className="h-3 w-3" /> Round-trip
+                  <RefreshCw className="h-3 w-3" /> {t('embeddable.round-trip')}
                 </button>
               </div>
             )}
@@ -340,7 +341,7 @@ export default function EmbeddableWidget() {
 
             <Input
               type="number"
-              placeholder="Passengers"
+              placeholder={t('embeddable.passengers')}
               min={1}
               max={8}
               value={formData.passengers}
@@ -362,13 +363,12 @@ export default function EmbeddableWidget() {
             className="w-full rounded-full bg-primary py-2.5 text-sm font-semibold tracking-wide text-white hover:bg-primary"
             disabled={isSubmitting}
           >
-            {isSubmitting ? "Redirecting..." : "Search"}
+            {isSubmitting ? t('embeddable.redirecting') : t('embeddable.search')}
           </Button>
         </form>
 
         <footer className="mt-2 text-center text-[10px] leading-relaxed text-slate-400">
-          By submitting my data, I agree to be contacted.
-        </footer>
+          {t('embeddable.by-submitting-my-data-i-agree-to-be-contacted')} </footer>
       </Card>
     </div>
   );

@@ -154,5 +154,26 @@
     "free-cancellation-24h": "Free Cancellation (24h)",
     "24-7-customer-support": "24/7 Customer Support"
   },
-  "booking-failed-data-message": "Booking failed: {0}"
+  "booking-failed-data-message": "Booking failed: {0}",
+  "embeddable": {
+    "trip": "Trip",
+    "vehicle": "Vehicle",
+    "payment": "Payment",
+    "pickup-location-is-required": "Pickup location is required",
+    "destination-is-required": "Destination is required",
+    "date-is-required": "Date is required",
+    "time-is-required": "Time is required",
+    "params-tostring": "?{0}",
+    "trip-booking": "Trip Booking",
+    "destination": "Destination",
+    "hourly": "Hourly",
+    "pickup-location": "Pickup Location",
+    "duration-hours": "Duration (hours)",
+    "passengers": "Passengers",
+    "search": "Search",
+    "by-submitting-my-data-i-agree-to-be-contacted": "By submitting my data, I agree to be contacted.",
+    "redirecting": "Redirecting...",
+    "round-trip": "Round-trip",
+    "one-way": "One-way"
+  }
 }

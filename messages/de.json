@@ -154,5 +154,26 @@
     "what-and-apos-s-included": "Was",
     "you-will-pay-eur": "Sie zahlen €"
   },
-  "booking-failed-data-message": "Buchung fehlgeschlagen: {0}"
+  "booking-failed-data-message": "Buchung fehlgeschlagen: {0}",
+  "embeddable": {
+    "by-submitting-my-data-i-agree-to-be-contacted": "Mit der Übermittlung meiner Daten erkläre ich mich mit der Kontaktaufnahme einverstanden.",
+    "date-is-required": "Datum ist erforderlich",
+    "destination": "Ziel",
+    "destination-is-required": "Ziel ist erforderlich",
+    "duration-hours": "Dauer (Stunden)",
+    "hourly": "Stündlich",
+    "one-way": "Ein Weg",
+    "params-tostring": "?{0}",
+    "passengers": "Passagiere",
+    "payment": "Zahlung",
+    "pickup-location": "Abholort",
+    "pickup-location-is-required": "Abholort ist erforderlich",
+    "redirecting": "Weiterleitung...",
+    "round-trip": "Rundfahrt",
+    "search": "Suchen",
+    "time-is-required": "Zeit ist erforderlich",
+    "trip": "Reise",
+    "trip-booking": "Reisebuchung",
+    "vehicle": "Fahrzeug"
+  }
 }

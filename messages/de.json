@@ -1,7 +1,11 @@
 {
   "FormContainer": {
     "StepIndicator": "Schritt {currentStep} von 3",
-    "Title": "Premium-Transportservice"
+    "Title": "Premium-Transportservice",
+    "booking": "Buchung",
+    "payment-and-details": "Zahlung",
+    "select-vehicle": "Wählen Sie Fahrzeug",
+    "trip-details": "Reisedetails"
   },
   "Footer": {
     "Copyright": "© 2025 Swiss Ride SARL. \nAlle Rechte vorbehalten.",

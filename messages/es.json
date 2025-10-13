@@ -1,7 +1,11 @@
 {
   "FormContainer": {
     "StepIndicator": "Paso {currentStep} de 3",
-    "Title": "Servicio de transporte premium"
+    "Title": "Servicio de transporte premium",
+    "booking": "Reserva",
+    "payment-and-details": "Pago",
+    "select-vehicle": "Seleccionar vehículo",
+    "trip-details": "Detalles del viaje"
   },
   "Footer": {
     "Copyright": "© 2025 SwissRide SARL. \nReservados todos los derechos.",

@@ -67,13 +67,13 @@ export default function BookingFormContainer() {
   const getStepTitle = () => {
     switch (currentStep) {
       case 1:
-        return "Trip Details";
+        return t('FormContainer.trip-details');
       case 2:
-        return "Select Vehicle";
+        return t('FormContainer.select-vehicle');
       case 3:
-        return "Payment & Details";
+        return t('FormContainer.payment-and-details');
       default:
-        return "Booking";
+        return t('FormContainer.booking');
     }
   };
   const t = useTranslations();

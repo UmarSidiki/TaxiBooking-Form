@@ -1,7 +1,11 @@
 {
   "FormContainer": {
     "StepIndicator": "Étape {currentStep} sur 3",
-    "Title": "Service de transport haut de gamme"
+    "Title": "Service de transport haut de gamme",
+    "booking": "Réservation",
+    "payment-and-details": "Paiement",
+    "select-vehicle": "Sélectionnez un véhicule",
+    "trip-details": "Détails du voyage"
   },
   "Footer": {
     "Copyright": "© 2025 Swiss Ride SARL. \nTous droits réservés.",

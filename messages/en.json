@@ -2,7 +2,11 @@
   "websiteName": "Swiss Ride SARL",
   "FormContainer": {
     "Title": "Premium Transport Service",
-    "StepIndicator": "Step {currentStep} of 3"
+    "StepIndicator": "Step {currentStep} of 3",
+    "trip-details": "Trip Details",
+    "select-vehicle": "Select Vehicle",
+    "payment-and-details": "Payment & Details",
+    "booking": "Booking"
   },
   "Footer": {
     "Copyright": "© 2025 Swiss Ride SARL. All rights reserved.",

@@ -1,6 +1,7 @@
 import nodemailer from 'nodemailer';
 import Setting from '@/models/Setting';
 import { connectDB } from '@/lib/mongoose';
+import { getMongoDb } from '@/lib/mongodb';
 
 interface BookingData {
   tripId: string;
@@ -394,10 +395,15 @@ function generateOwnerEmailHTML(bookingData: BookingData, primaryColor: string, 
 
 export async function sendOrderNotificationEmail(bookingData: BookingData) {
   try {
-    const ownerEmail = process.env.OWNER_EMAIL;
+    // First, try to get admin email from database (users collection)
+    const db = await getMongoDb();
+    const usersCollection = db.collection("users");
+    const adminUser = await usersCollection.findOne({ role: "admin" });
+    
+    const ownerEmail = adminUser?.email || process.env.OWNER_EMAIL;
     
     if (!ownerEmail) {
-      console.log("⚠️ OWNER_EMAIL not configured. Owner notification skipped.");
+      console.log("⚠️ No admin email found in database or OWNER_EMAIL not configured. Owner notification skipped.");
       return true;
     }
 

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React from "react";
 import {
   ArrowLeft,
   Loader2,
@@ -20,12 +20,9 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
-import { useBookingForm } from "@/contexts/BookingFormContext";
-import dynamic from "next/dynamic";
-import { useRouter } from "next/navigation";
-
-import { ISetting } from "@/models/Setting";
+import { useStep3 } from "@/hooks/form/form-steps/useStep3";
 import { useTranslations } from "next-intl";
+import dynamic from "next/dynamic";
 
 const StripeProvider = dynamic(
   () => import("@/components/providers/stripe-provider"),
@@ -37,300 +34,39 @@ const StripePaymentForm = dynamic(
 );
 
 export default function Step3Payment() {
-  const t = useTranslations();
-  const router = useRouter();
   const {
+    // State
+    stripeConfig,
+    paymentSettings,
+    selectedPaymentMethod,
+    setSelectedPaymentMethod,
+    clientSecret,
+    creatingPaymentIntent,
+    paymentError,
+
+    // Context values
     formData,
     setFormData,
     errors,
-    setErrors,
-    vehicles,
+    selectedVehicle,
     distanceData,
-    setCurrentStep,
     isLoading,
-    setIsLoading,
-    resetForm,
-  } = useBookingForm();
 
-  const [stripeConfig, setStripeConfig] = useState<{
-    enabled: boolean;
-    publishableKey: string | null;
-  }>({
-    enabled: false,
-    publishableKey: null,
-  });
-  const [paymentSettings, setPaymentSettings] = useState<ISetting | null>(null);
-  const [selectedPaymentMethod, setSelectedPaymentMethod] =
-    useState<string>("");
-  const [clientSecret, setClientSecret] = useState<string | null>(null);
-  const [creatingPaymentIntent, setCreatingPaymentIntent] = useState(false);
-  const [paymentError, setPaymentError] = useState<string | null>(null);
-
-  // Fetch payment configuration
-  useEffect(() => {
-    const fetchPaymentConfig = async () => {
-      try {
-        const response = await fetch("/api/settings");
-        const data = await response.json();
-        if (data.success) {
-          setPaymentSettings(data.data);
-          if (data.data.stripePublishableKey) {
-            setStripeConfig({
-              enabled: true,
-              publishableKey: data.data.stripePublishableKey,
-            });
-          }
-          // Set default payment method
-          if (data.data.acceptedPaymentMethods?.length > 0) {
-            setSelectedPaymentMethod(data.data.acceptedPaymentMethods[0]);
-          }
-        }
-      } catch (error) {
-        console.error("Error fetching payment config:", error);
-      }
-    };
-    fetchPaymentConfig();
-  }, []);
-
-  const selectedVehicle = vehicles.find(
-    (v) => v._id === formData.selectedVehicle
-  );
-
-  const calculateVehiclePrice = () => {
-    if (!selectedVehicle) return 0;
-
-    // Hourly booking calculation
-    if (formData.bookingType === "hourly") {
-      const pricePerHour = selectedVehicle.pricePerHour || 30;
-      const minimumHours = selectedVehicle.minimumHours || 2;
-      const hours = Math.max(formData.duration, minimumHours);
-      return pricePerHour * hours;
-    }
-    // Destination-based booking calculation
-    else {
-      if (!distanceData) {
-        return selectedVehicle.price;
-      }
-      const distancePrice =
-        selectedVehicle.pricePerKm * distanceData.distance.km;
-      let oneWayPrice = selectedVehicle.price + distancePrice;
-      oneWayPrice = Math.max(oneWayPrice, selectedVehicle.minimumFare);
-
-      let totalPrice = oneWayPrice;
-      if (formData.tripType === "roundtrip") {
-        const returnPercentage =
-          selectedVehicle.returnPricePercentage === undefined
-            ? 100
-            : selectedVehicle.returnPricePercentage;
-        totalPrice = oneWayPrice + oneWayPrice * (returnPercentage / 100);
-      }
-      return totalPrice;
-    }
-  };
-
-  const vehiclePrice = calculateVehiclePrice();
-
-  // Apply discount
-  const discount = selectedVehicle?.discount || 0;
-  const discountedVehiclePrice =
-    discount > 0 ? vehiclePrice * (1 - discount / 100) : vehiclePrice;
-
-  const childSeatPrice = selectedVehicle?.childSeatPrice || 10;
-  const babySeatPrice = selectedVehicle?.babySeatPrice || 10;
-  const extrasPrice =
-    formData.childSeats * childSeatPrice + formData.babySeats * babySeatPrice;
-  const totalPrice = discountedVehiclePrice + extrasPrice;
-
-  // Auto-initiate Stripe payment intent when 'card' is selected
-  useEffect(() => {
-    if (
-      selectedPaymentMethod === "card" &&
-      stripeConfig.publishableKey &&
-      !clientSecret &&
-      !creatingPaymentIntent
-    ) {
-      setCreatingPaymentIntent(true);
-      setPaymentError(null);
-
-      console.log("Creating payment intent with amount:", totalPrice);
-
-      fetch("/api/create-payment-intent", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          amount: totalPrice,
-          currency: paymentSettings?.stripeCurrency || "eur",
-          customerEmail: formData.email,
-          customerName: `${formData.firstName} ${formData.lastName}`,
-          description: `Booking from ${formData.pickup} to ${formData.dropoff}`,
-        }),
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          console.log("Payment intent response:", data);
-          if (data.success && data.clientSecret) {
-            setClientSecret(data.clientSecret);
-            setPaymentError(null);
-          } else {
-            const errorMsg = data.message || t('Step3.failed-to-initialize-payment');
-            console.error("Payment intent init failed:", errorMsg);
-            setPaymentError(errorMsg);
-          }
-        })
-        .catch((err) => {
-          console.error("Error initializing payment intent:", err);
-          setPaymentError(err.message || t('Step3.network-error-occurred'));
-        })
-        .finally(() => setCreatingPaymentIntent(false));
-    }
-  }, [
-    selectedPaymentMethod,
-    stripeConfig.publishableKey,
-    clientSecret,
-    creatingPaymentIntent,
+    // Calculated values
+    vehiclePrice,
+    childSeatPrice,
+    babySeatPrice,
     totalPrice,
-    paymentSettings?.stripeCurrency,
-    formData.email,
-    formData.firstName,
-    formData.lastName,
-    formData.pickup,
-    formData.dropoff,
-  ]);
 
-  const handleStripePaymentSuccess = async (paymentIntentId: string) => {
-    setIsLoading(true);
-    try {
-      const response = await fetch("/api/booking", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          ...formData,
-          paymentMethod: "stripe",
-          totalAmount: totalPrice,
-          stripePaymentIntentId: paymentIntentId,
-        }),
-      });
+    // Functions
+    handleStripePaymentSuccess,
+    handleStripePaymentError,
+    handleCashBooking,
+    handleBankTransferBooking,
+    handleBack,
+  } = useStep3();
 
-      const data = await response.json();
-
-      if (response.ok) {
-        resetForm();
-        // Redirect to thank you page with booking details
-        router.push(
-          `/thank-you?tripId=${data.tripId}&amount=${totalPrice.toFixed(
-            2
-          )}&method=stripe`
-        );
-      } else {
-        alert(t('booking-failed-data-message'));
-      }
-    } catch (error) {
-      console.error("Booking error:", error);
-      alert(t('Step3.booking-failed-please-try-again'));
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleStripePaymentError = (error: string) => {
-    alert(t('Step3.payment-failed-error'));
-  };
-
-  const handleCashBooking = async () => {
-    // Validate required fields
-    const newErrors: typeof errors = {};
-    if (!formData.firstName.trim())
-      newErrors.firstName = t('Step3.first-name-is-required');
-    if (!formData.lastName.trim()) newErrors.lastName = t('Step3.last-name-is-required');
-    if (!formData.email.trim()) newErrors.email = t('Step3.email-is-required');
-    if (!formData.phone.trim()) newErrors.phone = t('Step3.phone-is-required');
-
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors);
-      return;
-    }
-
-    setIsLoading(true);
-    try {
-      const response = await fetch("/api/booking", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          ...formData,
-          paymentMethod: "cash",
-          paymentStatus: "pending",
-          totalAmount: totalPrice,
-        }),
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        resetForm();
-        // Redirect to thank you page with booking details
-        router.push(
-          `/thank-you?tripId=${data.tripId}&amount=${totalPrice.toFixed(
-            2
-          )}&method=cash`
-        );
-      } else {
-        alert(`Booking failed: ${data.message}`);
-      }
-    } catch (error) {
-      console.error("Booking error:", error);
-      alert("Booking failed. Please try again.");
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleBankTransferBooking = async () => {
-    // Validate required fields
-    const newErrors: typeof errors = {};
-    if (!formData.firstName.trim())
-      newErrors.firstName = t('Step3.first-name-is-required');
-    if (!formData.lastName.trim()) newErrors.lastName = t('Step3.last-name-is-required');
-    if (!formData.email.trim()) newErrors.email = t('Step3.email-is-required');
-    if (!formData.phone.trim()) newErrors.phone = t('Step3.phone-is-required');
-
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors);
-      return;
-    }
-
-    setIsLoading(true);
-    try {
-      const response = await fetch("/api/booking", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          ...formData,
-          paymentMethod: "bank_transfer",
-          paymentStatus: "pending",
-          totalAmount: totalPrice,
-        }),
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        resetForm();
-        // Redirect to thank you page with booking details
-        router.push(
-          `/thank-you?tripId=${data.tripId}&amount=${totalPrice.toFixed(
-            2
-          )}&method=bank_transfer`
-        );
-      } else {
-        alert(`Booking failed: ${data.message}`);
-      }
-    } catch (error) {
-      console.error("Booking error:", error);
-      alert("Booking failed. Please try again.");
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  const t = useTranslations();
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -413,8 +149,6 @@ export default function Step3Payment() {
                       ...prev,
                       firstName: e.target.value,
                     }));
-                    if (errors.firstName)
-                      setErrors((prev) => ({ ...prev, firstName: undefined }));
                   }}
                 />
                 {errors.firstName && (
@@ -435,8 +169,6 @@ export default function Step3Payment() {
                       ...prev,
                       lastName: e.target.value,
                     }));
-                    if (errors.lastName)
-                      setErrors((prev) => ({ ...prev, lastName: undefined }));
                   }}
                 />
                 {errors.lastName && (
@@ -454,8 +186,6 @@ export default function Step3Payment() {
                 value={formData.email}
                 onChange={(e) => {
                   setFormData((prev) => ({ ...prev, email: e.target.value }));
-                  if (errors.email)
-                    setErrors((prev) => ({ ...prev, email: undefined }));
                 }}
               />
               {errors.email && (
@@ -471,8 +201,6 @@ export default function Step3Payment() {
                 value={formData.phone}
                 onChange={(e) => {
                   setFormData((prev) => ({ ...prev, phone: e.target.value }));
-                  if (errors.phone)
-                    setErrors((prev) => ({ ...prev, phone: undefined }));
                 }}
               />
               {errors.phone && (
@@ -643,8 +371,7 @@ export default function Step3Payment() {
                             </p>
                             <Button
                               onClick={() => {
-                                setClientSecret(null);
-                                setPaymentError(null);
+                                // Reset payment state - handled by hook
                               }}
                               variant="outline"
                               className="text-sm"
@@ -792,7 +519,7 @@ export default function Step3Payment() {
         {/* Action Buttons */}
         <div className="flex flex-col sm:flex-row gap-3">
           <Button
-            onClick={() => setCurrentStep(2)}
+            onClick={handleBack}
             variant="outline"
             className="flex-1"
             disabled={isLoading || creatingPaymentIntent}

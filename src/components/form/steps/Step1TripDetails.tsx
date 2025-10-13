@@ -1,215 +1,39 @@
 "use client";
 
-import React, { useRef, useEffect, useCallback, useState } from 'react';
+import React from 'react';
 import { MapPin, CalendarDays, Clock, Users, Loader2, ArrowRight, Info } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card } from '@/components/ui/card';
-import { useBookingForm } from '@/contexts/BookingFormContext';
-import { importLibrary, setOptions } from '@googlemaps/js-api-loader';
 import Image from 'next/image';
-import { useTheme } from '@/contexts/ThemeContext';
+import { useStep1 } from '@/hooks/form/form-steps/useStep1';
 import { useTranslations } from 'next-intl';
 
 export default function Step1TripDetails() {
-  const [mapLoaded, setMapLoaded] = useState(false);
-  const mapRef = useRef<HTMLDivElement>(null);
-  const googleMapRef = useRef<google.maps.Map | null>(null);
-  const directionsRendererRef = useRef<google.maps.DirectionsRenderer | null>(null);
-  
   const {
+    // State
+    mapLoaded,
+    mapRef,
+    pickupInputRef,
+    dropoffInputRef,
+
+    // Context values
     formData,
     setFormData,
     errors,
-    setErrors,
     distanceData,
-    setDistanceData,
     calculatingDistance,
-    setCalculatingDistance,
-    setCurrentStep,
     isLoading,
-  } = useBookingForm();
+
+    // Functions
+    handleBookingTypeChange,
+    handleTripTypeChange,
+    handleInputChange,
+    handleInputBlur,
+    handleNext,
+  } = useStep1();
 
   const t = useTranslations();
-
-  const pickupInputRef = useRef<HTMLInputElement>(null);
-  const dropoffInputRef = useRef<HTMLInputElement>(null);
-  const formDataRef = useRef(formData);
-  const { settings } = useTheme();
-
-  useEffect(() => {
-    formDataRef.current = formData;
-  }, [formData]);
-
-  const calculateDistance = useCallback(async (origin: string, destination: string, isRoundTrip: boolean = false) => {
-    if (!origin || !destination) return;
-
-    setCalculatingDistance(true);
-    try {
-      const response = await fetch('/api/distance', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ origin, destination, isRoundTrip }),
-      });
-
-      const data = await response.json();
-      if (data.success) {
-        setDistanceData(data.data);
-        
-        // Update map route
-        if (googleMapRef.current && window.google) {
-          const directionsService = new google.maps.DirectionsService();
-          
-          directionsService.route(
-            {
-              origin: origin,
-              destination: destination,
-              travelMode: google.maps.TravelMode.DRIVING,
-            },
-            (result, status) => {
-              if (status === 'OK' && result) {
-                if (!directionsRendererRef.current) {
-                  directionsRendererRef.current = new google.maps.DirectionsRenderer({
-                    map: googleMapRef.current,
-                    suppressMarkers: false,
-                    polylineOptions: {
-                      strokeColor: 'var(--primary-color)',
-                      strokeWeight: 4,
-                    },
-                  });
-                }
-                directionsRendererRef.current.setDirections(result);
-              }
-            }
-          );
-        }
-      }
-    } catch (error) {
-      console.error('Error calculating distance:', error);
-    } finally {
-      setCalculatingDistance(false);
-    }
-  }, [setCalculatingDistance, setDistanceData]);
-
-  useEffect(() => {
-    const initGoogleMaps = async () => {
-      const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
-      if (!apiKey) {
-        console.warn("Google Maps API key not configured");
-        return;
-      }
-
-      try {
-        setOptions({
-          key: apiKey,
-          v: "weekly",
-        });
-
-        const [maps, places] = await Promise.all([
-          importLibrary("maps"),
-          importLibrary("places"),
-        ]);
-
-        // Initialize map
-        if (mapRef.current && !googleMapRef.current) {
-          const initialCenter =
-            settings && settings.mapInitialLat && settings.mapInitialLng
-              ? { lat: settings.mapInitialLat, lng: settings.mapInitialLng }
-              : { lat: 46.2044, lng: 6.1432 }; // Default to Geneva
-
-          googleMapRef.current = new maps.Map(mapRef.current, {
-            center: initialCenter,
-            zoom: 8,
-            disableDefaultUI: false,
-            zoomControl: true,
-            mapTypeControl: false,
-            streetViewControl: false,
-            fullscreenControl: true,
-          });
-          setMapLoaded(true);
-        }
-
-        const autocompleteOptions = {
-          componentRestrictions: settings?.mapCountryRestrictions?.length 
-            ? { country: settings.mapCountryRestrictions }
-            : undefined,
-        };
-
-        // Setup Autocomplete
-        if (pickupInputRef.current) {
-          const autocompletePickup = new places.Autocomplete(
-            pickupInputRef.current,
-            autocompleteOptions
-          );
-          autocompletePickup.addListener('place_changed', () => {
-            const place = autocompletePickup.getPlace();
-            const newPickup = place.formatted_address || place.name || '';
-            setFormData(prev => ({ ...prev, pickup: newPickup }));
-            if (formDataRef.current.dropoff) {
-              calculateDistance(newPickup, formDataRef.current.dropoff, formDataRef.current.tripType === 'roundtrip');
-            }
-          });
-        }
-
-        if (dropoffInputRef.current) {
-          const autocompleteDropoff = new places.Autocomplete(
-            dropoffInputRef.current,
-            autocompleteOptions
-          );
-          autocompleteDropoff.addListener('place_changed', () => {
-            const place = autocompleteDropoff.getPlace();
-            const newDropoff = place.formatted_address || place.name || '';
-            setFormData(prev => ({ ...prev, dropoff: newDropoff }));
-            if (formDataRef.current.pickup) {
-              calculateDistance(formDataRef.current.pickup, newDropoff, formDataRef.current.tripType === 'roundtrip');
-            }
-          });
-        }
-
-        // If we have pickup and dropoff from context, show the route
-        if (formData.pickup && formData.dropoff) {
-          calculateDistance(formData.pickup, formData.dropoff, formData.tripType === 'roundtrip');
-        }
-      } catch (error) {
-        console.error("Error loading Google Maps:", error);
-      }
-    };
-
-    if (settings) {
-      initGoogleMaps();
-    }
-  }, [settings, calculateDistance, formData.pickup, formData.dropoff, formData.tripType, setFormData]);
-
-  const validateStep = (): boolean => {
-    const newErrors: typeof errors = {};
-    
-    if (!formData.pickup.trim()) {
-      newErrors.pickup = t('Step1.pickup-location-is-required');
-    }
-    
-    // Dropoff is only required for destination-based bookings
-    if (formData.bookingType === 'destination' && !formData.dropoff.trim()) {
-      newErrors.dropoff = t('Step1.dropoff-location-is-required');
-    }
-    
-    if (!formData.date) {
-      newErrors.date = t('Step1.date-is-required');
-    }
-    if (!formData.time) {
-      newErrors.time = t('Step1.time-is-required');
-    }
-    
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleNext = () => {
-    if (validateStep()) {
-      setCurrentStep(2);
-    }
-  };
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-7 gap-6">
@@ -277,10 +101,7 @@ export default function Step1TripDetails() {
             <div className="grid grid-cols-2 gap-2">
               <Button
                 type="button"
-                onClick={() => {
-                  setFormData(prev => ({ ...prev, bookingType: "destination" }));
-                  setErrors(prev => ({ ...prev, dropoff: undefined }));
-                }}
+                onClick={() => handleBookingTypeChange("destination")}
                 variant="outline"
                 className={`${
                   formData.bookingType === "destination"
@@ -293,10 +114,7 @@ export default function Step1TripDetails() {
               </Button>
               <Button
                 type="button"
-                onClick={() => {
-                  setFormData(prev => ({ ...prev, bookingType: "hourly", dropoff: "" }));
-                  setErrors(prev => ({ ...prev, dropoff: undefined }));
-                }}
+                onClick={() => handleBookingTypeChange("hourly")}
                 variant="outline"
                 className={`${
                   formData.bookingType === "hourly"
@@ -328,11 +146,10 @@ export default function Step1TripDetails() {
               value={formData.pickup}
               onChange={(e) => {
                 setFormData(prev => ({ ...prev, pickup: e.target.value }));
-                if (errors.pickup) setErrors(prev => ({ ...prev, pickup: undefined }));
               }}
               onBlur={() => {
                 if (formData.pickup && formData.dropoff) {
-                  calculateDistance(formData.pickup, formData.dropoff, formData.tripType === 'roundtrip');
+                  handleInputBlur('pickup');
                 }
               }}
             />
@@ -353,11 +170,10 @@ export default function Step1TripDetails() {
                 value={formData.dropoff}
                 onChange={(e) => {
                   setFormData(prev => ({ ...prev, dropoff: e.target.value }));
-                  if (errors.dropoff) setErrors(prev => ({ ...prev, dropoff: undefined }));
                 }}
                 onBlur={() => {
                   if (formData.pickup && formData.dropoff) {
-                    calculateDistance(formData.pickup, formData.dropoff, formData.tripType === 'roundtrip');
+                    handleInputBlur('dropoff');
                   }
                 }}
               />
@@ -386,7 +202,7 @@ export default function Step1TripDetails() {
                 className="focus:border-primary-500 focus:ring-primary-500"
                 value={formData.duration}
                 onChange={(e) => {
-                  setFormData(prev => ({ ...prev, duration: parseInt(e.target.value) || 1 }));
+                  handleInputChange('duration', parseInt(e.target.value) || 1);
                 }}
               />
               <p className="text-xs text-gray-500 mt-1">{t("Step1.DurationDescription")}</p>
@@ -401,9 +217,9 @@ export default function Step1TripDetails() {
               <Button
                 type="button"
                 onClick={() => {
-                  setFormData(prev => ({ ...prev, tripType: "oneway" }));
+                  handleTripTypeChange("oneway");
                   if (formData.pickup && formData.dropoff) {
-                    calculateDistance(formData.pickup, formData.dropoff, false);
+                    handleInputBlur('pickup');
                   }
                 }}
                 variant="outline"
@@ -418,9 +234,9 @@ export default function Step1TripDetails() {
               <Button
                 type="button"
                 onClick={() => {
-                  setFormData(prev => ({ ...prev, tripType: "roundtrip" }));
+                  handleTripTypeChange("roundtrip");
                   if (formData.pickup && formData.dropoff) {
-                    calculateDistance(formData.pickup, formData.dropoff, true);
+                    handleInputBlur('pickup');
                   }
                 }}
                 variant="outline"
@@ -448,8 +264,7 @@ export default function Step1TripDetails() {
                 className={`${errors.date ? 'border-red-500' : 'border-gray-300'} focus:border-primary-500 focus:ring-primary-500`}
                 value={formData.date}
                 onChange={(e) => {
-                  setFormData(prev => ({ ...prev, date: e.target.value }));
-                  if (errors.date) setErrors(prev => ({ ...prev, date: undefined }));
+                  handleInputChange('date', e.target.value);
                 }}
               />
               {errors.date && <p className="text-red-500 text-xs mt-1">{errors.date}</p>}
@@ -464,8 +279,7 @@ export default function Step1TripDetails() {
                 className={`${errors.time ? 'border-red-500' : 'border-gray-300'} focus:border-primary-500 focus:ring-primary-500`}
                 value={formData.time}
                 onChange={(e) => {
-                  setFormData(prev => ({ ...prev, time: e.target.value }));
-                  if (errors.time) setErrors(prev => ({ ...prev, time: undefined }));
+                  handleInputChange('time', e.target.value);
                 }}
               />
               {errors.time && <p className="text-red-500 text-xs mt-1">{errors.time}</p>}
@@ -484,7 +298,7 @@ export default function Step1TripDetails() {
               max="8"
               className="border-gray-300 focus:border-primary-500 focus:ring-primary-500" 
               value={formData.passengers}
-              onChange={(e) => setFormData(prev => ({ ...prev, passengers: parseInt(e.target.value) || 1 }))}
+              onChange={(e) => handleInputChange('passengers', parseInt(e.target.value) || 1)}
             />
           </div>
 

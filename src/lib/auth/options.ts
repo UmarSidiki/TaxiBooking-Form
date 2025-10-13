@@ -37,32 +37,37 @@ export const authOptions: NextAuthOptions = {
           password?: string
           name?: string
           role?: string
-        }>(
-          { email }
-        )
+        }>({ email });
+
+        const userCount = await users.countDocuments();
 
         if (!existingUser) {
-          const passwordHash = await hash(credentials.password, 10)
-          const now = new Date()
-          const nameFromEmail = credentials.email.split("@")[0] || "Admin"
+          if (userCount === 0) {
+            const passwordHash = await hash(credentials.password, 10);
+            const now = new Date();
+            const nameFromEmail = credentials.email.split("@")[0] || "Admin";
 
-          const insertResult = await users.insertOne({
-            email,
-            name: nameFromEmail,
-            role: DEFAULT_ROLE,
-            password: passwordHash,
-            emailVerified: null,
-            image: null,
-            createdAt: now,
-            updatedAt: now,
-          })
+            const insertResult = await users.insertOne({
+              email,
+              name: nameFromEmail,
+              role: DEFAULT_ROLE,
+              password: passwordHash,
+              emailVerified: null,
+              image: null,
+              createdAt: now,
+              updatedAt: now,
+            });
 
-          return {
-            id: insertResult.insertedId.toString(),
-            email,
-            name: nameFromEmail,
-            role: DEFAULT_ROLE,
+            return {
+              id: insertResult.insertedId.toString(),
+              email,
+              name: nameFromEmail,
+              role: DEFAULT_ROLE,
+            };
           }
+          throw new Error(
+            "No user found with this email. Only registered admins can log in."
+          );
         }
 
         if (!existingUser.password) {

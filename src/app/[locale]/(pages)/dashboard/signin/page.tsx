@@ -1,101 +1,349 @@
-'use client'
+"use client";
 
-import { useState, type FormEvent } from "react"
-import { signIn } from "next-auth/react"
-import { useParams, useRouter } from "next/navigation"
+import { useState, type FormEvent, useEffect, useRef } from "react";
+import { signIn } from "next-auth/react";
+import { useParams, useRouter } from "next/navigation";
+import {
+  Eye,
+  EyeOff,
+  Lock,
+  Mail,
+  Shield,
+  Sparkles,
+  ArrowRight,
+} from "lucide-react";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { TextPlugin } from "gsap/TextPlugin";
 
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+
+// Register GSAP plugins
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(ScrollTrigger, TextPlugin);
+}
 
 export default function SignInPage() {
-  const router = useRouter()
-  const params = useParams<{ locale: string }>()
-  const locale = params?.locale ?? "en"
+  const router = useRouter();
+  const params = useParams<{ locale: string }>();
+  const locale = params?.locale ?? "en";
 
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
-  const [error, setError] = useState<string | null>(null)
-  const [loading, setLoading] = useState(false)
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+
+  // Refs for GSAP animations
+  const containerRef = useRef<HTMLDivElement>(null);
+  const cardRef = useRef<HTMLDivElement>(null);
+  const titleRef = useRef<HTMLHeadingElement>(null);
+  const subtitleRef = useRef<HTMLParagraphElement>(null);
+  const formRef = useRef<HTMLFormElement>(null);
+  const iconRef = useRef<HTMLDivElement>(null);
+  const particlesRef = useRef<HTMLDivElement[]>([]);
+
+  useEffect(() => {
+    // Initial animations
+    const tl = gsap.timeline();
+
+    // Animate particles
+    particlesRef.current.forEach((particle, index) => {
+      if (particle) {
+        gsap.to(particle, {
+          y: -20,
+          x: Math.random() * 20 - 10,
+          opacity: 0,
+          duration: 2 + Math.random() * 2,
+          repeat: -1,
+          delay: index * 0.2,
+          ease: "power1.out",
+        });
+      }
+    });
+
+    // Animate icon
+    if (iconRef.current) {
+      tl.fromTo(
+        iconRef.current,
+        { scale: 0, rotation: -180 },
+        { scale: 1, rotation: 0, duration: 1, ease: "back.out(1.7)" }
+      );
+    }
+
+    // Animate title
+    if (titleRef.current) {
+      tl.fromTo(
+        titleRef.current,
+        { y: 30, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.8, ease: "power2.out" },
+        "-=0.5"
+      );
+    }
+
+    // Animate subtitle
+    if (subtitleRef.current) {
+      tl.fromTo(
+        subtitleRef.current,
+        { y: 20, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.6, ease: "power2.out" },
+        "-=0.3"
+      );
+    }
+
+    // Animate card
+    if (cardRef.current) {
+      tl.fromTo(
+        cardRef.current,
+        { y: 50, opacity: 0, scale: 0.95 },
+        { y: 0, opacity: 1, scale: 1, duration: 0.8, ease: "power2.out" },
+        "-=0.2"
+      );
+    }
+
+    // Animate form elements
+    if (formRef.current) {
+      const formElements = Array.from(formRef.current.children);
+      tl.fromTo(
+        formElements,
+        { y: 20, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.5, stagger: 0.1, ease: "power2.out" },
+        "-=0.3"
+      );
+    }
+
+    // Cleanup
+    return () => {
+      gsap.killTweensOf("*");
+    };
+  }, []);
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
-    setError(null)
-    setLoading(true)
+    event.preventDefault();
+    setError(null);
+    setLoading(true);
+
+    // Form submission animation
+    gsap.to(formRef.current, {
+      scale: 0.98,
+      duration: 0.2,
+      yoyo: true,
+      repeat: 1,
+      ease: "power2.inOut",
+    });
 
     const result = await signIn("credentials", {
       email,
       password,
       redirect: false,
       callbackUrl: `/${locale}/dashboard`,
-    })
+    });
 
-    setLoading(false)
+    setLoading(false);
 
     if (result?.error) {
       setError(
         result.error === "CredentialsSignin"
           ? "Invalid email or password"
           : result.error
-      )
-      return
+      );
+
+      // Shake animation for error
+      if (formRef.current) {
+        gsap.fromTo(
+          formRef.current,
+          { x: 0 },
+          { x: 0, duration: 0.6, ease: "power2.out" }
+        );
+      }
+      return;
     }
 
-    router.push(result?.url ?? `/${locale}/dashboard`)
-  }
+    // Success animation
+    gsap.to(cardRef.current, {
+      scale: 1.05,
+      duration: 0.3,
+      yoyo: true,
+      repeat: 1,
+      ease: "power2.inOut",
+      onComplete: () => {
+        router.push(result?.url ?? `/${locale}/dashboard`);
+      },
+    });
+  };
 
   return (
-    <div className="flex min-h-[60vh] items-center justify-center px-4 py-10">
-      <Card className="w-full">
-        <CardHeader>
-          <CardTitle>Admin Sign In</CardTitle>
-          <CardDescription>
-            Enter your admin credentials to access the dashboard.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
-            <div className="flex flex-col gap-2">
-              <label className="text-sm font-medium" htmlFor="email">
-                Email
-              </label>
-              <Input
-                id="email"
-                type="email"
-                autoComplete="email"
-                value={email}
-                onChange={(event) => setEmail(event.target.value)}
-                required
+    <div
+      ref={containerRef}
+      className="min-h-screen bg-gradient-to-br from-primary/20 via-background to-primary/10 flex items-center justify-center p-4 overflow-hidden relative"
+    >
+      {/* Animated background elements */}
+      <div className="absolute inset-0 overflow-hidden">
+        {[...Array(20)].map((_, i) => (
+          <div
+            key={i}
+            ref={(el) => {
+              if (el) particlesRef.current[i] = el;
+            }}
+            className="absolute rounded-full bg-primary/10"
+            style={{
+              width: `${Math.random() * 10 + 5}px`,
+              height: `${Math.random() * 10 + 5}px`,
+              left: `${Math.random() * 100}%`,
+              bottom: `${Math.random() * 100}%`,
+            }}
+          />
+        ))}
+      </div>
+
+      <div className="w-full max-w-md relative z-10">
+        <div className="mb-8 text-center">
+          <div
+            ref={iconRef}
+            className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-br from-primary to-primary/70 mb-6 shadow-lg shadow-primary/30"
+          >
+            <Shield className="w-10 h-10 text-white" />
+          </div>
+          <h1
+            ref={titleRef}
+            className="text-4xl font-bold text-foreground mb-2"
+          >
+            Admin Portal
+          </h1>
+          <p
+            ref={subtitleRef}
+            className="text-muted-foreground flex items-center justify-center gap-2"
+          >
+            <Sparkles className="w-4 h-4 text-primary" />
+            Secure access to your dashboard
+            <Sparkles className="w-4 h-4 text-primary" />
+          </p>
+        </div>
+
+        <Card
+          ref={cardRef}
+          className="shadow-2xl border-0 bg-background/80 backdrop-blur-sm overflow-hidden"
+        >
+          <div className="h-1 bg-gradient-to-r from-primary via-primary/70 to-primary"></div>
+          <CardHeader className="space-y-1 pb-6">
+            <CardTitle className="text-2xl font-bold text-center">
+              Sign In
+            </CardTitle>
+            <CardDescription className="text-center">
+              Enter your credentials to access the admin dashboard
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <form ref={formRef} className="space-y-5" onSubmit={handleSubmit}>
+              <div className="space-y-2">
+                <label
+                  className="text-sm font-medium flex items-center gap-2"
+                  htmlFor="email"
+                >
+                  <Mail className="w-4 h-4 text-primary" />
+                  Email Address
+                </label>
+                <Input
+                  id="email"
+                  type="email"
+                  autoComplete="email"
+                  value={email}
+                  onChange={(event) => setEmail(event.target.value)}
+                  required
+                  disabled={loading}
+                  className="border-primary/20 focus:border-primary focus:ring-primary/20 transition-all duration-300"
+                  placeholder="admin@example.com"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label
+                  className="text-sm font-medium flex items-center gap-2"
+                  htmlFor="password"
+                >
+                  <Lock className="w-4 h-4 text-primary" />
+                  Password
+                </label>
+                <div className="relative">
+                  <Input
+                    id="password"
+                    type={showPassword ? "text" : "password"}
+                    autoComplete="current-password"
+                    value={password}
+                    onChange={(event) => setPassword(event.target.value)}
+                    required
+                    disabled={loading}
+                    className="border-primary/20 focus:border-primary focus:ring-primary/20 pr-10 transition-all duration-300"
+                    placeholder="Enter your password"
+                  />
+                  <button
+                    type="button"
+                    className="absolute inset-y-0 right-0 flex items-center pr-3 text-muted-foreground hover:text-primary transition-colors"
+                    onClick={() => setShowPassword(!showPassword)}
+                    disabled={loading}
+                  >
+                    {showPassword ? (
+                      <EyeOff className="h-5 w-5" />
+                    ) : (
+                      <Eye className="h-5 w-5" />
+                    )}
+                  </button>
+                </div>
+              </div>
+
+              {error ? (
+                <div className="bg-destructive/10 text-destructive p-3 rounded-md text-sm animate-pulse">
+                  {error}
+                </div>
+              ) : null}
+
+              <Button
+                type="submit"
                 disabled={loading}
-              />
+                className="w-full bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 text-primary-foreground py-3 font-medium shadow-lg transition-all duration-300 hover:shadow-xl group"
+              >
+                {loading ? (
+                  <div className="flex items-center gap-2">
+                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                    Signing in...
+                  </div>
+                ) : (
+                  <div className="flex items-center justify-center gap-2">
+                    Sign In
+                    <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+                  </div>
+                )}
+              </Button>
+            </form>
+
+            <div className="mt-6 text-center">
+              <p className="text-sm text-muted-foreground">
+                Need assistance?{" "}
+                <a
+                  href="#"
+                  className="text-primary hover:underline transition-colors"
+                >
+                  Contact Support
+                </a>
+              </p>
             </div>
-            <div className="flex flex-col gap-2">
-              <label className="text-sm font-medium" htmlFor="password">
-                Password
-              </label>
-              <Input
-                id="password"
-                type="password"
-                autoComplete="current-password"
-                value={password}
-                onChange={(event) => setPassword(event.target.value)}
-                required
-                disabled={loading}
-              />
-            </div>
-            {error ? <p className="text-sm text-destructive">{error}</p> : null}
-            <Button type="submit" disabled={loading} className="w-full bg-primary hover:bg-primary/90 text-primary-foreground">
-              {loading ? "Signing in..." : "Sign in"}
-            </Button>
-          </form>
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
+
+        <div className="mt-8 text-center text-xs text-muted-foreground">
+          <p>
+            © 2025 {process.env.NEXT_PUBLIC_WEBSITE_NAME}. All rights reserved.
+          </p>
+        </div>
+      </div>
     </div>
-  )
+  );
 }

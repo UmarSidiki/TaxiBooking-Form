@@ -8,6 +8,9 @@ import {
   MapPin,
   ArrowRight,
   RefreshCw,
+  Users,
+  Calendar,
+  AlertCircle,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -40,6 +43,7 @@ const initialFormData: FormData = {
 
 export default function EmbeddableWidget() {
   const [isMounted, setIsMounted] = useState(false);
+  const [focusedField, setFocusedField] = useState<string | null>(null);
   const t = useTranslations();
 
   const progressSteps = [
@@ -50,9 +54,8 @@ export default function EmbeddableWidget() {
 
   // Animation effect
   useEffect(() => {
-    // Set mounted to true after a short delay to trigger the animation
     const timer = setTimeout(() => setIsMounted(true), 100);
-    return () => clearTimeout(timer); // Cleanup timer on unmount
+    return () => clearTimeout(timer);
   }, []);
 
   //   make body tag bg transparent forcefully
@@ -152,8 +155,8 @@ export default function EmbeddableWidget() {
       params.set("duration", String(formData.duration));
     }
 
-    // Return absolute path without origin for same-site navigation
-    return t('embeddable.params-tostring');
+    // Return the URL with parameters
+    return `?${params.toString()}`;
   };
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -185,34 +188,48 @@ export default function EmbeddableWidget() {
         isMounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5"
       }`}
     >
-      {/* Progress Bar (on transparent background) */}
-      <div className="flex justify-between gap-2 p-2">
-        {progressSteps.map(({ icon: Icon }, index) => (
-          <div key={index} className="flex flex-1 flex-col items-center">
+      {/* Progress Bar with reduced padding */}
+      <div className="flex justify-between items-center px-2 py-2">
+        {progressSteps.map(({ icon: Icon, label }, index) => (
+          <div key={index} className="flex flex-1 flex-col items-center relative">
+            {index < progressSteps.length - 1 && (
+              <div className="absolute top-4 left-1/2 w-full h-0.5 bg-slate-200 -z-10" />
+            )}
             <div
-              className={`flex h-8 w-8 items-center justify-center rounded-full border ${
+              className={`flex h-8 w-8 items-center justify-center rounded-full border-2 transition-all duration-300 ${
                 index === 0
-                  ? "border-primary bg-primary text-white"
+                  ? "border-primary bg-primary text-white shadow-md"
                   : "border-slate-300 bg-white text-slate-400"
               }`}
             >
               <Icon className="h-4 w-4" />
             </div>
+            <span className={`mt-1 text-xs font-medium ${
+              index === 0 ? "text-primary" : "text-slate-400"
+            }`}>
+              {label}
+            </span>
           </div>
         ))}
       </div>
 
-      {/* Form Card (with white background) */}
-      <Card className="rounded-xl bg-white shadow-lg p-3">
-        <header className="mb-3 text-center">
-          <h1 className="text-sm font-bold uppercase tracking-wider text-slate-600">
-            <Car className="inline h-4 w-4 mr-1.5" />
-            {t('embeddable.trip-booking')} </h1>
+      {/* Form Card with reduced padding */}
+      <Card className="rounded-2xl bg-white shadow-xl p-4 border-0">
+        <header className="mb-1 pb-1 text-center">
+          <h1 className="text-base font-bold text-slate-800 flex items-center justify-center gap-2">
+            <div className="p-1.5 bg-primary/10 rounded-lg">
+              <Car className="h-4 w-4 text-primary" />
+            </div>
+            {t('embeddable.trip-booking')}
+          </h1>
+          <p className="text-xs text-slate-500 mt-1">
+            {t('embeddable.book-your-ride-in-seconds')}
+          </p>
         </header>
 
-        <form onSubmit={handleSubmit} className="space-y-2">
-          {/* Booking Type Toggle */}
-          <div className="flex rounded-full border border-slate-200 bg-slate-100 p-1 text-xs font-medium">
+        <form onSubmit={handleSubmit}>
+          {/* Booking Type Toggle with reduced padding */}
+          <div className="flex rounded-xl border border-slate-200 bg-slate-50 p-1 text-sm font-medium">
             {(["destination", "hourly"] as const).map((type) => (
               <button
                 key={type}
@@ -224,151 +241,239 @@ export default function EmbeddableWidget() {
                     dropoff: type === "hourly" ? "" : prev.dropoff,
                   }))
                 }
-                className={`flex-1 rounded-full px-2 py-1.5 transition-all duration-300 ${
+                className={`flex-1 rounded-lg px-2 py-2 transition-all duration-300 flex items-center justify-center gap-1.5 ${
                   formData.bookingType === type
                     ? "bg-primary text-white shadow-sm"
-                    : "text-slate-500 hover:text-slate-800"
+                    : "text-slate-600 hover:text-slate-800 hover:bg-slate-100"
                 }`}
               >
-                <span className="inline-flex items-center justify-center gap-1.5">
-                  {type === "destination" ? (
-                    <MapPin className="h-3.5 w-3.5" />
-                  ) : (
-                    <Clock className="h-3.5 w-3.5" />
-                  )}
-                  {type === "destination" ? t('embeddable.destination') : t('embeddable.hourly')}
-                </span>
+                {type === "destination" ? (
+                  <MapPin className="h-3.5 w-3.5" />
+                ) : (
+                  <Clock className="h-3.5 w-3.5" />
+                )}
+                {type === "destination" ? t('embeddable.destination') : t('embeddable.hourly')}
               </button>
             ))}
           </div>
 
-          {/* Form Inputs */}
-          <div className="space-y-2 pt-1">
-            <Input
-              ref={pickupInputRef}
-              placeholder={t('embeddable.pickup-location')}
-              value={formData.pickup}
-              onChange={(e) =>
-                setFormData((prev) => ({ ...prev, pickup: e.target.value }))
-              }
-              className={`rounded-lg border bg-white px-3 py-2 text-sm ${
-                errors.pickup ? "border-red-400" : "border-slate-200"
-              }`}
-            />
-            {!isHourly && (
+          {/* Form Inputs with reduced spacing */}
+          <div className="space-y-3">
+            {/* Pickup Location with icon */}
+            <div className="relative">
+              <div className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
+                <MapPin className="h-4 w-4" />
+              </div>
               <Input
-                ref={dropoffInputRef}
-                placeholder={t('embeddable.destination')}
-                value={formData.dropoff}
+                ref={pickupInputRef}
+                placeholder={t('embeddable.pickup-location')}
+                value={formData.pickup}
                 onChange={(e) =>
-                  setFormData((prev) => ({ ...prev, dropoff: e.target.value }))
+                  setFormData((prev) => ({ ...prev, pickup: e.target.value }))
                 }
-                className={`rounded-lg border bg-white px-3 py-2 text-sm ${
-                  errors.dropoff ? "border-red-400" : "border-slate-200"
+                onFocus={() => setFocusedField('pickup')}
+                onBlur={() => setFocusedField(null)}
+                className={`rounded-xl border bg-white pl-10 pr-3 py-2.5 text-sm transition-all duration-200 ${
+                  errors.pickup 
+                    ? "border-red-400 focus:border-red-500 focus:ring-red-100" 
+                    : focusedField === 'pickup'
+                    ? "border-primary focus:border-primary focus:ring-primary/20"
+                    : "border-slate-200 focus:border-primary focus:ring-primary/20"
                 }`}
               />
-            )}
-            {isHourly && (
-              <Input
-                type="number"
-                placeholder={t('embeddable.duration-hours')}
-                min={1}
-                value={formData.duration}
-                onChange={(e) =>
-                  setFormData((prev) => ({
-                    ...prev,
-                    duration: Math.max(1, Number(e.target.value) || 1),
-                  }))
-                }
-                className="rounded-lg border bg-white px-3 py-2 text-sm border-slate-200"
-              />
+              {errors.pickup && (
+                <div className="flex items-center gap-1 mt-1 text-xs text-red-500">
+                  <AlertCircle className="h-3 w-3" />
+                  {errors.pickup}
+                </div>
+              )}
+            </div>
+
+            {/* Dropoff Location with icon */}
+            {!isHourly && (
+              <div className="relative">
+                <div className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
+                  <MapPin className="h-4 w-4" />
+                </div>
+                <Input
+                  ref={dropoffInputRef}
+                  placeholder={t('embeddable.destination')}
+                  value={formData.dropoff}
+                  onChange={(e) =>
+                    setFormData((prev) => ({ ...prev, dropoff: e.target.value }))
+                  }
+                  onFocus={() => setFocusedField('dropoff')}
+                  onBlur={() => setFocusedField(null)}
+                  className={`rounded-xl border bg-white pl-10 pr-3 py-2.5 text-sm transition-all duration-200 ${
+                    errors.dropoff 
+                      ? "border-red-400 focus:border-red-500 focus:ring-red-100" 
+                      : focusedField === 'dropoff'
+                      ? "border-primary focus:border-primary focus:ring-primary/20"
+                      : "border-slate-200 focus:border-primary focus:ring-primary/20"
+                  }`}
+                />
+                {errors.dropoff && (
+                  <div className="flex items-center gap-1 mt-1 text-xs text-red-500">
+                    <AlertCircle className="h-3 w-3" />
+                    {errors.dropoff}
+                  </div>
+                )}
+              </div>
             )}
 
-            {/* One-way / Round-trip Toggle */}
+            {/* Duration with icon */}
+            {isHourly && (
+              <div className="relative">
+                <div className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
+                  <Clock className="h-4 w-4" />
+                </div>
+                <Input
+                  type="number"
+                  placeholder={t('embeddable.duration-hours')}
+                  min={1}
+                  value={formData.duration}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      duration: Math.max(1, Number(e.target.value) || 1),
+                    }))
+                  }
+                  className="rounded-xl border bg-white pl-10 pr-3 py-2.5 text-sm border-slate-200 focus:border-primary focus:ring-primary/20 transition-all duration-200"
+                />
+              </div>
+            )}
+
+            {/* One-way / Round-trip Toggle with reduced padding */}
             {!isHourly && (
-              <div className="flex rounded-lg border bg-slate-100 p-0.5 text-xs font-medium">
+              <div className="flex rounded-xl border bg-slate-50 p-1 text-sm font-medium">
                 <button
                   type="button"
                   onClick={() =>
                     setFormData((prev) => ({ ...prev, tripType: "oneway" }))
                   }
-                  className={`flex-1 rounded-md px-2 py-1.5 transition-all duration-300 flex items-center justify-center gap-1.5 ${
+                  className={`flex-1 rounded-lg px-2 py-2 transition-all duration-300 flex items-center justify-center gap-1.5 ${
                     formData.tripType === "oneway"
                       ? "bg-white shadow-sm text-slate-800"
-                      : "text-slate-500"
+                      : "text-slate-600 hover:text-slate-800 hover:bg-slate-100"
                   }`}
                 >
-                  <ArrowRight className="h-3 w-3" /> {t('embeddable.one-way')}
+                  <ArrowRight className="h-3.5 w-3.5" /> {t('embeddable.one-way')}
                 </button>
                 <button
                   type="button"
                   onClick={() =>
                     setFormData((prev) => ({ ...prev, tripType: "roundtrip" }))
                   }
-                  className={`flex-1 rounded-md px-2 py-1.5 transition-all duration-300 flex items-center justify-center gap-1.5 ${
+                  className={`flex-1 rounded-lg px-2 py-2 transition-all duration-300 flex items-center justify-center gap-1.5 ${
                     formData.tripType === "roundtrip"
                       ? "bg-white shadow-sm text-slate-800"
-                      : "text-slate-500"
+                      : "text-slate-600 hover:text-slate-800 hover:bg-slate-100"
                   }`}
                 >
-                  <RefreshCw className="h-3 w-3" /> {t('embeddable.round-trip')}
+                  <RefreshCw className="h-3.5 w-3.5" /> {t('embeddable.round-trip')}
                 </button>
               </div>
             )}
 
+            {/* Date and Time with icons and reduced spacing */}
             <div className="grid grid-cols-2 gap-2">
-              <Input
-                type="date"
-                value={formData.date}
-                onChange={(e) =>
-                  setFormData((prev) => ({ ...prev, date: e.target.value }))
-                }
-                className={`rounded-lg border bg-white px-3 py-2 text-sm ${
-                  errors.date ? "border-red-400" : "border-slate-200"
-                }`}
-              />
-              <Input
-                type="time"
-                value={formData.time}
-                onChange={(e) =>
-                  setFormData((prev) => ({ ...prev, time: e.target.value }))
-                }
-                className={`rounded-lg border bg-white px-3 py-2 text-sm ${
-                  errors.time ? "border-red-400" : "border-slate-200"
-                }`}
-              />
+              <div className="relative">
+                <div className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
+                  <Calendar className="h-4 w-4" />
+                </div>
+                <Input
+                  type="date"
+                  value={formData.date}
+                  onChange={(e) =>
+                    setFormData((prev) => ({ ...prev, date: e.target.value }))
+                  }
+                  className={`rounded-xl border bg-white pl-10 pr-3 py-2.5 text-sm transition-all duration-200 ${
+                    errors.date 
+                      ? "border-red-400 focus:border-red-500 focus:ring-red-100" 
+                      : "border-slate-200 focus:border-primary focus:ring-primary/20"
+                  }`}
+                />
+                {errors.date && (
+                  <div className="flex items-center gap-1 mt-1 text-xs text-red-500">
+                    <AlertCircle className="h-3 w-3" />
+                    {errors.date}
+                  </div>
+                )}
+              </div>
+              <div className="relative">
+                <div className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
+                  <Clock className="h-4 w-4" />
+                </div>
+                <Input
+                  type="time"
+                  value={formData.time}
+                  onChange={(e) =>
+                    setFormData((prev) => ({ ...prev, time: e.target.value }))
+                  }
+                  className={`rounded-xl border bg-white pl-10 pr-3 py-2.5 text-sm transition-all duration-200 ${
+                    errors.time 
+                      ? "border-red-400 focus:border-red-500 focus:ring-red-100" 
+                      : "border-slate-200 focus:border-primary focus:ring-primary/20"
+                  }`}
+                />
+                {errors.time && (
+                  <div className="flex items-center gap-1 mt-1 text-xs text-red-500">
+                    <AlertCircle className="h-3 w-3" />
+                    {errors.time}
+                  </div>
+                )}
+              </div>
             </div>
 
-            <Input
-              type="number"
-              placeholder={t('embeddable.passengers')}
-              min={1}
-              max={8}
-              value={formData.passengers}
-              onChange={(e) =>
-                setFormData((prev) => ({
-                  ...prev,
-                  passengers: Math.min(
-                    8,
-                    Math.max(1, Number(e.target.value) || 1)
-                  ),
-                }))
-              }
-              className="rounded-lg border bg-white px-3 py-2 text-sm border-slate-200"
-            />
+            {/* Passengers with icon */}
+            <div className="relative">
+              <div className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
+                <Users className="h-4 w-4" />
+              </div>
+              <Input
+                type="number"
+                placeholder={t('embeddable.passengers')}
+                min={1}
+                max={8}
+                value={formData.passengers}
+                onChange={(e) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    passengers: Math.min(
+                      8,
+                      Math.max(1, Number(e.target.value) || 1)
+                    ),
+                  }))
+                }
+                className="rounded-xl border bg-white pl-10 pr-3 py-2.5 text-sm border-slate-200 focus:border-primary focus:ring-primary/20 transition-all duration-200"
+              />
+            </div>
           </div>
 
+          {/* Submit Button with reduced padding */}
           <Button
             type="submit"
-            className="w-full rounded-full bg-primary py-2.5 text-sm font-semibold tracking-wide text-white hover:bg-primary"
+            className="w-full rounded-xl bg-primary py-2.5 text-sm font-semibold tracking-wide text-white hover:bg-primary/90 transition-all duration-200 shadow-md hover:shadow-lg disabled:opacity-70 disabled:cursor-not-allowed"
             disabled={isSubmitting}
           >
-            {isSubmitting ? t('embeddable.redirecting') : t('embeddable.search')}
+            {isSubmitting ? (
+              <div className="flex items-center justify-center gap-2">
+                <div className="h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                {t('embeddable.redirecting')}
+              </div>
+            ) : (
+              <div className="flex items-center justify-center gap-2">
+                {t('embeddable.search')}
+                <ArrowRight className="h-4 w-4" />
+              </div>
+            )}
           </Button>
         </form>
 
-        <footer className="mt-2 text-center text-[10px] leading-relaxed text-slate-400">
-          {t('embeddable.by-submitting-my-data-i-agree-to-be-contacted')} </footer>
+        {/* Footer with reduced margin */}
+        {/* <footer className="mt-3 text-center text-xs leading-relaxed text-slate-400">
+          {t('embeddable.by-submitting-my-data-i-agree-to-be-contacted')}
+        </footer> */}
       </Card>
     </div>
   );

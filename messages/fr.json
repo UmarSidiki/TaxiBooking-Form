@@ -152,7 +152,8 @@
     "transfer-to-our-bank-account": "Virement sur notre compte bancaire",
     "try-again": "Essayer à nouveau",
     "what-and-apos-s-included": "Quoi",
-    "you-will-pay-eur": "Vous paierez €"
+    "you-will-pay-eur": "Vous paierez €",
+    "each": "chaque"
   },
   "booking-failed-data-message": "Échec de la réservation : {0}",
   "embeddable": {

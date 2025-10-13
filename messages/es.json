@@ -152,7 +152,8 @@
     "transfer-to-our-bank-account": "Transferencia a nuestra cuenta bancaria",
     "try-again": "Intentar otra vez",
     "what-and-apos-s-included": "Qué",
-    "you-will-pay-eur": "Pagarás €"
+    "you-will-pay-eur": "Pagarás €",
+    "each": "cada"
   },
   "booking-failed-data-message": "Reserva fallida: {0}",
   "embeddable": {

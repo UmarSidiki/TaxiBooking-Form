@@ -152,7 +152,8 @@
     "instant-confirmation": "Instant Confirmation",
     "secure-payment": "Secure Payment",
     "free-cancellation-24h": "Free Cancellation (24h)",
-    "24-7-customer-support": "24/7 Customer Support"
+    "24-7-customer-support": "24/7 Customer Support",
+    "each": "each"
   },
   "booking-failed-data-message": "Booking failed: {0}",
   "embeddable": {

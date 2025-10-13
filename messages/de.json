@@ -152,7 +152,8 @@
     "transfer-to-our-bank-account": "Überweisung auf unser Bankkonto",
     "try-again": "Versuchen Sie es erneut",
     "what-and-apos-s-included": "Was",
-    "you-will-pay-eur": "Sie zahlen €"
+    "you-will-pay-eur": "Sie zahlen €",
+    "each": "jede"
   },
   "booking-failed-data-message": "Buchung fehlgeschlagen: {0}",
   "embeddable": {

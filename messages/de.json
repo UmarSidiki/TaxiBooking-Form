@@ -1,4 +1,5 @@
 {
+  "websiteName": "Website Name",
   "FormContainer": {
     "StepIndicator": "Schritt {currentStep} von 3",
     "Title": "Premium-Transportservice",
@@ -87,7 +88,6 @@
     "your-trip": "Ihre Reise"
   },
   "not-set": "Nicht festgelegt",
-  "websiteName": "Swiss Ride SARL",
   "Step3": {
     "24-7-customer-support": "Kundensupport rund um die Uhr",
     "account-name": "Kontoname",

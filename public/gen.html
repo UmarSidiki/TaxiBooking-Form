@@ -148,6 +148,12 @@
             box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
         }
 
+        input:disabled {
+            background-color: var(--secondary-color);
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
         .input-hint {
             font-size: 0.85rem;
             color: var(--text-secondary);
@@ -201,6 +207,31 @@
             display: flex;
             gap: 15px;
             flex-wrap: wrap;
+        }
+
+        .version-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-left: 8px;
+        }
+
+        .version-badge.latest {
+            background-color: rgba(16, 185, 129, 0.1);
+            color: var(--success-color);
+        }
+
+        .version-badge.stable {
+            background-color: rgba(79, 70, 229, 0.1);
+            color: var(--primary-color);
+        }
+
+        .version-badge.beta {
+            background-color: rgba(245, 158, 11, 0.1);
+            color: var(--warning-color);
         }
 
         .generate-btn {
@@ -376,6 +407,12 @@
             border-left: 4px solid var(--success-color);
         }
 
+        .notification.warning {
+            background-color: rgba(245, 158, 11, 0.1);
+            color: var(--warning-color);
+            border-left: 4px solid var(--warning-color);
+        }
+
         .notification i {
             font-size: 20px;
         }
@@ -401,6 +438,26 @@
 
         .footer a:hover {
             text-decoration: underline;
+        }
+
+        .domain-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 5px;
+            font-size: 0.85rem;
+        }
+
+        .domain-status.success {
+            color: var(--success-color);
+        }
+
+        .domain-status.warning {
+            color: var(--warning-color);
+        }
+
+        .domain-status i {
+            font-size: 14px;
         }
 
         @media (max-width: 768px) {
@@ -464,9 +521,32 @@
                             <i class="fas fa-globe"></i>
                         </div>
                     </div>
+                    <div id="domainStatus" class="domain-status">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        <span>Detecting your domain...</span>
+                    </div>
                     <div class="input-hint">
                         <i class="fas fa-info-circle"></i>
-                        The domain where your Next.js app is hosted
+                        The domain where your Next.js app is hosted (auto-detected)
+                    </div>
+                </div>
+
+                <!-- Widget Version -->
+                <div class="form-group">
+                    <label for="widgetVersion">Widget Version <span class="required">*</span></label>
+                    <div class="input-group">
+                        <select id="widgetVersion">
+                            <option value="v1">v1 <span class="version-badge stable">Stable</span></option>
+                            <option value="v2">v2 <span class="version-badge latest">Latest</span></option>
+                            <option value="v3">v3 <span class="version-badge beta">Beta</span></option>
+                        </select>
+                        <div class="input-addon">
+                            <i class="fas fa-code-branch"></i>
+                        </div>
+                    </div>
+                    <div class="input-hint">
+                        <i class="fas fa-info-circle"></i>
+                        Select the widget version that best fits your needs
                     </div>
                 </div>
 
@@ -656,7 +736,7 @@
                     <div class="preview-dot green"></div>
                     <span style="margin-left: 10px; color: var(--text-secondary); font-size: 14px;">Widget Preview</span>
                 </div>
-                <iframe id="previewIframe" class="preview-iframe" src="http://localhost:3000/en/embeddable/v1"></iframe>
+                <iframe id="previewIframe" class="preview-iframe" src=""></iframe>
             </div>
         </div>
 
@@ -733,6 +813,74 @@
         // Form elements
         const embedForm = document.getElementById('embedForm');
         const outputSection = document.getElementById('outputSection');
+        const domainInput = document.getElementById('domain');
+        const domainStatus = document.getElementById('domainStatus');
+
+        // Auto-detect domain on page load
+        window.addEventListener('DOMContentLoaded', () => {
+            detectDomain();
+        });
+
+        function detectDomain() {
+            try {
+                // Get the current domain
+                let currentDomain = window.location.origin;
+                
+                // Check if we're on localhost
+                if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+                    // For localhost, try to use a default production domain or keep localhost
+                    currentDomain = 'https://yourdomain.com'; // Replace with your actual production domain
+                    
+                    // Show warning for localhost
+                    domainStatus.className = 'domain-status warning';
+                    domainStatus.innerHTML = `
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <span>Running on localhost. Using default domain. Please update if needed.</span>
+                    `;
+                } else {
+                    // Show success for detected domain
+                    domainStatus.className = 'domain-status success';
+                    domainStatus.innerHTML = `
+                        <i class="fas fa-check-circle"></i>
+                        <span>Domain detected: ${currentDomain}</span>
+                    `;
+                }
+                
+                // Set the domain input value
+                domainInput.value = currentDomain;
+                
+                // Make the field readonly if domain was successfully detected
+                if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
+                    domainInput.setAttribute('readonly', true);
+                }
+                
+                // Update the preview iframe with the detected domain
+                updatePreviewIframe();
+                
+            } catch (error) {
+                console.error('Error detecting domain:', error);
+                domainStatus.className = 'domain-status warning';
+                domainStatus.innerHTML = `
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <span>Could not detect domain. Please enter manually.</span>
+                `;
+            }
+        }
+
+        function updatePreviewIframe() {
+            const widgetVersion = document.getElementById('widgetVersion').value;
+            const locale = document.getElementById('locale').value;
+            const domain = domainInput.value.trim();
+            
+            if (domain) {
+                const previewUrl = `${domain}/${locale}/embeddable/${widgetVersion}`;
+                document.getElementById('previewIframe').src = previewUrl;
+            }
+        }
+
+        // Update preview when version or locale changes
+        document.getElementById('widgetVersion').addEventListener('change', updatePreviewIframe);
+        document.getElementById('locale').addEventListener('change', updatePreviewIframe);
 
         // Generate embed code
         embedForm.addEventListener('submit', (e) => {
@@ -742,6 +890,7 @@
 
         function generateCode() {
             const domain = document.getElementById('domain').value.trim();
+            const widgetVersion = document.getElementById('widgetVersion').value;
             const locale = document.getElementById('locale').value;
             const iframeWidth = document.getElementById('iframeWidth').value;
             const iframeHeight = document.getElementById('iframeHeight').value;
@@ -749,8 +898,8 @@
             const enableSandbox = document.getElementById('enableSandbox').checked;
             const enableLazyLoading = document.getElementById('enableLazyLoading').checked;
             
-            // Build URL
-            let url = `${domain}/${locale}/embeddable/v1`;
+            // Build URL with version
+            let url = `${domain}/${locale}/embeddable/${widgetVersion}`;
 
             // Determine width value
             const widthValue = iframeWidth.includes('%') ? iframeWidth : `${iframeWidth}px`;
@@ -772,7 +921,7 @@
             // Generate embed code
             const embedCode = `<iframe${classAttr}
   src="${url}"
-  title="Interactive Booking Widget"
+  title="Interactive Booking Widget (${widgetVersion})"
   width="${widthValue}"
   height="${heightValue}"${loadingAttr}
   style="border: none"${sandboxAttr}
@@ -805,7 +954,6 @@
             document.getElementById('embedCode').textContent = embedCode;
             document.getElementById('cssCode').textContent = cssCode;
             document.getElementById('directLink').textContent = url;
-            document.getElementById('previewIframe').src = url;
             
             outputSection.classList.add('visible');
             
@@ -819,6 +967,7 @@
         function generateAdvancedCode() {
             // Get all form values including advanced options
             const domain = document.getElementById('domain').value.trim();
+            const widgetVersion = document.getElementById('widgetVersion').value;
             const locale = document.getElementById('locale').value;
             const iframeWidth = document.getElementById('iframeWidth').value;
             const iframeHeight = document.getElementById('iframeHeight').value;
@@ -831,8 +980,8 @@
             const referrerPolicy = document.getElementById('referrerPolicy').value;
             const loadingStrategy = document.querySelector('input[name="loadingStrategy"]:checked').value;
             
-            // Build URL with custom parameters
-            let url = `${domain}/${locale}/embeddable/v1`;
+            // Build URL with version and custom parameters
+            let url = `${domain}/${locale}/embeddable/${widgetVersion}`;
             const params = new URLSearchParams();
             
             if (widgetId) params.append('widgetId', widgetId);
@@ -875,7 +1024,7 @@
             // Generate embed code
             const embedCode = `<iframe${classAttr}
   src="${url}"
-  title="Interactive Booking Widget"
+  title="Interactive Booking Widget (${widgetVersion})"
   width="${widthValue}"
   height="${heightValue}"${loadingAttr}${referrerAttr}
   style="border: none"${sandboxAttr}
@@ -908,7 +1057,6 @@
             document.getElementById('embedCode').textContent = embedCode;
             document.getElementById('cssCode').textContent = cssCode;
             document.getElementById('directLink').textContent = url;
-            document.getElementById('previewIframe').src = url;
             
             outputSection.classList.add('visible');
             

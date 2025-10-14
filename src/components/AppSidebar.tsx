@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { Calendar, Car, Home, PersonStanding, Settings } from "lucide-react";
+import { Calendar, Car, Home, Settings } from "lucide-react";
 
 import {
   Sidebar,
@@ -39,11 +39,11 @@ export function AppSidebar({ locale }: { locale: string }) {
       href: (locale: string) => `/${locale}/dashboard/fleet`,
       icon: Car,
     },
-    {
-      title: t("Sidebar.partners"),
-      href: (locale: string) => `/${locale}/dashboard/partners`,
-      icon: PersonStanding,
-    },
+    // {
+    //   title: t("Sidebar.partners"),
+    //   href: (locale: string) => `/${locale}/dashboard/partners`,
+    //   icon: PersonStanding,
+    // },
     {
       title: t("Sidebar.settings"),
       href: (locale: string) => `/${locale}/dashboard/settings`,

@@ -47,19 +47,20 @@ import {
   Eye,
   Trash2,
 } from "lucide-react";
-import { Booking } from "@/models/Booking";
+import { IBooking } from "@/models/Booking";
+import { apiGet, apiPatch } from "@/utils/api";
 
 export default function RidesPage() {
   const t = useTranslations();
-  const [bookings, setBookings] = useState<Booking[]>([]);
-  const [filteredBookings, setFilteredBookings] = useState<Booking[]>([]);
+  const [bookings, setBookings] = useState<IBooking[]>([]);
+  const [filteredBookings, setFilteredBookings] = useState<IBooking[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("upcoming");
   const [cancelingId, setCancelingId] = useState<string | null>(null);
   const [showCancelDialog, setShowCancelDialog] = useState(false);
-  const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
+  const [selectedBooking, setSelectedBooking] = useState<IBooking | null>(null);
   const [refundPercentage, setRefundPercentage] = useState(100);
-  const [detailBooking, setDetailBooking] = useState<Booking | null>(null);
+  const [detailBooking, setDetailBooking] = useState<IBooking | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [paymentFilter, setPaymentFilter] = useState("all");
@@ -88,8 +89,7 @@ export default function RidesPage() {
   const fetchBookings = async () => {
     setIsLoading(true);
     try {
-      const response = await fetch("/api/bookings");
-      const data = await response.json();
+      const data = await apiGet<{ success: boolean; data: IBooking[] }>("/api/bookings");
       if (data.success) {
         setBookings(data.data);
       }
@@ -102,7 +102,7 @@ export default function RidesPage() {
 
   const filterBookings = useMemo(() => {
     return () => {
-      let filtered: Booking[] = [];
+      let filtered: IBooking[] = [];
 
       // First filter by tab
       switch (activeTab) {
@@ -178,7 +178,7 @@ export default function RidesPage() {
     };
   }, [bookings, activeTab, searchQuery, statusFilter, paymentFilter]);
 
-  const handleCancelClick = (booking: Booking) => {
+  const handleCancelClick = (booking: IBooking) => {
     setSelectedBooking(booking);
     setRefundPercentage(100);
     setShowCancelDialog(true);
@@ -189,16 +189,10 @@ export default function RidesPage() {
 
     setCancelingId(selectedBooking._id.toString());
     try {
-      const response = await fetch(`/api/bookings/${selectedBooking._id}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          action: "cancel",
-          refundPercentage: refundPercentage,
-        }),
+      const data = await apiPatch<{ success: boolean; message: string; data: IBooking }>(`/api/bookings/${selectedBooking._id}`, {
+        action: "cancel",
+        refundPercentage: refundPercentage,
       });
-
-      const data = await response.json();
 
       if (data.success) {
         // Update local state
@@ -259,7 +253,7 @@ export default function RidesPage() {
     }
   };
 
-  const getStatusBadge = (booking: Booking) => {
+  const getStatusBadge = (booking: IBooking) => {
     const badgeClasses =
       "text-white font-semibold flex items-center gap-1.5 px-3 py-1";
     if (booking.status === "canceled") {
@@ -288,7 +282,7 @@ export default function RidesPage() {
     );
   };
 
-  const canRefund = (booking: Booking) => {
+  const canRefund = (booking: IBooking) => {
     return (
       booking.paymentStatus === "completed" &&
       booking.paymentMethod &&
@@ -297,7 +291,7 @@ export default function RidesPage() {
     );
   };
 
-  const BookingCard = ({ booking }: { booking: Booking }) => (
+  const BookingCard = ({ booking }: { booking: IBooking }) => (
     <Card className="group hover:shadow-lg transition-all duration-300 border border-border hover:border-primary/20 bg-card">
       <CardContent className="p-4 sm:p-6">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 lg:gap-6">

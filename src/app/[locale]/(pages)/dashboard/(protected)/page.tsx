@@ -19,6 +19,7 @@ import {
   Settings,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { apiGet } from "@/utils/api";
 
 interface DashboardStats {
   totalBookings: number;
@@ -43,8 +44,7 @@ export default function DashboardPage() {
   useEffect(() => {
     const fetchDashboardStats = async () => {
       try {
-        const response = await fetch("/api/dashboard/stats");
-        const data = await response.json();
+        const data = await apiGet<{ success: boolean; data: DashboardStats; message?: string }>("/api/dashboard/stats");
 
         if (data.success) {
           setStats(data.data);

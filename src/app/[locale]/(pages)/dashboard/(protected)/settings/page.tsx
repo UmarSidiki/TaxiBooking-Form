@@ -8,6 +8,7 @@ import { Save, Loader2, Palette, Square, Circle, MapPin, CreditCard, Banknote, B
 import { ISetting } from '@/models/Setting';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useTranslations } from 'next-intl';
+import { apiGet, apiPost } from '@/utils/api';
 
 const SettingsPage = () => {
   const [settings, setSettings] = useState<Partial<ISetting>>({});
@@ -20,8 +21,7 @@ const SettingsPage = () => {
     const fetchSettings = async () => {
       setIsFetching(true);
       try {
-        const response = await fetch('/api/settings');
-        const data = await response.json();
+        const data = await apiGet<{ success: boolean; data: Partial<ISetting> }>('/api/settings');
         if (data.success) {
           setSettings(data.data);
         }
@@ -38,12 +38,7 @@ const SettingsPage = () => {
   const handleSubmit = async () => {
     setIsLoading(true);
     try {
-      const response = await fetch('/api/settings', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(settings),
-      });
-      const data = await response.json();
+      const data = await apiPost<{ success: boolean; message: string }>('/api/settings', settings);
       if (data.success) {
         alert(t('Dashboard.Settings.settings-saved-successfully'));
         // Optional: trigger a global state update or page reload to apply changes

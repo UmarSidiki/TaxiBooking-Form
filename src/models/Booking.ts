@@ -1,7 +1,6 @@
-import { ObjectId } from "mongodb";
+import mongoose, { Schema, Document } from "mongoose";
 
-export interface Booking {
-  _id?: ObjectId;
+export interface IBooking extends Document {
   tripId: string;
   pickup: string;
   dropoff?: string;
@@ -33,6 +32,56 @@ export interface Booking {
   createdAt: Date;
   updatedAt: Date;
 }
+
+const BookingSchema: Schema = new Schema({
+  tripId: { type: String, required: true, unique: true },
+  pickup: { type: String, required: true },
+  dropoff: { type: String },
+  tripType: { type: String, enum: ["oneway", "roundtrip"], required: true },
+  date: { type: String, required: true },
+  time: { type: String, required: true },
+  passengers: { type: Number, required: true },
+  selectedVehicle: { type: String, required: true },
+  vehicleDetails: {
+    name: { type: String },
+    price: { type: String },
+    seats: { type: String },
+  },
+  childSeats: { type: Number, default: 0 },
+  babySeats: { type: Number, default: 0 },
+  notes: { type: String, default: "" },
+  firstName: { type: String, required: true },
+  lastName: { type: String, required: true },
+  email: { type: String, required: true },
+  phone: { type: String, required: true },
+  paymentMethod: { type: String, default: "stripe" },
+  paymentStatus: {
+    type: String,
+    enum: ["pending", "completed", "failed", "refunded"],
+    default: "pending"
+  },
+  stripePaymentIntentId: { type: String },
+  status: {
+    type: String,
+    enum: ["upcoming", "completed", "canceled"],
+    default: "upcoming"
+  },
+  totalAmount: { type: Number },
+  refundAmount: { type: Number },
+  refundPercentage: { type: Number },
+  canceledAt: { type: Date },
+}, {
+  timestamps: true,
+});
+
+// Create indexes for better performance
+BookingSchema.index({ createdAt: -1 });
+BookingSchema.index({ status: 1 });
+BookingSchema.index({ tripId: 1 });
+
+const Booking = mongoose.models.Booking || mongoose.model<IBooking>("Booking", BookingSchema);
+
+export default Booking;
 
 export interface BookingInput {
   bookingType?: "destination" | "hourly";

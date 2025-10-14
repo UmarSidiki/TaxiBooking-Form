@@ -1,6 +1,7 @@
 "use client";
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { apiFetch } from "@/utils/api";
 import { IVehicle } from '@/models/Vehicle';
 
 export interface FormData {
@@ -225,8 +226,7 @@ export function BookingFormProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const fetchVehicles = async () => {
       try {
-        const response = await fetch('/api/vehicles?isActive=true');
-        const data = await response.json();
+        const data = await apiFetch<{ success: boolean; data: IVehicle[] }>('/api/vehicles?isActive=true');
         if (data.success) {
           setVehicles(data.data);
         }

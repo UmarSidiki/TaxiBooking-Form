@@ -1,6 +1,7 @@
 "use client";
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import { apiFetch } from "@/utils/api";
 import type { ISetting } from "@/models/Setting";
 import type { ThemeSettings } from "@/lib/theme-settings";
 
@@ -27,8 +28,7 @@ export function ThemeProvider({ children, initialSettings = null }: ThemeProvide
     if (!initialSettings) {
       const fetchSettings = async () => {
         try {
-          const response = await fetch("/api/settings");
-          const data = await response.json();
+          const data = await apiFetch<{ success: boolean; data: Partial<ISetting> }>("/api/settings");
           if (data.success) {
             setSettings(data.data);
           }

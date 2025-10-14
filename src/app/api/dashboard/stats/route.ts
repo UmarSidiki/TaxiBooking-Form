@@ -1,11 +1,10 @@
 import { NextResponse } from "next/server";
-import { Booking } from "@/models/Booking";
-import { getMongoDb } from "@/lib/mongodb";
+import { connectDB } from "@/lib/mongoose";
+import Booking from "@/models/Booking";
 
 export async function GET() {
   try {
-    const db = await getMongoDb();
-    const collection = db.collection<Booking>("bookings");
+    await connectDB();
 
     // Get current date and last month date
     const now = new Date();
@@ -13,7 +12,7 @@ export async function GET() {
     const currentMonth = new Date(now.getFullYear(), now.getMonth(), 1);
 
     // Fetch all bookings
-    const allBookings = await collection.find({}).sort({ createdAt: -1 }).toArray();
+    const allBookings = await Booking.find({}).sort({ createdAt: -1 });
 
     // Filter bookings for current month
     const currentMonthBookings = allBookings.filter((booking) => {

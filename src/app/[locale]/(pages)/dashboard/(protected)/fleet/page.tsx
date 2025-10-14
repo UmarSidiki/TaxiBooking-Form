@@ -37,6 +37,7 @@ import {
 } from "lucide-react";
 import { IVehicle } from "@/models/Vehicle";
 import Image from "next/image";
+import { apiGet, apiPost, apiPatch, apiDelete } from "@/utils/api";
 
 interface VehicleForm
   extends Omit<IVehicle, "_id" | "createdAt" | "updatedAt"> {
@@ -100,8 +101,7 @@ const FleetPage = () => {
   const fetchVehicles = async () => {
     try {
       setIsLoading(true);
-      const response = await fetch("/api/vehicles");
-      const data = await response.json();
+      const data = await apiGet<{ success: boolean; data: IVehicle[] }>("/api/vehicles");
       if (data.success) {
         setVehicles(data.data);
       }
@@ -119,17 +119,10 @@ const FleetPage = () => {
 
     try {
       const url = editingId ? `/api/vehicles/${editingId}` : "/api/vehicles";
-      const method = editingId ? "PUT" : "POST";
 
-      const response = await fetch(url, {
-        method,
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
-
-      const data = await response.json();
+      const data = editingId
+        ? await apiPatch<{ success: boolean; message: string }>(url, formData)
+        : await apiPost<{ success: boolean; message: string }>(url, formData);
 
       if (data.success) {
         alert(data.message);
@@ -171,11 +164,7 @@ const FleetPage = () => {
 
     try {
       setIsLoading(true);
-      const response = await fetch(`/api/vehicles/${id}`, {
-        method: "DELETE",
-      });
-
-      const data = await response.json();
+      const data = await apiDelete<{ success: boolean; message: string }>(`/api/vehicles/${id}`);
 
       if (data.success) {
         alert(data.message);

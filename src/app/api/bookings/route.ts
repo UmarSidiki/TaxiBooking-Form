@@ -1,28 +1,26 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getMongoDb } from "@/lib/mongodb";
-import { Booking } from "@/models/Booking";
+import { connectDB } from "@/lib/mongoose";
+import Booking, { IBooking } from "@/models/Booking";
 
 // GET all bookings
 export async function GET(request: NextRequest) {
   try {
+    await connectDB();
+
     const searchParams = request.nextUrl.searchParams;
     const status = searchParams.get('status'); // upcoming, completed, canceled
-    
-    const db = await getMongoDb();
-    const collection = db.collection<Booking>("bookings");
-    
+
     // Build query
-    const query: Partial<Booking> = {};
+    const query: Partial<Pick<IBooking, 'status'>> = {};
     if (status) {
       query.status = status as "upcoming" | "completed" | "canceled";
     }
-    
+
     // Fetch bookings sorted by date (newest first)
-    const bookings = await collection
+    const bookings = await Booking
       .find(query)
-      .sort({ createdAt: -1 })
-      .toArray();
-    
+      .sort({ createdAt: -1 });
+
     return NextResponse.json({
       success: true,
       data: bookings,

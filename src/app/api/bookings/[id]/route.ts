@@ -1,11 +1,82 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getMongoDb } from "@/lib/mongodb";
-import { Booking } from "@/models/Booking";
-import { ObjectId } from "mongodb";
+import Booking, { IBooking } from "@/models/Booking";
 import Stripe from "stripe";
 import Setting from "@/models/Setting";
 import { connectDB } from "@/lib/mongoose";
 import { sendOrderCancellationEmail } from "@/controllers/email/OrderCancellation";
+
+// Helper function to process Stripe refund
+async function processStripeRefund(
+  booking: IBooking,
+  refundPercentage: number,
+  settings: { stripeSecretKey?: string } | null
+): Promise<{ success: boolean; refundAmount?: number; error?: string }> {
+  try {
+    if (!booking.stripePaymentIntentId) {
+      return { success: false, error: "No payment intent ID found for refund" };
+    }
+
+    const stripeSecretKey = settings?.stripeSecretKey || process.env.STRIPE_SECRET_KEY;
+
+    if (!stripeSecretKey) {
+      return { success: false, error: "Stripe is not configured. Cannot process refund." };
+    }
+
+    const stripeApiVersion = (process.env.STRIPE_API_VERSION as Stripe.LatestApiVersion);
+    const stripe = new Stripe(stripeSecretKey, { apiVersion: stripeApiVersion });
+
+    const paymentIntent = (await stripe.paymentIntents.retrieve(
+      booking.stripePaymentIntentId,
+      { expand: ["latest_charge"] }
+    )) as Stripe.PaymentIntent;
+
+    const baseAmount = typeof booking.totalAmount === "number" ? booking.totalAmount : 0;
+    const refundAmount = baseAmount * (refundPercentage / 100);
+    const refundAmountCents = Math.round(refundAmount * 100);
+
+    if (refundAmountCents <= 0) {
+      return { success: false, error: "Refund amount must be greater than zero" };
+    }
+
+    const latestCharge = paymentIntent.latest_charge;
+    const chargeObject = latestCharge && typeof latestCharge !== "string" ? latestCharge : undefined;
+    const amountReceivedCents = paymentIntent.amount_received ?? chargeObject?.amount ?? paymentIntent.amount ?? 0;
+    const amountAlreadyRefundedCents = chargeObject?.amount_refunded ?? 0;
+    const refundableCents = Math.max(amountReceivedCents - amountAlreadyRefundedCents, 0);
+
+    if (refundableCents <= 0) {
+      return { success: false, error: "No refundable amount remains for this payment" };
+    }
+
+    const amountToRefundCents = Math.min(refundAmountCents, refundableCents);
+
+    if (amountToRefundCents <= 0) {
+      return { success: false, error: "Calculated refund is zero" };
+    }
+
+    // Process refund with Stripe
+    const refund = await stripe.refunds.create({
+      payment_intent: booking.stripePaymentIntentId,
+      amount: amountToRefundCents,
+      reason: 'requested_by_customer',
+      metadata: {
+        booking_id: booking.id,
+        trip_id: booking.tripId,
+        refund_percentage: refundPercentage.toString(),
+      },
+    });
+
+    if (refund.status === 'succeeded' || refund.status === 'pending') {
+      return { success: true, refundAmount: amountToRefundCents / 100 };
+    } else {
+      return { success: false, error: `Refund failed with status: ${refund.status}` };
+    }
+  } catch (stripeError: unknown) {
+    console.error("Stripe refund error:", stripeError);
+    const errorMessage = stripeError instanceof Error ? stripeError.message : 'Unknown error';
+    return { success: false, error: `Failed to process refund: ${errorMessage}` };
+  }
+}
 
 // GET single booking
 export async function GET(
@@ -13,19 +84,18 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    await connectDB();
     const { id } = await params;
-    const db = await getMongoDb();
-    const collection = db.collection<Booking>("bookings");
-    
-    const booking = await collection.findOne({ _id: new ObjectId(id) });
-    
+
+    const booking = await Booking.findById(id);
+
     if (!booking) {
       return NextResponse.json(
         { success: false, message: "Booking not found" },
         { status: 404 }
       );
     }
-    
+
     return NextResponse.json({
       success: true,
       data: booking,
@@ -40,6 +110,34 @@ export async function GET(
       { status: 500 }
     );
   }
+}
+
+// Helper function to create cancellation email data
+function createCancellationEmailData(booking: IBooking, updateData: Partial<IBooking>) {
+  return {
+    tripId: booking.tripId,
+    pickup: booking.pickup,
+    dropoff: booking.dropoff || 'N/A (Hourly booking)',
+    tripType: booking.tripType,
+    date: booking.date,
+    time: booking.time,
+    passengers: booking.passengers,
+    selectedVehicle: booking.selectedVehicle,
+    vehicleDetails: booking.vehicleDetails,
+    childSeats: booking.childSeats,
+    babySeats: booking.babySeats,
+    notes: booking.notes,
+    firstName: booking.firstName,
+    lastName: booking.lastName,
+    email: booking.email,
+    phone: booking.phone,
+    totalAmount: typeof booking.totalAmount === "number" ? booking.totalAmount : 0,
+    refundAmount: typeof updateData.refundAmount === "number" ? updateData.refundAmount : booking.refundAmount || 0,
+    refundPercentage: typeof updateData.refundPercentage === "number" ? updateData.refundPercentage : booking.refundPercentage,
+    paymentMethod: booking.paymentMethod,
+    paymentStatus: booking.paymentStatus,
+    canceledAt: updateData.canceledAt ?? booking.canceledAt,
+  };
 }
 
 // PATCH update booking (cancel, refund, complete)
@@ -86,11 +184,8 @@ export async function PATCH(
       );
     }
     
-    const db = await getMongoDb();
-    const collection = db.collection<Booking>("bookings");
-    
     // Fetch the booking
-    const booking = await collection.findOne({ _id: new ObjectId(id) });
+    const booking = await Booking.findById(id);
     
     if (!booking) {
       return NextResponse.json(
@@ -99,7 +194,7 @@ export async function PATCH(
       );
     }
     
-    const updateData: Partial<Booking> = {
+    const updateData: Partial<IBooking> = {
       updatedAt: new Date(),
     };
     
@@ -107,173 +202,56 @@ export async function PATCH(
     if (rawAction === "cancel") {
       updateData.status = 'canceled';
       updateData.canceledAt = new Date();
-      
-      // Handle refund if payment was completed and via Stripe
-      if (
-        booking.paymentStatus === 'completed' && 
-        booking.paymentMethod === 'stripe' &&
-        booking.stripePaymentIntentId
-      ) {
-        try {
-          // Get Stripe configuration
-          await connectDB();
-          const settings = await Setting.findOne();
-          const stripeSecretKey = settings?.stripeSecretKey || process.env.STRIPE_SECRET_KEY;
 
-          if (!stripeSecretKey) {
+      // Handle refund if payment was completed
+      if (booking.paymentStatus === 'completed') {
+        if (booking.paymentMethod === 'stripe' && booking.stripePaymentIntentId) {
+          // Process Stripe refund
+          const settings = await Setting.findOne();
+          const refundResult = await processStripeRefund(booking, normalizedRefundPercentage ?? 100, settings);
+
+          if (!refundResult.success) {
             return NextResponse.json(
-              { success: false, message: "Stripe is not configured. Cannot process refund." },
+              { success: false, message: refundResult.error },
               { status: 500 }
             );
           }
 
-          const stripeApiVersion =
-            (process.env.STRIPE_API_VERSION as Stripe.LatestApiVersion);
-
-          const stripe = new Stripe(stripeSecretKey, {
-            apiVersion: stripeApiVersion,
-          });
-
-          const paymentIntent = (await stripe.paymentIntents.retrieve(
-            booking.stripePaymentIntentId,
-            { expand: ["latest_charge"] }
-          )) as Stripe.PaymentIntent;
-
-          const percentage =
-            normalizedRefundPercentage !== undefined ? normalizedRefundPercentage : 100;
+          updateData.refundPercentage = normalizedRefundPercentage ?? 100;
+          updateData.refundAmount = refundResult.refundAmount;
+          updateData.paymentStatus = 'refunded';
+        } else if (booking.paymentMethod === 'bank_transfer') {
+          // For bank transfers, just mark the refund in the system
+          const percentage = normalizedRefundPercentage ?? 100;
           const baseAmount = typeof booking.totalAmount === "number" ? booking.totalAmount : 0;
           const refundAmount = baseAmount * (percentage / 100);
-          const refundAmountCents = Math.round(refundAmount * 100);
 
-          if (refundAmountCents <= 0) {
-            return NextResponse.json(
-              { success: false, message: "Refund amount must be greater than zero" },
-              { status: 400 }
-            );
-          }
-
-          const latestCharge = paymentIntent.latest_charge;
-          const chargeObject =
-            latestCharge && typeof latestCharge !== "string" ? latestCharge : undefined;
-          const amountReceivedCents =
-            paymentIntent.amount_received ?? chargeObject?.amount ?? paymentIntent.amount ?? 0;
-          const amountAlreadyRefundedCents = chargeObject?.amount_refunded ?? 0;
-          const refundableCents = Math.max(amountReceivedCents - amountAlreadyRefundedCents, 0);
-
-          if (refundableCents <= 0) {
-            return NextResponse.json(
-              { success: false, message: "No refundable amount remains for this payment" },
-              { status: 400 }
-            );
-          }
-
-          const amountToRefundCents = Math.min(refundAmountCents, refundableCents);
-
-          if (amountToRefundCents <= 0) {
-            return NextResponse.json(
-              { success: false, message: "Calculated refund is zero" },
-              { status: 400 }
-            );
-          }
-
-          // Process refund with Stripe
-          const refund = await stripe.refunds.create({
-            payment_intent: booking.stripePaymentIntentId,
-            amount: amountToRefundCents,
-            reason: 'requested_by_customer',
-            metadata: {
-              booking_id: id,
-              trip_id: booking.tripId,
-              refund_percentage: percentage.toString(),
-            },
-          });
-
-          if (refund.status === 'succeeded' || refund.status === 'pending') {
-            updateData.refundPercentage = percentage;
-            updateData.refundAmount = amountToRefundCents / 100;
-            updateData.paymentStatus = 'refunded';
-          } else {
-            return NextResponse.json(
-              { success: false, message: `Refund failed with status: ${refund.status}` },
-              { status: 500 }
-            );
-          }
-        } catch (stripeError: unknown) {
-          console.error("Stripe refund error:", stripeError);
-          const errorMessage = stripeError instanceof Error ? stripeError.message : 'Unknown error';
-          return NextResponse.json(
-            { 
-              success: false, 
-              message: `Failed to process refund: ${errorMessage}` 
-            },
-            { status: 500 }
-          );
+          updateData.refundPercentage = percentage;
+          updateData.refundAmount = refundAmount;
+          updateData.paymentStatus = 'refunded';
         }
-      } else if (
-        booking.paymentStatus === 'completed' && 
-        booking.paymentMethod === 'bank_transfer'
-      ) {
-        // For bank transfers, just mark the refund in the system
-        const percentage =
-          normalizedRefundPercentage !== undefined ? normalizedRefundPercentage : 100;
-        const baseAmount = typeof booking.totalAmount === "number" ? booking.totalAmount : 0;
-        const refundAmount = baseAmount * (percentage / 100);
-        
-        updateData.refundPercentage = percentage;
-        updateData.refundAmount = refundAmount;
-        updateData.paymentStatus = 'refunded';
       }
     } else if (rawAction === "complete") {
       updateData.status = 'completed';
     }
     
     // Update booking
-    const result = await collection.updateOne(
-      { _id: new ObjectId(id) },
-      { $set: updateData }
+    const updatedBooking = await Booking.findByIdAndUpdate(
+      id,
+      { $set: updateData },
+      { new: true, runValidators: true }
     );
-    
-    if (result.modifiedCount === 0) {
+
+    if (!updatedBooking) {
       return NextResponse.json(
         { success: false, message: "Failed to update booking" },
         { status: 500 }
       );
     }
     
-    // Fetch updated booking
-    const updatedBooking = await collection.findOne({ _id: new ObjectId(id) });
-    
-    if (rawAction === "cancel" && updatedBooking?.email) {
-      const cancellationPayload = {
-        tripId: updatedBooking.tripId,
-        pickup: updatedBooking.pickup,
-        dropoff: updatedBooking.dropoff || 'N/A (Hourly booking)',
-        tripType: updatedBooking.tripType,
-        date: updatedBooking.date,
-        time: updatedBooking.time,
-        passengers: updatedBooking.passengers,
-        selectedVehicle: updatedBooking.selectedVehicle,
-        vehicleDetails: updatedBooking.vehicleDetails,
-        childSeats: updatedBooking.childSeats,
-        babySeats: updatedBooking.babySeats,
-        notes: updatedBooking.notes,
-        firstName: updatedBooking.firstName,
-        lastName: updatedBooking.lastName,
-        email: updatedBooking.email,
-        phone: updatedBooking.phone,
-        totalAmount: typeof updatedBooking.totalAmount === "number" ? updatedBooking.totalAmount : 0,
-        refundAmount:
-          typeof updateData.refundAmount === "number"
-            ? updateData.refundAmount
-            : updatedBooking.refundAmount || 0,
-        refundPercentage:
-          typeof updateData.refundPercentage === "number"
-            ? updateData.refundPercentage
-            : updatedBooking.refundPercentage,
-        paymentMethod: updatedBooking.paymentMethod,
-        paymentStatus: updatedBooking.paymentStatus,
-        canceledAt: updateData.canceledAt ?? updatedBooking.canceledAt,
-      };
+    // Send cancellation email if applicable
+    if (rawAction === "cancel" && updatedBooking.email) {
+      const cancellationPayload = createCancellationEmailData(updatedBooking, updateData);
 
       sendOrderCancellationEmail(cancellationPayload).catch((emailError) => {
         console.error("Error sending cancellation email:", emailError);
@@ -305,19 +283,18 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    await connectDB();
     const { id } = await params;
-    const db = await getMongoDb();
-    const collection = db.collection<Booking>("bookings");
-    
-    const result = await collection.deleteOne({ _id: new ObjectId(id) });
-    
-    if (result.deletedCount === 0) {
+
+    const deletedBooking = await Booking.findByIdAndDelete(id);
+
+    if (!deletedBooking) {
       return NextResponse.json(
         { success: false, message: "Booking not found" },
         { status: 404 }
       );
     }
-    
+
     return NextResponse.json({
       success: true,
       message: "Booking deleted successfully",

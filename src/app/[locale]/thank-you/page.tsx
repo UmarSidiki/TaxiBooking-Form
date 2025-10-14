@@ -5,6 +5,7 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import { Card, CardContent } from '@/components/ui/card';
 import { CheckCircle, Loader2, Mail, Phone, Home } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { apiGet } from '@/utils/api';
 
 export default function ThankYouPage() {
   const searchParams = useSearchParams();
@@ -20,8 +21,7 @@ export default function ThankYouPage() {
     // Fetch redirect URL from settings
     const fetchRedirectUrl = async () => {
       try {
-        const response = await fetch('/api/settings');
-        const data = await response.json();
+        const data = await apiGet<{ success: boolean; data: { redirectUrl?: string } }>('/api/settings');
         if (data.success && data.data.redirectUrl) {
           setRedirectUrl(data.data.redirectUrl);
         }

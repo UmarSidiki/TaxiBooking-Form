@@ -40,6 +40,13 @@ export default function Step2VehicleSelection() {
 
   const t = useTranslations();
 
+  // Sort vehicles by calculated price (lowest first)
+  const sortedVehicles = [...vehicles].sort((a, b) => {
+    const priceA = calculatePrice(a);
+    const priceB = calculatePrice(b);
+    return priceA - priceB;
+  });
+
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
       {/* Main Content - Vehicle Selection */}
@@ -71,11 +78,13 @@ export default function Step2VehicleSelection() {
             </p>
           </div>
         ) : (
-          <div className="space-y-3">
-            {vehicles.map((vehicle) => {
+          <div className="space-y-2">
+            {sortedVehicles.map((vehicle, index) => {
               const calculatedPrice = calculatePrice(vehicle);
               const originalPrice = calculateOriginalPrice(vehicle);
               const isSelected = formData.selectedVehicle === vehicle._id;
+              const isBestPrice = index === 0; // First vehicle after sorting is the cheapest
+              const discountValue = parseFloat(String(vehicle.discount || "0"));
 
               return (
                 <Card
@@ -83,23 +92,25 @@ export default function Step2VehicleSelection() {
                   className={`relative overflow-hidden transition-all ${
                     isSelected
                       ? "border-primary border-2 shadow-lg"
+                      : isBestPrice
+                      ? "border-secondary border-2"
                       : "border-gray-200 hover:border-primary/70"
                   }`}
                 >
-                  <div className="p-3 sm:p-4">
-                    <div className="flex flex-col sm:flex-row gap-3">
+                  <div className="p-2 sm:p-3">
+                    <div className="flex flex-col sm:flex-row gap-2">
                       {/* Vehicle Image */}
                       <div className="flex-shrink-0">
                         {vehicle.image ? (
                           <Image
                             src={vehicle.image}
                             alt={vehicle.name}
-                            width={120}
-                            height={85}
+                            width={100}
+                            height={70}
                             className="rounded-lg object-cover"
                           />
                         ) : (
-                          <div className="w-[120px] h-[85px] bg-gray-200 rounded-lg flex items-center justify-center">
+                          <div className="w-[100px] h-[70px] bg-gray-200 rounded-lg flex items-center justify-center">
                             <span className="text-gray-400 text-xs">
                               {t("Step2.no-image")}
                             </span>
@@ -109,24 +120,19 @@ export default function Step2VehicleSelection() {
 
                       {/* Vehicle Details */}
                       <div className="flex-1">
-                        <div className="flex items-start justify-between mb-1.5">
+                        <div className="flex items-start justify-between mb-1">
                           <div>
                             <h3 className="font-bold text-base">
                               {vehicle.name}
                             </h3>
-                            <div className="flex gap-1.5 mt-0.5">
-                              {vehicle.category && (
-                                <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-primary/10 text-primary">
-                                  {vehicle.category === "economy" &&
-                                    t("Step2.best-price")}
-                                  {vehicle.category === "standard" &&
-                                    t("Step2.standard")}
-                                  {vehicle.category === "premium" &&
-                                    t("Step2.premium")}
+                            <div className="flex gap-1">
+                              {isBestPrice && (
+                                <span className="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium bg-green-100 text-green-700">
+                                  {t("Step2.best-price")}
                                 </span>
                               )}
-                              {vehicle.discount && vehicle.discount > 0 && (
-                                <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-700">
+                              {discountValue > 0 && (
+                                <span className="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium bg-green-100 text-green-700">
                                   🎉 {vehicle.discount}
                                   {t("Step2.off")}
                                 </span>
@@ -140,7 +146,7 @@ export default function Step2VehicleSelection() {
                                   €{originalPrice.toFixed(2)}
                                 </p>
                               )}
-                            <p className="text-xl font-bold text-gray-900">
+                            <p className="text-lg font-bold text-gray-900">
                               €{calculatedPrice.toFixed(2)}
                             </p>
                             <p className="text-xs text-gray-500">
@@ -158,22 +164,22 @@ export default function Step2VehicleSelection() {
                           </div>
                         </div>
 
-                        <p className="text-sm text-gray-600 mb-2">
+                        <p className="text-sm text-gray-600 mb-1">
                           {vehicle.description}
                         </p>
 
-                        <div className="grid grid-cols-2 gap-2 text-xs text-gray-700 mb-2">
+                        <div className="grid grid-cols-2 gap-1 text-xs text-gray-700 mb-1">
                           <div className="flex items-center gap-1">
-                            <Users className="h-4 w-4 text-blue-600" />
+                            <Users className="h-3.5 w-3.5 text-blue-600" />
                             <span>
                               {t("Step2.passenger-allowance", {
-                                persons: vehicle.persons || 0,
+                                persons: vehicle.persons || "",
                               })}
                             </span>
                           </div>
                           <div className="flex items-center gap-1">
                             <svg
-                              className="h-4 w-4 text-blue-600"
+                              className="h-3.5 w-3.5 text-blue-600"
                               fill="currentColor"
                               viewBox="0 0 20 20"
                             >
@@ -182,54 +188,25 @@ export default function Step2VehicleSelection() {
                             </svg>
                             <span>
                               {t("Step2.baggage-allowance", {
-                                baggages: vehicle.baggages || 0,
+                                baggages: vehicle.baggages || "",
                               })}
                             </span>
                           </div>
                           <div className="flex items-center gap-1">
-                            <Shield className="h-4 w-4 text-green-600" />
+                            <Shield className="h-3.5 w-3.5 text-green-600" />
                             <span>{t("Step2.licensed-chauffeur")}</span>
                           </div>
                           {vehicle.minimumFare && (
                             <div className="flex items-center gap-1">
-                              <CheckCircle2 className="h-4 w-4 text-green-600" />
+                              <CheckCircle2 className="h-3.5 w-3.5 text-green-600" />
                               <span>{t("Step2.free-cancellation")}</span>
                             </div>
                           )}
                         </div>
 
-                        {/* Pricing breakdown */}
-                        {formData.bookingType === "hourly" ? (
-                          <p className="text-xs text-gray-500 mb-2">
-                            €{vehicle.pricePerHour || 30}
-                            {t("Step2.hour")}{" "}
-                            {Math.max(
-                              formData.duration,
-                              vehicle.minimumHours || 2
-                            )}{" "}
-                            hours
-                            {formData.duration < (vehicle.minimumHours || 2) &&
-                              t(
-                                "Step2.minimum-vehicle-minimumhours-or-or-2-hours"
-                              )}
-                          </p>
-                        ) : (
-                          distanceData && (
-                            <p className="text-xs text-gray-500 mb-2">
-                              {t("Step2.base-fare-eur")}€{vehicle.price} + €
-                              {vehicle.pricePerKm}/km ×{" "}
-                              {distanceData.distance.km.toFixed(1)} km
-                              {calculatedPrice === vehicle.minimumFare &&
-                                t(
-                                  "Step2.minimum-fare-applied-eur-vehicle-minimumfare"
-                                )}
-                            </p>
-                          )
-                        )}
-
                         <Button
                           onClick={() => handleVehicleSelect(vehicle._id!)}
-                          className={`w-full py-2 ${
+                          className={`w-full py-1.5 ${
                             isSelected
                               ? "bg-primary hover:bg-primary/90"
                               : "bg-secondary hover:bg-secondary/90"
@@ -246,11 +223,7 @@ export default function Step2VehicleSelection() {
           </div>
         )}
 
-        <Button
-          onClick={handleBack}
-          variant="outline"
-          className="w-full"
-        >
+        <Button onClick={handleBack} variant="outline" className="w-full">
           <ArrowLeft className="mr-2 h-4 w-4" />{" "}
           {t("Step2.back-to-trip-details")}
         </Button>
@@ -359,8 +332,10 @@ export default function Step2VehicleSelection() {
                   {t("Step2.vehicle-type")}
                 </span>
                 <span className="text-sm font-medium">
-                  {vehicles.find((v) => v._id === formData.selectedVehicle)
-                    ?.category || t("Step2.economy")}
+                  {
+                    vehicles.find((v) => v._id === formData.selectedVehicle)
+                      ?.category
+                  }
                 </span>
               </div>
               <div className="flex justify-between items-center text-lg font-bold">

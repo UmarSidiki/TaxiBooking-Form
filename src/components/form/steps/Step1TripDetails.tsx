@@ -1,7 +1,7 @@
 "use client";
 
-import React from 'react';
-import { MapPin, CalendarDays, Clock, Users, Loader2, ArrowRight, Info } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { MapPin, Flag, CalendarDays, Clock, Users, Loader2, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card } from '@/components/ui/card';
@@ -10,6 +10,12 @@ import { useStep1 } from '@/hooks/form/form-steps/useStep1';
 import { useTranslations } from 'next-intl';
 
 export default function Step1TripDetails() {
+  // Get today's date in YYYY-MM-DD format
+  const today = new Date().toISOString().split('T')[0];
+  
+  // State for passenger input to handle empty state
+  const [passengerInputValue, setPassengerInputValue] = useState('');
+
   const {
     // State
     mapLoaded,
@@ -35,12 +41,46 @@ export default function Step1TripDetails() {
 
   const t = useTranslations();
 
+  // Initialize passenger input value
+  useEffect(() => {
+    if (formData.passengers === 1) {
+      setPassengerInputValue('1');
+    } else {
+      setPassengerInputValue(formData.passengers.toString());
+    }
+  }, [formData.passengers]);
+  
+  // Handle passenger input change
+  const handlePassengerChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setPassengerInputValue(value);
+    
+    // Only update form data if it's a valid number
+    const numValue = parseInt(value, 10);
+    if (value === '' || (!isNaN(numValue) && numValue >= 1 && numValue <= 8)) {
+      const finalValue = value === '' ? 1 : numValue;
+      handleInputChange('passengers', finalValue);
+    }
+  };
+
+  // Handle passenger input blur
+  const handlePassengerBlur = () => {
+    if (passengerInputValue === '' || isNaN(parseInt(passengerInputValue)) || parseInt(passengerInputValue) < 1) {
+      setPassengerInputValue('');
+      handleInputChange('passengers', 1);
+    } else {
+      const numValue = Math.min(8, Math.max(1, parseInt(passengerInputValue)));
+      setPassengerInputValue(numValue === 1 ? '' : numValue.toString());
+      handleInputChange('passengers', numValue);
+    }
+  };
+
   return (
     <div className="grid grid-cols-1 lg:grid-cols-7 gap-6">
       {/* Map Section - Left Side */}
       <div className="lg:col-span-3 max-sm:order-2">
         <Card className="h-full min-h-[500px] lg:min-h-[600px] overflow-hidden border-0 shadow-none">
-          <div className="relative w-full h-full">
+          <div className="relative w-full h-full bg-white p-3">
             <div ref={mapRef} className="w-full h-full" />
             {!mapLoaded && (
               <div className="absolute inset-0 flex items-center justify-center bg-gray-100">
@@ -88,7 +128,7 @@ export default function Step1TripDetails() {
       </div>
 
       {/* Form Section - Right Side */}
-      <div className="lg:col-span-4">
+      <div className="lg:col-span-4 bg-white p-6">
         <div className="space-y-4">
           <div>
             <h2 className="text-xl font-semibold mb-2">{t("Step1.Title")}</h2>
@@ -136,7 +176,7 @@ export default function Step1TripDetails() {
           {/* Pickup Location */}
           <div>
             <label className="block text-sm font-medium mb-1.5 text-gray-700">
-              <MapPin className="inline h-4 w-4 mr-1 text-green-600" />
+              <MapPin className="inline h-4 w-4 mr-1 text-primary" />
               {t("Step1.PickupLocation")} *
             </label>
             <Input 
@@ -160,7 +200,7 @@ export default function Step1TripDetails() {
           {formData.bookingType === 'destination' && (
             <div>
               <label className="block text-sm font-medium mb-1.5 text-gray-700">
-                <MapPin className="inline h-4 w-4 mr-1 text-red-600" />
+                <Flag className="inline h-4 w-4 mr-1 text-primary" />
                 {t("Step1.DropoffLocation")} *
               </label>
               <Input 
@@ -261,6 +301,7 @@ export default function Step1TripDetails() {
               </label>
               <Input 
                 type="date"
+                min={today}
                 className={`${errors.date ? 'border-red-500' : 'border-gray-300'} focus:border-primary-500 focus:ring-primary-500`}
                 value={formData.date}
                 onChange={(e) => {
@@ -295,19 +336,13 @@ export default function Step1TripDetails() {
             <Input 
               type="number"
               min="1"
-              max="8"
+              max="15"
+              placeholder="1"
               className="border-gray-300 focus:border-primary-500 focus:ring-primary-500" 
-              value={formData.passengers}
-              onChange={(e) => handleInputChange('passengers', parseInt(e.target.value) || 1)}
+              value={passengerInputValue}
+              onChange={handlePassengerChange}
+              onBlur={handlePassengerBlur}
             />
-          </div>
-
-          {/* Info Banner */}
-          <div className="flex items-start gap-2 p-3 bg-blue-50 border border-blue-200 rounded-lg text-sm">
-            <Info className="h-4 w-4 text-blue-600 mt-0.5 flex-shrink-0" />
-            <p className="text-blue-700">
-              <strong>{t("Step1.FreeCancellation")}</strong> {t("Step1.FreeCancellationDescription")}
-            </p>
           </div>
 
           {/* Next Button */}

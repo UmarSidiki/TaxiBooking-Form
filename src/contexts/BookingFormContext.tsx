@@ -41,6 +41,8 @@ export interface FormErrors {
   dropoff?: string;
   date?: string;
   time?: string;
+  duration?: string;
+  passengers?: string;
   firstName?: string;
   lastName?: string;
   email?: string;

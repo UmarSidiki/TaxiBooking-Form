@@ -93,11 +93,11 @@ export function useStep2() {
           googleMapRef.current = new maps.Map(mapRef.current, {
             center: initialCenter,
             zoom: 8,
-            disableDefaultUI: false,
-            zoomControl: true,
+            disableDefaultUI: true,
+            zoomControl: false,
             mapTypeControl: false,
             streetViewControl: false,
-            fullscreenControl: true,
+            fullscreenControl: false,
           });
           setMapLoaded(true);
 

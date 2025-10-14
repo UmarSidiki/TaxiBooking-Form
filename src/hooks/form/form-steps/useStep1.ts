@@ -199,6 +199,56 @@ export function useStep1() {
     return Object.keys(newErrors).length === 0;
   };
 
+  const createTargetUrl = () => {
+    const params = new URLSearchParams({
+      step: "2",
+      bookingType: formData.bookingType,
+      pickup: formData.pickup.trim(),
+      date: formData.date,
+      time: formData.time,
+      passengers: String(formData.passengers),
+      source: "embed_v1",
+    });
+
+    // Add dropoff and tripType only for destination bookings
+    if (formData.bookingType === 'destination') {
+      params.set("dropoff", formData.dropoff.trim());
+      params.set(
+        "tripType",
+        formData.tripType === "roundtrip" ? "return" : "oneway"
+      );
+    }
+
+    // Add duration only for hourly bookings
+    if (formData.bookingType === 'hourly') {
+      params.set("duration", String(formData.duration));
+    }
+
+    // Return the URL with parameters
+    return `?${params.toString()}`;
+  };
+
+  const redirectToStep2 = () => {
+    if (validateStep()) {
+      const targetUrl = createTargetUrl();
+      const fullUrl = `${window.location.origin}${targetUrl}`;
+
+      // Check if we're in an iframe and redirect parent window
+      try {
+        if (window.top && window.top !== window.self) {
+          // We're in an iframe, try to redirect the parent window
+          window.top.location.href = fullUrl;
+        } else {
+          // We're not in an iframe, redirect normally
+          window.location.href = fullUrl;
+        }
+      } catch {
+        // Fallback for cross-origin or security errors: open in new tab
+        window.open(fullUrl, "_blank");
+      }
+    }
+  };
+
   const handleNext = () => {
     if (validateStep()) {
       setCurrentStep(2);
@@ -252,6 +302,7 @@ export function useStep1() {
     // Functions
     validateStep,
     handleNext,
+    redirectToStep2, // New function for redirecting to step 2
     setCurrentStep,
     handleBookingTypeChange,
     handleTripTypeChange,

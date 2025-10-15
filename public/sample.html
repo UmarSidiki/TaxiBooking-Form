@@ -154,7 +154,7 @@
         // 1. Get current domain/hostname
         // Use 'localhost:3000' as a safe default if the environment is unusual,
         // but typically you use window.location.host
-        const host = window.location.host || 'localhost:3000'; 
+        const host = window.location.host; 
         const urlParams = new URLSearchParams(window.location.search);
 
         // 2. Set initial values based on URL parameters or defaults
@@ -170,7 +170,7 @@
           const lang = languageSelect.value;
           const version = versionSelect.value;
           // Dynamically build the source URL
-          iframe.src = `http://${host}/${lang}/embeddable/${version}`;
+          iframe.src = `https://${host}/${lang}/embeddable/${version}`;
         };
 
         // --- Event Listeners ---

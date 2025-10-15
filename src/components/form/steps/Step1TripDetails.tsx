@@ -149,7 +149,7 @@ export default function Step1TripDetails() {
                     : "bg-white hover:bg-gray-50"
                 }`}
               >
-                <MapPin className="mr-2 h-4 w-4" />
+                <MapPin className="h-4 w-4" />
                 {t("Step1.DestinationBased")}
               </Button>
               <Button
@@ -162,7 +162,7 @@ export default function Step1TripDetails() {
                     : "bg-white hover:bg-gray-50"
                 }`}
               >
-                <Clock className="mr-2 h-4 w-4" />
+                <Clock className="h-4 w-4" />
                 {t("Step1.TimeBased")}
               </Button>
             </div>

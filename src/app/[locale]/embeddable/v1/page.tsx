@@ -110,7 +110,7 @@ function BookingFormUI() {
 
   return (
     <div
-      className={`w-full h-full bg-transparent font-sans transition-all duration-700 ease-out ${
+      className={`font-sans transition-all duration-700 ease-out ${
         isMounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5"
       }`}
     >
@@ -122,7 +122,7 @@ function BookingFormUI() {
       )}
 
       {/* Compact Progress Bar */}
-      <div className="flex justify-between items-center px-3 py-1">
+      <div className="flex justify-between items-center px-3 py-2">
         {progressSteps.map(({ icon: iconName, label }, index) => {
           const Icon = iconMap[iconName as keyof typeof iconMap];
           return (
@@ -156,7 +156,7 @@ function BookingFormUI() {
 
       {/* Compact Form Card */}
       <Card className="rounded-xl bg-white shadow-lg p-3 border-0 h-full flex flex-col">
-        <header className="mb-3 pb-1 text-center">
+        <header className="mb-1 text-center">
           <h1 className="text-base md:text-lg font-bold text-slate-800 flex items-center justify-center gap-2">
             {t("embeddable.trip-booking")}
           </h1>

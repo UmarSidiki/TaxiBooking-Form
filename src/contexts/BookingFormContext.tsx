@@ -77,7 +77,7 @@ const STORAGE_KEY = 'booking_form_data';
 const STEP_KEY = 'booking_form_step';
 const DISTANCE_KEY = 'booking_form_distance';
 const TIMESTAMP_KEY = 'booking_form_timestamp';
-const EXPIRATION_TIME = 10 * 60 * 1000; // 10 minutes in milliseconds
+const EXPIRATION_TIME = 10 * 60 * 500; // 5 minutes in milliseconds
 
 const defaultFormData: FormData = {
   bookingType: "destination",

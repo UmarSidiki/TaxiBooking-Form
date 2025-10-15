@@ -40,24 +40,24 @@
         display: block;
       }
 
-/* Start with the iframe hidden but ready for animation */
-iframe {
-  opacity: 0;
-  visibility: hidden;
-  animation-name: Show2Sec;
-  animation-duration: 0.5s;
-  animation-delay: 1500ms;
-  animation-fill-mode: forwards;
-}
+      /* Start with the iframe hidden but ready for animation */
+      iframe {
+        opacity: 0;
+        visibility: hidden;
+        animation-name: Show2Sec;
+        animation-duration: 0.5s;
+        animation-delay: 1500ms;
+        animation-fill-mode: forwards;
+      }
 
-/* Define the animation keyframes */
-@keyframes Show2Sec {
-  /* At the end of the animation, the iframe is fully visible */
-  to {
-    opacity: 1;
-    visibility: visible;
-  }
-}
+      /* Define the animation keyframes */
+      @keyframes Show2Sec {
+        /* At the end of the animation, the iframe is fully visible */
+        to {
+          opacity: 1;
+          visibility: visible;
+        }
+      }
     </style>
   </head>
   <body>
@@ -69,10 +69,11 @@ iframe {
         <p>This is a simple hero section. Below is the embedded content.</p>
 
         <iframe
+          class="booking-widget-iframe"
           src="http://localhost:3000/en/embeddable/v1"
-          title="Interactive Booking Widget"
-          width="400"
-          height="500"
+          title="Interactive Booking Widget (v1)"
+          width="600px"
+          height="550px"
           loading="lazy"
           style="border: none"
           allow="payment"
@@ -81,7 +82,7 @@ iframe {
           <p>
             Your browser does not support this interactive content. Please visit
             our
-            <a href="https://your-domain.com/booking">booking page</a> directly.
+            <a href="http://localhost:3000/en">booking page</a> directly.
           </p>
         </iframe>
       </section>

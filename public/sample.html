@@ -121,11 +121,11 @@
       const versionSelect = document.getElementById("version-select");
 
       // get url parameters
-      const urlParams = new URLSearchParams(window.location.search);
+      const domain = window.location.hostname;
       const lang = urlParams.get("lang") || "en";
 
       const iframe = document.querySelector(".booking-widget-iframe");
-      iframe.src = `http://${urlParams}/${lang}/embeddable/${versionSelect.value}`;
+      iframe.src = `http://${domain}/${lang}/embeddable/${versionSelect.value}`;
     </script>
   </body>
 </html>

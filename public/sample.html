@@ -32,35 +32,7 @@
         margin-bottom: 30px;
       }
 
-      /* Container for the iframe to center it */
-      .iframe-container {
-        display: flex;
-        justify-content: center;
-        margin-top: 20px;
-        margin-bottom: 40px;
-      }
-
-      /* Styling the iframe itself */
-      .booking-widget-iframe {
-        /* Use CSS properties for size, not HTML attributes, for better control */
-        width: 400px; 
-        max-width: 100%; /* Ensure it's responsive */
-        height: 550px; 
-        border: none;
-        display: block;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-        border-radius: 12px;
-      }
-
-      /* Start with the iframe hidden but ready for animation */
-      .booking-widget-iframe {
-        opacity: 0;
-        visibility: hidden;
-        animation-name: fadeIn;
-        animation-duration: 0.5s;
-        animation-delay: 1.5s; /* Delay 1500ms */
-        animation-fill-mode: forwards;
-      }
+      
 
       /* Define the animation keyframes */
       @keyframes fadeIn {

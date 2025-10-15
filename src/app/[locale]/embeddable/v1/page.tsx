@@ -178,7 +178,7 @@ function BookingFormUI() {
                     onClick={() => setBookingType(type)}
                     className={`flex-1 rounded-md px-2 py-1.5 md:px-3 md:py-2 transition-all duration-300 flex items-center justify-center gap-1.5 ${
                       formData.bookingType === type
-                        ? "bg-primary text-white shadow-sm"
+                        ? "bg-gradient-to-r from-primary/80 to-primary text-white shadow-sm"
                         : "text-slate-600 hover:text-slate-800 hover:bg-slate-100"
                     }`}
                   >

@@ -828,10 +828,7 @@
                 
                 // Check if we're on localhost
                 if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-                    // For localhost, try to use a default production domain or keep localhost
-                    currentDomain = 'https://yourdomain.com'; // Replace with your actual production domain
-                    
-                    // Show warning for localhost
+                    // Show Informarion for localhost
                     domainStatus.className = 'domain-status warning';
                     domainStatus.innerHTML = `
                         <i class="fas fa-exclamation-triangle"></i>

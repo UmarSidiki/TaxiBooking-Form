@@ -110,19 +110,19 @@ function BookingFormUI() {
 
   return (
     <div
-      className={`w-full max-w-md mx-auto bg-transparent font-sans transition-all duration-700 ease-out ${
+      className={`w-full h-full bg-transparent font-sans transition-all duration-700 ease-out ${
         isMounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5"
       }`}
     >
       {/* Map container - only show if map is loaded */}
       {mapLoaded && (
-        <div className="mb-3 rounded-lg overflow-hidden h-48">
+        <div className="mb-3 rounded-lg overflow-hidden h-32 md:h-48">
           <div ref={mapRef} className="w-full h-full" />
         </div>
       )}
 
       {/* Compact Progress Bar */}
-      <div className="flex justify-between items-center px-3 py-2 md:px-4 md:py-2">
+      <div className="flex justify-between items-center px-3 py-1">
         {progressSteps.map(({ icon: iconName, label }, index) => {
           const Icon = iconMap[iconName as keyof typeof iconMap];
           return (
@@ -155,7 +155,7 @@ function BookingFormUI() {
       </div>
 
       {/* Compact Form Card */}
-      <Card className="rounded-xl bg-white shadow-lg p-3 md:p-4 border-0">
+      <Card className="rounded-xl bg-white shadow-lg p-3 border-0 h-full flex flex-col">
         <header className="mb-3 pb-1 text-center">
           <h1 className="text-base md:text-lg font-bold text-slate-800 flex items-center justify-center gap-2">
             {t("embeddable.trip-booking")}
@@ -165,34 +165,35 @@ function BookingFormUI() {
           </p>
         </header>
 
-        <form onSubmit={handleSubmit}>
-          {/* Compact Booking Type Toggle */}
-          <div className="flex rounded-lg border border-slate-200 bg-slate-50 p-1 text-xs md:text-sm font-medium mb-3">
-            {(["destination", "hourly"] as const).map((type) => (
-              <button
-                key={type}
-                type="button"
-                onClick={() => setBookingType(type)}
-                className={`flex-1 rounded-md px-2 py-1.5 md:px-3 md:py-2 transition-all duration-300 flex items-center justify-center gap-1.5 ${
-                  formData.bookingType === type
-                    ? "bg-primary text-white shadow-sm"
-                    : "text-slate-600 hover:text-slate-800 hover:bg-slate-100"
-                }`}
-              >
-                {type === "destination" ? (
-                  <MapPin className="h-3.5 w-3.5 md:h-4 md:w-4" />
-                ) : (
-                  <Clock className="h-3.5 w-3.5 md:h-4 md:w-4" />
-                )}
-                {type === "destination"
-                  ? t("embeddable.destination")
-                  : t("embeddable.hourly")}
-              </button>
-            ))}
-          </div>
+        <form onSubmit={handleSubmit} className="flex flex-col h-full">
+          <div className="flex-1">
+            {/* Compact Booking Type Toggle */}
+            <div className="flex rounded-lg border border-slate-200 bg-slate-50 p-1 text-xs md:text-sm font-medium mb-3">
+              {(["destination", "hourly"] as const).map((type) => (
+                <button
+                  key={type}
+                  type="button"
+                  onClick={() => setBookingType(type)}
+                  className={`flex-1 rounded-md px-2 py-1.5 md:px-3 md:py-2 transition-all duration-300 flex items-center justify-center gap-1.5 ${
+                    formData.bookingType === type
+                      ? "bg-primary text-white shadow-sm"
+                      : "text-slate-600 hover:text-slate-800 hover:bg-slate-100"
+                  }`}
+                >
+                  {type === "destination" ? (
+                    <MapPin className="h-3.5 w-3.5 md:h-4 md:w-4" />
+                  ) : (
+                    <Clock className="h-3.5 w-3.5 md:h-4 md:w-4" />
+                  )}
+                  {type === "destination"
+                    ? t("embeddable.destination")
+                    : t("embeddable.hourly")}
+                </button>
+              ))}
+            </div>
 
-          {/* Compact Form Inputs */}
-          <div className="space-y-3">
+            {/* Compact Form Inputs */}
+            <div className="space-y-3">
             {/* Pickup Location */}
             <div className="relative">
               <div className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
@@ -394,36 +395,39 @@ function BookingFormUI() {
               )}
             </div>
           </div>
-
-          {/* Compact Submit Button */}
-          <Button
-            type="submit"
-            className="w-full rounded-lg bg-primary py-2 md:py-2.5 text-sm font-semibold tracking-wide text-white hover:bg-primary/90 transition-all duration-200 shadow-md hover:shadow-lg disabled:opacity-70 disabled:cursor-not-allowed mt-4"
-            disabled={isLoading || calculatingDistance}
-          >
-            {isLoading || calculatingDistance ? (
-              <div className="flex items-center justify-center gap-2">
-                <div className="h-3.5 w-3.5 md:h-4 md:w-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                {t("embeddable.redirecting")}
-              </div>
-            ) : (
-              <div className="flex items-center justify-center gap-2">
-                {t("embeddable.search")}
-                <ArrowRight className="h-3.5 w-3.5 md:h-4 md:w-4" />
-              </div>
-            )}
-          </Button>
-          <div>
-            <p className="text-xs text-center text-slate-500 mt-3">
-              By submitting my data, I agree to be contacted.
-            </p>
           </div>
-          <div className="flex justify-center gap-2 flex-wrap pt-2">
-            <Image src="/visa.webp" alt="Visa" width={35} height={25} className="h-6 w-auto opacity-70" />
-            <Image src="/mastercard.webp" alt="MasterCard" width={35} height={25} className="h-6 w-auto opacity-70" />
-            <Image src="/paypal.webp" alt="PayPal" width={35} height={25} className="h-6 w-auto opacity-70" />
-            <Image src="/twint.webp" alt="Twint" width={35} height={25} className="h-6 w-auto opacity-70" />
-            <Image src="/applepay.webp" alt="Apple Pay" width={35} height={25} className="h-6 w-auto opacity-70" />
+
+          <div className="mt-auto">
+            {/* Compact Submit Button */}
+            <Button
+              type="submit"
+              className="w-full rounded-lg bg-primary py-2 md:py-2.5 text-sm font-semibold tracking-wide text-white hover:bg-primary/90 transition-all duration-200 shadow-md hover:shadow-lg disabled:opacity-70 disabled:cursor-not-allowed mt-4"
+              disabled={isLoading || calculatingDistance}
+            >
+              {isLoading || calculatingDistance ? (
+                <div className="flex items-center justify-center gap-2">
+                  <div className="h-3.5 w-3.5 md:h-4 md:w-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  {t("embeddable.redirecting")}
+                </div>
+              ) : (
+                <div className="flex items-center justify-center gap-2">
+                  {t("embeddable.search")}
+                  <ArrowRight className="h-3.5 w-3.5 md:h-4 md:w-4" />
+                </div>
+              )}
+            </Button>
+            <div>
+              <p className="text-xs text-center text-slate-500 mt-3">
+                By submitting my data, I agree to be contacted.
+              </p>
+            </div>
+            <div className="flex justify-center gap-2 flex-wrap pt-2">
+              <Image src="/visa.webp" alt="Visa" width={35} height={25} className="h-6 w-auto opacity-70" />
+              <Image src="/mastercard.webp" alt="MasterCard" width={35} height={25} className="h-6 w-auto opacity-70" />
+              <Image src="/paypal.webp" alt="PayPal" width={35} height={25} className="h-6 w-auto opacity-70" />
+              <Image src="/twint.webp" alt="Twint" width={35} height={25} className="h-6 w-auto opacity-70" />
+              <Image src="/applepay.webp" alt="Apple Pay" width={35} height={25} className="h-6 w-auto opacity-70" />
+            </div>
           </div>
         </form>
       </Card>

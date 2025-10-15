@@ -336,6 +336,15 @@
             border: 1px solid var(--border-color);
             border-radius: 8px;
             overflow: hidden;
+            position: relative;
+        }
+
+        .preview-container {
+            position: relative;
+            width: 100%;
+            height: 500px;
+            overflow: hidden;
+            background: #f9fafb;
         }
 
         .preview-header {
@@ -358,10 +367,62 @@
         .preview-dot.green { background-color: #10b981; }
 
         .preview-iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
             width: 100%;
-            height: 500px;
+            height: 100%;
             border: none;
-            display: block;
+            transform: scale(0.8);
+            transform-origin: 0 0;
+            width: 125%;
+            height: 125%;
+        }
+
+        .preview-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            pointer-events: none;
+            border: 1px solid var(--border-color);
+            z-index: 10;
+        }
+
+        .preview-controls {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            display: flex;
+            gap: 5px;
+            z-index: 20;
+        }
+
+        .preview-control-btn {
+            background: rgba(255, 255, 255, 0.8);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            padding: 5px 10px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .preview-control-btn:hover {
+            background: white;
+        }
+
+        .preview-size-indicator {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(255, 255, 255, 0.8);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            padding: 5px 10px;
+            font-size: 12px;
+            z-index: 20;
         }
 
         .advanced-settings {
@@ -736,7 +797,19 @@
                     <div class="preview-dot green"></div>
                     <span style="margin-left: 10px; color: var(--text-secondary); font-size: 14px;">Widget Preview</span>
                 </div>
-                <iframe id="previewIframe" class="preview-iframe" src=""></iframe>
+                <div class="preview-container">
+                    <div class="preview-size-indicator" id="sizeIndicator">400 × 500</div>
+                    <div class="preview-overlay"></div>
+                    <iframe id="previewIframe" class="preview-iframe" sandbox="allow-scripts allow-same-origin allow-forms" src=""></iframe>
+                    <div class="preview-controls">
+                        <button class="preview-control-btn" onclick="resetPreviewScale()">
+                            <i class="fas fa-compress"></i> Reset Scale
+                        </button>
+                        <button class="preview-control-btn" onclick="togglePreviewFullscreen()">
+                            <i class="fas fa-expand"></i> Fullscreen
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -807,6 +880,11 @@
                     content.classList.remove('active');
                 });
                 document.getElementById(tabId).classList.add('active');
+                
+                // Update preview when preview tab is clicked
+                if (tabId === 'preview') {
+                    updatePreviewIframe();
+                }
             });
         });
 
@@ -815,11 +893,24 @@
         const outputSection = document.getElementById('outputSection');
         const domainInput = document.getElementById('domain');
         const domainStatus = document.getElementById('domainStatus');
+        const iframeWidthInput = document.getElementById('iframeWidth');
+        const iframeHeightInput = document.getElementById('iframeHeight');
+        const sizeIndicator = document.getElementById('sizeIndicator');
 
         // Auto-detect domain on page load
         window.addEventListener('DOMContentLoaded', () => {
             detectDomain();
         });
+
+        // Update size indicator when width or height changes
+        iframeWidthInput.addEventListener('input', updateSizeIndicator);
+        iframeHeightInput.addEventListener('input', updateSizeIndicator);
+
+        function updateSizeIndicator() {
+            const width = iframeWidthInput.value || '400';
+            const height = iframeHeightInput.value || '500';
+            sizeIndicator.textContent = `${width} × ${height}`;
+        }
 
         function detectDomain() {
             try {
@@ -828,7 +919,7 @@
                 
                 // Check if we're on localhost
                 if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-                    // Show Informarion for localhost
+                    // Show Information for localhost
                     domainStatus.className = 'domain-status warning';
                     domainStatus.innerHTML = `
                         <i class="fas fa-exclamation-triangle"></i>
@@ -904,7 +995,7 @@
 
             // Build sandbox attribute
             const sandboxAttr = enableSandbox 
-                ? '\n  allow="payment"' 
+                ? '\n  sandbox="allow-scripts allow-same-origin allow-forms allow-payment"' 
                 : '';
 
             // Build loading attribute
@@ -999,7 +1090,7 @@
 
             // Build sandbox attribute
             const sandboxAttr = enableSandbox 
-                ? '\n  allow="payment"' 
+                ? '\n  sandbox="allow-scripts allow-same-origin allow-forms allow-payment"' 
                 : '';
 
             // Build loading attribute
@@ -1104,6 +1195,31 @@
                     btn.classList.remove('copied');
                 }, 2000);
             });
+        }
+
+        // Preview controls
+        function resetPreviewScale() {
+            const iframe = document.getElementById('previewIframe');
+            iframe.style.transform = 'scale(0.8)';
+            iframe.style.width = '125%';
+            iframe.style.height = '125%';
+        }
+
+        function togglePreviewFullscreen() {
+            const previewContainer = document.querySelector('.preview-container');
+            
+            if (!document.fullscreenElement) {
+                previewContainer.requestFullscreen().then(() => {
+                    const iframe = document.getElementById('previewIframe');
+                    iframe.style.transform = 'scale(1)';
+                    iframe.style.width = '100%';
+                    iframe.style.height = '100%';
+                });
+            } else {
+                document.exitFullscreen().then(() => {
+                    resetPreviewScale();
+                });
+            }
         }
     </script>
 </body>

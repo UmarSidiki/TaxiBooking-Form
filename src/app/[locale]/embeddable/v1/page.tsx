@@ -146,7 +146,7 @@ function BookingFormUI() {
                 </div>
                 <span
                   className={`mt-1 text-xs font-medium ${
-                    index === 0 ? "text-primary" : "text-slate-400"
+                    index === 0 ? "text-primary font-bold" : "text-neutral-600"
                   }`}
                 >
                   {label}
@@ -157,7 +157,7 @@ function BookingFormUI() {
         </div>
 
         {/* Compact Form Card */}
-        <Card className="rounded-xl bg-white shadow-lg p-3 border-0 h-full flex flex-col">
+        <Card className="rounded-xl bg-white/90 backdrop-blur-md shadow-lg p-3 border-0 h-full flex flex-col shimmer-container">
           <header className="mb-1 text-center">
             <h1 className="text-base md:text-lg font-bold text-slate-800 flex items-center justify-center gap-2">
               {t("embeddable.trip-booking")}

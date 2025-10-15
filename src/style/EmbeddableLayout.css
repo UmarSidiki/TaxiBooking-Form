@@ -98,3 +98,51 @@
 .animate-bounce-subtle {
   animation: bounce-subtle 1s ease-in-out infinite;
 }
+
+.shimmer-container {
+    /* Must be relative so the pseudo-element positions correctly */
+    position: relative; 
+    /* Essential: Hides the shine effect when it's outside the button boundaries */
+    overflow: hidden; 
+}
+
+.shimmer-container::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -150%; /* Start further left to ensure it's completely off-screen */
+    width: 50%;
+    height: 100%;
+    /* Use a slightly softer gradient */
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.4) 30%,
+        rgba(255, 255, 255, 0.7) 50%,
+        rgba(255, 255, 255, 0.4) 70%,
+        transparent
+    );
+    /* - Adjust duration for a smoother travel speed (e.g., 4s) 
+       - Increase delay to 3s to create a noticeable pause before the next shine
+    */
+    animation: shine 8s infinite; 
+    z-index: 10; /* Set a high z-index to shine over the button content */
+    pointer-events: none; /* Prevents the pseudo-element from blocking clicks */
+}
+
+@keyframes shine {
+    0% {
+        /* Start off-screen to the left */
+        left: -150%; 
+    }
+    /* Travel point: 1.5s (4s * 0.375) */
+    37.5% {
+        /* End off-screen to the right (50% width + 100% container) */
+        left: 150%; 
+    }
+    /* Wait point: The shine is now invisible */
+    100% {
+        /* Stay off-screen to the right until the loop restarts */
+        left: 150%; 
+    }
+}

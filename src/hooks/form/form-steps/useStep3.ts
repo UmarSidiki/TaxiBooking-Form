@@ -3,12 +3,13 @@
 import { useState, useEffect } from "react";
 import { useBookingForm } from "@/contexts/BookingFormContext";
 import { useRouter } from "next/navigation";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { ISetting } from "@/models/Setting";
 
 export function useStep3() {
   const t = useTranslations();
   const router = useRouter();
+  const locale = useLocale();
   const {
     formData,
     setFormData,
@@ -188,7 +189,7 @@ export function useStep3() {
         resetForm();
         // Redirect to thank you page with booking details
         router.push(
-          `/thank-you?tripId=${data.tripId}&amount=${totalPrice.toFixed(
+          `/${locale}/thank-you?tripId=${data.tripId}&amount=${totalPrice.toFixed(
             2
           )}&method=stripe`
         );
@@ -240,7 +241,7 @@ export function useStep3() {
         resetForm();
         // Redirect to thank you page with booking details
         router.push(
-          `/thank-you?tripId=${data.tripId}&amount=${totalPrice.toFixed(
+          `/${locale}/thank-you?tripId=${data.tripId}&amount=${totalPrice.toFixed(
             2
           )}&method=cash`
         );
@@ -288,7 +289,7 @@ export function useStep3() {
         resetForm();
         // Redirect to thank you page with booking details
         router.push(
-          `/thank-you?tripId=${data.tripId}&amount=${totalPrice.toFixed(
+          `/${locale}/thank-you?tripId=${data.tripId}&amount=${totalPrice.toFixed(
             2
           )}&method=bank_transfer`
         );

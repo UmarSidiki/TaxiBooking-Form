@@ -32,8 +32,6 @@
         margin-bottom: 30px;
       }
 
-
-
       /* Define the animation keyframes */
       @keyframes fadeIn {
         to {
@@ -41,39 +39,40 @@
           visibility: visible;
         }
       }
-      
+
       /* Styling for the controls */
       .controls {
-          display: flex;
-          justify-content: center;
-          gap: 30px;
-          margin-top: 20px;
+        display: flex;
+        justify-content: center;
+        gap: 30px;
+        margin-top: 20px;
       }
-      .controls label, .controls select {
-          color: white;
-          font-weight: bold;
+      .controls label,
+      .controls select {
+        color: white;
+        font-weight: bold;
       }
       .controls select {
-          padding: 5px 10px;
-          border-radius: 5px;
-          border: none;
+        padding: 5px 10px;
+        border-radius: 5px;
+        border: none;
       }
 
       .booking-widget-iframe {
-  opacity: 0;
-  visibility: hidden;
-  animation-name: Show2Sec;
-  animation-duration: 0.5s;
-  animation-delay: 1500ms;
-  animation-fill-mode: forwards;
-}
+        opacity: 0;
+        visibility: hidden;
+        animation-name: Show2Sec;
+        animation-duration: 0.5s;
+        animation-delay: 1500ms;
+        animation-fill-mode: forwards;
+      }
 
-@keyframes Show2Sec {
-  to {
-    opacity: 1;
-    visibility: visible;
-  }
-}
+      @keyframes Show2Sec {
+        to {
+          opacity: 1;
+          visibility: visible;
+        }
+      }
     </style>
   </head>
   <body>
@@ -85,19 +84,23 @@
         <p>This is a simple hero section. Below is the embedded content.</p>
 
         <div>
-            <iframe
-              class="booking-widget-iframe"
-              src="" title="Interactive Booking Widget"
-              loading="lazy"
-              style="border: none"
-              allow="payment"
-              scrolling="no"
-            >
-              <p>
-                Your browser does not support this interactive content. Please visit
-                our <a href="http://localhost:3000/en">booking page</a> directly.
-              </p>
-            </iframe>
+          <iframe
+            class="booking-widget-iframe"
+            src=""
+            title="Interactive Booking Widget"
+            loading="lazy"
+            style="border: none"
+            allow="payment"
+            scrolling="no"
+            width="400px"
+            height="500px"
+          >
+            <p>
+              Your browser does not support this interactive content. Please
+              visit our
+              <a href="http://localhost:3000/en">booking page</a> directly.
+            </p>
+          </iframe>
         </div>
 
         <div class="controls">
@@ -132,17 +135,17 @@
     <footer></footer>
 
     <script>
-      document.addEventListener('DOMContentLoaded', () => {
+      document.addEventListener("DOMContentLoaded", () => {
         const languageSelect = document.getElementById("language-select");
         const versionSelect = document.getElementById("version-select");
         const iframe = document.querySelector(".booking-widget-iframe");
-        
+
         // --- Initialization ---
 
         // 1. Get current domain/hostname
         // Use 'localhost:3000' as a safe default if the environment is unusual,
         // but typically you use window.location.host
-        const host = window.location.host; 
+        const host = window.location.host;
         const urlParams = new URLSearchParams(window.location.search);
 
         // 2. Set initial values based on URL parameters or defaults
@@ -162,13 +165,13 @@
         };
 
         // --- Event Listeners ---
-        
+
         // Update the iframe source whenever a select box changes
         languageSelect.addEventListener("change", updateIframeSrc);
         versionSelect.addEventListener("change", updateIframeSrc);
 
         // Call the function once to set the initial source when the page loads
-        updateIframeSrc(); 
+        updateIframeSrc();
       });
     </script>
   </body>

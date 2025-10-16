@@ -33,10 +33,9 @@ export async function sendEmail(
 
     await transporter.sendMail(mailOptions);
 
-    console.log("✅ Email sent to:", mailOptions.to);
     return true;
   } catch (error) {
-    console.error("❌ Error sending email:", error);
+    console.error("❌ Error sending email to", mailOptions.to, ":", error);
     return false;
   }
 }

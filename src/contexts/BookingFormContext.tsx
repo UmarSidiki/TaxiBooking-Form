@@ -77,6 +77,9 @@ const STORAGE_KEY = 'booking_form_data';
 const STEP_KEY = 'booking_form_step';
 const DISTANCE_KEY = 'booking_form_distance';
 const TIMESTAMP_KEY = 'booking_form_timestamp';
+
+// Use sessionStorage instead of localStorage to persist across refreshes but clear on tab close
+const storage = typeof window !== 'undefined' ? sessionStorage : null;
 const EXPIRATION_TIME = 10 * 60 * 500; // 5 minutes in milliseconds
 
 const defaultFormData: FormData = {
@@ -123,10 +126,10 @@ export function BookingFormProvider({ children }: { children: ReactNode }) {
     }
 
     try {
-      const savedData = localStorage.getItem(STORAGE_KEY);
-      const savedStep = localStorage.getItem(STEP_KEY);
-      const savedDistance = localStorage.getItem(DISTANCE_KEY);
-      const savedTimestamp = localStorage.getItem(TIMESTAMP_KEY);
+      const savedData = storage?.getItem(STORAGE_KEY);
+      const savedStep = storage?.getItem(STEP_KEY);
+      const savedDistance = storage?.getItem(DISTANCE_KEY);
+      const savedTimestamp = storage?.getItem(TIMESTAMP_KEY);
       
       // Check if data has expired (10 minutes)
       if (savedTimestamp) {
@@ -136,11 +139,11 @@ export function BookingFormProvider({ children }: { children: ReactNode }) {
         
         if (elapsed > EXPIRATION_TIME) {
           // Data has expired, clear it
-          console.log('Booking data expired after 10 minutes. Clearing localStorage.');
-          localStorage.removeItem(STORAGE_KEY);
-          localStorage.removeItem(STEP_KEY);
-          localStorage.removeItem(DISTANCE_KEY);
-          localStorage.removeItem(TIMESTAMP_KEY);
+          console.log('Booking data expired after 5 minutes. Clearing sessionStorage.');
+          storage?.removeItem(STORAGE_KEY);
+          storage?.removeItem(STEP_KEY);
+          storage?.removeItem(DISTANCE_KEY);
+          storage?.removeItem(TIMESTAMP_KEY);
           setIsHydrated(true);
           return;
         }
@@ -165,41 +168,41 @@ export function BookingFormProvider({ children }: { children: ReactNode }) {
     setIsHydrated(true);
   }, [isEmbedded]);
 
-  // Save formData to localStorage whenever it changes (only if not embedded)
+  // Save formData to sessionStorage whenever it changes (only if not embedded)
   useEffect(() => {
     if (isHydrated && !isEmbedded) {
       try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(formData));
+        storage?.setItem(STORAGE_KEY, JSON.stringify(formData));
         // Update timestamp whenever data is saved
-        localStorage.setItem(TIMESTAMP_KEY, Date.now().toString());
+        storage?.setItem(TIMESTAMP_KEY, Date.now().toString());
       } catch (error) {
-        console.error('Error saving form data to localStorage:', error);
+        console.error('Error saving form data to sessionStorage:', error);
       }
     }
   }, [formData, isHydrated, isEmbedded]);
 
-  // Save currentStep to localStorage whenever it changes (only if not embedded)
+  // Save currentStep to sessionStorage whenever it changes (only if not embedded)
   useEffect(() => {
     if (isHydrated && !isEmbedded) {
       try {
-        localStorage.setItem(STEP_KEY, currentStep.toString());
+        storage?.setItem(STEP_KEY, currentStep.toString());
       } catch (error) {
-        console.error('Error saving step to localStorage:', error);
+        console.error('Error saving step to sessionStorage:', error);
       }
     }
   }, [currentStep, isHydrated, isEmbedded]);
 
-  // Save distanceData to localStorage whenever it changes (only if not embedded)
+  // Save distanceData to sessionStorage whenever it changes (only if not embedded)
   useEffect(() => {
     if (isHydrated && !isEmbedded) {
       try {
         if (distanceData) {
-          localStorage.setItem(DISTANCE_KEY, JSON.stringify(distanceData));
+          storage?.setItem(DISTANCE_KEY, JSON.stringify(distanceData));
         } else {
-          localStorage.removeItem(DISTANCE_KEY);
+          storage?.removeItem(DISTANCE_KEY);
         }
       } catch (error) {
-        console.error('Error saving distance data to localStorage:', error);
+        console.error('Error saving distance data to sessionStorage:', error);
       }
     }
   }, [distanceData, isHydrated, isEmbedded]);
@@ -210,7 +213,7 @@ export function BookingFormProvider({ children }: { children: ReactNode }) {
 
     const intervalId = setInterval(() => {
       try {
-        const savedTimestamp = localStorage.getItem(TIMESTAMP_KEY);
+        const savedTimestamp = storage?.getItem(TIMESTAMP_KEY);
         
         if (savedTimestamp) {
           const timestamp = parseInt(savedTimestamp);
@@ -219,7 +222,7 @@ export function BookingFormProvider({ children }: { children: ReactNode }) {
           
           if (elapsed > EXPIRATION_TIME) {
             // Data has expired, reset the form
-            console.log('Booking data expired after 10 minutes. Resetting form.');
+            console.log('Booking data expired after 5 minutes. Resetting form.');
             resetForm();
           }
         }
@@ -231,30 +234,6 @@ export function BookingFormProvider({ children }: { children: ReactNode }) {
     return () => clearInterval(intervalId);
   }, [isHydrated, isEmbedded]);
 
-  // Clear localStorage when user leaves the page (only for non-embedded forms)
-  useEffect(() => {
-    if (isEmbedded) return;
-
-    const handleBeforeUnload = () => {
-      try {
-        localStorage.removeItem(STORAGE_KEY);
-        localStorage.removeItem(STEP_KEY);
-        localStorage.removeItem(DISTANCE_KEY);
-        localStorage.removeItem(TIMESTAMP_KEY);
-      } catch (error) {
-        console.error('Error clearing localStorage on unload:', error);
-      }
-    };
-
-    // Add event listener for when user leaves/closes the tab
-    window.addEventListener('beforeunload', handleBeforeUnload);
-
-    return () => {
-      window.removeEventListener('beforeunload', handleBeforeUnload);
-      // Also clear on unmount
-      handleBeforeUnload();
-    };
-  }, [isEmbedded]);
 
   // Fetch vehicles list on mount to persist selection across steps
   useEffect(() => {
@@ -277,12 +256,12 @@ export function BookingFormProvider({ children }: { children: ReactNode }) {
     setCurrentStep(1);
     setDistanceData(null);
     try {
-      localStorage.removeItem(STORAGE_KEY);
-      localStorage.removeItem(STEP_KEY);
-      localStorage.removeItem(DISTANCE_KEY);
-      localStorage.removeItem(TIMESTAMP_KEY);
+      storage?.removeItem(STORAGE_KEY);
+      storage?.removeItem(STEP_KEY);
+      storage?.removeItem(DISTANCE_KEY);
+      storage?.removeItem(TIMESTAMP_KEY);
     } catch (error) {
-      console.error('Error clearing localStorage:', error);
+      console.error('Error clearing sessionStorage:', error);
     }
   };
 

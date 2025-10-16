@@ -194,9 +194,9 @@ export default function BookingFormContainer() {
       </div>
 
       {/* Main Content - Increased Width */}
-      <main className="max-w-full mx-auto pb-8 pt-6">
+      <main className="max-w-7xl max-sm:max-w-full mx-auto pb-8 pt-6">
         <div className="bg-transparent overflow-hidden">
-          <div className="p-6 sm:p-8 lg:p-10">
+          <div className="p-4 sm:p-6 lg:p-8">
             {currentStep === 1 && <Step1TripDetails />}
             {currentStep === 2 && <Step2VehicleSelection />}
             {currentStep === 3 && <Step3Payment />}

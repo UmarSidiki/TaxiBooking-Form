@@ -200,6 +200,7 @@ export function useStep1() {
   };
 
   const createTargetUrl = () => {
+    const locale = window.location.pathname.split('/')[1]; // Extract locale from URL path
     const params = new URLSearchParams({
       step: "2",
       bookingType: formData.bookingType,
@@ -224,8 +225,8 @@ export function useStep1() {
       params.set("duration", String(formData.duration));
     }
 
-    // Return the URL with parameters
-    return `?${params.toString()}`;
+    // Return the URL with locale path and parameters
+    return `/${locale}?${params.toString()}`;
   };
 
   const redirectToStep2 = () => {
@@ -233,19 +234,7 @@ export function useStep1() {
       const targetUrl = createTargetUrl();
       const fullUrl = `${window.location.origin}${targetUrl}`;
 
-      // Check if we're in an iframe and redirect parent window
-      try {
-        if (window.top && window.top !== window.self) {
-          // We're in an iframe, try to redirect the parent window
-          window.top.location.href = fullUrl;
-        } else {
-          // We're not in an iframe, redirect normally
-          window.location.href = fullUrl;
-        }
-      } catch {
-        // Fallback for cross-origin or security errors: open in new tab
-        window.open(fullUrl, "_blank");
-      }
+      window.location.href = fullUrl;
     }
   };
 

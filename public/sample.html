@@ -32,7 +32,7 @@
         margin-bottom: 30px;
       }
 
-      
+
 
       /* Define the animation keyframes */
       @keyframes fadeIn {
@@ -58,6 +58,22 @@
           border-radius: 5px;
           border: none;
       }
+
+      .booking-widget-iframe {
+  opacity: 0;
+  visibility: hidden;
+  animation-name: Show2Sec;
+  animation-duration: 0.5s;
+  animation-delay: 1500ms;
+  animation-fill-mode: forwards;
+}
+
+@keyframes Show2Sec {
+  to {
+    opacity: 1;
+    visibility: visible;
+  }
+}
     </style>
   </head>
   <body>

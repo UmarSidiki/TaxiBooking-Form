@@ -18,6 +18,7 @@ export function useBookingFormContainer() {
   useEffect(() => {
     const params = searchParams;
     const stepRaw = params.get("step");
+    const sourceRaw = params.get("source");
     const bookingRaw = params.get("bookingType") ?? params.get("bookingtype");
     const pickupRaw = params.get("pickup");
     const dropoffRaw = params.get("dropoff");
@@ -48,13 +49,19 @@ export function useBookingFormContainer() {
       if (!isNaN(d) && d > 0) updates.duration = d;
     }
 
-    // Apply updates if any form params exist
-    if (Object.keys(updates).length > 0) {
+    const hasUpdates = Object.keys(updates).length > 0;
+    const shouldDetermineStep = hasUpdates || !!stepRaw || !!sourceRaw;
+
+    if (hasUpdates) {
       setFormData((prev) => ({ ...prev, ...updates }));
-      // Determine step
+    }
+
+    if (shouldDetermineStep) {
       if (stepRaw && ["1", "2", "3"].includes(stepRaw)) {
         setCurrentStep(parseInt(stepRaw, 10) as 1 | 2 | 3);
-      } else {
+      } else if (sourceRaw === "embed_v1") {
+        setCurrentStep(2);
+      } else if (hasUpdates) {
         setCurrentStep(2);
       }
     }
@@ -65,13 +72,13 @@ export function useBookingFormContainer() {
   const getStepTitle = () => {
     switch (currentStep) {
       case 1:
-        return t('FormContainer.trip-details');
+        return t("FormContainer.trip-details");
       case 2:
-        return t('FormContainer.select-vehicle');
+        return t("FormContainer.select-vehicle");
       case 3:
-        return t('FormContainer.payment-and-details');
+        return t("FormContainer.payment-and-details");
       default:
-        return t('FormContainer.booking');
+        return t("FormContainer.booking");
     }
   };
 

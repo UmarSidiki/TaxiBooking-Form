@@ -231,8 +231,24 @@ export function useStep1() {
 
   const redirectToStep2 = () => {
     if (validateStep()) {
+      // Persist step change before navigating away so the main form opens on step 2
+      setCurrentStep(2);
+      try {
+        localStorage.setItem('booking_form_step', '2');
+      } catch (error) {
+        console.debug('Unable to persist step to localStorage', error);
+      }
       const targetUrl = createTargetUrl();
       const fullUrl = `${window.location.origin}${targetUrl}`;
+
+      try {
+        if (window.top) {
+          window.top.location.href = fullUrl;
+          return;
+        }
+      } catch (error) {
+        console.debug('Unable to redirect parent frame, falling back to current frame', error);
+      }
 
       window.location.href = fullUrl;
     }

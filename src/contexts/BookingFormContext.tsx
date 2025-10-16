@@ -111,8 +111,17 @@ export function BookingFormProvider({ children }: { children: ReactNode }) {
   const [isLoading, setIsLoading] = useState(false);
   const [isHydrated, setIsHydrated] = useState(false);
 
-  // Load data from localStorage on mount
+  // Check if we're in an iframe (embedded form)
+  const isEmbedded = typeof window !== 'undefined' && window.self !== window.top;
+
+  // Load data from localStorage on mount (only if not embedded)
   useEffect(() => {
+    if (isEmbedded) {
+      // Don't use localStorage for embedded forms
+      setIsHydrated(true);
+      return;
+    }
+
     try {
       const savedData = localStorage.getItem(STORAGE_KEY);
       const savedStep = localStorage.getItem(STEP_KEY);
@@ -154,11 +163,11 @@ export function BookingFormProvider({ children }: { children: ReactNode }) {
       console.error('Error loading form data from localStorage:', error);
     }
     setIsHydrated(true);
-  }, []);
+  }, [isEmbedded]);
 
-  // Save formData to localStorage whenever it changes
+  // Save formData to localStorage whenever it changes (only if not embedded)
   useEffect(() => {
-    if (isHydrated) {
+    if (isHydrated && !isEmbedded) {
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(formData));
         // Update timestamp whenever data is saved
@@ -167,22 +176,22 @@ export function BookingFormProvider({ children }: { children: ReactNode }) {
         console.error('Error saving form data to localStorage:', error);
       }
     }
-  }, [formData, isHydrated]);
+  }, [formData, isHydrated, isEmbedded]);
 
-  // Save currentStep to localStorage whenever it changes
+  // Save currentStep to localStorage whenever it changes (only if not embedded)
   useEffect(() => {
-    if (isHydrated) {
+    if (isHydrated && !isEmbedded) {
       try {
         localStorage.setItem(STEP_KEY, currentStep.toString());
       } catch (error) {
         console.error('Error saving step to localStorage:', error);
       }
     }
-  }, [currentStep, isHydrated]);
+  }, [currentStep, isHydrated, isEmbedded]);
 
-  // Save distanceData to localStorage whenever it changes
+  // Save distanceData to localStorage whenever it changes (only if not embedded)
   useEffect(() => {
-    if (isHydrated) {
+    if (isHydrated && !isEmbedded) {
       try {
         if (distanceData) {
           localStorage.setItem(DISTANCE_KEY, JSON.stringify(distanceData));
@@ -193,11 +202,11 @@ export function BookingFormProvider({ children }: { children: ReactNode }) {
         console.error('Error saving distance data to localStorage:', error);
       }
     }
-  }, [distanceData, isHydrated]);
+  }, [distanceData, isHydrated, isEmbedded]);
 
-  // Periodic check for expiration (every minute)
+  // Periodic check for expiration (every minute) - only for non-embedded forms
   useEffect(() => {
-    if (!isHydrated) return;
+    if (!isHydrated || isEmbedded) return;
 
     const intervalId = setInterval(() => {
       try {
@@ -220,7 +229,32 @@ export function BookingFormProvider({ children }: { children: ReactNode }) {
     }, 60000); // Check every minute
 
     return () => clearInterval(intervalId);
-  }, [isHydrated]);
+  }, [isHydrated, isEmbedded]);
+
+  // Clear localStorage when user leaves the page (only for non-embedded forms)
+  useEffect(() => {
+    if (isEmbedded) return;
+
+    const handleBeforeUnload = () => {
+      try {
+        localStorage.removeItem(STORAGE_KEY);
+        localStorage.removeItem(STEP_KEY);
+        localStorage.removeItem(DISTANCE_KEY);
+        localStorage.removeItem(TIMESTAMP_KEY);
+      } catch (error) {
+        console.error('Error clearing localStorage on unload:', error);
+      }
+    };
+
+    // Add event listener for when user leaves/closes the tab
+    window.addEventListener('beforeunload', handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+      // Also clear on unmount
+      handleBeforeUnload();
+    };
+  }, [isEmbedded]);
 
   // Fetch vehicles list on mount to persist selection across steps
   useEffect(() => {

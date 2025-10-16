@@ -233,24 +233,42 @@ export function useStep1() {
     if (validateStep()) {
       // Persist step change before navigating away so the main form opens on step 2
       setCurrentStep(2);
-      try {
-        localStorage.setItem('booking_form_step', '2');
-      } catch (error) {
-        console.debug('Unable to persist step to localStorage', error);
+      
+      // Only persist to localStorage if not in iframe (since main form will handle it)
+      const isEmbedded = typeof window !== 'undefined' && window.self !== window.top;
+      if (!isEmbedded) {
+        try {
+          localStorage.setItem('booking_form_step', '2');
+        } catch (error) {
+          console.debug('Unable to persist step to localStorage', error);
+        }
       }
+      
       const targetUrl = createTargetUrl();
       const fullUrl = `${window.location.origin}${targetUrl}`;
 
+      // Always try to break out of iframe by navigating the top window
       try {
-        if (window.top) {
+        if (window.top && window.top !== window) {
+          // We're in an iframe, try to navigate parent
           window.top.location.href = fullUrl;
-          return;
+        } else {
+          // We're not in an iframe, navigate normally
+          window.location.href = fullUrl;
         }
       } catch (error) {
-        console.debug('Unable to redirect parent frame, falling back to current frame', error);
+        // Cross-origin restrictions prevent accessing window.top.location
+        // Force navigation with a fallback approach
+        console.debug('Cross-origin restriction, using alternative navigation', error);
+        
+        // Try using window.open with _top target as fallback
+        try {
+          window.open(fullUrl, '_top');
+        } catch {
+          // Last resort: regular navigation
+          window.location.href = fullUrl;
+        }
       }
-
-      window.location.href = fullUrl;
     }
   };
 

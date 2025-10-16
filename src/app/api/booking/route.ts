@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { sendOrderConfirmationEmail } from "@/controllers/email/OrderConfirmation";
 import { sendOrderNotificationEmail } from "@/controllers/email/OrderNotification";
-import Booking, { BookingInput, IBooking } from "@/models/Booking";
+import Booking, { BookingInput } from "@/models/Booking";
 import { v4 as uuidv4 } from "uuid";
 import { connectDB } from "@/lib/mongoose";
 import Vehicle, { IVehicle } from "@/models/Vehicle";
@@ -194,19 +194,21 @@ export async function POST(request: NextRequest) {
     };
 
     // Save to database using Mongoose
-    const booking = await Booking.create(bookingData);
+    await Booking.create(bookingData);
 
-    // Send emails
+    // Send emails asynchronously (fire-and-forget)
     const emailData = createEmailData(formData, vehicle, tripId, totalAmount);
-
-    await Promise.all([
+    Promise.all([
       sendOrderConfirmationEmail(emailData),
       sendOrderNotificationEmail(emailData),
-    ]);
+    ]).catch((error) => {
+      console.error("Error sending booking emails:", error);
+      // Note: We don't fail the booking if emails fail
+    });
 
     return NextResponse.json({
       success: true,
-      message: "Booking confirmed and emails sent",
+      message: "Booking confirmed",
       tripId,
       totalAmount,
     });

@@ -147,11 +147,13 @@ export function BookingFormProvider({ children }: { children: ReactNode }) {
       const savedStep = storage?.getItem(STEP_KEY);
 
       if (savedTimestamp && Date.now() - parseInt(savedTimestamp) <= EXPIRATION_TIME) {
-        if (savedData) setFormData(JSON.parse(savedData));
-        if (savedDistance) setDistanceData(JSON.parse(savedDistance));
-        // Only load step from localStorage if there are no deep link params
-        if (savedStep && !hasDeepLinkParams) {
-          setCurrentStep(parseInt(savedStep, 10) as 1 | 2 | 3);
+        // Only load from localStorage if there are no deep link params
+        if (!hasDeepLinkParams) {
+          if (savedData) setFormData(JSON.parse(savedData));
+          if (savedDistance) setDistanceData(JSON.parse(savedDistance));
+          if (savedStep) {
+            setCurrentStep(parseInt(savedStep, 10) as 1 | 2 | 3);
+          }
         }
       } else {
         // Clear expired data

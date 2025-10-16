@@ -456,5 +456,41 @@
     "management_portal": "Management Portal",
     "navigation": "Navigation",
     "preferences": "Preferences"
+  },
+  "ThankYouPage": {
+    "no-payment-information-found": "No payment information found.",
+    "payment-successful-your-booking-has-been-confirmed": "Payment successful! Your booking has been confirmed.",
+    "your-payment-is-being-processed-you-will-receive-a-confirmation-email-shortly": "Your payment is being processed. You will receive a confirmation email shortly.",
+    "payment-failed-please-try-again-or-contact-support-if-the-problem-persists": "Payment failed. Please try again or contact support if the problem persists.",
+    "payment-status-unknown-please-contact-support-with-your-payment-id": "Payment status unknown. Please contact support with your payment ID:",
+    "processing-payment": "Processing Payment",
+    "please-wait-while-we-verify-your-payment": "Please wait while we verify your payment...",
+    "payment-successful": "Payment Successful!",
+    "you-will-receive-a-confirmation-email-shortly": "You will receive a confirmation email shortly.",
+    "redirecting-to-home-page-in-3-seconds": "Redirecting to home page in 3 seconds...",
+    "return-to-home": "Return to Home",
+    "payment-processing": "Payment Processing",
+    "this-may-take-a-few-minutes-we-and-apos-ll-send-you-an-email-once-completed": "This may take a few minutes. We&apos;ll send you an email once completed.",
+    "redirecting-to-home-page-in-5-seconds": "Redirecting to home page in 5 seconds...",
+    "payment-failed": "Payment Failed",
+    "try-again": "Try Again",
+    "common-issues": "Common issues:",
+    "insufficient-funds": "• Insufficient funds",
+    "card-expired-or-blocked": "• Card expired or blocked",
+    "incorrect-card-details": "• Incorrect card details",
+    "payment-declined-by-bank": "• Payment declined by bank"
+  },
+  "ThankYou": {
+    "thank-you-for-your-booking": "Thank You for Your Booking!",
+    "your-trip-has-been-successfully-confirmed": "Your trip has been successfully confirmed",
+    "trip-id": "Trip ID:",
+    "payment-method": "Payment Method:",
+    "confirmation-email-sent": "Confirmation Email Sent",
+    "we-and-apos-ve-sent-a-confirmation-email-with-all-your-booking-details-please-check-your-inbox-and-spam-folder": "We&apos;ve sent a confirmation email with all your booking details. Please check your inbox and spam folder.",
+    "need-help": "Need Help?",
+    "contact-our-24-7-support-team-at": "Contact our 24/7 support team at",
+    "redirecting-in": "Redirecting in",
+    "return-to-home": "Return to Home",
+    "seconds": "seconds"
   }
 }

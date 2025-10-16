@@ -176,7 +176,8 @@
     "trip": "Viaje",
     "trip-booking": "Reserva",
     "vehicle": "Vehículo",
-    "book-your-ride-in-seconds": "Reserva tu viaje en segundos"
+    "book-your-ride-in-seconds": "Reserva tu viaje en segundos",
+    "date-cannot-be-in-the-past": "La fecha no puede ser en el pasado."
   },
   "Dashboard": {
     "Fleet": {
@@ -455,5 +456,41 @@
     "preferences": "Preferencias",
     "rides": "paseos",
     "settings": "Ajustes"
+  },
+  "ThankYou": {
+    "confirmation-email-sent": "Correo electrónico de confirmación enviado",
+    "contact-our-24-7-support-team-at": "Póngase en contacto con nuestro equipo de soporte 24 horas al día, 7 días a la semana en",
+    "need-help": "¿Necesitar ayuda?",
+    "payment-method": "Método de pago:",
+    "redirecting-in": "Redireccionando en",
+    "return-to-home": "Regreso a casa",
+    "seconds": "artículos de segunda clase",
+    "thank-you-for-your-booking": "¡Gracias por su reserva!",
+    "trip-id": "ID de viaje:",
+    "we-and-apos-ve-sent-a-confirmation-email-with-all-your-booking-details-please-check-your-inbox-and-spam-folder": "Nosotros",
+    "your-trip-has-been-successfully-confirmed": "Tu viaje ha sido confirmado exitosamente"
+  },
+  "ThankYouPage": {
+    "card-expired-or-blocked": "• Tarjeta caducada o bloqueada",
+    "common-issues": "Problemas comunes:",
+    "incorrect-card-details": "• Datos de tarjeta incorrectos",
+    "insufficient-funds": "• Fondos insuficientes",
+    "no-payment-information-found": "No se encontró información de pago.",
+    "payment-declined-by-bank": "• Pago rechazado por el banco",
+    "payment-failed": "Pago fallido",
+    "payment-failed-please-try-again-or-contact-support-if-the-problem-persists": "El pago falló. \nInténtelo de nuevo o comuníquese con el soporte si el problema persiste.",
+    "payment-processing": "Procesamiento de pagos",
+    "payment-status-unknown-please-contact-support-with-your-payment-id": "Estado de pago desconocido. \nComuníquese con el soporte con su ID de pago:",
+    "payment-successful": "¡Pago exitoso!",
+    "payment-successful-your-booking-has-been-confirmed": "¡Pago exitoso! \nSu reserva ha sido confirmada.",
+    "please-wait-while-we-verify-your-payment": "Espere mientras verificamos su pago...",
+    "processing-payment": "Procesando pago",
+    "redirecting-to-home-page-in-3-seconds": "Redirigiendo a la página de inicio en 3 segundos...",
+    "redirecting-to-home-page-in-5-seconds": "Redirigiendo a la página de inicio en 5 segundos...",
+    "return-to-home": "Regreso a casa",
+    "this-may-take-a-few-minutes-we-and-apos-ll-send-you-an-email-once-completed": "Esto puede tardar unos minutos. \nNosotros",
+    "try-again": "Intentar otra vez",
+    "you-will-receive-a-confirmation-email-shortly": "Recibirás un correo electrónico de confirmación en breve.",
+    "your-payment-is-being-processed-you-will-receive-a-confirmation-email-shortly": "Su pago está siendo procesado. \nRecibirás un correo electrónico de confirmación en breve."
   }
 }

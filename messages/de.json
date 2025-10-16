@@ -176,7 +176,8 @@
     "trip": "Reise",
     "trip-booking": "Reservierung",
     "vehicle": "Fahrzeug",
-    "book-your-ride-in-seconds": "Buchen Sie Ihre Fahrt in Sekundenschnelle"
+    "book-your-ride-in-seconds": "Buchen Sie Ihre Fahrt in Sekundenschnelle",
+    "date-cannot-be-in-the-past": "Das Datum darf nicht in der Vergangenheit liegen"
   },
   "Dashboard": {
     "Fleet": {
@@ -455,5 +456,41 @@
     "preferences": "Präferenzen",
     "rides": "Fahrten",
     "settings": "Einstellungen"
+  },
+  "ThankYou": {
+    "confirmation-email-sent": "Bestätigungs-E-Mail gesendet",
+    "contact-our-24-7-support-team-at": "Kontaktieren Sie unser 24/7-Support-Team unter",
+    "need-help": "Brauchen Sie Hilfe?",
+    "payment-method": "Zahlungsmethode:",
+    "redirecting-in": "Weiterleiten in",
+    "return-to-home": "Zurück nach Hause",
+    "seconds": "Sekunden",
+    "thank-you-for-your-booking": "Vielen Dank für Ihre Buchung!",
+    "trip-id": "Reise-ID:",
+    "we-and-apos-ve-sent-a-confirmation-email-with-all-your-booking-details-please-check-your-inbox-and-spam-folder": "Wir",
+    "your-trip-has-been-successfully-confirmed": "Ihre Reise wurde erfolgreich bestätigt"
+  },
+  "ThankYouPage": {
+    "card-expired-or-blocked": "• Karte abgelaufen oder gesperrt",
+    "common-issues": "Häufige Probleme:",
+    "incorrect-card-details": "• Falsche Kartendaten",
+    "insufficient-funds": "• Unzureichende Mittel",
+    "no-payment-information-found": "Keine Zahlungsinformationen gefunden.",
+    "payment-declined-by-bank": "• Zahlung von der Bank abgelehnt",
+    "payment-failed": "Zahlung fehlgeschlagen",
+    "payment-failed-please-try-again-or-contact-support-if-the-problem-persists": "Die Zahlung ist fehlgeschlagen. \nBitte versuchen Sie es erneut oder wenden Sie sich an den Support, wenn das Problem weiterhin besteht.",
+    "payment-processing": "Zahlungsabwicklung",
+    "payment-status-unknown-please-contact-support-with-your-payment-id": "Zahlungsstatus unbekannt. \nBitte wenden Sie sich mit Ihrer Zahlungs-ID an den Support:",
+    "payment-successful": "Zahlung erfolgreich!",
+    "payment-successful-your-booking-has-been-confirmed": "Zahlung erfolgreich! \nIhre Buchung wurde bestätigt.",
+    "please-wait-while-we-verify-your-payment": "Bitte warten Sie, während wir Ihre Zahlung überprüfen...",
+    "processing-payment": "Zahlungsabwicklung",
+    "redirecting-to-home-page-in-3-seconds": "Weiterleitung zur Startseite in 3 Sekunden...",
+    "redirecting-to-home-page-in-5-seconds": "Weiterleitung zur Startseite in 5 Sekunden...",
+    "return-to-home": "Zurück nach Hause",
+    "this-may-take-a-few-minutes-we-and-apos-ll-send-you-an-email-once-completed": "Dies kann einige Minuten dauern. \nWir",
+    "try-again": "Versuchen Sie es erneut",
+    "you-will-receive-a-confirmation-email-shortly": "Sie erhalten in Kürze eine Bestätigungs-E-Mail.",
+    "your-payment-is-being-processed-you-will-receive-a-confirmation-email-shortly": "Ihre Zahlung wird bearbeitet. \nSie erhalten in Kürze eine Bestätigungs-E-Mail."
   }
 }

@@ -176,7 +176,8 @@
     "trip": "Voyage",
     "trip-booking": "Réservation",
     "vehicle": "Véhicule",
-    "book-your-ride-in-seconds": "Réservez votre course en quelques secondes"
+    "book-your-ride-in-seconds": "Réservez votre course en quelques secondes",
+    "date-cannot-be-in-the-past": "La date ne peut pas être dans le passé"
   },
   "Dashboard": {
     "Fleet": {
@@ -455,5 +456,41 @@
     "preferences": "Préférences",
     "rides": "Manèges",
     "settings": "Paramètres"
+  },
+  "ThankYou": {
+    "confirmation-email-sent": "E-mail de confirmation envoyé",
+    "contact-our-24-7-support-team-at": "Contactez notre équipe d'assistance 24h/24 et 7j/7 au",
+    "need-help": "Besoin d'aide ?",
+    "payment-method": "Mode de paiement:",
+    "redirecting-in": "Redirection vers",
+    "return-to-home": "Retour à la maison",
+    "seconds": "secondes",
+    "thank-you-for-your-booking": "Merci pour votre réservation !",
+    "trip-id": "ID du voyage :",
+    "we-and-apos-ve-sent-a-confirmation-email-with-all-your-booking-details-please-check-your-inbox-and-spam-folder": "Nous",
+    "your-trip-has-been-successfully-confirmed": "Votre voyage a été confirmé avec succès"
+  },
+  "ThankYouPage": {
+    "card-expired-or-blocked": "• Carte expirée ou bloquée",
+    "common-issues": "Problèmes courants :",
+    "incorrect-card-details": "• Informations de carte incorrectes",
+    "insufficient-funds": "• Fonds insuffisants",
+    "no-payment-information-found": "Aucune information de paiement trouvée.",
+    "payment-declined-by-bank": "• Paiement refusé par la banque",
+    "payment-failed": "Échec du paiement",
+    "payment-failed-please-try-again-or-contact-support-if-the-problem-persists": "Le paiement a échoué. \nVeuillez réessayer ou contacter l'assistance si le problème persiste.",
+    "payment-processing": "Traitement des paiements",
+    "payment-status-unknown-please-contact-support-with-your-payment-id": "Statut de paiement inconnu. \nVeuillez contacter le support avec votre identifiant de paiement :",
+    "payment-successful": "Paiement réussi !",
+    "payment-successful-your-booking-has-been-confirmed": "Paiement réussi ! \nVotre réservation a été confirmée.",
+    "please-wait-while-we-verify-your-payment": "Veuillez patienter pendant que nous vérifions votre paiement...",
+    "processing-payment": "Traitement du paiement",
+    "redirecting-to-home-page-in-3-seconds": "Redirection vers la page d'accueil en 3 secondes...",
+    "redirecting-to-home-page-in-5-seconds": "Redirection vers la page d'accueil dans 5 secondes...",
+    "return-to-home": "Retour à la maison",
+    "this-may-take-a-few-minutes-we-and-apos-ll-send-you-an-email-once-completed": "Cela peut prendre quelques minutes. \nNous",
+    "try-again": "Essayer à nouveau",
+    "you-will-receive-a-confirmation-email-shortly": "Vous recevrez un e-mail de confirmation sous peu.",
+    "your-payment-is-being-processed-you-will-receive-a-confirmation-email-shortly": "Votre paiement est en cours de traitement. \nVous recevrez un e-mail de confirmation sous peu."
   }
 }

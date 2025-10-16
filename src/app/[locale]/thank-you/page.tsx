@@ -6,8 +6,10 @@ import { Card, CardContent } from '@/components/ui/card';
 import { CheckCircle, Loader2, Mail, Phone, Home } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useTheme } from '@/contexts/ThemeContext';
+import { useTranslations } from 'next-intl';
 
 export default function ThankYouPage() {
+  const t = useTranslations();
   const searchParams = useSearchParams();
   const router = useRouter();
   const [countdown, setCountdown] = useState(5);
@@ -66,11 +68,9 @@ export default function ThankYouPage() {
           {/* Success Message */}
           <div className="text-center space-y-4 mb-8">
             <h1 className="text-3xl sm:text-4xl font-bold text-gray-900">
-              Thank You for Your Booking!
-            </h1>
+              {t('ThankYou.thank-you-for-your-booking')} </h1>
             <p className="text-lg text-gray-600">
-              Your trip has been successfully confirmed
-            </p>
+              {t('ThankYou.your-trip-has-been-successfully-confirmed')} </p>
           </div>
 
           {/* Booking Details */}
@@ -78,7 +78,7 @@ export default function ThankYouPage() {
             <div className="bg-gradient-to-r from-green-50 to-blue-50 rounded-lg p-4 sm:p-6 mb-6 sm:mb-8 border border-green-200">
               <div className="space-y-4">
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-                  <span className="text-sm font-medium text-gray-600">Trip ID:</span>
+                  <span className="text-sm font-medium text-gray-600">{t('ThankYou.trip-id')}</span>
                   <span className="text-sm sm:text-lg font-bold text-gray-900 font-mono break-all sm:break-normal">
                     {tripId}
                   </span>
@@ -91,7 +91,7 @@ export default function ThankYouPage() {
                 )}
                 {paymentMethod && (
                   <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-                    <span className="text-sm font-medium text-gray-600">Payment Method:</span>
+                    <span className="text-sm font-medium text-gray-600">{t('ThankYou.payment-method')}</span>
                     <span className="text-sm font-semibold text-gray-900 capitalize">
                       {paymentMethod.replace('_', ' ')}
                     </span>
@@ -106,11 +106,9 @@ export default function ThankYouPage() {
             <div className="flex items-start gap-3">
               <Mail className="h-5 w-5 text-blue-600 mt-0.5 flex-shrink-0" />
               <div>
-                <h3 className="font-semibold text-gray-900 mb-1 text-sm sm:text-base">Confirmation Email Sent</h3>
+                <h3 className="font-semibold text-gray-900 mb-1 text-sm sm:text-base">{t('ThankYou.confirmation-email-sent')}</h3>
                 <p className="text-xs sm:text-sm text-gray-600">
-                  We&apos;ve sent a confirmation email with all your booking details. 
-                  Please check your inbox and spam folder.
-                </p>
+                  {t('ThankYou.we-and-apos-ve-sent-a-confirmation-email-with-all-your-booking-details-please-check-your-inbox-and-spam-folder')} </p>
               </div>
             </div>
           </div>
@@ -120,15 +118,15 @@ export default function ThankYouPage() {
             <div className="flex items-start gap-3">
               <Phone className="h-5 w-5 text-gray-600 mt-0.5 flex-shrink-0" />
               <div>
-                <h3 className="font-semibold text-gray-900 mb-1 text-sm sm:text-base">Need Help?</h3>
+                <h3 className="font-semibold text-gray-900 mb-1 text-sm sm:text-base">{t('ThankYou.need-help')}</h3>
                 <p className="text-xs sm:text-sm text-gray-600">
-                  Contact our 24/7 support team at{' '}
-                  <a href="tel:+41763868121" className="text-primary font-medium hover:underline break-all">
-                    +41 76 386 81 21
+                  {t('ThankYou.contact-our-24-7-support-team-at')}t{' '}
+                  <a href={"tel:" + process.env.NEXT_PUBLIC_PHONE_NUMBER} className="text-primary font-medium hover:underline break-all">
+                    {process.env.NEXT_PUBLIC_PHONE_NUMBER}
                   </a>
                   {' '}or{' '}
-                  <a href="mailto:booking@swissride-sarl.ch" className="text-primary font-medium hover:underline break-all">
-                    booking@swissride-sarl.ch
+                  <a href={"mailto:" + process.env.NEXT_PUBLIC_SUPPORT_EMAIL} className="text-primary font-medium hover:underline break-all">
+                    {process.env.NEXT_PUBLIC_SUPPORT_EMAIL}
                   </a>
                 </p>
               </div>
@@ -140,7 +138,7 @@ export default function ThankYouPage() {
             <div className="flex items-center justify-center gap-2 text-gray-600">
               <Loader2 className="h-4 w-4 animate-spin" />
               <span className="text-sm">
-                Redirecting in <strong className="text-primary">{countdown}</strong> second{countdown !== 1 ? 's' : ''}...
+                {t('ThankYou.redirecting-in')} <strong className="text-primary">{countdown}</strong> {t('ThankYou.seconds')}...
               </span>
             </div>
             
@@ -150,8 +148,7 @@ export default function ThankYouPage() {
               size="lg"
             >
               <Home className="mr-2 h-4 w-4" />
-              Return to Home
-            </Button>
+              {t('ThankYou.return-to-home')} </Button>
           </div>
         </CardContent>
       </Card>

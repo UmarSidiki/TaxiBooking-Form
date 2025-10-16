@@ -3,6 +3,7 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { apiFetch } from "@/utils/api";
 import { IVehicle } from '@/models/Vehicle';
+import { useSearchParams } from 'next/navigation';
 
 export interface FormData {
   bookingType: "destination" | "hourly";
@@ -118,6 +119,21 @@ export function BookingFormProvider({ children }: { children: ReactNode }) {
   // Check if we're in an iframe (embedded form)
   const isEmbedded = typeof window !== 'undefined' && window.self !== window.top;
 
+  // Check for URL params that indicate deep linking
+  const searchParams = useSearchParams();
+  const hasDeepLinkParams = !!(
+    searchParams?.get("step") ||
+    searchParams?.get("source") ||
+    searchParams?.get("bookingType") ||
+    searchParams?.get("pickup") ||
+    searchParams?.get("dropoff") ||
+    searchParams?.get("date") ||
+    searchParams?.get("time") ||
+    searchParams?.get("passengers") ||
+    searchParams?.get("tripType") ||
+    searchParams?.get("duration")
+  );
+
   // Load saved formData and step on mount for main form (skip for embedded)
   useEffect(() => {
     if (isEmbedded) {
@@ -129,11 +145,14 @@ export function BookingFormProvider({ children }: { children: ReactNode }) {
       const savedDistance = storage?.getItem(DISTANCE_KEY);
       const savedTimestamp = storage?.getItem(TIMESTAMP_KEY);
       const savedStep = storage?.getItem(STEP_KEY);
-      
+
       if (savedTimestamp && Date.now() - parseInt(savedTimestamp) <= EXPIRATION_TIME) {
         if (savedData) setFormData(JSON.parse(savedData));
         if (savedDistance) setDistanceData(JSON.parse(savedDistance));
-        if (savedStep) setCurrentStep(parseInt(savedStep, 10) as 1 | 2 | 3);
+        // Only load step from localStorage if there are no deep link params
+        if (savedStep && !hasDeepLinkParams) {
+          setCurrentStep(parseInt(savedStep, 10) as 1 | 2 | 3);
+        }
       } else {
         // Clear expired data
         storage?.removeItem(STORAGE_KEY);
@@ -145,7 +164,7 @@ export function BookingFormProvider({ children }: { children: ReactNode }) {
       console.error('Error loading form data from localStorage:', error);
     }
     setIsHydrated(true);
-  }, [isEmbedded]);
+  }, [isEmbedded, hasDeepLinkParams]);
 
   // Save formData to sessionStorage whenever it changes (only if not embedded)
   useEffect(() => {

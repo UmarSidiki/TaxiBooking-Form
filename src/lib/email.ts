@@ -10,14 +10,25 @@ export async function sendEmail(
       return true;
     }
 
+    const port = Number(process.env.SMTP_PORT) || 465;
+    const isSecure = port === 465;
+    
+    // Check if SMTP_HOST is an IP address
+    const isIPAddress = /^(\d{1,3}\.){3}\d{1,3}$/.test(process.env.SMTP_HOST);
+
     const transporter = nodemailer.createTransport({
       host: process.env.SMTP_HOST,
-      port: Number(process.env.SMTP_PORT) || 465,
-      secure: Number(process.env.SMTP_PORT) === 465,
+      port: port,
+      secure: isSecure,
       auth: {
         user: process.env.SMTP_USER,
         pass: process.env.SMTP_PASS,
       },
+      // If connecting via IP address, we need to relax TLS certificate validation
+      tls: isIPAddress ? {
+        rejectUnauthorized: false, // Allow self-signed certificates or hostname mismatches
+        servername: process.env.SMTP_SERVERNAME, // Optional: specify the expected server name
+      } : undefined,
     });
 
     await transporter.sendMail(mailOptions);

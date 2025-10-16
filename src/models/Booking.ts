@@ -77,7 +77,7 @@ const BookingSchema: Schema = new Schema({
 // Create indexes for better performance
 BookingSchema.index({ createdAt: -1 });
 BookingSchema.index({ status: 1 });
-BookingSchema.index({ tripId: 1 });
+// Note: tripId index is already created by unique: true in schema definition
 
 const Booking = mongoose.models.Booking || mongoose.model<IBooking>("Booking", BookingSchema);
 

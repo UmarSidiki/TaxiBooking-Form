@@ -192,6 +192,13 @@ export function BookingFormProvider({ children }: { children: ReactNode }) {
     if (isHydrated && !isEmbedded) {
       try {
         storage?.setItem(STEP_KEY, currentStep.toString());
+        
+        // Update URL params to reflect current step
+        if (typeof window !== 'undefined') {
+          const url = new URL(window.location.href);
+          url.searchParams.set('step', currentStep.toString());
+          window.history.replaceState({}, '', url.toString());
+        }
       } catch (error) {
         console.error('Error saving step to sessionStorage:', error);
       }

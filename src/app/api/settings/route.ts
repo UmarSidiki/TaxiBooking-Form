@@ -25,13 +25,16 @@ export async function POST(request: Request) {
   await connectDB();
   try {
     const body = await request.json();
-    // Find one and update, or create if it doesn't exist (upsert)
-    const settings = await Setting.findOneAndUpdate({}, body, {
-      new: true,
-      upsert: true,
-      runValidators: true,
-    });
-    return NextResponse.json({ success: true, data: settings });
+    const existing = await Setting.findOne();
+    if (existing) {
+      Object.assign(existing, body);
+      await existing.save();
+      return NextResponse.json({ success: true, message: "Settings saved successfully", data: existing });
+    } else {
+      const newSettings = new Setting(body);
+      await newSettings.save();
+      return NextResponse.json({ success: true, message: "Settings saved successfully", data: newSettings });
+    }
   } catch (error) {
     const message = error instanceof Error ? error.message : "An unknown error occurred";
     return NextResponse.json({ success: false, message }, { status: 400 });

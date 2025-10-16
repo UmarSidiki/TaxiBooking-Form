@@ -22,6 +22,12 @@ export interface ISetting {
   bankAccountNumber?: string;
   bankIBAN?: string;
   bankSwiftBIC?: string;
+  smtpHost?: string;
+  smtpPort?: number;
+  smtpUser?: string;
+  smtpPass?: string;
+  smtpEncryption?: 'TLS' | 'SSL' | 'none';
+  smtpTestEmail?: string;
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -105,6 +111,31 @@ const SettingSchema = new Schema<ISetting>(
       default: "",
     },
     bankSwiftBIC: {
+      type: String,
+      default: "",
+    },
+    smtpHost: {
+      type: String,
+      default: "",
+    },
+    smtpPort: {
+      type: Number,
+      default: 587,
+    },
+    smtpUser: {
+      type: String,
+      default: "",
+    },
+    smtpPass: {
+      type: String,
+      default: "",
+    },
+    smtpEncryption: {
+      type: String,
+      enum: ['TLS', 'SSL', 'none'],
+      default: 'TLS',
+    },
+    smtpTestEmail: {
       type: String,
       default: "",
     },

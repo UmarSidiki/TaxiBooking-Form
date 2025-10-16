@@ -1,4 +1,4 @@
-import nodemailer from 'nodemailer';
+import { sendEmail } from '@/lib/email';
 
 interface BookingData {
   tripId: string;
@@ -87,38 +87,18 @@ function generateEmailHTML(bookingData: BookingData) {
 }
 
 export async function sendOrderConfirmationEmail(bookingData: BookingData) {
-  try {
-    
-    if (!process.env.SMTP_HOST || !process.env.SMTP_USER) {
-      console.log("⚠️ SMTP not configured. Email sending skipped.");
-      console.log("✉️ Would send confirmation email to:", bookingData.email);
-      return true;
-    }
+  const htmlContent = generateEmailHTML(bookingData);
 
-    const transporter = nodemailer.createTransport({
-      host: process.env.SMTP_HOST,
-      port: parseInt(process.env.SMTP_PORT || '587'),
-      secure: process.env.SMTP_PORT === '465',
-      auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASS,
-      },
-    });
+  const success = await sendEmail({
+    from: process.env.SMTP_FROM || `"Booking Service" <${process.env.SMTP_USER}>`,
+    to: bookingData.email,
+    subject: `Booking Confirmation - Trip #${bookingData.tripId}`,
+    html: htmlContent,
+    text: `Booking Confirmed!\n\nTrip ID: ${bookingData.tripId}\nCustomer: ${bookingData.firstName} ${bookingData.lastName}\nFrom: ${bookingData.pickup}\nTo: ${bookingData.dropoff}\nDate: ${bookingData.date} at ${bookingData.time}\nVehicle: ${bookingData.vehicleDetails.name}\nTotal Amount: €${bookingData.totalAmount}`,
+  });
 
-    const htmlContent = generateEmailHTML(bookingData);
+  if (!success) return false;
 
-    await transporter.sendMail({
-      from: process.env.SMTP_FROM || `"Booking Service" <${process.env.SMTP_USER}>`,
-      to: bookingData.email,
-      subject: `Booking Confirmation - Trip #${bookingData.tripId}`,
-      html: htmlContent,
-      text: `Booking Confirmed!\n\nTrip ID: ${bookingData.tripId}\nCustomer: ${bookingData.firstName} ${bookingData.lastName}\nFrom: ${bookingData.pickup}\nTo: ${bookingData.dropoff}\nDate: ${bookingData.date} at ${bookingData.time}\nVehicle: ${bookingData.vehicleDetails.name}\nTotal Amount: €${bookingData.totalAmount}`,
-    });
-
-    console.log("✅ Confirmation email sent to:", bookingData.email);
-    return true;
-  } catch (error) {
-    console.error("❌ Error sending confirmation email:", error);
-    return false;
-  }
+  console.log("✅ Confirmation email sent to:", bookingData.email);
+  return true;
 }

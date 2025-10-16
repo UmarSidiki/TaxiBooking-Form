@@ -1,4 +1,4 @@
-import nodemailer from "nodemailer";
+import { sendEmail } from "@/lib/email";
 import { getMongoDb } from "@/lib/mongodb";
 
 interface BookingData {
@@ -84,37 +84,19 @@ function generateEmailHTML(bookingData: BookingData) {
 }
 
 export async function sendOrderCancellationEmail(bookingData: BookingData) {
-  try {
+  const htmlContent = generateEmailHTML(bookingData);
 
-    if (!process.env.SMTP_HOST || !process.env.SMTP_USER) {
-      console.log("⚠️ SMTP not configured. Email sending skipped.");
-      console.log("✉️ Would send cancellation email to:", bookingData.email);
-      return true;
-    }
+  const refundAmountText = (bookingData.refundAmount ?? 0).toFixed(2);
+  const refundPercentText = bookingData.refundPercentage
+    ? `${bookingData.refundPercentage}%`
+    : "N/A";
 
-    const transporter = nodemailer.createTransport({
-      host: process.env.SMTP_HOST,
-      port: parseInt(process.env.SMTP_PORT || "587", 10),
-      secure: process.env.SMTP_PORT === "465",
-      auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASS,
-      },
-    });
-
-    const htmlContent = generateEmailHTML(bookingData);
-
-    const refundAmountText = (bookingData.refundAmount ?? 0).toFixed(2);
-    const refundPercentText = bookingData.refundPercentage
-      ? `${bookingData.refundPercentage}%`
-      : "N/A";
-
-    await transporter.sendMail({
-      from: process.env.SMTP_FROM || `"Booking Service" <${process.env.SMTP_USER}>`,
-      to: bookingData.email,
-      subject: `Booking Cancelled - Trip #${bookingData.tripId}`,
-      html: htmlContent,
-      text: `Your booking (Trip #${bookingData.tripId}) has been cancelled.
+  const success = await sendEmail({
+    from: process.env.SMTP_FROM || `"Booking Service" <${process.env.SMTP_USER}>`,
+    to: bookingData.email,
+    subject: `Booking Cancelled - Trip #${bookingData.tripId}`,
+    html: htmlContent,
+    text: `Your booking (Trip #${bookingData.tripId}) has been cancelled.
 
 Cancellation Details:
 - Pickup: ${bookingData.pickup}
@@ -124,18 +106,16 @@ Cancellation Details:
 - Refund Percentage: ${refundPercentText}
 
 If you have any questions, reply to this email and our team will assist you.`,
-    });
+  });
 
-    console.log("✅ Cancellation email sent to:", bookingData.email);
-    
-    // Also send notification to admin
-    await sendCancellationNotificationToAdmin(bookingData);
-    
-    return true;
-  } catch (error) {
-    console.error("❌ Error sending cancellation email:", error);
-    return false;
-  }
+  if (!success) return false;
+
+  console.log("✅ Cancellation email sent to:", bookingData.email);
+
+  // Also send notification to admin
+  await sendCancellationNotificationToAdmin(bookingData);
+
+  return true;
 }
 
 async function sendCancellationNotificationToAdmin(bookingData: BookingData) {
@@ -144,35 +124,20 @@ async function sendCancellationNotificationToAdmin(bookingData: BookingData) {
     const db = await getMongoDb();
     const usersCollection = db.collection("users");
     const adminUser = await usersCollection.findOne({ role: "admin" });
-    
+
     const adminEmail = adminUser?.email || process.env.OWNER_EMAIL;
-    
+
     if (!adminEmail) {
       console.log("⚠️ No admin email found. Admin cancellation notification skipped.");
       return true;
     }
-
-    if (!process.env.SMTP_HOST || !process.env.SMTP_USER) {
-      console.log("⚠️ SMTP not configured. Admin notification skipped.");
-      return true;
-    }
-
-    const transporter = nodemailer.createTransport({
-      host: process.env.SMTP_HOST,
-      port: parseInt(process.env.SMTP_PORT || "587", 10),
-      secure: process.env.SMTP_PORT === "465",
-      auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASS,
-      },
-    });
 
     const refundAmountText = (bookingData.refundAmount ?? 0).toFixed(2);
     const refundPercentText = bookingData.refundPercentage
       ? `${bookingData.refundPercentage}%`
       : "N/A";
 
-    await transporter.sendMail({
+    const success = await sendEmail({
       from: process.env.SMTP_FROM || `"Booking System" <${process.env.SMTP_USER}>`,
       to: adminEmail,
       subject: `🚫 Booking Cancelled - Trip #${bookingData.tripId}`,
@@ -180,7 +145,7 @@ async function sendCancellationNotificationToAdmin(bookingData: BookingData) {
         <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
           <h1 style="color: #dc2626; border-bottom: 3px solid #dc2626; padding-bottom: 10px;">⚠️ Booking Cancellation Alert</h1>
           <p style="font-size: 16px; color: #333;">A booking has been cancelled by the customer.</p>
-          
+
           <div style="background: #fee; border-left: 4px solid #dc2626; padding: 15px; margin: 20px 0;">
             <h2 style="margin-top: 0; color: #dc2626;">Cancellation Details</h2>
             <table style="width: 100%; border-collapse: collapse;">
@@ -230,7 +195,7 @@ async function sendCancellationNotificationToAdmin(bookingData: BookingData) {
               </tr>
             </table>
           </div>
-          
+
           <p style="color: #666; font-size: 14px; margin-top: 30px;">
             Please review this cancellation and process the refund if applicable.
           </p>
@@ -252,6 +217,8 @@ Refund Percentage: ${refundPercentText}
 
 Please review this cancellation and process the refund if applicable.`,
     });
+
+    if (!success) return false;
 
     console.log("✅ Cancellation notification sent to admin:", adminEmail);
     return true;

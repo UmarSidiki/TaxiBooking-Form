@@ -126,6 +126,11 @@ export function BookingFormProvider({ children }: { children: ReactNode }) {
     }
 
     try {
+      // Check if URL has step parameter - if so, don't override with storage
+      const urlParams = new URLSearchParams(window.location.search);
+      const hasStepParam = urlParams.has('step');
+      const hasSourceParam = urlParams.has('source');
+      
       const savedData = storage?.getItem(STORAGE_KEY);
       const savedStep = storage?.getItem(STEP_KEY);
       const savedDistance = storage?.getItem(DISTANCE_KEY);
@@ -159,7 +164,8 @@ export function BookingFormProvider({ children }: { children: ReactNode }) {
         setDistanceData(parsedDistance);
       }
       
-      if (savedStep) {
+      // Only load step from storage if URL doesn't have step or source params
+      if (savedStep && !hasStepParam && !hasSourceParam) {
         setCurrentStep(parseInt(savedStep) as 1 | 2 | 3);
       }
     } catch (error) {

@@ -176,6 +176,7 @@ export function useStep3() {
         body: JSON.stringify({
           ...formData,
           paymentMethod: "stripe",
+          paymentStatus: "completed",
           totalAmount: totalPrice,
           stripePaymentIntentId: paymentIntentId,
         }),
@@ -203,7 +204,7 @@ export function useStep3() {
   };
 
   const handleStripePaymentError = () => {
-    alert(t('Step3.payment-failed-error'));
+    setPaymentError(t('Step3.payment-failed-error'));
   };
 
   const handleCashBooking = async () => {

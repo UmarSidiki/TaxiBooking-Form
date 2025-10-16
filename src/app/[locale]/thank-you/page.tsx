@@ -5,32 +5,33 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import { Card, CardContent } from '@/components/ui/card';
 import { CheckCircle, Loader2, Mail, Phone, Home } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { apiGet } from '@/utils/api';
+import { useTheme } from '@/contexts/ThemeContext';
 
 export default function ThankYouPage() {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const [countdown, setCountdown] = useState(10);
+  const [countdown, setCountdown] = useState(5);
   const [redirectUrl, setRedirectUrl] = useState<string>('/');
+  const { settings } = useTheme();
 
   const tripId = searchParams.get('tripId');
   const amount = searchParams.get('amount');
   const paymentMethod = searchParams.get('method');
 
   useEffect(() => {
-    // Fetch redirect URL from settings
-    const fetchRedirectUrl = async () => {
-      try {
-        const data = await apiGet<{ success: boolean; data: { redirectUrl?: string } }>('/api/settings');
-        if (data.success && data.data.redirectUrl) {
-          setRedirectUrl(data.data.redirectUrl);
-        }
-      } catch (error) {
-        console.error('Error fetching redirect URL:', error);
-      }
-    };
-    fetchRedirectUrl();
-  }, []);
+    if (settings?.redirectUrl) {
+      setRedirectUrl(settings.redirectUrl);
+    }
+  }, [settings]);
+
+  useEffect(() => {
+    try {
+      router.prefetch(redirectUrl);
+    } catch (error) {
+      // Prefetch is a best-effort hint; ignore failures
+      console.debug('Prefetch failed', error);
+    }
+  }, [router, redirectUrl]);
 
   useEffect(() => {
     // Countdown timer
@@ -50,8 +51,8 @@ export default function ThankYouPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-blue-50 flex items-center justify-center p-4">
-      <Card className="w-full shadow-2xl border-0">
-        <CardContent className="p-8 sm:p-12">
+      <Card className="w-full max-w-2xl shadow-2xl border-0">
+        <CardContent className="p-6 sm:p-8 lg:p-12">
           {/* Success Icon */}
           <div className="flex justify-center mb-6">
             <div className="relative">
@@ -74,20 +75,22 @@ export default function ThankYouPage() {
 
           {/* Booking Details */}
           {tripId && (
-            <div className="bg-gradient-to-r from-green-50 to-blue-50 rounded-lg p-6 mb-8 border border-green-200">
-              <div className="space-y-3">
-                <div className="flex items-center justify-between">
+            <div className="bg-gradient-to-r from-green-50 to-blue-50 rounded-lg p-4 sm:p-6 mb-6 sm:mb-8 border border-green-200">
+              <div className="space-y-4">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
                   <span className="text-sm font-medium text-gray-600">Trip ID:</span>
-                  <span className="text-lg font-bold text-gray-900">{tripId}</span>
+                  <span className="text-sm sm:text-lg font-bold text-gray-900 font-mono break-all sm:break-normal">
+                    {tripId}
+                  </span>
                 </div>
                 {amount && (
-                  <div className="flex items-center justify-between">
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
                     <span className="text-sm font-medium text-gray-600">Amount:</span>
                     <span className="text-lg font-bold text-green-600">€{amount}</span>
                   </div>
                 )}
                 {paymentMethod && (
-                  <div className="flex items-center justify-between">
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
                     <span className="text-sm font-medium text-gray-600">Payment Method:</span>
                     <span className="text-sm font-semibold text-gray-900 capitalize">
                       {paymentMethod.replace('_', ' ')}
@@ -99,12 +102,12 @@ export default function ThankYouPage() {
           )}
 
           {/* Confirmation Email Info */}
-          <div className="bg-blue-50 rounded-lg p-6 mb-8 border border-blue-200">
+          <div className="bg-blue-50 rounded-lg p-4 sm:p-6 mb-6 sm:mb-8 border border-blue-200">
             <div className="flex items-start gap-3">
               <Mail className="h-5 w-5 text-blue-600 mt-0.5 flex-shrink-0" />
               <div>
-                <h3 className="font-semibold text-gray-900 mb-1">Confirmation Email Sent</h3>
-                <p className="text-sm text-gray-600">
+                <h3 className="font-semibold text-gray-900 mb-1 text-sm sm:text-base">Confirmation Email Sent</h3>
+                <p className="text-xs sm:text-sm text-gray-600">
                   We&apos;ve sent a confirmation email with all your booking details. 
                   Please check your inbox and spam folder.
                 </p>
@@ -113,18 +116,18 @@ export default function ThankYouPage() {
           </div>
 
           {/* Support Info */}
-          <div className="bg-gray-50 rounded-lg p-6 mb-8 border border-gray-200">
+          <div className="bg-gray-50 rounded-lg p-4 sm:p-6 mb-6 sm:mb-8 border border-gray-200">
             <div className="flex items-start gap-3">
               <Phone className="h-5 w-5 text-gray-600 mt-0.5 flex-shrink-0" />
               <div>
-                <h3 className="font-semibold text-gray-900 mb-1">Need Help?</h3>
-                <p className="text-sm text-gray-600">
+                <h3 className="font-semibold text-gray-900 mb-1 text-sm sm:text-base">Need Help?</h3>
+                <p className="text-xs sm:text-sm text-gray-600">
                   Contact our 24/7 support team at{' '}
-                  <a href="tel:+41763868121" className="text-primary font-medium hover:underline">
+                  <a href="tel:+41763868121" className="text-primary font-medium hover:underline break-all">
                     +41 76 386 81 21
                   </a>
                   {' '}or{' '}
-                  <a href="mailto:booking@swissride-sarl.ch" className="text-primary font-medium hover:underline">
+                  <a href="mailto:booking@swissride-sarl.ch" className="text-primary font-medium hover:underline break-all">
                     booking@swissride-sarl.ch
                   </a>
                 </p>

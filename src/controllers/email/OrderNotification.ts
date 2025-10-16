@@ -1,5 +1,5 @@
-import nodemailer from 'nodemailer';
 import { getMongoDb } from '@/lib/mongodb';
+import { sendEmail } from '@/lib/email';
 
 interface BookingData {
   tripId: string;
@@ -89,49 +89,30 @@ function generateOwnerEmailHTML(bookingData: BookingData) {
 }
 
 export async function sendOrderNotificationEmail(bookingData: BookingData) {
-  try {
-    // First, try to get admin email from database (users collection)
-    const db = await getMongoDb();
-    const usersCollection = db.collection("users");
-    const adminUser = await usersCollection.findOne({ role: "admin" });
-    
-    const ownerEmail = adminUser?.email || process.env.OWNER_EMAIL;
-    
-    if (!ownerEmail) {
-      console.log("⚠️ No admin email found in database or OWNER_EMAIL not configured. Owner notification skipped.");
-      return true;
-    }
-    
-    if (!process.env.SMTP_HOST || !process.env.SMTP_USER) {
-      console.log("⚠️ SMTP not configured. Email sending skipped.");
-      console.log("✉️ Would send notification email to:", ownerEmail);
-      return true;
-    }
+  // First, try to get admin email from database (users collection)
+  const db = await getMongoDb();
+  const usersCollection = db.collection("users");
+  const adminUser = await usersCollection.findOne({ role: "admin" });
 
-    const transporter = nodemailer.createTransport({
-      host: process.env.SMTP_HOST,
-      port: parseInt(process.env.SMTP_PORT || '587'),
-      secure: process.env.SMTP_PORT === '465',
-      auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASS,
-      },
-    });
+  const ownerEmail = adminUser?.email || process.env.OWNER_EMAIL;
 
-    const htmlContent = generateOwnerEmailHTML(bookingData);
-
-    await transporter.sendMail({
-      from: process.env.SMTP_FROM || `"Booking System" <${process.env.SMTP_USER}>`,
-      to: ownerEmail,
-      subject: `New Booking Alert - Trip #${bookingData.tripId}`,
-      html: htmlContent,
-      text: `New Booking Received!\n\nTrip ID: ${bookingData.tripId}\nCustomer: ${bookingData.firstName} ${bookingData.lastName}\nEmail: ${bookingData.email}\nPhone: ${bookingData.phone}\nFrom: ${bookingData.pickup}\nTo: ${bookingData.dropoff}\nDate: ${bookingData.date} at ${bookingData.time}\nVehicle: ${bookingData.vehicleDetails.name}\nTotal Amount: €${bookingData.totalAmount}\n\nPlease review and confirm this booking.`,
-    });
-
-    console.log("✅ Notification email sent to owner:", ownerEmail);
+  if (!ownerEmail) {
+    console.log("⚠️ No admin email found in database or OWNER_EMAIL not configured. Owner notification skipped.");
     return true;
-  } catch (error) {
-    console.error("❌ Error sending notification email:", error);
-    return false;
   }
+
+  const htmlContent = generateOwnerEmailHTML(bookingData);
+
+  const success = await sendEmail({
+    from: process.env.SMTP_FROM || `"Booking System" <${process.env.SMTP_USER}>`,
+    to: ownerEmail,
+    subject: `New Booking Alert - Trip #${bookingData.tripId}`,
+    html: htmlContent,
+    text: `New Booking Received!\n\nTrip ID: ${bookingData.tripId}\nCustomer: ${bookingData.firstName} ${bookingData.lastName}\nEmail: ${bookingData.email}\nPhone: ${bookingData.phone}\nFrom: ${bookingData.pickup}\nTo: ${bookingData.dropoff}\nDate: ${bookingData.date} at ${bookingData.time}\nVehicle: ${bookingData.vehicleDetails.name}\nTotal Amount: €${bookingData.totalAmount}\n\nPlease review and confirm this booking.`,
+  });
+
+  if (!success) return false;
+
+  console.log("✅ Notification email sent to owner:", ownerEmail);
+  return true;
 }

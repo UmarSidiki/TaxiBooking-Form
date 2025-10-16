@@ -64,7 +64,7 @@ export default function PaymentSuccessPage() {
       setStatus('failed');
       setMessage(t('ThankYouPage.payment-status-unknown-please-contact-support-with-your-payment-id') + paymentIntentId);
     }
-  }, [searchParams, router, redirectUrl]);
+  }, [searchParams, router, redirectUrl, t]);
 
   const handleReturnHome = () => {
     router.push(redirectUrl);

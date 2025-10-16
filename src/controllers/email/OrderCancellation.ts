@@ -1,5 +1,5 @@
+import nodemailer from "nodemailer";
 import { getMongoDb } from "@/lib/mongodb";
-import { sendEmail } from "@/lib/email";
 
 interface BookingData {
   tripId: string;
@@ -84,19 +84,37 @@ function generateEmailHTML(bookingData: BookingData) {
 }
 
 export async function sendOrderCancellationEmail(bookingData: BookingData) {
-  const htmlContent = generateEmailHTML(bookingData);
+  try {
 
-  const refundAmountText = (bookingData.refundAmount ?? 0).toFixed(2);
-  const refundPercentText = bookingData.refundPercentage
-    ? `${bookingData.refundPercentage}%`
-    : "N/A";
+    if (!process.env.SMTP_HOST || !process.env.SMTP_USER) {
+      console.log("⚠️ SMTP not configured. Email sending skipped.");
+      console.log("✉️ Would send cancellation email to:", bookingData.email);
+      return true;
+    }
 
-  const success = await sendEmail({
-    from: process.env.SMTP_FROM || `"Booking Service" <${process.env.SMTP_USER}>`,
-    to: bookingData.email,
-    subject: `Booking Cancelled - Trip #${bookingData.tripId}`,
-    html: htmlContent,
-    text: `Your booking (Trip #${bookingData.tripId}) has been cancelled.
+    const transporter = nodemailer.createTransport({
+      host: process.env.SMTP_HOST,
+      port: parseInt(process.env.SMTP_PORT || "587", 10),
+      secure: process.env.SMTP_PORT === "465",
+      auth: {
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASS,
+      },
+    });
+
+    const htmlContent = generateEmailHTML(bookingData);
+
+    const refundAmountText = (bookingData.refundAmount ?? 0).toFixed(2);
+    const refundPercentText = bookingData.refundPercentage
+      ? `${bookingData.refundPercentage}%`
+      : "N/A";
+
+    await transporter.sendMail({
+      from: process.env.SMTP_FROM || `"Booking Service" <${process.env.SMTP_USER}>`,
+      to: bookingData.email,
+      subject: `Booking Cancelled - Trip #${bookingData.tripId}`,
+      html: htmlContent,
+      text: `Your booking (Trip #${bookingData.tripId}) has been cancelled.
 
 Cancellation Details:
 - Pickup: ${bookingData.pickup}
@@ -106,101 +124,119 @@ Cancellation Details:
 - Refund Percentage: ${refundPercentText}
 
 If you have any questions, reply to this email and our team will assist you.`,
-  });
+    });
 
-  if (!success) return false;
-
-  console.log("✅ Cancellation email sent to:", bookingData.email);
-
-  // Also send notification to admin
-  await sendCancellationNotificationToAdmin(bookingData);
-
-  return true;
+    console.log("✅ Cancellation email sent to:", bookingData.email);
+    
+    // Also send notification to admin
+    await sendCancellationNotificationToAdmin(bookingData);
+    
+    return true;
+  } catch (error) {
+    console.error("❌ Error sending cancellation email:", error);
+    return false;
+  }
 }
 
 async function sendCancellationNotificationToAdmin(bookingData: BookingData) {
-  // Get admin email from database
-  const db = await getMongoDb();
-  const usersCollection = db.collection("users");
-  const adminUser = await usersCollection.findOne({ role: "admin" });
+  try {
+    // Get admin email from database
+    const db = await getMongoDb();
+    const usersCollection = db.collection("users");
+    const adminUser = await usersCollection.findOne({ role: "admin" });
+    
+    const adminEmail = adminUser?.email || process.env.OWNER_EMAIL;
+    
+    if (!adminEmail) {
+      console.log("⚠️ No admin email found. Admin cancellation notification skipped.");
+      return true;
+    }
 
-  const adminEmail = adminUser?.email || process.env.OWNER_EMAIL;
+    if (!process.env.SMTP_HOST || !process.env.SMTP_USER) {
+      console.log("⚠️ SMTP not configured. Admin notification skipped.");
+      return true;
+    }
 
-  if (!adminEmail) {
-    console.log("⚠️ No admin email found. Admin cancellation notification skipped.");
-    return true;
-  }
+    const transporter = nodemailer.createTransport({
+      host: process.env.SMTP_HOST,
+      port: parseInt(process.env.SMTP_PORT || "587", 10),
+      secure: process.env.SMTP_PORT === "465",
+      auth: {
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASS,
+      },
+    });
 
-  const refundAmountText = (bookingData.refundAmount ?? 0).toFixed(2);
-  const refundPercentText = bookingData.refundPercentage
-    ? `${bookingData.refundPercentage}%`
-    : "N/A";
+    const refundAmountText = (bookingData.refundAmount ?? 0).toFixed(2);
+    const refundPercentText = bookingData.refundPercentage
+      ? `${bookingData.refundPercentage}%`
+      : "N/A";
 
-  const success = await sendEmail({
-    from: process.env.SMTP_FROM || `"Booking System" <${process.env.SMTP_USER}>`,
-    to: adminEmail,
-    subject: `🚫 Booking Cancelled - Trip #${bookingData.tripId}`,
-    html: `
-      <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
-        <h1 style="color: #dc2626; border-bottom: 3px solid #dc2626; padding-bottom: 10px;">⚠️ Booking Cancellation Alert</h1>
-        <p style="font-size: 16px; color: #333;">A booking has been cancelled by the customer.</p>
-
-        <div style="background: #fee; border-left: 4px solid #dc2626; padding: 15px; margin: 20px 0;">
-          <h2 style="margin-top: 0; color: #dc2626;">Cancellation Details</h2>
-          <table style="width: 100%; border-collapse: collapse;">
-            <tr>
-              <td style="padding: 8px 0; font-weight: bold;">Trip ID:</td>
-              <td style="padding: 8px 0;">${bookingData.tripId}</td>
-            </tr>
-            <tr>
-              <td style="padding: 8px 0; font-weight: bold;">Customer:</td>
-              <td style="padding: 8px 0;">${bookingData.firstName} ${bookingData.lastName}</td>
-            </tr>
-            <tr>
-              <td style="padding: 8px 0; font-weight: bold;">Email:</td>
-              <td style="padding: 8px 0;">${bookingData.email}</td>
-            </tr>
-            <tr>
-              <td style="padding: 8px 0; font-weight: bold;">Phone:</td>
-              <td style="padding: 8px 0;">${bookingData.phone}</td>
-            </tr>
-            <tr>
-              <td style="padding: 8px 0; font-weight: bold;">Pickup:</td>
-              <td style="padding: 8px 0;">${bookingData.pickup}</td>
-            </tr>
-            <tr>
-              <td style="padding: 8px 0; font-weight: bold;">Dropoff:</td>
-              <td style="padding: 8px 0;">${bookingData.dropoff}</td>
-            </tr>
-            <tr>
-              <td style="padding: 8px 0; font-weight: bold;">Date & Time:</td>
-              <td style="padding: 8px 0;">${bookingData.date} at ${bookingData.time}</td>
-            </tr>
-            <tr>
-              <td style="padding: 8px 0; font-weight: bold;">Vehicle:</td>
-              <td style="padding: 8px 0;">${bookingData.vehicleDetails?.name || 'N/A'}</td>
-            </tr>
-            <tr>
-              <td style="padding: 8px 0; font-weight: bold;">Total Amount:</td>
-              <td style="padding: 8px 0; font-size: 18px; color: #dc2626;">€${bookingData.totalAmount.toFixed(2)}</td>
-            </tr>
-            <tr>
-              <td style="padding: 8px 0; font-weight: bold;">Refund Amount:</td>
-              <td style="padding: 8px 0; font-size: 18px; color: #16a34a;">€${refundAmountText}</td>
-            </tr>
-            <tr>
-              <td style="padding: 8px 0; font-weight: bold;">Refund Percentage:</td>
-              <td style="padding: 8px 0;">${refundPercentText}</td>
-            </tr>
-          </table>
+    await transporter.sendMail({
+      from: process.env.SMTP_FROM || `"Booking System" <${process.env.SMTP_USER}>`,
+      to: adminEmail,
+      subject: `🚫 Booking Cancelled - Trip #${bookingData.tripId}`,
+      html: `
+        <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+          <h1 style="color: #dc2626; border-bottom: 3px solid #dc2626; padding-bottom: 10px;">⚠️ Booking Cancellation Alert</h1>
+          <p style="font-size: 16px; color: #333;">A booking has been cancelled by the customer.</p>
+          
+          <div style="background: #fee; border-left: 4px solid #dc2626; padding: 15px; margin: 20px 0;">
+            <h2 style="margin-top: 0; color: #dc2626;">Cancellation Details</h2>
+            <table style="width: 100%; border-collapse: collapse;">
+              <tr>
+                <td style="padding: 8px 0; font-weight: bold;">Trip ID:</td>
+                <td style="padding: 8px 0;">${bookingData.tripId}</td>
+              </tr>
+              <tr>
+                <td style="padding: 8px 0; font-weight: bold;">Customer:</td>
+                <td style="padding: 8px 0;">${bookingData.firstName} ${bookingData.lastName}</td>
+              </tr>
+              <tr>
+                <td style="padding: 8px 0; font-weight: bold;">Email:</td>
+                <td style="padding: 8px 0;">${bookingData.email}</td>
+              </tr>
+              <tr>
+                <td style="padding: 8px 0; font-weight: bold;">Phone:</td>
+                <td style="padding: 8px 0;">${bookingData.phone}</td>
+              </tr>
+              <tr>
+                <td style="padding: 8px 0; font-weight: bold;">Pickup:</td>
+                <td style="padding: 8px 0;">${bookingData.pickup}</td>
+              </tr>
+              <tr>
+                <td style="padding: 8px 0; font-weight: bold;">Dropoff:</td>
+                <td style="padding: 8px 0;">${bookingData.dropoff}</td>
+              </tr>
+              <tr>
+                <td style="padding: 8px 0; font-weight: bold;">Date & Time:</td>
+                <td style="padding: 8px 0;">${bookingData.date} at ${bookingData.time}</td>
+              </tr>
+              <tr>
+                <td style="padding: 8px 0; font-weight: bold;">Vehicle:</td>
+                <td style="padding: 8px 0;">${bookingData.vehicleDetails?.name || 'N/A'}</td>
+              </tr>
+              <tr>
+                <td style="padding: 8px 0; font-weight: bold;">Total Amount:</td>
+                <td style="padding: 8px 0; font-size: 18px; color: #dc2626;">€${bookingData.totalAmount.toFixed(2)}</td>
+              </tr>
+              <tr>
+                <td style="padding: 8px 0; font-weight: bold;">Refund Amount:</td>
+                <td style="padding: 8px 0; font-size: 18px; color: #16a34a;">€${refundAmountText}</td>
+              </tr>
+              <tr>
+                <td style="padding: 8px 0; font-weight: bold;">Refund Percentage:</td>
+                <td style="padding: 8px 0;">${refundPercentText}</td>
+              </tr>
+            </table>
+          </div>
+          
+          <p style="color: #666; font-size: 14px; margin-top: 30px;">
+            Please review this cancellation and process the refund if applicable.
+          </p>
         </div>
-
-        <p style="color: #666; font-size: 14px; margin-top: 30px;">
-          Please review this cancellation and process the refund if applicable.
-        </p>
-      </div>
-    `,
-    text: `Booking Cancellation Alert
+      `,
+      text: `Booking Cancellation Alert
 
 Trip ID: ${bookingData.tripId}
 Customer: ${bookingData.firstName} ${bookingData.lastName}
@@ -215,10 +251,12 @@ Refund Amount: €${refundAmountText}
 Refund Percentage: ${refundPercentText}
 
 Please review this cancellation and process the refund if applicable.`,
-  });
+    });
 
-  if (!success) return false;
-
-  console.log("✅ Cancellation notification sent to admin:", adminEmail);
-  return true;
+    console.log("✅ Cancellation notification sent to admin:", adminEmail);
+    return true;
+  } catch (error) {
+    console.error("❌ Error sending admin cancellation notification:", error);
+    return false;
+  }
 }

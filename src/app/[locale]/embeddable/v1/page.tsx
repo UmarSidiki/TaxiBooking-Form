@@ -157,7 +157,7 @@ function BookingFormUI() {
         </div>
 
         {/* Compact Form Card */}
-        <Card className="rounded-xl bg-white/90 backdrop-blur-md shadow-lg p-3 border-0 h-full flex flex-col shimmer-container">
+        <Card className="rounded-xl bg-white/90 backdrop-blur-md p-3 border-0 h-full flex flex-col shimmer-container">
           <header className="mb-1 text-center">
             <h1 className="text-base md:text-lg font-bold text-slate-800 flex items-center justify-center gap-2">
               {t("embeddable.trip-booking")}

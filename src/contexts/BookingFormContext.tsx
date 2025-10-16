@@ -78,9 +78,10 @@ const STEP_KEY = 'booking_form_step';
 const DISTANCE_KEY = 'booking_form_distance';
 const TIMESTAMP_KEY = 'booking_form_timestamp';
 
-// Use sessionStorage instead of localStorage to persist across refreshes but clear on tab close
-const storage = typeof window !== 'undefined' ? sessionStorage : null;
-const EXPIRATION_TIME = 10 * 60 * 500; // 5 minutes in milliseconds
+// Use localStorage to persist across refreshes
+const storage = typeof window !== 'undefined' ? localStorage : null;
+// Expiration time for saved form data (2 minutes in milliseconds)
+const EXPIRATION_TIME = 2 * 60 * 1000;
 
 const defaultFormData: FormData = {
   bookingType: "destination",
@@ -117,56 +118,28 @@ export function BookingFormProvider({ children }: { children: ReactNode }) {
   // Check if we're in an iframe (embedded form)
   const isEmbedded = typeof window !== 'undefined' && window.self !== window.top;
 
-  // Load data from localStorage on mount (only if not embedded)
+  // Load saved formData and step on mount for main form (skip for embedded)
   useEffect(() => {
     if (isEmbedded) {
-      // Don't use localStorage for embedded forms
       setIsHydrated(true);
       return;
     }
-
     try {
-      // Check if URL has step parameter - if so, don't override with storage
-      const urlParams = new URLSearchParams(window.location.search);
-      const hasStepParam = urlParams.has('step');
-      const hasSourceParam = urlParams.has('source');
-      
       const savedData = storage?.getItem(STORAGE_KEY);
-      const savedStep = storage?.getItem(STEP_KEY);
       const savedDistance = storage?.getItem(DISTANCE_KEY);
       const savedTimestamp = storage?.getItem(TIMESTAMP_KEY);
+      const savedStep = storage?.getItem(STEP_KEY);
       
-      // Check if data has expired (10 minutes)
-      if (savedTimestamp) {
-        const timestamp = parseInt(savedTimestamp);
-        const now = Date.now();
-        const elapsed = now - timestamp;
-        
-        if (elapsed > EXPIRATION_TIME) {
-          // Data has expired, clear it
-          console.log('Booking data expired after 5 minutes. Clearing sessionStorage.');
-          storage?.removeItem(STORAGE_KEY);
-          storage?.removeItem(STEP_KEY);
-          storage?.removeItem(DISTANCE_KEY);
-          storage?.removeItem(TIMESTAMP_KEY);
-          setIsHydrated(true);
-          return;
-        }
-      }
-      
-      if (savedData) {
-        const parsed = JSON.parse(savedData);
-        setFormData(parsed);
-      }
-      
-      if (savedDistance) {
-        const parsedDistance = JSON.parse(savedDistance);
-        setDistanceData(parsedDistance);
-      }
-      
-      // Only load step from storage if URL doesn't have step or source params
-      if (savedStep && !hasStepParam && !hasSourceParam) {
-        setCurrentStep(parseInt(savedStep) as 1 | 2 | 3);
+      if (savedTimestamp && Date.now() - parseInt(savedTimestamp) <= EXPIRATION_TIME) {
+        if (savedData) setFormData(JSON.parse(savedData));
+        if (savedDistance) setDistanceData(JSON.parse(savedDistance));
+        if (savedStep) setCurrentStep(parseInt(savedStep, 10) as 1 | 2 | 3);
+      } else {
+        // Clear expired data
+        storage?.removeItem(STORAGE_KEY);
+        storage?.removeItem(DISTANCE_KEY);
+        storage?.removeItem(TIMESTAMP_KEY);
+        storage?.removeItem(STEP_KEY);
       }
     } catch (error) {
       console.error('Error loading form data from localStorage:', error);
@@ -193,12 +166,6 @@ export function BookingFormProvider({ children }: { children: ReactNode }) {
       try {
         storage?.setItem(STEP_KEY, currentStep.toString());
         
-        // Update URL params to reflect current step
-        if (typeof window !== 'undefined') {
-          const url = new URL(window.location.href);
-          url.searchParams.set('step', currentStep.toString());
-          window.history.replaceState({}, '', url.toString());
-        }
       } catch (error) {
         console.error('Error saving step to sessionStorage:', error);
       }

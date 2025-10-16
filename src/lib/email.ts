@@ -33,6 +33,9 @@ export async function sendEmail(
 
     await transporter.sendMail(mailOptions);
 
+    // Close the transporter to free up resources in serverless environments
+    transporter.close();
+
     return true;
   } catch (error) {
     console.error("❌ Error sending email to", mailOptions.to, ":", error);

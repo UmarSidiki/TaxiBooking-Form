@@ -79,7 +79,7 @@ function generateEmailHTML(bookingData: BookingData) {
       <h2>Journey Details</h2>
       <div class="details">
         <ul>
-          <li><span class="highlight">Trip ID:</span> #${
+          <li><span class="highlight">Reservation ID:</span> #${
             bookingData.tripId
           }</li>
           <li><span class="highlight">Pickup:</span> ${bookingData.pickup}</li>
@@ -153,9 +153,9 @@ export async function sendOrderCancellationEmail(bookingData: BookingData) {
       from:
         process.env.SMTP_FROM || `"Booking Service" <${process.env.SMTP_USER}>`,
       to: bookingData.email,
-      subject: `Booking Cancelled - Trip #${bookingData.tripId}`,
+      subject: `Booking Cancelled - Reservation #${bookingData.tripId}`,
       html: htmlContent,
-      text: `Your booking (Trip #${bookingData.tripId}) has been cancelled.
+      text: `Your booking (Reservation #${bookingData.tripId}) has been cancelled.
 
 Cancellation Details:
 - Pickup: ${bookingData.pickup}
@@ -212,7 +212,7 @@ async function sendCancellationNotificationToAdmin(bookingData: BookingData) {
       from:
         process.env.SMTP_FROM || `"Booking System" <${process.env.SMTP_USER}>`,
       to: adminEmail,
-      subject: `🚫 Booking Cancelled - Trip #${bookingData.tripId}`,
+      subject: `Booking Cancelled - Reservation #${bookingData.tripId}`,
       html: `
         <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
           <div style="background-color: #fef2f2; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
@@ -224,7 +224,7 @@ async function sendCancellationNotificationToAdmin(bookingData: BookingData) {
             <h2 style="margin-top: 0; color: #dc2626;">Cancellation Details</h2>
             <table style="width: 100%; border-collapse: collapse;">
               <tr>
-                <td style="padding: 8px 0; font-weight: bold;">Trip ID:</td>
+                <td style="padding: 8px 0; font-weight: bold;">Reservation ID:</td>
                 <td style="padding: 8px 0;">${bookingData.tripId}</td>
               </tr>
               <tr>
@@ -287,7 +287,7 @@ async function sendCancellationNotificationToAdmin(bookingData: BookingData) {
       `,
       text: `Booking Cancellation Alert
 
-Trip ID: ${bookingData.tripId}
+Reservation ID: ${bookingData.tripId}
 Customer: ${bookingData.firstName} ${bookingData.lastName}
 Email: ${bookingData.email}
 Phone: ${bookingData.phone}

@@ -1,4 +1,4 @@
-import { sendEmail } from '@/lib/email';
+import { sendEmail } from "@/lib/email";
 
 interface BookingData {
   tripId: string;
@@ -33,14 +33,14 @@ function isValidEmail(email: string): boolean {
 }
 
 function generateEmailHTML(bookingData: BookingData) {
-  const getCurrencySymbol = () => '€';
+  const getCurrencySymbol = () => "€";
 
   return `
 <!DOCTYPE html>
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>Booking Confirmation - Trip #${bookingData.tripId}</title>
+  <title>Booking Confirmation - Reservation #${bookingData.tripId}</title>
   <style>
     body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
     .container { max-width: 600px; margin: 0 auto; padding: 20px; }
@@ -54,27 +54,44 @@ function generateEmailHTML(bookingData: BookingData) {
     .payment { background-color: #edf2f7; padding: 15px; border-radius: 5px; }
     .footer { color: #718096; font-size: 12px; margin-top: 30px; border-top: 1px solid #e2e8f0; padding-top: 15px; }
     .highlight { color: #2d3748; font-weight: bold; }
-    .cta-button { display: inline-block; background-color: #0369a1; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; margin-top: 15px; }
+    .cta-button { 
+      display: inline-block; 
+      background-color: #0369a1; 
+      color: #ffffff !important; 
+      padding: 10px 20px; 
+      text-decoration: none; 
+      border-radius: 5px; 
+      margin-top: 15px;
+      font-weight: bold;
+      text-align: center;
+    }
+    .cta-button span {
+      color: #ffffff !important;
+    }
   </style>
 </head>
 <body>
   <div class="container">
     <div class="header">
-      <h1>✅ Booking Confirmed</h1>
+      <h1>Booking Confirmed</h1>
       <p>Dear ${bookingData.firstName} ${bookingData.lastName},</p>
-      <p>Thank you for choosing our service! Your trip has been confirmed.</p>
+      <p>Thank you for choosing our service! Your Reservation has been confirmed.</p>
     </div>
 
     <div class="section">
       <h2>Journey Details</h2>
       <div class="details">
         <ul>
-          <li><span class="highlight">Trip ID:</span> #${bookingData.tripId}</li>
+          <li><span class="highlight">Reservation ID:</span> #${
+            bookingData.tripId
+          }</li>
           <li><span class="highlight">From:</span> ${bookingData.pickup}</li>
           <li><span class="highlight">To:</span> ${bookingData.dropoff}</li>
           <li><span class="highlight">Date:</span> ${bookingData.date}</li>
           <li><span class="highlight">Time:</span> ${bookingData.time}</li>
-          <li><span class="highlight">Trip Type:</span> ${bookingData.tripType}</li>
+          <li><span class="highlight">Reservation Type:</span> ${
+            bookingData.tripType
+          }</li>
         </ul>
       </div>
     </div>
@@ -83,38 +100,69 @@ function generateEmailHTML(bookingData: BookingData) {
       <h2>Vehicle & Passengers</h2>
       <div class="details">
         <ul>
-          <li><span class="highlight">Vehicle:</span> ${bookingData.vehicleDetails.name}</li>
-          <li><span class="highlight">Max Seats:</span> ${bookingData.vehicleDetails.seats}</li>
-          <li><span class="highlight">Passengers:</span> ${bookingData.passengers}</li>
-          ${bookingData.childSeats > 0 ? `<li><span class="highlight">Child Seats:</span> ${bookingData.childSeats}</li>` : ''}
-          ${bookingData.babySeats > 0 ? `<li><span class="highlight">Baby Seats:</span> ${bookingData.babySeats}</li>` : ''}
+          <li><span class="highlight">Vehicle:</span> ${
+            bookingData.vehicleDetails.name
+          }</li>
+          <li><span class="highlight">Max Seats:</span> ${
+            bookingData.vehicleDetails.seats
+          }</li>
+          <li><span class="highlight">Passengers:</span> ${
+            bookingData.passengers
+          }</li>
+          ${
+            bookingData.childSeats > 0
+              ? `<li><span class="highlight">Child Seats:</span> ${bookingData.childSeats}</li>`
+              : ""
+          }
+          ${
+            bookingData.babySeats > 0
+              ? `<li><span class="highlight">Baby Seats:</span> ${bookingData.babySeats}</li>`
+              : ""
+          }
         </ul>
       </div>
     </div>
 
-    ${bookingData.notes ? `
+    ${
+      bookingData.notes
+        ? `
     <div class="section">
       <h2>Special Requests</h2>
       <div class="details">
         <p>${bookingData.notes}</p>
       </div>
     </div>
-    ` : ''}
+    `
+        : ""
+    }
 
     <div class="section">
       <h2>Payment Summary</h2>
       <div class="payment">
-        <p><span class="highlight">Total Amount: ${getCurrencySymbol()}${bookingData.totalAmount.toFixed(2)}</span></p>
-        ${bookingData.paymentMethod ? `
-        <p><span class="highlight">Payment Method:</span> ${bookingData.paymentMethod.replace('_', ' ')}</p>
-        <p><span class="highlight">Payment Status:</span> ${bookingData.paymentStatus || 'Pending'}</p>
-        ` : ''}
+        <p><span class="highlight">Total Amount: ${getCurrencySymbol()}${bookingData.totalAmount.toFixed(
+    2
+  )}</span></p>
+        ${
+          bookingData.paymentMethod
+            ? `
+        <p><span class="highlight">Payment Method:</span> ${bookingData.paymentMethod.replace(
+          "_",
+          " "
+        )}</p>
+        <p><span class="highlight">Payment Status:</span> ${
+          bookingData.paymentStatus || "Pending"
+        }</p>
+        `
+            : ""
+        }
       </div>
     </div>
 
     <div class="section">
       <p>If you have any questions, please contact us.</p>
-      <a href="mailto:support@example.com" class="cta-button">Contact Support</a>
+      <a href="mailto:support@example.com" class="cta-button">
+        <span>Contact Support</span>
+      </a>
     </div>
 
     <div class="footer">
@@ -136,19 +184,23 @@ export async function sendOrderConfirmationEmail(bookingData: BookingData) {
     }
 
     console.log("📧 Preparing confirmation email for:", bookingData.email);
-    
+
     const htmlContent = generateEmailHTML(bookingData);
 
     const success = await sendEmail({
-      from: process.env.SMTP_FROM || `"Booking Service" <${process.env.SMTP_USER}>`,
+      from:
+        process.env.SMTP_FROM || `"Booking Service" <${process.env.SMTP_USER}>`,
       to: bookingData.email,
-      subject: `Booking Confirmation - Trip #${bookingData.tripId}`,
+      subject: `Booking Confirmation - Reservation #${bookingData.tripId}`,
       html: htmlContent,
-      text: `Booking Confirmed!\n\nTrip ID: ${bookingData.tripId}\nCustomer: ${bookingData.firstName} ${bookingData.lastName}\nFrom: ${bookingData.pickup}\nTo: ${bookingData.dropoff}\nDate: ${bookingData.date} at ${bookingData.time}\nVehicle: ${bookingData.vehicleDetails.name}\nTotal Amount: €${bookingData.totalAmount}`,
+      text: `Booking Confirmed!\n\nReservation ID: ${bookingData.tripId}\nCustomer: ${bookingData.firstName} ${bookingData.lastName}\nFrom: ${bookingData.pickup}\nTo: ${bookingData.dropoff}\nDate: ${bookingData.date} at ${bookingData.time}\nVehicle: ${bookingData.vehicleDetails.name}\nTotal Amount: €${bookingData.totalAmount}`,
     });
 
     if (!success) {
-      console.error("❌ Failed to send confirmation email to:", bookingData.email);
+      console.error(
+        "❌ Failed to send confirmation email to:",
+        bookingData.email
+      );
       return false;
     }
 

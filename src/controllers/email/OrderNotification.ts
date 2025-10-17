@@ -35,7 +35,7 @@ function generateOwnerEmailHTML(bookingData: BookingData) {
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>New Booking Alert - Trip #${bookingData.tripId}</title>
+  <title>New Booking Alert - Reservation #${bookingData.tripId}</title>
   <style>
     body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
     .container { max-width: 600px; margin: 0 auto; padding: 20px; }
@@ -53,7 +53,7 @@ function generateOwnerEmailHTML(bookingData: BookingData) {
 <body>
   <div class="container">
     <div class="header">
-      <h1 style="margin: 0; color: #2b6cb0;">🚗 New Booking Alert</h1>
+      <h1 style="margin: 0; color: #2b6cb0;">New Booking Alert</h1>
       <p>You have received a new booking request!</p>
     </div>
 
@@ -72,12 +72,12 @@ function generateOwnerEmailHTML(bookingData: BookingData) {
       <h2>Journey Details</h2>
       <div class="details">
         <ul>
-          <li><span class="highlight">Trip ID:</span> #${bookingData.tripId}</li>
+          <li><span class="highlight">Reservation ID:</span> #${bookingData.tripId}</li>
           <li><span class="highlight">Pickup:</span> ${bookingData.pickup}</li>
           <li><span class="highlight">Dropoff:</span> ${bookingData.dropoff}</li>
           <li><span class="highlight">Date:</span> ${bookingData.date}</li>
           <li><span class="highlight">Time:</span> ${bookingData.time}</li>
-          <li><span class="highlight">Trip Type:</span> ${bookingData.tripType}</li>
+          <li><span class="highlight">Reservation Type:</span> ${bookingData.tripType}</li>
           <li><span class="highlight">Vehicle:</span> ${bookingData.vehicleDetails.name}</li>
           <li><span class="highlight">Passengers:</span> ${bookingData.passengers}</li>
           ${bookingData.childSeats > 0 ? `<li><span class="highlight">Child Seats:</span> ${bookingData.childSeats}</li>` : ''}
@@ -107,7 +107,7 @@ function generateOwnerEmailHTML(bookingData: BookingData) {
     </div>
 
     <div class="section">
-      <p>Please review this booking and confirm the trip details with the customer.</p>
+      <p>Please review this booking and confirm the Reservation details with the customer.</p>
     </div>
 
     <div class="footer">
@@ -139,9 +139,9 @@ export async function sendOrderNotificationEmail(bookingData: BookingData) {
     const success = await sendEmail({
       from: process.env.SMTP_FROM || `"Booking System" <${process.env.SMTP_USER}>`,
       to: ownerEmail,
-      subject: `New Booking Alert - Trip #${bookingData.tripId}`,
+      subject: `New Booking Alert - Reservation #${bookingData.tripId}`,
       html: htmlContent,
-      text: `New Booking Received!\n\nTrip ID: ${bookingData.tripId}\nCustomer: ${bookingData.firstName} ${bookingData.lastName}\nEmail: ${bookingData.email}\nPhone: ${bookingData.phone}\nFrom: ${bookingData.pickup}\nTo: ${bookingData.dropoff}\nDate: ${bookingData.date} at ${bookingData.time}\nVehicle: ${bookingData.vehicleDetails.name}\nTotal Amount: €${bookingData.totalAmount}\n\nPlease review and confirm this booking.`,
+      text: `New Booking Received!\n\nReservation ID: ${bookingData.tripId}\nCustomer: ${bookingData.firstName} ${bookingData.lastName}\nEmail: ${bookingData.email}\nPhone: ${bookingData.phone}\nFrom: ${bookingData.pickup}\nTo: ${bookingData.dropoff}\nDate: ${bookingData.date} at ${bookingData.time}\nVehicle: ${bookingData.vehicleDetails.name}\nTotal Amount: €${bookingData.totalAmount}\n\nPlease review and confirm this booking.`,
     });
 
     if (!success) {

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useBookingForm } from "@/contexts/BookingFormContext";
 import { useRouter } from "next/navigation";
 import { useTranslations, useLocale } from "next-intl";
@@ -35,6 +35,7 @@ export function useStep3() {
   const [clientSecret, setClientSecret] = useState<string | null>(null);
   const [creatingPaymentIntent, setCreatingPaymentIntent] = useState(false);
   const [paymentError, setPaymentError] = useState<string | null>(null);
+  const [paymentInitialized, setPaymentInitialized] = useState(false);
 
   // Fetch payment configuration
   useEffect(() => {
@@ -52,7 +53,11 @@ export function useStep3() {
           }
           // Set default payment method
           if (data.data.acceptedPaymentMethods?.length > 0) {
-            setSelectedPaymentMethod(data.data.acceptedPaymentMethods[0]);
+            // Prefer card if available, otherwise use the first available method
+            const defaultMethod = data.data.acceptedPaymentMethods.includes("card") 
+              ? "card" 
+              : data.data.acceptedPaymentMethods[0];
+            setSelectedPaymentMethod(defaultMethod);
           }
         }
       } catch (error) {
@@ -66,7 +71,7 @@ export function useStep3() {
     (v) => v._id === formData.selectedVehicle
   );
 
-  const calculateVehiclePrice = () => {
+  const calculateVehiclePrice = useCallback(() => {
     if (!selectedVehicle) return 0;
 
     // Hourly booking calculation
@@ -96,7 +101,7 @@ export function useStep3() {
       }
       return totalPrice;
     }
-  };
+  }, [selectedVehicle, formData.bookingType, formData.duration, formData.tripType, distanceData]);
 
   const vehiclePrice = calculateVehiclePrice();
 
@@ -111,52 +116,49 @@ export function useStep3() {
     formData.childSeats * childSeatPrice + formData.babySeats * babySeatPrice;
   const totalPrice = discountedVehiclePrice + extrasPrice;
 
-  // Auto-initiate Stripe payment intent when 'card' is selected
-  useEffect(() => {
-    if (
-      selectedPaymentMethod === "card" &&
-      stripeConfig.publishableKey &&
-      !clientSecret &&
-      !creatingPaymentIntent
-    ) {
-      setCreatingPaymentIntent(true);
-      setPaymentError(null);
+  // Create payment intent function
+  const createPaymentIntent = useCallback(async () => {
+    if (!stripeConfig.publishableKey || creatingPaymentIntent) return;
+    
+    setCreatingPaymentIntent(true);
+    setPaymentError(null);
 
-      console.log("Creating payment intent with amount:", totalPrice);
+    console.log("Creating payment intent with amount:", totalPrice);
 
-      fetch("/api/create-payment-intent", {
+    try {
+      const response = await fetch("/api/create-payment-intent", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           amount: totalPrice,
           currency: paymentSettings?.stripeCurrency || "eur",
-          customerEmail: formData.email,
-          customerName: `${formData.firstName} ${formData.lastName}`,
-          description: `Booking from ${formData.pickup} to ${formData.dropoff}`,
+          customerEmail: formData.email || "customer@example.com", // Fallback email
+          customerName: `${formData.firstName || "First"} ${formData.lastName || "Last"}`, // Fallback name
+          description: `Booking from ${formData.pickup || "pickup"} to ${formData.dropoff || "dropoff"}`,
         }),
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          console.log("Payment intent response:", data);
-          if (data.success && data.clientSecret) {
-            setClientSecret(data.clientSecret);
-            setPaymentError(null);
-          } else {
-            const errorMsg = data.message || t('Step3.failed-to-initialize-payment');
-            console.error("Payment intent init failed:", errorMsg);
-            setPaymentError(errorMsg);
-          }
-        })
-        .catch((err) => {
-          console.error("Error initializing payment intent:", err);
-          setPaymentError(err.message || t('Step3.network-error-occurred'));
-        })
-        .finally(() => setCreatingPaymentIntent(false));
+      });
+
+      const data = await response.json();
+      console.log("Payment intent response:", data);
+      
+      if (data.success && data.clientSecret) {
+        setClientSecret(data.clientSecret);
+        setPaymentError(null);
+        setPaymentInitialized(true);
+      } else {
+        const errorMsg = data.message || t('Step3.failed-to-initialize-payment');
+        console.error("Payment intent init failed:", errorMsg);
+        setPaymentError(errorMsg);
+      }
+    } catch (err) {
+      console.error("Error initializing payment intent:", err);
+      const errorMessage = err instanceof Error ? err.message : t('Step3.network-error-occurred');
+      setPaymentError(errorMessage);
+    } finally {
+      setCreatingPaymentIntent(false);
     }
   }, [
-    selectedPaymentMethod,
     stripeConfig.publishableKey,
-    clientSecret,
     creatingPaymentIntent,
     totalPrice,
     paymentSettings?.stripeCurrency,
@@ -167,6 +169,34 @@ export function useStep3() {
     formData.dropoff,
     t,
   ]);
+
+  // Auto-initiate Stripe payment intent when 'card' is selected
+  useEffect(() => {
+    if (
+      selectedPaymentMethod === "card" &&
+      stripeConfig.enabled &&
+      !clientSecret &&
+      !creatingPaymentIntent &&
+      !paymentInitialized
+    ) {
+      createPaymentIntent();
+    }
+  }, [
+    selectedPaymentMethod,
+    stripeConfig.enabled,
+    clientSecret,
+    creatingPaymentIntent,
+    paymentInitialized,
+    createPaymentIntent
+  ]);
+
+  // Reset payment initialization when payment method changes
+  useEffect(() => {
+    if (selectedPaymentMethod !== "card") {
+      setPaymentInitialized(false);
+      setClientSecret(null);
+    }
+  }, [selectedPaymentMethod]);
 
   const handleStripePaymentSuccess = async (paymentIntentId: string) => {
     setIsLoading(true);

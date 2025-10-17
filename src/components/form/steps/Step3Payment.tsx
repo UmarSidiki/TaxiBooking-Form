@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import {
   ArrowLeft,
   Loader2,
@@ -67,6 +67,20 @@ export default function Step3Payment() {
   } = useStep3();
 
   const t = useTranslations();
+
+  // Initialize payment method based on available options
+  useEffect(() => {
+    if (paymentSettings?.acceptedPaymentMethods && !selectedPaymentMethod) {
+      // Default to the first available payment method
+      if (paymentSettings.acceptedPaymentMethods.includes("card") && stripeConfig.enabled) {
+        setSelectedPaymentMethod("card");
+      } else if (paymentSettings.acceptedPaymentMethods.includes("cash")) {
+        setSelectedPaymentMethod("cash");
+      } else if (paymentSettings.acceptedPaymentMethods.includes("bank_transfer")) {
+        setSelectedPaymentMethod("bank_transfer");
+      }
+    }
+  }, [paymentSettings, selectedPaymentMethod, setSelectedPaymentMethod, stripeConfig.enabled]);
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -372,6 +386,7 @@ export default function Step3Payment() {
                             <Button
                               onClick={() => {
                                 // Reset payment state - handled by hook
+                                window.location.reload();
                               }}
                               variant="outline"
                               className="text-sm"

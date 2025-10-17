@@ -1,20 +1,25 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
-import { MapPin, Flag, CalendarDays, Clock, Users, Loader2, ArrowRight } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Card } from '@/components/ui/card';
-import Image from 'next/image';
-import { useStep1 } from '@/hooks/form/form-steps/useStep1';
-import { useTranslations } from 'next-intl';
+import React from "react";
+import {
+  MapPin,
+  Flag,
+  CalendarDays,
+  Clock,
+  Users,
+  Loader2,
+  ArrowRight,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Card } from "@/components/ui/card";
+import Image from "next/image";
+import { useStep1 } from "@/hooks/form/form-steps/useStep1";
+import { useTranslations } from "next-intl";
 
 export default function Step1TripDetails() {
   // Get today's date in YYYY-MM-DD format
-  const today = new Date().toISOString().split('T')[0];
-  
-  // State for passenger input to handle empty state
-  const [passengerInputValue, setPassengerInputValue] = useState('');
+  const today = new Date().toISOString().split("T")[0];
 
   const {
     // State
@@ -41,37 +46,26 @@ export default function Step1TripDetails() {
 
   const t = useTranslations();
 
-  // Initialize passenger input value
-  useEffect(() => {
-    if (formData.passengers === 1) {
-      setPassengerInputValue('1');
-    } else {
-      setPassengerInputValue(formData.passengers.toString());
-    }
-  }, [formData.passengers]);
-  
-  // Handle passenger input change
+  // Handle passenger input change - simplified logic
   const handlePassengerChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
-    setPassengerInputValue(value);
-    
+
     // Only update form data if it's a valid number
     const numValue = parseInt(value, 10);
-    if (value === '' || (!isNaN(numValue) && numValue >= 1 && numValue <= 8)) {
-      const finalValue = value === '' ? 1 : numValue;
-      handleInputChange('passengers', finalValue);
+    if (value === "" || (!isNaN(numValue) && numValue >= 1 && numValue <= 8)) {
+      const finalValue = value === "" ? 1 : numValue;
+      handleInputChange("passengers", finalValue);
     }
   };
 
-  // Handle passenger input blur
+  // Handle passenger input blur - simplified logic
   const handlePassengerBlur = () => {
-    if (passengerInputValue === '' || isNaN(parseInt(passengerInputValue)) || parseInt(passengerInputValue) < 1) {
-      setPassengerInputValue('');
-      handleInputChange('passengers', 1);
+    if (formData.passengers < 1) {
+      handleInputChange("passengers", 1);
     } else {
-      const numValue = Math.min(8, Math.max(1, parseInt(passengerInputValue)));
-      setPassengerInputValue(numValue === 1 ? '' : numValue.toString());
-      handleInputChange('passengers', numValue);
+      // Ensure the value is within bounds
+      const numValue = Math.min(8, Math.max(1, formData.passengers));
+      handleInputChange("passengers", numValue);
     }
   };
 
@@ -87,7 +81,7 @@ export default function Step1TripDetails() {
                 <Loader2 className="h-8 w-8 animate-spin text-primary" />
               </div>
             )}
-            
+
             {/* Distance Info Overlay */}
             {distanceData && (
               <div className="absolute top-4 left-4 right-4 bg-white/95 backdrop-blur-sm rounded-lg shadow-lg p-4">
@@ -95,28 +89,40 @@ export default function Step1TripDetails() {
                   <div className="flex items-center gap-2">
                     <MapPin className="h-4 w-4 text-primary" />
                     <div>
-                      <p className="text-xs text-gray-500">{t("Step1.Distance")}</p>
-                      <p className="font-semibold">{distanceData.distance.text}</p>
+                      <p className="text-xs text-gray-500">
+                        {t("Step1.Distance")}
+                      </p>
+                      <p className="font-semibold">
+                        {distanceData.distance.text}
+                      </p>
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
                     <Clock className="h-4 w-4 text-primary" />
                     <div>
-                      <p className="text-xs text-gray-500">{t("Step1.Duration")}</p>
-                      <p className="font-semibold">{distanceData.duration.text}</p>
+                      <p className="text-xs text-gray-500">
+                        {t("Step1.Duration")}
+                      </p>
+                      <p className="font-semibold">
+                        {distanceData.duration.text}
+                      </p>
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
                     <CalendarDays className="h-4 w-4 text-primary" />
                     <div>
                       <p className="text-xs text-gray-500">{t("Step1.Date")}</p>
-                      <p className="font-semibold">{formData.date || t('not-set')}</p>
+                      <p className="font-semibold">
+                        {formData.date || t("not-set")}
+                      </p>
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
                     <Users className="h-4 w-4 text-primary" />
                     <div>
-                      <p className="text-xs text-gray-500">{t("Step1.Passengers")}</p>
+                      <p className="text-xs text-gray-500">
+                        {t("Step1.Passengers")}
+                      </p>
                       <p className="font-semibold">{formData.passengers}</p>
                     </div>
                   </div>
@@ -137,7 +143,9 @@ export default function Step1TripDetails() {
 
           {/* Booking Type */}
           <div>
-            <label className="block text-sm font-medium mb-1.5 text-gray-700">{t("Step1.BookingType")}</label>
+            <label className="block text-sm font-medium mb-1.5 text-gray-700">
+              {t("Step1.BookingType")}
+            </label>
             <div className="grid grid-cols-2 gap-2">
               <Button
                 type="button"
@@ -167,9 +175,9 @@ export default function Step1TripDetails() {
               </Button>
             </div>
             <p className="text-xs text-gray-500 mt-1">
-              {formData.bookingType === "destination" 
-                ? t('Step1.price-based-on-distance-traveled') 
-                : t('Step1.price-based-on-hourly-rate')}
+              {formData.bookingType === "destination"
+                ? t("Step1.price-based-on-distance-traveled")
+                : t("Step1.price-based-on-hourly-rate")}
             </p>
           </div>
 
@@ -179,45 +187,53 @@ export default function Step1TripDetails() {
               <MapPin className="inline h-4 w-4 mr-1 text-primary" />
               {t("Step1.PickupLocation")} *
             </label>
-            <Input 
+            <Input
               ref={pickupInputRef}
-              placeholder={t("Step1.PickupPlaceholder")} 
-              className={`${errors.pickup ? 'border-red-500' : 'border-gray-300'} focus:border-primary-500 focus:ring-primary-500`}
+              placeholder={t("Step1.PickupPlaceholder")}
+              className={`${
+                errors.pickup ? "border-red-500" : "border-gray-300"
+              } focus:border-primary-500 focus:ring-primary-500`}
               value={formData.pickup}
               onChange={(e) => {
-                setFormData(prev => ({ ...prev, pickup: e.target.value }));
+                setFormData((prev) => ({ ...prev, pickup: e.target.value }));
               }}
               onBlur={() => {
                 if (formData.pickup && formData.dropoff) {
-                  handleInputBlur('pickup');
+                  handleInputBlur("pickup");
                 }
               }}
             />
-            {errors.pickup && <p className="text-red-500 text-xs mt-1">{errors.pickup}</p>}
+            {errors.pickup && (
+              <p className="text-red-500 text-xs mt-1">{errors.pickup}</p>
+            )}
           </div>
 
           {/* Dropoff Location - Only for destination-based bookings */}
-          {formData.bookingType === 'destination' && (
+          {formData.bookingType === "destination" && (
             <div>
               <label className="block text-sm font-medium mb-1.5 text-gray-700">
                 <Flag className="inline h-4 w-4 mr-1 text-primary" />
                 {t("Step1.DropoffLocation")} *
               </label>
-              <Input 
+              <Input
                 ref={dropoffInputRef}
-                placeholder={t("Step1.DropoffPlaceholder")} 
-                className={`${errors.dropoff ? 'border-red-500' : 'border-gray-300'} focus:border-primary-500 focus:ring-primary-500`}
+                placeholder={t("Step1.DropoffPlaceholder")}
+                className={`${
+                  errors.dropoff ? "border-red-500" : "border-gray-300"
+                } focus:border-primary-500 focus:ring-primary-500`}
                 value={formData.dropoff}
                 onChange={(e) => {
-                  setFormData(prev => ({ ...prev, dropoff: e.target.value }));
+                  setFormData((prev) => ({ ...prev, dropoff: e.target.value }));
                 }}
                 onBlur={() => {
                   if (formData.pickup && formData.dropoff) {
-                    handleInputBlur('dropoff');
+                    handleInputBlur("dropoff");
                   }
                 }}
               />
-              {errors.dropoff && <p className="text-red-500 text-xs mt-1">{errors.dropoff}</p>}
+              {errors.dropoff && (
+                <p className="text-red-500 text-xs mt-1">{errors.dropoff}</p>
+              )}
               {calculatingDistance && (
                 <p className="text-xs text-gray-500 mt-1 flex items-center">
                   <Loader2 className="inline h-3 w-3 animate-spin mr-1" />
@@ -228,13 +244,13 @@ export default function Step1TripDetails() {
           )}
 
           {/* Duration - Only for hourly bookings */}
-          {formData.bookingType === 'hourly' && (
+          {formData.bookingType === "hourly" && (
             <div>
               <label className="block text-sm font-medium mb-1.5 text-gray-700">
                 <Clock className="inline h-4 w-4 mr-1" />
                 {t("Step1.Duration")} *
               </label>
-              <Input 
+              <Input
                 type="number"
                 min="1"
                 step="1"
@@ -242,53 +258,57 @@ export default function Step1TripDetails() {
                 className="focus:border-primary-500 focus:ring-primary-500"
                 value={formData.duration}
                 onChange={(e) => {
-                  handleInputChange('duration', parseInt(e.target.value) || 1);
+                  handleInputChange("duration", parseInt(e.target.value) || 1);
                 }}
               />
-              <p className="text-xs text-gray-500 mt-1">{t("Step1.DurationDescription")}</p>
+              <p className="text-xs text-gray-500 mt-1">
+                {t("Step1.DurationDescription")}
+              </p>
             </div>
           )}
 
           {/* Trip Type - Only for destination-based bookings */}
-          {formData.bookingType === 'destination' && (
+          {formData.bookingType === "destination" && (
             <div>
-            <label className="block text-sm font-medium mb-1.5 text-gray-700">Trip Type</label>
-            <div className="grid grid-cols-2 gap-2">
-              <Button
-                type="button"
-                onClick={() => {
-                  handleTripTypeChange("oneway");
-                  if (formData.pickup && formData.dropoff) {
-                    handleInputBlur('pickup');
-                  }
-                }}
-                variant="outline"
-                className={`${
-                  formData.tripType === "oneway"
-                    ? "bg-primary text-primary-foreground border-primary hover:bg-primary/90"
-                    : "bg-white hover:bg-gray-50"
-                }`}
-              >
-                {t("Step1.OneWay")}
-              </Button>
-              <Button
-                type="button"
-                onClick={() => {
-                  handleTripTypeChange("roundtrip");
-                  if (formData.pickup && formData.dropoff) {
-                    handleInputBlur('pickup');
-                  }
-                }}
-                variant="outline"
-                className={`${
-                  formData.tripType === "roundtrip"
-                    ? "bg-primary text-primary-foreground border-primary hover:bg-primary/90"
-                    : "bg-white hover:bg-gray-50"
-                }`}
-              >
-                {t("Step1.RoundTrip")}
-              </Button>
-            </div>
+              <label className="block text-sm font-medium mb-1.5 text-gray-700">
+                Trip Type
+              </label>
+              <div className="grid grid-cols-2 gap-2">
+                <Button
+                  type="button"
+                  onClick={() => {
+                    handleTripTypeChange("oneway");
+                    if (formData.pickup && formData.dropoff) {
+                      handleInputBlur("pickup");
+                    }
+                  }}
+                  variant="outline"
+                  className={`${
+                    formData.tripType === "oneway"
+                      ? "bg-primary text-primary-foreground border-primary hover:bg-primary/90"
+                      : "bg-white hover:bg-gray-50"
+                  }`}
+                >
+                  {t("Step1.OneWay")}
+                </Button>
+                <Button
+                  type="button"
+                  onClick={() => {
+                    handleTripTypeChange("roundtrip");
+                    if (formData.pickup && formData.dropoff) {
+                      handleInputBlur("pickup");
+                    }
+                  }}
+                  variant="outline"
+                  className={`${
+                    formData.tripType === "roundtrip"
+                      ? "bg-primary text-primary-foreground border-primary hover:bg-primary/90"
+                      : "bg-white hover:bg-gray-50"
+                  }`}
+                >
+                  {t("Step1.RoundTrip")}
+                </Button>
+              </div>
             </div>
           )}
 
@@ -299,31 +319,39 @@ export default function Step1TripDetails() {
                 <CalendarDays className="inline h-4 w-4 mr-1" />
                 {t("Step1.Date")} *
               </label>
-              <Input 
+              <Input
                 type="date"
                 min={today}
-                className={`${errors.date ? 'border-red-500' : 'border-gray-300'} focus:border-primary-500 focus:ring-primary-500`}
+                className={`${
+                  errors.date ? "border-red-500" : "border-gray-300"
+                } focus:border-primary-500 focus:ring-primary-500`}
                 value={formData.date}
                 onChange={(e) => {
-                  handleInputChange('date', e.target.value);
+                  handleInputChange("date", e.target.value);
                 }}
               />
-              {errors.date && <p className="text-red-500 text-xs mt-1">{errors.date}</p>}
+              {errors.date && (
+                <p className="text-red-500 text-xs mt-1">{errors.date}</p>
+              )}
             </div>
             <div>
               <label className="block text-sm font-medium mb-1.5 text-gray-700">
                 <Clock className="inline h-4 w-4 mr-1" />
                 {t("Step1.Time")} *
               </label>
-              <Input 
+              <Input
                 type="time"
-                className={`${errors.time ? 'border-red-500' : 'border-gray-300'} focus:border-primary-500 focus:ring-primary-500`}
+                className={`${
+                  errors.time ? "border-red-500" : "border-gray-300"
+                } focus:border-primary-500 focus:ring-primary-500`}
                 value={formData.time}
                 onChange={(e) => {
-                  handleInputChange('time', e.target.value);
+                  handleInputChange("time", e.target.value);
                 }}
               />
-              {errors.time && <p className="text-red-500 text-xs mt-1">{errors.time}</p>}
+              {errors.time && (
+                <p className="text-red-500 text-xs mt-1">{errors.time}</p>
+              )}
             </div>
           </div>
 
@@ -333,20 +361,20 @@ export default function Step1TripDetails() {
               <Users className="inline h-4 w-4 mr-1" />
               {t("Step1.Passengers")}
             </label>
-            <Input 
+            <Input
               type="number"
               min="1"
               max="15"
               placeholder="1"
-              className="border-gray-300 focus:border-primary-500 focus:ring-primary-500" 
-              value={passengerInputValue}
+              className="border-gray-300 focus:border-primary-500 focus:ring-primary-500"
+              value={formData.passengers}
               onChange={handlePassengerChange}
               onBlur={handlePassengerBlur}
             />
           </div>
 
           {/* Next Button */}
-          <Button 
+          <Button
             className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold py-6 text-base rounded-lg"
             onClick={handleNext}
             disabled={isLoading || calculatingDistance}
@@ -366,11 +394,41 @@ export default function Step1TripDetails() {
 
           {/* Payment Icons */}
           <div className="flex justify-center gap-2 flex-wrap pt-2">
-            <Image src="/visa.webp" alt="Visa" width={35} height={25} className="h-6 w-auto opacity-70" />
-            <Image src="/mastercard.webp" alt="MasterCard" width={35} height={25} className="h-6 w-auto opacity-70" />
-            <Image src="/paypal.webp" alt="PayPal" width={35} height={25} className="h-6 w-auto opacity-70" />
-            <Image src="/twint.webp" alt="Twint" width={35} height={25} className="h-6 w-auto opacity-70" />
-            <Image src="/applepay.webp" alt="Apple Pay" width={35} height={25} className="h-6 w-auto opacity-70" />
+            <Image
+              src="/visa.webp"
+              alt="Visa"
+              width={35}
+              height={25}
+              className="h-6 w-auto opacity-70"
+            />
+            <Image
+              src="/mastercard.webp"
+              alt="MasterCard"
+              width={35}
+              height={25}
+              className="h-6 w-auto opacity-70"
+            />
+            <Image
+              src="/paypal.webp"
+              alt="PayPal"
+              width={35}
+              height={25}
+              className="h-6 w-auto opacity-70"
+            />
+            <Image
+              src="/twint.webp"
+              alt="Twint"
+              width={35}
+              height={25}
+              className="h-6 w-auto opacity-70"
+            />
+            <Image
+              src="/applepay.webp"
+              alt="Apple Pay"
+              width={35}
+              height={25}
+              className="h-6 w-auto opacity-70"
+            />
           </div>
 
           {/* Support Info */}

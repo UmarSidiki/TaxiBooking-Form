@@ -10,31 +10,18 @@ import { useBookingFormContainer } from "@/hooks/form/form-container/useBookingF
 import Image from "next/image";
 
 export default function BookingFormContainer() {
-  const { initialized, currentStep, getStepTitle } = useBookingFormContainer();
+  const { initialized, currentStep } = useBookingFormContainer();
   const t = useTranslations();
 
   // Wait until URL params are processed
   if (!initialized) return null;
 
-  // Get all step titles for the progress tracker
-  const getAllStepTitles = () => {
-    // Store current step to restore after getting titles
-    const originalStep = currentStep;
-
-    // Get titles for each step by temporarily changing the step
-    const step1Title =
-      originalStep === 1 ? getStepTitle() : t("FormContainer.trip-details");
-    const step2Title =
-      originalStep === 2 ? getStepTitle() : t("FormContainer.select-vehicle");
-    const step3Title =
-      originalStep === 3
-        ? getStepTitle()
-        : t("FormContainer.payment-and-details");
-
-    return [step1Title, step2Title, step3Title];
-  };
-
-  const stepTitles = getAllStepTitles();
+  // Get step titles directly from translations
+  const stepTitles = [
+    t("FormContainer.trip-details"),
+    t("FormContainer.select-vehicle"),
+    t("FormContainer.payment-and-details")
+  ];
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-100 to-gray-200">

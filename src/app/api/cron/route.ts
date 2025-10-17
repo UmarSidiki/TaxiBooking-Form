@@ -1,7 +1,7 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { sendThankYouEmails } from "@/utils/sendThankYouEmails";
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   console.log('🕒 Cron job triggered: Sending thank you emails');
 
   const result = await sendThankYouEmails();

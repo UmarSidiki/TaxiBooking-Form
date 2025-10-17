@@ -93,24 +93,6 @@ function generateEmailHTML(bookingData: BookingData) {
       </div>
     </div>
 
-    <div class="section">
-      <p>We value your feedback! Please take a moment to rate your experience.</p>
-      <a href="mailto:feedback@example.com?subject=Feedback for Reservation #${
-        bookingData.tripId
-      }" class="cta-button">
-        <span>Share Your Feedback</span>
-      </a>
-    </div>
-
-    <div class="section">
-      <p>Book with us again for your next trip!</p>
-      <a href="${
-        process.env.NEXT_PUBLIC_APP_URL || "https://example.com"
-      }" class="cta-button">
-        <span>Book Another Trip</span>
-      </a>
-    </div>
-
     <div class="footer">
       <p>This is an automated email. Please do not reply.</p>
       <p>© ${new Date().getFullYear()} Booking Service. All rights reserved.</p>

@@ -41,7 +41,8 @@
     "date-is-required": "Date is required",
     "time-is-required": "Time is required",
     "price-based-on-distance-traveled": "Price based on distance traveled",
-    "price-based-on-hourly-rate": "Price based on hourly rate"
+    "price-based-on-hourly-rate": "Price based on hourly rate",
+    "stop": "Stop"
   },
   "Step2": {
     "select-your-vehicle": "Select Your Vehicle",
@@ -272,6 +273,7 @@
       "JourneyDetails": "Journey Details",
       "PickupLocation": "Pickup Location",
       "DropoffLocation": "Dropoff Location",
+      "Stops": "Stops",
       "NotSpecified": "Not Specified",
       "CustomerInformation": "Customer Information",
       "Vehicle": "Vehicle",

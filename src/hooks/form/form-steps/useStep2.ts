@@ -34,12 +34,14 @@ export function useStep2() {
       const fetchDistance = async () => {
         setCalculatingDistance(true);
         try {
+          const stopLocations = formData.stops.map(stop => stop.location).filter(location => location.trim());
           const res = await fetch("/api/distance", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
               origin: formData.pickup,
               destination: formData.dropoff,
+              stops: stopLocations,
               isRoundTrip: formData.tripType === "roundtrip",
             }),
           });
@@ -57,6 +59,7 @@ export function useStep2() {
     formData.bookingType,
     formData.pickup,
     formData.dropoff,
+    formData.stops,
     formData.tripType,
     distanceData,
     setDistanceData,
@@ -105,10 +108,18 @@ export function useStep2() {
           if (formData.pickup && formData.dropoff) {
             const directionsService = new routes.DirectionsService();
 
+            const waypoints = formData.stops
+              .filter(stop => stop.location.trim())
+              .map(stop => ({
+                location: stop.location,
+                stopover: true,
+              }));
+
             directionsService.route(
               {
                 origin: formData.pickup,
                 destination: formData.dropoff,
+                waypoints: waypoints,
                 travelMode: google.maps.TravelMode.DRIVING,
               },
               (
@@ -143,7 +154,7 @@ export function useStep2() {
     if (settings) {
       initGoogleMaps();
     }
-  }, [settings, formData.pickup, formData.dropoff]);
+  }, [settings, formData.pickup, formData.dropoff, formData.stops]);
 
   useEffect(() => {
     const fetchVehicles = async () => {

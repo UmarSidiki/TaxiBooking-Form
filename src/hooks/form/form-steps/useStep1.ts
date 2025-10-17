@@ -28,6 +28,7 @@ export function useStep1() {
   const t = useTranslations();
   const pickupInputRef = useRef<HTMLInputElement>(null);
   const dropoffInputRef = useRef<HTMLInputElement>(null);
+  const stopInputRefs = useRef<(HTMLInputElement | null)[]>([]);
   const formDataRef = useRef(formData);
   const { settings } = useTheme();
 
@@ -35,17 +36,43 @@ export function useStep1() {
     formDataRef.current = formData;
   }, [formData]);
 
-  const calculateDistance = useCallback(async (origin: string, destination: string, isRoundTrip: boolean = false) => {
+  const setupStopAutocomplete = useCallback((index: number) => {
+    if (!window.google || !window.google.maps || !window.google.maps.places) return;
+
+    const inputRef = stopInputRefs.current[index];
+    if (!inputRef) return;
+
+    const autocompleteOptions = {
+      componentRestrictions: settings?.mapCountryRestrictions?.length
+        ? { country: settings.mapCountryRestrictions }
+        : undefined,
+    };
+
+    const autocomplete = new window.google.maps.places.Autocomplete(inputRef, autocompleteOptions);
+    autocomplete.addListener('place_changed', () => {
+      const place = autocomplete.getPlace();
+      const newLocation = place.formatted_address || place.name || '';
+      setFormData(prev => ({
+        ...prev,
+        stops: prev.stops.map((stop, i) =>
+          i === index ? { ...stop, location: newLocation } : stop
+        ),
+      }));
+    });
+  }, [settings, setFormData]);
+
+  const calculateDistance = useCallback(async (origin: string, destination: string, stops: Array<{ location: string; order: number }> = [], isRoundTrip: boolean = false) => {
     if (!origin || !destination) return;
 
     setCalculatingDistance(true);
     try {
+      const stopLocations = stops.map(stop => stop.location).filter(location => location.trim());
       const response = await fetch('/api/distance', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ origin, destination, isRoundTrip }),
+        body: JSON.stringify({ origin, destination, stops: stopLocations, isRoundTrip }),
       });
 
       const data = await response.json();
@@ -56,10 +83,16 @@ export function useStep1() {
         if (googleMapRef.current && window.google) {
           const directionsService = new google.maps.DirectionsService();
 
+          const waypoints = stopLocations.map(location => ({
+            location: location,
+            stopover: true,
+          }));
+
           directionsService.route(
             {
               origin: origin,
               destination: destination,
+              waypoints: waypoints,
               travelMode: google.maps.TravelMode.DRIVING,
             },
             (result, status) => {
@@ -86,6 +119,22 @@ export function useStep1() {
       setCalculatingDistance(false);
     }
   }, [setCalculatingDistance, setDistanceData]);
+
+  // Effect to setup autocomplete for stops when they change
+  useEffect(() => {
+    formData.stops.forEach((_, index) => {
+      if (stopInputRefs.current[index]) {
+        setupStopAutocomplete(index);
+      }
+    });
+  }, [formData.stops, setupStopAutocomplete]);
+
+  // Effect to recalculate distance when stops change
+  useEffect(() => {
+    if (formData.pickup && formData.dropoff) {
+      calculateDistance(formData.pickup, formData.dropoff, formData.stops, formData.tripType === 'roundtrip');
+    }
+  }, [formData.stops, calculateDistance, formData.pickup, formData.dropoff, formData.tripType]);
 
   useEffect(() => {
     const initGoogleMaps = async () => {
@@ -142,7 +191,7 @@ export function useStep1() {
             const newPickup = place.formatted_address || place.name || '';
             setFormData(prev => ({ ...prev, pickup: newPickup }));
             if (formDataRef.current.dropoff) {
-              calculateDistance(newPickup, formDataRef.current.dropoff, formDataRef.current.tripType === 'roundtrip');
+              calculateDistance(newPickup, formDataRef.current.dropoff, formDataRef.current.stops, formDataRef.current.tripType === 'roundtrip');
             }
           });
         }
@@ -157,14 +206,14 @@ export function useStep1() {
             const newDropoff = place.formatted_address || place.name || '';
             setFormData(prev => ({ ...prev, dropoff: newDropoff }));
             if (formDataRef.current.pickup) {
-              calculateDistance(formDataRef.current.pickup, newDropoff, formDataRef.current.tripType === 'roundtrip');
+              calculateDistance(formDataRef.current.pickup, newDropoff, formDataRef.current.stops, formDataRef.current.tripType === 'roundtrip');
             }
           });
         }
 
         // If we have pickup and dropoff from context, show the route
         if (formData.pickup && formData.dropoff) {
-          calculateDistance(formData.pickup, formData.dropoff, formData.tripType === 'roundtrip');
+          calculateDistance(formData.pickup, formData.dropoff, formData.stops, formData.tripType === 'roundtrip');
         }
       } catch (error) {
         console.error("Error loading Google Maps:", error);
@@ -174,7 +223,7 @@ export function useStep1() {
     if (settings) {
       initGoogleMaps();
     }
-  }, [settings, calculateDistance, formData.pickup, formData.dropoff, formData.tripType, setFormData]);
+  }, [settings, calculateDistance, formData.pickup, formData.dropoff, formData.stops, formData.tripType, setFormData]);
 
   const validateStep = (): boolean => {
     const newErrors: typeof errors = {};
@@ -218,6 +267,17 @@ export function useStep1() {
         "tripType",
         formData.tripType === "roundtrip" ? "return" : "oneway"
       );
+
+      // Add stops if they exist
+      if (formData.stops.length > 0) {
+        const stopsParam = formData.stops
+          .filter(stop => stop.location.trim())
+          .map(stop => stop.location.trim())
+          .join(',');
+        if (stopsParam) {
+          params.set("stops", stopsParam);
+        }
+      }
     }
 
     // Add duration only for hourly bookings
@@ -301,9 +361,9 @@ export function useStep1() {
   const handleInputBlur = (field: string) => {
     // Trigger distance calculation when both pickup and dropoff are filled
     if (field === 'pickup' && formData.pickup && formData.dropoff) {
-      calculateDistance(formData.pickup, formData.dropoff, formData.tripType === 'roundtrip');
+      calculateDistance(formData.pickup, formData.dropoff, formData.stops, formData.tripType === 'roundtrip');
     } else if (field === 'dropoff' && formData.pickup && formData.dropoff) {
-      calculateDistance(formData.pickup, formData.dropoff, formData.tripType === 'roundtrip');
+      calculateDistance(formData.pickup, formData.dropoff, formData.stops, formData.tripType === 'roundtrip');
     }
   };
 
@@ -313,6 +373,7 @@ export function useStep1() {
     mapRef,
     pickupInputRef,
     dropoffInputRef,
+    stopInputRefs,
 
     // Context values
     formData,

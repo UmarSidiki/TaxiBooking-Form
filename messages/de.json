@@ -41,7 +41,8 @@
     "pickup-location-is-required": "Abholort ist erforderlich",
     "price-based-on-distance-traveled": "Der Preis richtet sich nach der zurückgelegten Strecke",
     "price-based-on-hourly-rate": "Preis basierend auf Stundensatz",
-    "time-is-required": "Zeit ist erforderlich"
+    "time-is-required": "Zeit ist erforderlich",
+    "stop": "Stoppen"
   },
   "Step2": {
     "best-price": "⭐ Bester Preis",
@@ -378,6 +379,7 @@
       "PaymentMethodIsCashNoOnlineRefundWillBeProcessedYouMayNeedToHandleTheRefundManually": "Zahlungsmethode ist Bargeld. Es wird keine Online-Rückerstattung durchgeführt. Möglicherweise müssen Sie die Rückerstattung manuell durchführen",
       "PaymentStatus": "Zahlungsstatus",
       "PickupLocation": "Abholort",
+      "Stops": "Stops",
       "Price": "Preis",
       "Processing": "Verarbeitung",
       "RefundAmount": "Rückerstattungsbetrag",

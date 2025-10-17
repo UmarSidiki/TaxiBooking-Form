@@ -44,6 +44,10 @@ export default function Step3Payment() {
     creatingPaymentIntent,
     paymentError,
 
+    // Map state
+    mapLoaded,
+    mapRef,
+
     // Context values
     formData,
     setFormData,
@@ -140,6 +144,18 @@ export default function Step3Payment() {
                 value={formData.notes}
                 onChange={(e) =>
                   setFormData((prev) => ({ ...prev, notes: e.target.value }))
+                }
+              />
+            </div>
+            <div>
+              <label className="text-sm font-medium block mb-2">
+                Flight Number (Optional)
+              </label>
+              <Input
+                placeholder="e.g. LH 1234"
+                value={formData.flightNumber}
+                onChange={(e) =>
+                  setFormData((prev) => ({ ...prev, flightNumber: e.target.value }))
                 }
               />
             </div>
@@ -549,6 +565,17 @@ export default function Step3Payment() {
         <Card className="sticky top-4 p-5 space-y-4">
           <h3 className="font-bold text-lg border-b pb-2">{t('Step3.booking-summary')}</h3>
 
+          {/* Map */}
+          {mapLoaded && (
+            <div className="border rounded-lg overflow-hidden">
+              <div
+                ref={mapRef}
+                className="w-full h-48 bg-gray-100"
+                style={{ minHeight: "200px" }}
+              />
+            </div>
+          )}
+
           {/* Trip Details */}
           <div className="space-y-3 text-sm">
             <div className="flex items-start gap-2">
@@ -558,6 +585,21 @@ export default function Step3Payment() {
                 <p className="font-medium text-gray-900">{formData.pickup}</p>
               </div>
             </div>
+
+            {/* Stops */}
+            {formData.stops
+              .filter(stop => stop.location.trim())
+              .map((stop, index) => (
+                <div key={index} className="flex items-start gap-2">
+                  <div className="flex items-center justify-center w-5 h-5 bg-blue-100 rounded-full flex-shrink-0 mt-0.5">
+                    <span className="text-xs font-semibold text-gray-600">{index + 1}</span>
+                  </div>
+                  <div>
+                    <p className="text-xs text-gray-500">{t('Step1.stop')} {index + 1}</p>
+                    <p className="font-medium text-gray-900">{stop.location}</p>
+                  </div>
+                </div>
+              ))}
 
             {formData.bookingType === "destination" ? (
               <>

@@ -83,6 +83,7 @@ function createEmailData(
     tripId,
     pickup: formData.pickup,
     dropoff: formData.dropoff || 'N/A (Hourly booking)',
+    stops: formData.stops || [],
     tripType: formData.tripType,
     date: formData.date,
     time: formData.time,
@@ -96,6 +97,7 @@ function createEmailData(
     childSeats: formData.childSeats,
     babySeats: formData.babySeats,
     notes: formData.notes,
+    flightNumber: formData.flightNumber,
     firstName: formData.firstName,
     lastName: formData.lastName,
     email: formData.email,
@@ -117,9 +119,28 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       );
     }
-    
-    // Dropoff is required for destination bookings, optional for hourly
-    if (formData.bookingType === 'destination' && !formData.dropoff) {
+
+    // Validate stops if provided
+    if (formData.stops && formData.stops.length > 0) {
+      for (let i = 0; i < formData.stops.length; i++) {
+        const stop = formData.stops[i];
+        if (!stop.location || stop.location.trim() === '') {
+          return NextResponse.json(
+            { success: false, message: `Stop ${i + 1} location is required` },
+            { status: 400 }
+          );
+        }
+        if (stop.order === undefined || stop.order < 0) {
+          return NextResponse.json(
+            { success: false, message: `Stop ${i + 1} order must be a valid number` },
+            { status: 400 }
+          );
+        }
+      }
+    }
+
+    // Dropoff is required for destination bookings without stops, optional for hourly
+    if (formData.bookingType === 'destination' && !formData.dropoff && (!formData.stops || formData.stops.length === 0)) {
       return NextResponse.json(
         { success: false, message: "Dropoff location is required for destination bookings" },
         { status: 400 }
@@ -169,6 +190,7 @@ export async function POST(request: NextRequest) {
       tripId,
       pickup: formData.pickup,
       dropoff: formData.dropoff || '',
+      stops: formData.stops || [],
       tripType: formData.tripType,
       date: formData.date,
       time: formData.time,
@@ -182,6 +204,7 @@ export async function POST(request: NextRequest) {
       childSeats: formData.childSeats,
       babySeats: formData.babySeats,
       notes: formData.notes,
+      flightNumber: formData.flightNumber,
       firstName: formData.firstName,
       lastName: formData.lastName,
       email: formData.email,

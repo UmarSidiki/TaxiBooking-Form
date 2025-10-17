@@ -255,6 +255,20 @@ export default function Step2VehicleSelection() {
 
             {formData.bookingType === "destination" ? (
               <>
+                {/* Stops */}
+                {formData.stops.map((stop, index) => (
+                  <div key={index} className="flex items-start gap-2">
+                    <div className="h-5 w-5 rounded-full bg-blue-100 border-2 border-gray-600 flex items-center justify-center text-xs font-bold text-gray-600">
+                      {index + 1}
+                    </div>
+                    <div>
+                      <p className="text-gray-700">
+                        {stop.location || `Stop ${index + 1}`}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+
                 <div className="flex items-start gap-2">
                   <Flag className="h-5 w-5 text-gray-600" />
                   <div>

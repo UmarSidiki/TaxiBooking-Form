@@ -353,10 +353,36 @@ export default function RidesPage() {
             <div className="flex items-center gap-2 text-sm">
               <MapPin className="w-4 h-4 text-gray-500" />
               <span className="text-gray-700 font-medium">{t("Dashboard.Rides.Route")}:</span>
-              <MapLine
-                start={booking.pickup}
-                end={booking.dropoff || "N/A"}
-              />
+              {booking.stops && booking.stops.length > 0 ? (
+                <div className="flex items-center gap-1 flex-wrap">
+                  <span className="max-w-[6rem] truncate" title={booking.pickup}>
+                    {booking.pickup}
+                  </span>
+                  {booking.stops
+                    .sort((a, b) => a.order - b.order)
+                    .map((stop, index) => (
+                      <React.Fragment key={index}>
+                        <span className="text-gray-400">→</span>
+                        <span className="max-w-[6rem] truncate" title={stop.location}>
+                          {stop.location}
+                        </span>
+                      </React.Fragment>
+                    ))}
+                  {booking.dropoff && (
+                    <>
+                      <span className="text-gray-400">→</span>
+                      <span className="max-w-[6rem] truncate" title={booking.dropoff}>
+                        {booking.dropoff}
+                      </span>
+                    </>
+                  )}
+                </div>
+              ) : (
+                <MapLine
+                  start={booking.pickup}
+                  end={booking.dropoff || "N/A"}
+                />
+              )}
             </div>
           </div>
 
@@ -768,6 +794,29 @@ export default function RidesPage() {
                         <p className="text-gray-600 ml-6">{detailBooking.pickup}</p>
                       </div>
 
+                      {detailBooking.stops && detailBooking.stops.length > 0 && (
+                        <div className="space-y-2">
+                          <div className="flex items-center gap-2 text-sm">
+                            <Navigation className="w-4 h-4 text-blue-600" />
+                            <span className="font-medium text-gray-700">
+                              {t("Dashboard.Rides.Stops")}
+                            </span>
+                          </div>
+                          <div className="ml-6 space-y-1">
+                            {detailBooking.stops
+                              .sort((a, b) => a.order - b.order)
+                              .map((stop, index) => (
+                                <div key={index} className="flex items-center gap-2 text-sm text-gray-600">
+                                  <span className="w-6 h-6 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-xs font-medium">
+                                    {index + 1}
+                                  </span>
+                                  <span>{stop.location}</span>
+                                </div>
+                              ))}
+                          </div>
+                        </div>
+                      )}
+
                       <div className="space-y-2">
                         <div className="flex items-center gap-2 text-sm">
                           <MapPin className="w-4 h-4 text-red-600" />
@@ -864,6 +913,14 @@ export default function RidesPage() {
                           {detailBooking.vehicleDetails?.name ||
                             detailBooking.selectedVehicle}
                         </p>
+                        {detailBooking.flightNumber && (
+                          <div className="mt-3">
+                            <p className="font-medium text-gray-700 mb-1">
+                              Flight Number
+                            </p>
+                            <p className="text-gray-600">{detailBooking.flightNumber}</p>
+                          </div>
+                        )}
                       </div>
                     </CardContent>
                   </Card>

@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import "@/style/EmbeddableLayout.css"
+import "@/style/EmbeddableLayout.css";
 import {
   Car,
   CheckCircle,
@@ -11,13 +11,17 @@ import {
   Users,
   Calendar,
   AlertCircle,
+  X,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { useStep1 } from "@/hooks/form/form-steps/useStep1";
 import { useTranslations } from "next-intl";
-import { BookingFormProvider } from "@/contexts/BookingFormContext";
+import {
+  BookingFormProvider,
+  useBookingForm,
+} from "@/contexts/BookingFormContext";
 import Image from "next/image";
 
 const iconMap = {
@@ -34,11 +38,13 @@ const iconMap = {
 
 function BookingFormUI() {
   const t = useTranslations();
+  const { setFormData } = useBookingForm();
   const {
     mapLoaded,
     mapRef,
     pickupInputRef,
     dropoffInputRef,
+    stopInputRefs,
     formData,
     errors,
     calculatingDistance,
@@ -67,12 +73,12 @@ function BookingFormUI() {
   // Handle form submission
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     // Update the form data if needed
     if (formData.passengers < 1) {
       handleInputChange("passengers", 1);
     }
-    
+
     // Use redirectToStep2 instead of handleNext
     redirectToStep2();
   };
@@ -108,6 +114,38 @@ function BookingFormUI() {
   useEffect(() => {
     setIsMounted(true);
   }, []);
+
+  // Handle adding a stop
+  const handleAddStop = () => {
+    const newStop = {
+      location: "",
+      order: formData.stops.length + 1,
+    };
+    setFormData((prev) => ({ ...prev, stops: [...prev.stops, newStop] }));
+  };
+
+  // Handle removing a stop
+  const handleRemoveStop = (index: number) => {
+    setFormData((prev) => ({
+      ...prev,
+      stops: prev.stops
+        .filter((_, i) => i !== index)
+        .map((stop, i) => ({
+          ...stop,
+          order: i + 1,
+        })),
+    }));
+  };
+
+  // Handle stop location change
+  const handleStopChange = (index: number, location: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      stops: prev.stops.map((stop, i) =>
+        i === index ? { ...stop, location } : stop
+      ),
+    }));
+  };
 
   return (
     <>
@@ -198,7 +236,7 @@ function BookingFormUI() {
               <div className="space-y-3">
                 {/* Pickup Location */}
                 <div className="relative">
-                  <div className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
+                  <div className="absolute left-3 top-1/2 -translate-y-1/2 text-primary">
                     <MapPin className="h-3.5 w-3.5 md:h-4 md:w-4" />
                   </div>
                   <Input
@@ -226,29 +264,75 @@ function BookingFormUI() {
                   )}
                 </div>
 
+                {/* Stops - Only for destination-based bookings */}
+                {!isHourly && (
+                  <div className="space-y-2">
+                    {formData.stops.map((stop, index) => (
+                      <div key={index} className="flex items-center gap-2">
+                        <div className="flex-1 relative">
+                          <div className="absolute left-3 top-1/2 -translate-y-1/2 text-primary">
+                            <MapPin className="h-3.5 w-3.5 md:h-4 md:w-4" />
+                          </div>
+                          <Input
+                            ref={(el) => {
+                              if (stopInputRefs.current) {
+                                stopInputRefs.current[index] = el;
+                              }
+                            }}
+                            placeholder={`Stop ${index + 1} location`}
+                            value={stop.location}
+                            onChange={(e) =>
+                              handleStopChange(index, e.target.value)
+                            }
+                            className="rounded-lg border bg-white pl-9 md:pl-10 pr-3 py-2 md:py-2.5 text-sm border-slate-200 focus:border-primary focus:ring-primary/20 transition-all duration-200"
+                          />
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveStop(index)}
+                          className="flex-shrink-0 p-1 text-slate-400 hover:text-red-500 transition-colors"
+                        >
+                          <X className="h-3.5 w-3.5 md:h-4 md:w-4" />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
                 {/* Dropoff Location */}
                 {!isHourly && (
-                  <div className="relative">
-                    <div className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
-                      <MapPin className="h-3.5 w-3.5 md:h-4 md:w-4" />
+                  <div>
+                    <div className="flex justify-end mb-1.5 w-full">
+                      <button
+                        type="button"
+                        onClick={handleAddStop}
+                        className="text-xs text-primary hover:text-primary/80 underline"
+                      >
+                        Add a stop
+                      </button>
                     </div>
-                    <Input
-                      ref={dropoffInputRef}
-                      placeholder={t("embeddable.destination")}
-                      value={formData.dropoff}
-                      onChange={(e) => {
-                        handleInputChange("dropoff", e.target.value);
-                      }}
-                      onBlur={() => handleInputBlur("dropoff")}
-                      onFocus={() => setFocusedField("dropoff")}
-                      className={`rounded-lg border bg-white pl-9 md:pl-10 pr-3 py-2 md:py-2.5 text-sm transition-all duration-200 ${
-                        errors.dropoff
-                          ? "border-red-400 focus:border-red-500 focus:ring-red-100"
-                          : focusedField === "dropoff"
-                          ? "border-primary focus:border-primary focus:ring-primary/20"
-                          : "border-slate-200 focus:border-primary focus:ring-primary/20"
-                      }`}
-                    />
+                    <div className="flex-1 relative">
+                      <div className="absolute left-3 top-1/2 -translate-y-1/2 text-primary">
+                        <MapPin className="h-3.5 w-3.5 md:h-4 md:w-4" />
+                      </div>
+                      <Input
+                        ref={dropoffInputRef}
+                        placeholder={t("embeddable.destination")}
+                        value={formData.dropoff}
+                        onChange={(e) => {
+                          handleInputChange("dropoff", e.target.value);
+                        }}
+                        onBlur={() => handleInputBlur("dropoff")}
+                        onFocus={() => setFocusedField("dropoff")}
+                        className={`rounded-lg border bg-white pl-9 md:pl-10 pr-3 py-2 md:py-2.5 text-sm transition-all duration-200 ${
+                          errors.dropoff
+                            ? "border-red-400 focus:border-red-500 focus:ring-red-100"
+                            : focusedField === "dropoff"
+                            ? "border-primary focus:border-primary focus:ring-primary/20"
+                            : "border-slate-200 focus:border-primary focus:ring-primary/20"
+                        }`}
+                      />
+                    </div>
                     {errors.dropoff && (
                       <div className="flex items-center gap-1 mt-1 text-xs text-red-500">
                         <AlertCircle className="h-3 w-3" />
@@ -261,7 +345,7 @@ function BookingFormUI() {
                 {/* Duration */}
                 {isHourly && (
                   <div className="relative">
-                    <div className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
+                    <div className="absolute left-3 top-1/2 -translate-y-1/2 text-primary">
                       <Clock className="h-3.5 w-3.5 md:h-4 md:w-4" />
                     </div>
                     <Input
@@ -308,14 +392,16 @@ function BookingFormUI() {
                 {/* Compact Date and Time */}
                 <div className="grid grid-cols-2 gap-2">
                   <div className="relative">
-                    <div className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
+                    <div className="absolute left-3 top-1/2 -translate-y-1/2 text-primary">
                       <Calendar className="h-3.5 w-3.5 md:h-4 md:w-4" />
                     </div>
                     <Input
                       type="date"
                       value={formData.date}
                       min={minDate}
-                      onChange={(e) => handleInputChange("date", e.target.value)}
+                      onChange={(e) =>
+                        handleInputChange("date", e.target.value)
+                      }
                       className={`rounded-lg border bg-white pl-9 md:pl-10 pr-3 py-2 md:py-2.5 text-sm transition-all duration-200 ${
                         errors.date
                           ? "border-red-400 focus:border-red-500 focus:ring-red-100"
@@ -330,13 +416,15 @@ function BookingFormUI() {
                     )}
                   </div>
                   <div className="relative">
-                    <div className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
+                    <div className="absolute left-3 top-1/2 -translate-y-1/2 text-primary">
                       <Clock className="h-3.5 w-3.5 md:h-4 md:w-4" />
                     </div>
                     <Input
                       type="time"
                       value={formData.time}
-                      onChange={(e) => handleInputChange("time", e.target.value)}
+                      onChange={(e) =>
+                        handleInputChange("time", e.target.value)
+                      }
                       className={`rounded-lg border bg-white pl-9 md:pl-10 pr-3 py-2 md:py-2.5 text-sm transition-all duration-200 ${
                         errors.time
                           ? "border-red-400 focus:border-red-500 focus:ring-red-100"
@@ -354,7 +442,7 @@ function BookingFormUI() {
 
                 {/* Passengers */}
                 <div className="relative">
-                  <div className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
+                  <div className="absolute left-3 top-1/2 -translate-y-1/2 text-primary">
                     <Users className="h-3.5 w-3.5 md:h-4 md:w-4" />
                   </div>
                   <Input
@@ -409,12 +497,12 @@ function BookingFormUI() {
                   <div className="taxi-animation-container w-full">
                     {/* Road/Path */}
                     <div className="taxi-road"></div>
-                    
+
                     {/* Taxi Icon */}
                     <div className="flex items-center justify-center h-full">
                       <Car className="h-5 w-5 md:h-6 md:w-6 taxi-icon text-white" />
                     </div>
-                    
+
                     {/* Loading dots below taxi */}
                     <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 flex gap-1">
                       <span className="w-1 h-1 bg-white rounded-full loading-dot"></span>
@@ -435,11 +523,41 @@ function BookingFormUI() {
                 </p>
               </div>
               <div className="flex justify-center gap-2 flex-wrap pt-2">
-                <Image src="/visa.webp" alt="Visa" width={35} height={25} className="h-6 w-auto opacity-70" />
-                <Image src="/mastercard.webp" alt="MasterCard" width={35} height={25} className="h-6 w-auto opacity-70" />
-                <Image src="/paypal.webp" alt="PayPal" width={35} height={25} className="h-6 w-auto opacity-70" />
-                <Image src="/twint.webp" alt="Twint" width={35} height={25} className="h-6 w-auto opacity-70" />
-                <Image src="/applepay.webp" alt="Apple Pay" width={35} height={25} className="h-6 w-auto opacity-70" />
+                <Image
+                  src="/visa.webp"
+                  alt="Visa"
+                  width={35}
+                  height={25}
+                  className="h-6 w-auto opacity-70"
+                />
+                <Image
+                  src="/mastercard.webp"
+                  alt="MasterCard"
+                  width={35}
+                  height={25}
+                  className="h-6 w-auto opacity-70"
+                />
+                <Image
+                  src="/paypal.webp"
+                  alt="PayPal"
+                  width={35}
+                  height={25}
+                  className="h-6 w-auto opacity-70"
+                />
+                <Image
+                  src="/twint.webp"
+                  alt="Twint"
+                  width={35}
+                  height={25}
+                  className="h-6 w-auto opacity-70"
+                />
+                <Image
+                  src="/applepay.webp"
+                  alt="Apple Pay"
+                  width={35}
+                  height={25}
+                  className="h-6 w-auto opacity-70"
+                />
               </div>
             </div>
           </form>

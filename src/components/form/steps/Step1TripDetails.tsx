@@ -9,6 +9,7 @@ import {
   Users,
   Loader2,
   ArrowRight,
+  X,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -27,6 +28,7 @@ export default function Step1TripDetails() {
     mapRef,
     pickupInputRef,
     dropoffInputRef,
+    stopInputRefs,
 
     // Context values
     formData,
@@ -67,6 +69,39 @@ export default function Step1TripDetails() {
       const numValue = Math.min(8, Math.max(1, formData.passengers));
       handleInputChange("passengers", numValue);
     }
+  };
+
+  // Handle adding a stop
+  const handleAddStop = () => {
+    const newStop = {
+      location: "",
+      order: formData.stops.length + 1,
+    };
+    setFormData((prev) => ({
+      ...prev,
+      stops: [...prev.stops, newStop],
+    }));
+  };
+
+  // Handle removing a stop
+  const handleRemoveStop = (index: number) => {
+    setFormData((prev) => ({
+      ...prev,
+      stops: prev.stops.filter((_, i) => i !== index).map((stop, i) => ({
+        ...stop,
+        order: i + 1,
+      })),
+    }));
+  };
+
+  // Handle stop location change
+  const handleStopChange = (index: number, location: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      stops: prev.stops.map((stop, i) =>
+        i === index ? { ...stop, location } : stop
+      ),
+    }));
   };
 
   return (
@@ -208,13 +243,53 @@ export default function Step1TripDetails() {
             )}
           </div>
 
+          {/* Stops - Only for destination-based bookings */}
+          {formData.bookingType === "destination" && (
+            <div className="space-y-2">
+              {formData.stops.map((stop, index) => (
+                <div key={index} className="flex items-center gap-2">
+                  <div className="flex-1 relative">
+                    <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-primary" />
+                    <Input
+                      ref={(el) => {
+                        stopInputRefs.current[index] = el;
+                      }}
+                      placeholder={`Stop ${index + 1} location`}
+                      value={stop.location}
+                      onChange={(e) => handleStopChange(index, e.target.value)}
+                      className="pl-10 focus:border-primary-500 focus:ring-primary-500"
+                    />
+                  </div>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="icon"
+                    onClick={() => handleRemoveStop(index)}
+                    className="flex-shrink-0 h-9 w-9"
+                  >
+                    <X className="h-4 w-4" />
+                  </Button>
+                </div>
+              ))}
+            </div>
+          )}
+
           {/* Dropoff Location - Only for destination-based bookings */}
           {formData.bookingType === "destination" && (
             <div>
-              <label className="block text-sm font-medium mb-1.5 text-gray-700">
-                <Flag className="inline h-4 w-4 mr-1 text-primary" />
-                {t("Step1.DropoffLocation")} *
-              </label>
+              <div className="flex items-center justify-between mb-1.5">
+                <label className="text-sm font-medium text-gray-700">
+                  <Flag className="inline h-4 w-4 mr-1 text-primary" />
+                  {t("Step1.DropoffLocation")} *
+                </label>
+                <button
+                  type="button"
+                  onClick={handleAddStop}
+                  className="text-sm text-primary hover:text-primary/80 underline"
+                >
+                  Add a stop
+                </button>
+              </div>
               <Input
                 ref={dropoffInputRef}
                 placeholder={t("Step1.DropoffPlaceholder")}
@@ -242,6 +317,7 @@ export default function Step1TripDetails() {
               )}
             </div>
           )}
+
 
           {/* Duration - Only for hourly bookings */}
           {formData.bookingType === "hourly" && (

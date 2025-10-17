@@ -198,6 +198,7 @@
       "PaymentMethodIsCashNoOnlineRefundWillBeProcessedYouMayNeedToHandleTheRefundManually": "Betaalmethode is contant Er wordt geen online restitutie verwerkt. Mogelijk moet u de restitutie handmatig afhandelen",
       "PaymentStatus": "Betalingsstatus",
       "PickupLocation": "Ophaallocatie",
+      "Stops": "Stops",
       "Price": "Prijs",
       "Processing": "Verwerking",
       "RefundAmount": "Bedrag terugbetalen",
@@ -362,7 +363,8 @@
     "pickup-location-is-required": "Ophaallocatie is vereist",
     "price-based-on-distance-traveled": "Prijs op basis van afgelegde afstand",
     "price-based-on-hourly-rate": "Prijs op basis van uurtarief",
-    "time-is-required": "Er is tijd nodig"
+    "time-is-required": "Er is tijd nodig",
+    "stop": "Stop"
   },
   "Step2": {
     "24-7-support": "24/7 ondersteuning",

@@ -96,18 +96,20 @@ const FleetPage = () => {
 
   useEffect(() => {
     fetchVehicles();
-  }, []);
+  });
 
   const fetchVehicles = async () => {
     try {
       setIsLoading(true);
-      const data = await apiGet<{ success: boolean; data: IVehicle[] }>("/api/vehicles");
+      const data = await apiGet<{ success: boolean; data: IVehicle[] }>(
+        "/api/vehicles"
+      );
       if (data.success) {
         setVehicles(data.data);
       }
     } catch (error) {
       console.error("Error fetching vehicles:", error);
-      alert(t('Dashboard.Fleet.failed-to-fetch-vehicles'));
+      alert(t("Dashboard.Fleet.failed-to-fetch-vehicles"));
     } finally {
       setIsLoading(false);
     }
@@ -129,11 +131,11 @@ const FleetPage = () => {
         resetForm();
         fetchVehicles();
       } else {
-        alert(data.message || t('Dashboard.Fleet.operation-failed'));
+        alert(data.message || t("Dashboard.Fleet.operation-failed"));
       }
     } catch (error) {
       console.error("Error saving vehicle:", error);
-      alert(t('Dashboard.Fleet.failed-to-save-vehicle'));
+      alert(t("Dashboard.Fleet.failed-to-save-vehicle"));
     } finally {
       setIsLoading(false);
     }
@@ -158,23 +160,29 @@ const FleetPage = () => {
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm(t('Dashboard.Fleet.are-you-sure-you-want-to-delete-this-vehicle'))) {
+    if (
+      !confirm(
+        t("Dashboard.Fleet.are-you-sure-you-want-to-delete-this-vehicle")
+      )
+    ) {
       return;
     }
 
     try {
       setIsLoading(true);
-      const data = await apiDelete<{ success: boolean; message: string }>(`/api/vehicles/${id}`);
+      const data = await apiDelete<{ success: boolean; message: string }>(
+        `/api/vehicles/${id}`
+      );
 
       if (data.success) {
         alert(data.message);
         fetchVehicles();
       } else {
-        alert(data.message || t('Dashboard.Fleet.delete-failed'));
+        alert(data.message || t("Dashboard.Fleet.delete-failed"));
       }
     } catch (error) {
       console.error("Error deleting vehicle:", error);
-      alert(t('Dashboard.Fleet.failed-to-delete-vehicle'));
+      alert(t("Dashboard.Fleet.failed-to-delete-vehicle"));
     } finally {
       setIsLoading(false);
     }
@@ -228,21 +236,27 @@ const FleetPage = () => {
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4 lg:mb-6">
         <div>
           <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-foreground">
-            {t('Dashboard.Fleet.fleet-management')} </h1>
+            {t("Dashboard.Fleet.fleet-management")}{" "}
+          </h1>
           <p className="text-muted-foreground mt-1 text-sm sm:text-base">
-            {t('Dashboard.Fleet.manage-your-vehicle-fleet-and-pricing')} </p>
+            {t("Dashboard.Fleet.manage-your-vehicle-fleet-and-pricing")}{" "}
+          </p>
         </div>
         <Dialog open={showForm} onOpenChange={setShowForm}>
           <DialogTrigger asChild>
             <Button className="bg-primary hover:bg-primary/90 text-primary-foreground w-full sm:w-auto">
               <Plus className="h-4 w-4 sm:mr-2" />
-              <span className="hidden sm:inline">{t('Dashboard.Fleet.add-vehicle')}</span>
+              <span className="hidden sm:inline">
+                {t("Dashboard.Fleet.add-vehicle")}
+              </span>
             </Button>
           </DialogTrigger>
           <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle>
-                {editingId ? t('Dashboard.Fleet.edit-vehicle') : t('Dashboard.Fleet.add-new-vehicle')}
+                {editingId
+                  ? t("Dashboard.Fleet.edit-vehicle")
+                  : t("Dashboard.Fleet.add-new-vehicle")}
               </DialogTitle>
             </DialogHeader>
             <VehicleForm
@@ -265,7 +279,9 @@ const FleetPage = () => {
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
-                  placeholder={t('Dashboard.Fleet.search-vehicles-by-name-description-or-category')}
+                  placeholder={t(
+                    "Dashboard.Fleet.search-vehicles-by-name-description-or-category"
+                  )}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="pl-10 h-10 sm:h-9"
@@ -275,26 +291,46 @@ const FleetPage = () => {
             <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
               <Select value={categoryFilter} onValueChange={setCategoryFilter}>
                 <SelectTrigger className="w-full sm:w-40 h-10 sm:h-9">
-                  <SelectValue placeholder={t('Dashboard.Fleet.category')} />
+                  <SelectValue placeholder={t("Dashboard.Fleet.category")} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">{t('Dashboard.Fleet.all-categories')}</SelectItem>
-                  <SelectItem value="economy">{t('Dashboard.Fleet.economy')}</SelectItem>
-                  <SelectItem value="comfort">{t('Dashboard.Fleet.comfort')}</SelectItem>
-                  <SelectItem value="business">{t('Dashboard.Fleet.business')}</SelectItem>
-                  <SelectItem value="van">{t('Dashboard.Fleet.van')}</SelectItem>
-                  <SelectItem value="luxury">{t('Dashboard.Fleet.luxury')}</SelectItem>
-                  <SelectItem value="suv">{t('Dashboard.Fleet.suv')}</SelectItem>
+                  <SelectItem value="all">
+                    {t("Dashboard.Fleet.all-categories")}
+                  </SelectItem>
+                  <SelectItem value="economy">
+                    {t("Dashboard.Fleet.economy")}
+                  </SelectItem>
+                  <SelectItem value="comfort">
+                    {t("Dashboard.Fleet.comfort")}
+                  </SelectItem>
+                  <SelectItem value="business">
+                    {t("Dashboard.Fleet.business")}
+                  </SelectItem>
+                  <SelectItem value="van">
+                    {t("Dashboard.Fleet.van")}
+                  </SelectItem>
+                  <SelectItem value="luxury">
+                    {t("Dashboard.Fleet.luxury")}
+                  </SelectItem>
+                  <SelectItem value="suv">
+                    {t("Dashboard.Fleet.suv")}
+                  </SelectItem>
                 </SelectContent>
               </Select>
               <Select value={statusFilter} onValueChange={setStatusFilter}>
                 <SelectTrigger className="w-full sm:w-32 h-10 sm:h-9">
-                  <SelectValue placeholder={t('Dashboard.Fleet.status')} />
+                  <SelectValue placeholder={t("Dashboard.Fleet.status")} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">{t('Dashboard.Fleet.all-status')}</SelectItem>
-                  <SelectItem value="active">{t('Dashboard.Fleet.active')}</SelectItem>
-                  <SelectItem value="inactive">{t('Dashboard.Fleet.inactive')}</SelectItem>
+                  <SelectItem value="all">
+                    {t("Dashboard.Fleet.all-status")}
+                  </SelectItem>
+                  <SelectItem value="active">
+                    {t("Dashboard.Fleet.active")}
+                  </SelectItem>
+                  <SelectItem value="inactive">
+                    {t("Dashboard.Fleet.inactive")}
+                  </SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -316,13 +352,17 @@ const FleetPage = () => {
                   <Car className="h-12 sm:h-16 w-12 sm:w-16 text-muted-foreground mx-auto mb-4" />
                   <h3 className="text-lg font-semibold mb-2 text-foreground">
                     {vehicles.length === 0
-                      ? t('Dashboard.Fleet.no-vehicles-yet')
-                      : t('Dashboard.Fleet.no-vehicles-match-your-filters')}
+                      ? t("Dashboard.Fleet.no-vehicles-yet")
+                      : t("Dashboard.Fleet.no-vehicles-match-your-filters")}
                   </h3>
                   <p className="text-muted-foreground mb-4 text-sm sm:text-base">
                     {vehicles.length === 0
-                      ? t('Dashboard.Fleet.get-started-by-adding-your-first-vehicle-to-the-fleet')
-                      : t('Dashboard.Fleet.try-adjusting-your-search-or-filter-criteria')}
+                      ? t(
+                          "Dashboard.Fleet.get-started-by-adding-your-first-vehicle-to-the-fleet"
+                        )
+                      : t(
+                          "Dashboard.Fleet.try-adjusting-your-search-or-filter-criteria"
+                        )}
                   </p>
                   {vehicles.length === 0 && (
                     <Button
@@ -330,7 +370,8 @@ const FleetPage = () => {
                       className="bg-primary hover:bg-primary/90 text-primary-foreground"
                     >
                       <Plus className="h-4 w-4 mr-2" />
-                      {t('Dashboard.Fleet.add-your-first-vehicle')} </Button>
+                      {t("Dashboard.Fleet.add-your-first-vehicle")}{" "}
+                    </Button>
                   )}
                 </CardContent>
               </Card>
@@ -363,7 +404,6 @@ const VehicleCard = ({
   onEdit: (vehicle: IVehicle) => void;
   onDelete: (id: string) => void;
   resolveImageSrc: (src: string) => string;
-  
 }) => {
   const t = useTranslations();
   return (
@@ -424,11 +464,15 @@ const VehicleCard = ({
         <div className="grid grid-cols-2 gap-3 text-sm">
           <div className="flex items-center gap-2">
             <Users className="h-4 w-4 text-muted-foreground flex-shrink-0" />
-            <span className="text-foreground">{vehicle.persons} {t('Dashboard.Fleet.seats')}</span>
+            <span className="text-foreground">
+              {vehicle.persons} {t("Dashboard.Fleet.seats")}
+            </span>
           </div>
           <div className="flex items-center gap-2">
             <Package className="h-4 w-4 text-muted-foreground flex-shrink-0" />
-            <span className="text-foreground">{vehicle.baggages} {t('Dashboard.Fleet.bags')}</span>
+            <span className="text-foreground">
+              {vehicle.baggages} {t("Dashboard.Fleet.bags")}
+            </span>
           </div>
         </div>
 
@@ -452,12 +496,12 @@ const VehicleCard = ({
             {vehicle.isActive ? (
               <>
                 <CheckCircle className="h-3 w-3 mr-1" />
-                {t('Dashboard.Fleet.active')}
+                {t("Dashboard.Fleet.active")}
               </>
             ) : (
               <>
                 <XCircle className="h-3 w-3 mr-1" />
-                {t('Dashboard.Fleet.inactive')}
+                {t("Dashboard.Fleet.inactive")}
               </>
             )}
           </Badge>
@@ -489,22 +533,27 @@ const VehicleForm = ({
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Basic Information */}
         <div className="md:col-span-2">
-          <h3 className="text-lg font-semibold mb-4">{t('Dashboard.Fleet.basic-information')}</h3>
+          <h3 className="text-lg font-semibold mb-4">
+            {t("Dashboard.Fleet.basic-information")}
+          </h3>
         </div>
 
         <div>
           <label className="block text-sm font-medium mb-2">
-            {t('Dashboard.Fleet.vehicle-name')} </label>
+            {t("Dashboard.Fleet.vehicle-name")}{" "}
+          </label>
           <Input
             required
-            placeholder={t('Dashboard.Fleet.e-g-mercedes-e-class')}
+            placeholder={t("Dashboard.Fleet.e-g-mercedes-e-class")}
             value={formData.name}
             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium mb-2">{t('Dashboard.Fleet.category2')}</label>
+          <label className="block text-sm font-medium mb-2">
+            {t("Dashboard.Fleet.category2")}
+          </label>
           <Select
             value={formData.category}
             onValueChange={(value) =>
@@ -515,11 +564,19 @@ const VehicleForm = ({
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="economy">{t('Dashboard.Fleet.economy')}</SelectItem>
-              <SelectItem value="comfort">{t('Dashboard.Fleet.comfort')}</SelectItem>
-              <SelectItem value="business">{t('Dashboard.Fleet.business')}</SelectItem>
-              <SelectItem value="van">{t('Dashboard.Fleet.van')}</SelectItem>
-              <SelectItem value="luxury">{t('Dashboard.Fleet.luxury')}</SelectItem>
+              <SelectItem value="economy">
+                {t("Dashboard.Fleet.economy")}
+              </SelectItem>
+              <SelectItem value="comfort">
+                {t("Dashboard.Fleet.comfort")}
+              </SelectItem>
+              <SelectItem value="business">
+                {t("Dashboard.Fleet.business")}
+              </SelectItem>
+              <SelectItem value="van">{t("Dashboard.Fleet.van")}</SelectItem>
+              <SelectItem value="luxury">
+                {t("Dashboard.Fleet.luxury")}
+              </SelectItem>
               <SelectItem value="suv">SUV</SelectItem>
             </SelectContent>
           </Select>
@@ -527,10 +584,11 @@ const VehicleForm = ({
 
         <div className="md:col-span-2">
           <label className="block text-sm font-medium mb-2">
-            {t('Dashboard.Fleet.description')} </label>
+            {t("Dashboard.Fleet.description")}{" "}
+          </label>
           <textarea
             required
-            placeholder={t('Dashboard.Fleet.describe-the-vehicle-features')}
+            placeholder={t("Dashboard.Fleet.describe-the-vehicle-features")}
             className="w-full min-h-[80px] px-3 py-2 rounded-md border border-input bg-background resize-none"
             value={formData.description}
             onChange={(e) =>
@@ -540,7 +598,9 @@ const VehicleForm = ({
         </div>
 
         <div className="md:col-span-2">
-          <label className="block text-sm font-medium mb-2">{t('Dashboard.Fleet.image-url')}</label>
+          <label className="block text-sm font-medium mb-2">
+            {t("Dashboard.Fleet.image-url")}
+          </label>
           <Input
             placeholder="/images/car.jpg"
             value={formData.image}
@@ -552,12 +612,15 @@ const VehicleForm = ({
 
         {/* Pricing Section */}
         <div className="md:col-span-2">
-          <h3 className="text-lg font-semibold mb-4">{t('Dashboard.Fleet.pricing')}</h3>
+          <h3 className="text-lg font-semibold mb-4">
+            {t("Dashboard.Fleet.pricing")}
+          </h3>
         </div>
 
         <div>
           <label className="block text-sm font-medium mb-2">
-            {t('Dashboard.Fleet.base-price-eur')} </label>
+            {t("Dashboard.Fleet.base-price-eur")}{" "}
+          </label>
           <Input
             required
             type="number"
@@ -573,12 +636,14 @@ const VehicleForm = ({
             }
           />
           <p className="text-xs text-muted-foreground mt-1">
-            {t('Dashboard.Fleet.starting-fare-before-distance-calculation')} </p>
+            {t("Dashboard.Fleet.starting-fare-before-distance-calculation")}{" "}
+          </p>
         </div>
 
         <div>
           <label className="block text-sm font-medium mb-2">
-            {t('Dashboard.Fleet.price-per-km-eur')} </label>
+            {t("Dashboard.Fleet.price-per-km-eur")}{" "}
+          </label>
           <Input
             required
             type="number"
@@ -594,12 +659,14 @@ const VehicleForm = ({
             }
           />
           <p className="text-xs text-muted-foreground mt-1">
-            {t('Dashboard.Fleet.rate-charged-per-kilometer')} </p>
+            {t("Dashboard.Fleet.rate-charged-per-kilometer")}{" "}
+          </p>
         </div>
 
         <div>
           <label className="block text-sm font-medium mb-2">
-            {t('Dashboard.Fleet.price-per-hour-eur')} </label>
+            {t("Dashboard.Fleet.price-per-hour-eur")}{" "}
+          </label>
           <Input
             required
             type="number"
@@ -615,12 +682,14 @@ const VehicleForm = ({
             }
           />
           <p className="text-xs text-muted-foreground mt-1">
-            {t('Dashboard.Fleet.rate-charged-per-hour')} </p>
+            {t("Dashboard.Fleet.rate-charged-per-hour")}{" "}
+          </p>
         </div>
 
         <div>
           <label className="block text-sm font-medium mb-2">
-            {t('Dashboard.Fleet.minimum-fare-eur')} </label>
+            {t("Dashboard.Fleet.minimum-fare-eur")}{" "}
+          </label>
           <Input
             required
             type="number"
@@ -636,12 +705,14 @@ const VehicleForm = ({
             }
           />
           <p className="text-xs text-muted-foreground mt-1">
-            {t('Dashboard.Fleet.minimum-charge-for-trips')} </p>
+            {t("Dashboard.Fleet.minimum-charge-for-trips")}{" "}
+          </p>
         </div>
 
         <div>
           <label className="block text-sm font-medium mb-2">
-            {t('Dashboard.Fleet.minimum-hours')} </label>
+            {t("Dashboard.Fleet.minimum-hours")}{" "}
+          </label>
           <Input
             required
             type="number"
@@ -657,12 +728,14 @@ const VehicleForm = ({
             }
           />
           <p className="text-xs text-muted-foreground mt-1">
-            {t('Dashboard.Fleet.minimum-hours-for-bookings')} </p>
+            {t("Dashboard.Fleet.minimum-hours-for-bookings")}{" "}
+          </p>
         </div>
 
         <div>
           <label className="block text-sm font-medium mb-2">
-            {t('Dashboard.Fleet.return-trip-price')} </label>
+            {t("Dashboard.Fleet.return-trip-price")}{" "}
+          </label>
           <Input
             required
             type="number"
@@ -677,11 +750,14 @@ const VehicleForm = ({
             }
           />
           <p className="text-xs text-muted-foreground mt-1">
-            {t('Dashboard.Fleet.percentage-for-return-trips')} </p>
+            {t("Dashboard.Fleet.percentage-for-return-trips")}{" "}
+          </p>
         </div>
 
         <div>
-          <label className="block text-sm font-medium mb-2">{t('Dashboard.Fleet.discount')}</label>
+          <label className="block text-sm font-medium mb-2">
+            {t("Dashboard.Fleet.discount")}
+          </label>
           <Input
             type="number"
             min="0"
@@ -696,17 +772,21 @@ const VehicleForm = ({
             }
           />
           <p className="text-xs text-muted-foreground mt-1">
-            {t('Dashboard.Fleet.discount-percentage')} </p>
+            {t("Dashboard.Fleet.discount-percentage")}{" "}
+          </p>
         </div>
 
         {/* Capacity Section */}
         <div className="md:col-span-2">
-          <h3 className="text-lg font-semibold mb-4">{t('Dashboard.Fleet.capacity-and-features')}</h3>
+          <h3 className="text-lg font-semibold mb-4">
+            {t("Dashboard.Fleet.capacity-and-features")}
+          </h3>
         </div>
 
         <div>
           <label className="block text-sm font-medium mb-2">
-            {t('Dashboard.Fleet.persons-capacity')} </label>
+            {t("Dashboard.Fleet.persons-capacity")}{" "}
+          </label>
           <Input
             required
             type="number"
@@ -725,7 +805,8 @@ const VehicleForm = ({
 
         <div>
           <label className="block text-sm font-medium mb-2">
-            {t('Dashboard.Fleet.baggages-capacity')} </label>
+            {t("Dashboard.Fleet.baggages-capacity")}{" "}
+          </label>
           <Input
             required
             type="number"
@@ -744,7 +825,8 @@ const VehicleForm = ({
 
         <div>
           <label className="block text-sm font-medium mb-2">
-            {t('Dashboard.Fleet.child-seat-price-eur')} </label>
+            {t("Dashboard.Fleet.child-seat-price-eur")}{" "}
+          </label>
           <Input
             type="number"
             min="0"
@@ -762,7 +844,8 @@ const VehicleForm = ({
 
         <div>
           <label className="block text-sm font-medium mb-2">
-            {t('Dashboard.Fleet.baby-seat-price-eur')} </label>
+            {t("Dashboard.Fleet.baby-seat-price-eur")}{" "}
+          </label>
           <Input
             type="number"
             min="0"
@@ -791,7 +874,8 @@ const VehicleForm = ({
               className="h-4 w-4 rounded border-gray-300"
             />
             <label htmlFor="isActive" className="text-sm font-medium">
-              {t('Dashboard.Fleet.active-available-for-booking')} </label>
+              {t("Dashboard.Fleet.active-available-for-booking")}{" "}
+            </label>
           </div>
         </div>
       </div>
@@ -806,12 +890,15 @@ const VehicleForm = ({
           ) : (
             <>
               <Save className="mr-2 h-4 w-4" />
-              {editingId ? t('Dashboard.Fleet.update-vehicle') : t('Dashboard.Fleet.add-vehicle')}
+              {editingId
+                ? t("Dashboard.Fleet.update-vehicle")
+                : t("Dashboard.Fleet.add-vehicle")}
             </>
           )}
         </Button>
         <Button type="button" variant="outline" onClick={onCancel}>
-          {t('Dashboard.Fleet.cancel')} </Button>
+          {t("Dashboard.Fleet.cancel")}{" "}
+        </Button>
       </div>
     </form>
   );

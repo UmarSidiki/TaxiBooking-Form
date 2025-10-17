@@ -40,7 +40,8 @@
     "pickup-location-is-required": "Le lieu de prise en charge est requis",
     "price-based-on-distance-traveled": "Prix ​​basé sur la distance parcourue",
     "price-based-on-hourly-rate": "Prix ​​basé sur le taux horaire",
-    "time-is-required": "Il faut du temps"
+    "time-is-required": "Il faut du temps",
+    "stop": "Arrêt"
   },
   "Step2": {
     "best-price": "⭐ Meilleur prix",
@@ -378,6 +379,7 @@
       "PaymentMethodIsCashNoOnlineRefundWillBeProcessedYouMayNeedToHandleTheRefundManually": "Le mode de paiement est en espèces. Aucun remboursement en ligne ne sera traité. Vous devrez peut-être gérer le remboursement manuellement.",
       "PaymentStatus": "Statut du paiement",
       "PickupLocation": "Lieu de prise en charge",
+      "Stops": "Arrêts",
       "Price": "Prix",
       "Processing": "Traitement",
       "RefundAmount": "Montant du remboursement",

@@ -4,6 +4,7 @@ interface BookingData {
   tripId: string;
   pickup: string;
   dropoff: string;
+  stops: Array<{ location: string; order: number }>;
   tripType: string;
   date: string;
   time: string;
@@ -24,6 +25,7 @@ interface BookingData {
   totalAmount: number;
   paymentMethod?: string;
   paymentStatus?: string;
+  flightNumber?: string;
 }
 
 // Email validation utility
@@ -86,12 +88,20 @@ function generateEmailHTML(bookingData: BookingData) {
             bookingData.tripId
           }</li>
           <li><span class="highlight">From:</span> ${bookingData.pickup}</li>
+          ${bookingData.stops && bookingData.stops.length > 0 ? bookingData.stops.map((stop, index) =>
+            `<li><span class="highlight">Stop ${index + 1}:</span> ${stop.location}</li>`
+          ).join('') : ''}
           <li><span class="highlight">To:</span> ${bookingData.dropoff}</li>
           <li><span class="highlight">Date:</span> ${bookingData.date}</li>
           <li><span class="highlight">Time:</span> ${bookingData.time}</li>
           <li><span class="highlight">Reservation Type:</span> ${
             bookingData.tripType
           }</li>
+          ${
+            bookingData.flightNumber
+              ? `<li><span class="highlight">Flight Number:</span> ${bookingData.flightNumber}</li>`
+              : ""
+          }
         </ul>
       </div>
     </div>
@@ -193,7 +203,7 @@ export async function sendOrderConfirmationEmail(bookingData: BookingData) {
       to: bookingData.email,
       subject: `Booking Confirmation - Reservation #${bookingData.tripId}`,
       html: htmlContent,
-      text: `Booking Confirmed!\n\nReservation ID: ${bookingData.tripId}\nCustomer: ${bookingData.firstName} ${bookingData.lastName}\nFrom: ${bookingData.pickup}\nTo: ${bookingData.dropoff}\nDate: ${bookingData.date} at ${bookingData.time}\nVehicle: ${bookingData.vehicleDetails.name}\nTotal Amount: €${bookingData.totalAmount}`,
+      text: `Booking Confirmed!\n\nReservation ID: ${bookingData.tripId}\nCustomer: ${bookingData.firstName} ${bookingData.lastName}\nFrom: ${bookingData.pickup}${bookingData.stops && bookingData.stops.length > 0 ? '\nStops: ' + bookingData.stops.map((stop, index) => `Stop ${index + 1}: ${stop.location}`).join(', ') : ''}\nTo: ${bookingData.dropoff}\nDate: ${bookingData.date} at ${bookingData.time}${bookingData.flightNumber ? `\nFlight Number: ${bookingData.flightNumber}` : ''}\nVehicle: ${bookingData.vehicleDetails.name}\nTotal Amount: €${bookingData.totalAmount}`,
     });
 
     if (!success) {

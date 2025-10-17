@@ -38,6 +38,7 @@ export async function sendThankYouEmails() {
           tripId: booking.tripId,
           pickup: booking.pickup,
           dropoff: booking.dropoff || 'N/A (Hourly booking)',
+          stops: booking.stops || [],
           tripType: booking.tripType,
           date: booking.date,
           time: booking.time,

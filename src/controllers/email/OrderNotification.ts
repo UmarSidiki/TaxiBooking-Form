@@ -5,6 +5,7 @@ interface BookingData {
   tripId: string;
   pickup: string;
   dropoff: string;
+  stops: Array<{ location: string; order: number }>;
   tripType: string;
   date: string;
   time: string;
@@ -25,6 +26,7 @@ interface BookingData {
   totalAmount: number;
   paymentMethod?: string;
   paymentStatus?: string;
+  flightNumber?: string;
 }
 
 function generateOwnerEmailHTML(bookingData: BookingData) {
@@ -74,10 +76,14 @@ function generateOwnerEmailHTML(bookingData: BookingData) {
         <ul>
           <li><span class="highlight">Reservation ID:</span> #${bookingData.tripId}</li>
           <li><span class="highlight">Pickup:</span> ${bookingData.pickup}</li>
+          ${bookingData.stops && bookingData.stops.length > 0 ? bookingData.stops.map((stop, index) =>
+            `<li><span class="highlight">Stop ${index + 1}:</span> ${stop.location}</li>`
+          ).join('') : ''}
           <li><span class="highlight">Dropoff:</span> ${bookingData.dropoff}</li>
           <li><span class="highlight">Date:</span> ${bookingData.date}</li>
           <li><span class="highlight">Time:</span> ${bookingData.time}</li>
           <li><span class="highlight">Reservation Type:</span> ${bookingData.tripType}</li>
+          ${bookingData.flightNumber ? `<li><span class="highlight">Flight Number:</span> ${bookingData.flightNumber}</li>` : ''}
           <li><span class="highlight">Vehicle:</span> ${bookingData.vehicleDetails.name}</li>
           <li><span class="highlight">Passengers:</span> ${bookingData.passengers}</li>
           ${bookingData.childSeats > 0 ? `<li><span class="highlight">Child Seats:</span> ${bookingData.childSeats}</li>` : ''}
@@ -141,7 +147,7 @@ export async function sendOrderNotificationEmail(bookingData: BookingData) {
       to: ownerEmail,
       subject: `New Booking Alert - Reservation #${bookingData.tripId}`,
       html: htmlContent,
-      text: `New Booking Received!\n\nReservation ID: ${bookingData.tripId}\nCustomer: ${bookingData.firstName} ${bookingData.lastName}\nEmail: ${bookingData.email}\nPhone: ${bookingData.phone}\nFrom: ${bookingData.pickup}\nTo: ${bookingData.dropoff}\nDate: ${bookingData.date} at ${bookingData.time}\nVehicle: ${bookingData.vehicleDetails.name}\nTotal Amount: €${bookingData.totalAmount}\n\nPlease review and confirm this booking.`,
+      text: `New Booking Received!\n\nReservation ID: ${bookingData.tripId}\nCustomer: ${bookingData.firstName} ${bookingData.lastName}\nEmail: ${bookingData.email}\nPhone: ${bookingData.phone}\nFrom: ${bookingData.pickup}${bookingData.stops && bookingData.stops.length > 0 ? '\nStops: ' + bookingData.stops.map((stop, index) => `Stop ${index + 1}: ${stop.location}`).join(', ') : ''}\nTo: ${bookingData.dropoff}\nDate: ${bookingData.date} at ${bookingData.time}${bookingData.flightNumber ? `\nFlight Number: ${bookingData.flightNumber}` : ''}\nVehicle: ${bookingData.vehicleDetails.name}\nTotal Amount: €${bookingData.totalAmount}\n\nPlease review and confirm this booking.`,
     });
 
     if (!success) {

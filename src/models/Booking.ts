@@ -4,6 +4,10 @@ export interface IBooking extends Document {
   tripId: string;
   pickup: string;
   dropoff?: string;
+  stops?: Array<{
+    location: string;
+    order: number;
+  }>;
   tripType: "oneway" | "roundtrip";
   date: string;
   time: string;
@@ -17,6 +21,7 @@ export interface IBooking extends Document {
   childSeats: number;
   babySeats: number;
   notes: string;
+  flightNumber?: string;
   firstName: string;
   lastName: string;
   email: string;
@@ -38,6 +43,10 @@ const BookingSchema: Schema = new Schema({
   tripId: { type: String, required: true, unique: true },
   pickup: { type: String, required: true },
   dropoff: { type: String },
+  stops: [{
+    location: { type: String, required: true },
+    order: { type: Number, required: true }
+  }],
   tripType: { type: String, enum: ["oneway", "roundtrip"], required: true },
   date: { type: String, required: true },
   time: { type: String, required: true },
@@ -51,6 +60,7 @@ const BookingSchema: Schema = new Schema({
   childSeats: { type: Number, default: 0 },
   babySeats: { type: Number, default: 0 },
   notes: { type: String, default: "" },
+  flightNumber: { type: String },
   firstName: { type: String, required: true },
   lastName: { type: String, required: true },
   email: { type: String, required: true },
@@ -89,6 +99,10 @@ export interface BookingInput {
   bookingType?: "destination" | "hourly";
   pickup: string;
   dropoff?: string;
+  stops?: Array<{
+    location: string;
+    order: number;
+  }>;
   tripType: "oneway" | "roundtrip";
   duration?: number;
   date: string;
@@ -98,6 +112,7 @@ export interface BookingInput {
   childSeats: number;
   babySeats: number;
   notes: string;
+  flightNumber?: string;
   firstName: string;
   lastName: string;
   email: string;

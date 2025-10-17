@@ -5,6 +5,7 @@ interface BookingData {
   tripId: string;
   pickup: string;
   dropoff: string;
+  stops: Array<{ location: string; order: number }>;
   tripType: string;
   date: string;
   time: string;
@@ -28,6 +29,7 @@ interface BookingData {
   paymentMethod?: string;
   paymentStatus?: string;
   canceledAt?: Date | string | null;
+  flightNumber?: string;
 }
 
 // Email validation utility
@@ -83,11 +85,19 @@ function generateEmailHTML(bookingData: BookingData) {
             bookingData.tripId
           }</li>
           <li><span class="highlight">Pickup:</span> ${bookingData.pickup}</li>
+          ${bookingData.stops && bookingData.stops.length > 0 ? bookingData.stops.map((stop, index) =>
+            `<li><span class="highlight">Stop ${index + 1}:</span> ${stop.location}</li>`
+          ).join('') : ''}
           <li><span class="highlight">Dropoff:</span> ${
             bookingData.dropoff
           }</li>
           <li><span class="highlight">Date:</span> ${bookingData.date}</li>
           <li><span class="highlight">Time:</span> ${bookingData.time}</li>
+          ${
+            bookingData.flightNumber
+              ? `<li><span class="highlight">Flight Number:</span> ${bookingData.flightNumber}</li>`
+              : ""
+          }
           <li><span class="highlight">Vehicle:</span> ${
             bookingData.vehicleDetails?.name || bookingData.selectedVehicle
           }</li>
@@ -158,9 +168,9 @@ export async function sendOrderCancellationEmail(bookingData: BookingData) {
       text: `Your booking (Reservation #${bookingData.tripId}) has been cancelled.
 
 Cancellation Details:
-- Pickup: ${bookingData.pickup}
+- Pickup: ${bookingData.pickup}${bookingData.stops && bookingData.stops.length > 0 ? '\n- Stops: ' + bookingData.stops.map((stop, index) => `Stop ${index + 1}: ${stop.location}`).join(', ') : ''}
 - Dropoff: ${bookingData.dropoff}
-- Date: ${bookingData.date} at ${bookingData.time}
+- Date: ${bookingData.date} at ${bookingData.time}${bookingData.flightNumber ? `\n- Flight Number: ${bookingData.flightNumber}` : ''}
 - Refund Amount: €${refundAmountText}
 - Refund Percentage: ${refundPercentText}
 
@@ -245,6 +255,12 @@ async function sendCancellationNotificationToAdmin(bookingData: BookingData) {
                 <td style="padding: 8px 0; font-weight: bold;">Pickup:</td>
                 <td style="padding: 8px 0;">${bookingData.pickup}</td>
               </tr>
+              ${bookingData.stops && bookingData.stops.length > 0 ? bookingData.stops.map((stop, index) =>
+                `<tr>
+                  <td style="padding: 8px 0; font-weight: bold;">Stop ${index + 1}:</td>
+                  <td style="padding: 8px 0;">${stop.location}</td>
+                </tr>`
+              ).join('') : ''}
               <tr>
                 <td style="padding: 8px 0; font-weight: bold;">Dropoff:</td>
                 <td style="padding: 8px 0;">${bookingData.dropoff}</td>
@@ -255,6 +271,10 @@ async function sendCancellationNotificationToAdmin(bookingData: BookingData) {
         bookingData.time
       }</td>
               </tr>
+              ${bookingData.flightNumber ? `<tr>
+                <td style="padding: 8px 0; font-weight: bold;">Flight Number:</td>
+                <td style="padding: 8px 0;">${bookingData.flightNumber}</td>
+              </tr>` : ''}
               <tr>
                 <td style="padding: 8px 0; font-weight: bold;">Vehicle:</td>
                 <td style="padding: 8px 0;">${
@@ -291,9 +311,9 @@ Reservation ID: ${bookingData.tripId}
 Customer: ${bookingData.firstName} ${bookingData.lastName}
 Email: ${bookingData.email}
 Phone: ${bookingData.phone}
-From: ${bookingData.pickup}
+From: ${bookingData.pickup}${bookingData.stops && bookingData.stops.length > 0 ? '\nStops: ' + bookingData.stops.map((stop, index) => `Stop ${index + 1}: ${stop.location}`).join(', ') : ''}
 To: ${bookingData.dropoff}
-Date: ${bookingData.date} at ${bookingData.time}
+Date: ${bookingData.date} at ${bookingData.time}${bookingData.flightNumber ? `\nFlight Number: ${bookingData.flightNumber}` : ''}
 Vehicle: ${bookingData.vehicleDetails?.name || "N/A"}
 Total Amount: €${bookingData.totalAmount.toFixed(2)}
 Refund Amount: €${refundAmountText}

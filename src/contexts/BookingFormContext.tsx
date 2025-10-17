@@ -9,6 +9,10 @@ export interface FormData {
   bookingType: "destination" | "hourly";
   pickup: string;
   dropoff: string;
+  stops: Array<{
+    location: string;
+    order: number;
+  }>;
   tripType: "oneway" | "roundtrip";
   duration: number;
   date: string;
@@ -18,6 +22,7 @@ export interface FormData {
   childSeats: number;
   babySeats: number;
   notes: string;
+  flightNumber: string;
   firstName: string;
   lastName: string;
   email: string;
@@ -88,6 +93,7 @@ const defaultFormData: FormData = {
   bookingType: "destination",
   pickup: "",
   dropoff: "",
+  stops: [],
   tripType: "oneway",
   duration: 2,
   date: "",
@@ -97,6 +103,7 @@ const defaultFormData: FormData = {
   childSeats: 0,
   babySeats: 0,
   notes: "",
+  flightNumber: "",
   firstName: "",
   lastName: "",
   email: "",
@@ -127,19 +134,106 @@ export function BookingFormProvider({ children }: { children: ReactNode }) {
     searchParams?.get("bookingType") ||
     searchParams?.get("pickup") ||
     searchParams?.get("dropoff") ||
+    searchParams?.get("stops") ||
     searchParams?.get("date") ||
     searchParams?.get("time") ||
     searchParams?.get("passengers") ||
     searchParams?.get("tripType") ||
-    searchParams?.get("duration")
+    searchParams?.get("duration") ||
+    searchParams?.get("flightNumber")
   );
 
-  // Load saved formData and step on mount for main form (skip for embedded)
+  // Load saved formData and step on mount
   useEffect(() => {
+    // Parse URL parameters if they exist (for both embedded and main forms)
+    if (hasDeepLinkParams && searchParams) {
+      const urlFormData = { ...defaultFormData };
+
+      // Parse basic parameters
+      const bookingType = searchParams.get("bookingType");
+      if (bookingType === "destination" || bookingType === "hourly") {
+        urlFormData.bookingType = bookingType;
+      }
+
+      const pickup = searchParams.get("pickup");
+      if (pickup) urlFormData.pickup = pickup;
+
+      const dropoff = searchParams.get("dropoff");
+      if (dropoff) urlFormData.dropoff = dropoff;
+
+      // Parse stops parameter (JSON string or comma-separated)
+      const stopsParam = searchParams.get("stops");
+      if (stopsParam) {
+        try {
+          // Try to parse as JSON first
+          const parsedStops = JSON.parse(stopsParam);
+          if (Array.isArray(parsedStops)) {
+            urlFormData.stops = parsedStops.map((stop, index) => ({
+              location: typeof stop === 'string' ? stop : stop.location || '',
+              order: typeof stop === 'object' ? stop.order || index + 1 : index + 1
+            }));
+          }
+        } catch {
+          // If not JSON, treat as comma-separated string
+          const stopsArray = stopsParam.split(',').map(s => s.trim()).filter(s => s);
+          urlFormData.stops = stopsArray.map((stop, index) => ({
+            location: stop,
+            order: index + 1
+          }));
+        }
+      }
+
+      const tripType = searchParams.get("tripType");
+      if (tripType === "oneway" || tripType === "roundtrip") {
+        urlFormData.tripType = tripType;
+      }
+
+      const duration = searchParams.get("duration");
+      if (duration) {
+        const durationNum = parseInt(duration, 10);
+        if (!isNaN(durationNum) && durationNum > 0) {
+          urlFormData.duration = durationNum;
+        }
+      }
+
+      const date = searchParams.get("date");
+      if (date) urlFormData.date = date;
+
+      const time = searchParams.get("time");
+      if (time) urlFormData.time = time;
+
+      const passengers = searchParams.get("passengers");
+      if (passengers) {
+        const passengersNum = parseInt(passengers, 10);
+        if (!isNaN(passengersNum) && passengersNum > 0) {
+          urlFormData.passengers = passengersNum;
+        }
+      }
+
+      const flightNumber = searchParams.get("flightNumber");
+      if (flightNumber) urlFormData.flightNumber = flightNumber;
+
+      setFormData(urlFormData);
+
+      // Set step if provided
+      const step = searchParams.get("step");
+      if (step) {
+        const stepNum = parseInt(step, 10);
+        if (stepNum >= 1 && stepNum <= 3) {
+          setCurrentStep(stepNum as 1 | 2 | 3);
+        }
+      }
+
+      setIsHydrated(true);
+      return;
+    }
+
+    // For embedded forms without deep link params, still set hydrated
     if (isEmbedded) {
       setIsHydrated(true);
       return;
     }
+
     try {
       const savedData = storage?.getItem(STORAGE_KEY);
       const savedDistance = storage?.getItem(DISTANCE_KEY);
@@ -166,7 +260,7 @@ export function BookingFormProvider({ children }: { children: ReactNode }) {
       console.error('Error loading form data from localStorage:', error);
     }
     setIsHydrated(true);
-  }, [isEmbedded, hasDeepLinkParams]);
+  }, [isEmbedded, hasDeepLinkParams, searchParams]);
 
   // Save formData to sessionStorage whenever it changes (only if not embedded)
   useEffect(() => {

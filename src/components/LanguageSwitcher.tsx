@@ -39,6 +39,7 @@ export function LanguageSwitcher() {
     es: "Español",
     fr: "Français",
     de: "Deutsch",
+    nl: "Nederlands",
   };
 
   return (

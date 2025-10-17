@@ -82,6 +82,14 @@ export async function PUT(
   }
 }
 
+// PATCH - Update a vehicle (alias for PUT)
+export async function PATCH(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  return PUT(request, { params });
+}
+
 // DELETE - Delete a vehicle
 export async function DELETE(
   request: NextRequest,

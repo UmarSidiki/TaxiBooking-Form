@@ -249,13 +249,20 @@ export async function PATCH(
       );
     }
     
-    // Send cancellation email if applicable
+    // Send cancellation email if applicable - NOW PROPERLY AWAITED
     if (rawAction === "cancel" && updatedBooking.email) {
-      const cancellationPayload = createCancellationEmailData(updatedBooking, updateData);
-
-      sendOrderCancellationEmail(cancellationPayload).catch((emailError) => {
+      try {
+        const cancellationPayload = createCancellationEmailData(updatedBooking, updateData);
+        const emailSent = await sendOrderCancellationEmail(cancellationPayload);
+        
+        if (!emailSent) {
+          console.error("Failed to send cancellation email to:", updatedBooking.email);
+          // Continue with the response even if email fails
+        }
+      } catch (emailError) {
         console.error("Error sending cancellation email:", emailError);
-      });
+        // Continue with the response even if email fails
+      }
     }
 
     const actionPastTense = rawAction === "cancel" ? "canceled" : "completed";

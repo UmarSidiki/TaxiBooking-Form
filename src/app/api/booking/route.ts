@@ -196,15 +196,27 @@ export async function POST(request: NextRequest) {
     // Save to database using Mongoose
     await Booking.create(bookingData);
 
-    // Send emails asynchronously (fire-and-forget)
+    // Send emails - NOW PROPERLY AWAITED
     const emailData = createEmailData(formData, vehicle, tripId, totalAmount);
-    Promise.all([
-      sendOrderConfirmationEmail(emailData),
-      sendOrderNotificationEmail(emailData),
-    ]).catch((error) => {
-      console.error("Error sending booking emails:", error);
-      // Note: We don't fail the booking if emails fail
-    });
+    
+    try {
+      console.log("📧 Sending confirmation email to:", emailData.email);
+      const confirmationEmailSent = await sendOrderConfirmationEmail(emailData);
+      
+      if (!confirmationEmailSent) {
+        console.error("❌ Failed to send confirmation email to:", emailData.email);
+      }
+      
+      console.log("📧 Sending notification email to admin");
+      const notificationEmailSent = await sendOrderNotificationEmail(emailData);
+      
+      if (!notificationEmailSent) {
+        console.error("❌ Failed to send notification email to admin");
+      }
+    } catch (emailError) {
+      console.error("❌ Error sending booking emails:", emailError);
+      // Continue with the response even if emails fail
+    }
 
     return NextResponse.json({
       success: true,

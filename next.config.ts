@@ -2,14 +2,18 @@ import {NextConfig} from 'next';
 import createNextIntlPlugin from 'next-intl/plugin';
  
 const nextConfig: NextConfig = {
-	images: {
-		remotePatterns: [
-			{
-				protocol: "https",
-				hostname: "swissride-sarl.ch",
-			},
-		],
-	},
+    images: {
+        remotePatterns: [
+            {
+                protocol: "https",
+                hostname: "**", // This allows all HTTPS domains
+            },
+            {
+                protocol: "http",
+                hostname: "**", // This allows all HTTP domains (use with caution)
+            },
+        ],
+    },
 };
  
 const withNextIntl = createNextIntlPlugin();

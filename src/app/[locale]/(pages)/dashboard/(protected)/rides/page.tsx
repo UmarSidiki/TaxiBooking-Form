@@ -37,7 +37,6 @@ import {
   DollarSign,
   Baby,
   Search,
-  Filter,
   MapPin,
   Navigation,
   CalendarDays,
@@ -49,6 +48,8 @@ import {
 } from "lucide-react";
 import { IBooking } from "@/models/Booking";
 import { apiGet, apiPatch } from "@/utils/api";
+import { DateRangePicker } from "@/components/ui/date-range-picker";
+import { DateRange } from "react-day-picker";
 
 export default function RidesPage() {
   const t = useTranslations();
@@ -62,8 +63,8 @@ export default function RidesPage() {
   const [refundPercentage, setRefundPercentage] = useState(100);
   const [detailBooking, setDetailBooking] = useState<IBooking | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
-  const [statusFilter, setStatusFilter] = useState("all");
   const [paymentFilter, setPaymentFilter] = useState("all");
+  const [dateRange, setDateRange] = useState<DateRange | undefined>();
 
   const MapLine = ({ start, end }: { start: string; end: string }) => (
     <span className="flex items-center gap-1 truncate">
@@ -84,7 +85,7 @@ export default function RidesPage() {
   useEffect(() => {
     filterBookings();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [bookings, activeTab, searchQuery, statusFilter, paymentFilter]);
+  }, [bookings, activeTab, searchQuery, paymentFilter, dateRange]);
 
   const fetchBookings = async () => {
     setIsLoading(true);
@@ -110,14 +111,14 @@ export default function RidesPage() {
           filtered = bookings.filter((b) => {
             if (b.status === "canceled") return false;
             const bookingDate = new Date(b.date);
-            return bookingDate >= new Date() || b.status === "upcoming";
+            return bookingDate >= new Date();
           });
           break;
         case "passed":
           filtered = bookings.filter((b) => {
             if (b.status === "canceled") return false;
             const bookingDate = new Date(b.date);
-            return bookingDate < new Date() && b.status !== "upcoming";
+            return bookingDate < new Date();
           });
           break;
         case "canceled":
@@ -145,27 +146,19 @@ export default function RidesPage() {
         );
       }
 
-      // Apply status filter
-      if (statusFilter !== "all") {
+      // Apply date filter
+      if (dateRange?.from || dateRange?.to) {
         filtered = filtered.filter((booking) => {
-          if (statusFilter === "upcoming") {
-            const bookingDate = new Date(booking.date);
-            return bookingDate >= new Date() && booking.status !== "canceled";
-          }
-          if (statusFilter === "completed") {
-            const bookingDate = new Date(booking.date);
-            return (
-              bookingDate < new Date() &&
-              booking.status !== "canceled" &&
-              booking.status !== "upcoming"
-            );
-          }
-          if (statusFilter === "canceled") {
-            return booking.status === "canceled";
-          }
+          const bookingDate = new Date(booking.date);
+          const fromDate = dateRange.from;
+          const toDate = dateRange.to;
+
+          if (fromDate && bookingDate < fromDate) return false;
+          if (toDate && bookingDate > toDate) return false;
           return true;
         });
       }
+
 
       // Apply payment filter
       if (paymentFilter !== "all") {
@@ -176,7 +169,7 @@ export default function RidesPage() {
 
       setFilteredBookings(filtered);
     };
-  }, [bookings, activeTab, searchQuery, statusFilter, paymentFilter]);
+  }, [bookings, activeTab, searchQuery, paymentFilter, dateRange]);
 
   const handleCancelClick = (booking: IBooking) => {
     setSelectedBooking(booking);
@@ -394,7 +387,7 @@ export default function RidesPage() {
                 </span>
               </Button>
 
-              {booking.status !== "canceled" && (
+              {booking.status !== "canceled" && new Date(booking.date) >= new Date() && (
                 <Button
                   onClick={() => handleCancelClick(booking)}
                   variant="destructive"
@@ -472,34 +465,19 @@ export default function RidesPage() {
                     placeholder={t("Dashboard.Rides.SearchPlaceholder")}
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="pl-10 h-10 sm:h-9"
+                    className="pl-10 h-8 sm:h-9"
                   />
                 </div>
               </div>
-              <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
-                <Select value={statusFilter} onValueChange={setStatusFilter}>
-                  <SelectTrigger className="w-full sm:w-40 h-10 sm:h-9">
-                    <Filter className="w-4 h-4 mr-2" />
-                    <SelectValue placeholder={t("Dashboard.Rides.Status")} />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">
-                      {t("Dashboard.Rides.AllStatus")}
-                    </SelectItem>
-                    <SelectItem value="upcoming">
-                      {t("Dashboard.Rides.Upcoming")}
-                    </SelectItem>
-                    <SelectItem value="completed">
-                      {t("Dashboard.Rides.Completed")}
-                    </SelectItem>
-                    <SelectItem value="canceled">
-                      {t("Dashboard.Rides.Canceled")}
-                    </SelectItem>
-                  </SelectContent>
-                </Select>
+              <div className="flex gap-2">
+                <DateRangePicker
+                  date={dateRange}
+                  onDateChange={setDateRange}
+                  className="flex-1 sm:w-48 h-8 sm:h-9"
+                />
 
                 <Select value={paymentFilter} onValueChange={setPaymentFilter}>
-                  <SelectTrigger className="w-full sm:w-40 h-10 sm:h-9">
+                  <SelectTrigger className="flex-1 sm:w-40 h-8 sm:h-9">
                     <CreditCard className="w-4 h-4 mr-2" />
                     <SelectValue placeholder={t("Dashboard.Rides.Payment")} />
                   </SelectTrigger>
@@ -1154,3 +1132,4 @@ export default function RidesPage() {
     </div>
   );
 }
+

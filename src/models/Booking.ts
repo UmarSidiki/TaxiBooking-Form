@@ -29,6 +29,7 @@ export interface IBooking extends Document {
   refundAmount?: number;
   refundPercentage?: number;
   canceledAt?: Date;
+  thankYouEmailSent?: boolean;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -70,6 +71,7 @@ const BookingSchema: Schema = new Schema({
   refundAmount: { type: Number },
   refundPercentage: { type: Number },
   canceledAt: { type: Date },
+  thankYouEmailSent: { type: Boolean, default: false },
 }, {
   timestamps: true,
 });

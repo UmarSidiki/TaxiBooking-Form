@@ -91,7 +91,7 @@ const SettingsPage = () => {
   }
 
   return (
-    <div className="w-full p-4 md:p-6">
+    <div className="space-y-6">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
         <h1 className="text-2xl sm:text-3xl font-bold">
           {t("Dashboard.Settings.settings")}
@@ -116,26 +116,51 @@ const SettingsPage = () => {
       </div>
 
       <Tabs defaultValue="appearance">
-        <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-1">
-          <TabsTrigger value="appearance">
-            <Palette className="mr-2 h-4 w-4" />
-            {t("Dashboard.Settings.appearance")}{" "}
+        <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 md:grid-cols-5 bg-white p-1 rounded-lg shadow-sm h-auto">
+          <TabsTrigger
+            value="appearance"
+            className="flex items-center justify-center gap-2 py-3 px-4 rounded-md transition-all data-[state=active]:bg-blue-50 data-[state=active]:text-blue-600 data-[state=active]:shadow-sm"
+          >
+            <Palette className="w-4 h-4" />
+            <span className="font-medium">
+              {t("Dashboard.Settings.appearance")}
+            </span>
           </TabsTrigger>
-          <TabsTrigger value="booking">
-            <CreditCard className="mr-2 h-4 w-4" />
-            {t("Dashboard.Settings.booking")}{" "}
+          <TabsTrigger
+            value="booking"
+            className="flex items-center justify-center gap-2 py-3 px-4 rounded-md transition-all data-[state=active]:bg-green-50 data-[state=active]:text-green-600 data-[state=active]:shadow-sm"
+          >
+            <CreditCard className="w-4 h-4" />
+            <span className="font-medium">
+              {t("Dashboard.Settings.booking")}
+            </span>
           </TabsTrigger>
-          <TabsTrigger value="map">
-            <MapPin className="mr-2 h-4 w-4" />
-            {t("Dashboard.Settings.map")}{" "}
+          <TabsTrigger
+            value="map"
+            className="flex items-center justify-center gap-2 py-3 px-4 rounded-md transition-all data-[state=active]:bg-purple-50 data-[state=active]:text-purple-600 data-[state=active]:shadow-sm"
+          >
+            <MapPin className="w-4 h-4" />
+            <span className="font-medium">
+              {t("Dashboard.Settings.map")}
+            </span>
           </TabsTrigger>
-          <TabsTrigger value="payment">
-            <CreditCard className="mr-2 h-4 w-4" />
-            {t("Dashboard.Settings.payment")}{" "}
+          <TabsTrigger
+            value="payment"
+            className="flex items-center justify-center gap-2 py-3 px-4 rounded-md transition-all data-[state=active]:bg-orange-50 data-[state=active]:text-orange-600 data-[state=active]:shadow-sm"
+          >
+            <CreditCard className="w-4 h-4" />
+            <span className="font-medium">
+              {t("Dashboard.Settings.payment")}
+            </span>
           </TabsTrigger>
-          <TabsTrigger value="smtp">
-            <Mail className="mr-2 h-4 w-4" />
-            SMTP{" "}
+          <TabsTrigger
+            value="smtp"
+            className="flex items-center justify-center gap-2 py-3 px-4 rounded-md transition-all data-[state=active]:bg-red-50 data-[state=active]:text-red-600 data-[state=active]:shadow-sm"
+          >
+            <Mail className="w-4 h-4" />
+            <span className="font-medium">
+              SMTP
+            </span>
           </TabsTrigger>
         </TabsList>
         <TabsContent value="appearance">

@@ -223,7 +223,7 @@ const FleetPage = () => {
   }, [vehicles, searchQuery, categoryFilter, statusFilter]);
 
   return (
-    <div className="w-full min-h-screen bg-background p-4 sm:p-6 lg:p-8 space-y-4 sm:space-y-6 lg:space-y-8">
+    <div className="space-y-6">
       {/* Header Section */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4 lg:mb-6">
         <div>

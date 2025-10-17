@@ -26,6 +26,12 @@ interface BookingData {
   paymentStatus?: string;
 }
 
+// Email validation utility
+function isValidEmail(email: string): boolean {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+}
+
 function generateEmailHTML(bookingData: BookingData) {
   const getCurrencySymbol = () => '€';
 
@@ -35,51 +41,86 @@ function generateEmailHTML(bookingData: BookingData) {
 <head>
   <meta charset="UTF-8">
   <title>Booking Confirmation - Trip #${bookingData.tripId}</title>
+  <style>
+    body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+    .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+    .header { background-color: #f0f9ff; padding: 20px; border-radius: 5px; margin-bottom: 20px; text-align: center; }
+    .header h1 { margin: 0; color: #0369a1; }
+    .section { margin-bottom: 20px; }
+    .section h2 { color: #4a5568; border-bottom: 2px solid #e2e8f0; padding-bottom: 5px; }
+    .details { background-color: #f7fafc; padding: 15px; border-radius: 5px; }
+    .details ul { margin: 0; padding-left: 20px; }
+    .details li { margin-bottom: 8px; }
+    .payment { background-color: #edf2f7; padding: 15px; border-radius: 5px; }
+    .footer { color: #718096; font-size: 12px; margin-top: 30px; border-top: 1px solid #e2e8f0; padding-top: 15px; }
+    .highlight { color: #2d3748; font-weight: bold; }
+    .cta-button { display: inline-block; background-color: #0369a1; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; margin-top: 15px; }
+  </style>
 </head>
-<body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
-  <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
-    <h1>Booking Confirmed</h1>
-    <p>Dear ${bookingData.firstName} ${bookingData.lastName},</p>
-    <p>Thank you for choosing our service! Your trip has been confirmed.</p>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>✅ Booking Confirmed</h1>
+      <p>Dear ${bookingData.firstName} ${bookingData.lastName},</p>
+      <p>Thank you for choosing our service! Your trip has been confirmed.</p>
+    </div>
 
-    <h2>Journey Details</h2>
-    <ul>
-      <li><strong>Trip ID:</strong> #${bookingData.tripId}</li>
-      <li><strong>From:</strong> ${bookingData.pickup}</li>
-      <li><strong>To:</strong> ${bookingData.dropoff}</li>
-      <li><strong>Date:</strong> ${bookingData.date}</li>
-      <li><strong>Time:</strong> ${bookingData.time}</li>
-      <li><strong>Trip Type:</strong> ${bookingData.tripType}</li>
-    </ul>
+    <div class="section">
+      <h2>Journey Details</h2>
+      <div class="details">
+        <ul>
+          <li><span class="highlight">Trip ID:</span> #${bookingData.tripId}</li>
+          <li><span class="highlight">From:</span> ${bookingData.pickup}</li>
+          <li><span class="highlight">To:</span> ${bookingData.dropoff}</li>
+          <li><span class="highlight">Date:</span> ${bookingData.date}</li>
+          <li><span class="highlight">Time:</span> ${bookingData.time}</li>
+          <li><span class="highlight">Trip Type:</span> ${bookingData.tripType}</li>
+        </ul>
+      </div>
+    </div>
 
-    <h2>Vehicle & Passengers</h2>
-    <ul>
-      <li><strong>Vehicle:</strong> ${bookingData.vehicleDetails.name}</li>
-      <li><strong>Max Seats:</strong> ${bookingData.vehicleDetails.seats}</li>
-      <li><strong>Passengers:</strong> ${bookingData.passengers}</li>
-      ${bookingData.childSeats > 0 ? `<li><strong>Child Seats:</strong> ${bookingData.childSeats}</li>` : ''}
-      ${bookingData.babySeats > 0 ? `<li><strong>Baby Seats:</strong> ${bookingData.babySeats}</li>` : ''}
-    </ul>
+    <div class="section">
+      <h2>Vehicle & Passengers</h2>
+      <div class="details">
+        <ul>
+          <li><span class="highlight">Vehicle:</span> ${bookingData.vehicleDetails.name}</li>
+          <li><span class="highlight">Max Seats:</span> ${bookingData.vehicleDetails.seats}</li>
+          <li><span class="highlight">Passengers:</span> ${bookingData.passengers}</li>
+          ${bookingData.childSeats > 0 ? `<li><span class="highlight">Child Seats:</span> ${bookingData.childSeats}</li>` : ''}
+          ${bookingData.babySeats > 0 ? `<li><span class="highlight">Baby Seats:</span> ${bookingData.babySeats}</li>` : ''}
+        </ul>
+      </div>
+    </div>
 
     ${bookingData.notes ? `
-    <h2>Special Requests</h2>
-    <p>${bookingData.notes}</p>
+    <div class="section">
+      <h2>Special Requests</h2>
+      <div class="details">
+        <p>${bookingData.notes}</p>
+      </div>
+    </div>
     ` : ''}
 
-    <h2>Payment Summary</h2>
-    <p><strong>Total Amount: ${getCurrencySymbol()}${bookingData.totalAmount.toFixed(2)}</strong></p>
-    ${bookingData.paymentMethod ? `
-    <p><strong>Payment Method:</strong> ${bookingData.paymentMethod.replace('_', ' ')}</p>
-    <p><strong>Payment Status:</strong> ${bookingData.paymentStatus || 'Pending'}</p>
-    ` : ''}
+    <div class="section">
+      <h2>Payment Summary</h2>
+      <div class="payment">
+        <p><span class="highlight">Total Amount: ${getCurrencySymbol()}${bookingData.totalAmount.toFixed(2)}</span></p>
+        ${bookingData.paymentMethod ? `
+        <p><span class="highlight">Payment Method:</span> ${bookingData.paymentMethod.replace('_', ' ')}</p>
+        <p><span class="highlight">Payment Status:</span> ${bookingData.paymentStatus || 'Pending'}</p>
+        ` : ''}
+      </div>
+    </div>
 
-    <p>If you have any questions, please contact us.</p>
+    <div class="section">
+      <p>If you have any questions, please contact us.</p>
+      <a href="mailto:support@example.com" class="cta-button">Contact Support</a>
+    </div>
 
-    <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;">
-    <p style="color: #666; font-size: 12px;">
-      This is an automated email. Please do not reply.<br>
-      © ${new Date().getFullYear()} Booking Service. All rights reserved.
-    </p>
+    <div class="footer">
+      <p>This is an automated email. Please do not reply.</p>
+      <p>© ${new Date().getFullYear()} Booking Service. All rights reserved.</p>
+    </div>
   </div>
 </body>
 </html>
@@ -87,18 +128,34 @@ function generateEmailHTML(bookingData: BookingData) {
 }
 
 export async function sendOrderConfirmationEmail(bookingData: BookingData) {
-  const htmlContent = generateEmailHTML(bookingData);
+  try {
+    // Validate email before sending
+    if (!bookingData.email || !isValidEmail(bookingData.email)) {
+      console.error("❌ Invalid customer email address:", bookingData.email);
+      return false;
+    }
 
-  const success = await sendEmail({
-    from: process.env.SMTP_FROM || `"Booking Service" <${process.env.SMTP_USER}>`,
-    to: bookingData.email,
-    subject: `Booking Confirmation - Trip #${bookingData.tripId}`,
-    html: htmlContent,
-    text: `Booking Confirmed!\n\nTrip ID: ${bookingData.tripId}\nCustomer: ${bookingData.firstName} ${bookingData.lastName}\nFrom: ${bookingData.pickup}\nTo: ${bookingData.dropoff}\nDate: ${bookingData.date} at ${bookingData.time}\nVehicle: ${bookingData.vehicleDetails.name}\nTotal Amount: €${bookingData.totalAmount}`,
-  });
+    console.log("📧 Preparing confirmation email for:", bookingData.email);
+    
+    const htmlContent = generateEmailHTML(bookingData);
 
-  if (!success) return false;
+    const success = await sendEmail({
+      from: process.env.SMTP_FROM || `"Booking Service" <${process.env.SMTP_USER}>`,
+      to: bookingData.email,
+      subject: `Booking Confirmation - Trip #${bookingData.tripId}`,
+      html: htmlContent,
+      text: `Booking Confirmed!\n\nTrip ID: ${bookingData.tripId}\nCustomer: ${bookingData.firstName} ${bookingData.lastName}\nFrom: ${bookingData.pickup}\nTo: ${bookingData.dropoff}\nDate: ${bookingData.date} at ${bookingData.time}\nVehicle: ${bookingData.vehicleDetails.name}\nTotal Amount: €${bookingData.totalAmount}`,
+    });
 
-  console.log("✅ Confirmation email sent to:", bookingData.email);
-  return true;
+    if (!success) {
+      console.error("❌ Failed to send confirmation email to:", bookingData.email);
+      return false;
+    }
+
+    console.log("✅ Confirmation email sent to:", bookingData.email);
+    return true;
+  } catch (error) {
+    console.error("❌ Error sending confirmation email:", error);
+    return false;
+  }
 }

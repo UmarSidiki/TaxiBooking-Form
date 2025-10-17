@@ -6,6 +6,10 @@ export async function sendEmail(
   mailOptions: nodemailer.SendMailOptions
 ): Promise<boolean> {
   try {
+    // Add debug logging
+    console.log("📧 Attempting to send email to:", mailOptions.to);
+    console.log("📧 Email subject:", mailOptions.subject);
+    
     let smtpConfig: {
       host: string;
       port: number;
@@ -64,8 +68,9 @@ export async function sendEmail(
       },
     });
 
-    await transporter.sendMail(mailOptions);
-
+    const result = await transporter.sendMail(mailOptions);
+    console.log("📧 Email sent successfully:", result.messageId);
+    
     // Close the transporter to free up resources in serverless environments
     transporter.close();
 

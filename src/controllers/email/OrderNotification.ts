@@ -36,52 +36,84 @@ function generateOwnerEmailHTML(bookingData: BookingData) {
 <head>
   <meta charset="UTF-8">
   <title>New Booking Alert - Trip #${bookingData.tripId}</title>
+  <style>
+    body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+    .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+    .header { background-color: #f8f9fa; padding: 15px; border-radius: 5px; margin-bottom: 20px; }
+    .section { margin-bottom: 20px; }
+    .section h2 { color: #4a5568; border-bottom: 2px solid #e2e8f0; padding-bottom: 5px; }
+    .details { background-color: #f7fafc; padding: 15px; border-radius: 5px; }
+    .details ul { margin: 0; padding-left: 20px; }
+    .details li { margin-bottom: 8px; }
+    .payment { background-color: #edf2f7; padding: 15px; border-radius: 5px; }
+    .footer { color: #718096; font-size: 12px; margin-top: 30px; border-top: 1px solid #e2e8f0; padding-top: 15px; }
+    .highlight { color: #2d3748; font-weight: bold; }
+  </style>
 </head>
-<body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
-  <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
-    <h1>New Booking Alert</h1>
-    <p>You have received a new booking request!</p>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1 style="margin: 0; color: #2b6cb0;">🚗 New Booking Alert</h1>
+      <p>You have received a new booking request!</p>
+    </div>
 
-    <h2>Customer Details</h2>
-    <ul>
-      <li><strong>Name:</strong> ${bookingData.firstName} ${bookingData.lastName}</li>
-      <li><strong>Email:</strong> <a href="mailto:${bookingData.email}">${bookingData.email}</a></li>
-      <li><strong>Phone:</strong> <a href="tel:${bookingData.phone}">${bookingData.phone}</a></li>
-    </ul>
+    <div class="section">
+      <h2>Customer Details</h2>
+      <div class="details">
+        <ul>
+          <li><span class="highlight">Name:</span> ${bookingData.firstName} ${bookingData.lastName}</li>
+          <li><span class="highlight">Email:</span> <a href="mailto:${bookingData.email}">${bookingData.email}</a></li>
+          <li><span class="highlight">Phone:</span> <a href="tel:${bookingData.phone}">${bookingData.phone}</a></li>
+        </ul>
+      </div>
+    </div>
 
-    <h2>Journey Details</h2>
-    <ul>
-      <li><strong>Trip ID:</strong> #${bookingData.tripId}</li>
-      <li><strong>Pickup:</strong> ${bookingData.pickup}</li>
-      <li><strong>Dropoff:</strong> ${bookingData.dropoff}</li>
-      <li><strong>Date:</strong> ${bookingData.date}</li>
-      <li><strong>Time:</strong> ${bookingData.time}</li>
-      <li><strong>Trip Type:</strong> ${bookingData.tripType}</li>
-      <li><strong>Vehicle:</strong> ${bookingData.vehicleDetails.name}</li>
-      <li><strong>Passengers:</strong> ${bookingData.passengers}</li>
-      ${bookingData.childSeats > 0 ? `<li><strong>Child Seats:</strong> ${bookingData.childSeats}</li>` : ''}
-      ${bookingData.babySeats > 0 ? `<li><strong>Baby Seats:</strong> ${bookingData.babySeats}</li>` : ''}
-    </ul>
+    <div class="section">
+      <h2>Journey Details</h2>
+      <div class="details">
+        <ul>
+          <li><span class="highlight">Trip ID:</span> #${bookingData.tripId}</li>
+          <li><span class="highlight">Pickup:</span> ${bookingData.pickup}</li>
+          <li><span class="highlight">Dropoff:</span> ${bookingData.dropoff}</li>
+          <li><span class="highlight">Date:</span> ${bookingData.date}</li>
+          <li><span class="highlight">Time:</span> ${bookingData.time}</li>
+          <li><span class="highlight">Trip Type:</span> ${bookingData.tripType}</li>
+          <li><span class="highlight">Vehicle:</span> ${bookingData.vehicleDetails.name}</li>
+          <li><span class="highlight">Passengers:</span> ${bookingData.passengers}</li>
+          ${bookingData.childSeats > 0 ? `<li><span class="highlight">Child Seats:</span> ${bookingData.childSeats}</li>` : ''}
+          ${bookingData.babySeats > 0 ? `<li><span class="highlight">Baby Seats:</span> ${bookingData.babySeats}</li>` : ''}
+        </ul>
+      </div>
+    </div>
 
     ${bookingData.notes ? `
-    <h2>Special Requests</h2>
-    <p>${bookingData.notes}</p>
+    <div class="section">
+      <h2>Special Requests</h2>
+      <div class="details">
+        <p>${bookingData.notes}</p>
+      </div>
+    </div>
     ` : ''}
 
-    <h2>Payment Summary</h2>
-    <p><strong>Total Amount: ${getCurrencySymbol()}${bookingData.totalAmount.toFixed(2)}</strong></p>
-    ${bookingData.paymentMethod ? `
-    <p><strong>Payment Method:</strong> ${bookingData.paymentMethod.replace('_', ' ')}</p>
-    <p><strong>Payment Status:</strong> ${bookingData.paymentStatus || 'Pending'}</p>
-    ` : ''}
+    <div class="section">
+      <h2>Payment Summary</h2>
+      <div class="payment">
+        <p><span class="highlight">Total Amount: ${getCurrencySymbol()}${bookingData.totalAmount.toFixed(2)}</span></p>
+        ${bookingData.paymentMethod ? `
+        <p><span class="highlight">Payment Method:</span> ${bookingData.paymentMethod.replace('_', ' ')}</p>
+        <p><span class="highlight">Payment Status:</span> ${bookingData.paymentStatus || 'Pending'}</p>
+        ` : ''}
+      </div>
+    </div>
 
-    <p>Please review this booking and confirm the trip details with the customer.</p>
+    <div class="section">
+      <p>Please review this booking and confirm the trip details with the customer.</p>
+    </div>
 
-    <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;">
-    <p style="color: #666; font-size: 12px;">
-      This is an automated notification.<br>
-      © ${new Date().getFullYear()} Booking Service. All rights reserved.
-    </p>
+    <div class="footer">
+      <p>This is an automated notification.</p>
+      <p>© ${new Date().getFullYear()} Booking Service. All rights reserved.</p>
+    </div>
   </div>
 </body>
 </html>
@@ -112,7 +144,10 @@ export async function sendOrderNotificationEmail(bookingData: BookingData) {
       text: `New Booking Received!\n\nTrip ID: ${bookingData.tripId}\nCustomer: ${bookingData.firstName} ${bookingData.lastName}\nEmail: ${bookingData.email}\nPhone: ${bookingData.phone}\nFrom: ${bookingData.pickup}\nTo: ${bookingData.dropoff}\nDate: ${bookingData.date} at ${bookingData.time}\nVehicle: ${bookingData.vehicleDetails.name}\nTotal Amount: €${bookingData.totalAmount}\n\nPlease review and confirm this booking.`,
     });
 
-    if (!success) return false;
+    if (!success) {
+      console.error("❌ Failed to send notification email to owner:", ownerEmail);
+      return false;
+    }
 
     console.log("✅ Notification email sent to owner:", ownerEmail);
     return true;

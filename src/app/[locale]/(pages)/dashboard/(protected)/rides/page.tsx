@@ -32,7 +32,6 @@ import {
   Loader2,
   X,
   CheckCircle,
-  AlertCircle,
   RefreshCw,
   DollarSign,
   Baby,
@@ -44,8 +43,15 @@ import {
   UserCheck,
   Ban,
   Eye,
-  Trash2,
   Filter,
+  Plane,
+  Info,
+  ChevronRight,
+  Route,
+  User,
+  Receipt,
+  Percent,
+  AlertTriangle,
 } from "lucide-react";
 import { IBooking } from "@/models/Booking";
 import { apiGet, apiPatch } from "@/utils/api";
@@ -73,7 +79,7 @@ export default function RidesPage() {
       <span className="max-w-[6rem] truncate" title={start}>
         {start}
       </span>
-      <span className="text-gray-400 dark:text-gray-600">→</span>
+      <ChevronRight className="h-3 w-3 text-gray-400" />
       <span className="max-w-[6rem] truncate" title={end}>
         {end}
       </span>
@@ -212,44 +218,44 @@ export default function RidesPage() {
 
   const getPaymentStatusBadge = (status: string) => {
     const badgeClasses =
-      "text-white font-semibold flex items-center gap-1.5 px-3 py-1";
+      "text-white font-semibold flex items-center gap-1.5 px-3 py-1 rounded-full text-xs";
     switch (status) {
       case "completed":
         return (
-          <Badge className={`${badgeClasses} bg-green-500 hover:bg-green-600`}>
+          <Badge className={`${badgeClasses} bg-green-600 hover:bg-green-700`}>
             <CheckCircle className="w-3 h-3" /> {t("Dashboard.Rides.Paid")}
           </Badge>
         );
       case "pending":
         return (
           <Badge
-            className={`${badgeClasses} bg-yellow-500 hover:bg-yellow-600`}
+            className={`${badgeClasses} bg-amber-600 hover:bg-amber-700`}
           >
             <Clock className="w-3 h-3" /> {t("Dashboard.Rides.Pending")}
           </Badge>
         );
       case "refunded":
         return (
-          <Badge className={`${badgeClasses} bg-blue-500 hover:bg-blue-600`}>
+          <Badge className={`${badgeClasses} bg-blue-600 hover:bg-blue-700`}>
             <RefreshCw className="w-3 h-3" /> {t("Dashboard.Rides.Refunded")}
           </Badge>
         );
       case "failed":
         return (
-          <Badge className={`${badgeClasses} bg-red-500 hover:bg-red-600`}>
+          <Badge className={`${badgeClasses} bg-red-600 hover:bg-red-700`}>
             <X className="w-3 h-3" /> {t("Dashboard.Rides.Failed")}
           </Badge>
         );
       default:
         return (
-          <Badge className={`${badgeClasses} bg-gray-500`}>{status}</Badge>
+          <Badge className={`${badgeClasses} bg-gray-600`}>{status}</Badge>
         );
     }
   };
 
   const getStatusBadge = (booking: IBooking) => {
     const badgeClasses =
-      "text-white font-semibold flex items-center gap-1.5 px-3 py-1";
+      "text-white font-semibold flex items-center gap-1.5 px-3 py-1 rounded-full text-xs";
     if (booking.status === "canceled") {
       return (
         <Badge className={`${badgeClasses} bg-red-600 hover:bg-red-700`}>
@@ -286,14 +292,14 @@ export default function RidesPage() {
   };
 
   const BookingCard = ({ booking }: { booking: IBooking }) => (
-    <Card className="group hover:shadow-lg transition-all duration-300 border-0 shadow-sm bg-white overflow-hidden">
-      <div className="h-1 bg-gradient-to-r from-blue-500 to-purple-600"></div>
+    <Card className="group hover:shadow-lg transition-all duration-300 border border-gray-200 shadow-sm bg-white overflow-hidden">
+      <div className="h-1 bg-blue-600"></div>
       <CardContent className="p-4 sm:p-6">
         <div className="flex flex-col gap-4">
           {/* Header Section */}
           <div className="flex items-start justify-between">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-blue-100 rounded-lg">
+              <div className="p-2 bg-blue-50 rounded-lg">
                 <Car className="w-5 h-5 text-blue-600" />
               </div>
               <div>
@@ -305,7 +311,7 @@ export default function RidesPage() {
                 </p>
               </div>
             </div>
-            <div className="flex gap-2">
+            <div className="flex flex-col gap-2 sm:flex-row">
               {getStatusBadge(booking)}
               {getPaymentStatusBadge(booking.paymentStatus)}
             </div>
@@ -352,39 +358,39 @@ export default function RidesPage() {
           <div className="space-y-2 pt-2 border-t border-gray-100">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
               <div className="flex items-center gap-2">
-                <Users className="w-3 h-3 text-blue-600" />
+                <Users className="w-3 h-3 text-gray-400" />
                 <span className="text-gray-600">Passengers:</span>
                 <span className="font-medium text-gray-900">{booking.passengers}</span>
               </div>
               {booking.childSeats > 0 && (
                 <div className="flex items-center gap-2">
-                  <Baby className="w-3 h-3 text-pink-600" />
+                  <Baby className="w-3 h-3 text-gray-400" />
                   <span className="text-gray-600">Child Seats:</span>
                   <span className="font-medium text-gray-900">{booking.childSeats}</span>
                 </div>
               )}
               {booking.babySeats > 0 && (
                 <div className="flex items-center gap-2">
-                  <Baby className="w-3 h-3 text-pink-600" />
+                  <Baby className="w-3 h-3 text-gray-400" />
                   <span className="text-gray-600">Baby Seats:</span>
                   <span className="font-medium text-gray-900">{booking.babySeats}</span>
                 </div>
               )}
               {booking.flightNumber && (
                 <div className="flex items-center gap-2">
-                  <Navigation className="w-3 h-3 text-purple-600" />
+                  <Plane className="w-3 h-3 text-gray-400" />
                   <span className="text-gray-600">Flight Number:</span>
                   <span className="font-medium text-gray-900">{booking.flightNumber}</span>
                 </div>
               )}
             </div>
             {booking.notes && (
-              <div className="bg-amber-50 border border-amber-200 rounded-lg p-2">
+              <div className="bg-gray-50 border border-gray-200 rounded-lg p-2">
                 <div className="flex items-start gap-2">
-                  <AlertCircle className="w-3 h-3 text-amber-600 flex-shrink-0 mt-0.5" />
+                  <Info className="w-3 h-3 text-gray-500 flex-shrink-0 mt-0.5" />
                   <div>
-                    <span className="text-xs font-medium text-amber-800">Special Requests:</span>
-                    <p className="text-xs text-amber-700 mt-1">{booking.notes}</p>
+                    <span className="text-xs font-medium text-gray-700">Special Requests:</span>
+                    <p className="text-xs text-gray-600 mt-1">{booking.notes}</p>
                   </div>
                 </div>
               </div>
@@ -394,7 +400,7 @@ export default function RidesPage() {
           {/* Route Information */}
           <div className="bg-gray-50 p-3 rounded-lg">
             <div className="flex items-center gap-2 text-sm">
-              <MapPin className="w-4 h-4 text-gray-500" />
+              <Route className="w-4 h-4 text-gray-500" />
               <span className="text-gray-700 font-medium">{t("Dashboard.Rides.Route")}:</span>
               {booking.stops && booking.stops.length > 0 ? (
                 <div className="flex items-center gap-1 flex-wrap">
@@ -405,7 +411,7 @@ export default function RidesPage() {
                     .sort((a, b) => a.order - b.order)
                     .map((stop, index) => (
                       <React.Fragment key={index}>
-                        <span className="text-gray-400">→</span>
+                        <ChevronRight className="h-3 w-3 text-gray-400" />
                         <span className="max-w-[6rem] truncate" title={stop.location}>
                           {stop.location}
                         </span>
@@ -413,7 +419,7 @@ export default function RidesPage() {
                     ))}
                   {booking.dropoff && (
                     <>
-                      <span className="text-gray-400">→</span>
+                      <ChevronRight className="h-3 w-3 text-gray-400" />
                       <span className="max-w-[6rem] truncate" title={booking.dropoff}>
                         {booking.dropoff}
                       </span>
@@ -432,7 +438,7 @@ export default function RidesPage() {
           {/* Customer Information */}
           <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 text-sm">
             <div className="flex items-center gap-2">
-              <UserCheck className="w-4 h-4 text-gray-500" />
+              <User className="w-4 h-4 text-gray-500" />
               <span className="text-gray-700">
                 {booking.firstName} {booking.lastName}
               </span>
@@ -476,7 +482,7 @@ export default function RidesPage() {
                   </>
                 ) : (
                   <>
-                    <Trash2 className="w-4 h-4" />
+                    <Ban className="w-4 h-4" />
                     {t("Dashboard.Rides.Cancel")}
                   </>
                 )}
@@ -494,7 +500,8 @@ export default function RidesPage() {
         <div className="mb-6 sm:mb-8">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
             <div>
-              <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
+              <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 flex items-center gap-2">
+                <Car className="w-8 h-8 text-blue-600" />
                 {t("Dashboard.Rides.Title")}
               </h1>
               <p className="text-gray-500 mt-1">
@@ -519,10 +526,13 @@ export default function RidesPage() {
 
 
           {/* Search and Filters */}
-          <Card className="p-4 border-0 shadow-sm bg-white">
+          <Card className="p-4 border border-gray-200 shadow-sm bg-white">
             <div className="flex flex-col space-y-4">
               <div className="flex items-center justify-between">
-                <h3 className="text-lg font-semibold text-gray-900">{t("Dashboard.Rides.FilterBookings")}</h3>
+                <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
+                  <Filter className="w-5 h-5 text-gray-500" />
+                  {t("Dashboard.Rides.FilterBookings")}
+                </h3>
                 <Button
                   variant="ghost"
                   size="sm"
@@ -583,7 +593,7 @@ export default function RidesPage() {
 
         {/* Tabs Section */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-1 sm:grid-cols-3 bg-white p-1 rounded-lg shadow-sm h-auto">
+          <TabsList className="grid w-full grid-cols-1 sm:grid-cols-3 bg-white p-1 rounded-lg border border-gray-200 shadow-sm h-auto">
             <TabsTrigger
               value="upcoming"
               className="flex items-center justify-center gap-2 py-3 px-4 rounded-md transition-all data-[state=active]:bg-blue-50 data-[state=active]:text-blue-600 data-[state=active]:shadow-sm"
@@ -603,7 +613,7 @@ export default function RidesPage() {
             </TabsTrigger>
             <TabsTrigger
               value="passed"
-              className="flex items-center justify-center gap-2 py-3 px-4 rounded-md transition-all data-[state=active]:bg-green-50 data-[state=active]:text-green-600 data-[state=active]:shadow-sm"
+              className="flex items-center justify-center gap-2 py-3 px-4 rounded-md transition-all data-[state=active]:bg-gray-100 data-[state=active]:text-gray-700 data-[state=active]:shadow-sm"
             >
               <CheckCircle className="w-4 h-4" />
               <span className="font-medium">
@@ -612,7 +622,7 @@ export default function RidesPage() {
               {filteredBookings.length > 0 && activeTab === "passed" && (
                 <Badge
                   variant="secondary"
-                  className="ml-1 bg-green-100 text-green-600"
+                  className="ml-1 bg-gray-100 text-gray-700"
                 >
                   {filteredBookings.length}
                 </Badge>
@@ -640,7 +650,7 @@ export default function RidesPage() {
           <TabsContent value="upcoming" className="mt-6">
             {isLoading ? (
               <div className="flex flex-col items-center justify-center py-16">
-                <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mb-4">
+                <div className="w-16 h-16 bg-blue-50 rounded-full flex items-center justify-center mb-4">
                   <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
                 </div>
                 <h3 className="text-lg font-semibold text-gray-900 mb-2">
@@ -653,8 +663,8 @@ export default function RidesPage() {
             ) : filteredBookings.length === 0 ? (
               <Card className="border-2 border-dashed border-gray-200 bg-white">
                 <CardContent className="py-16 text-center">
-                  <div className="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                    <CalendarDays className="w-10 h-10 text-blue-600" />
+                  <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <CalendarDays className="w-10 h-10 text-gray-500" />
                   </div>
                   <h3 className="text-xl font-semibold text-gray-900 mb-2">
                     {t("Dashboard.Rides.NoUpcomingRides")}
@@ -701,7 +711,7 @@ export default function RidesPage() {
               <Card className="border-2 border-dashed border-gray-200 bg-white">
                 <CardContent className="py-16 text-center">
                   <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                    <CheckCircle className="w-10 h-10 text-gray-600" />
+                    <CheckCircle className="w-10 h-10 text-gray-500" />
                   </div>
                   <h3 className="text-xl font-semibold text-gray-900 mb-2">
                     {t("Dashboard.Rides.NoCompletedRides")}
@@ -734,7 +744,7 @@ export default function RidesPage() {
           <TabsContent value="canceled" className="mt-6">
             {isLoading ? (
               <div className="flex flex-col items-center justify-center py-16">
-                <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mb-4">
+                <div className="w-16 h-16 bg-red-50 rounded-full flex items-center justify-center mb-4">
                   <Loader2 className="w-8 h-8 animate-spin text-red-600" />
                 </div>
                 <h3 className="text-lg font-semibold text-gray-900 mb-2">
@@ -747,8 +757,8 @@ export default function RidesPage() {
             ) : filteredBookings.length === 0 ? (
               <Card className="border-2 border-dashed border-gray-200 bg-white">
                 <CardContent className="py-16 text-center">
-                  <div className="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                    <Ban className="w-10 h-10 text-red-600" />
+                  <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <Ban className="w-10 h-10 text-gray-500" />
                   </div>
                   <h3 className="text-xl font-semibold text-gray-900 mb-2">
                     {t("Dashboard.Rides.NoCanceledRides")}
@@ -793,7 +803,7 @@ export default function RidesPage() {
               <div className="space-y-6">
                 <DialogHeader className="pb-4 border-b">
                   <div className="flex items-center gap-4">
-                    <div className="p-3 bg-blue-100 rounded-xl">
+                    <div className="p-3 bg-blue-50 rounded-lg">
                       <Car className="w-6 h-6 text-blue-600" />
                     </div>
                     <div>
@@ -819,38 +829,38 @@ export default function RidesPage() {
 
                 <div className="grid gap-6 md:grid-cols-2">
                   {/* Journey Details */}
-                  <Card className="border-0 shadow-sm bg-white">
-                    <CardHeader className="pb-3">
+                  <Card className="border border-gray-200 shadow-sm bg-white">
+                    <CardHeader className="pb-3 border-b">
                       <CardTitle className="text-lg flex items-center gap-2 text-gray-900">
-                        <Navigation className="w-5 h-5 text-blue-600" />
+                        <Route className="w-5 h-5 text-blue-600" />
                         {t("Dashboard.Rides.JourneyDetails")}
                       </CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-4">
                       <div className="space-y-2">
                         <div className="flex items-center gap-2 text-sm">
-                          <MapPin className="w-4 h-4 text-green-600" />
+                          <MapPin className="w-4 h-4 text-gray-500" />
                           <span className="font-medium text-gray-700">
                             {t("Dashboard.Rides.PickupLocation")}
                           </span>
                         </div>
-                        <p className="text-gray-600 ml-6">{detailBooking.pickup}</p>
+                        <p className="text-gray-600 ml-6 p-2 bg-gray-50 rounded-lg">{detailBooking.pickup}</p>
                       </div>
 
                       {detailBooking.stops && detailBooking.stops.length > 0 && (
                         <div className="space-y-2">
                           <div className="flex items-center gap-2 text-sm">
-                            <Navigation className="w-4 h-4 text-blue-600" />
+                            <Navigation className="w-4 h-4 text-gray-500" />
                             <span className="font-medium text-gray-700">
                               {t("Dashboard.Rides.Stops")}
                             </span>
                           </div>
-                          <div className="ml-6 space-y-1">
+                          <div className="ml-6 space-y-2">
                             {detailBooking.stops
                               .sort((a, b) => a.order - b.order)
                               .map((stop, index) => (
-                                <div key={index} className="flex items-center gap-2 text-sm text-gray-600">
-                                  <span className="w-6 h-6 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-xs font-medium">
+                                <div key={index} className="flex items-center gap-2 text-sm text-gray-600 p-2 bg-gray-50 rounded-lg">
+                                  <span className="w-6 h-6 bg-gray-200 text-gray-700 rounded-full flex items-center justify-center text-xs font-medium">
                                     {index + 1}
                                   </span>
                                   <span>{stop.location}</span>
@@ -862,19 +872,19 @@ export default function RidesPage() {
 
                       <div className="space-y-2">
                         <div className="flex items-center gap-2 text-sm">
-                          <MapPin className="w-4 h-4 text-red-600" />
+                          <MapPin className="w-4 h-4 text-gray-500" />
                           <span className="font-medium text-gray-700">
                             {t("Dashboard.Rides.DropoffLocation")}
                           </span>
                         </div>
-                        <p className="text-gray-600 ml-6">
+                        <p className="text-gray-600 ml-6 p-2 bg-gray-50 rounded-lg">
                           {detailBooking.dropoff || t("Dashboard.Rides.NotSpecified")}
                         </p>
                       </div>
 
                       <div className="grid grid-cols-2 gap-4 pt-4 border-t">
                         <div className="flex items-center gap-2 text-sm">
-                          <Clock className="w-4 h-4 text-purple-600" />
+                          <Clock className="w-4 h-4 text-gray-500" />
                           <div>
                             <p className="font-medium text-gray-700">
                               {t("Dashboard.Rides.Time")}
@@ -883,7 +893,7 @@ export default function RidesPage() {
                           </div>
                         </div>
                         <div className="flex items-center gap-2 text-sm">
-                          <Users className="w-4 h-4 text-green-600" />
+                          <Users className="w-4 h-4 text-gray-500" />
                           <div>
                             <p className="font-medium text-gray-700">
                               {t("Dashboard.Rides.Passengers")}
@@ -895,7 +905,7 @@ export default function RidesPage() {
 
                       {(detailBooking.childSeats > 0 ||
                         detailBooking.babySeats > 0) && (
-                        <div className="flex items-center gap-2 text-sm text-pink-600 bg-pink-50 p-3 rounded-lg">
+                        <div className="flex items-center gap-2 text-sm text-gray-600 bg-gray-50 p-3 rounded-lg">
                           <Baby className="w-4 h-4" />
                           <span>
                             {detailBooking.childSeats > 0 &&
@@ -912,23 +922,24 @@ export default function RidesPage() {
                   </Card>
 
                   {/* Customer Information */}
-                  <Card className="border-0 shadow-sm bg-white">
-                    <CardHeader className="pb-3">
+                  <Card className="border border-gray-200 shadow-sm bg-white">
+                    <CardHeader className="pb-3 border-b">
                       <CardTitle className="text-lg flex items-center gap-2 text-gray-900">
-                        <UserCheck className="w-5 h-5 text-green-600" />
+                        <UserCheck className="w-5 h-5 text-blue-600" />
                         {t("Dashboard.Rides.CustomerInformation")}
                       </CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-4">
-                      <div>
+                      <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+                        <User className="w-5 h-5 text-gray-500" />
                         <p className="font-semibold text-gray-900 text-lg">
                           {detailBooking.firstName} {detailBooking.lastName}
                         </p>
                       </div>
 
                       <div className="space-y-3">
-                        <div className="flex items-center gap-3 text-sm">
-                          <Mail className="w-4 h-4 text-blue-600 flex-shrink-0" />
+                        <div className="flex items-center gap-3 text-sm p-3 bg-gray-50 rounded-lg">
+                          <Mail className="w-4 h-4 text-gray-500 flex-shrink-0" />
                           <a
                             href={`mailto:${detailBooking.email}`}
                             className="text-blue-600 hover:underline break-all"
@@ -937,11 +948,11 @@ export default function RidesPage() {
                           </a>
                         </div>
 
-                        <div className="flex items-center gap-3 text-sm">
-                          <PhoneCall className="w-4 h-4 text-green-600 flex-shrink-0" />
+                        <div className="flex items-center gap-3 text-sm p-3 bg-gray-50 rounded-lg">
+                          <PhoneCall className="w-4 h-4 text-gray-500 flex-shrink-0" />
                           <a
                             href={`tel:${detailBooking.phone}`}
-                            className="text-green-600 hover:underline"
+                            className="text-blue-600 hover:underline"
                           >
                             {detailBooking.phone}
                           </a>
@@ -949,19 +960,21 @@ export default function RidesPage() {
                       </div>
 
                       <div className="pt-4 border-t">
-                        <p className="font-medium text-gray-700 mb-2">
+                        <p className="font-medium text-gray-700 mb-2 flex items-center gap-2">
+                          <Car className="w-4 h-4 text-gray-500" />
                           {t("Dashboard.Rides.Vehicle")}
                         </p>
-                        <p className="text-gray-600">
+                        <p className="text-gray-600 p-2 bg-gray-50 rounded-lg">
                           {detailBooking.vehicleDetails?.name ||
                             detailBooking.selectedVehicle}
                         </p>
                         {detailBooking.flightNumber && (
                           <div className="mt-3">
-                            <p className="font-medium text-gray-700 mb-1">
+                            <p className="font-medium text-gray-700 mb-1 flex items-center gap-2">
+                              <Plane className="w-4 h-4 text-gray-500" />
                               Flight Number
                             </p>
-                            <p className="text-gray-600">{detailBooking.flightNumber}</p>
+                            <p className="text-gray-600 p-2 bg-gray-50 rounded-lg">{detailBooking.flightNumber}</p>
                           </div>
                         )}
                       </div>
@@ -971,15 +984,15 @@ export default function RidesPage() {
 
                 {/* Special Notes */}
                 {detailBooking.notes && (
-                  <Card className="border-amber-200 bg-amber-50">
+                  <Card className="border border-gray-200 bg-gray-50">
                     <CardContent className="p-4">
                       <div className="flex items-start gap-3">
-                        <AlertCircle className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
+                        <Info className="w-5 h-5 text-gray-500 flex-shrink-0 mt-0.5" />
                         <div>
-                          <p className="font-semibold text-amber-800 mb-1">
+                          <p className="font-semibold text-gray-800 mb-1">
                             {t("Dashboard.Rides.SpecialNotes")}
                           </p>
-                          <p className="text-amber-700">{detailBooking.notes}</p>
+                          <p className="text-gray-700">{detailBooking.notes}</p>
                         </div>
                       </div>
                     </CardContent>
@@ -987,25 +1000,27 @@ export default function RidesPage() {
                 )}
 
                 {/* Billing Information */}
-                <Card className="border-0 shadow-sm bg-white">
-                  <CardHeader className="pb-3">
+                <Card className="border border-gray-200 shadow-sm bg-white">
+                  <CardHeader className="pb-3 border-b">
                     <CardTitle className="text-lg flex items-center gap-2 text-gray-900">
-                      <CreditCard className="w-5 h-5 text-green-600" />
+                      <Receipt className="w-5 h-5 text-blue-600" />
                       {t("Dashboard.Rides.BillingAndPayment")}
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
                     <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
                       <div className="text-center p-4 bg-gray-50 rounded-lg">
+                        <DollarSign className="w-6 h-6 text-gray-500 mx-auto mb-2" />
                         <p className="text-sm text-gray-500 mb-1">
                           {t("Dashboard.Rides.TotalAmount")}
                         </p>
-                        <p className="text-2xl font-bold text-green-600">
+                        <p className="text-2xl font-bold text-gray-900">
                           €{detailBooking.totalAmount?.toFixed(2)}
                         </p>
                       </div>
 
                       <div className="text-center p-4 bg-gray-50 rounded-lg">
+                        <CreditCard className="w-6 h-6 text-gray-500 mx-auto mb-2" />
                         <p className="text-sm text-gray-500 mb-1">
                           {t("Dashboard.Rides.PaymentMethod")}
                         </p>
@@ -1015,6 +1030,7 @@ export default function RidesPage() {
                       </div>
 
                       <div className="text-center p-4 bg-gray-50 rounded-lg">
+                        <Clock className="w-6 h-6 text-gray-500 mx-auto mb-2" />
                         <p className="text-sm text-gray-500 mb-1">
                           {t("Dashboard.Rides.PaymentStatus")}
                         </p>
@@ -1024,6 +1040,7 @@ export default function RidesPage() {
                       </div>
 
                       <div className="text-center p-4 bg-gray-50 rounded-lg">
+                        <Calendar className="w-6 h-6 text-gray-500 mx-auto mb-2" />
                         <p className="text-sm text-gray-500 mb-1">
                           {t("Dashboard.Rides.TripStatus")}
                         </p>
@@ -1036,10 +1053,10 @@ export default function RidesPage() {
                     {/* Cancellation/Refund Info */}
                     {(detailBooking.status === "canceled" ||
                       detailBooking.refundAmount) && (
-                      <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-lg">
+                      <div className="mt-4 p-4 bg-gray-50 border border-gray-200 rounded-lg">
                         {detailBooking.status === "canceled" &&
                           detailBooking.canceledAt && (
-                            <div className="flex items-center gap-2 text-red-700 mb-2">
+                            <div className="flex items-center gap-2 text-gray-700 mb-2">
                               <Ban className="w-4 h-4" />
                               <span className="font-medium">
                                 {t("Dashboard.Rides.CanceledOn")}{" "}
@@ -1051,7 +1068,7 @@ export default function RidesPage() {
                           )}
                         {detailBooking.refundAmount &&
                           detailBooking.refundAmount > 0 && (
-                            <div className="flex items-center justify-between text-red-700">
+                            <div className="flex items-center justify-between text-gray-700">
                               <span className="flex items-center gap-2">
                                 <RefreshCw className="w-4 h-4" />
                                 {t("Dashboard.Rides.RefundProcessed")}
@@ -1080,8 +1097,8 @@ export default function RidesPage() {
           <DialogContent className="sm:max-w-[550px]">
             <DialogHeader>
               <DialogTitle className="text-xl font-bold flex items-center gap-2">
-                <div className="p-2 bg-red-100 rounded-full">
-                  <AlertCircle className="w-5 h-5 text-red-600" />
+                <div className="p-2 bg-red-50 rounded-full">
+                  <AlertTriangle className="w-5 h-5 text-red-600" />
                 </div>
                 {t("Dashboard.Rides.CancelRideAndProcessRefund")}
               </DialogTitle>
@@ -1097,9 +1114,9 @@ export default function RidesPage() {
             </DialogHeader>
 
             <div className="space-y-4 py-4">
-              <div className="bg-yellow-50 border-l-4 border-yellow-400 rounded-r-lg p-4">
-                <p className="text-sm text-yellow-800 flex items-start gap-2">
-                  <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5" />
+              <div className="bg-gray-50 border-l-4 border-gray-400 rounded-r-lg p-4">
+                <p className="text-sm text-gray-700 flex items-start gap-2">
+                  <AlertTriangle className="w-5 h-5 flex-shrink-0 mt-0.5" />
                   <span>
                     <span className="font-semibold block mb-1">
                       {t("Dashboard.Rides.WarningThisActionCannotBeUndone")}
@@ -1115,7 +1132,7 @@ export default function RidesPage() {
               {selectedBooking && canRefund(selectedBooking) && (
                 <div className="space-y-3 p-4 bg-gray-50 rounded-lg border">
                   <label className="text-sm font-semibold text-gray-900 flex items-center gap-2">
-                    <RefreshCw className="w-4 h-4 text-blue-600" />
+                    <Percent className="w-4 h-4 text-blue-600" />
                     {t("Dashboard.Rides.RefundPercentage")}
                   </label>
                   <div className="flex items-center gap-3">
@@ -1150,12 +1167,13 @@ export default function RidesPage() {
                       />
                     </div>
                   </div>
-                  <div className="p-3 bg-green-50 rounded-md border border-green-200">
+                  <div className="p-3 bg-gray-100 rounded-md border border-gray-200">
                     <div className="flex justify-between items-center text-sm">
-                      <span className="text-gray-700">
+                      <span className="text-gray-700 flex items-center gap-1">
+                        <RefreshCw className="w-4 h-4" />
                         {t("Dashboard.Rides.RefundAmount")}
                       </span>
-                      <span className="font-bold text-xl text-green-600">
+                      <span className="font-bold text-xl text-gray-900">
                         €
                         {(
                           (selectedBooking?.totalAmount || 0) *
@@ -1172,8 +1190,8 @@ export default function RidesPage() {
               )}
 
               {selectedBooking?.paymentMethod === "cash" && (
-                <div className="bg-blue-50 border-l-4 border-blue-400 rounded-r-lg p-4">
-                  <p className="text-sm text-blue-800 flex items-start gap-2">
+                <div className="bg-gray-50 border-l-4 border-gray-400 rounded-r-lg p-4">
+                  <p className="text-sm text-gray-700 flex items-start gap-2">
                     <CreditCard className="w-5 h-5 flex-shrink-0 mt-0.5" />
                     <span>
                       <span className="font-semibold block mb-1">
@@ -1207,7 +1225,7 @@ export default function RidesPage() {
                   </>
                 ) : (
                   <>
-                    <X className="w-4 h-4 mr-2" />
+                    <Ban className="w-4 h-4 mr-2" />
                     {t("Dashboard.Rides.ConfirmCancellation")}
                   </>
                 )}

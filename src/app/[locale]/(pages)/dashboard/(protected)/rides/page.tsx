@@ -348,6 +348,49 @@ export default function RidesPage() {
             </div>
           </div>
 
+          {/* Additional Details */}
+          <div className="space-y-2 pt-2 border-t border-gray-100">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+              <div className="flex items-center gap-2">
+                <Users className="w-3 h-3 text-blue-600" />
+                <span className="text-gray-600">Passengers:</span>
+                <span className="font-medium text-gray-900">{booking.passengers}</span>
+              </div>
+              {booking.childSeats > 0 && (
+                <div className="flex items-center gap-2">
+                  <Baby className="w-3 h-3 text-pink-600" />
+                  <span className="text-gray-600">Child Seats:</span>
+                  <span className="font-medium text-gray-900">{booking.childSeats}</span>
+                </div>
+              )}
+              {booking.babySeats > 0 && (
+                <div className="flex items-center gap-2">
+                  <Baby className="w-3 h-3 text-pink-600" />
+                  <span className="text-gray-600">Baby Seats:</span>
+                  <span className="font-medium text-gray-900">{booking.babySeats}</span>
+                </div>
+              )}
+              {booking.flightNumber && (
+                <div className="flex items-center gap-2">
+                  <Navigation className="w-3 h-3 text-purple-600" />
+                  <span className="text-gray-600">Flight Number:</span>
+                  <span className="font-medium text-gray-900">{booking.flightNumber}</span>
+                </div>
+              )}
+            </div>
+            {booking.notes && (
+              <div className="bg-amber-50 border border-amber-200 rounded-lg p-2">
+                <div className="flex items-start gap-2">
+                  <AlertCircle className="w-3 h-3 text-amber-600 flex-shrink-0 mt-0.5" />
+                  <div>
+                    <span className="text-xs font-medium text-amber-800">Special Requests:</span>
+                    <p className="text-xs text-amber-700 mt-1">{booking.notes}</p>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+
           {/* Route Information */}
           <div className="bg-gray-50 p-3 rounded-lg">
             <div className="flex items-center gap-2 text-sm">

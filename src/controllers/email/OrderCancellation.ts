@@ -129,7 +129,7 @@ function generateEmailHTML(bookingData: BookingData) {
 
     <div class="section">
       <p>If you have any questions, please contact our support team.</p>
-      <a href="mailto:support@example.com" class="cta-button">Contact Support</a>
+      <a href="mailto:${process.env.NEXT_PUBLIC_SUPPORT_EMAIL}" class="cta-button">Contact Support</a>
     </div>
 
     <div class="footer">

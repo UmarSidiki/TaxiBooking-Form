@@ -270,12 +270,9 @@ export function useStep1() {
 
       // Add stops if they exist
       if (formData.stops.length > 0) {
-        const stopsParam = formData.stops
-          .filter(stop => stop.location.trim())
-          .map(stop => stop.location.trim())
-          .join(',');
-        if (stopsParam) {
-          params.set("stops", stopsParam);
+        const filteredStops = formData.stops.filter(stop => stop.location.trim());
+        if (filteredStops.length > 0) {
+          params.set("stops", JSON.stringify(filteredStops));
         }
       }
     }

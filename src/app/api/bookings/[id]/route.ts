@@ -258,9 +258,6 @@ export async function PATCH(
         );
       }
 
-      // Check if this is a reassignment (booking already has a driver)
-      const isReassignment = booking.assignedDriver && booking.assignedDriver._id !== driverId;
-
       updateData.assignedDriver = {
         _id: driver._id.toString(),
         name: driver.name,

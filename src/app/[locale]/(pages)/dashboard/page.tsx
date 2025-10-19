@@ -1,9 +1,6 @@
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 import { authOptions } from "@/lib/auth/options";
-// Import the protected page (not the layout) — the layout expects params/children
-// and cannot be rendered directly as a component here.
-import ProtectedDashboardPage from "./(protected)/page";
 
 interface DashboardPageProps {
   params: { locale: string };
@@ -22,7 +19,7 @@ export default async function DashboardPage({ params }: DashboardPageProps) {
     redirect(`/${params.locale}/drivers`);
   }
 
-  // If user is admin, render the protected dashboard page
+  // If user is admin, redirect to the protected dashboard home page
   // (the protected layout will be applied automatically for that page).
-  return <ProtectedDashboardPage />;
+  redirect(`/${params.locale}/dashboard/home`);
 }

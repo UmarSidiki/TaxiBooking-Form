@@ -26,7 +26,7 @@ export function AppSidebar({ locale }: { locale: string }) {
   const items = [
     {
       title: t("Sidebar.dashboard"),
-      href: (locale: string) => `/${locale}/dashboard`,
+      href: (locale: string) => `/${locale}/dashboard/home`,
       icon: Home,
     },
     {

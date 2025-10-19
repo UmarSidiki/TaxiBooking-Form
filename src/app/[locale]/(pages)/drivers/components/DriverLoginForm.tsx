@@ -2,7 +2,7 @@
 
 import { useState, type FormEvent, useEffect, useRef } from "react";
 import { signIn } from "next-auth/react";
-import { useParams, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import {
   Eye,
   EyeOff,
@@ -33,8 +33,6 @@ if (typeof window !== "undefined") {
 
 export default function DriverLoginForm() {
   const router = useRouter();
-  const params = useParams<{ locale: string }>();
-  const locale = params?.locale ?? "en";
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -144,7 +142,7 @@ export default function DriverLoginForm() {
       email,
       password,
       redirect: false,
-      callbackUrl: `/${locale}/drivers`,
+      callbackUrl: `/drivers`,
     });
 
     setLoading(false);
@@ -175,7 +173,7 @@ export default function DriverLoginForm() {
       repeat: 1,
       ease: "power2.inOut",
       onComplete: () => {
-        router.push(result?.url ?? `/${locale}/drivers`);
+        router.push(result?.url ?? `/drivers`);
       },
     });
   };

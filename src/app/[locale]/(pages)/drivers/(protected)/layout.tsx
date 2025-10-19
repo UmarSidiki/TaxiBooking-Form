@@ -13,23 +13,21 @@ type DriverLayoutProps = {
 
 export default async function DriverProtectedLayout({
   children,
-  params,
 }: DriverLayoutProps) {
-  const { locale } = await params;
   const session = await getServerSession(authOptions);
 
   if (!session?.user) {
-    redirect(`/${locale}/drivers/login`);
+    redirect(`/drivers/login`);
   }
 
   // Check if user is a driver
   if (session.user.role !== "driver") {
     // If admin, redirect to admin dashboard
     if (session.user.role === "admin") {
-      redirect(`/${locale}/dashboard`);
+      redirect(`/dashboard`);
     }
     // Otherwise, redirect to home
-    redirect(`/${locale}`);
+    redirect(`/`);
   }
 
   return (
@@ -49,7 +47,7 @@ export default async function DriverProtectedLayout({
                 {new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
               </div>
               <LanguageSwitcher />
-              <LogoutButton callbackUrl={`/${locale}/drivers/login`} />
+              <LogoutButton callbackUrl={`/drivers/login`} />
             </div>
           </div>
           {/* Mobile welcome message */}

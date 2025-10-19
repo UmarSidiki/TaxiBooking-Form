@@ -2,7 +2,7 @@
 
 import { useState, type FormEvent, useEffect, useRef } from "react";
 import { signIn } from "next-auth/react";
-import { useParams, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import {
   Eye,
   EyeOff,
@@ -33,8 +33,6 @@ if (typeof window !== "undefined") {
 
 export default function SignInPage() {
   const router = useRouter();
-  const params = useParams<{ locale: string }>();
-  const locale = params?.locale ?? "en";
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -144,7 +142,7 @@ export default function SignInPage() {
       email,
       password,
       redirect: false,
-      callbackUrl: `/${locale}/dashboard`,
+      callbackUrl: `/dashboard`,
     });
 
     setLoading(false);
@@ -175,7 +173,7 @@ export default function SignInPage() {
       repeat: 1,
       ease: "power2.inOut",
       onComplete: () => {
-        router.push(result?.url ?? `/${locale}/dashboard`);
+        router.push(result?.url ?? `/dashboard`);
       },
     });
   };

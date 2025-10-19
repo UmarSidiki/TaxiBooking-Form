@@ -73,6 +73,7 @@ export default function RidesPage() {
   const [paymentFilter, setPaymentFilter] = useState("all");
   const [dateRange, setDateRange] = useState<DateRange | undefined>();
   const [showFilters, setShowFilters] = useState(false);
+  const [sortBy, setSortBy] = useState("date-asc");
 
   const MapLine = ({ start, end }: { start: string; end: string }) => (
     <span className="flex items-center gap-1 truncate">
@@ -93,7 +94,7 @@ export default function RidesPage() {
   useEffect(() => {
     filterBookings();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [bookings, activeTab, searchQuery, paymentFilter, dateRange]);
+  }, [bookings, activeTab, searchQuery, paymentFilter, dateRange, sortBy]);
 
   const fetchBookings = async () => {
     setIsLoading(true);
@@ -174,9 +175,20 @@ export default function RidesPage() {
         );
       }
 
+      // Apply sorting
+      if (sortBy === "date-asc") {
+        filtered.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+      } else if (sortBy === "date-desc") {
+        filtered.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+      } else if (sortBy === "price-asc") {
+        filtered.sort((a, b) => (a.totalAmount || 0) - (b.totalAmount || 0));
+      } else if (sortBy === "price-desc") {
+        filtered.sort((a, b) => (b.totalAmount || 0) - (a.totalAmount || 0));
+      }
+
       setFilteredBookings(filtered);
     };
-  }, [bookings, activeTab, searchQuery, paymentFilter, dateRange]);
+  }, [bookings, activeTab, searchQuery, paymentFilter, dateRange, sortBy]);
 
   const handleCancelClick = (booking: IBooking) => {
     setSelectedBooking(booking);
@@ -583,6 +595,19 @@ export default function RidesPage() {
                       <SelectItem value="refunded">
                         {t("Dashboard.Rides.Refunded")}
                       </SelectItem>
+                    </SelectContent>
+                  </Select>
+
+                  <Select value={sortBy} onValueChange={setSortBy}>
+                    <SelectTrigger className="flex-1 sm:w-48">
+                      <Filter className="w-4 h-4 mr-2" />
+                      <SelectValue placeholder="Sort by" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="date-asc">Nearest Date</SelectItem>
+                      <SelectItem value="date-desc">Furthest Date</SelectItem>
+                      <SelectItem value="price-asc">Lowest Price</SelectItem>
+                      <SelectItem value="price-desc">Highest Price</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>

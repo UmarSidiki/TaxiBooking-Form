@@ -34,9 +34,6 @@ export default async function DashboardProtectedLayout({
                 <div className="text-sm text-gray-500">
                   {new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
                 </div>
-                <div className="h-8 w-8 rounded-full bg-primary text-white flex items-center justify-center text-sm font-medium">
-                  {session.user?.name?.charAt(0).toUpperCase()}
-                </div>
               </div>
             </div>
           </header>

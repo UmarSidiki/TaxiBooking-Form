@@ -96,7 +96,7 @@ const FleetPage = () => {
 
   useEffect(() => {
     fetchVehicles();
-  });
+  }, []);
 
   const fetchVehicles = async () => {
     try {

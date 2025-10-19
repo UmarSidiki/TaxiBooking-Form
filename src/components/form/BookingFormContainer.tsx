@@ -4,24 +4,24 @@ import React from "react";
 import Step1TripDetails from "./steps/Step1TripDetails";
 import Step2VehicleSelection from "./steps/Step2VehicleSelection";
 import Step3Payment from "./steps/Step3Payment";
-import { useTranslations } from "next-intl";
+// import { useTranslations } from "next-intl";
 import { LanguageSwitcher } from "../LanguageSwitcher";
 import { useBookingFormContainer } from "@/hooks/form/form-container/useBookingFormContainer";
 import Image from "next/image";
 
 export default function BookingFormContainer() {
   const { initialized, currentStep } = useBookingFormContainer();
-  const t = useTranslations();
+  // const t = useTranslations();
 
   // Wait until URL params are processed
   if (!initialized) return null;
 
   // Get step titles directly from translations
-  const stepTitles = [
-    t("FormContainer.trip-details"),
-    t("FormContainer.select-vehicle"),
-    t("FormContainer.payment-and-details")
-  ];
+  // const stepTitles = [
+  //   t("FormContainer.trip-details"),
+  //   t("FormContainer.select-vehicle"),
+  //   t("FormContainer.payment-and-details")
+  // ];
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-100 to-gray-200">
@@ -45,7 +45,7 @@ export default function BookingFormContainer() {
             </div>
 
             {/* Progress Indicator - Centered in Header */}
-            <div className="hidden md:flex items-center justify-center flex-1 mx-8">
+            {/* <div className="hidden md:flex items-center justify-center flex-1 mx-8">
               <div className="flex items-center">
                 <div className="flex flex-col items-center">
                   <div
@@ -104,7 +104,7 @@ export default function BookingFormContainer() {
                   </span>
                 </div>
               </div>
-            </div>
+            </div> */}
 
             {/* Language Switcher */}
             <div className="flex items-center gap-2 bg-gray-50 rounded-lg p-1">
@@ -115,7 +115,7 @@ export default function BookingFormContainer() {
       </header>
 
       {/* Mobile Progress Indicator */}
-      <div className="md:hidden bg-white shadow-sm">
+      {/* <div className="md:hidden bg-white shadow-sm">
         <div className="max-w-7xl mx-auto px-4 py-3">
           <div className="flex items-center justify-center">
             <div className="flex items-center">
@@ -178,7 +178,7 @@ export default function BookingFormContainer() {
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
 
       {/* Main Content - Increased Width */}
       <main className="max-w-7xl max-sm:max-w-full mx-auto pb-8 pt-6">

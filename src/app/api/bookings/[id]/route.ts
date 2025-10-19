@@ -4,6 +4,9 @@ import Stripe from "stripe";
 import Setting from "@/models/Setting";
 import { connectDB } from "@/lib/mongoose";
 import { sendOrderCancellationEmail } from "@/controllers/email/OrderCancellation";
+import { sendRideAssignmentEmail } from "@/controllers/email/RideAssignment";
+import { sendRideCancellationEmail } from "@/controllers/email/RideCancellation";
+import Driver from "@/models/Driver";
 
 // Helper function to process Stripe refund
 async function processStripeRefund(
@@ -162,7 +165,7 @@ export async function PATCH(
       );
     }
 
-    const supportedActions = new Set(["cancel", "complete"]);
+    const supportedActions = new Set(["cancel", "complete", "assign"]);
     if (!supportedActions.has(rawAction)) {
       return NextResponse.json(
         { success: false, message: `Unsupported action: ${rawAction}` },
@@ -198,7 +201,10 @@ export async function PATCH(
     const updateData: Partial<IBooking> = {
       updatedAt: new Date(),
     };
-    
+
+    // Check if this is a reassignment (for email sending)
+    const isReassignment = rawAction === "assign" && booking.assignedDriver && booking.assignedDriver._id !== body.driverId;
+
     // Handle different actions
     if (rawAction === "cancel") {
       updateData.status = 'canceled';
@@ -234,6 +240,35 @@ export async function PATCH(
       }
     } else if (rawAction === "complete") {
       updateData.status = 'completed';
+    } else if (rawAction === "assign") {
+      const driverId = body.driverId;
+      if (!driverId) {
+        return NextResponse.json(
+          { success: false, message: "Driver ID is required for assignment" },
+          { status: 400 }
+        );
+      }
+
+      // Fetch driver details
+      const driver = await Driver.findById(driverId);
+      if (!driver) {
+        return NextResponse.json(
+          { success: false, message: "Driver not found" },
+          { status: 404 }
+        );
+      }
+
+      // Check if this is a reassignment (booking already has a driver)
+      const isReassignment = booking.assignedDriver && booking.assignedDriver._id !== driverId;
+
+      updateData.assignedDriver = {
+        _id: driver._id.toString(),
+        name: driver.name,
+        email: driver.email,
+      };
+
+      // Reset assignment email sent flag for new assignment
+      updateData.assignmentEmailSent = false;
     }
     
     // Update booking
@@ -255,13 +290,96 @@ export async function PATCH(
       try {
         const cancellationPayload = createCancellationEmailData(updatedBooking, updateData);
         const emailSent = await sendOrderCancellationEmail(cancellationPayload);
-        
+
         if (!emailSent) {
           console.error("Failed to send cancellation email to:", updatedBooking.email);
           // Continue with the response even if email fails
         }
       } catch (emailError) {
         console.error("Error sending cancellation email:", emailError);
+        // Continue with the response even if email fails
+      }
+    }
+
+    // Send cancellation email to old driver if this is a reassignment
+    if (rawAction === "assign" && isReassignment && booking.assignedDriver) {
+      try {
+        const cancellationPayload = {
+          tripId: updatedBooking.tripId,
+          pickup: updatedBooking.pickup,
+          dropoff: updatedBooking.dropoff || 'N/A',
+          stops: updatedBooking.stops || [],
+          tripType: updatedBooking.tripType,
+          date: updatedBooking.date,
+          time: updatedBooking.time,
+          passengers: updatedBooking.passengers,
+          selectedVehicle: updatedBooking.selectedVehicle,
+          vehicleDetails: updatedBooking.vehicleDetails || { name: 'N/A', price: '0', seats: '4' },
+          childSeats: updatedBooking.childSeats,
+          babySeats: updatedBooking.babySeats,
+          notes: updatedBooking.notes,
+          firstName: updatedBooking.firstName,
+          lastName: updatedBooking.lastName,
+          email: updatedBooking.email,
+          phone: updatedBooking.phone,
+          totalAmount: typeof updatedBooking.totalAmount === "number" ? updatedBooking.totalAmount : 0,
+          paymentMethod: updatedBooking.paymentMethod,
+          paymentStatus: updatedBooking.paymentStatus,
+          flightNumber: updatedBooking.flightNumber,
+          driverName: booking.assignedDriver.name,
+          driverEmail: booking.assignedDriver.email,
+        };
+
+        const emailSent = await sendRideCancellationEmail(cancellationPayload);
+
+        if (!emailSent) {
+          console.error("Failed to send cancellation email to old driver:", booking.assignedDriver.email);
+        }
+      } catch (emailError) {
+        console.error("Error sending cancellation email to old driver:", emailError);
+        // Continue with the response even if email fails
+      }
+    }
+
+    // Send assignment email if applicable
+    if (rawAction === "assign" && updatedBooking.assignedDriver && !updatedBooking.assignmentEmailSent) {
+      try {
+        const assignmentPayload = {
+          tripId: updatedBooking.tripId,
+          pickup: updatedBooking.pickup,
+          dropoff: updatedBooking.dropoff || 'N/A',
+          stops: updatedBooking.stops || [],
+          tripType: updatedBooking.tripType,
+          date: updatedBooking.date,
+          time: updatedBooking.time,
+          passengers: updatedBooking.passengers,
+          selectedVehicle: updatedBooking.selectedVehicle,
+          vehicleDetails: updatedBooking.vehicleDetails || { name: 'N/A', price: '0', seats: '4' },
+          childSeats: updatedBooking.childSeats,
+          babySeats: updatedBooking.babySeats,
+          notes: updatedBooking.notes,
+          firstName: updatedBooking.firstName,
+          lastName: updatedBooking.lastName,
+          email: updatedBooking.email,
+          phone: updatedBooking.phone,
+          totalAmount: typeof updatedBooking.totalAmount === "number" ? updatedBooking.totalAmount : 0,
+          paymentMethod: updatedBooking.paymentMethod,
+          paymentStatus: updatedBooking.paymentStatus,
+          flightNumber: updatedBooking.flightNumber,
+          driverName: updatedBooking.assignedDriver.name,
+          driverEmail: updatedBooking.assignedDriver.email,
+        };
+
+        const emailSent = await sendRideAssignmentEmail(assignmentPayload);
+
+        if (emailSent) {
+          // Mark that assignment email was sent
+          await Booking.findByIdAndUpdate(id, { assignmentEmailSent: true });
+        } else {
+          console.error("Failed to send assignment email to:", updatedBooking.assignedDriver.email);
+        }
+      } catch (emailError) {
+        console.error("Error sending assignment email:", emailError);
         // Continue with the response even if email fails
       }
     }

@@ -1,10 +1,11 @@
 import { MongoDBAdapter } from "@auth/mongodb-adapter"
 import type { NextAuthOptions } from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials"
-import { compare, hash } from "bcryptjs"
-import type { ObjectId } from "mongodb"
+import { compare } from "bcryptjs"
 
-import clientPromise, { getMongoDb } from "@/lib/mongodb"
+import clientPromise from "@/lib/mongodb"
+import { connectDB } from "@/lib/mongoose"
+import Driver from "@/models/Driver"
 
 const DEFAULT_ROLE = "admin"
 
@@ -24,69 +25,54 @@ export const authOptions: NextAuthOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
+        console.log("NextAuth authorize called with credentials:", { email: credentials?.email, password: "[REDACTED]" });
         if (!credentials?.email || !credentials?.password) {
+          console.log("Missing email or password");
           throw new Error("Email and password are required")
         }
 
-        const db = await getMongoDb()
-        const users = db.collection("users")
+        await connectDB();
         const email = credentials.email.trim().toLowerCase()
+        console.log("Normalized email:", email);
 
-        const existingUser = await users.findOne<{
-          _id: ObjectId
-          password?: string
-          name?: string
-          role?: string
-        }>({ email });
+        // First check if it's an admin user (we'll need to create a User model or use direct MongoDB for this)
+        // For now, skip admin check and focus on drivers
 
-        const userCount = await users.countDocuments();
+        // Check drivers collection using mongoose
+        const existingDriver = await Driver.findOne({ email }).select('+password');
+        console.log("Driver lookup result:", existingDriver ? { id: existingDriver._id, name: existingDriver.name, isActive: existingDriver.isActive } : "No driver found");
 
-        if (!existingUser) {
-          if (userCount === 0) {
-            const passwordHash = await hash(credentials.password, 10);
-            const now = new Date();
-            const nameFromEmail = credentials.email.split("@")[0] || "Admin";
-
-            const insertResult = await users.insertOne({
-              email,
-              name: nameFromEmail,
-              role: DEFAULT_ROLE,
-              password: passwordHash,
-              emailVerified: null,
-              image: null,
-              createdAt: now,
-              updatedAt: now,
-            });
-
-            return {
-              id: insertResult.insertedId.toString(),
-              email,
-              name: nameFromEmail,
-              role: DEFAULT_ROLE,
-            };
-          }
-          throw new Error(
-            "No user found with this email. Only registered admins can log in."
-          );
+        if (!existingDriver) {
+          console.log("No driver found with email:", email);
+          throw new Error("Invalid email or password");
         }
 
-        if (!existingUser.password) {
+        if (!existingDriver.isActive) {
+          console.log("Driver account is deactivated");
+          throw new Error("Account is deactivated")
+        }
+
+        if (!existingDriver.password) {
+          console.log("Driver has no password set");
           throw new Error("Account does not have a password set")
         }
 
-        const passwordMatches = await compare(credentials.password, existingUser.password)
+        const passwordMatches = await compare(credentials.password, existingDriver.password)
+        console.log("Driver password match:", passwordMatches);
 
         if (!passwordMatches) {
+          console.log("Driver password does not match");
           throw new Error("Invalid email or password")
         }
 
-        await users.updateOne({ _id: existingUser._id }, { $set: { updatedAt: new Date() } })
+        await Driver.updateOne({ _id: existingDriver._id }, { $set: { updatedAt: new Date() } })
 
+        console.log("Driver authentication successful");
         return {
-          id: existingUser._id?.toString() ?? "",
+          id: existingDriver._id?.toString() ?? "",
           email,
-          name: existingUser.name || "Admin",
-          role: existingUser.role || DEFAULT_ROLE,
+          name: existingDriver.name || "Driver",
+          role: "driver",
         }
       },
     }),

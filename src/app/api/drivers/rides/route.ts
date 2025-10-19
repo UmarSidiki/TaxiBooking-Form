@@ -1,0 +1,45 @@
+import { NextResponse } from "next/server";
+import { getServerSession } from "next-auth";
+import { connectDB } from "@/lib/mongoose";
+import Booking from "@/models/Booking";
+import { authOptions } from "@/lib/auth/options";
+
+export async function GET() {
+  try {
+    const session = await getServerSession(authOptions);
+
+    if (!session?.user || session.user.role !== "driver") {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "Unauthorized",
+        },
+        { status: 401 }
+      );
+    }
+
+    await connectDB();
+
+    // Find all bookings assigned to this driver
+    const bookings = await Booking.find({
+      "assignedDriver._id": session.user.id,
+      status: { $in: ["upcoming", "completed"] }
+    })
+    .sort({ date: 1, time: 1 })
+    .select("-__v");
+
+    return NextResponse.json({
+      success: true,
+      data: bookings,
+    });
+  } catch (error) {
+    console.error("Error fetching driver rides:", error);
+    return NextResponse.json(
+      {
+        success: false,
+        message: error instanceof Error ? error.message : "Failed to fetch rides",
+      },
+      { status: 500 }
+    );
+  }
+}

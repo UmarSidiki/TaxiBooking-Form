@@ -22,6 +22,11 @@ export default async function DashboardProtectedLayout({
     redirect(`/${locale}/dashboard/signin`);
   }
 
+  // Additional check: ensure user is admin
+  if (session.user.role !== "admin") {
+    redirect(`/${locale}/drivers`);
+  }
+
   return (
     <SidebarProvider>
       <div className="flex h-screen w-screen bg-gray-50">

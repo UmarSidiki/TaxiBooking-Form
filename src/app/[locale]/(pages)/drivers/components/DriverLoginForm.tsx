@@ -31,7 +31,7 @@ if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger, TextPlugin);
 }
 
-export default function DriverSignInPage() {
+export default function DriverLoginForm() {
   const router = useRouter();
   const params = useParams<{ locale: string }>();
   const locale = params?.locale ?? "en";

@@ -19,12 +19,12 @@ export default async function DashboardProtectedLayout({
   const session = await getServerSession(authOptions);
 
   if (!session?.user) {
-    redirect(`/${locale}/dashboard/signin`);
+    redirect(`/dashboard/signin`);
   }
 
   // Additional check: ensure user is admin
   if (session.user.role !== "admin") {
-    redirect(`/${locale}/drivers`);
+    redirect(`/drivers`);
   }
 
   return (

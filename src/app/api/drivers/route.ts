@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { connectDB } from "@/lib/mongoose";
 import Driver, { IDriver } from "@/models/Driver";
 import bcrypt from "bcryptjs";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth/options";
 
 // GET - Fetch all drivers
 export async function GET(request: NextRequest) {
@@ -34,6 +36,15 @@ export async function GET(request: NextRequest) {
 // POST - Create a new driver
 export async function POST(request: NextRequest) {
   try {
+    // Check if user is authenticated and is an admin
+    const session = await getServerSession(authOptions);
+    if (!session?.user || session.user.role !== 'admin') {
+      return NextResponse.json(
+        { success: false, message: 'Unauthorized. Admin access required.' },
+        { status: 403 }
+      );
+    }
+
     console.log("Driver creation API called");
     await connectDB();
 

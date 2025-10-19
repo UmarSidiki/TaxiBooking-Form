@@ -1,11 +1,12 @@
 import { MongoDBAdapter } from "@auth/mongodb-adapter"
 import type { NextAuthOptions } from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials"
-import { compare } from "bcryptjs"
+import { compare, hash } from "bcryptjs"
 
 import clientPromise from "@/lib/mongodb"
 import { connectDB } from "@/lib/mongoose"
 import Driver from "@/models/Driver"
+import User from "@/models/User"
 
 const DEFAULT_ROLE = "admin"
 
@@ -35,8 +36,72 @@ export const authOptions: NextAuthOptions = {
         const email = credentials.email.trim().toLowerCase()
         console.log("Normalized email:", email);
 
-        // First check if it's an admin user (we'll need to create a User model or use direct MongoDB for this)
-        // For now, skip admin check and focus on drivers
+        // Check if there are any admin users in the system
+        const adminCount = await User.countDocuments({ role: { $in: ['admin', 'superadmin'] } });
+        console.log("Admin count in system:", adminCount);
+
+        // First check if it's an admin user in the User collection
+        const existingUser = await User.findOne({ email }).select('+password');
+        console.log("User lookup result:", existingUser ? { id: existingUser._id, name: existingUser.name, role: existingUser.role, isActive: existingUser.isActive } : "No user found");
+
+        if (existingUser) {
+          // Existing user - validate credentials
+          if (!existingUser.isActive) {
+            console.log("User account is deactivated");
+            throw new Error("Account is deactivated")
+          }
+
+          if (!existingUser.password) {
+            console.log("User has no password set");
+            throw new Error("Account does not have a password set")
+          }
+
+          const passwordMatches = await compare(credentials.password, existingUser.password)
+          console.log("User password match:", passwordMatches);
+
+          if (passwordMatches) {
+            await User.updateOne({ _id: existingUser._id }, { $set: { updatedAt: new Date() } })
+
+            console.log("User authentication successful");
+            return {
+              id: existingUser._id?.toString() ?? "",
+              email,
+              name: existingUser.name,
+              role: existingUser.role,
+            }
+          } else {
+            console.log("User password does not match");
+            throw new Error("Invalid email or password")
+          }
+        } else {
+          // No existing user found - check if this should be the first admin
+          if (adminCount === 0) {
+            console.log("No admins exist - creating first admin user");
+
+            // Hash the password
+            const hashedPassword = await hash(credentials.password, 10);
+
+            // Create the first admin user
+            const newAdmin = await User.create({
+              email,
+              password: hashedPassword,
+              name: "Administrator", // Default name for first admin
+              role: "admin",
+              isActive: true,
+            });
+
+            console.log("First admin user created successfully");
+            return {
+              id: newAdmin._id?.toString() ?? "",
+              email,
+              name: newAdmin.name,
+              role: newAdmin.role,
+            }
+          } else {
+            console.log("Admins exist but user not found - cannot auto-register");
+            throw new Error("Invalid email or password")
+          }
+        }
 
         // Check drivers collection using mongoose
         const existingDriver = await Driver.findOne({ email }).select('+password');
@@ -57,7 +122,7 @@ export const authOptions: NextAuthOptions = {
           throw new Error("Account does not have a password set")
         }
 
-        const passwordMatches = await compare(credentials.password, existingDriver.password)
+        const passwordMatches = await compare(credentials!.password, existingDriver.password)
         console.log("Driver password match:", passwordMatches);
 
         if (!passwordMatches) {

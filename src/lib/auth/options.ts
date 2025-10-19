@@ -74,70 +74,68 @@ export const authOptions: NextAuthOptions = {
             throw new Error("Invalid email or password")
           }
         } else {
-          // No existing user found - check if this should be the first admin
-          if (adminCount === 0) {
-            console.log("No admins exist - creating first admin user");
+          // No existing user found - check drivers collection
+          const existingDriver = await Driver.findOne({ email }).select('+password');
+          console.log("Driver lookup result:", existingDriver ? { id: existingDriver._id, name: existingDriver.name, isActive: existingDriver.isActive } : "No driver found");
 
-            // Hash the password
-            const hashedPassword = await hash(credentials.password, 10);
+          if (existingDriver) {
+            // Driver found - validate credentials
+            if (!existingDriver.isActive) {
+              console.log("Driver account is deactivated");
+              throw new Error("Account is deactivated")
+            }
 
-            // Create the first admin user
-            const newAdmin = await User.create({
-              email,
-              password: hashedPassword,
-              name: "Administrator", // Default name for first admin
-              role: "admin",
-              isActive: true,
-            });
+            if (!existingDriver.password) {
+              console.log("Driver has no password set");
+              throw new Error("Account does not have a password set")
+            }
 
-            console.log("First admin user created successfully");
-            return {
-              id: newAdmin._id?.toString() ?? "",
-              email,
-              name: newAdmin.name,
-              role: newAdmin.role,
+            const passwordMatches = await compare(credentials.password, existingDriver.password)
+            console.log("Driver password match:", passwordMatches);
+
+            if (passwordMatches) {
+              await Driver.updateOne({ _id: existingDriver._id }, { $set: { updatedAt: new Date() } })
+
+              console.log("Driver authentication successful");
+              return {
+                id: existingDriver._id?.toString() ?? "",
+                email,
+                name: existingDriver.name || "Driver",
+                role: "driver",
+              }
+            } else {
+              console.log("Driver password does not match");
+              throw new Error("Invalid email or password")
             }
           } else {
-            console.log("Admins exist but user not found - cannot auto-register");
-            throw new Error("Invalid email or password")
+            // No user or driver found - check if this should be the first admin
+            if (adminCount === 0) {
+              console.log("No admins exist - creating first admin user");
+
+              // Hash the password
+              const hashedPassword = await hash(credentials.password, 10);
+
+              // Create the first admin user
+              const newAdmin = await User.create({
+                email,
+                password: hashedPassword,
+                name: "Administrator", // Default name for first admin
+                role: "admin",
+                isActive: true,
+              });
+
+              console.log("First admin user created successfully");
+              return {
+                id: newAdmin._id?.toString() ?? "",
+                email,
+                name: newAdmin.name,
+                role: newAdmin.role,
+              }
+            } else {
+              console.log("Admins exist but user/driver not found - cannot auto-register");
+              throw new Error("Invalid email or password")
+            }
           }
-        }
-
-        // Check drivers collection using mongoose
-        const existingDriver = await Driver.findOne({ email }).select('+password');
-        console.log("Driver lookup result:", existingDriver ? { id: existingDriver._id, name: existingDriver.name, isActive: existingDriver.isActive } : "No driver found");
-
-        if (!existingDriver) {
-          console.log("No driver found with email:", email);
-          throw new Error("Invalid email or password");
-        }
-
-        if (!existingDriver.isActive) {
-          console.log("Driver account is deactivated");
-          throw new Error("Account is deactivated")
-        }
-
-        if (!existingDriver.password) {
-          console.log("Driver has no password set");
-          throw new Error("Account does not have a password set")
-        }
-
-        const passwordMatches = await compare(credentials!.password, existingDriver.password)
-        console.log("Driver password match:", passwordMatches);
-
-        if (!passwordMatches) {
-          console.log("Driver password does not match");
-          throw new Error("Invalid email or password")
-        }
-
-        await Driver.updateOne({ _id: existingDriver._id }, { $set: { updatedAt: new Date() } })
-
-        console.log("Driver authentication successful");
-        return {
-          id: existingDriver._id?.toString() ?? "",
-          email,
-          name: existingDriver.name || "Driver",
-          role: "driver",
         }
       },
     }),

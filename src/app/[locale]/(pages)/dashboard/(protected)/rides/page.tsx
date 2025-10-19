@@ -572,111 +572,113 @@ export default function RidesPage() {
               </div>
             </div>
 
-            {/* Driver Assignment Section */}
-            <div className="border-t pt-3">
-              {booking.assignedDriver && !isEditMode ? (
-                <div className="bg-primary/10 border border-primary/20 rounded-lg p-3">
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                    <div className="flex items-center gap-2">
-                      <UserCheck className="w-4 h-4 text-primary" />
-                      <div>
-                        <span className="text-primary font-medium text-sm">
-                          Assigned Driver:
-                        </span>
-                        <p className="text-primary font-medium">{booking.assignedDriver.name}</p>
-                        <p className="text-primary/70 text-xs">{booking.assignedDriver.email}</p>
+            {/* Driver Assignment Section - Only show for upcoming rides */}
+            {booking.status !== "canceled" && new Date(booking.date) >= new Date() && (
+              <div className="border-t pt-3">
+                {booking.assignedDriver && !isEditMode ? (
+                  <div className="bg-primary/10 border border-primary/20 rounded-lg p-3">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                      <div className="flex items-center gap-2">
+                        <UserCheck className="w-4 h-4 text-primary" />
+                        <div>
+                          <span className="text-primary font-medium text-sm">
+                            Assigned Driver:
+                          </span>
+                          <p className="text-primary font-medium">{booking.assignedDriver.name}</p>
+                          <p className="text-primary/70 text-xs">{booking.assignedDriver.email}</p>
+                        </div>
                       </div>
-                    </div>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => setIsEditMode(true)}
-                      className="text-xs h-8 px-3 border-primary/30 text-primary hover:bg-primary/10"
-                    >
-                      <Edit className="w-3 h-3 mr-1" />
-                      Reassign
-                    </Button>
-                  </div>
-                </div>
-              ) : (
-                <div className="bg-secondary/10 border border-secondary/20 rounded-lg p-3">
-                  <div className="flex flex-col gap-3">
-                    <div className="flex items-center gap-2">
-                      <UserCheck className="w-4 h-4 text-secondary-foreground" />
-                      <span className="text-secondary-foreground font-medium text-sm">
-                        {booking.assignedDriver ? "Reassign Driver:" : "Assign Driver:"}
-                      </span>
-                    </div>
-                    
-                    <div className="flex flex-col sm:flex-row gap-2">
-                      <Select
-                        value={selectedDriver}
-                        onValueChange={setSelectedDriver}
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setIsEditMode(true)}
+                        className="text-xs h-8 px-3 border-primary/30 text-primary hover:bg-primary/10"
                       >
-                        <SelectTrigger className="w-full">
-                          <User className="w-4 h-4 mr-2" />
-                          <SelectValue placeholder={booking.assignedDriver ? "Change Driver" : "Select Driver"} />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {drivers.map((driver) => (
-                            <SelectItem
-                              key={driver._id?.toString()}
-                              value={driver._id?.toString() || ""}
-                            >
-                              {driver.name} ({driver.email})
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      
-                      <div className="flex gap-2">
-                        <Button
-                          onClick={() =>
-                            handleAssignDriver(
-                              booking._id?.toString() || "",
-                              selectedDriver
-                            )
-                          }
-                          disabled={
-                            !selectedDriver ||
-                            assigningId === booking._id?.toString() ||
-                            (booking.assignedDriver && selectedDriver === booking.assignedDriver._id)
-                          }
-                          size="sm"
-                          className="flex items-center gap-2 bg-primary hover:bg-primary/90"
+                        <Edit className="w-3 h-3 mr-1" />
+                        Reassign
+                      </Button>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="bg-secondary/10 border border-secondary/20 rounded-lg p-3">
+                    <div className="flex flex-col gap-3">
+                      <div className="flex items-center gap-2">
+                        <UserCheck className="w-4 h-4 text-secondary-foreground" />
+                        <span className="text-secondary-foreground font-medium text-sm">
+                          {booking.assignedDriver ? "Reassign Driver:" : "Assign Driver:"}
+                        </span>
+                      </div>
+
+                      <div className="flex flex-col sm:flex-row gap-2">
+                        <Select
+                          value={selectedDriver}
+                          onValueChange={setSelectedDriver}
                         >
-                          {assigningId === booking._id ? (
-                            <>
-                              <Loader2 className="w-4 h-4 animate-spin" />
-                              {booking.assignedDriver ? "Reassigning..." : "Assigning..."}
-                            </>
-                          ) : (
-                            <>
-                              <UserCheck className="w-4 h-4" />
-                              {booking.assignedDriver ? "Reassign" : "Assign"}
-                            </>
-                          )}
-                        </Button>
-                        
-                        {isEditMode && (
+                          <SelectTrigger className="w-full">
+                            <User className="w-4 h-4 mr-2" />
+                            <SelectValue placeholder={booking.assignedDriver ? "Change Driver" : "Select Driver"} />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {drivers.map((driver) => (
+                              <SelectItem
+                                key={driver._id?.toString()}
+                                value={driver._id?.toString() || ""}
+                              >
+                                {driver.name} ({driver.email})
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+
+                        <div className="flex gap-2">
                           <Button
-                            variant="outline"
+                            onClick={() =>
+                              handleAssignDriver(
+                                booking._id?.toString() || "",
+                                selectedDriver
+                              )
+                            }
+                            disabled={
+                              !selectedDriver ||
+                              assigningId === booking._id?.toString() ||
+                              (booking.assignedDriver && selectedDriver === booking.assignedDriver._id)
+                            }
                             size="sm"
-                            onClick={() => {
-                              setIsEditMode(false);
-                              setSelectedDriver(booking.assignedDriver?._id || "");
-                            }}
-                            className="flex items-center gap-2"
+                            className="flex items-center gap-2 bg-primary hover:bg-primary/90"
                           >
-                            Cancel
+                            {assigningId === booking._id ? (
+                              <>
+                                <Loader2 className="w-4 h-4 animate-spin" />
+                                {booking.assignedDriver ? "Reassigning..." : "Assigning..."}
+                              </>
+                            ) : (
+                              <>
+                                <UserCheck className="w-4 h-4" />
+                                {booking.assignedDriver ? "Reassign" : "Assign"}
+                              </>
+                            )}
                           </Button>
-                        )}
+
+                          {isEditMode && (
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => {
+                                setIsEditMode(false);
+                                setSelectedDriver(booking.assignedDriver?._id || "");
+                              }}
+                              className="flex items-center gap-2"
+                            >
+                              Cancel
+                            </Button>
+                          )}
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              )}
-            </div>
+                )}
+              </div>
+            )}
 
             {/* Action Buttons */}
             <div className="flex flex-col sm:flex-row gap-2 pt-2 border-t">

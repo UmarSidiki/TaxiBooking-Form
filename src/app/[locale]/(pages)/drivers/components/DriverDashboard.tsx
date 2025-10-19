@@ -44,7 +44,7 @@ import {
   User,
   Receipt,
 } from "lucide-react";
-import { IBooking } from "@/models/Booking";
+import type { IBooking } from "@/models/Booking";
 import { apiGet } from "@/utils/api";
 import { DateRangePicker } from "@/components/ui/date-range-picker";
 import { DateRange } from "react-day-picker";

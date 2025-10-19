@@ -23,7 +23,7 @@ import {
   CheckCircle,
   XCircle,
 } from "lucide-react";
-import { IDriver } from "@/models/Driver";
+import type { IDriver } from "@/models/Driver";
 import { apiGet, apiPost, apiPatch, apiDelete } from "@/utils/api";
 
 interface DriverForm extends Omit<IDriver, "_id" | "createdAt" | "updatedAt"> {

@@ -37,11 +37,6 @@ export default function BookingFormContainer() {
                 width={32}
                 height={32}
               />
-              <div>
-                <h1 className="text-xl sm:text-2xl font-bold text-secondary">
-                  RideNow
-                </h1>
-              </div>
             </div>
 
             {/* Progress Indicator - Centered in Header */}

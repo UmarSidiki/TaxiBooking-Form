@@ -271,13 +271,13 @@ export default function RidesPage() {
         );
         // Reset edit mode
         setSelectedBooking(null);
-        alert(data.data.assignedDriver && bookingId !== data.data.assignedDriver._id ? "Driver reassigned successfully" : "Driver assigned successfully");
+        alert(data.data.assignedDriver && bookingId !== data.data.assignedDriver._id ? t('Dashboard.Rides.driver-reassigned-successfully') : t('Dashboard.Rides.driver-assigned-successfully'));
       } else {
-        alert(`Assignment failed: ${data.message}`);
+        alert(t('Dashboard.Rides.assignment-failed-data-message', { 0: data.message }));
       }
     } catch (error) {
       console.error("Error assigning driver:", error);
-      alert("Failed to assign driver");
+      alert(t('Dashboard.Rides.failed-to-assign-driver'));
     } finally {
       setAssigningId(null);
     }
@@ -461,7 +461,7 @@ export default function RidesPage() {
                 {booking.childSeats > 0 && (
                   <div className="flex items-center gap-2">
                     <Baby className="w-3 h-3 text-gray-400" />
-                    <span className="text-gray-600">Child Seats:</span>
+                    <span className="text-gray-600">{t('Dashboard.Rides.child-seats')}</span>
                     <span className="font-medium text-gray-900">
                       {booking.childSeats}
                     </span>
@@ -470,7 +470,7 @@ export default function RidesPage() {
                 {booking.babySeats > 0 && (
                   <div className="flex items-center gap-2">
                     <Baby className="w-3 h-3 text-gray-400" />
-                    <span className="text-gray-600">Baby Seats:</span>
+                    <span className="text-gray-600">{t('Dashboard.Rides.baby-seats')}</span>
                     <span className="font-medium text-gray-900">
                       {booking.babySeats}
                     </span>
@@ -479,7 +479,7 @@ export default function RidesPage() {
                 {booking.flightNumber && (
                   <div className="flex items-center gap-2">
                     <Plane className="w-3 h-3 text-gray-400" />
-                    <span className="text-gray-600">Flight Number:</span>
+                    <span className="text-gray-600">{t('Dashboard.Rides.flight-number')}</span>
                     <span className="font-medium text-gray-900">
                       {booking.flightNumber}
                     </span>
@@ -492,8 +492,7 @@ export default function RidesPage() {
                     <Info className="w-3 h-3 text-secondary-foreground flex-shrink-0 mt-0.5" />
                     <div>
                       <span className="text-xs font-medium text-secondary-foreground">
-                        Special Requests:
-                      </span>
+                        {t('Dashboard.Rides.special-requests')} </span>
                       <p className="text-xs text-secondary-foreground mt-1">
                         {booking.notes}
                       </p>
@@ -582,8 +581,7 @@ export default function RidesPage() {
                         <UserCheck className="w-4 h-4 text-primary" />
                         <div>
                           <span className="text-primary font-medium text-sm">
-                            Assigned Driver:
-                          </span>
+                            {t('Dashboard.Rides.assigned-driver')} </span>
                           <p className="text-primary font-medium">{booking.assignedDriver.name}</p>
                           <p className="text-primary/70 text-xs">{booking.assignedDriver.email}</p>
                         </div>
@@ -595,8 +593,7 @@ export default function RidesPage() {
                         className="text-xs h-8 px-3 border-primary/30 text-primary hover:bg-primary/10"
                       >
                         <Edit className="w-3 h-3 mr-1" />
-                        Reassign
-                      </Button>
+                        {t('Dashboard.Rides.reassign')} </Button>
                     </div>
                   </div>
                 ) : (
@@ -605,7 +602,7 @@ export default function RidesPage() {
                       <div className="flex items-center gap-2">
                         <UserCheck className="w-4 h-4 text-secondary-foreground" />
                         <span className="text-secondary-foreground font-medium text-sm">
-                          {booking.assignedDriver ? "Reassign Driver:" : "Assign Driver:"}
+                          {booking.assignedDriver ? t('Dashboard.Rides.reassign-driver') : t('Dashboard.Rides.assign-driver')}
                         </span>
                       </div>
 
@@ -616,7 +613,7 @@ export default function RidesPage() {
                         >
                           <SelectTrigger className="w-full">
                             <User className="w-4 h-4 mr-2" />
-                            <SelectValue placeholder={booking.assignedDriver ? "Change Driver" : "Select Driver"} />
+                            <SelectValue placeholder={booking.assignedDriver ? t('Dashboard.Rides.change-driver') : t('Dashboard.Rides.select-driver')} />
                           </SelectTrigger>
                           <SelectContent>
                             {drivers.map((driver) => (
@@ -654,7 +651,7 @@ export default function RidesPage() {
                             ) : (
                               <>
                                 <UserCheck className="w-4 h-4" />
-                                {booking.assignedDriver ? "Reassign" : "Assign"}
+                                {booking.assignedDriver ? t('Dashboard.Rides.reassign') : t('Dashboard.Rides.assign')}
                               </>
                             )}
                           </Button>
@@ -669,8 +666,7 @@ export default function RidesPage() {
                               }}
                               className="flex items-center gap-2"
                             >
-                              Cancel
-                            </Button>
+                              {t('Dashboard.Rides.cancel')} </Button>
                           )}
                         </div>
                       </div>
@@ -817,13 +813,13 @@ export default function RidesPage() {
                 <Select value={sortBy} onValueChange={setSortBy}>
                   <SelectTrigger className="flex-1 sm:w-48">
                     <Filter className="w-4 h-4 mr-2" />
-                    <SelectValue placeholder="Sort by" />
+                    <SelectValue placeholder={t('Dashboard.Rides.sort-by')} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="date-asc">Nearest Date</SelectItem>
-                    <SelectItem value="date-desc">Furthest Date</SelectItem>
-                    <SelectItem value="price-asc">Lowest Price</SelectItem>
-                    <SelectItem value="price-desc">Highest Price</SelectItem>
+                    <SelectItem value="date-asc">{t('Dashboard.Rides.nearest-date')}</SelectItem>
+                    <SelectItem value="date-desc">{t('Dashboard.Rides.furthest-date')}</SelectItem>
+                    <SelectItem value="price-asc">{t('Dashboard.Rides.lowest-price')}</SelectItem>
+                    <SelectItem value="price-desc">{t('Dashboard.Rides.highest-price')}</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -1156,16 +1152,12 @@ export default function RidesPage() {
                         <Baby className="w-4 h-4" />
                         <span>
                           {detailBooking.childSeats > 0 &&
-                            `${detailBooking.childSeats} child seat${
-                              detailBooking.childSeats > 1 ? "s" : ""
-                            }`}
+                            t('Dashboard.Rides.detailbooking-childseats-child-seat-detailbooking-childseats-greater-than-1-s', { 0: detailBooking.childSeats, 1: detailBooking.childSeats > 1 ? 's' : '' })}
                           {detailBooking.childSeats > 0 &&
                             detailBooking.babySeats > 0 &&
                             " • "}
                           {detailBooking.babySeats > 0 &&
-                            `${detailBooking.babySeats} baby seat${
-                              detailBooking.babySeats > 1 ? "s" : ""
-                            }`}
+                            t('Dashboard.Rides.detailbooking-babyseats-baby-seat-detailbooking-babyseats-greater-than-1-s', { 0: detailBooking.babySeats, 1: detailBooking.babySeats > 1 ? 's' : '' })}
                         </span>
                       </div>
                     )}
@@ -1223,8 +1215,7 @@ export default function RidesPage() {
                         <div className="mt-3">
                           <p className="font-medium text-gray-700 mb-1 flex items-center gap-2">
                             <Plane className="w-4 h-4 text-secondary-foreground" />
-                            Flight Number
-                          </p>
+                            {t('Dashboard.Rides.flight-number2')} </p>
                           <p className="text-gray-600 p-2 bg-secondary/10 rounded-lg">
                             {detailBooking.flightNumber}
                           </p>

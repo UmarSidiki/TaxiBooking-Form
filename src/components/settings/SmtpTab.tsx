@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Loader2, Mail } from "lucide-react";
 import { ISetting } from "@/models/Setting";
 import { apiPost } from "@/utils/api";
+import { useTranslations } from "next-intl";
 
 interface SmtpTabProps {
   settings: Partial<ISetting>;
@@ -19,19 +20,22 @@ const SmtpTab: React.FC<SmtpTabProps> = ({
   isLoading,
   setIsLoading,
 }) => {
+  const t = useTranslations();
   return (
     <Card>
       <CardHeader>
-        <CardTitle>SMTP Configuration</CardTitle>
+        <CardTitle>{t("Dashboard.Settings.smtp-configuration")}</CardTitle>
       </CardHeader>
       <CardContent className="space-y-6">
         {/* SMTP Settings */}
         <div className="space-y-4">
-          <h3 className="text-lg font-medium">SMTP Server Settings</h3>
+          <h3 className="text-lg font-medium">
+            {t("Dashboard.Settings.smtp-server-settings")}
+          </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium mb-2">
-                SMTP Host
+                {t("Dashboard.Settings.smtp-host")}{" "}
               </label>
               <Input
                 type="text"
@@ -45,12 +49,12 @@ const SmtpTab: React.FC<SmtpTabProps> = ({
                 }
               />
               <p className="text-xs text-gray-500 mt-1">
-                Your SMTP server hostname
+                {t("Dashboard.Settings.your-smtp-server-hostname")}{" "}
               </p>
             </div>
             <div>
               <label className="block text-sm font-medium mb-2">
-                SMTP Port
+                {t("Dashboard.Settings.smtp-port")}{" "}
               </label>
               <Input
                 type="number"
@@ -64,12 +68,12 @@ const SmtpTab: React.FC<SmtpTabProps> = ({
                 }
               />
               <p className="text-xs text-gray-500 mt-1">
-                Common ports: 587 (TLS), 465 (SSL), 25 (none)
+                {t("Dashboard.Settings.common-ports-587-tls-465-ssl-25-none")}{" "}
               </p>
             </div>
             <div>
               <label className="block text-sm font-medium mb-2">
-                Username
+                {t("Dashboard.Settings.username")}{" "}
               </label>
               <Input
                 type="text"
@@ -83,12 +87,12 @@ const SmtpTab: React.FC<SmtpTabProps> = ({
                 }
               />
               <p className="text-xs text-gray-500 mt-1">
-                Your SMTP username/email
+                {t("Dashboard.Settings.your-smtp-username-email")}{" "}
               </p>
             </div>
             <div>
               <label className="block text-sm font-medium mb-2">
-                Password
+                {t("Dashboard.Settings.password")}{" "}
               </label>
               <Input
                 type="password"
@@ -102,38 +106,37 @@ const SmtpTab: React.FC<SmtpTabProps> = ({
                 }
               />
               <p className="text-xs text-gray-500 mt-1">
-                Your SMTP password or app password
+                {t("Dashboard.Settings.your-smtp-password-or-app-password")}{" "}
               </p>
             </div>
           </div>
           <div>
             <label className="block text-sm font-medium mb-2">
-              Encryption
+              {t("Dashboard.Settings.encryption")}{" "}
             </label>
             <select
               value={settings.smtpEncryption ?? "TLS"}
               onChange={(e) =>
                 setSettings((prev) => ({
                   ...prev,
-                  smtpEncryption: e.target.value as
-                    | "TLS"
-                    | "SSL"
-                    | "none",
+                  smtpEncryption: e.target.value as "TLS" | "SSL" | "none",
                 }))
               }
               className="w-full px-3 py-2 border rounded-md"
             >
-              <option value="TLS">TLS (recommended)</option>
+              <option value="TLS">
+                {t("Dashboard.Settings.tls-recommended")}
+              </option>
               <option value="SSL">SSL</option>
-              <option value="none">None</option>
+              <option value="none">{t("Dashboard.Settings.none")}</option>
             </select>
             <p className="text-xs text-gray-500 mt-1">
-              Security protocol for SMTP connection
+              {t("Dashboard.Settings.security-protocol-for-smtp-connection")}{" "}
             </p>
           </div>
           <div>
             <label className="block text-sm font-medium mb-2">
-              Test Email Recipient
+              {t("Dashboard.Settings.test-email-recipient")}{" "}
             </label>
             <Input
               type="email"
@@ -147,14 +150,18 @@ const SmtpTab: React.FC<SmtpTabProps> = ({
               }
             />
             <p className="text-xs text-gray-500 mt-1">
-              Email address to send test emails to (leave empty to send to SMTP user)
+              {t(
+                "Dashboard.Settings.email-address-to-send-test-emails-to-leave-empty-to-send-to-smtp-user"
+              )}{" "}
             </p>
           </div>
         </div>
 
         {/* Test SMTP */}
         <div className="space-y-4 border-t pt-4">
-          <h3 className="text-lg font-medium">Test SMTP Configuration</h3>
+          <h3 className="text-lg font-medium">
+            {t("Dashboard.Settings.test-smtp-configuration")}
+          </h3>
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
             <Button
               onClick={async () => {
@@ -178,9 +185,7 @@ const SmtpTab: React.FC<SmtpTabProps> = ({
                   setIsLoading(false);
                 }
               }}
-              disabled={
-                isLoading || !settings.smtpHost || !settings.smtpUser
-              }
+              disabled={isLoading || !settings.smtpHost || !settings.smtpUser}
               className="bg-blue-600 hover:bg-blue-700"
             >
               {isLoading ? (
@@ -191,12 +196,14 @@ const SmtpTab: React.FC<SmtpTabProps> = ({
               ) : (
                 <>
                   <Mail className="mr-2 h-4 w-4" />
-                  Test SMTP
+                  {t("Dashboard.Settings.test-smtp")}{" "}
                 </>
               )}
             </Button>
             <p className="text-sm text-gray-600">
-              Send a test email to verify your SMTP configuration
+              {t(
+                "Dashboard.Settings.send-a-test-email-to-verify-your-smtp-configuration"
+              )}{" "}
             </p>
           </div>
         </div>
@@ -204,9 +211,10 @@ const SmtpTab: React.FC<SmtpTabProps> = ({
         {/* Info Notice */}
         <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
           <p className="text-sm text-blue-800">
-            <strong>Note:</strong> SMTP settings are used for sending
-            booking confirmation emails. Make sure your SMTP provider
-            allows less secure apps or use app passwords if required.
+            <strong>Note:</strong>{" "}
+            {t(
+              "Dashboard.Settings.smtp-settings-are-used-for-sending-booking-confirmation-emails-make-sure-your-smtp-provider-allows-less-secure-apps-or-use-app-passwords-if-required"
+            )}{" "}
           </p>
         </div>
       </CardContent>

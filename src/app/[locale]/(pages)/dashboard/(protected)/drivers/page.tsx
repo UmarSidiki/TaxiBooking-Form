@@ -25,6 +25,7 @@ import {
 } from "lucide-react";
 import type { IDriver } from "@/models/Driver";
 import { apiGet, apiPost, apiPatch, apiDelete } from "@/utils/api";
+import { useTranslations } from "next-intl";
 
 interface DriverForm extends Omit<IDriver, "_id" | "createdAt" | "updatedAt"> {
   _id?: string;
@@ -41,6 +42,7 @@ const DriversPage = () => {
     password: "",
     isActive: true,
   });
+  const t = useTranslations();
 
   useEffect(() => {
     fetchDrivers();
@@ -57,7 +59,7 @@ const DriversPage = () => {
       }
     } catch (error) {
       console.error("Error fetching drivers:", error);
-      alert("Failed to fetch drivers");
+      alert(t("Driver.failed-to-fetch-drivers"));
     } finally {
       setIsLoading(false);
     }
@@ -79,11 +81,11 @@ const DriversPage = () => {
         resetForm();
         fetchDrivers();
       } else {
-        alert(data.message || "Operation failed");
+        alert(data.message || t("Driver.operation-failed"));
       }
     } catch (error) {
       console.error("Error saving driver:", error);
-      alert("Failed to save driver");
+      alert(t("Driver.failed-to-save-driver"));
     } finally {
       setIsLoading(false);
     }
@@ -99,7 +101,7 @@ const DriversPage = () => {
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm("Are you sure you want to delete this driver?")) {
+    if (!confirm(t("Driver.are-you-sure-you-want-to-delete-this-driver"))) {
       return;
     }
 
@@ -113,11 +115,11 @@ const DriversPage = () => {
         alert(data.message);
         fetchDrivers();
       } else {
-        alert(data.message || "Delete failed");
+        alert(data.message || t("Driver.delete-failed"));
       }
     } catch (error) {
       console.error("Error deleting driver:", error);
-      alert("Failed to delete driver");
+      alert(t("Driver.failed-to-delete-driver"));
     } finally {
       setIsLoading(false);
     }
@@ -140,23 +142,25 @@ const DriversPage = () => {
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4 lg:mb-6">
         <div>
           <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-foreground">
-            Driver Management
+            {t("Driver.driver-management")}{" "}
           </h1>
           <p className="text-muted-foreground mt-1 text-sm sm:text-base">
-            Manage your drivers and their accounts
+            {t("Driver.manage-your-drivers-and-their-accounts")}{" "}
           </p>
         </div>
         <Dialog open={showForm} onOpenChange={setShowForm}>
           <DialogTrigger asChild>
             <Button className="bg-primary hover:bg-primary/90 text-primary-foreground w-full sm:w-auto">
               <Plus className="h-4 w-4 sm:mr-2" />
-              <span className="hidden sm:inline">Add Driver</span>
+              <span className="hidden sm:inline">{t("Driver.add-driver")}</span>
             </Button>
           </DialogTrigger>
           <DialogContent className="max-w-md">
             <DialogHeader>
               <DialogTitle>
-                {editingId ? "Edit Driver" : "Add New Driver"}
+                {editingId
+                  ? t("Driver.edit-driver")
+                  : t("Driver.add-new-driver")}
               </DialogTitle>
             </DialogHeader>
             <DriverForm
@@ -184,17 +188,17 @@ const DriversPage = () => {
                 <CardContent className="p-8 sm:p-12 text-center">
                   <Users className="h-12 sm:h-16 w-12 sm:w-16 text-muted-foreground mx-auto mb-4" />
                   <h3 className="text-lg font-semibold mb-2 text-foreground">
-                    No drivers yet
+                    {t("Driver.no-drivers-yet")}{" "}
                   </h3>
                   <p className="text-muted-foreground mb-4 text-sm sm:text-base">
-                    Get started by adding your first driver
+                    {t("Driver.get-started-by-adding-your-first-driver")}{" "}
                   </p>
                   <Button
                     onClick={() => setShowForm(true)}
                     className="bg-primary hover:bg-primary/90 text-primary-foreground"
                   >
                     <Plus className="h-4 w-4 mr-2" />
-                    Add Your First Driver
+                    {t("Driver.add-your-first-driver")}{" "}
                   </Button>
                 </CardContent>
               </Card>
@@ -225,6 +229,8 @@ const DriverCard = ({
   onEdit: (driver: IDriver) => void;
   onDelete: (id: string) => void;
 }) => {
+
+  const t = useTranslations();
   return (
     <Card
       className={`group hover:shadow-lg transition-all duration-300 border border-border hover:border-primary/20 bg-card min-w-[300px] ${
@@ -276,12 +282,12 @@ const DriverCard = ({
             {driver.isActive ? (
               <>
                 <CheckCircle className="h-3 w-3 mr-1" />
-                Active
+                {t("Driver.active")}{" "}
               </>
             ) : (
               <>
                 <XCircle className="h-3 w-3 mr-1" />
-                Inactive
+                {t("Driver.inactive")}{" "}
               </>
             )}
           </Badge>
@@ -307,20 +313,25 @@ const DriverForm = ({
   isLoading: boolean;
   editingId: string | null;
 }) => {
+  const t = useTranslations();
   return (
     <form onSubmit={onSubmit} className="space-y-4">
       <div>
-        <label className="block text-sm font-medium mb-2">Name</label>
+        <label className="block text-sm font-medium mb-2">
+          {t("Driver.name")}
+        </label>
         <Input
           required
-          placeholder="Driver name"
+          placeholder={t("Driver.driver-name")}
           value={formData.name}
           onChange={(e) => setFormData({ ...formData, name: e.target.value })}
         />
       </div>
 
       <div>
-        <label className="block text-sm font-medium mb-2">Email</label>
+        <label className="block text-sm font-medium mb-2">
+          {t("Driver.email")}
+        </label>
         <Input
           required
           type="email"
@@ -331,17 +342,21 @@ const DriverForm = ({
       </div>
 
       <div>
-        <label className="block text-sm font-medium mb-2">Password</label>
+        <label className="block text-sm font-medium mb-2">
+          {t("Driver.password")}
+        </label>
         <Input
           required={!editingId}
           type="password"
-          placeholder="Password"
+          placeholder={t("Driver.password")}
           value={formData.password}
-          onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+          onChange={(e) =>
+            setFormData({ ...formData, password: e.target.value })
+          }
         />
         {editingId && (
           <p className="text-xs text-muted-foreground mt-1">
-            Leave empty to keep current password
+            {t("Driver.leave-empty-to-keep-current-password")}{" "}
           </p>
         )}
       </div>
@@ -357,7 +372,7 @@ const DriverForm = ({
           className="h-4 w-4 rounded border-gray-300"
         />
         <label htmlFor="isActive" className="text-sm font-medium">
-          Active
+          {t("Driver.active")}{" "}
         </label>
       </div>
 
@@ -371,12 +386,12 @@ const DriverForm = ({
           ) : (
             <>
               <Save className="mr-2 h-4 w-4" />
-              {editingId ? "Update Driver" : "Add Driver"}
+              {editingId ? t("Driver.update-driver") : t("Driver.add-driver")}
             </>
           )}
         </Button>
         <Button type="button" variant="outline" onClick={onCancel}>
-          Cancel
+          {t("Driver.cancel")}{" "}
         </Button>
       </div>
     </form>

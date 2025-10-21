@@ -279,7 +279,7 @@ function BookingFormUI() {
                                 stopInputRefs.current[index] = el;
                               }
                             }}
-                            placeholder={`Stop ${index + 1} location`}
+                            placeholder={t('embeddable.stop-index-1-location', { 0: index + 1 })}
                             value={stop.location}
                             onChange={(e) =>
                               handleStopChange(index, e.target.value)
@@ -308,8 +308,7 @@ function BookingFormUI() {
                         onClick={handleAddStop}
                         className="text-xs text-primary hover:text-primary/80 underline"
                       >
-                        Add a stop
-                      </button>
+                        {t('embeddable.add-a-stop')} </button>
                     </div>
                     <div className="flex-1 relative">
                       <div className="absolute left-3 top-1/2 -translate-y-1/2 text-primary">
@@ -519,8 +518,7 @@ function BookingFormUI() {
               </Button>
               <div>
                 <p className="text-xs text-center text-slate-500 mt-3">
-                  By submitting my data, I agree to be contacted.
-                </p>
+                  {t('embeddable.by-submitting-my-data-i-agree-to-be-contacted')} </p>
               </div>
               <div className="flex justify-center gap-2 flex-wrap pt-2">
                 <Image

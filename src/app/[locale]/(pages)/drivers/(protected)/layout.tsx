@@ -1,10 +1,11 @@
-import type { ReactNode } from "react";
+import { type ReactNode } from "react";
 import { redirect } from "next/navigation";
 import { getServerSession } from "next-auth";
 
 import { authOptions } from "@/lib/auth/options";
 import LogoutButton from "@/components/auth/LogoutButton";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import { getTranslations } from "next-intl/server";
 
 type DriverLayoutProps = {
   children: ReactNode;
@@ -15,6 +16,7 @@ export default async function DriverProtectedLayout({
   children,
 }: DriverLayoutProps) {
   const session = await getServerSession(authOptions);
+  const t = await getTranslations();
 
   if (!session?.user) {
     redirect(`/drivers/login`);
@@ -36,7 +38,9 @@ export default async function DriverProtectedLayout({
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
             <div className="flex items-center">
-              <h1 className="text-xl sm:text-2xl font-bold text-gray-900">Driver Dashboard</h1>
+              <h1 className="text-xl sm:text-2xl font-bold text-gray-900">
+                {t("Drivers.driver-dashboard")}
+              </h1>
             </div>
             <div className="flex items-center space-x-2 sm:space-x-4">
               {/* Mobile: Show only essential items */}
@@ -44,7 +48,12 @@ export default async function DriverProtectedLayout({
                 Welcome, {session.user.name}
               </div>
               <div className="hidden md:block text-sm text-gray-500">
-                {new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+                {new Date().toLocaleDateString("en-US", {
+                  weekday: "long",
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                })}
               </div>
               <LanguageSwitcher />
               <LogoutButton callbackUrl={`/drivers/login`} />

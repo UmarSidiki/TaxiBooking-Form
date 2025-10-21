@@ -177,7 +177,7 @@ function BookingFormUI() {
                         : t("embeddable.hourly")}
                     </span>
                     <span className="xs:hidden">
-                      {type === "destination" ? "Transfer" : "Hourly"}
+                      {type === "destination" ? t('Step1.DestinationBased') : t('Step1.TimeBased')}
                     </span>
                   </button>
                 ))}
@@ -230,7 +230,7 @@ function BookingFormUI() {
                                 stopInputRefs.current[index] = el;
                               }
                             }}
-                            placeholder={`Stop ${index + 1} location`}
+                            placeholder={t('embeddable.stop-index-1-location', { 0: index + 1 })}
                             value={stop.location}
                             onChange={(e) =>
                               handleStopChange(index, e.target.value)
@@ -259,8 +259,7 @@ function BookingFormUI() {
                         onClick={handleAddStop}
                         className="text-xs text-primary hover:text-primary/80 underline"
                       >
-                        Add a stop
-                      </button>
+                        {t('embeddable.add-a-stop')} </button>
                     </div>
                     <div className="flex-1 relative">
                       <div className="absolute left-2 sm:left-3 top-1/2 -translate-y-1/2 text-primary">
@@ -337,7 +336,7 @@ function BookingFormUI() {
                     >
                       <RefreshCw className="h-3 w-3 sm:h-3.5 sm:w-3.5 md:h-4 md:w-4" />
                       <span className="hidden xs:inline">{t("embeddable.round-trip")}</span>
-                      <span className="xs:hidden">Round</span>
+                      <span className="xs:hidden">{t('embeddable.round')}</span>
                     </button>
                   </div>
                 )}
@@ -466,15 +465,14 @@ function BookingFormUI() {
                 ) : (
                   <div className="flex items-center justify-center gap-2">
                     <span className="hidden xs:inline">{t("embeddable.search")}</span>
-                    <span className="xs:hidden">Search</span>
+                    <span className="xs:hidden">{t('embeddable.search')}</span>
                     <ArrowRight className="h-3 w-3 sm:h-3.5 sm:w-3.5 md:h-4 md:w-4" />
                   </div>
                 )}
               </Button>
               <div>
                 <p className="text-xs text-center text-slate-500 mt-2 sm:mt-3">
-                  By submitting my data, I agree to be contacted.
-                </p>
+                  {t('embeddable.by-submitting-my-data-i-agree-to-be-contacted')} </p>
               </div>
               <div className="flex justify-center gap-2 flex-wrap pt-2">
                 <Image

@@ -184,7 +184,7 @@ function BookingFormUI() {
                             stopInputRefs.current[index] = el;
                           }
                         }}
-                        placeholder={`Stop ${index + 1} location`}
+                        placeholder={t('embeddable.stop-index-1-location', { 0: index + 1 })}
                         value={stop.location}
                         onChange={(e) =>
                           handleStopChange(index, e.target.value)
@@ -217,7 +217,7 @@ function BookingFormUI() {
                     className="flex items-center gap-1 text-xs text-primary hover:text-primary/80 transition-colors"
                   >
                     <Plus className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
-                    <span className="hidden sm:inline">Add a stop</span>
+                    <span className="hidden sm:inline">{t('embeddable.add-a-stop')}</span>
                     <span className="sm:hidden">+</span>
                   </button>
                 </div>

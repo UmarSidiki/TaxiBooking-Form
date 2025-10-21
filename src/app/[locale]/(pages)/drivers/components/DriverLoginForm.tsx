@@ -25,6 +25,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { useTranslations } from "next-intl";
 
 // Register GSAP plugins
 if (typeof window !== "undefined") {
@@ -48,6 +49,7 @@ export default function DriverLoginForm() {
   const formRef = useRef<HTMLFormElement>(null);
   const iconRef = useRef<HTMLDivElement>(null);
   const particlesRef = useRef<HTMLDivElement[]>([]);
+  const t = useTranslations();
 
   useEffect(() => {
     // Initial animations
@@ -150,7 +152,7 @@ export default function DriverLoginForm() {
     if (result?.error) {
       setError(
         result.error === "CredentialsSignin"
-          ? "Invalid email or password"
+          ? t('Drivers.invalid-email-or-password')
           : result.error
       );
 
@@ -214,15 +216,13 @@ export default function DriverLoginForm() {
             ref={titleRef}
             className="text-4xl font-bold text-foreground mb-2"
           >
-            Driver Portal
-          </h1>
+            {t('Drivers.driver-portal')} </h1>
           <p
             ref={subtitleRef}
             className="text-muted-foreground flex items-center justify-center gap-2"
           >
             <Sparkles className="w-4 h-4 text-primary" />
-            Access your driver dashboard
-            <Sparkles className="w-4 h-4 text-primary" />
+            {t('Drivers.access-your-driver-dashboard')} <Sparkles className="w-4 h-4 text-primary" />
           </p>
         </div>
 
@@ -233,11 +233,9 @@ export default function DriverLoginForm() {
           <div className="h-1 bg-gradient-to-r from-primary via-primary/70 to-primary"></div>
           <CardHeader className="space-y-1 pb-6">
             <CardTitle className="text-2xl font-bold text-center">
-              Sign In
-            </CardTitle>
+              {t('Drivers.sign-in')} </CardTitle>
             <CardDescription className="text-center">
-              Enter your credentials to access the driver dashboard
-            </CardDescription>
+              {t('Drivers.enter-your-credentials-to-access-the-driver-dashboard')} </CardDescription>
           </CardHeader>
           <CardContent>
             <form ref={formRef} className="space-y-5" onSubmit={handleSubmit}>
@@ -247,8 +245,7 @@ export default function DriverLoginForm() {
                   htmlFor="email"
                 >
                   <Mail className="w-4 h-4 text-primary" />
-                  Email Address
-                </label>
+                  {t('Drivers.email-address')} </label>
                 <Input
                   id="email"
                   type="email"
@@ -268,8 +265,7 @@ export default function DriverLoginForm() {
                   htmlFor="password"
                 >
                   <Lock className="w-4 h-4 text-primary" />
-                  Password
-                </label>
+                  {t('Drivers.password')} </label>
                 <div className="relative">
                   <Input
                     id="password"
@@ -280,7 +276,7 @@ export default function DriverLoginForm() {
                     required
                     disabled={loading}
                     className="border-primary/20 focus:border-primary focus:ring-primary/20 pr-10 transition-all duration-300"
-                    placeholder="Enter your password"
+                    placeholder={t('Drivers.enter-your-password')}
                   />
                   <button
                     type="button"
@@ -311,12 +307,10 @@ export default function DriverLoginForm() {
                 {loading ? (
                   <div className="flex items-center gap-2">
                     <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                    Signing in...
-                  </div>
+                    {t('Drivers.signing-in')} </div>
                 ) : (
                   <div className="flex items-center justify-center gap-2">
-                    Sign In
-                    <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+                    {t('Drivers.sign-in')} <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
                   </div>
                 )}
               </Button>
@@ -324,13 +318,12 @@ export default function DriverLoginForm() {
 
             <div className="mt-6 text-center">
               <p className="text-sm text-muted-foreground">
-                Need assistance?{" "}
+                {t('Drivers.need-assistance')}?{" "}
                 <a
                   href="#"
                   className="text-primary hover:underline transition-colors"
                 >
-                  Contact Support
-                </a>
+                  {t('Drivers.contact-support')} </a>
               </p>
             </div>
           </CardContent>
@@ -338,7 +331,7 @@ export default function DriverLoginForm() {
 
         <div className="mt-8 text-center text-xs text-muted-foreground">
           <p>
-            © 2025 {process.env.NEXT_PUBLIC_WEBSITE_NAME}. All rights reserved.
+            © 2025 {process.env.NEXT_PUBLIC_WEBSITE_NAME}{t('Drivers.all-rights-reserved')}
           </p>
         </div>
       </div>

@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { PaymentElement, useStripe, useElements } from '@stripe/react-stripe-js';
 import { Button } from '@/components/ui/button';
 import { Loader2, Shield, Lock, CreditCard, CheckCircle2, AlertCircle } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 
 interface StripePaymentFormProps {
   amount: number;
@@ -36,16 +37,18 @@ export default function StripePaymentForm({
     return symbols[curr.toUpperCase()] || curr;
   };
 
+  const t = useTranslations();
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!stripe || !elements) {
-      setMessage({ type: 'error', text: 'Payment system not ready. Please refresh the page.' });
+      setMessage({ type: 'error', text: t('Stripe.payment-system-not-ready-please-refresh-the-page') });
       return;
     }
 
     setIsProcessing(true);
-    setMessage({ type: 'info', text: 'Processing your payment...' });
+    setMessage({ type: 'info', text: t('Stripe.processing-your-payment') });
 
     try {
       const { error, paymentIntent } = await stripe.confirmPayment({
@@ -60,27 +63,27 @@ export default function StripePaymentForm({
       if (error) {
         const errorMessage = error.type === 'card_error' || error.type === 'validation_error'
           ? error.message
-          : 'An unexpected error occurred. Please try again.';
+          : t('Stripe.an-unexpected-error-occurred-please-try-again');
         
-        setMessage({ type: 'error', text: errorMessage || 'Payment failed' });
-        onError(errorMessage || 'Payment failed');
+        setMessage({ type: 'error', text: errorMessage || t('Stripe.payment-failed') });
+        onError(errorMessage || t('Stripe.payment-failed'));
       } else if (paymentIntent && paymentIntent.status === 'succeeded') {
-        setMessage({ type: 'success', text: 'Payment successful! Processing your booking...' });
+        setMessage({ type: 'success', text: t('Stripe.payment-successful-processing-your-booking') });
         setTimeout(() => onSuccess(paymentIntent.id), 1000);
       } else if (paymentIntent && paymentIntent.status === 'processing') {
-        setMessage({ type: 'info', text: 'Payment is processing. You will receive a confirmation shortly.' });
+        setMessage({ type: 'info', text: t('Stripe.payment-is-processing-you-will-receive-a-confirmation-shortly') });
         // Still call success callback for processing status
         setTimeout(() => onSuccess(paymentIntent.id), 1500);
       } else if (paymentIntent && paymentIntent.status === 'requires_action') {
-        setMessage({ type: 'info', text: 'Additional authentication required. Please follow the prompts.' });
+        setMessage({ type: 'info', text: t('Stripe.additional-authentication-required-please-follow-the-prompts') });
       } else {
-        setMessage({ type: 'error', text: 'Payment status unclear. Please contact support.' });
-        onError('Payment status: ' + (paymentIntent?.status || 'unknown'));
+        setMessage({ type: 'error', text: t('Stripe.payment-status-unclear-please-contact-support') });
+        onError(t('Stripe.payment-status') + (paymentIntent?.status || 'unknown'));
       }
     } catch (err) {
       console.error('Payment error:', err);
-      setMessage({ type: 'error', text: 'An unexpected error occurred. Please try again.' });
-      onError('Payment processing failed');
+      setMessage({ type: 'error', text: t('Stripe.an-unexpected-error-occurred-please-try-again') });
+      onError(t('Stripe.payment-processing-failed'));
     } finally {
       setIsProcessing(false);
     }
@@ -94,8 +97,7 @@ export default function StripePaymentForm({
           <div>
             <p className="text-sm text-gray-600 mb-1 flex items-center gap-2">
               <CreditCard className="h-4 w-4" />
-              Total Amount
-            </p>
+              {t('Stripe.total-amount')} </p>
             <p className="text-3xl font-bold text-gray-900">
               {getCurrencySymbol(currency)}{amount.toFixed(2)}
             </p>
@@ -103,9 +105,8 @@ export default function StripePaymentForm({
           <div className="text-right">
             <div className="flex items-center gap-1 text-green-600 text-sm font-medium">
               <Shield className="h-4 w-4" />
-              Secure
-            </div>
-            <p className="text-xs text-gray-500 mt-1">256-bit SSL</p>
+              {t('Stripe.secure')} </div>
+            <p className="text-xs text-gray-500 mt-1">{t('Stripe.256-bit-ssl')}</p>
           </div>
         </div>
       </div>
@@ -114,7 +115,7 @@ export default function StripePaymentForm({
       <div className="bg-white p-4 rounded-lg border">
         <div className="flex items-center gap-2 mb-4">
           <Lock className="h-4 w-4 text-gray-600" />
-          <h3 className="text-sm font-semibold text-gray-700">Payment Details</h3>
+          <h3 className="text-sm font-semibold text-gray-700">{t('Stripe.payment-details')}</h3>
         </div>
         <PaymentElement 
           options={{
@@ -161,12 +162,11 @@ export default function StripePaymentForm({
         {isProcessing ? (
           <>
             <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-            Processing Payment...
-          </>
+            {t('Stripe.processing-payment')} </>
         ) : (
           <>
             <Lock className="mr-2 h-5 w-5" />
-            Pay {getCurrencySymbol(currency)}{amount.toFixed(2)} Securely
+            {t('Stripe.pay')} {getCurrencySymbol(currency)}{amount.toFixed(2)} {t('Stripe.securely')}
           </>
         )}
       </Button>
@@ -175,18 +175,17 @@ export default function StripePaymentForm({
       <div className="flex items-center justify-center gap-4 pt-2">
         <div className="flex items-center gap-2 text-xs text-gray-500">
           <Shield className="h-4 w-4" />
-          <span>Secured by Stripe</span>
+          <span>{t('Stripe.secured-by-stripe')}</span>
         </div>
         <div className="h-4 w-px bg-gray-300"></div>
         <div className="flex items-center gap-2 text-xs text-gray-500">
           <Lock className="h-4 w-4" />
-          <span>PCI DSS Compliant</span>
+          <span>{t('Stripe.pci-dss-compliant')}</span>
         </div>
       </div>
 
       <p className="text-xs text-gray-400 text-center">
-        Your payment information is encrypted and secure. We never store your card details.
-      </p>
+        {t('Stripe.your-payment-information-is-encrypted-and-secure-we-never-store-your-card-details')} </p>
     </form>
   );
 }

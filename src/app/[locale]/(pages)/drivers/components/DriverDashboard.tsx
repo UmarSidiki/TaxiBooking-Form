@@ -160,7 +160,9 @@ export default function DriverDashboard() {
       "text-white font-semibold flex items-center gap-1.5 px-3 py-1 rounded-full text-xs";
     if (booking.status === "canceled") {
       return (
-        <Badge className={`${badgeClasses} bg-destructive hover:bg-destructive/90`}>
+        <Badge
+          className={`${badgeClasses} bg-destructive hover:bg-destructive/90`}
+        >
           <X className="w-3 h-3" /> {t("Dashboard.Rides.Canceled")}
         </Badge>
       );
@@ -171,7 +173,9 @@ export default function DriverDashboard() {
 
     if (bookingDate < now) {
       return (
-        <Badge className={`${badgeClasses} bg-muted hover:bg-muted/90 text-muted-foreground`}>
+        <Badge
+          className={`${badgeClasses} bg-muted hover:bg-muted/90 text-muted-foreground`}
+        >
           <CheckCircle className="w-3 h-3" /> {t("Dashboard.Rides.Completed")}
         </Badge>
       );
@@ -196,7 +200,9 @@ export default function DriverDashboard() {
         );
       case "pending":
         return (
-          <Badge className={`${badgeClasses} bg-secondary hover:bg-secondary/90`}>
+          <Badge
+            className={`${badgeClasses} bg-secondary hover:bg-secondary/90`}
+          >
             <Clock className="w-3 h-3" /> {t("Dashboard.Rides.Pending")}
           </Badge>
         );
@@ -208,13 +214,19 @@ export default function DriverDashboard() {
         );
       case "failed":
         return (
-          <Badge className={`${badgeClasses} bg-destructive hover:bg-destructive/90`}>
+          <Badge
+            className={`${badgeClasses} bg-destructive hover:bg-destructive/90`}
+          >
             <X className="w-3 h-3" /> {t("Dashboard.Rides.Failed")}
           </Badge>
         );
       default:
         return (
-          <Badge className={`${badgeClasses} bg-muted hover:bg-muted/90 text-muted-foreground`}>{status}</Badge>
+          <Badge
+            className={`${badgeClasses} bg-muted hover:bg-muted/90 text-muted-foreground`}
+          >
+            {status}
+          </Badge>
         );
     }
   };
@@ -231,24 +243,39 @@ export default function DriverDashboard() {
     return (
       <Card className="group hover:shadow-lg transition-all duration-300 border border-gray-200 shadow-sm bg-white overflow-hidden">
         {/* Top border indicator */}
-        <div className={`h-1 ${
-          statusColor === "destructive" ? "bg-destructive" :
-          statusColor === "muted" ? "bg-muted" : "bg-primary"
-        }`}></div>
+        <div
+          className={`h-1 ${
+            statusColor === "destructive"
+              ? "bg-destructive"
+              : statusColor === "muted"
+              ? "bg-muted"
+              : "bg-primary"
+          }`}
+        ></div>
 
         <CardContent className="p-3 sm:p-4 lg:p-6">
           <div className="flex flex-col gap-3 sm:gap-4">
             {/* Header Section */}
             <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
               <div className="flex items-center gap-3">
-                <div className={`p-2 rounded-lg ${
-                  statusColor === "destructive" ? "bg-destructive/10" :
-                  statusColor === "muted" ? "bg-muted/10" : "bg-primary/10"
-                }`}>
-                  <Car className={`w-4 h-4 sm:w-5 sm:h-5 ${
-                    statusColor === "destructive" ? "text-destructive" :
-                    statusColor === "muted" ? "text-muted-foreground" : "text-primary"
-                  }`} />
+                <div
+                  className={`p-2 rounded-lg ${
+                    statusColor === "destructive"
+                      ? "bg-destructive/10"
+                      : statusColor === "muted"
+                      ? "bg-muted/10"
+                      : "bg-primary/10"
+                  }`}
+                >
+                  <Car
+                    className={`w-4 h-4 sm:w-5 sm:h-5 ${
+                      statusColor === "destructive"
+                        ? "text-destructive"
+                        : statusColor === "muted"
+                        ? "text-muted-foreground"
+                        : "text-primary"
+                    }`}
+                  />
                 </div>
                 <div className="min-w-0 flex-1">
                   <h3 className="font-semibold text-gray-900 text-base sm:text-lg truncate">
@@ -290,7 +317,9 @@ export default function DriverDashboard() {
               <div className="flex flex-col gap-1">
                 <div className="flex items-center gap-1 sm:gap-2 text-xs text-gray-500">
                   <Users className="w-3 h-3 flex-shrink-0" />
-                  <span className="truncate">{t("Dashboard.Rides.Passengers")}</span>
+                  <span className="truncate">
+                    {t("Dashboard.Rides.Passengers")}
+                  </span>
                 </div>
                 <p className="text-sm font-medium text-gray-900 truncate">
                   {booking.passengers}
@@ -320,7 +349,9 @@ export default function DriverDashboard() {
                 {booking.childSeats > 0 && (
                   <div className="flex items-center gap-2">
                     <Baby className="w-3 h-3 text-gray-400" />
-                    <span className="text-gray-600">Child Seats:</span>
+                    <span className="text-gray-600">
+                      {t("Drivers.child-seats")}
+                    </span>
                     <span className="font-medium text-gray-900">
                       {booking.childSeats}
                     </span>
@@ -329,7 +360,9 @@ export default function DriverDashboard() {
                 {booking.babySeats > 0 && (
                   <div className="flex items-center gap-2">
                     <Baby className="w-3 h-3 text-gray-400" />
-                    <span className="text-gray-600">Baby Seats:</span>
+                    <span className="text-gray-600">
+                      {t("Drivers.baby-seats")}
+                    </span>
                     <span className="font-medium text-gray-900">
                       {booking.babySeats}
                     </span>
@@ -338,7 +371,9 @@ export default function DriverDashboard() {
                 {booking.flightNumber && (
                   <div className="flex items-center gap-2">
                     <Plane className="w-3 h-3 text-gray-400" />
-                    <span className="text-gray-600">Flight Number:</span>
+                    <span className="text-gray-600">
+                      {t("Drivers.flight-number")}
+                    </span>
                     <span className="font-medium text-gray-900">
                       {booking.flightNumber}
                     </span>
@@ -351,7 +386,7 @@ export default function DriverDashboard() {
                     <Info className="w-3 h-3 text-secondary-foreground flex-shrink-0 mt-0.5" />
                     <div>
                       <span className="text-xs font-medium text-secondary-foreground">
-                        Special Requests:
+                        {t("Drivers.special-requests")}{" "}
                       </span>
                       <p className="text-xs text-secondary-foreground mt-1">
                         {booking.notes}
@@ -421,9 +456,7 @@ export default function DriverDashboard() {
               </div>
               <div className="flex items-center gap-2">
                 <Mail className="w-4 h-4 text-secondary-foreground flex-shrink-0" />
-                <span className="text-gray-700 truncate">
-                  {booking.email}
-                </span>
+                <span className="text-gray-700 truncate">{booking.email}</span>
               </div>
               <div className="flex items-center gap-2">
                 <PhoneCall className="w-4 h-4 text-secondary-foreground flex-shrink-0" />
@@ -742,14 +775,24 @@ export default function DriverDashboard() {
             <div className="space-y-6">
               <DialogHeader className="pb-4 border-b">
                 <div className="flex items-center gap-4">
-                  <div className={`p-3 rounded-lg ${
-                    detailBooking.status === "canceled" ? "bg-destructive/10" :
-                    new Date(detailBooking.date) < new Date() ? "bg-muted/10" : "bg-primary/10"
-                  }`}>
-                    <Car className={`w-6 h-6 ${
-                      detailBooking.status === "canceled" ? "text-destructive" :
-                      new Date(detailBooking.date) < new Date() ? "text-muted-foreground" : "text-primary"
-                    }`} />
+                  <div
+                    className={`p-3 rounded-lg ${
+                      detailBooking.status === "canceled"
+                        ? "bg-destructive/10"
+                        : new Date(detailBooking.date) < new Date()
+                        ? "bg-muted/10"
+                        : "bg-primary/10"
+                    }`}
+                  >
+                    <Car
+                      className={`w-6 h-6 ${
+                        detailBooking.status === "canceled"
+                          ? "text-destructive"
+                          : new Date(detailBooking.date) < new Date()
+                          ? "text-muted-foreground"
+                          : "text-primary"
+                      }`}
+                    />
                   </div>
                   <div>
                     <DialogTitle className="text-2xl font-bold text-gray-900">
@@ -863,16 +906,24 @@ export default function DriverDashboard() {
                         <Baby className="w-4 h-4" />
                         <span>
                           {detailBooking.childSeats > 0 &&
-                            `${detailBooking.childSeats} child seat${
-                              detailBooking.childSeats > 1 ? "s" : ""
-                            }`}
+                            t(
+                              "Drivers.detailbooking-childseats-child-seat-detailbooking-childseats-greater-than-1-s",
+                              {
+                                0: detailBooking.childSeats,
+                                1: detailBooking.childSeats > 1 ? "s" : "",
+                              }
+                            )}
                           {detailBooking.childSeats > 0 &&
                             detailBooking.babySeats > 0 &&
                             " • "}
                           {detailBooking.babySeats > 0 &&
-                            `${detailBooking.babySeats} baby seat${
-                              detailBooking.babySeats > 1 ? "s" : ""
-                            }`}
+                            t(
+                              "Drivers.detailbooking-babyseats-baby-seat-detailbooking-babyseats-greater-than-1-s",
+                              {
+                                0: detailBooking.babySeats,
+                                1: detailBooking.babySeats > 1 ? "s" : "",
+                              }
+                            )}
                         </span>
                       </div>
                     )}
@@ -930,7 +981,7 @@ export default function DriverDashboard() {
                         <div className="mt-3">
                           <p className="font-medium text-gray-700 mb-1 flex items-center gap-2">
                             <Plane className="w-4 h-4 text-secondary-foreground" />
-                            Flight Number
+                            {t("Drivers.flight-number")}{" "}
                           </p>
                           <p className="text-gray-600 p-2 bg-secondary/10 rounded-lg">
                             {detailBooking.flightNumber}

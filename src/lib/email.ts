@@ -30,17 +30,8 @@ export async function sendEmail(
         pass: settings.smtpPass || '',
         encryption: settings.smtpEncryption || 'TLS',
       };
-    } else if (process.env.SMTP_HOST && process.env.SMTP_USER) {
-      // Fallback to environment variables if settings not configured
-      smtpConfig = {
-        host: process.env.SMTP_HOST,
-        port: Number(process.env.SMTP_PORT) || 465,
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASS || '',
-        encryption: 'SSL', // Default for env-based config
-      };
     } else {
-      console.log("⚠️ SMTP not configured in settings or environment. Email sending skipped.");
+      console.log("⚠️ SMTP not configured in settings. Email sending skipped.");
       console.log("✉️ Would send email to:", mailOptions.to);
       return true;
     }

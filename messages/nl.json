@@ -352,7 +352,11 @@
       "username": "Gebruikersnaam",
       "your-smtp-password-or-app-password": "Uw SMTP-wachtwoord of app-wachtwoord",
       "your-smtp-server-hostname": "De hostnaam van uw SMTP-server",
-      "your-smtp-username-email": "Uw SMTP-gebruikersnaam/-e-mailadres"
+      "your-smtp-username-email": "Uw SMTP-gebruikersnaam/-e-mailadres",
+      "email-address-used-as-sender-for-outgoing-emails": "E-mailadres gebruikt als afzender voor uitgaande e-mails",
+      "from-email-address": "Van e-mailadres",
+      "name-displayed-as-sender-in-emails": "Naam afzender",
+      "sender-name": "Naam afzender"
     }
   },
   "Footer": {

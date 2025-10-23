@@ -9,29 +9,29 @@ export async function POST() {
     // Get SMTP settings
     const settings = await Setting.findOne();
 
-    // Check if we have either database settings or environment variables
+    // Check if we have database settings
     const hasDatabaseConfig =
       settings && settings.smtpHost && settings.smtpUser;
-    const hasEnvConfig = process.env.SMTP_HOST && process.env.SMTP_USER;
 
-    if (!hasDatabaseConfig && !hasEnvConfig) {
+    if (!hasDatabaseConfig) {
       return NextResponse.json(
         {
           success: false,
           message:
-            "SMTP configuration incomplete. Please configure SMTP settings in the dashboard or set environment variables.",
+            "SMTP configuration incomplete. Please configure SMTP settings in the dashboard.",
         },
         { status: 400 }
       );
     }
 
-    // Use database settings if available, otherwise use env vars for the test email
-    const smtpUser = settings?.smtpUser || process.env.SMTP_USER;
-    const testRecipient = settings?.smtpTestEmail || smtpUser;
+    // Use database settings for the test email
+    const smtpUser = settings.smtpUser;
+    const testRecipient = settings.smtpTestEmail || smtpUser;
+    const fromField = settings.smtpSenderName ? `${settings.smtpSenderName} <${smtpUser}>` : smtpUser;
 
     // Create test email options
     const testEmailOptions = {
-      from: smtpUser,
+      from: fromField,
       to: testRecipient,
       subject: "SMTP Test - Booking System",
       html: `

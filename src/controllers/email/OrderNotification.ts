@@ -1,5 +1,7 @@
 import { sendEmail } from '@/lib/email';
 import { getMongoDb } from '@/lib/mongodb';
+import { connectDB } from '@/lib/mongoose';
+import Setting from '@/models/Setting';
 
 interface BookingData {
   tripId: string;
@@ -140,10 +142,16 @@ export async function sendOrderNotificationEmail(bookingData: BookingData) {
       return true;
     }
 
+    // Get SMTP settings for from address
+    await connectDB();
+    const settings = await Setting.findOne();
+    const fromAddress = settings?.smtpFrom || settings?.smtpUser || "noreply@booking.com";
+    const fromField = settings?.smtpSenderName ? `${settings.smtpSenderName} <${fromAddress}>` : fromAddress;
+
     const htmlContent = generateOwnerEmailHTML(bookingData);
 
     const success = await sendEmail({
-      from: process.env.SMTP_FROM || `"Booking System" <${process.env.SMTP_USER}>`,
+      from: fromField,
       to: ownerEmail,
       subject: `New Booking Alert - Reservation #${bookingData.tripId}`,
       html: htmlContent,

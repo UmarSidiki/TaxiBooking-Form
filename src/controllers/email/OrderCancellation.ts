@@ -1,5 +1,7 @@
 import { sendEmail } from "@/lib/email";
 import { getMongoDb } from "@/lib/mongodb";
+import { connectDB } from "@/lib/mongoose";
+import Setting from "@/models/Setting";
 
 interface BookingData {
   tripId: string;
@@ -152,6 +154,12 @@ export async function sendOrderCancellationEmail(bookingData: BookingData) {
 
     console.log("📧 Preparing cancellation email for:", bookingData.email);
 
+    // Get SMTP settings for from address
+    await connectDB();
+    const settings = await Setting.findOne();
+    const fromAddress = settings?.smtpFrom || settings?.smtpUser || "noreply@booking.com";
+    const fromField = settings?.smtpSenderName ? `${settings.smtpSenderName} <${fromAddress}>` : fromAddress;
+
     const htmlContent = generateEmailHTML(bookingData);
 
     const refundAmountText = (bookingData.refundAmount ?? 0).toFixed(2);
@@ -160,8 +168,7 @@ export async function sendOrderCancellationEmail(bookingData: BookingData) {
       : "N/A";
 
     const success = await sendEmail({
-      from:
-        process.env.SMTP_FROM || `"Booking Service" <${process.env.SMTP_USER}>`,
+      from: fromField,
       to: bookingData.email,
       subject: `Booking Cancelled - Reservation #${bookingData.tripId}`,
       html: htmlContent,
@@ -213,14 +220,18 @@ async function sendCancellationNotificationToAdmin(bookingData: BookingData) {
       return true;
     }
 
+    // Get SMTP settings for from address (reuse from parent function if available, otherwise fetch again)
+    const settings = await Setting.findOne();
+    const fromAddressAdmin = settings?.smtpFrom || settings?.smtpUser || "noreply@booking.com";
+    const fromFieldAdmin = settings?.smtpSenderName ? `${settings.smtpSenderName} <${fromAddressAdmin}>` : fromAddressAdmin;
+
     const refundAmountText = (bookingData.refundAmount ?? 0).toFixed(2);
     const refundPercentText = bookingData.refundPercentage
       ? `${bookingData.refundPercentage}%`
       : "N/A";
 
     const success = await sendEmail({
-      from:
-        process.env.SMTP_FROM || `"Booking System" <${process.env.SMTP_USER}>`,
+      from: fromFieldAdmin,
       to: adminEmail,
       subject: `Booking Cancelled - Reservation #${bookingData.tripId}`,
       html: `

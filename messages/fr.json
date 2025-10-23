@@ -536,7 +536,11 @@
       "username": "Nom d'utilisateur",
       "your-smtp-password-or-app-password": "Votre mot de passe SMTP ou mot de passe d'application",
       "your-smtp-server-hostname": "Le nom d'hôte de votre serveur SMTP",
-      "your-smtp-username-email": "Votre nom d'utilisateur/e-mail SMTP"
+      "your-smtp-username-email": "Votre nom d'utilisateur/e-mail SMTP",
+      "email-address-used-as-sender-for-outgoing-emails": "Adresse e-mail utilisée comme expéditeur pour les e-mails sortants",
+      "from-email-address": "De l'adresse e-mail",
+      "name-displayed-as-sender-in-emails": "Nom de l'expéditeur",
+      "sender-name": "Nom de l'expéditeur"
     }
   },
   "Sidebar": {

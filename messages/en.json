@@ -536,7 +536,11 @@
       "test-smtp-configuration": "Test SMTP Configuration",
       "test-smtp": "Test SMTP",
       "send-a-test-email-to-verify-your-smtp-configuration": "Send a test email to verify your SMTP configuration",
-      "smtp-settings-are-used-for-sending-booking-confirmation-emails-make-sure-your-smtp-provider-allows-less-secure-apps-or-use-app-passwords-if-required": "SMTP settings are used for sending booking confirmation emails. Make sure your SMTP provider allows less secure apps or use app passwords if required."
+      "smtp-settings-are-used-for-sending-booking-confirmation-emails-make-sure-your-smtp-provider-allows-less-secure-apps-or-use-app-passwords-if-required": "SMTP settings are used for sending booking confirmation emails. Make sure your SMTP provider allows less secure apps or use app passwords if required.",
+      "from-email-address": "From Email Address",
+      "email-address-used-as-sender-for-outgoing-emails": "Email Address Used as Sender for Outgoing Emails",
+      "name-displayed-as-sender-in-emails": "Sender Name",
+      "sender-name": "Sender Name"
     }
   },
   "Sidebar": {

@@ -27,7 +27,54 @@ const SmtpTab: React.FC<SmtpTabProps> = ({
         <CardTitle>{t("Dashboard.Settings.smtp-configuration")}</CardTitle>
       </CardHeader>
       <CardContent className="space-y-6">
-        {/* SMTP Settings */}
+        {/* Sender Information */}
+        <div className="space-y-4">
+          <h3 className="text-lg font-medium">
+            {t("Dashboard.Settings.sender-information")}
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium mb-2">
+                {t("Dashboard.Settings.from-email-address")}{" "}
+              </label>
+              <Input
+                type="email"
+                placeholder="noreply@yourdomain.com"
+                value={settings.smtpFrom ?? ""}
+                onChange={(e) =>
+                  setSettings((prev) => ({
+                    ...prev,
+                    smtpFrom: e.target.value,
+                  }))
+                }
+              />
+              <p className="text-xs text-gray-500 mt-1">
+                {t("Dashboard.Settings.email-address-used-as-sender-for-outgoing-emails")}{" "}
+              </p>
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-2">
+                {t("Dashboard.Settings.sender-name")}{" "}
+              </label>
+              <Input
+                type="text"
+                placeholder="Your Company Name"
+                value={settings.smtpSenderName ?? ""}
+                onChange={(e) =>
+                  setSettings((prev) => ({
+                    ...prev,
+                    smtpSenderName: e.target.value,
+                  }))
+                }
+              />
+              <p className="text-xs text-gray-500 mt-1">
+                {t("Dashboard.Settings.name-displayed-as-sender-in-emails")}{" "}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Server Configuration */}
         <div className="space-y-4">
           <h3 className="text-lg font-medium">
             {t("Dashboard.Settings.smtp-server-settings")}
@@ -71,6 +118,39 @@ const SmtpTab: React.FC<SmtpTabProps> = ({
                 {t("Dashboard.Settings.common-ports-587-tls-465-ssl-25-none")}{" "}
               </p>
             </div>
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-2">
+              {t("Dashboard.Settings.encryption")}{" "}
+            </label>
+            <select
+              value={settings.smtpEncryption ?? "TLS"}
+              onChange={(e) =>
+                setSettings((prev) => ({
+                  ...prev,
+                  smtpEncryption: e.target.value as "TLS" | "SSL" | "none",
+                }))
+              }
+              className="w-full px-3 py-2 border rounded-md"
+            >
+              <option value="TLS">
+                {t("Dashboard.Settings.tls-recommended")}
+              </option>
+              <option value="SSL">SSL</option>
+              <option value="none">{t("Dashboard.Settings.none")}</option>
+            </select>
+            <p className="text-xs text-gray-500 mt-1">
+              {t("Dashboard.Settings.security-protocol-for-smtp-connection")}{" "}
+            </p>
+          </div>
+        </div>
+
+        {/* Authentication */}
+        <div className="space-y-4">
+          <h3 className="text-lg font-medium">
+            {t("Dashboard.Settings.authentication")}
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium mb-2">
                 {t("Dashboard.Settings.username")}{" "}
@@ -110,30 +190,13 @@ const SmtpTab: React.FC<SmtpTabProps> = ({
               </p>
             </div>
           </div>
-          <div>
-            <label className="block text-sm font-medium mb-2">
-              {t("Dashboard.Settings.encryption")}{" "}
-            </label>
-            <select
-              value={settings.smtpEncryption ?? "TLS"}
-              onChange={(e) =>
-                setSettings((prev) => ({
-                  ...prev,
-                  smtpEncryption: e.target.value as "TLS" | "SSL" | "none",
-                }))
-              }
-              className="w-full px-3 py-2 border rounded-md"
-            >
-              <option value="TLS">
-                {t("Dashboard.Settings.tls-recommended")}
-              </option>
-              <option value="SSL">SSL</option>
-              <option value="none">{t("Dashboard.Settings.none")}</option>
-            </select>
-            <p className="text-xs text-gray-500 mt-1">
-              {t("Dashboard.Settings.security-protocol-for-smtp-connection")}{" "}
-            </p>
-          </div>
+        </div>
+
+        {/* Testing */}
+        <div className="space-y-4">
+          <h3 className="text-lg font-medium">
+            {t("Dashboard.Settings.testing")}
+          </h3>
           <div>
             <label className="block text-sm font-medium mb-2">
               {t("Dashboard.Settings.test-email-recipient")}{" "}

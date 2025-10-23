@@ -1,4 +1,6 @@
 import { sendEmail } from "@/lib/email";
+import { connectDB } from "@/lib/mongoose";
+import Setting from "@/models/Setting";
 
 interface RideCancellationData {
   tripId: string;
@@ -177,10 +179,16 @@ export async function sendRideCancellationEmail(cancellationData: RideCancellati
 
     console.log("📧 Preparing ride cancellation email for:", cancellationData.driverEmail);
 
+    // Get SMTP settings for from address
+    await connectDB();
+    const settings = await Setting.findOne();
+    const fromAddress = settings?.smtpFrom || settings?.smtpUser || "noreply@booking.com";
+    const fromField = settings?.smtpSenderName ? `${settings.smtpSenderName} <${fromAddress}>` : fromAddress;
+
     const htmlContent = generateEmailHTML(cancellationData);
 
     const success = await sendEmail({
-      from: process.env.SMTP_FROM || `"Booking Service" <${process.env.SMTP_USER}>`,
+      from: fromField,
       to: cancellationData.driverEmail,
       subject: `Ride Assignment Cancelled - Reservation #${cancellationData.tripId}`,
       html: htmlContent,

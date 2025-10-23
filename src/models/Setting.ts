@@ -28,6 +28,8 @@ export interface ISetting {
   smtpPass?: string;
   smtpEncryption?: 'TLS' | 'SSL' | 'none';
   smtpTestEmail?: string;
+  smtpFrom?: string;
+  smtpSenderName?: string;
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -136,6 +138,14 @@ const SettingSchema = new Schema<ISetting>(
       default: 'TLS',
     },
     smtpTestEmail: {
+      type: String,
+      default: "",
+    },
+    smtpFrom: {
+      type: String,
+      default: "",
+    },
+    smtpSenderName: {
       type: String,
       default: "",
     },

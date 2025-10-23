@@ -1,4 +1,6 @@
 import { sendEmail } from "@/lib/email";
+import { connectDB } from "@/lib/mongoose";
+import Setting from "@/models/Setting";
 
 interface BookingData {
   tripId: string;
@@ -123,11 +125,16 @@ export async function sendOrderThankYouEmail(bookingData: BookingData) {
 
     console.log("📧 Preparing thank you email for:", bookingData.email);
 
+    // Get SMTP settings for from address
+    await connectDB();
+    const settings = await Setting.findOne();
+    const fromAddress = settings?.smtpFrom || settings?.smtpUser || "noreply@booking.com";
+    const fromField = settings?.smtpSenderName ? `${settings.smtpSenderName} <${fromAddress}>` : fromAddress;
+
     const htmlContent = generateEmailHTML(bookingData);
 
     const success = await sendEmail({
-      from:
-        process.env.SMTP_FROM || `"Booking Service" <${process.env.SMTP_USER}>`,
+      from: fromField,
       to: bookingData.email,
       subject: `Thank You for Your Trip - Reservation #${bookingData.tripId}`,
       html: htmlContent,

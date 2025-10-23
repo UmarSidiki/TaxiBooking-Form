@@ -540,7 +540,9 @@
       "from-email-address": "From Email Address",
       "email-address-used-as-sender-for-outgoing-emails": "Email Address Used as Sender for Outgoing Emails",
       "name-displayed-as-sender-in-emails": "Sender Name",
-      "sender-name": "Sender Name"
+      "sender-name": "Sender Name",
+      "authentication": "Authentication",
+      "testing": "Testing"
     }
   },
   "Sidebar": {

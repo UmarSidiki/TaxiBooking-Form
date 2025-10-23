@@ -540,7 +540,9 @@
       "email-address-used-as-sender-for-outgoing-emails": "E-Mail-Adresse, die als Absender für ausgehende E-Mails verwendet wird",
       "from-email-address": "Von E-Mail-Adresse",
       "name-displayed-as-sender-in-emails": "Absendername",
-      "sender-name": "Absendername"
+      "sender-name": "Absendername",
+      "authentication": "Authentifizierung",
+      "testing": "Testen"
     }
   },
   "Sidebar": {

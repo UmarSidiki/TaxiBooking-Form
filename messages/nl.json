@@ -356,7 +356,9 @@
       "email-address-used-as-sender-for-outgoing-emails": "E-mailadres gebruikt als afzender voor uitgaande e-mails",
       "from-email-address": "Van e-mailadres",
       "name-displayed-as-sender-in-emails": "Naam afzender",
-      "sender-name": "Naam afzender"
+      "sender-name": "Naam afzender",
+      "authentication": "Authenticatie",
+      "testing": "Testen"
     }
   },
   "Footer": {

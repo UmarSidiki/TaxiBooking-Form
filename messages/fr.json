@@ -540,7 +540,9 @@
       "email-address-used-as-sender-for-outgoing-emails": "Adresse e-mail utilisée comme expéditeur pour les e-mails sortants",
       "from-email-address": "De l'adresse e-mail",
       "name-displayed-as-sender-in-emails": "Nom de l'expéditeur",
-      "sender-name": "Nom de l'expéditeur"
+      "sender-name": "Nom de l'expéditeur",
+      "authentication": "Authentification",
+      "testing": "Essai"
     }
   },
   "Sidebar": {

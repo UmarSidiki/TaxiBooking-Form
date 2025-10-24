@@ -1,7 +1,7 @@
 import { sendEmail } from '@/lib/email';
-import { getMongoDb } from '@/lib/mongodb';
 import { connectDB } from '@/lib/mongoose';
 import Setting from '@/models/Setting';
+import User from '@/models/User';
 
 interface BookingData {
   tripId: string;
@@ -130,17 +130,25 @@ function generateOwnerEmailHTML(bookingData: BookingData) {
 
 export async function sendOrderNotificationEmail(bookingData: BookingData) {
   try {
-    // First, try to get admin email from database (users collection)
-    const db = await getMongoDb();
-    const usersCollection = db.collection("users");
-    const adminUser = await usersCollection.findOne({ role: "admin" });
+    // Get owner email from database (use Mongoose User model)
+    await connectDB();
+    const ownerUser = await User.findOne({ role: { $in: ["owner", "admin", "superadmin"] } }).lean();
 
-    const ownerEmail = adminUser?.email || process.env.OWNER_EMAIL;
 
-    if (!ownerEmail) {
-      console.log("⚠️ No admin email found in database or OWNER_EMAIL not configured. Owner notification skipped.");
+    const ownerEmail = ownerUser?.email;
+
+    // Validate owner email
+    const isEmailValid = (email?: string) =>
+      typeof email === "string" && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
+    if (!ownerEmail || !isEmailValid(ownerEmail)) {
+      console.log(
+        "⚠️ No valid owner/admin user found in database. Owner notification skipped."
+      );
       return true;
     }
+
+    console.log("📧 Sending owner notification to:", ownerEmail);
 
     // Get SMTP settings for from address
     await connectDB();

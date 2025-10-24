@@ -5,6 +5,7 @@ import Booking, { BookingInput } from "@/models/Booking";
 import { v4 as uuidv4 } from "uuid";
 import { connectDB } from "@/lib/mongoose";
 import Vehicle, { IVehicle } from "@/models/Vehicle";
+import User from "@/models/User";
 
 // Helper function to calculate booking total
 async function calculateBookingTotal(

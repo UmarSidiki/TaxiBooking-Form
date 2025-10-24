@@ -206,19 +206,24 @@ If you have any questions, reply to this email and our team will assist you.`,
 
 async function sendCancellationNotificationToAdmin(bookingData: BookingData) {
   try {
-    // Get admin email from database
+    // Get admin/owner email from database only
     const db = await getMongoDb();
     const usersCollection = db.collection("users");
-    const adminUser = await usersCollection.findOne({ role: "admin" });
+    const adminUser = await usersCollection.findOne({ role: { $in: ["owner", "admin", "superadmin"] } });
 
-    const adminEmail = adminUser?.email || process.env.OWNER_EMAIL;
+    const adminEmail = adminUser?.email;
 
-    if (!adminEmail) {
+    const isEmailValid = (email?: string) =>
+      typeof email === "string" && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
+    if (!adminEmail || !isEmailValid(adminEmail)) {
       console.log(
-        "⚠️ No admin email found. Admin cancellation notification skipped."
+        "⚠️ No valid owner/admin user found in database. Admin cancellation notification skipped."
       );
       return true;
     }
+
+    console.log("📧 Sending cancellation notification to admin:", adminEmail);
 
     // Get SMTP settings for from address (reuse from parent function if available, otherwise fetch again)
     const settings = await Setting.findOne();

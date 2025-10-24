@@ -542,7 +542,8 @@
       "name-displayed-as-sender-in-emails": "Nombre del remitente",
       "sender-name": "Nombre del remitente",
       "authentication": "Autenticación",
-      "testing": "Pruebas"
+      "testing": "Pruebas",
+      "sender-information": "Información del remitente"
     }
   },
   "Sidebar": {

@@ -37,6 +37,7 @@ export default function BookingFormContainer() {
                 width={32}
                 height={32}
               />
+              <span className="text-xl font-semibold text-gray-800">{process.env.NEXT_PUBLIC_WEBSITE_NAME}</span>
             </div>
 
             {/* Progress Indicator - Centered in Header */}

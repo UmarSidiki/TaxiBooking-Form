@@ -358,7 +358,8 @@
       "name-displayed-as-sender-in-emails": "Naam afzender",
       "sender-name": "Naam afzender",
       "authentication": "Authenticatie",
-      "testing": "Testen"
+      "testing": "Testen",
+      "sender-information": "Afzenderinformatie"
     }
   },
   "Footer": {

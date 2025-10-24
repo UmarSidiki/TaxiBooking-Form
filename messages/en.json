@@ -542,7 +542,8 @@
       "name-displayed-as-sender-in-emails": "Sender Name",
       "sender-name": "Sender Name",
       "authentication": "Authentication",
-      "testing": "Testing"
+      "testing": "Testing",
+      "sender-information": "Sender Information"
     }
   },
   "Sidebar": {

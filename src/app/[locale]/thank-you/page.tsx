@@ -7,8 +7,7 @@ import { CheckCircle, Loader2, Mail, Phone, Home } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useTranslations } from 'next-intl';
-import { useCurrency } from '@/hooks/useCurrency';
-import { getCurrencySymbol } from '@/lib/utils';
+import { useCurrency } from '@/contexts/CurrencyContext';
 
 export default function ThankYouPage() {
   const t = useTranslations();
@@ -17,8 +16,7 @@ export default function ThankYouPage() {
   const [countdown, setCountdown] = useState(5);
   const [redirectUrl, setRedirectUrl] = useState<string>('/');
   const { settings } = useTheme();
-  const { currency } = useCurrency();
-  const currencySymbol = getCurrencySymbol(currency);
+  const { currencySymbol } = useCurrency();
 
   const tripId = searchParams.get('tripId');
   const amount = searchParams.get('amount');

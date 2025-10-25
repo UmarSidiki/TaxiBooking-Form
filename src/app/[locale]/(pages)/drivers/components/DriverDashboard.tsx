@@ -47,13 +47,11 @@ import type { IBooking } from "@/models/Booking";
 import { apiGet } from "@/utils/api";
 import { DateRangePicker } from "@/components/ui/date-range-picker";
 import { DateRange } from "react-day-picker";
-import { useCurrency } from "@/hooks/useCurrency";
-import { getCurrencySymbol } from "@/lib/utils";
+import { useCurrency } from "@/contexts/CurrencyContext";
 
 export default function DriverDashboard() {
   const t = useTranslations();
-  const { currency } = useCurrency();
-  const currencySymbol = getCurrencySymbol(currency);
+  const { currencySymbol } = useCurrency();
   const [bookings, setBookings] = useState<IBooking[]>([]);
   const [filteredBookings, setFilteredBookings] = useState<IBooking[]>([]);
   const [isLoading, setIsLoading] = useState(true);

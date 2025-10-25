@@ -38,8 +38,7 @@ import {
 import type { IVehicle } from "@/models/Vehicle";
 import Image from "next/image";
 import { apiGet, apiPost, apiPatch, apiDelete } from "@/utils/api";
-import { useCurrency } from "@/hooks/useCurrency";
-import { getCurrencySymbol } from "@/lib/utils";
+import { useCurrency } from "@/contexts/CurrencyContext";
 
 interface VehicleForm
   extends Omit<IVehicle, "_id" | "createdAt" | "updatedAt"> {
@@ -47,8 +46,7 @@ interface VehicleForm
 }
 
 const FleetPage = () => {
-  const { currency } = useCurrency();
-  const currencySymbol = getCurrencySymbol(currency);
+  const { currencySymbol } = useCurrency();
   const [vehicles, setVehicles] = useState<IVehicle[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [showForm, setShowForm] = useState(false);
@@ -535,8 +533,7 @@ const VehicleForm = ({
   editingId: string | null;
 }) => {
   const t = useTranslations();
-  const { currency } = useCurrency();
-  const currencySymbol = getCurrencySymbol(currency);
+  const { currencySymbol } = useCurrency();
   return (
     <form onSubmit={onSubmit} className="space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

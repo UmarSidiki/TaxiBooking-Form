@@ -23,8 +23,7 @@ import { Card } from "@/components/ui/card";
 import { useStep3 } from "@/hooks/form/form-steps/useStep3";
 import { useTranslations } from "next-intl";
 import dynamic from "next/dynamic";
-import { useCurrency } from "@/hooks/useCurrency";
-import { getCurrencySymbol } from "@/lib/utils";
+import { useCurrency } from "@/contexts/CurrencyContext";
 
 const StripeProvider = dynamic(
   () => import("@/components/providers/stripe-provider"),
@@ -72,8 +71,7 @@ export default function Step3Payment() {
     handleBack,
   } = useStep3();
 
-  const { currency } = useCurrency();
-  const currencySymbol = getCurrencySymbol(currency);
+  const { currencySymbol } = useCurrency();
 
   const t = useTranslations();
 

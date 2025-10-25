@@ -22,8 +22,7 @@ import {
 import { useTranslations } from "next-intl";
 import { apiGet } from "@/utils/api";
 import { cn } from "@/lib/utils";
-import { useCurrency } from "@/hooks/useCurrency";
-import { getCurrencySymbol } from "@/lib/utils";
+import { useCurrency } from "@/contexts/CurrencyContext";
 
 interface DashboardStats {
   totalBookings: number;
@@ -54,8 +53,7 @@ export default function DashboardPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
-  const { currency } = useCurrency();
-  const currencySymbol = getCurrencySymbol(currency);
+  const { currencySymbol } = useCurrency();
 
   const t = useTranslations();
 

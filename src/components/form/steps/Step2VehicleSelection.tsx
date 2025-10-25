@@ -20,8 +20,7 @@ import { Card } from "@/components/ui/card";
 import { useStep2 } from "@/hooks/form/form-steps/useStep2";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
-import { useCurrency } from "@/hooks/useCurrency";
-import { getCurrencySymbol } from "@/lib/utils";
+import { useCurrency } from "@/contexts/CurrencyContext";
 
 export default function Step2VehicleSelection() {
   const {
@@ -41,8 +40,7 @@ export default function Step2VehicleSelection() {
     handleBack,
   } = useStep2();
 
-  const { currency } = useCurrency();
-  const currencySymbol = getCurrencySymbol(currency);
+  const { currencySymbol } = useCurrency();
 
   const t = useTranslations();
 

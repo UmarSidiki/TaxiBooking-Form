@@ -20,6 +20,8 @@ import { Card } from "@/components/ui/card";
 import { useStep2 } from "@/hooks/form/form-steps/useStep2";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
+import { useCurrency } from "@/hooks/useCurrency";
+import { getCurrencySymbol } from "@/lib/utils";
 
 export default function Step2VehicleSelection() {
   const {
@@ -38,6 +40,9 @@ export default function Step2VehicleSelection() {
     handleVehicleSelect,
     handleBack,
   } = useStep2();
+
+  const { currency } = useCurrency();
+  const currencySymbol = getCurrencySymbol(currency);
 
   const t = useTranslations();
 
@@ -144,11 +149,11 @@ export default function Step2VehicleSelection() {
                             {distanceData &&
                               originalPrice > calculatedPrice && (
                                 <p className="text-xs text-gray-500 line-through">
-                                  €{originalPrice.toFixed(2)}
+                                  {currencySymbol}{originalPrice.toFixed(2)}
                                 </p>
                               )}
                             <p className="text-xl font-bold text-gray-900">
-                              €{calculatedPrice.toFixed(2)}
+                              {currencySymbol}{calculatedPrice.toFixed(2)}
                             </p>
                             <p className="text-xs text-gray-500">
                               {formData.bookingType === "hourly"
@@ -362,7 +367,7 @@ export default function Step2VehicleSelection() {
                 <span>TOTAL</span>
                 <div className="text-right">
                   <p className="text-gray-900">
-                    €
+                    {currencySymbol}
                     {calculatePrice(
                       vehicles.find((v) => v._id === formData.selectedVehicle)!
                     ).toFixed(2)}

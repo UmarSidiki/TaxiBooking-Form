@@ -1,6 +1,7 @@
 import { sendEmail } from "@/lib/email";
 import { connectDB } from "@/lib/mongoose";
 import Setting from "@/models/Setting";
+import { getCurrencySymbol } from "@/lib/utils";
 
 interface RideCancellationData {
   tripId: string;
@@ -38,8 +39,8 @@ function isValidEmail(email: string): boolean {
   return emailRegex.test(email);
 }
 
-function generateEmailHTML(cancellationData: RideCancellationData) {
-  const getCurrencySymbol = () => "€";
+function generateEmailHTML(cancellationData: RideCancellationData, currency: string = 'EUR') {
+  const currencySymbol = getCurrencySymbol(currency);
 
   return `
 <!DOCTYPE html>
@@ -143,7 +144,7 @@ function generateEmailHTML(cancellationData: RideCancellationData) {
     <div class="section">
       <h2>Payment Summary</h2>
       <div class="payment">
-        <p><span class="highlight">Total Amount: ${getCurrencySymbol()}${cancellationData.totalAmount.toFixed(2)}</span></p>
+        <p><span class="highlight">Total Amount: ${currencySymbol}${cancellationData.totalAmount.toFixed(2)}</span></p>
         ${
           cancellationData.paymentMethod
             ? `
@@ -184,15 +185,17 @@ export async function sendRideCancellationEmail(cancellationData: RideCancellati
     const settings = await Setting.findOne();
     const fromAddress = settings?.smtpFrom || settings?.smtpUser || "noreply@booking.com";
     const fromField = settings?.smtpSenderName ? `${settings.smtpSenderName} <${fromAddress}>` : fromAddress;
+    const currency = settings?.stripeCurrency || 'EUR';
+    const currencySymbol = getCurrencySymbol(currency);
 
-    const htmlContent = generateEmailHTML(cancellationData);
+    const htmlContent = generateEmailHTML(cancellationData, currency);
 
     const success = await sendEmail({
       from: fromField,
       to: cancellationData.driverEmail,
       subject: `Ride Assignment Cancelled - Reservation #${cancellationData.tripId}`,
       html: htmlContent,
-      text: `Ride Assignment Cancelled!\n\nReservation ID: ${cancellationData.tripId}\nCustomer: ${cancellationData.firstName} ${cancellationData.lastName}\nFrom: ${cancellationData.pickup}${cancellationData.stops && cancellationData.stops.length > 0 ? '\nStops: ' + cancellationData.stops.map((stop, index) => `Stop ${index + 1}: ${stop.location}`).join(', ') : ''}\nTo: ${cancellationData.dropoff}\nDate: ${cancellationData.date} at ${cancellationData.time}${cancellationData.flightNumber ? `\nFlight Number: ${cancellationData.flightNumber}` : ''}\nVehicle: ${cancellationData.vehicleDetails.name}\nTotal Amount: €${cancellationData.totalAmount}\n\nCustomer Contact: ${cancellationData.email} | ${cancellationData.phone}\n\nThis ride has been reassigned to another driver.`,
+      text: `Ride Assignment Cancelled!\n\nReservation ID: ${cancellationData.tripId}\nCustomer: ${cancellationData.firstName} ${cancellationData.lastName}\nFrom: ${cancellationData.pickup}${cancellationData.stops && cancellationData.stops.length > 0 ? '\nStops: ' + cancellationData.stops.map((stop, index) => `Stop ${index + 1}: ${stop.location}`).join(', ') : ''}\nTo: ${cancellationData.dropoff}\nDate: ${cancellationData.date} at ${cancellationData.time}${cancellationData.flightNumber ? `\nFlight Number: ${cancellationData.flightNumber}` : ''}\nVehicle: ${cancellationData.vehicleDetails.name}\nTotal Amount: ${currencySymbol}${cancellationData.totalAmount}\n\nCustomer Contact: ${cancellationData.email} | ${cancellationData.phone}\n\nThis ride has been reassigned to another driver.`,
     });
 
     if (!success) {

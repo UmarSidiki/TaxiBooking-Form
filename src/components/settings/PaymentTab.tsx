@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import {  Building2, CreditCard, Banknote } from "lucide-react";
 import { ISetting } from "@/models/Setting";
 import { useTranslations } from "next-intl";
+import { useCurrency } from "@/contexts/CurrencyContext";
 
 interface PaymentTabProps {
   settings: Partial<ISetting>;
@@ -20,6 +21,7 @@ const PaymentTab: React.FC<PaymentTabProps> = ({
   handleMapSettingsChange,
 }) => {
   const t = useTranslations();
+  const { updateCurrency } = useCurrency();
 
   const paymentMethods = [
     {
@@ -169,12 +171,14 @@ const PaymentTab: React.FC<PaymentTabProps> = ({
               </label>
               <select
                 value={settings.stripeCurrency ?? "eur"}
-                onChange={(e) =>
+                onChange={(e) => {
+                  const newCurrency = e.target.value;
+                  updateCurrency(newCurrency);
                   handleMapSettingsChange(
                     "stripeCurrency",
-                    e.target.value
-                  )
-                }
+                    newCurrency
+                  );
+                }}
                 className="w-full px-3 py-2 border rounded-md"
               >
                 <option value="eur">

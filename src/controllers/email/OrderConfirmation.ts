@@ -1,6 +1,7 @@
 import { sendEmail } from "@/lib/email";
 import { connectDB } from "@/lib/mongoose";
 import Setting from "@/models/Setting";
+import { getCurrencySymbol } from "@/lib/utils";
 
 interface BookingData {
   tripId: string;
@@ -36,8 +37,8 @@ function isValidEmail(email: string): boolean {
   return emailRegex.test(email);
 }
 
-function generateEmailHTML(bookingData: BookingData) {
-  const getCurrencySymbol = () => "€";
+function generateEmailHTML(bookingData: BookingData, currency: string = 'EUR') {
+  const currencySymbol = getCurrencySymbol(currency);
 
   return `
 <!DOCTYPE html>
@@ -151,7 +152,7 @@ function generateEmailHTML(bookingData: BookingData) {
     <div class="section">
       <h2>Payment Summary</h2>
       <div class="payment">
-        <p><span class="highlight">Total Amount: ${getCurrencySymbol()}${bookingData.totalAmount.toFixed(
+        <p><span class="highlight">Total Amount: ${currencySymbol}${bookingData.totalAmount.toFixed(
     2
   )}</span></p>
         ${
@@ -202,15 +203,17 @@ export async function sendOrderConfirmationEmail(bookingData: BookingData) {
     const settings = await Setting.findOne();
     const fromAddress = settings?.smtpFrom || settings?.smtpUser || "noreply@booking.com";
     const fromField = settings?.smtpSenderName ? `${settings.smtpSenderName} <${fromAddress}>` : fromAddress;
+    const currency = settings?.stripeCurrency || 'EUR';
+    const currencySymbol = getCurrencySymbol(currency);
 
-    const htmlContent = generateEmailHTML(bookingData);
+    const htmlContent = generateEmailHTML(bookingData, currency);
 
     const success = await sendEmail({
       from: fromField,
       to: bookingData.email,
       subject: `Booking Confirmation - Reservation #${bookingData.tripId}`,
       html: htmlContent,
-      text: `Booking Confirmed!\n\nReservation ID: ${bookingData.tripId}\nCustomer: ${bookingData.firstName} ${bookingData.lastName}\nFrom: ${bookingData.pickup}${bookingData.stops && bookingData.stops.length > 0 ? '\nStops: ' + bookingData.stops.map((stop, index) => `Stop ${index + 1}: ${stop.location}`).join(', ') : ''}\nTo: ${bookingData.dropoff}\nDate: ${bookingData.date} at ${bookingData.time}${bookingData.flightNumber ? `\nFlight Number: ${bookingData.flightNumber}` : ''}\nVehicle: ${bookingData.vehicleDetails.name}\nTotal Amount: €${bookingData.totalAmount}`,
+      text: `Booking Confirmed!\n\nReservation ID: ${bookingData.tripId}\nCustomer: ${bookingData.firstName} ${bookingData.lastName}\nFrom: ${bookingData.pickup}${bookingData.stops && bookingData.stops.length > 0 ? '\nStops: ' + bookingData.stops.map((stop, index) => `Stop ${index + 1}: ${stop.location}`).join(', ') : ''}\nTo: ${bookingData.dropoff}\nDate: ${bookingData.date} at ${bookingData.time}${bookingData.flightNumber ? `\nFlight Number: ${bookingData.flightNumber}` : ''}\nVehicle: ${bookingData.vehicleDetails.name}\nTotal Amount: ${currencySymbol}${bookingData.totalAmount}`,
     });
 
     if (!success) {

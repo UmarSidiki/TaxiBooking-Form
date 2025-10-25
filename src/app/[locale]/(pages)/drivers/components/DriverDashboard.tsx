@@ -11,7 +11,6 @@ import {
   Dialog,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
@@ -48,9 +47,13 @@ import type { IBooking } from "@/models/Booking";
 import { apiGet } from "@/utils/api";
 import { DateRangePicker } from "@/components/ui/date-range-picker";
 import { DateRange } from "react-day-picker";
+import { useCurrency } from "@/hooks/useCurrency";
+import { getCurrencySymbol } from "@/lib/utils";
 
 export default function DriverDashboard() {
   const t = useTranslations();
+  const { currency } = useCurrency();
+  const currencySymbol = getCurrencySymbol(currency);
   const [bookings, setBookings] = useState<IBooking[]>([]);
   const [filteredBookings, setFilteredBookings] = useState<IBooking[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -331,7 +334,7 @@ export default function DriverDashboard() {
                   <span className="truncate">{t("Dashboard.Rides.Price")}</span>
                 </div>
                 <p className="text-sm font-medium text-gray-900 truncate">
-                  €{booking.totalAmount?.toFixed(2)}
+                  {currencySymbol}{booking.totalAmount?.toFixed(2)}
                 </p>
               </div>
             </div>
@@ -1026,7 +1029,7 @@ export default function DriverDashboard() {
                         {t("Dashboard.Rides.TotalAmount")}
                       </p>
                       <p className="text-2xl font-bold text-gray-900">
-                        €{detailBooking.totalAmount?.toFixed(2)}
+                        {currencySymbol}{detailBooking.totalAmount?.toFixed(2)}
                       </p>
                     </div>
 
@@ -1086,7 +1089,7 @@ export default function DriverDashboard() {
                               {t("Dashboard.Rides.RefundProcessed")}
                             </span>
                             <span className="font-bold">
-                              €{detailBooking.refundAmount.toFixed(2)}
+                              {currencySymbol}{detailBooking.refundAmount.toFixed(2)}
                               {detailBooking.refundPercentage && (
                                 <span className="text-sm font-normal ml-1">
                                   ({detailBooking.refundPercentage}%)

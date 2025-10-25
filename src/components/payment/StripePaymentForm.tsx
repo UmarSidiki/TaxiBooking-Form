@@ -5,6 +5,7 @@ import { PaymentElement, useStripe, useElements } from '@stripe/react-stripe-js'
 import { Button } from '@/components/ui/button';
 import { Loader2, Shield, Lock, CreditCard, CheckCircle2, AlertCircle } from 'lucide-react';
 import { useTranslations } from 'next-intl';
+import { getCurrencySymbol } from '@/lib/utils';
 
 interface StripePaymentFormProps {
   amount: number;
@@ -24,18 +25,6 @@ export default function StripePaymentForm({
   const [isProcessing, setIsProcessing] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error' | 'info', text: string } | null>(null);
 
-  const getCurrencySymbol = (curr: string) => {
-    const symbols: Record<string, string> = {
-      'EUR': '€',
-      'USD': '$',
-      'GBP': '£',
-      'CHF': 'Fr',
-      'JPY': '¥',
-      'CAD': '$',
-      'AUD': '$',
-    };
-    return symbols[curr.toUpperCase()] || curr;
-  };
 
   const t = useTranslations();
 

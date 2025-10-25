@@ -7,6 +7,8 @@ import { CheckCircle, Loader2, Mail, Phone, Home } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useTranslations } from 'next-intl';
+import { useCurrency } from '@/hooks/useCurrency';
+import { getCurrencySymbol } from '@/lib/utils';
 
 export default function ThankYouPage() {
   const t = useTranslations();
@@ -15,6 +17,8 @@ export default function ThankYouPage() {
   const [countdown, setCountdown] = useState(5);
   const [redirectUrl, setRedirectUrl] = useState<string>('/');
   const { settings } = useTheme();
+  const { currency } = useCurrency();
+  const currencySymbol = getCurrencySymbol(currency);
 
   const tripId = searchParams.get('tripId');
   const amount = searchParams.get('amount');
@@ -86,7 +90,7 @@ export default function ThankYouPage() {
                 {amount && (
                   <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
                     <span className="text-sm font-medium text-gray-600">Amount:</span>
-                    <span className="text-lg font-bold text-green-600">€{amount}</span>
+                    <span className="text-lg font-bold text-green-600">{currencySymbol}{amount}</span>
                   </div>
                 )}
                 {paymentMethod && (

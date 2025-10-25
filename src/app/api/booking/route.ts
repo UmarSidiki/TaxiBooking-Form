@@ -5,7 +5,8 @@ import Booking, { BookingInput } from "@/models/Booking";
 import { v4 as uuidv4 } from "uuid";
 import { connectDB } from "@/lib/mongoose";
 import Vehicle, { IVehicle } from "@/models/Vehicle";
-import User from "@/models/User";
+import Setting from "@/models/Setting";
+import { getCurrencySymbol } from "@/lib/utils";
 
 // Helper function to calculate booking total
 async function calculateBookingTotal(
@@ -73,13 +74,27 @@ async function calculateBookingTotal(
   return totalAmount;
 }
 
+// Helper function to get currency from settings
+async function getCurrencyFromSettings() {
+  try {
+    const setting = await Setting.findOne();
+    return setting?.currency || 'EUR';
+  } catch (error) {
+    console.error('Error fetching currency from settings:', error);
+    return 'EUR';
+  }
+}
+
 // Helper function to create email data
-function createEmailData(
+async function createEmailData(
   formData: BookingInput,
   vehicle: IVehicle,
   tripId: string,
   totalAmount: number
 ) {
+  const currency = await getCurrencyFromSettings();
+  const currencySymbol = getCurrencySymbol(currency);
+
   return {
     tripId,
     pickup: formData.pickup,
@@ -92,7 +107,7 @@ function createEmailData(
     selectedVehicle: formData.selectedVehicle,
     vehicleDetails: {
       name: vehicle.name,
-      price: `€${vehicle.price}`,
+      price: `${currencySymbol}${vehicle.price}`,
       seats: `${vehicle.persons} persons`,
     },
     childSeats: formData.childSeats,
@@ -186,6 +201,10 @@ export async function POST(request: NextRequest) {
     // Generate unique trip ID
     const tripId = uuidv4();
 
+    // Get currency for booking data
+    const currency = await getCurrencyFromSettings();
+    const currencySymbol = getCurrencySymbol(currency);
+
     // Create booking object
     const bookingData = {
       tripId,
@@ -199,7 +218,7 @@ export async function POST(request: NextRequest) {
       selectedVehicle: formData.selectedVehicle,
       vehicleDetails: {
         name: vehicle.name,
-        price: `€${vehicle.price}`,
+        price: `${currencySymbol}${vehicle.price}`,
         seats: `${vehicle.persons} persons`,
       },
       childSeats: formData.childSeats,
@@ -221,19 +240,19 @@ export async function POST(request: NextRequest) {
     await Booking.create(bookingData);
 
     // Send emails - NOW PROPERLY AWAITED
-    const emailData = createEmailData(formData, vehicle, tripId, totalAmount);
-    
+    const emailData = await createEmailData(formData, vehicle, tripId, totalAmount);
+
     try {
       console.log("📧 Sending confirmation email to:", emailData.email);
       const confirmationEmailSent = await sendOrderConfirmationEmail(emailData);
-      
+
       if (!confirmationEmailSent) {
         console.error("❌ Failed to send confirmation email to:", emailData.email);
       }
-      
+
       console.log("📧 Sending notification email to admin");
       const notificationEmailSent = await sendOrderNotificationEmail(emailData);
-      
+
       if (!notificationEmailSent) {
         console.error("❌ Failed to send notification email to admin");
       }

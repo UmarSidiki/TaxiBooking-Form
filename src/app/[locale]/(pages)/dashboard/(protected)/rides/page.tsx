@@ -59,9 +59,13 @@ import type { IDriver } from "@/models/Driver";
 import { apiGet, apiPatch } from "@/utils/api";
 import { DateRangePicker } from "@/components/ui/date-range-picker";
 import { DateRange } from "react-day-picker";
+import { useCurrency } from "@/hooks/useCurrency";
+import { getCurrencySymbol } from "@/lib/utils";
 
 export default function RidesPage() {
   const t = useTranslations();
+  const { currency } = useCurrency();
+  const currencySymbol = getCurrencySymbol(currency);
   const [bookings, setBookings] = useState<IBooking[]>([]);
   const [filteredBookings, setFilteredBookings] = useState<IBooking[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -443,7 +447,7 @@ export default function RidesPage() {
                   {t("Dashboard.Rides.Price")}
                 </div>
                 <p className="text-sm font-medium text-gray-900">
-                  €{booking.totalAmount?.toFixed(2)}
+                  {currencySymbol}{booking.totalAmount?.toFixed(2)}
                 </p>
               </div>
             </div>
@@ -1259,7 +1263,7 @@ export default function RidesPage() {
                         {t("Dashboard.Rides.TotalAmount")}
                       </p>
                       <p className="text-2xl font-bold text-gray-900">
-                        €{detailBooking.totalAmount?.toFixed(2)}
+                        {currencySymbol}{detailBooking.totalAmount?.toFixed(2)}
                       </p>
                     </div>
 
@@ -1319,7 +1323,7 @@ export default function RidesPage() {
                               {t("Dashboard.Rides.RefundProcessed")}
                             </span>
                             <span className="font-bold">
-                              €{detailBooking.refundAmount.toFixed(2)}
+                              {currencySymbol}{detailBooking.refundAmount.toFixed(2)}
                               {detailBooking.refundPercentage && (
                                 <span className="text-sm font-normal ml-1">
                                   ({detailBooking.refundPercentage}%)
@@ -1420,7 +1424,7 @@ export default function RidesPage() {
                       {t("Dashboard.Rides.RefundAmount")}
                     </span>
                     <span className="font-bold text-xl text-gray-900">
-                      €
+                      {currencySymbol}
                       {(
                         (selectedBooking?.totalAmount || 0) *
                         (refundPercentage / 100)
@@ -1429,7 +1433,7 @@ export default function RidesPage() {
                   </div>
                   <div className="flex justify-between items-center text-xs text-gray-500 mt-1">
                     <span>{t("Dashboard.Rides.TotalAmount")}</span>
-                    <span>€{selectedBooking?.totalAmount?.toFixed(2)}</span>
+                    <span>{currencySymbol}{selectedBooking?.totalAmount?.toFixed(2)}</span>
                   </div>
                 </div>
               </div>

@@ -7,6 +7,7 @@ import { notFound } from "next/navigation";
 import AuthSessionProvider from "@/components/providers/session-provider";
 import { routing } from "@/i18n/routing";
 import { ThemeProvider } from "@/contexts/ThemeContext";
+import { CurrencyProvider } from "@/contexts/CurrencyContext";
 import { getThemeSettings } from "@/lib/theme-settings";
 import type { ThemeSettings } from "@/lib/theme-settings";
 
@@ -55,7 +56,9 @@ export default async function RootLayout({ children, params }: Props) {
       >
         <AuthSessionProvider>
           <ThemeProvider initialSettings={serializedThemeSettings}>
-            <NextIntlClientProvider>{children}</NextIntlClientProvider>
+            <CurrencyProvider>
+              <NextIntlClientProvider>{children}</NextIntlClientProvider>
+            </CurrencyProvider>
           </ThemeProvider>
         </AuthSessionProvider>
       </body>

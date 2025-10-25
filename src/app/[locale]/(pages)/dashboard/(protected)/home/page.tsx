@@ -22,6 +22,8 @@ import {
 import { useTranslations } from "next-intl";
 import { apiGet } from "@/utils/api";
 import { cn } from "@/lib/utils";
+import { useCurrency } from "@/hooks/useCurrency";
+import { getCurrencySymbol } from "@/lib/utils";
 
 interface DashboardStats {
   totalBookings: number;
@@ -52,6 +54,8 @@ export default function DashboardPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
+  const { currency } = useCurrency();
+  const currencySymbol = getCurrencySymbol(currency);
 
   const t = useTranslations();
 
@@ -308,7 +312,7 @@ export default function DashboardPage() {
           </CardHeader>
           <CardContent>
             <div className="text-3xl font-bold text-gray-900">
-              €{stats.totalRevenue.toLocaleString()}
+              {currencySymbol}{stats.totalRevenue.toLocaleString()}
             </div>
             <div className="flex items-center mt-3">
               <div
@@ -334,7 +338,7 @@ export default function DashboardPage() {
                   {t("Dashboard.Home.monthly-revenue")}
                 </span>
                 <span className="text-sm font-medium text-gray-900">
-                  €{stats.monthlyRevenue.toLocaleString()}
+                  {currencySymbol}{stats.monthlyRevenue.toLocaleString()}
                 </span>
               </div>
             </div>
@@ -431,7 +435,7 @@ export default function DashboardPage() {
                     </div>
                     <div className="text-right">
                       <p className="text-sm font-medium text-gray-900">
-                        €{booking.amount}
+                        {currencySymbol}{booking.amount}
                       </p>
                       <Badge
                         variant="outline"

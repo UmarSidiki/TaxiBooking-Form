@@ -2,6 +2,7 @@ import { sendEmail } from "@/lib/email";
 import { getMongoDb } from "@/lib/mongodb";
 import { connectDB } from "@/lib/mongoose";
 import Setting from "@/models/Setting";
+import { getCurrencySymbol } from "@/lib/utils";
 
 interface BookingData {
   tripId: string;
@@ -40,8 +41,8 @@ function isValidEmail(email: string): boolean {
   return emailRegex.test(email);
 }
 
-function generateEmailHTML(bookingData: BookingData) {
-  const getCurrencySymbol = () => "€";
+function generateEmailHTML(bookingData: BookingData, currency: string = 'EUR') {
+  const currencySymbol = getCurrencySymbol(currency);
   const refundAmount = bookingData.refundAmount ?? 0;
   const refundPercentage = bookingData.refundPercentage ?? null;
   const canceledAt = bookingData.canceledAt
@@ -111,10 +112,10 @@ function generateEmailHTML(bookingData: BookingData) {
       <h2>Payment & Refund</h2>
       <div class="payment">
         <ul>
-          <li><span class="highlight">Total Paid:</span> ${getCurrencySymbol()}${bookingData.totalAmount.toFixed(
+          <li><span class="highlight">Total Paid:</span> ${currencySymbol}${bookingData.totalAmount.toFixed(
     2
   )}</li>
-          <li><span class="highlight">Refund Amount:</span> ${getCurrencySymbol()}${refundAmount.toFixed(
+          <li><span class="highlight">Refund Amount:</span> ${currencySymbol}${refundAmount.toFixed(
     2
   )}</li>
           ${
@@ -159,8 +160,10 @@ export async function sendOrderCancellationEmail(bookingData: BookingData) {
     const settings = await Setting.findOne();
     const fromAddress = settings?.smtpFrom || settings?.smtpUser || "noreply@booking.com";
     const fromField = settings?.smtpSenderName ? `${settings.smtpSenderName} <${fromAddress}>` : fromAddress;
+    const currency = settings?.stripeCurrency || 'EUR';
+    const currencySymbol = getCurrencySymbol(currency);
 
-    const htmlContent = generateEmailHTML(bookingData);
+    const htmlContent = generateEmailHTML(bookingData, currency);
 
     const refundAmountText = (bookingData.refundAmount ?? 0).toFixed(2);
     const refundPercentText = bookingData.refundPercentage
@@ -178,7 +181,7 @@ Cancellation Details:
 - Pickup: ${bookingData.pickup}${bookingData.stops && bookingData.stops.length > 0 ? '\n- Stops: ' + bookingData.stops.map((stop, index) => `Stop ${index + 1}: ${stop.location}`).join(', ') : ''}
 - Dropoff: ${bookingData.dropoff}
 - Date: ${bookingData.date} at ${bookingData.time}${bookingData.flightNumber ? `\n- Flight Number: ${bookingData.flightNumber}` : ''}
-- Refund Amount: €${refundAmountText}
+- Refund Amount: ${currencySymbol}${refundAmountText}
 - Refund Percentage: ${refundPercentText}
 
 If you have any questions, reply to this email and our team will assist you.`,
@@ -229,6 +232,8 @@ async function sendCancellationNotificationToAdmin(bookingData: BookingData) {
     const settings = await Setting.findOne();
     const fromAddressAdmin = settings?.smtpFrom || settings?.smtpUser || "noreply@booking.com";
     const fromFieldAdmin = settings?.smtpSenderName ? `${settings.smtpSenderName} <${fromAddressAdmin}>` : fromAddressAdmin;
+    const currency = settings?.stripeCurrency || 'EUR';
+    const currencySymbol = getCurrencySymbol(currency);
 
     const refundAmountText = (bookingData.refundAmount ?? 0).toFixed(2);
     const refundPercentText = bookingData.refundPercentage
@@ -299,13 +304,13 @@ async function sendCancellationNotificationToAdmin(bookingData: BookingData) {
               </tr>
               <tr>
                 <td style="padding: 8px 0; font-weight: bold;">Total Amount:</td>
-                <td style="padding: 8px 0; font-size: 18px; color: #dc2626;">€${bookingData.totalAmount.toFixed(
+                <td style="padding: 8px 0; font-size: 18px; color: #dc2626;">${currencySymbol}${bookingData.totalAmount.toFixed(
                   2
                 )}</td>
               </tr>
               <tr>
                 <td style="padding: 8px 0; font-weight: bold;">Refund Amount:</td>
-                <td style="padding: 8px 0; font-size: 18px; color: #16a34a;">€${refundAmountText}</td>
+                <td style="padding: 8px 0; font-size: 18px; color: #16a34a;">${currencySymbol}${refundAmountText}</td>
               </tr>
               <tr>
                 <td style="padding: 8px 0; font-weight: bold;">Refund Percentage:</td>
@@ -331,8 +336,8 @@ From: ${bookingData.pickup}${bookingData.stops && bookingData.stops.length > 0 ?
 To: ${bookingData.dropoff}
 Date: ${bookingData.date} at ${bookingData.time}${bookingData.flightNumber ? `\nFlight Number: ${bookingData.flightNumber}` : ''}
 Vehicle: ${bookingData.vehicleDetails?.name || "N/A"}
-Total Amount: €${bookingData.totalAmount.toFixed(2)}
-Refund Amount: €${refundAmountText}
+Total Amount: ${currencySymbol}${bookingData.totalAmount.toFixed(2)}
+Refund Amount: ${currencySymbol}${refundAmountText}
 Refund Percentage: ${refundPercentText}
 
 Please review this cancellation and process the refund if applicable.`,

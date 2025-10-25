@@ -38,6 +38,8 @@ import {
 import type { IVehicle } from "@/models/Vehicle";
 import Image from "next/image";
 import { apiGet, apiPost, apiPatch, apiDelete } from "@/utils/api";
+import { useCurrency } from "@/hooks/useCurrency";
+import { getCurrencySymbol } from "@/lib/utils";
 
 interface VehicleForm
   extends Omit<IVehicle, "_id" | "createdAt" | "updatedAt"> {
@@ -45,6 +47,8 @@ interface VehicleForm
 }
 
 const FleetPage = () => {
+  const { currency } = useCurrency();
+  const currencySymbol = getCurrencySymbol(currency);
   const [vehicles, setVehicles] = useState<IVehicle[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [showForm, setShowForm] = useState(false);
@@ -384,6 +388,7 @@ const FleetPage = () => {
                 onEdit={handleEdit}
                 onDelete={handleDelete}
                 resolveImageSrc={resolveImageSrc}
+                currencySymbol={currencySymbol}
               />
             ))
           )}
@@ -399,11 +404,13 @@ const VehicleCard = ({
   onEdit,
   onDelete,
   resolveImageSrc,
+  currencySymbol,
 }: {
   vehicle: IVehicle;
   onEdit: (vehicle: IVehicle) => void;
   onDelete: (id: string) => void;
   resolveImageSrc: (src: string) => string;
+  currencySymbol: string;
 }) => {
   const t = useTranslations();
   return (
@@ -482,7 +489,7 @@ const VehicleCard = ({
           <div className="flex items-center gap-2">
             <Euro className="h-4 w-4 text-primary flex-shrink-0" />
             <span className="text-xl font-bold text-primary">
-              €{vehicle.price}
+              {currencySymbol}{vehicle.price}
             </span>
           </div>
           <Badge
@@ -528,6 +535,8 @@ const VehicleForm = ({
   editingId: string | null;
 }) => {
   const t = useTranslations();
+  const { currency } = useCurrency();
+  const currencySymbol = getCurrencySymbol(currency);
   return (
     <form onSubmit={onSubmit} className="space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -619,7 +628,7 @@ const VehicleForm = ({
 
         <div>
           <label className="block text-sm font-medium mb-2">
-            {t("Dashboard.Fleet.base-price-eur")}{" "}
+            {t("Dashboard.Fleet.base-price-eur", {0: currencySymbol}) }{" "}
           </label>
           <Input
             required
@@ -642,7 +651,7 @@ const VehicleForm = ({
 
         <div>
           <label className="block text-sm font-medium mb-2">
-            {t("Dashboard.Fleet.price-per-km-eur")}{" "}
+            {t("Dashboard.Fleet.price-per-km-eur", {0: currencySymbol})}{" "}
           </label>
           <Input
             required
@@ -665,7 +674,7 @@ const VehicleForm = ({
 
         <div>
           <label className="block text-sm font-medium mb-2">
-            {t("Dashboard.Fleet.price-per-hour-eur")}{" "}
+            {t("Dashboard.Fleet.price-per-hour-eur", {0: currencySymbol})}{" "}
           </label>
           <Input
             required
@@ -688,7 +697,7 @@ const VehicleForm = ({
 
         <div>
           <label className="block text-sm font-medium mb-2">
-            {t("Dashboard.Fleet.minimum-fare-eur")}{" "}
+            {t("Dashboard.Fleet.minimum-fare-eur", {0: currencySymbol})}{" "}
           </label>
           <Input
             required
@@ -825,7 +834,7 @@ const VehicleForm = ({
 
         <div>
           <label className="block text-sm font-medium mb-2">
-            {t("Dashboard.Fleet.child-seat-price-eur")}{" "}
+            {t("Dashboard.Fleet.child-seat-price-eur", {0: currencySymbol})}{" "}
           </label>
           <Input
             type="number"
@@ -844,7 +853,7 @@ const VehicleForm = ({
 
         <div>
           <label className="block text-sm font-medium mb-2">
-            {t("Dashboard.Fleet.baby-seat-price-eur")}{" "}
+            {t("Dashboard.Fleet.baby-seat-price-eur", {0: currencySymbol})}{" "}
           </label>
           <Input
             type="number"

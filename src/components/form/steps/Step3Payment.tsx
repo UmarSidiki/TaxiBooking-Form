@@ -23,6 +23,8 @@ import { Card } from "@/components/ui/card";
 import { useStep3 } from "@/hooks/form/form-steps/useStep3";
 import { useTranslations } from "next-intl";
 import dynamic from "next/dynamic";
+import { useCurrency } from "@/hooks/useCurrency";
+import { getCurrencySymbol } from "@/lib/utils";
 
 const StripeProvider = dynamic(
   () => import("@/components/providers/stripe-provider"),
@@ -70,6 +72,9 @@ export default function Step3Payment() {
     handleBack,
   } = useStep3();
 
+  const { currency } = useCurrency();
+  const currencySymbol = getCurrencySymbol(currency);
+
   const t = useTranslations();
 
   // Initialize payment method based on available options
@@ -98,7 +103,7 @@ export default function Step3Payment() {
               <label className="text-sm font-medium">{t('Step3.child-seats')}</label>
               <div className="flex items-center gap-3">
                 <span className="text-sm text-gray-600">
-                  €{childSeatPrice} {t('Step3.each')}
+                  {currencySymbol}{childSeatPrice} {t('Step3.each')}
                 </span>
                 <Input
                   type="number"
@@ -119,7 +124,7 @@ export default function Step3Payment() {
               <label className="text-sm font-medium">{t('Step3.baby-seats')}</label>
               <div className="flex items-center gap-3">
                 <span className="text-sm text-gray-600">
-                  €{babySeatPrice} each
+                  {currencySymbol}{babySeatPrice} each
                 </span>
                 <Input
                   type="number"
@@ -445,7 +450,7 @@ export default function Step3Payment() {
                       <p className="font-medium text-green-900 mb-1">
                         {t('Step3.cash-payment-selected')} </p>
                       <p className="text-sm text-green-800">
-                        {t('Step3.you-will-pay-eur')}€{totalPrice.toFixed(2)} {t('Step3.in-cash-directly-to-the-driver-at-pickup')} </p>
+                        {t('Step3.you-will-pay-eur')}{currencySymbol}{totalPrice.toFixed(2)} {t('Step3.in-cash-directly-to-the-driver-at-pickup')} </p>
                     </div>
                   </div>
                   <Button
@@ -473,7 +478,7 @@ export default function Step3Payment() {
                       <p className="font-medium text-blue-900 mb-1">
                         {t('Step3.bank-transfer-instructions')} </p>
                       <p className="text-sm text-blue-800">
-                        {t('Step3.please-transfer-eur')}€{totalPrice.toFixed(2)} {t('Step3.to-the-account-below-your-booking-will-be-confirmed-once-payment-is-received')} </p>
+                        {t('Step3.please-transfer-eur')}{currencySymbol}{totalPrice.toFixed(2)} {t('Step3.to-the-account-below-your-booking-will-be-confirmed-once-payment-is-received')} </p>
                     </div>
                   </div>
 
@@ -686,7 +691,7 @@ export default function Step3Payment() {
                 <div className="flex justify-between items-center mt-2">
                   <span className="text-xs text-gray-600">{t('Step3.base-fare')}</span>
                   <span className="font-semibold">
-                    €{vehiclePrice.toFixed(2)}
+                    {currencySymbol}{vehiclePrice.toFixed(2)}
                   </span>
                 </div>
               </div>
@@ -704,7 +709,7 @@ export default function Step3Payment() {
                       {t('Step3.child-seatsx')} {formData.childSeats}
                     </span>
                     <span className="font-medium">
-                      €{(formData.childSeats * childSeatPrice).toFixed(2)}
+                      {currencySymbol}{(formData.childSeats * childSeatPrice).toFixed(2)}
                     </span>
                   </div>
                 )}
@@ -714,7 +719,7 @@ export default function Step3Payment() {
                       {t('Step3.baby-seatsx')} {formData.babySeats}
                     </span>
                     <span className="font-medium">
-                      €{(formData.babySeats * babySeatPrice).toFixed(2)}
+                      {currencySymbol}{(formData.babySeats * babySeatPrice).toFixed(2)}
                     </span>
                   </div>
                 )}
@@ -727,7 +732,7 @@ export default function Step3Payment() {
             <div className="flex justify-between items-center text-lg font-bold">
               <span>TOTAL</span>
               <span className="text-2xl text-primary">
-                €{totalPrice.toFixed(2)}
+                {currencySymbol}{totalPrice.toFixed(2)}
               </span>
             </div>
           </div>

@@ -1,7 +1,8 @@
 import { sendEmail } from '@/lib/email';
 import { connectDB } from '@/lib/mongoose';
 import Setting from '@/models/Setting';
-import User from '@/models/User';
+import User, { IUser } from '@/models/User';
+import { getCurrencySymbol } from '@/lib/utils';
 
 interface BookingData {
   tripId: string;
@@ -31,8 +32,8 @@ interface BookingData {
   flightNumber?: string;
 }
 
-function generateOwnerEmailHTML(bookingData: BookingData) {
-  const getCurrencySymbol = () => '€';
+function generateOwnerEmailHTML(bookingData: BookingData, currency: string = 'EUR') {
+  const currencySymbol = getCurrencySymbol(currency);
 
   return `
 <!DOCTYPE html>
@@ -106,7 +107,7 @@ function generateOwnerEmailHTML(bookingData: BookingData) {
     <div class="section">
       <h2>Payment Summary</h2>
       <div class="payment">
-        <p><span class="highlight">Total Amount: ${getCurrencySymbol()}${bookingData.totalAmount.toFixed(2)}</span></p>
+        <p><span class="highlight">Total Amount: ${currencySymbol}${bookingData.totalAmount.toFixed(2)}</span></p>
         ${bookingData.paymentMethod ? `
         <p><span class="highlight">Payment Method:</span> ${bookingData.paymentMethod.replace('_', ' ')}</p>
         <p><span class="highlight">Payment Status:</span> ${bookingData.paymentStatus || 'Pending'}</p>
@@ -132,9 +133,7 @@ export async function sendOrderNotificationEmail(bookingData: BookingData) {
   try {
     // Get owner email from database (use Mongoose User model)
     await connectDB();
-    const ownerUser = await User.findOne({ role: { $in: ["owner", "admin", "superadmin"] } }).lean();
-
-
+    const ownerUser = (await User.findOne({ role: { $in: ["owner", "admin", "superadmin"] } }).lean()) as IUser | null;
     const ownerEmail = ownerUser?.email;
 
     // Validate owner email
@@ -155,15 +154,17 @@ export async function sendOrderNotificationEmail(bookingData: BookingData) {
     const settings = await Setting.findOne();
     const fromAddress = settings?.smtpFrom || settings?.smtpUser || "noreply@booking.com";
     const fromField = settings?.smtpSenderName ? `${settings.smtpSenderName} <${fromAddress}>` : fromAddress;
+    const currency = settings?.stripeCurrency || 'EUR';
+    const currencySymbol = getCurrencySymbol(currency);
 
-    const htmlContent = generateOwnerEmailHTML(bookingData);
+    const htmlContent = generateOwnerEmailHTML(bookingData, currency);
 
     const success = await sendEmail({
       from: fromField,
       to: ownerEmail,
       subject: `New Booking Alert - Reservation #${bookingData.tripId}`,
       html: htmlContent,
-      text: `New Booking Received!\n\nReservation ID: ${bookingData.tripId}\nCustomer: ${bookingData.firstName} ${bookingData.lastName}\nEmail: ${bookingData.email}\nPhone: ${bookingData.phone}\nFrom: ${bookingData.pickup}${bookingData.stops && bookingData.stops.length > 0 ? '\nStops: ' + bookingData.stops.map((stop, index) => `Stop ${index + 1}: ${stop.location}`).join(', ') : ''}\nTo: ${bookingData.dropoff}\nDate: ${bookingData.date} at ${bookingData.time}${bookingData.flightNumber ? `\nFlight Number: ${bookingData.flightNumber}` : ''}\nVehicle: ${bookingData.vehicleDetails.name}\nTotal Amount: €${bookingData.totalAmount}\n\nPlease review and confirm this booking.`,
+      text: `New Booking Received!\n\nReservation ID: ${bookingData.tripId}\nCustomer: ${bookingData.firstName} ${bookingData.lastName}\nEmail: ${bookingData.email}\nPhone: ${bookingData.phone}\nFrom: ${bookingData.pickup}${bookingData.stops && bookingData.stops.length > 0 ? '\nStops: ' + bookingData.stops.map((stop, index) => `Stop ${index + 1}: ${stop.location}`).join(', ') : ''}\nTo: ${bookingData.dropoff}\nDate: ${bookingData.date} at ${bookingData.time}${bookingData.flightNumber ? `\nFlight Number: ${bookingData.flightNumber}` : ''}\nVehicle: ${bookingData.vehicleDetails.name}\nTotal Amount: ${currencySymbol}${bookingData.totalAmount}\n\nPlease review and confirm this booking.`,
     });
 
     if (!success) {

@@ -1,6 +1,7 @@
 import { sendEmail } from "@/lib/email";
 import { connectDB } from "@/lib/mongoose";
 import Setting from "@/models/Setting";
+import { getCurrencySymbol } from "@/lib/utils";
 
 interface RideAssignmentData {
   tripId: string;
@@ -38,8 +39,8 @@ function isValidEmail(email: string): boolean {
   return emailRegex.test(email);
 }
 
-function generateEmailHTML(assignmentData: RideAssignmentData) {
-  const getCurrencySymbol = () => "€";
+function generateEmailHTML(assignmentData: RideAssignmentData, currency: string = 'EUR') {
+  const currencySymbol = getCurrencySymbol(currency);
 
   return `
 <!DOCTYPE html>
@@ -157,7 +158,7 @@ function generateEmailHTML(assignmentData: RideAssignmentData) {
     <div class="section">
       <h2>Payment Summary</h2>
       <div class="payment">
-        <p><span class="highlight">Total Amount: ${getCurrencySymbol()}${assignmentData.totalAmount.toFixed(2)}</span></p>
+        <p><span class="highlight">Total Amount: ${currencySymbol}${assignmentData.totalAmount.toFixed(2)}</span></p>
         ${
           assignmentData.paymentMethod
             ? `
@@ -202,15 +203,17 @@ export async function sendRideAssignmentEmail(assignmentData: RideAssignmentData
     const settings = await Setting.findOne();
     const fromAddress = settings?.smtpFrom || settings?.smtpUser || "noreply@booking.com";
     const fromField = settings?.smtpSenderName ? `${settings.smtpSenderName} <${fromAddress}>` : fromAddress;
+    const currency = settings?.stripeCurrency || 'EUR';
+    const currencySymbol = getCurrencySymbol(currency);
 
-    const htmlContent = generateEmailHTML(assignmentData);
+    const htmlContent = generateEmailHTML(assignmentData, currency);
 
     const success = await sendEmail({
       from: fromField,
       to: assignmentData.driverEmail,
       subject: `Ride Assignment - Reservation #${assignmentData.tripId}`,
       html: htmlContent,
-      text: `Ride Assignment!\n\nReservation ID: ${assignmentData.tripId}\nCustomer: ${assignmentData.firstName} ${assignmentData.lastName}\nFrom: ${assignmentData.pickup}${assignmentData.stops && assignmentData.stops.length > 0 ? '\nStops: ' + assignmentData.stops.map((stop, index) => `Stop ${index + 1}: ${stop.location}`).join(', ') : ''}\nTo: ${assignmentData.dropoff}\nDate: ${assignmentData.date} at ${assignmentData.time}${assignmentData.flightNumber ? `\nFlight Number: ${assignmentData.flightNumber}` : ''}\nVehicle: ${assignmentData.vehicleDetails.name}\nTotal Amount: €${assignmentData.totalAmount}\n\nCustomer Contact: ${assignmentData.email} | ${assignmentData.phone}`,
+      text: `Ride Assignment!\n\nReservation ID: ${assignmentData.tripId}\nCustomer: ${assignmentData.firstName} ${assignmentData.lastName}\nFrom: ${assignmentData.pickup}${assignmentData.stops && assignmentData.stops.length > 0 ? '\nStops: ' + assignmentData.stops.map((stop, index) => `Stop ${index + 1}: ${stop.location}`).join(', ') : ''}\nTo: ${assignmentData.dropoff}\nDate: ${assignmentData.date} at ${assignmentData.time}${assignmentData.flightNumber ? `\nFlight Number: ${assignmentData.flightNumber}` : ''}\nVehicle: ${assignmentData.vehicleDetails.name}\nTotal Amount: ${currencySymbol}${assignmentData.totalAmount}\n\nCustomer Contact: ${assignmentData.email} | ${assignmentData.phone}`,
     });
 
     if (!success) {

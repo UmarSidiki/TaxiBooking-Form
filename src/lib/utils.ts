@@ -10,7 +10,7 @@ export function getCurrencySymbol(currency: string): string {
     'EUR': '€',
     'USD': '$',
     'GBP': '£',
-    'CHF': '₣',
+    'CHF': 'CHF',
     'JPY': '¥',
     'CAD': '$',
     'AUD': '$',

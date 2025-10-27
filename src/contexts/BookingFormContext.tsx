@@ -184,8 +184,8 @@ export function BookingFormProvider({ children }: { children: ReactNode }) {
       }
 
       const tripType = searchParams.get("tripType");
-      if (tripType === "oneway" || tripType === "roundtrip") {
-        urlFormData.tripType = tripType;
+      if (tripType === "oneway" || tripType === "roundtrip" || tripType === "return") {
+        urlFormData.tripType = tripType === "return" ? "roundtrip" : tripType;
       }
 
       const duration = searchParams.get("duration");

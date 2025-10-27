@@ -1,0 +1,663 @@
+{
+  "Dashboard": {
+    "Fleet": {
+      "active": "نشيط",
+      "active-available-for-booking": "نشط (متاح للحجز)",
+      "add-new-vehicle": "إضافة مركبة جديدة",
+      "add-vehicle": "أضف مركبة",
+      "add-your-first-vehicle": "أضف مركبتك الأولى",
+      "all-categories": "جميع الفئات",
+      "all-status": "كل الحالة",
+      "are-you-sure-you-want-to-delete-this-vehicle": "هل أنت متأكد أنك تريد حذف هذه السيارة؟",
+      "baby-seat-price-eur": "سعر مقعد الطفل (€)",
+      "baggages-capacity": "سعة الأمتعة *",
+      "bags": "أكياس",
+      "base-price-eur": "السعر الأساسي (€) *",
+      "basic-information": "المعلومات الأساسية",
+      "business": "عمل",
+      "cancel": "يلغي",
+      "capacity-and-features": "سعة",
+      "category": "فئة",
+      "category2": "فئة *",
+      "child-seat-price-eur": "سعر مقعد الطفل (€)",
+      "comfort": "راحة",
+      "delete-failed": "فشل الحذف",
+      "describe-the-vehicle-features": "شرح مميزات السيارة...",
+      "description": "وصف *",
+      "discount": "تخفيض (٪)",
+      "discount-percentage": "نسبة الخصم",
+      "e-g-mercedes-e-class": "على سبيل المثال، مرسيدس الفئة E",
+      "economy": "اقتصاد",
+      "edit-vehicle": "تحرير المركبة",
+      "failed-to-delete-vehicle": "فشل في حذف السيارة",
+      "failed-to-fetch-vehicles": "فشل في جلب المركبات",
+      "failed-to-save-vehicle": "فشل في حفظ السيارة",
+      "fleet-management": "إدارة الأسطول",
+      "get-started-by-adding-your-first-vehicle-to-the-fleet": "ابدأ بإضافة سيارتك الأولى إلى الأسطول.",
+      "image-url": "عنوان URL للصورة",
+      "inactive": "غير نشط",
+      "luxury": "رفاهية",
+      "manage-your-vehicle-fleet-and-pricing": "إدارة أسطول المركبات الخاصة بك والتسعير",
+      "minimum-charge-for-trips": "الحد الأدنى لرسوم الرحلات",
+      "minimum-fare-eur": "الحد الأدنى للأجرة (€) *",
+      "minimum-hours": "الحد الأدنى للساعات *",
+      "minimum-hours-for-bookings": "الحد الأدنى لساعات الحجز",
+      "no-vehicles-match-your-filters": "لا توجد مركبات تتطابق مع المرشحات الخاصة بك",
+      "no-vehicles-yet": "لا توجد مركبات حتى الآن",
+      "operation-failed": "فشلت العملية",
+      "percentage-for-return-trips": "النسبة المئوية لرحلات العودة",
+      "persons-capacity": "سعة الأشخاص *",
+      "price-per-hour-eur": "سعر الساعة (€) *",
+      "price-per-km-eur": "السعر لكل كيلومتر (€) *",
+      "pricing": "التسعير",
+      "rate-charged-per-hour": "السعر مشحون بالساعة",
+      "rate-charged-per-kilometer": "السعر المدفوع لكل كيلومتر",
+      "return-trip-price": "سعر رحلة العودة (%)",
+      "search-vehicles-by-name-description-or-category": "ابحث عن المركبات حسب الاسم أو الوصف أو الفئة...",
+      "seats": "مقاعد",
+      "starting-fare-before-distance-calculation": "بدء الأجرة قبل حساب المسافة",
+      "status": "حالة",
+      "suv": "سيارات الدفع الرباعي",
+      "try-adjusting-your-search-or-filter-criteria": "حاول تعديل معايير البحث أو التصفية.",
+      "update-vehicle": "تحديث المركبة",
+      "van": "فان",
+      "vehicle-name": "اسم المركبة *"
+    },
+    "Home": {
+      "all-time-bookings": "حجوزات لجميع الأوقات",
+      "bookings": "الحجوزات",
+      "canceled-by-customers": "تم إلغاؤها من قبل العملاء",
+      "completion-rate": "معدل الإنجاز",
+      "configure-system": "تكوين النظام",
+      "dashboard": "لوحة القيادة",
+      "error-loading-dashboard": "حدث خطأ أثناء تحميل لوحة المعلومات",
+      "failed-to-fetch-dashboard-stats": "فشل جلب إحصائيات لوحة التحكم",
+      "failed-to-load-dashboard-data": "فشل تحميل بيانات لوحة القيادة",
+      "from-last-month": "% عن الشهر الماضي",
+      "last-updated": "آخر تحديث:",
+      "manage-all-rides": "إدارة جميع الرحلات",
+      "manage-fleet": "إدارة الأسطول",
+      "monthly-bookings": "الحجوزات الشهرية",
+      "monthly-revenue": "الإيرادات الشهرية",
+      "no-bookings-or-revenue-data-found": "لم يتم العثور على أي حجوزات أو بيانات الإيرادات.",
+      "no-data-available": "لا توجد بيانات متاحة",
+      "no-destination-data": "لا توجد بيانات الوجهة",
+      "no-recent-bookings": "لا توجد حجوزات حديثة",
+      "partner-management": "إدارة الشركاء",
+      "quick-actions": "إجراءات سريعة",
+      "recent-bookings": "الحجوزات الأخيرة",
+      "scheduled-for-future": "المقرر للمستقبل",
+      "settings": "إعدادات",
+      "successfully-completed-trips": "الرحلات المكتملة بنجاح",
+      "top-destinations": "أفضل الوجهات",
+      "total-bookings": "إجمالي الحجوزات",
+      "total-revenue": "إجمالي الإيرادات",
+      "try-again": "حاول ثانية",
+      "vehicle-management": "إدارة المركبات",
+      "view-all": "عرض الكل",
+      "view-all-bookings": "عرض جميع الحجوزات",
+      "view-partners": "عرض الشركاء",
+      "welcome-back": "مرحبًا بعودتك،"
+    },
+    "Rides": {
+      "ARefundWillBeProcessedAutomaticallyToTheCustomer": "ستتم معالجة استرداد الأموال تلقائيًا للعميل",
+      "AllPayments": "جميع المدفوعات",
+      "AllStatus": "كل الحالة",
+      "BillingAndPayment": "الفواتير والدفع",
+      "BookingCanceled": "تم إلغاء الحجز بنجاح",
+      "Cancel": "يلغي",
+      "CancelBooking": "إلغاء الحجز",
+      "CancelBookingError": "فشل في إلغاء الحجز. \nيرجى المحاولة مرة أخرى.",
+      "CancelError": "فشل في إلغاء الحجز",
+      "CancelRideAndProcessRefund": "قم بإلغاء الرحلة واسترداد الأموال",
+      "Canceled": "تم الإلغاء",
+      "CanceledOn": "تم الإلغاء في",
+      "CanceledRides": "تم الإلغاء",
+      "Canceling": "جارٍ الإلغاء...",
+      "CashPayment": "الدفع النقدي",
+      "Completed": "مكتمل",
+      "CompletedRides": "مكتمل",
+      "ConfirmCancelMessage": "هل أنت متأكد أنك تريد إلغاء هذا الحجز؟ \nلا يمكن التراجع عن هذا الإجراء.",
+      "ConfirmCancelTitle": "إلغاء الحجز",
+      "ConfirmCancellation": "تأكيد الإلغاء",
+      "CustomerInformation": "معلومات العملاء",
+      "Date": "تاريخ",
+      "Description": "إدارة وتتبع جميع طلبات الحجز الخاصة بك",
+      "Details": "تفاصيل",
+      "DropoffLocation": "موقع الإنزال",
+      "ErrorLoading": "حدث خطأ أثناء تحميل الحجوزات",
+      "Failed": "فشل",
+      "FilterBookings": "فلتر",
+      "HideFilters": "إخفاء عامل التصفية",
+      "JourneyDetails": "تفاصيل الرحلة",
+      "KeepBooking": "استمر بالحجز",
+      "KeepRide": "استمر في الركوب",
+      "LoadingBookings": "جارٍ تحميل الحجوزات...",
+      "LoadingRides": "تحميل الرحلات",
+      "LoadingRidesDescription": "يرجى الانتظار بينما نقوم بجلب رحلاتك القادمة...",
+      "NoBookings": "لم يتم العثور على أي حجوزات",
+      "NoCanceledRides": "لا يوجد رحلات ملغاة",
+      "NoCanceledRidesDescription": "ليس لديك أي رحلات ملغاة. \nستظهر الحجوزات الملغاة هنا لسجلاتك.",
+      "NoCompletedRides": "لا يوجد رحلات مكتملة",
+      "NoCompletedRidesDescription": "ليس لديك أي رحلات مكتملة حتى الآن. \nسيتم نقل الرحلات هنا بعد التاريخ والوقت المحددين لها.",
+      "NoUpcomingRides": "لا يوجد رحلات قادمة",
+      "NoUpcomingRidesDescription": "ليس لديك أي رحلات قادمة مجدولة. \nستظهر الحجوزات الجديدة هنا عندما يقوم العملاء بالحجز.",
+      "NotSpecified": "غير محدد",
+      "Paid": "مدفوع",
+      "Passenger": "راكب",
+      "Passengers": "الركاب",
+      "Payment": "قسط",
+      "PaymentMethod": "طريقة الدفع",
+      "PaymentMethodIsCashNoOnlineRefundWillBeProcessedYouMayNeedToHandleTheRefundManually": "طريقة الدفع هي نقدًا، ولن تتم معالجة استرداد الأموال عبر الإنترنت، وقد تحتاج إلى التعامل مع استرداد الأموال يدويًا",
+      "PaymentStatus": "حالة الدفع",
+      "Pending": "قيد الانتظار",
+      "PickupLocation": "موقع الالتقاط",
+      "Price": "سعر",
+      "Processing": "يعالج",
+      "Refresh": "ينعش",
+      "RefundAmount": "مبلغ الاسترداد",
+      "RefundPercentage": "نسبة الاسترداد",
+      "RefundProcessed": "تمت معالجة استرداد الأموال",
+      "Refunded": "ردها",
+      "Route": "طريق",
+      "ScheduledFor": "المقرر ل",
+      "SearchPlaceholder": "ابحث حسب معرف الرحلة أو اسم العميل أو البريد الإلكتروني أو الهاتف أو الموقع...",
+      "ShowFilters": "إظهار عامل التصفية",
+      "SpecialNotes": "ملاحظات خاصة",
+      "Status": "حالة",
+      "Stops": "توقف",
+      "ThisWillPermanentlyCancelTheRide": "سيؤدي هذا إلى إلغاء الرحلة نهائيًا",
+      "Time": "وقت",
+      "Title": "إدارة الرحلات",
+      "TotalAmount": "المبلغ الإجمالي",
+      "TotalBookings": "إجمالي الحجوزات",
+      "TotalRevenue": "إجمالي الإيرادات",
+      "Trip": "رحلة",
+      "TripStatus": "حالة الرحلة",
+      "Upcoming": "القادمة",
+      "UpcomingRides": "القادمة",
+      "Vehicle": "عربة",
+      "ViewDetails": "عرض التفاصيل",
+      "WarningThisActionCannotBeUndone": "تحذير لا يمكن التراجع عن هذا الإجراء",
+      "a-refund-will-be-processed-automatically-to-the-customer": "ستتم معالجة استرداد الأموال تلقائيًا للعميل.",
+      "assign": "تعيين",
+      "assign-driver": "تعيين السائق:",
+      "assigned-driver": "السائق المعين:",
+      "assignment-failed-data-message": "فشل التعيين: {0}",
+      "baby-seats": "مقاعد الأطفال:",
+      "billing-and-payment": "الفواتير",
+      "cancel": "يلغي",
+      "cancel-ride-and-process-refund": "إلغاء الرحلة",
+      "canceled-on": "تم الإلغاء على",
+      "cash-payment": "الدفع النقدي",
+      "change-driver": "تغيير السائق",
+      "child-seats": "مقاعد الأطفال:",
+      "confirm-cancellation": "تأكيد الإلغاء",
+      "customer-information": "معلومات العملاء",
+      "detailbooking-babyseats-baby-seat-detailbooking-babyseats-greater-than-1-s": "{0}مقعد أطفال{1}",
+      "detailbooking-childseats-child-seat-detailbooking-childseats-greater-than-1-s": "{0} مقعد أطفال{1}",
+      "driver-assigned-successfully": "تم تعيين السائق بنجاح",
+      "driver-reassigned-successfully": "تم إعادة تعيين السائق بنجاح",
+      "dropoff-location": "موقع الإنزال",
+      "failed-to-assign-driver": "فشل في تعيين السائق",
+      "flight-number": "رقم الرحلة:",
+      "flight-number2": "رقم الرحلة",
+      "furthest-date": "التاريخ الأبعد",
+      "highest-price": "أعلى سعر",
+      "journey-details": "تفاصيل الرحلة",
+      "keep-ride": "استمر في الركوب",
+      "loading-rides": "تحميل الرحلات",
+      "lowest-price": "أدنى سعر",
+      "nearest-date": "أقرب تاريخ",
+      "not-specified": "غير محدد",
+      "passengers": "الركاب",
+      "payment-method": "طريقة الدفع",
+      "payment-method-is-cash-no-online-refund-will-be-processed-you-may-need-to-handle-the-refund-manually": "طريقة الدفع هي نقدا. \nلن تتم معالجة أي استرداد عبر الإنترنت. \nقد تحتاج إلى التعامل مع عملية استرداد الأموال يدويًا.",
+      "payment-status": "حالة الدفع",
+      "pickup-location": "موقع الالتقاط",
+      "please-wait-while-we-fetch-your-canceled-rides": "يرجى الانتظار بينما نقوم بإحضار رحلاتك الملغاة...",
+      "please-wait-while-we-fetch-your-completed-rides": "يرجى الانتظار بينما نقوم بإحضار رحلاتك المكتملة...",
+      "reassign": "إعادة التعيين",
+      "reassign-driver": "إعادة تعيين برنامج التشغيل:",
+      "refresh-list": "تحديث القائمة",
+      "refund-amount": "مبلغ الاسترداد:",
+      "refund-percentage": "نسبة الاسترداد",
+      "refund-processed": "تمت معالجة استرداد الأموال",
+      "scheduled-for": "المقرر ل",
+      "select-driver": "حدد برنامج التشغيل",
+      "sort-by": "الترتيب حسب",
+      "special-notes": "ملاحظات خاصة",
+      "special-requests": "الطلبات الخاصة:",
+      "text-white-font-semibold-flex-items-center-gap-1-5-px-3-py-1-rounded-full-text-xs": "نص-خط أبيض-عناصر مرنة نصف غامقة-وسط الفجوة-1.5 بكسل-3 py-1 مدور-نص كامل-xs",
+      "this-will-permanently-cancel-the-ride": "سيؤدي هذا إلى إلغاء الرحلة نهائيًا.",
+      "time": "وقت",
+      "total-amount": "المبلغ الإجمالي",
+      "total-amount2": "المبلغ الإجمالي:",
+      "trip": "رحلة",
+      "trip-status": "حالة الرحلة",
+      "vehicle": "عربة",
+      "warning-this-action-cannot-be-undone": "تحذير: لا يمكن التراجع عن هذا الإجراء"
+    },
+    "Settings": {
+      "a-custom-thank-you-page-on-your-site": "• صفحة شكر مخصصة على موقعك",
+      "a-special-offers-page": "• صفحة العروض الخاصة",
+      "accepted-payment-methods": "طرق الدفع المقبولة",
+      "account-name": "إسم الحساب",
+      "account-number": "رقم الحساب",
+      "add-your-stripe-api-keys-above-to-enable-card-payments": "أضف مفاتيح Stripe API الخاصة بك أعلاه لتمكين الدفع بالبطاقة.",
+      "after-a-successful-booking-customers-will-be-redirected-to-this-url-after-3-seconds": "بعد إجراء الحجز بنجاح، سيتم إعادة توجيه العملاء إلى عنوان URL هذا بعد 3 ثوانٍ.",
+      "allow-customers-to-save-cards": "السماح للعملاء بحفظ البطاقات",
+      "and-get-your-api-keys-from-the-dashboard": "واحصل على مفاتيح API الخاصة بك من لوحة المعلومات.",
+      "appearance": "مظهر",
+      "apple-pay-and-google-pay-shown-automatically-on-supported-devices": "• أبل الدفع",
+      "aud-australian-dollar": "AUD ($) - الدولار الأسترالي",
+      "authentication": "المصادقة",
+      "available-methods-depend-on-your-stripe-account-settings-and-customer-location": "تعتمد الطرق المتاحة على إعدادات حساب Stripe الخاص بك وموقع العميل.",
+      "bank-account-details": "تفاصيل الحساب البنكي",
+      "bank-name": "اسم البنك",
+      "bank-transfer": "التحويل البنكي",
+      "booking": "الحجز",
+      "booking-settings": "إعدادات الحجز",
+      "border-radius": "نصف قطر الحدود",
+      "buy-now-pay-later-options-klarna-affirm-afterpay-based-on-region": "• خيارات الشراء الآن والدفع لاحقًا (Klarna، وAfirm، وAfterpay - بناءً على المنطقة)",
+      "cad-canadian-dollar": "CAD ($) - الدولار الكندي",
+      "cards-paypal-apple-pay-google-pay-and-more": "البطاقات وPayPal وApple Pay وGoogle Pay والمزيد",
+      "cash-app-link-and-more-payment-methods": "• تطبيق نقدي، رابط، والمزيد من طرق الدفع",
+      "cash-payment": "الدفع النقدي",
+      "ch-fr-de-2-letter-country-codes-comma-separated": "CH، FR، DE (رموز الدول المكونة من حرفين، مفصولة بفواصل)",
+      "ch93-0076-2011-6238-5295-7": "CH93 0076 2011 6238 5295 7",
+      "chf-fr-swiss-franc": "الفرنك السويسري - الفرنك السويسري",
+      "color-scheme": "نظام الألوان",
+      "common-ports-587-tls-465-ssl-25-none": "المنافذ المشتركة: 587 (TLS)، 465 (SSL)، 25 (لا شيء)",
+      "company-name": "اسم الشركة",
+      "configure-stripe-first": "تكوين الشريط أولاً:",
+      "controls-the-roundness-of-buttons-inputs-and-cards": "يتحكم في استدارة الأزرار والمدخلات والبطاقات.",
+      "corner-sharpness": "حدة الزاوية",
+      "country-restrictions": "القيود القطرية",
+      "credit-debit-cards-visa-mastercard-amex-etc": "• بطاقات الائتمان/الخصم (Visa وMastercard وAmex وما إلى ذلك)",
+      "currency": "عملة",
+      "customers-can-save-cards-for-future-bookings": "يمكن للعملاء حفظ البطاقات للحجوزات المستقبلية",
+      "default-currency-for-payments": "العملة الافتراضية للمدفوعات",
+      "default-latitude-for-the-map-center": "خط العرض الافتراضي لمركز الخريطة.",
+      "default-longitude-for-the-map-center": "خط الطول الافتراضي لمركز الخريطة.",
+      "direct-bank-transfer": "التحويل البنكي المباشر",
+      "email-address-to-send-test-emails-to-leave-empty-to-send-to-smtp-user": "عنوان البريد الإلكتروني لإرسال رسائل البريد الإلكتروني الاختبارية إليه (اتركه فارغًا لإرساله إلى مستخدم SMTP)",
+      "email-address-used-as-sender-for-outgoing-emails": "عنوان البريد الإلكتروني المستخدم كمرسل لرسائل البريد الإلكتروني الصادرة",
+      "encryption": "التشفير",
+      "eur-eur-euro": "يورو (€) - يورو",
+      "failed-to-load-settings": "فشل تحميل الإعدادات.",
+      "failed-to-save-settings": "فشل في حفظ الإعدادات.",
+      "from-email-address": "من عنوان البريد الإلكتروني",
+      "gbp-gbp-british-pound": "الجنيه الاسترليني (جنيه استرليني) - الجنيه البريطاني",
+      "https-yourwebsite-com-or-leave-empty-for-home-page": "https://yourwebsite.com أو اتركه فارغًا للصفحة الرئيسية",
+      "initial-latitude": "خط العرض الأولي",
+      "initial-location": "الموقع الأولي",
+      "initial-longitude": "خط الطول الأولي",
+      "jpy-cny-japanese-yen": "الين الياباني (¥) - الين الياباني",
+      "leave-empty-to-redirect-to-the-home-page": "اتركه فارغا لإعادة التوجيه إلى الصفحة الرئيسية (/).",
+      "limit-address-autocomplete-to-specific-countries-leave-empty-for-no-restrictions": "قصر الإكمال التلقائي للعنوان على بلدان محددة. \nاتركه فارغًا بدون أي قيود.",
+      "live-mode": "🔴 الوضع المباشر",
+      "map": "رسم خريطة",
+      "map-configuration": "تكوين الخريطة",
+      "name-displayed-as-sender-in-emails": "اسم المرسل",
+      "none": "لا أحد",
+      "noopener-noreferrer": "noopener noreferrer",
+      "or-any-other-url-you-choose": "• أو أي عنوان URL آخر تختاره",
+      "password": "كلمة المرور",
+      "pay-with-cash-on-delivery": "الدفع نقدا عند التسليم",
+      "payment": "قسط",
+      "payment-configuration": "تكوين الدفع",
+      "payment-settings": "إعدادات الدفع",
+      "paypal-if-enabled-in-your-stripe-account": "• PayPal (إذا تم تمكينه في حساب Stripe الخاص بك)",
+      "please-configure-stripe-settings-first-before-enabling-card-payments": "يرجى تكوين إعدادات Stripe أولاً قبل تمكين الدفع بالبطاقة.",
+      "post-booking-redirect": "إعادة التوجيه بعد الحجز",
+      "primary-color": "اللون الأساسي",
+      "publishable-key": "مفتاح قابل للنشر",
+      "publishable-key-starts-with-pk_": "مفتاح قابل للنشر (يبدأ بـ pk_)",
+      "redirect-url": "إعادة توجيه URL",
+      "restrictions": "قيود",
+      "save-all-settings": "حفظ كافة الإعدادات",
+      "secondary-color": "اللون الثانوي",
+      "secret-key": "المفتاح السري",
+      "secret-key-starts-with-sk_-keep-this-secure": "المفتاح السري (يبدأ بـ sk_) - احتفظ بهذا آمنًا!",
+      "security-protocol-for-smtp-connection": "بروتوكول الأمان للاتصال SMTP",
+      "send-a-test-email-to-verify-your-smtp-configuration": "أرسل بريدًا إلكترونيًا تجريبيًا للتحقق من تكوين SMTP الخاص بك",
+      "sender-information": "معلومات المرسل",
+      "sender-name": "اسم المرسل",
+      "settings": "إعدادات",
+      "settings-saved-successfully": "تم حفظ الإعدادات بنجاح!",
+      "smtp-configuration": "تكوين SMTP",
+      "smtp-host": "مضيف SMTP",
+      "smtp-port": "منفذ SMTP",
+      "smtp-server-settings": "إعدادات خادم SMTP",
+      "smtp-settings-are-used-for-sending-booking-confirmation-emails-make-sure-your-smtp-provider-allows-less-secure-apps-or-use-app-passwords-if-required": "تُستخدم إعدادات SMTP لإرسال رسائل البريد الإلكتروني لتأكيد الحجز. \nتأكد من أن موفر SMTP الخاص بك يسمح بالتطبيقات الأقل أمانًا أو يستخدم كلمات مرور التطبيقات إذا لزم الأمر.",
+      "statement-descriptor-suffix": "بيان واصف لاحقة",
+      "stripe-configuration": "تكوين الشريط",
+      "stripe-payment": "الدفع الشريطي",
+      "stripe-payment-includes": "💳الدفع بالشريط يشمل:",
+      "suffix-shown-on-customer-and-apos-s-statement-e-g-and-quot-company-booking-and-quot-max-22-chars": "اللاحقة تظهر على العميل",
+      "test-email-recipient": "اختبار مستلم البريد الإلكتروني",
+      "test-mode": "🧪 وضع الاختبار",
+      "test-smtp": "اختبار SMTP",
+      "test-smtp-configuration": "اختبار تكوين SMTP",
+      "testing": "اختبار",
+      "theme-and-appearance": "سمة",
+      "these-details-will-be-shown-to-customers-who-choose-bank-transfer-payment": "سيتم عرض هذه التفاصيل للعملاء الذين يختارون الدفع عن طريق التحويل المصرفي",
+      "tip": "💡 نصيحة:",
+      "tls-recommended": "طبقة النقل الآمنة (مستحسن)",
+      "to-use-stripe-payments-you-need-to-create-a-stripe-account-at": "لاستخدام مدفوعات Stripe، تحتاج إلى إنشاء حساب Stripe على",
+      "ubs-switzerland-ag": "يو بي إس سويسرا إيه جي",
+      "usd-us-dollar": "الدولار الأمريكي ($) - الدولار الأمريكي",
+      "used-for-buttons-highlights-and-main-actions": "يستخدم للأزرار والإبرازات والإجراءات الرئيسية.",
+      "used-for-text-backgrounds-and-secondary-elements": "يستخدم للنص والخلفيات والعناصر الثانوية.",
+      "username": "اسم المستخدم",
+      "webhook-secret-optional": "Webhook السري (اختياري)",
+      "webhook-signing-secret-for-secure-payment-status-updates": "سر توقيع Webhook لتحديثات حالة الدفع الآمنة",
+      "you-can-redirect-to": "يمكنك إعادة التوجيه إلى:",
+      "your-main-website-homepage": "• الصفحة الرئيسية لموقعك الإلكتروني",
+      "your-smtp-password-or-app-password": "كلمة مرور SMTP أو كلمة مرور التطبيق",
+      "your-smtp-server-hostname": "اسم مضيف خادم SMTP الخاص بك",
+      "your-smtp-username-email": "اسم المستخدم/البريد الإلكتروني الخاص بك عبر SMTP",
+      "your-stripe": "الشريط الخاص بك",
+      "your-stripe-0": "الشريط الخاص بك"
+    }
+  },
+  "Driver": {
+    "active": "نشيط",
+    "add-driver": "إضافة سائق",
+    "add-new-driver": "إضافة سائق جديد",
+    "add-your-first-driver": "أضف سائقك الأول",
+    "are-you-sure-you-want-to-delete-this-driver": "هل أنت متأكد أنك تريد حذف برنامج التشغيل هذا؟",
+    "cancel": "يلغي",
+    "delete-failed": "فشل الحذف",
+    "driver-management": "إدارة السائق",
+    "driver-name": "اسم السائق",
+    "edit-driver": "تحرير برنامج التشغيل",
+    "email": "بريد إلكتروني",
+    "failed-to-delete-driver": "فشل في حذف برنامج التشغيل",
+    "failed-to-fetch-drivers": "فشل في جلب برامج التشغيل",
+    "failed-to-save-driver": "فشل في حفظ السائق",
+    "get-started-by-adding-your-first-driver": "ابدأ بإضافة برنامج التشغيل الأول الخاص بك",
+    "inactive": "غير نشط",
+    "leave-empty-to-keep-current-password": "اتركه فارغًا للاحتفاظ بكلمة المرور الحالية",
+    "manage-your-drivers-and-their-accounts": "إدارة برامج التشغيل الخاصة بك وحساباتهم",
+    "name": "اسم",
+    "no-drivers-yet": "لا يوجد سائقين حتى الآن",
+    "operation-failed": "فشلت العملية",
+    "password": "كلمة المرور",
+    "update-driver": "تحديث برنامج التشغيل"
+  },
+  "Drivers": {
+    "access-your-driver-dashboard": "الوصول إلى لوحة القيادة الخاصة بالسائق",
+    "all-rights-reserved": ". \nجميع الحقوق محفوظة.",
+    "baby-seats": "مقاعد الأطفال:",
+    "child-seats": "مقاعد الأطفال:",
+    "contact-support": "اتصل بالدعم",
+    "detailbooking-babyseats-baby-seat-detailbooking-babyseats-greater-than-1-s": "{0}مقعد أطفال{1}",
+    "detailbooking-childseats-child-seat-detailbooking-childseats-greater-than-1-s": "{0} مقعد أطفال{1}",
+    "driver-dashboard": "لوحة القيادة للسائق",
+    "driver-portal": "بوابة السائق",
+    "enter-your-password": "أدخل كلمة المرور الخاصة بك",
+    "flight-number": "رقم الرحلة",
+    "need-assistance": "هل تحتاج إلى مساعدة؟",
+    "password": "كلمة المرور",
+    "sign-in": "تسجيل الدخول",
+    "signing-in": "تسجيل الدخول...",
+    "special-requests": "الطلبات الخاصة:",
+    "email-address": "عنوان البريد الإلكتروني",
+    "enter-your-credentials-to-access-the-driver-dashboard": "أدخل بيانات الاعتماد الخاصة بك للوصول إلى لوحة القيادة للسائق",
+    "invalid-email-or-password": "البريد الإلكتروني أو كلمة المرور غير صالحة"
+  },
+  "Footer": {
+    "Copyright": "© 2025 {websiteName} جميع الحقوق محفوظة.",
+    "Support": "دعم 24/7:",
+    "Support2": "يتوفر دعم على مدار 24 ساعة طوال أيام الأسبوع • الدفع الآمن • برامج التشغيل المرخصة"
+  },
+  "FormContainer": {
+    "StepIndicator": "الخطوة {currentStep} من 3",
+    "Title": "خدمة النقل المتميزة",
+    "booking": "الحجز",
+    "payment-and-details": "قسط",
+    "select-vehicle": "اختر مركبة",
+    "trip-details": "تفاصيل الرحلة"
+  },
+  "Sidebar": {
+    "dashboard": "لوحة القيادة",
+    "fleet": "أسطول",
+    "management_portal": "بوابة الإدارة",
+    "navigation": "ملاحة",
+    "partners": "الشركاء",
+    "preferences": "التفضيلات",
+    "rides": "ركوب الخيل",
+    "settings": "إعدادات"
+  },
+  "Step1": {
+    "BookingType": "نوع الحجز",
+    "CalculatingDistance": "جارٍ حساب المسار...",
+    "ContinueToVehicleSelection": "يكمل",
+    "Date": "تاريخ",
+    "Description": "أدخل تفاصيل رحلتك للبدء",
+    "DestinationBased": "تحويل",
+    "Distance": "مسافة",
+    "DropoffLocation": "موقع الإنزال",
+    "DropoffPlaceholder": "أدخل عنوان الوجهة",
+    "Duration": "المدة (ساعات)",
+    "DurationDescription": "كم ساعة تحتاج السيارة؟",
+    "FreeCancellation": "إلغاء مجاني",
+    "FreeCancellationDescription": "ما يصل إلى 24 ساعة قبل الاستلام. \nتأكيد الحجز الفوري.",
+    "OneWay": "طريقة واحدة",
+    "Passengers": "الركاب",
+    "PickupLocation": "موقع الالتقاط",
+    "PickupPlaceholder": "أدخل عنوان الالتقاط",
+    "Processing": "يعالج...",
+    "RoundTrip": "رحلة ذهابا وإيابا",
+    "Time": "تاريخ",
+    "TimeBased": "كل ساعة",
+    "Title": "خطط لرحلتك",
+    "date-is-required": "التاريخ مطلوب",
+    "dropoff-location-is-required": "مطلوب موقع الانزال",
+    "pickup-location-is-required": "موقع الالتقاط مطلوب",
+    "price-based-on-distance-traveled": "السعر على أساس المسافة المقطوعة",
+    "price-based-on-hourly-rate": "السعر على أساس سعر الساعة",
+    "stop": "قف",
+    "time-is-required": "الوقت مطلوب"
+  },
+  "Step2": {
+    "24-7-support": "دعم 24/7",
+    "back-to-trip-details": "العودة إلى تفاصيل الحجز",
+    "baggage-allowance": "الأعلى. \n{أمتعة} حقائب",
+    "base-fare-eur": "الأجرة الأساسية: €",
+    "best-price": "⭐ أفضل الأسعار",
+    "choose-the-perfect-vehicle-for-your-journey": "اختر السيارة المثالية لرحلتك",
+    "date-not-set": "لم يتم تحديد التاريخ",
+    "door-to-door": "من الباب إلى الباب",
+    "dropoff-location": "موقع النزول",
+    "easy-cancellation": "سهولة الإلغاء",
+    "economy": "اقتصاد",
+    "free-cancellation": "إلغاء مجاني",
+    "hour": "/ساعة ×",
+    "hourly-booking": "- الحجز بالساعة",
+    "hours": "ساعات",
+    "included-services": "الخدمات المضمنة",
+    "instant-booking-confirmation": "تأكيد الحجز الفوري",
+    "licensed-chauffeur": "سائق مرخص",
+    "loading-available-vehicles": "جارٍ تحميل المركبات المتاحة...",
+    "math-max-formdata-duration-vehicle-minimumhours-or-or-2-hours": "{0} ساعة",
+    "meet-and-greet": "يقابل",
+    "minimum-fare-applied-eur-vehicle-minimumfare": "(الحد الأدنى المطبق: €{0})",
+    "minimum-vehicle-minimumhours-or-or-2-hours": "(الحد الأدنى {0} ساعة)",
+    "no-further-costs": "لا مزيد من التكاليف",
+    "no-image": "لا توجد صورة",
+    "off": "٪ عن",
+    "one-way": "طريقة واحدة",
+    "passenger-allowance": "الأعلى. \n{الأشخاص} الركاب",
+    "pickup-location": "موقع الالتقاط",
+    "premium": "👑 بريميوم",
+    "round-trip": "رحلة ذهابا وإيابا",
+    "secure-payment-methods": "طرق الدفع الآمنة",
+    "select": "يختار",
+    "select-your-vehicle": "اختر سيارتك",
+    "selected": "✓ مختارة",
+    "standard": "✨قياسي",
+    "starting-from": "ابتداء من",
+    "time-not-set": "لم يتم ضبط الوقت",
+    "total-one-way": "مجموع طريقة واحدة",
+    "total-round-trip": "إجمالي الرحلة ذهابًا وإيابًا",
+    "vehicle-type": "نوع المركبة",
+    "your-trip": "تفاصيل الحجز"
+  },
+  "Step3": {
+    "24-7-customer-support": "دعم العملاء على مدار 24 ساعة طوال أيام الأسبوع",
+    "account-name": "إسم الحساب",
+    "account-number": "رقم الحساب",
+    "any-special-requirements-or-notes": "أي متطلبات أو ملاحظات خاصة...",
+    "baby-seats": "مقاعد اطفال",
+    "baby-seatsx": "مقاعد اطفال ×",
+    "back-to-vehicles": "العودة إلى المركبات",
+    "bank-name": "اسم البنك",
+    "bank-transfer": "التحويل البنكي",
+    "bank-transfer-instructions": "تعليمات التحويل البنكي",
+    "base-fare": "الأجرة الأساسية",
+    "booking-failed-please-try-again": "فشل الحجز. \nيرجى المحاولة مرة أخرى.",
+    "booking-from-formdata-pickup-to-formdata-dropoff": "الحجز من {0} إلى {1}",
+    "booking-summary": "ملخص الحجز",
+    "cash-payment": "الدفع النقدي",
+    "cash-payment-selected": "تم تحديد الدفع النقدي",
+    "child-seats": "مقاعد الأطفال",
+    "child-seatsx": "مقاعد الأطفال ×",
+    "confirm-booking-i-will-transfer-payment": "تأكيد الحجز - سأقوم بتحويل الدفع",
+    "confirm-booking-pay-cash-on-arrival": "تأكيد الحجز",
+    "confirming-booking": "تأكيد الحجز...",
+    "credit-debit-card": "بطاقة الائتمان/الخصم",
+    "doe": "ظبية",
+    "door-to-door-service": "خدمة من الباب إلى الباب",
+    "dropoff": "الإنزال",
+    "each": "كل",
+    "email-address": "عنوان البريد الإلكتروني *",
+    "email-is-required": "البريد الإلكتروني مطلوب",
+    "extras": "إضافات",
+    "failed-to-initialize-payment": "فشل في تهيئة الدفع",
+    "first-name": "الاسم الأول *",
+    "first-name-is-required": "الاسم الأول مطلوب",
+    "free-cancellation-24h": "إلغاء مجاني (24 ساعة)",
+    "hourly-booking": "- الحجز بالساعة",
+    "in-cash-directly-to-the-driver-at-pickup": "نقدًا مباشرة إلى السائق عند الاستلام.",
+    "instant-confirmation": "تأكيد فوري",
+    "john": "جون",
+    "last-name": "اسم العائلة *",
+    "last-name-is-required": "الاسم الأخير مطلوب",
+    "loading-payment-options": "جارٍ تحميل خيارات الدفع...",
+    "meet-and-greet": "يقابل",
+    "network-error-occurred": "حدث خطأ في الشبكة",
+    "no-payment-methods-configured": "لم يتم تكوين طرق الدفع",
+    "one-way": "طريقة واحدة",
+    "optional-extras": "إضافات اختيارية",
+    "pay-in-cash-to-the-driver": "الدفع نقداً للسائق",
+    "payment-failed-error": "فشل الدفع: {0}",
+    "payment-initialization-error": "خطأ في تهيئة الدفع",
+    "payment-method": "طريقة الدفع",
+    "personal-details": "التفاصيل الشخصية",
+    "phone-is-required": "الهاتف مطلوب",
+    "phone-number": "رقم التليفون *",
+    "pickup": "يلتقط",
+    "please-contact-the-administrator-to-set-up-payment-processing": "يرجى الاتصال بالمسؤول لإعداد معالجة الدفع",
+    "please-transfer-eur": "يرجى تحويل €",
+    "round-trip": "رحلة ذهابا وإيابا",
+    "secure-payment": "الدفع الآمن",
+    "selected-vehicle": "المركبة المختارة",
+    "special-requests-optional": "الطلبات الخاصة (اختياري)",
+    "this-may-take-a-few-seconds": "قد يستغرق هذا بضع ثوان",
+    "to-the-account-below-your-booking-will-be-confirmed-once-payment-is-received": "إلى الحساب أدناه. \nسيتم تأكيد حجزك بمجرد استلام الدفع.",
+    "transfer-to-our-bank-account": "تحويل إلى حسابنا البنكي",
+    "try-again": "حاول ثانية",
+    "what-and-apos-s-included": "ماذا",
+    "you-will-pay-eur": "سوف تدفع"
+  },
+  "Stripe": {
+    "256-bit-ssl": "طبقة المقابس الآمنة 256 بت",
+    "additional-authentication-required-please-follow-the-prompts": "مطلوب مصادقة إضافية. \nيرجى اتباع المطالبات.",
+    "an-unexpected-error-occurred-please-try-again": "حدث خطأ غير متوقع. \nيرجى المحاولة مرة أخرى.",
+    "pay": "يدفع",
+    "payment-details": "تفاصيل الدفع",
+    "payment-failed": "فشل الدفع",
+    "payment-is-processing-you-will-receive-a-confirmation-shortly": "جارٍ معالجة الدفع. \nسوف تتلقى تأكيدا قريبا.",
+    "payment-processing-failed": "فشلت معالجة الدفع",
+    "payment-status": "حالة الدفع:",
+    "payment-status-unclear-please-contact-support": "حالة الدفع غير واضحة \nيرجى الاتصال بالدعم.",
+    "payment-successful-processing-your-booking": "تم الدفع بنجاح! \nجارٍ معالجة حجزك...",
+    "payment-system-not-ready-please-refresh-the-page": "نظام الدفع غير جاهز. \nيرجى تحديث الصفحة.",
+    "pci-dss-compliant": "متوافق مع PCI DSS",
+    "processing-payment": "جارٍ معالجة الدفع...",
+    "processing-your-payment": "جارٍ معالجة دفعتك...",
+    "secure": "يؤمن",
+    "secured-by-stripe": "مؤمن بواسطة الشريط",
+    "securely": "بشكل آمن",
+    "total-amount": "المبلغ الإجمالي",
+    "your-payment-information-is-encrypted-and-secure-we-never-store-your-card-details": "معلومات الدفع الخاصة بك مشفرة وآمنة. \nنحن لا نقوم أبدًا بتخزين تفاصيل بطاقتك."
+  },
+  "ThankYou": {
+    "confirmation-email-sent": "تم إرسال البريد الإلكتروني للتأكيد",
+    "contact-our-24-7-support-team-at": "اتصل بفريق الدعم لدينا على مدار 24 ساعة طوال أيام الأسبوع على",
+    "need-help": "هل تحتاج إلى مساعدة؟",
+    "payment-method": "طريقة الدفع:",
+    "redirecting-in": "إعادة التوجيه في",
+    "return-to-home": "العودة إلى المنزل",
+    "seconds": "ثواني",
+    "thank-you-for-your-booking": "شكرا لحجزك!",
+    "trip-id": "معرف الرحلة:",
+    "we-and-apos-ve-sent-a-confirmation-email-with-all-your-booking-details-please-check-your-inbox-and-spam-folder": "نحن",
+    "your-trip-has-been-successfully-confirmed": "لقد تم تأكيد رحلتك بنجاح"
+  },
+  "ThankYouPage": {
+    "card-expired-or-blocked": "• انتهت صلاحية البطاقة أو تم حظرها",
+    "common-issues": "القضايا المشتركة:",
+    "incorrect-card-details": "• تفاصيل البطاقة غير صحيحة",
+    "insufficient-funds": "• عدم كفاية الأموال",
+    "no-payment-information-found": "لم يتم العثور على معلومات الدفع.",
+    "payment-declined-by-bank": "• تم رفض الدفع عن طريق البنك",
+    "payment-failed": "فشل الدفع",
+    "payment-failed-please-try-again-or-contact-support-if-the-problem-persists": "فشل الدفع. \nيرجى المحاولة مرة أخرى أو الاتصال بالدعم إذا استمرت المشكلة.",
+    "payment-processing": "معالجة الدفع",
+    "payment-status-unknown-please-contact-support-with-your-payment-id": "حالة الدفع غير معروفة. \nيرجى الاتصال بالدعم باستخدام معرف الدفع الخاص بك:",
+    "payment-successful": "تم الدفع بنجاح!",
+    "payment-successful-your-booking-has-been-confirmed": "تم الدفع بنجاح! \nلقد تم تأكيد الحجز الخاص بك.",
+    "please-wait-while-we-verify-your-payment": "يرجى الانتظار حتى نتحقق من دفعتك...",
+    "processing-payment": "معالجة الدفع",
+    "redirecting-to-home-page-in-3-seconds": "إعادة التوجيه إلى الصفحة الرئيسية خلال 3 ثواني...",
+    "redirecting-to-home-page-in-5-seconds": "إعادة التوجيه إلى الصفحة الرئيسية خلال 5 ثواني...",
+    "return-to-home": "العودة إلى المنزل",
+    "this-may-take-a-few-minutes-we-and-apos-ll-send-you-an-email-once-completed": "قد يستغرق هذا بضع دقائق. \nنحن",
+    "try-again": "حاول ثانية",
+    "you-will-receive-a-confirmation-email-shortly": "سوف تتلقى رسالة تأكيد بالبريد الإلكتروني قريبا.",
+    "your-payment-is-being-processed-you-will-receive-a-confirmation-email-shortly": "تتم معالجة دفعتك. \nسوف تتلقى رسالة تأكيد بالبريد الإلكتروني قريبا."
+  },
+  "booking-failed-data-message": "فشل الحجز: {0}",
+  "embeddable": {
+    "add-a-stop": "إضافة توقف",
+    "book-your-ride-in-seconds": "احجز رحلتك في ثواني",
+    "by-submitting-my-data-i-agree-to-be-contacted": "من خلال تقديم بياناتي، أوافق على أن يتم الاتصال بي.",
+    "date-cannot-be-in-the-past": "لا يمكن أن يكون التاريخ في الماضي",
+    "date-is-required": "التاريخ مطلوب",
+    "destination": "وجهة",
+    "destination-is-required": "الوجهة مطلوبة",
+    "duration-hours": "المدة (ساعات)",
+    "hourly": "كل ساعة",
+    "one-way": "طريقة واحدة",
+    "params-tostring": "?{0}",
+    "passengers": "الركاب",
+    "payment": "قسط",
+    "pickup-location": "رحيل",
+    "pickup-location-is-required": "موقع الالتقاط مطلوب",
+    "redirecting": "إعادة التوجيه...",
+    "round": "دائري",
+    "round-trip": "ذهابا وإيابا",
+    "search": "يبحث",
+    "stop-index-1-location": "أوقف موقع {0}.",
+    "time-is-required": "الوقت مطلوب",
+    "trip": "رحلة",
+    "trip-booking": "حجز",
+    "vehicle": "عربة"
+  },
+  "not-set": "غير محدد",
+  "websiteName": "اسم الموقع"
+}

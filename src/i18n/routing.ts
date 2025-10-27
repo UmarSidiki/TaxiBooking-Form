@@ -1,8 +1,9 @@
+import { ar } from 'date-fns/locale';
 import {defineRouting} from 'next-intl/routing';
  
 export const routing = defineRouting({
   // A list of all locales that are supported
-  locales: ['en', 'fr', 'es', 'de', 'nl'],
+  locales: ['en', 'fr', 'es', 'de', 'nl', 'it', 'ru', 'ar'],
  
   // Used when no locale matches
   defaultLocale: 'en',

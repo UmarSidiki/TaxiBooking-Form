@@ -40,6 +40,9 @@ export function LanguageSwitcher() {
     fr: "Français",
     de: "Deutsch",
     nl: "Nederlands",
+    it: "Italiano",
+    ru: "Русский",
+    ar: "العربية"
   };
 
   return (

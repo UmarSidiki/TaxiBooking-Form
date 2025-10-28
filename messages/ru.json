@@ -359,7 +359,27 @@
       "your-smtp-server-hostname": "Имя хоста вашего SMTP-сервера",
       "your-smtp-username-email": "Ваше имя пользователя/адрес электронной почты SMTP",
       "your-stripe": "Ваша полоса",
-      "your-stripe-0": "Ваша полоса"
+      "your-stripe-0": "Ваша полоса",
+      "configuration": "Конфигурация",
+      "accept-payments-via-multisafepay-gateway": "Принимайте платежи через шлюз MultiSafepay",
+      "api-key": "API-ключ",
+      "environment": "Среда",
+      "select-test-mode-for-testing-or-live-mode-for-production": "Выберите тестовый режим для тестирования или режим реального времени для производства.",
+      "your-multisafepay-api-key": "Ваш API-ключ MultiSafepay",
+      "your-multisafepay-api-key-from-the-dashboard": "Ваш API-ключ MultiSafepay с панели управления",
+      "add-your-multisafepay-api-key-above-to-enable-multisafepay-payments": "Выберите и настройте MultiSafepay выше, чтобы включить платежи.",
+      "available-methods-depend-on-your-multisafepay-account-settings": "Доступные методы зависят от настроек вашей учетной записи MultiSafepay.",
+      "bancontact-belgium": "Банкконтакт Бельгия",
+      "configure-multisafepay-first": "Сначала настройте Multisafepay",
+      "configure-payment-gateway-first": "Сначала настройте платежный шлюз",
+      "ideal-netherlands": "идеальные Нидерланды",
+      "multisafepay-payment-includes": "Платеж Multisafepay включает в себя",
+      "paypal-and-credit-debit-cards": "Paypal и кредитные дебетовые карты",
+      "please-configure-multisafepay-settings-first": "Сначала настройте параметры MultiSafepay.",
+      "select-and-configure-a-payment-gateway-above-to-enable-online-payments": "Выберите и настройте платежный шлюз выше, чтобы включить онлайн-платежи.",
+      "sofort-giropay-and-more-european-payment-methods": "sofort, giropay и другие европейские способы оплаты",
+      "payment-gateway": "Платежный шлюз",
+      "select-your-preferred-payment-gateway": "Выберите предпочитаемый платежный шлюз"
     }
   },
   "Driver": {
@@ -571,7 +591,11 @@
     "transfer-to-our-bank-account": "Перевод на наш банковский счет",
     "try-again": "Попробуйте еще раз",
     "what-and-apos-s-included": "Что",
-    "you-will-pay-eur": "Вы заплатите"
+    "you-will-pay-eur": "Вы заплатите",
+    "confirming": {
+      "continue-to-multisafepay": "Перейти к MultiSafepay",
+      "you-will-be-redirected-to-multisafepay-to-complete-your-payment-securely-multiple-payment-methods-available-including-ideal-bancontact-paypal-and-more": "Вы будете перенаправлены на MultiSafepay для безопасного завершения платежа. \nДоступно несколько способов оплаты, включая iDEAL, Bancontact, PayPal и другие."
+    }
   },
   "Stripe": {
     "256-bit-ssl": "256-битный SSL",

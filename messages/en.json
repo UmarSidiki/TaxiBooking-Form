@@ -154,7 +154,11 @@
     "secure-payment": "Secure Payment",
     "free-cancellation-24h": "Free Cancellation (24h)",
     "24-7-customer-support": "24/7 Customer Support",
-    "each": "each"
+    "each": "each",
+    "confirming": {
+      "you-will-be-redirected-to-multisafepay-to-complete-your-payment-securely-multiple-payment-methods-available-including-ideal-bancontact-paypal-and-more": "You will be redirected to MultiSafepay to complete your payment securely. Multiple payment methods available including iDEAL, Bancontact, PayPal, and more.",
+      "continue-to-multisafepay": "Continue to MultiSafepay"
+    }
   },
   "booking-failed-data-message": "Booking failed: {0}",
   "embeddable": {
@@ -543,7 +547,27 @@
       "sender-name": "Sender Name",
       "authentication": "Authentication",
       "testing": "Testing",
-      "sender-information": "Sender Information"
+      "sender-information": "Sender Information",
+      "configuration": "Configuration",
+      "api-key": "API Key",
+      "your-multisafepay-api-key": "Your MultiSafepay API Key",
+      "your-multisafepay-api-key-from-the-dashboard": "Your MultiSafepay API key from the dashboard",
+      "environment": "Environment",
+      "select-test-mode-for-testing-or-live-mode-for-production": "Select test mode for testing or live mode for production",
+      "accept-payments-via-multisafepay-gateway": "Accept payments via MultiSafepay gateway",
+      "please-configure-multisafepay-settings-first": "Please configure MultiSafepay settings first.",
+      "configure-payment-gateway-first": "Configure Payment Gateway First",
+      "select-and-configure-a-payment-gateway-above-to-enable-online-payments": "Select and configure a payment gateway above to enable online payments.",
+      "configure-multisafepay-first": "Configure Multisafepay First",
+      "add-your-multisafepay-api-key-above-to-enable-multisafepay-payments": "Select and configure MultiSafepay above to enable payments.",
+      "multisafepay-payment-includes": "Multisafepay Payment Includes",
+      "ideal-netherlands": "ideal Netherlands",
+      "bancontact-belgium": "Bancontact Belgium",
+      "paypal-and-credit-debit-cards": "Paypal and Credit Debit Cards",
+      "sofort-giropay-and-more-european-payment-methods": "sofort, giropay, and more European payment methods",
+      "available-methods-depend-on-your-multisafepay-account-settings": "Available methods depend on your MultiSafepay account settings.",
+      "payment-gateway": "Payment Gateway",
+      "select-your-preferred-payment-gateway": "Select Your Preferred  Payment Gateway"
     }
   },
   "Sidebar": {

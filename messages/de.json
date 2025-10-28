@@ -64,7 +64,11 @@
     "what-and-apos-s-included": "Was",
     "you-will-pay-eur": "Sie werden bezahlen",
     "24-7-customer-support": "Kundensupport rund um die Uhr",
-    "account-name": "Kontoname"
+    "account-name": "Kontoname",
+    "confirming": {
+      "continue-to-multisafepay": "Weiter zu MultiSafepay",
+      "you-will-be-redirected-to-multisafepay-to-complete-your-payment-securely-multiple-payment-methods-available-including-ideal-bancontact-paypal-and-more": "Sie werden zu MultiSafepay weitergeleitet, um Ihre Zahlung sicher abzuschließen. \nMehrere Zahlungsmethoden verfügbar, darunter iDEAL, Bancontact, PayPal und mehr."
+    }
   },
   "Stripe": {
     "256-bit-ssl": "256-Bit-SSL",
@@ -513,7 +517,27 @@
       "your-smtp-server-hostname": "Ihr SMTP-Server-Hostname",
       "your-smtp-username-email": "Ihr SMTP-Benutzername/Ihre E-Mail-Adresse",
       "your-stripe": "Dein Streifen",
-      "your-stripe-0": "Dein Streifen"
+      "your-stripe-0": "Dein Streifen",
+      "configuration": "Konfiguration",
+      "accept-payments-via-multisafepay-gateway": "Akzeptieren Sie Zahlungen über das MultiSafepay-Gateway",
+      "api-key": "API-Schlüssel",
+      "environment": "Umfeld",
+      "select-test-mode-for-testing-or-live-mode-for-production": "Wählen Sie den Testmodus zum Testen oder den Live-Modus für die Produktion",
+      "your-multisafepay-api-key": "Ihr MultiSafepay-API-Schlüssel",
+      "your-multisafepay-api-key-from-the-dashboard": "Ihr MultiSafepay-API-Schlüssel aus dem Dashboard",
+      "add-your-multisafepay-api-key-above-to-enable-multisafepay-payments": "Wählen und konfigurieren Sie oben MultiSafepay, um Zahlungen zu ermöglichen.",
+      "available-methods-depend-on-your-multisafepay-account-settings": "Die verfügbaren Methoden hängen von den Einstellungen Ihres MultiSafepay-Kontos ab.",
+      "bancontact-belgium": "Bancontact Belgien",
+      "configure-multisafepay-first": "Konfigurieren Sie zuerst Multisafepay",
+      "configure-payment-gateway-first": "Konfigurieren Sie zuerst das Zahlungsgateway",
+      "ideal-netherlands": "ideale Niederlande",
+      "multisafepay-payment-includes": "Multisafepay-Zahlung beinhaltet",
+      "paypal-and-credit-debit-cards": "Paypal und Kredit-Debitkarten",
+      "please-configure-multisafepay-settings-first": "Bitte konfigurieren Sie zuerst die MultiSafepay-Einstellungen.",
+      "select-and-configure-a-payment-gateway-above-to-enable-online-payments": "Wählen Sie oben ein Zahlungsgateway aus und konfigurieren Sie es, um Online-Zahlungen zu ermöglichen.",
+      "sofort-giropay-and-more-european-payment-methods": "Sofort, giropay und weitere europäische Zahlungsarten",
+      "payment-gateway": "Zahlungsgateway",
+      "select-your-preferred-payment-gateway": "Wählen Sie Ihr bevorzugtes Zahlungsgateway aus"
     }
   },
   "Driver": {

@@ -359,7 +359,27 @@
       "your-smtp-server-hostname": "Le nom d'hôte de votre serveur SMTP",
       "your-smtp-username-email": "Votre nom d'utilisateur/e-mail SMTP",
       "your-stripe": "Votre rayure",
-      "your-stripe-0": "Votre rayure"
+      "your-stripe-0": "Votre rayure",
+      "configuration": "Configuration",
+      "accept-payments-via-multisafepay-gateway": "Acceptez les paiements via la passerelle MultiSafepay",
+      "api-key": "Clé API",
+      "environment": "Environnement",
+      "select-test-mode-for-testing-or-live-mode-for-production": "Sélectionnez le mode test pour les tests ou le mode live pour la production",
+      "your-multisafepay-api-key": "Votre clé API MultiSafepay",
+      "your-multisafepay-api-key-from-the-dashboard": "Votre clé API MultiSafepay depuis le tableau de bord",
+      "add-your-multisafepay-api-key-above-to-enable-multisafepay-payments": "Sélectionnez et configurez MultiSafepay ci-dessus pour activer les paiements.",
+      "available-methods-depend-on-your-multisafepay-account-settings": "Les méthodes disponibles dépendent des paramètres de votre compte MultiSafepay.",
+      "bancontact-belgium": "Bancontact Belgique",
+      "configure-multisafepay-first": "Configurez d'abord Multisafepay",
+      "configure-payment-gateway-first": "Configurez d'abord la passerelle de paiement",
+      "ideal-netherlands": "Pays-Bas idéal",
+      "multisafepay-payment-includes": "Le paiement Multisafepay comprend",
+      "paypal-and-credit-debit-cards": "Paypal et cartes de débit",
+      "please-configure-multisafepay-settings-first": "Veuillez d'abord configurer les paramètres MultiSafepay.",
+      "select-and-configure-a-payment-gateway-above-to-enable-online-payments": "Sélectionnez et configurez une passerelle de paiement ci-dessus pour activer les paiements en ligne.",
+      "sofort-giropay-and-more-european-payment-methods": "sofort, giropay et d'autres méthodes de paiement européennes",
+      "payment-gateway": "Passerelle de paiement",
+      "select-your-preferred-payment-gateway": "Sélectionnez votre passerelle de paiement préférée"
     }
   },
   "Driver": {
@@ -571,7 +591,11 @@
     "transfer-to-our-bank-account": "Virement sur notre compte bancaire",
     "try-again": "Essayer à nouveau",
     "what-and-apos-s-included": "Quoi",
-    "you-will-pay-eur": "Vous paierez"
+    "you-will-pay-eur": "Vous paierez",
+    "confirming": {
+      "continue-to-multisafepay": "Continuer vers MultiSafepay",
+      "you-will-be-redirected-to-multisafepay-to-complete-your-payment-securely-multiple-payment-methods-available-including-ideal-bancontact-paypal-and-more": "Vous serez redirigé vers MultiSafepay pour effectuer votre paiement en toute sécurité. \nPlusieurs méthodes de paiement disponibles, notamment iDEAL, Bancontact, PayPal, etc."
+    }
   },
   "Stripe": {
     "256-bit-ssl": "SSL 256 bits",

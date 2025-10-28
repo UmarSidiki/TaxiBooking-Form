@@ -32,16 +32,32 @@ export default function PaymentSuccessPage() {
   }, []);
 
   useEffect(() => {
+    // Check for Stripe payment
     const paymentIntentId = searchParams.get('payment_intent');
     const redirectStatus = searchParams.get('redirect_status');
-
-    if (!paymentIntentId) {
+    
+    // Check for MultiSafepay payment
+    const transactionId = searchParams.get('transactionid');
+    
+    if (!paymentIntentId && !transactionId) {
       setStatus('failed');
       setMessage(t('ThankYouPage.no-payment-information-found'));
       return;
     }
 
-    // Handle different redirect statuses
+    // Handle MultiSafepay redirect
+    if (transactionId) {
+      setStatus('success');
+      setMessage(t('ThankYouPage.payment-successful-your-booking-has-been-confirmed'));
+      
+      // Redirect after 3 seconds
+      setTimeout(() => {
+        router.push(redirectUrl);
+      }, 3000);
+      return;
+    }
+
+    // Handle Stripe redirect statuses
     if (redirectStatus === 'succeeded') {
       setStatus('success');
       setMessage(t('ThankYouPage.payment-successful-your-booking-has-been-confirmed'));

@@ -359,7 +359,27 @@
       "your-smtp-server-hostname": "El nombre de host de su servidor SMTP",
       "your-smtp-username-email": "Su nombre de usuario/correo electrónico SMTP",
       "your-stripe": "Tu raya",
-      "your-stripe-0": "Tu raya"
+      "your-stripe-0": "Tu raya",
+      "configuration": "Configuración",
+      "accept-payments-via-multisafepay-gateway": "Acepte pagos a través de la pasarela MultiSafepay",
+      "api-key": "Clave API",
+      "environment": "Ambiente",
+      "select-test-mode-for-testing-or-live-mode-for-production": "Seleccione el modo de prueba para pruebas o el modo en vivo para producción",
+      "your-multisafepay-api-key": "Su clave API de MultiSafepay",
+      "your-multisafepay-api-key-from-the-dashboard": "Su clave API de MultiSafepay desde el panel",
+      "add-your-multisafepay-api-key-above-to-enable-multisafepay-payments": "Seleccione y configure MultiSafepay arriba para habilitar los pagos.",
+      "available-methods-depend-on-your-multisafepay-account-settings": "Los métodos disponibles dependen de la configuración de su cuenta MultiSafepay.",
+      "bancontact-belgium": "Bancontact Bélgica",
+      "configure-multisafepay-first": "Configurar Multisafepay primero",
+      "configure-payment-gateway-first": "Configure la pasarela de pago primero",
+      "ideal-netherlands": "Holanda ideal",
+      "multisafepay-payment-includes": "El pago Multisafepay incluye",
+      "paypal-and-credit-debit-cards": "Paypal y Tarjetas de Débito Crédito",
+      "please-configure-multisafepay-settings-first": "Primero configure los ajustes de MultiSafepay.",
+      "select-and-configure-a-payment-gateway-above-to-enable-online-payments": "Seleccione y configure una pasarela de pago arriba para permitir pagos en línea.",
+      "sofort-giropay-and-more-european-payment-methods": "sofort, giropay y más métodos de pago europeos",
+      "payment-gateway": "Pasarela de pago",
+      "select-your-preferred-payment-gateway": "Seleccione su pasarela de pago preferida"
     }
   },
   "Driver": {
@@ -571,7 +591,11 @@
     "transfer-to-our-bank-account": "Transferencia a nuestra cuenta bancaria",
     "try-again": "Intentar otra vez",
     "what-and-apos-s-included": "Qué",
-    "you-will-pay-eur": "tu pagaras"
+    "you-will-pay-eur": "tu pagaras",
+    "confirming": {
+      "continue-to-multisafepay": "Continuar a MultiSafepay",
+      "you-will-be-redirected-to-multisafepay-to-complete-your-payment-securely-multiple-payment-methods-available-including-ideal-bancontact-paypal-and-more": "Serás redirigido a MultiSafepay para completar tu pago de forma segura. \nMúltiples métodos de pago disponibles, incluidos iDEAL, Bancontact, PayPal y más."
+    }
   },
   "Stripe": {
     "256-bit-ssl": "SSL de 256 bits",

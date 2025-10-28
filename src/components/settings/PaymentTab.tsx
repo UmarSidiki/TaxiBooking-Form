@@ -22,6 +22,9 @@ const PaymentTab: React.FC<PaymentTabProps> = ({
 }) => {
   const t = useTranslations();
   const { updateCurrency } = useCurrency();
+  const [selectedGateway, setSelectedGateway] = React.useState<'stripe' | 'multisafepay'>(
+    settings.multisafepayApiKey ? 'multisafepay' : 'stripe'
+  );
 
   const paymentMethods = [
     {
@@ -31,6 +34,12 @@ const PaymentTab: React.FC<PaymentTabProps> = ({
       description: t(
         "Dashboard.Settings.cards-paypal-apple-pay-google-pay-and-more"
       ),
+    },
+    {
+      id: "multisafepay",
+      label: "MultiSafepay",
+      Icon: CreditCard,
+      description: "iDEAL, Bancontact, PayPal & more",
     },
     {
       id: "cash",
@@ -52,39 +61,60 @@ const PaymentTab: React.FC<PaymentTabProps> = ({
         <CardTitle>{t("Dashboard.Settings.payment-configuration")}</CardTitle>
       </CardHeader>
       <CardContent className="space-y-6">
-        {/* Stripe API Keys */}
+        {/* Payment Gateway Selection */}
         <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <h3 className="text-lg font-medium">
-              {t("Dashboard.Settings.stripe-configuration")}
-            </h3>
-            <div className="flex items-center gap-2">
-              <label className="flex items-center gap-2 text-sm">
-                <input
-                  type="checkbox"
-                  checked={settings.stripeTestMode ?? true}
-                  onChange={(e) =>
-                    handleMapSettingsChange(
-                      "stripeTestMode",
-                      e.target.checked
-                    )
-                  }
-                  className="w-4 h-4"
-                />
-                <span
-                  className={
-                    settings.stripeTestMode
-                      ? "text-orange-600 font-medium"
-                      : "text-green-600 font-medium"
-                  }
-                >
-                  {settings.stripeTestMode
-                    ? t("Dashboard.Settings.test-mode")
-                    : t("Dashboard.Settings.live-mode")}
-                </span>
-              </label>
-            </div>
+          <div>
+            <label className="block text-sm font-medium mb-2">
+              {t("Dashboard.Settings.payment-gateway")}
+            </label>
+            <select
+              value={selectedGateway}
+              onChange={(e) => setSelectedGateway(e.target.value as 'stripe' | 'multisafepay')}
+              className="w-full px-3 py-2 border rounded-md"
+            >
+              <option value="stripe">Stripe</option>
+              <option value="multisafepay">MultiSafepay</option>
+            </select>
+            <p className="text-xs text-gray-500 mt-1">
+              {t("Dashboard.Settings.select-your-preferred-payment-gateway")}
+            </p>
           </div>
+        </div>
+
+        {/* Stripe Configuration */}
+        {selectedGateway === 'stripe' && (
+          <div className="space-y-4 border-t pt-4">
+            <div className="flex items-center justify-between">
+              <h3 className="text-lg font-medium">
+                {t("Dashboard.Settings.stripe-configuration")}
+              </h3>
+              <div className="flex items-center gap-2">
+                <label className="flex items-center gap-2 text-sm">
+                  <input
+                    type="checkbox"
+                    checked={settings.stripeTestMode ?? true}
+                    onChange={(e) =>
+                      handleMapSettingsChange(
+                        "stripeTestMode",
+                        e.target.checked
+                      )
+                    }
+                    className="w-4 h-4"
+                  />
+                  <span
+                    className={
+                      settings.stripeTestMode
+                        ? "text-orange-600 font-medium"
+                        : "text-green-600 font-medium"
+                    }
+                  >
+                    {settings.stripeTestMode
+                      ? t("Dashboard.Settings.test-mode")
+                      : t("Dashboard.Settings.live-mode")}
+                  </span>
+                </label>
+              </div>
+            </div>
 
           <div className="grid grid-cols-1 gap-4">
             <div>
@@ -157,7 +187,64 @@ const PaymentTab: React.FC<PaymentTabProps> = ({
               </p>
             </div>
           </div>
-        </div>
+          </div>
+        )}
+
+        {/* MultiSafepay Configuration */}
+        {selectedGateway === 'multisafepay' && (
+          <div className="space-y-4 border-t pt-4">
+            <div className="flex items-center justify-between">
+              <h3 className="text-lg font-medium">MultiSafepay {t("Dashboard.Settings.configuration")}</h3>
+              <div className="flex items-center gap-2">
+                <label className="flex items-center gap-2 text-sm">
+                  <input
+                    type="checkbox"
+                    checked={settings.multisafepayTestMode ?? true}
+                    onChange={(e) =>
+                      handleMapSettingsChange(
+                        "multisafepayTestMode",
+                        e.target.checked
+                      )
+                    }
+                    className="w-4 h-4"
+                  />
+                  <span
+                    className={
+                      settings.multisafepayTestMode
+                        ? "text-orange-600 font-medium"
+                        : "text-green-600 font-medium"
+                    }
+                  >
+                    {settings.multisafepayTestMode
+                      ? t("Dashboard.Settings.test-mode")
+                      : t("Dashboard.Settings.live-mode")}
+                  </span>
+                </label>
+              </div>
+            </div>
+            <div className="grid grid-cols-1 gap-4">
+              <div>
+                <label className="block text-sm font-medium mb-2">
+                  {t('Dashboard.Settings.api-key')}
+                </label>
+                <Input
+                  type="password"
+                  placeholder={t('Dashboard.Settings.your-multisafepay-api-key')}
+                  value={settings.multisafepayApiKey ?? ""}
+                  onChange={(e) =>
+                    handleMapSettingsChange(
+                      "multisafepayApiKey",
+                      e.target.value
+                    )
+                  }
+                />
+                <p className="text-xs text-gray-500 mt-1">
+                  {t('Dashboard.Settings.your-multisafepay-api-key-from-the-dashboard')}
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Stripe Settings */}
         <div className="space-y-4 border-t pt-4">
@@ -272,7 +359,8 @@ const PaymentTab: React.FC<PaymentTabProps> = ({
                     ? "border-blue-500 bg-blue-50"
                     : "border-gray-200 hover:bg-gray-50"
                 } ${
-                  method.id === "card" && !settings.stripePublishableKey
+                  (method.id === "card" && !settings.stripePublishableKey) ||
+                  (method.id === "multisafepay" && !settings.multisafepayApiKey)
                     ? "opacity-50 cursor-not-allowed"
                     : ""
                 }`}
@@ -296,6 +384,17 @@ const PaymentTab: React.FC<PaymentTabProps> = ({
                       );
                       return;
                     }
+                    if (
+                      method.id === "multisafepay" &&
+                      !settings.multisafepayApiKey
+                    ) {
+                      alert(
+                        t(
+                          "Dashboard.Settings.please-configure-multisafepay-settings-first"
+                        )
+                      );
+                      return;
+                    }
                     const current = settings.acceptedPaymentMethods || [];
                     const updated = e.target.checked
                       ? [...current, method.id]
@@ -306,7 +405,8 @@ const PaymentTab: React.FC<PaymentTabProps> = ({
                     );
                   }}
                   disabled={
-                    method.id === "card" && !settings.stripePublishableKey
+                    (method.id === "card" && !settings.stripePublishableKey) ||
+                    (method.id === "multisafepay" && !settings.multisafepayApiKey)
                   }
                   className="w-4 h-4 mt-0.5"
                 />
@@ -323,7 +423,20 @@ const PaymentTab: React.FC<PaymentTabProps> = ({
             ))}
           </div>
           <div className="space-y-2">
-            {!settings.stripePublishableKey && (
+            {!settings.stripePublishableKey && !settings.multisafepayApiKey && (
+              <div className="bg-amber-50 border border-amber-200 rounded-lg p-3">
+                <p className="text-xs text-amber-800">
+                  ⚠️{" "}
+                  <strong>
+                    {t("Dashboard.Settings.configure-payment-gateway-first")}
+                  </strong>{" "}
+                  {t(
+                    "Dashboard.Settings.select-and-configure-a-payment-gateway-above-to-enable-online-payments"
+                  )}
+                </p>
+              </div>
+            )}
+            {!settings.stripePublishableKey && settings.multisafepayApiKey && (
               <div className="bg-amber-50 border border-amber-200 rounded-lg p-3">
                 <p className="text-xs text-amber-800">
                   ⚠️{" "}
@@ -332,6 +445,19 @@ const PaymentTab: React.FC<PaymentTabProps> = ({
                   </strong>{" "}
                   {t(
                     "Dashboard.Settings.add-your-stripe-api-keys-above-to-enable-card-payments"
+                  )}
+                </p>
+              </div>
+            )}
+            {settings.stripePublishableKey && !settings.multisafepayApiKey && (
+              <div className="bg-amber-50 border border-amber-200 rounded-lg p-3">
+                <p className="text-xs text-amber-800">
+                  ⚠️{" "}
+                  <strong>
+                    {t("Dashboard.Settings.configure-multisafepay-first")}
+                  </strong>{" "}
+                  {t(
+                    "Dashboard.Settings.add-your-multisafepay-api-key-above-to-enable-multisafepay-payments"
                   )}
                 </p>
               </div>
@@ -367,6 +493,38 @@ const PaymentTab: React.FC<PaymentTabProps> = ({
                   <em>
                     {t(
                       "Dashboard.Settings.available-methods-depend-on-your-stripe-account-settings-and-customer-location"
+                    )}
+                  </em>
+                </p>
+              </div>
+            )}
+            {settings.multisafepayApiKey && (
+              <div className="bg-purple-50 border border-purple-200 rounded-lg p-3">
+                <p className="text-xs text-purple-800">
+                  <strong>
+                    {t("Dashboard.Settings.multisafepay-payment-includes")}
+                  </strong>
+                  <br />
+                  {t(
+                    "Dashboard.Settings.ideal-netherlands"
+                  )}
+                  <br />
+                  {t(
+                    "Dashboard.Settings.bancontact-belgium"
+                  )}
+                  <br />
+                  {t(
+                    "Dashboard.Settings.paypal-and-credit-debit-cards"
+                  )}
+                  <br />
+                  {t(
+                    "Dashboard.Settings.sofort-giropay-and-more-european-payment-methods"
+                  )}
+                  <br />
+                  <br />
+                  <em>
+                    {t(
+                      "Dashboard.Settings.available-methods-depend-on-your-multisafepay-account-settings"
                     )}
                   </em>
                 </p>

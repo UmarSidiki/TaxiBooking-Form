@@ -29,6 +29,8 @@ export interface IBooking extends Document {
   paymentMethod?: string;
   paymentStatus: "pending" | "completed" | "failed" | "refunded";
   stripePaymentIntentId?: string;
+  multisafepayOrderId?: string;
+  multisafepayTransactionId?: string;
   status?: "upcoming" | "completed" | "canceled";
   totalAmount?: number;
   refundAmount?: number;
@@ -78,6 +80,8 @@ const BookingSchema: Schema = new Schema({
     default: "pending"
   },
   stripePaymentIntentId: { type: String },
+  multisafepayOrderId: { type: String },
+  multisafepayTransactionId: { type: String },
   status: {
     type: String,
     enum: ["upcoming", "completed", "canceled"],
@@ -135,5 +139,7 @@ export interface BookingInput {
   paymentMethod?: string;
   paymentStatus?: string;
   stripePaymentIntentId?: string;
+  multisafepayOrderId?: string;
+  multisafepayTransactionId?: string;
   totalAmount?: number;
 }

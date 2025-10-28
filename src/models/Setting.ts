@@ -16,6 +16,8 @@ export interface ISetting {
   stripeTestMode?: boolean;
   stripeStatementDescriptor?: string;
   stripeSaveCards?: boolean;
+  multisafepayApiKey?: string;
+  multisafepayTestMode?: boolean;
   acceptedPaymentMethods: string[];
   bankName?: string;
   bankAccountName?: string;
@@ -91,6 +93,14 @@ const SettingSchema = new Schema<ISetting>(
     stripeSaveCards: {
       type: Boolean,
       default: false,
+    },
+    multisafepayApiKey: {
+      type: String,
+      default: "",
+    },
+    multisafepayTestMode: {
+      type: Boolean,
+      default: true,
     },
     acceptedPaymentMethods: {
       type: [String],

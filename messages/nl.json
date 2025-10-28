@@ -260,7 +260,27 @@
       "your-smtp-server-hostname": "De hostnaam van uw SMTP-server",
       "your-smtp-username-email": "Uw SMTP-gebruikersnaam/-e-mailadres",
       "your-stripe": "Jouw streep",
-      "your-stripe-0": "Jouw streep"
+      "your-stripe-0": "Jouw streep",
+      "configuration": "Configuratie",
+      "accept-payments-via-multisafepay-gateway": "Accepteer betalingen via de MultiSafepay-gateway",
+      "api-key": "API-sleutel",
+      "environment": "Omgeving",
+      "select-test-mode-for-testing-or-live-mode-for-production": "Selecteer de testmodus voor testen of de livemodus voor productie",
+      "your-multisafepay-api-key": "Uw MultiSafepay API-sleutel",
+      "your-multisafepay-api-key-from-the-dashboard": "Uw MultiSafepay API-sleutel uit het dashboard",
+      "add-your-multisafepay-api-key-above-to-enable-multisafepay-payments": "Selecteer en configureer MultiSafepay hierboven om betalingen mogelijk te maken.",
+      "available-methods-depend-on-your-multisafepay-account-settings": "Beschikbare methoden zijn afhankelijk van uw MultiSafepay-accountinstellingen.",
+      "bancontact-belgium": "Bancontact België",
+      "configure-multisafepay-first": "Configureer eerst Multisafepay",
+      "configure-payment-gateway-first": "Configureer eerst de betalingsgateway",
+      "ideal-netherlands": "ideaal Nederland",
+      "multisafepay-payment-includes": "Multisafepay-betaling inbegrepen",
+      "paypal-and-credit-debit-cards": "Paypal en creditcards",
+      "please-configure-multisafepay-settings-first": "Configureer eerst de MultiSafepay-instellingen.",
+      "select-and-configure-a-payment-gateway-above-to-enable-online-payments": "Selecteer en configureer hierboven een betalingsgateway om online betalingen mogelijk te maken.",
+      "sofort-giropay-and-more-european-payment-methods": "sofort, giropay en meer Europese betaalmethoden",
+      "payment-gateway": "Betalingsgateway",
+      "select-your-preferred-payment-gateway": "Selecteer uw gewenste betalingsgateway"
     },
     "Fleet": {
       "active": "Actief",
@@ -571,7 +591,11 @@
     "transfer-to-our-bank-account": "Maak over naar onze bankrekening",
     "try-again": "Probeer het opnieuw",
     "what-and-apos-s-included": "Wat",
-    "you-will-pay-eur": "Jij zult betalen"
+    "you-will-pay-eur": "Jij zult betalen",
+    "confirming": {
+      "continue-to-multisafepay": "Ga verder naar MultiSafepay",
+      "you-will-be-redirected-to-multisafepay-to-complete-your-payment-securely-multiple-payment-methods-available-including-ideal-bancontact-paypal-and-more": "U wordt doorgestuurd naar MultiSafepay om uw betaling veilig af te ronden. \nMeerdere betaalmethoden beschikbaar waaronder iDEAL, Bancontact, PayPal en meer."
+    }
   },
   "Stripe": {
     "256-bit-ssl": "256-bit SSL",

@@ -359,7 +359,27 @@
       "your-smtp-server-hostname": "اسم مضيف خادم SMTP الخاص بك",
       "your-smtp-username-email": "اسم المستخدم/البريد الإلكتروني الخاص بك عبر SMTP",
       "your-stripe": "الشريط الخاص بك",
-      "your-stripe-0": "الشريط الخاص بك"
+      "your-stripe-0": "الشريط الخاص بك",
+      "configuration": "إعدادات",
+      "accept-payments-via-multisafepay-gateway": "قبول المدفوعات عبر بوابة MultiSafepay",
+      "api-key": "مفتاح واجهة برمجة التطبيقات",
+      "environment": "بيئة",
+      "select-test-mode-for-testing-or-live-mode-for-production": "حدد وضع الاختبار للاختبار أو الوضع المباشر للإنتاج",
+      "your-multisafepay-api-key": "مفتاح MultiSafepay API الخاص بك",
+      "your-multisafepay-api-key-from-the-dashboard": "مفتاح MultiSafepay API الخاص بك من لوحة المعلومات",
+      "add-your-multisafepay-api-key-above-to-enable-multisafepay-payments": "حدد MultiSafepay وقم بتكوينه أعلاه لتمكين الدفعات.",
+      "available-methods-depend-on-your-multisafepay-account-settings": "تعتمد الطرق المتاحة على إعدادات حساب MultiSafepay الخاص بك.",
+      "bancontact-belgium": "بانكونتاكت بلجيكا",
+      "configure-multisafepay-first": "قم بتكوين Multisafepay أولاً",
+      "configure-payment-gateway-first": "قم بتكوين بوابة الدفع أولاً",
+      "ideal-netherlands": "هولندا المثالية",
+      "multisafepay-payment-includes": "يتضمن دفع Multisafepay",
+      "paypal-and-credit-debit-cards": "بطاقات الخصم والائتمان باي بال",
+      "please-configure-multisafepay-settings-first": "يرجى تكوين إعدادات MultiSafepay أولاً.",
+      "select-and-configure-a-payment-gateway-above-to-enable-online-payments": "حدد بوابة الدفع وقم بتكوينها أعلاه لتمكين الدفع عبر الإنترنت.",
+      "sofort-giropay-and-more-european-payment-methods": "sofort وgiropay والمزيد من طرق الدفع الأوروبية",
+      "payment-gateway": "بوابة الدفع",
+      "select-your-preferred-payment-gateway": "حدد بوابة الدفع المفضلة لديك"
     }
   },
   "Driver": {
@@ -571,7 +591,11 @@
     "transfer-to-our-bank-account": "تحويل إلى حسابنا البنكي",
     "try-again": "حاول ثانية",
     "what-and-apos-s-included": "ماذا",
-    "you-will-pay-eur": "سوف تدفع"
+    "you-will-pay-eur": "سوف تدفع",
+    "confirming": {
+      "continue-to-multisafepay": "المتابعة إلى MultiSafepay",
+      "you-will-be-redirected-to-multisafepay-to-complete-your-payment-securely-multiple-payment-methods-available-including-ideal-bancontact-paypal-and-more": "ستتم إعادة توجيهك إلى MultiSafepay لإكمال عملية الدفع بشكل آمن. \nتتوفر طرق دفع متعددة بما في ذلك iDEAL وBancontact وPayPal والمزيد."
+    }
   },
   "Stripe": {
     "256-bit-ssl": "طبقة المقابس الآمنة 256 بت",

@@ -68,6 +68,7 @@ export default function Step3Payment() {
     handleStripePaymentError,
     handleCashBooking,
     handleBankTransferBooking,
+    handleMultisafepayBooking,
     handleBack,
   } = useStep3();
 
@@ -286,7 +287,7 @@ export default function Step3Payment() {
                             <p className="font-semibold text-gray-900">
                               {t('Step3.credit-debit-card')} </p>
                             <p className="text-xs text-gray-500">
-                              Visa, Mastercard, Amex & more
+                              Visa, Mastercard, Amex
                             </p>
                           </div>
                         </div>
@@ -298,6 +299,51 @@ export default function Step3Payment() {
                       </div>
                     </button>
                   )}
+
+                {paymentSettings.acceptedPaymentMethods.includes("multisafepay") && (
+                  <button
+                    type="button"
+                    onClick={() => setSelectedPaymentMethod("multisafepay")}
+                    className={`p-4 border-2 rounded-xl text-left transition-all ${
+                      selectedPaymentMethod === "multisafepay"
+                        ? "border-purple-500 bg-purple-50 shadow-md"
+                        : "border-gray-200 hover:border-gray-300 hover:shadow-sm"
+                    }`}
+                  >
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <div
+                          className={`p-2 rounded-lg ${
+                            selectedPaymentMethod === "multisafepay"
+                              ? "bg-purple-100"
+                              : "bg-gray-100"
+                          }`}
+                        >
+                          <CreditCard
+                            className={`h-5 w-5 ${
+                              selectedPaymentMethod === "multisafepay"
+                                ? "text-purple-600"
+                                : "text-gray-600"
+                            }`}
+                          />
+                        </div>
+                        <div>
+                          <p className="font-semibold text-gray-900">
+                            MultiSafepay
+                          </p>
+                          <p className="text-xs text-gray-500">
+                            iDEAL, Bancontact, PayPal & more
+                          </p>
+                        </div>
+                      </div>
+                      {selectedPaymentMethod === "multisafepay" && (
+                        <div className="flex items-center gap-1 text-purple-600 text-sm font-medium">
+                          <CheckCircle2 className="h-4 w-4" />
+                        </div>
+                      )}
+                    </div>
+                  </button>
+                )}
 
                 {paymentSettings.acceptedPaymentMethods.includes("cash") && (
                   <button
@@ -534,6 +580,39 @@ export default function Step3Payment() {
                         {t('Step3.confirming-booking')} </>
                     ) : (
                       <>{t('Step3.confirm-booking-i-will-transfer-payment')}</>
+                    )}
+                  </Button>
+                </div>
+              )}
+
+              {/* MultiSafepay Payment */}
+              {selectedPaymentMethod === "multisafepay" && (
+                <div className="mt-4">
+                  <div className="bg-purple-50 border border-purple-200 rounded-lg p-4 mb-4">
+                    <div className="flex items-start gap-3">
+                      <CreditCard className="h-5 w-5 text-purple-600 flex-shrink-0 mt-0.5" />
+                      <div>
+                        <p className="font-medium text-purple-900 mb-1">
+                          MultiSafepay Payment
+                        </p>
+                        <p className="text-sm text-purple-800">
+                          {t('Step3.confirming.you-will-be-redirected-to-multisafepay-to-complete-your-payment-securely-multiple-payment-methods-available-including-ideal-bancontact-paypal-and-more')} </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <Button
+                    onClick={handleMultisafepayBooking}
+                    disabled={isLoading}
+                    className="w-full bg-purple-600 hover:bg-purple-700 text-white font-semibold py-6"
+                  >
+                    {isLoading ? (
+                      <>
+                        <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                        Processing...
+                      </>
+                    ) : (
+                      <>{t('Step3.confirming.continue-to-multisafepay')}</>
                     )}
                   </Button>
                 </div>

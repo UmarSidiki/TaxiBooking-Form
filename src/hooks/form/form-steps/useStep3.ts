@@ -433,6 +433,72 @@ export function useStep3() {
     }
   };
 
+  const handleMultisafepayBooking = async () => {
+    // Validate required fields
+    const newErrors: typeof errors = {};
+    if (!formData.firstName.trim())
+      newErrors.firstName = t('Step3.first-name-is-required');
+    if (!formData.lastName.trim()) newErrors.lastName = t('Step3.last-name-is-required');
+    if (!formData.email.trim()) newErrors.email = t('Step3.email-is-required');
+    if (!formData.phone.trim()) newErrors.phone = t('Step3.phone-is-required');
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      // First create the booking
+      const bookingResponse = await fetch("/api/booking", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          ...formData,
+          paymentMethod: "multisafepay",
+          paymentStatus: "pending",
+          totalAmount: totalPrice,
+        }),
+      });
+
+      const bookingData = await bookingResponse.json();
+
+      if (!bookingResponse.ok) {
+        alert(`Booking failed: ${bookingData.message}`);
+        setIsLoading(false);
+        return;
+      }
+
+      // Create MultiSafepay order
+      const paymentResponse = await fetch("/api/create-multisafepay-order", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          amount: totalPrice,
+          currency: paymentSettings?.stripeCurrency || "eur",
+          customerEmail: formData.email,
+          customerName: `${formData.firstName} ${formData.lastName}`,
+          description: `Booking from ${formData.pickup} to ${formData.dropoff || 'destination'}`,
+          orderId: bookingData.tripId,
+        }),
+      });
+
+      const paymentData = await paymentResponse.json();
+
+      if (paymentData.success && paymentData.paymentUrl) {
+        // Redirect to MultiSafepay payment page
+        window.location.href = paymentData.paymentUrl;
+      } else {
+        alert(`Payment initialization failed: ${paymentData.message}`);
+        setIsLoading(false);
+      }
+    } catch (error) {
+      console.error("MultiSafepay booking error:", error);
+      alert("Booking failed. Please try again.");
+      setIsLoading(false);
+    }
+  };
+
   const handleBack = () => {
     setCurrentStep(2);
   };
@@ -473,6 +539,7 @@ export function useStep3() {
     handleStripePaymentError,
     handleCashBooking,
     handleBankTransferBooking,
+    handleMultisafepayBooking,
     handleBack,
   };
 }

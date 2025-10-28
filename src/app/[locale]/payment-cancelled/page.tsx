@@ -33,6 +33,31 @@ export default function PaymentCancelledPage() {
   }, []);
 
   const transactionId = searchParams.get('transactionid');
+  const orderId = searchParams.get('order_id');
+
+  useEffect(() => {
+    // Mark the booking as cancelled if we have a transaction ID or order ID
+    const cancelBooking = async () => {
+      if (transactionId || orderId) {
+        try {
+          await fetch('/api/cancel-multisafepay-booking', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+              transactionId,
+              orderId 
+            }),
+          });
+        } catch (error) {
+          console.error('Error cancelling booking:', error);
+        }
+      }
+    };
+    
+    if (!isLoading) {
+      cancelBooking();
+    }
+  }, [transactionId, orderId, isLoading]);
 
   const handleReturnHome = () => {
     router.push(redirectUrl);

@@ -469,6 +469,19 @@ export function useStep3() {
         return;
       }
 
+      // Store the order ID in the booking
+      const updateResponse = await fetch(`/api/bookings/${bookingData.tripId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          multisafepayOrderId: bookingData.tripId,
+        }),
+      });
+
+      if (!updateResponse.ok) {
+        console.error("Failed to update booking with order ID");
+      }
+
       // Create MultiSafepay order
       const paymentResponse = await fetch("/api/create-multisafepay-order", {
         method: "POST",

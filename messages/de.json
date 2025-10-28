@@ -126,7 +126,13 @@
     "this-may-take-a-few-minutes-we-and-apos-ll-send-you-an-email-once-completed": "Dies kann einige Minuten dauern. \nWir",
     "try-again": "Versuchen Sie es erneut",
     "you-will-receive-a-confirmation-email-shortly": "Sie erhalten in Kürze eine Bestätigungs-E-Mail.",
-    "your-payment-is-being-processed-you-will-receive-a-confirmation-email-shortly": "Ihre Zahlung wird bearbeitet. \nSie erhalten in Kürze eine Bestätigungs-E-Mail."
+    "your-payment-is-being-processed-you-will-receive-a-confirmation-email-shortly": "Ihre Zahlung wird bearbeitet. \nSie erhalten in Kürze eine Bestätigungs-E-Mail.",
+    "loading": "Laden",
+    "payment-cancelled": "Zahlung storniert.",
+    "you-cancelled-the-payment-no-charges-were-made": "Sie haben die Zahlung storniert. \nEs wurden keine Anklagen erhoben.",
+    "transaction-id": "Transaktions-ID",
+    "need-help": "Brauchen Sie Hilfe?",
+    "if-you-experienced-any-issues-please-contact-our-support-team": "Wenn Sie Probleme haben, wenden Sie sich bitte an unser Support-Team."
   },
   "booking-failed-data-message": "Buchung fehlgeschlagen: {0}",
   "embeddable": {

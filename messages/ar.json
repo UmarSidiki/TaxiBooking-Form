@@ -653,7 +653,13 @@
     "this-may-take-a-few-minutes-we-and-apos-ll-send-you-an-email-once-completed": "قد يستغرق هذا بضع دقائق. \nنحن",
     "try-again": "حاول ثانية",
     "you-will-receive-a-confirmation-email-shortly": "سوف تتلقى رسالة تأكيد بالبريد الإلكتروني قريبا.",
-    "your-payment-is-being-processed-you-will-receive-a-confirmation-email-shortly": "تتم معالجة دفعتك. \nسوف تتلقى رسالة تأكيد بالبريد الإلكتروني قريبا."
+    "your-payment-is-being-processed-you-will-receive-a-confirmation-email-shortly": "تتم معالجة دفعتك. \nسوف تتلقى رسالة تأكيد بالبريد الإلكتروني قريبا.",
+    "loading": "تحميل",
+    "payment-cancelled": "تم إلغاء الدفع.",
+    "you-cancelled-the-payment-no-charges-were-made": "لقد ألغيت الدفع. \nلم يتم توجيه أي اتهامات.",
+    "transaction-id": "معرف المعاملة",
+    "need-help": "هل تحتاج إلى مساعدة؟",
+    "if-you-experienced-any-issues-please-contact-our-support-team": "إذا واجهت أي مشاكل، يرجى الاتصال بفريق الدعم لدينا."
   },
   "booking-failed-data-message": "فشل الحجز: {0}",
   "embeddable": {

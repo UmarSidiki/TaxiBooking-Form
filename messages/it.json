@@ -653,7 +653,13 @@
     "this-may-take-a-few-minutes-we-and-apos-ll-send-you-an-email-once-completed": "L'operazione potrebbe richiedere alcuni minuti. \nNoi",
     "try-again": "Riprova",
     "you-will-receive-a-confirmation-email-shortly": "A breve riceverai un'e-mail di conferma.",
-    "your-payment-is-being-processed-you-will-receive-a-confirmation-email-shortly": "Il tuo pagamento è in fase di elaborazione. \nA breve riceverai un'e-mail di conferma."
+    "your-payment-is-being-processed-you-will-receive-a-confirmation-email-shortly": "Il tuo pagamento è in fase di elaborazione. \nA breve riceverai un'e-mail di conferma.",
+    "loading": "Caricamento",
+    "payment-cancelled": "Pagamento annullato.",
+    "you-cancelled-the-payment-no-charges-were-made": "Hai annullato il pagamento. \nNon è stata avanzata alcuna accusa.",
+    "transaction-id": "ID transazione",
+    "need-help": "Hai bisogno di aiuto?",
+    "if-you-experienced-any-issues-please-contact-our-support-team": "Se hai riscontrato problemi, contatta il nostro team di supporto."
   },
   "booking-failed-data-message": "Prenotazione non riuscita: {0}",
   "embeddable": {

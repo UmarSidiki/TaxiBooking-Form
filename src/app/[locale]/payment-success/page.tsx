@@ -47,6 +47,8 @@ export default function PaymentSuccessPage() {
 
     // Handle MultiSafepay redirect
     if (transactionId) {
+      // Update booking status via webhook should have already happened
+      // But we show success to the user
       setStatus('success');
       setMessage(t('ThankYouPage.payment-successful-your-booking-has-been-confirmed'));
       

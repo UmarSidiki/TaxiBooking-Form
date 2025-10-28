@@ -601,7 +601,13 @@
     "insufficient-funds": "• Insufficient funds",
     "card-expired-or-blocked": "• Card expired or blocked",
     "incorrect-card-details": "• Incorrect card details",
-    "payment-declined-by-bank": "• Payment declined by bank"
+    "payment-declined-by-bank": "• Payment declined by bank",
+    "loading": "Loading",
+    "payment-cancelled": "Payment Cancelled.",
+    "you-cancelled-the-payment-no-charges-were-made": "You cancelled the payment. No charges were made.",
+    "transaction-id": "Transaction id",
+    "need-help": "Need Help?",
+    "if-you-experienced-any-issues-please-contact-our-support-team": "If you experienced any issues, please contact our support team."
   },
   "ThankYou": {
     "thank-you-for-your-booking": "Thank You for Your Booking!",

@@ -653,7 +653,13 @@
     "this-may-take-a-few-minutes-we-and-apos-ll-send-you-an-email-once-completed": "Dit kan enkele minuten duren. \nWij",
     "try-again": "Probeer het opnieuw",
     "you-will-receive-a-confirmation-email-shortly": "U ontvangt binnenkort een bevestigingsmail.",
-    "your-payment-is-being-processed-you-will-receive-a-confirmation-email-shortly": "Uw betaling wordt verwerkt. \nU ontvangt binnenkort een bevestigingsmail."
+    "your-payment-is-being-processed-you-will-receive-a-confirmation-email-shortly": "Uw betaling wordt verwerkt. \nU ontvangt binnenkort een bevestigingsmail.",
+    "loading": "Laden",
+    "payment-cancelled": "Betaling geannuleerd.",
+    "you-cancelled-the-payment-no-charges-were-made": "U heeft de betaling geannuleerd. \nEr zijn geen kosten in rekening gebracht.",
+    "transaction-id": "Transactie-ID",
+    "need-help": "Hulp nodig?",
+    "if-you-experienced-any-issues-please-contact-our-support-team": "Als u problemen ondervindt, neem dan contact op met ons ondersteuningsteam."
   },
   "booking-failed-data-message": "Boeking mislukt: {0}",
   "embeddable": {

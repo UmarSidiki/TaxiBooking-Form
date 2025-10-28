@@ -4,7 +4,7 @@ import { connectDB } from '@/lib/mongoose';
 
 export async function POST(request: NextRequest) {
   try {
-    const { amount, currency, customerEmail, customerName, description, orderId } = await request.json();
+    const { amount, currency, customerEmail, customerName, description, orderId, locale } = await request.json();
 
     if (!amount || amount <= 0) {
       return NextResponse.json(
@@ -31,6 +31,10 @@ export async function POST(request: NextRequest) {
       ? 'https://testapi.multisafepay.com/v1/json/orders'
       : 'https://api.multisafepay.com/v1/json/orders';
 
+    // Get base URL
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || request.headers.get('origin') || '';
+    const userLocale = locale || 'en';
+    
     // Create order payload
     const orderPayload = {
       type: 'redirect',
@@ -39,9 +43,9 @@ export async function POST(request: NextRequest) {
       amount: Math.round(amount * 100), // Amount in cents
       description: description || 'Booking payment',
       payment_options: {
-        notification_url: `${process.env.NEXT_PUBLIC_BASE_URL || ''}/api/multisafepay-webhook`,
-        redirect_url: `${process.env.NEXT_PUBLIC_BASE_URL || ''}/payment-success`,
-        cancel_url: `${process.env.NEXT_PUBLIC_BASE_URL || ''}/payment-cancelled`,
+        notification_url: `${baseUrl}/api/multisafepay-webhook`,
+        redirect_url: `${baseUrl}/${userLocale}/payment-success`,
+        cancel_url: `${baseUrl}/${userLocale}/payment-cancelled`,
       },
       customer: {
         email: customerEmail || 'customer@example.com',

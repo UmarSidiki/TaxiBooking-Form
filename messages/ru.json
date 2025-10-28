@@ -653,7 +653,13 @@
     "this-may-take-a-few-minutes-we-and-apos-ll-send-you-an-email-once-completed": "Это может занять несколько минут. \nМы",
     "try-again": "Попробуйте еще раз",
     "you-will-receive-a-confirmation-email-shortly": "Вскоре вы получите электронное письмо с подтверждением.",
-    "your-payment-is-being-processed-you-will-receive-a-confirmation-email-shortly": "Ваш платеж обрабатывается. \nВскоре вы получите электронное письмо с подтверждением."
+    "your-payment-is-being-processed-you-will-receive-a-confirmation-email-shortly": "Ваш платеж обрабатывается. \nВскоре вы получите электронное письмо с подтверждением.",
+    "loading": "Загрузка",
+    "payment-cancelled": "Платеж отменен.",
+    "you-cancelled-the-payment-no-charges-were-made": "Вы отменили платеж. \nНикаких обвинений предъявлено не было.",
+    "transaction-id": "Идентификатор транзакции",
+    "need-help": "Нужна помощь?",
+    "if-you-experienced-any-issues-please-contact-our-support-team": "Если у вас возникли какие-либо проблемы, пожалуйста, свяжитесь с нашей службой поддержки."
   },
   "booking-failed-data-message": "Бронирование не удалось: {0}",
   "embeddable": {

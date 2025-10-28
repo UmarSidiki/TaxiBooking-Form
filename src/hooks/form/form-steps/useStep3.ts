@@ -480,6 +480,7 @@ export function useStep3() {
           customerName: `${formData.firstName} ${formData.lastName}`,
           description: `Booking from ${formData.pickup} to ${formData.dropoff || 'destination'}`,
           orderId: bookingData.tripId,
+          locale: locale,
         }),
       });
 

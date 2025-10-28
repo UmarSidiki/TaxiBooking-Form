@@ -306,7 +306,7 @@ export default function Step3Payment() {
                     onClick={() => setSelectedPaymentMethod("multisafepay")}
                     className={`p-4 border-2 rounded-xl text-left transition-all ${
                       selectedPaymentMethod === "multisafepay"
-                        ? "border-purple-500 bg-purple-50 shadow-md"
+                        ? "border-[#00ABEE] bg-[#00ABEE]/10 shadow-md"
                         : "border-gray-200 hover:border-gray-300 hover:shadow-sm"
                     }`}
                   >
@@ -315,14 +315,14 @@ export default function Step3Payment() {
                         <div
                           className={`p-2 rounded-lg ${
                             selectedPaymentMethod === "multisafepay"
-                              ? "bg-purple-100"
+                              ? "bg-[#00ABEE]/10"
                               : "bg-gray-100"
                           }`}
                         >
                           <CreditCard
                             className={`h-5 w-5 ${
                               selectedPaymentMethod === "multisafepay"
-                                ? "text-purple-600"
+                                ? "text-[#00ABEE]"
                                 : "text-gray-600"
                             }`}
                           />
@@ -337,13 +337,13 @@ export default function Step3Payment() {
                         </div>
                       </div>
                       {selectedPaymentMethod === "multisafepay" && (
-                        <div className="flex items-center gap-1 text-purple-600 text-sm font-medium">
+                        <div className="flex items-center gap-1 text-[#00ABEE] text-sm font-medium">
                           <CheckCircle2 className="h-4 w-4" />
                         </div>
                       )}
                     </div>
                   </button>
-                )}
+                )}=
 
                 {paymentSettings.acceptedPaymentMethods.includes("cash") && (
                   <button
@@ -604,7 +604,7 @@ export default function Step3Payment() {
                   <Button
                     onClick={handleMultisafepayBooking}
                     disabled={isLoading}
-                    className="w-full bg-[#00ABEE] hover:bg-[#00ABEE]/80 text-black font-semibold py-6"
+                    className="w-full bg-[#00ABEE] hover:bg-[#00ABEE]/80 text-white font-semibold py-6"
                   >
                     {isLoading ? (
                       <>

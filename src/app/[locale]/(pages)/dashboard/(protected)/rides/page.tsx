@@ -412,7 +412,7 @@ export default function RidesPage() {
               <div className="flex flex-col gap-1">
                 <div className="flex items-center gap-2 text-xs text-gray-500">
                   <CalendarDays className="w-3 h-3" />
-                  {t("Dashboard.Rides.Date")}
+                  {booking.tripType === 'roundtrip' ? t("Dashboard.Rides.DepartureDate") : t("Dashboard.Rides.Date")}
                 </div>
                 <p className="text-sm font-medium text-gray-900">
                   {new Date(booking.date).toLocaleDateString("en-US", {
@@ -424,31 +424,83 @@ export default function RidesPage() {
               <div className="flex flex-col gap-1">
                 <div className="flex items-center gap-2 text-xs text-gray-500">
                   <Clock className="w-3 h-3" />
-                  {t("Dashboard.Rides.Time")}
+                  {booking.tripType === 'roundtrip' ? t("Dashboard.Rides.DepartureTime") : t("Dashboard.Rides.Time")}
                 </div>
                 <p className="text-sm font-medium text-gray-900">
                   {booking.time}
                 </p>
               </div>
-              <div className="flex flex-col gap-1">
-                <div className="flex items-center gap-2 text-xs text-gray-500">
-                  <Users className="w-3 h-3" />
-                  {t("Dashboard.Rides.Passengers")}
-                </div>
-                <p className="text-sm font-medium text-gray-900">
-                  {booking.passengers}
-                </p>
-              </div>
-              <div className="flex flex-col gap-1">
-                <div className="flex items-center gap-2 text-xs text-gray-500">
-                  <DollarSign className="w-3 h-3" />
-                  {t("Dashboard.Rides.Price")}
-                </div>
-                <p className="text-sm font-medium text-gray-900">
-                  {currencySymbol}{booking.totalAmount?.toFixed(2)}
-                </p>
-              </div>
+              {booking.tripType === 'roundtrip' && booking.returnDate ? (
+                <>
+                  <div className="flex flex-col gap-1">
+                    <div className="flex items-center gap-2 text-xs text-gray-500">
+                      <CalendarDays className="w-3 h-3" />
+                      {t("Dashboard.Rides.ReturnDate")}
+                    </div>
+                    <p className="text-sm font-medium text-gray-900">
+                      {new Date(booking.returnDate).toLocaleDateString("en-US", {
+                        month: "short",
+                        day: "numeric",
+                      })}
+                    </p>
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    <div className="flex items-center gap-2 text-xs text-gray-500">
+                      <Clock className="w-3 h-3" />
+                      {t("Dashboard.Rides.ReturnTime")}
+                    </div>
+                    <p className="text-sm font-medium text-gray-900">
+                      {booking.returnTime}
+                    </p>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="flex flex-col gap-1">
+                    <div className="flex items-center gap-2 text-xs text-gray-500">
+                      <Users className="w-3 h-3" />
+                      {t("Dashboard.Rides.Passengers")}
+                    </div>
+                    <p className="text-sm font-medium text-gray-900">
+                      {booking.passengers}
+                    </p>
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    <div className="flex items-center gap-2 text-xs text-gray-500">
+                      <DollarSign className="w-3 h-3" />
+                      {t("Dashboard.Rides.Price")}
+                    </div>
+                    <p className="text-sm font-medium text-gray-900">
+                      {currencySymbol}{booking.totalAmount?.toFixed(2)}
+                    </p>
+                  </div>
+                </>
+              )}
             </div>
+
+            {/* Second row for Passengers and Price on roundtrip bookings */}
+            {booking.tripType === 'roundtrip' && booking.returnDate && (
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                <div className="flex flex-col gap-1">
+                  <div className="flex items-center gap-2 text-xs text-gray-500">
+                    <Users className="w-3 h-3" />
+                    {t("Dashboard.Rides.Passengers")}
+                  </div>
+                  <p className="text-sm font-medium text-gray-900">
+                    {booking.passengers}
+                  </p>
+                </div>
+                <div className="flex flex-col gap-1">
+                  <div className="flex items-center gap-2 text-xs text-gray-500">
+                    <DollarSign className="w-3 h-3" />
+                    {t("Dashboard.Rides.Price")}
+                  </div>
+                  <p className="text-sm font-medium text-gray-900">
+                    {currencySymbol}{booking.totalAmount?.toFixed(2)}
+                  </p>
+                </div>
+              </div>
+            )}
 
             {/* Additional Details */}
             <div className="space-y-2 pt-2 border-t border-gray-100">
@@ -1048,17 +1100,47 @@ export default function RidesPage() {
                       {detailBooking.tripId.slice(0, 8)}
                     </DialogTitle>
                     <DialogDescription className="text-gray-500 mt-1">
-                      {t("Dashboard.Rides.ScheduledFor")}{" "}
-                      {new Date(detailBooking.date).toLocaleDateString(
-                        "en-US",
-                        {
-                          weekday: "long",
-                          month: "long",
-                          day: "numeric",
-                          year: "numeric",
-                        }
-                      )}{" "}
-                      at {detailBooking.time}
+                      {detailBooking.tripType === 'roundtrip' ? (
+                        <>
+                          {t("Dashboard.Rides.departure")}: {new Date(detailBooking.date).toLocaleDateString(
+                            "en-US",
+                            {
+                              weekday: "long",
+                              month: "long",
+                              day: "numeric",
+                              year: "numeric",
+                            }
+                          )} at {detailBooking.time}
+                          {detailBooking.returnDate && (
+                            <>
+                              <br />
+                              {t("Dashboard.Rides.return")}: {new Date(detailBooking.returnDate).toLocaleDateString(
+                                "en-US",
+                                {
+                                  weekday: "long",
+                                  month: "long",
+                                  day: "numeric",
+                                  year: "numeric",
+                                }
+                              )} at {detailBooking.returnTime}
+                            </>
+                          )}
+                        </>
+                      ) : (
+                        <>
+                          {t("Dashboard.Rides.ScheduledFor")}{" "}
+                          {new Date(detailBooking.date).toLocaleDateString(
+                            "en-US",
+                            {
+                              weekday: "long",
+                              month: "long",
+                              day: "numeric",
+                              year: "numeric",
+                            }
+                          )}{" "}
+                          at {detailBooking.time}
+                        </>
+                      )}
                     </DialogDescription>
                   </div>
                 </div>
@@ -1127,14 +1209,49 @@ export default function RidesPage() {
 
                     <div className="grid grid-cols-2 gap-4 pt-4 border-t">
                       <div className="flex items-center gap-2 text-sm">
+                        <CalendarDays className="w-4 h-4 text-secondary-foreground" />
+                        <div>
+                          <p className="font-medium text-gray-700">
+                            {detailBooking.tripType === 'roundtrip' ? t("Dashboard.Rides.DepartureDate") : t("Dashboard.Rides.Date")}
+                          </p>
+                          <p className="text-gray-600">{detailBooking.date}</p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2 text-sm">
                         <Clock className="w-4 h-4 text-secondary-foreground" />
                         <div>
                           <p className="font-medium text-gray-700">
-                            {t("Dashboard.Rides.Time")}
+                            {detailBooking.tripType === 'roundtrip' ? t("Dashboard.Rides.DepartureTime") : t("Dashboard.Rides.Time")}
                           </p>
                           <p className="text-gray-600">{detailBooking.time}</p>
                         </div>
                       </div>
+                    </div>
+
+                    {detailBooking.tripType === 'roundtrip' && detailBooking.returnDate && (
+                      <div className="grid grid-cols-2 gap-4 pt-4 border-t">
+                        <div className="flex items-center gap-2 text-sm">
+                          <CalendarDays className="w-4 h-4 text-secondary-foreground" />
+                          <div>
+                            <p className="font-medium text-gray-700">
+                              {t("Dashboard.Rides.ReturnDate")}
+                            </p>
+                            <p className="text-gray-600">{detailBooking.returnDate}</p>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-2 text-sm">
+                          <Clock className="w-4 h-4 text-secondary-foreground" />
+                          <div>
+                            <p className="font-medium text-gray-700">
+                              {t("Dashboard.Rides.ReturnTime")}
+                            </p>
+                            <p className="text-gray-600">{detailBooking.returnTime}</p>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    <div className="grid grid-cols-2 gap-4 pt-4 border-t">
                       <div className="flex items-center gap-2 text-sm">
                         <Users className="w-4 h-4 text-secondary-foreground" />
                         <div>

@@ -236,7 +236,13 @@
       "flight-number2": "Номер рейса",
       "furthest-date": "Самая дальняя дата",
       "highest-price": "Самая высокая цена",
-      "journey-details": "Детали путешествия"
+      "journey-details": "Детали путешествия",
+      "DepartureDate": "Дата отъезда",
+      "DepartureTime": "Время отправления",
+      "ReturnDate": "Дата возвращения",
+      "ReturnTime": "Время возврата",
+      "departure": "Отправление",
+      "return": "Возвращаться"
     },
     "Settings": {
       "a-custom-thank-you-page-on-your-site": "• Пользовательская страница благодарности на вашем сайте.",
@@ -480,7 +486,14 @@
     "price-based-on-distance-traveled": "Цена зависит от пройденного расстояния",
     "price-based-on-hourly-rate": "Цена основана на почасовой ставке",
     "stop": "Останавливаться",
-    "time-is-required": "Требуется время"
+    "time-is-required": "Требуется время",
+    "DepartureDate": "Дата отъезда",
+    "DepartureTime": "Время отправления",
+    "ReturnDate": "Дата возвращения",
+    "ReturnTime": "Время возврата",
+    "return-date-is-required": "Укажите дату возвращения.",
+    "return-date-must-be-after-departure": "Дата возвращения должна быть не позднее даты отъезда.",
+    "return-time-is-required": "Требуется время возврата"
   },
   "Step2": {
     "24-7-support": "Круглосуточная поддержка",
@@ -524,7 +537,15 @@
     "total-one-way": "Всего в одну сторону",
     "total-round-trip": "Всего туда и обратно",
     "vehicle-type": "Тип транспортного средства",
-    "your-trip": "Детали бронирования"
+    "your-trip": "Детали бронирования",
+    "date": "Дата",
+    "departure": "Отправление",
+    "departure-date": "Дата отъезда",
+    "departure-time": "Время отправления",
+    "return": "Возвращаться",
+    "return-date": "Дата возвращения",
+    "return-time": "Время возврата",
+    "time": "Время"
   },
   "Step3": {
     "24-7-customer-support": "Круглосуточная поддержка клиентов, 7 дней в неделю",
@@ -595,7 +616,11 @@
     "confirming": {
       "continue-to-multisafepay": "Перейти к MultiSafepay",
       "you-will-be-redirected-to-multisafepay-to-complete-your-payment-securely-multiple-payment-methods-available-including-ideal-bancontact-paypal-and-more": "Вы будете перенаправлены на MultiSafepay для безопасного завершения платежа. \nДоступно несколько способов оплаты, включая iDEAL, Bancontact, PayPal и другие."
-    }
+    },
+    "date": "Дата",
+    "departure": "Отправление",
+    "flight-number-optional": "Номер рейса (необязательно)",
+    "return": "Возвращаться"
   },
   "Stripe": {
     "256-bit-ssl": "256-битный SSL",
@@ -686,7 +711,13 @@
     "time-is-required": "Требуется время",
     "trip": "Путешествие",
     "trip-booking": "Бронирование",
-    "vehicle": "Транспортное средство"
+    "vehicle": "Транспортное средство",
+    "date": "Дата",
+    "departure-date": "Дата отъезда",
+    "departure-time": "Время отправления",
+    "return-date": "Дата возвращения",
+    "return-time": "Время возврата",
+    "time": "Время"
   },
   "not-set": "Не установлено",
   "websiteName": "Название веб-сайта"

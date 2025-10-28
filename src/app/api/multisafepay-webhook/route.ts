@@ -82,6 +82,8 @@ export async function POST(request: NextRequest) {
       tripType: pendingBooking.bookingData.tripType,
       date: pendingBooking.bookingData.date,
       time: pendingBooking.bookingData.time,
+      returnDate: pendingBooking.bookingData.returnDate,
+      returnTime: pendingBooking.bookingData.returnTime,
       passengers: pendingBooking.bookingData.passengers,
       selectedVehicle: pendingBooking.bookingData.selectedVehicle,
       vehicleDetails: {
@@ -119,6 +121,8 @@ export async function POST(request: NextRequest) {
       tripType: pendingBooking.bookingData.tripType,
       date: pendingBooking.bookingData.date,
       time: pendingBooking.bookingData.time,
+      returnDate: pendingBooking.bookingData.returnDate,
+      returnTime: pendingBooking.bookingData.returnTime,
       passengers: pendingBooking.bookingData.passengers,
       selectedVehicle: pendingBooking.bookingData.selectedVehicle,
       vehicleDetails: {

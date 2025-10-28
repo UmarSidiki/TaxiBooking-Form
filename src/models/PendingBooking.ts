@@ -15,6 +15,8 @@ export interface IPendingBooking {
     duration?: number;
     date: string;
     time: string;
+    returnDate?: string;
+    returnTime?: string;
     passengers: number;
     selectedVehicle: string;
     childSeats: number;

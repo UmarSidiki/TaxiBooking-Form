@@ -17,6 +17,8 @@ export interface FormData {
   duration: number;
   date: string;
   time: string;
+  returnDate: string;
+  returnTime: string;
   passengers: number;
   selectedVehicle: string;
   childSeats: number;
@@ -48,6 +50,8 @@ export interface FormErrors {
   dropoff?: string;
   date?: string;
   time?: string;
+  returnDate?: string;
+  returnTime?: string;
   duration?: string;
   passengers?: string;
   firstName?: string;
@@ -98,6 +102,8 @@ const defaultFormData: FormData = {
   duration: 2,
   date: "",
   time: "",
+  returnDate: "",
+  returnTime: "",
   passengers: 1,
   selectedVehicle: "",
   childSeats: 0,
@@ -201,6 +207,12 @@ export function BookingFormProvider({ children }: { children: ReactNode }) {
 
       const time = searchParams.get("time");
       if (time) urlFormData.time = time;
+
+      const returnDate = searchParams.get("returnDate");
+      if (returnDate) urlFormData.returnDate = returnDate;
+
+      const returnTime = searchParams.get("returnTime");
+      if (returnTime) urlFormData.returnTime = returnTime;
 
       const passengers = searchParams.get("passengers");
       if (passengers) {

@@ -12,6 +12,8 @@ interface BookingData {
   tripType: string;
   date: string;
   time: string;
+  returnDate?: string;
+  returnTime?: string;
   passengers: number;
   selectedVehicle: string;
   vehicleDetails?: {
@@ -94,8 +96,12 @@ function generateEmailHTML(bookingData: BookingData, currency: string = 'EUR') {
           <li><span class="highlight">Dropoff:</span> ${
             bookingData.dropoff
           }</li>
-          <li><span class="highlight">Date:</span> ${bookingData.date}</li>
-          <li><span class="highlight">Time:</span> ${bookingData.time}</li>
+          <li><span class="highlight">Departure Date:</span> ${bookingData.date}</li>
+          <li><span class="highlight">Departure Time:</span> ${bookingData.time}</li>
+          ${bookingData.tripType === 'roundtrip' && bookingData.returnDate ? 
+            `<li><span class="highlight">Return Date:</span> ${bookingData.returnDate}</li>` : ''}
+          ${bookingData.tripType === 'roundtrip' && bookingData.returnTime ? 
+            `<li><span class="highlight">Return Time:</span> ${bookingData.returnTime}</li>` : ''}
           ${
             bookingData.flightNumber
               ? `<li><span class="highlight">Flight Number:</span> ${bookingData.flightNumber}</li>`
@@ -180,7 +186,7 @@ export async function sendOrderCancellationEmail(bookingData: BookingData) {
 Cancellation Details:
 - Pickup: ${bookingData.pickup}${bookingData.stops && bookingData.stops.length > 0 ? '\n- Stops: ' + bookingData.stops.map((stop, index) => `Stop ${index + 1}: ${stop.location}`).join(', ') : ''}
 - Dropoff: ${bookingData.dropoff}
-- Date: ${bookingData.date} at ${bookingData.time}${bookingData.flightNumber ? `\n- Flight Number: ${bookingData.flightNumber}` : ''}
+- Departure Date: ${bookingData.date} at ${bookingData.time}${bookingData.tripType === 'roundtrip' && bookingData.returnDate ? `\n- Return Date: ${bookingData.returnDate} at ${bookingData.returnTime}` : ''}${bookingData.flightNumber ? `\n- Flight Number: ${bookingData.flightNumber}` : ''}
 - Refund Amount: ${currencySymbol}${refundAmountText}
 - Refund Percentage: ${refundPercentText}
 
@@ -287,11 +293,15 @@ async function sendCancellationNotificationToAdmin(bookingData: BookingData) {
                 <td style="padding: 8px 0;">${bookingData.dropoff}</td>
               </tr>
               <tr>
-                <td style="padding: 8px 0; font-weight: bold;">Date & Time:</td>
+                <td style="padding: 8px 0; font-weight: bold;">Departure Date & Time:</td>
                 <td style="padding: 8px 0;">${bookingData.date} at ${
         bookingData.time
       }</td>
               </tr>
+              ${bookingData.tripType === 'roundtrip' && bookingData.returnDate ? `<tr>
+                <td style="padding: 8px 0; font-weight: bold;">Return Date & Time:</td>
+                <td style="padding: 8px 0;">${bookingData.returnDate} at ${bookingData.returnTime}</td>
+              </tr>` : ''}
               ${bookingData.flightNumber ? `<tr>
                 <td style="padding: 8px 0; font-weight: bold;">Flight Number:</td>
                 <td style="padding: 8px 0;">${bookingData.flightNumber}</td>
@@ -334,7 +344,7 @@ Email: ${bookingData.email}
 Phone: ${bookingData.phone}
 From: ${bookingData.pickup}${bookingData.stops && bookingData.stops.length > 0 ? '\nStops: ' + bookingData.stops.map((stop, index) => `Stop ${index + 1}: ${stop.location}`).join(', ') : ''}
 To: ${bookingData.dropoff}
-Date: ${bookingData.date} at ${bookingData.time}${bookingData.flightNumber ? `\nFlight Number: ${bookingData.flightNumber}` : ''}
+Departure Date: ${bookingData.date} at ${bookingData.time}${bookingData.tripType === 'roundtrip' && bookingData.returnDate ? `\nReturn Date: ${bookingData.returnDate} at ${bookingData.returnTime}` : ''}${bookingData.flightNumber ? `\nFlight Number: ${bookingData.flightNumber}` : ''}
 Vehicle: ${bookingData.vehicleDetails?.name || "N/A"}
 Total Amount: ${currencySymbol}${bookingData.totalAmount.toFixed(2)}
 Refund Amount: ${currencySymbol}${refundAmountText}

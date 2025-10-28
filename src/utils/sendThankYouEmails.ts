@@ -26,7 +26,9 @@ export async function sendThankYouEmails() {
       return bookingDateTime < threeHoursAgo;
     });
 
-    console.log(`Found ${completedBookings.length} completed bookings eligible for thank you emails`);
+    console.log(
+      `Found ${completedBookings.length} completed bookings eligible for thank you emails`
+    );
 
     let sentCount = 0;
     let failedCount = 0;
@@ -37,17 +39,19 @@ export async function sendThankYouEmails() {
         const emailData = {
           tripId: booking.tripId,
           pickup: booking.pickup,
-          dropoff: booking.dropoff || 'N/A (Hourly booking)',
+          dropoff: booking.dropoff || "N/A (Hourly booking)",
           stops: booking.stops || [],
           tripType: booking.tripType,
           date: booking.date,
           time: booking.time,
+          returnDate: booking.returnDate,
+          returnTime: booking.returnTime,
           passengers: booking.passengers,
           selectedVehicle: booking.selectedVehicle,
           vehicleDetails: booking.vehicleDetails || {
             name: booking.selectedVehicle,
-            price: 'N/A',
-            seats: 'N/A'
+            price: "N/A",
+            seats: "N/A",
           },
           childSeats: booking.childSeats,
           babySeats: booking.babySeats,
@@ -56,7 +60,8 @@ export async function sendThankYouEmails() {
           lastName: booking.lastName,
           email: booking.email,
           phone: booking.phone,
-          totalAmount: typeof booking.totalAmount === "number" ? booking.totalAmount : 0,
+          totalAmount:
+            typeof booking.totalAmount === "number" ? booking.totalAmount : 0,
           paymentMethod: booking.paymentMethod,
           paymentStatus: booking.paymentStatus,
         };
@@ -68,16 +73,21 @@ export async function sendThankYouEmails() {
           // Mark as sent
           await Booking.findByIdAndUpdate(booking._id, {
             thankYouEmailSent: true,
-            updatedAt: new Date()
+            updatedAt: new Date(),
           });
           sentCount++;
           console.log(`✅ Thank you email sent for booking ${booking.tripId}`);
         } else {
           failedCount++;
-          console.error(`❌ Failed to send thank you email for booking ${booking.tripId}`);
+          console.error(
+            `❌ Failed to send thank you email for booking ${booking.tripId}`
+          );
         }
       } catch (error) {
-        console.error(`❌ Error processing thank you email for booking ${booking.tripId}:`, error);
+        console.error(
+          `❌ Error processing thank you email for booking ${booking.tripId}:`,
+          error
+        );
         failedCount++;
       }
     }
@@ -87,13 +97,16 @@ export async function sendThankYouEmails() {
       message: `Thank you emails processed. Sent: ${sentCount}, Failed: ${failedCount}`,
       sent: sentCount,
       failed: failedCount,
-      total: completedBookings.length
+      total: completedBookings.length,
     };
   } catch (error) {
     console.error("Error sending thank you emails:", error);
     return {
       success: false,
-      message: error instanceof Error ? error.message : "Failed to send thank you emails",
+      message:
+        error instanceof Error
+          ? error.message
+          : "Failed to send thank you emails",
     };
   }
 }

@@ -401,6 +401,7 @@ function BookingFormUI() {
                       onChange={(e) =>
                         handleInputChange("date", e.target.value)
                       }
+                      placeholder={formData.tripType === "roundtrip" ? t("embeddable.departure-date") : t("embeddable.date")}
                       className={`rounded-lg border bg-white pl-9 md:pl-10 pr-3 py-2 md:py-2.5 text-sm transition-all duration-200 ${
                         errors.date
                           ? "border-red-400 focus:border-red-500 focus:ring-red-100"
@@ -424,6 +425,7 @@ function BookingFormUI() {
                       onChange={(e) =>
                         handleInputChange("time", e.target.value)
                       }
+                      placeholder={formData.tripType === "roundtrip" ? t("embeddable.departure-time") : t("embeddable.time")}
                       className={`rounded-lg border bg-white pl-9 md:pl-10 pr-3 py-2 md:py-2.5 text-sm transition-all duration-200 ${
                         errors.time
                           ? "border-red-400 focus:border-red-500 focus:ring-red-100"
@@ -438,6 +440,61 @@ function BookingFormUI() {
                     )}
                   </div>
                 </div>
+
+                {/* Return Date and Time - Only for roundtrip */}
+                {formData.tripType === "roundtrip" && !isHourly && (
+                  <div className="grid grid-cols-2 gap-2">
+                    <div className="relative">
+                      <div className="absolute left-3 top-1/2 -translate-y-1/2 text-primary">
+                        <Calendar className="h-3.5 w-3.5 md:h-4 md:w-4" />
+                      </div>
+                      <Input
+                        type="date"
+                        value={formData.returnDate}
+                        min={formData.date || minDate}
+                        onChange={(e) =>
+                          handleInputChange("returnDate", e.target.value)
+                        }
+                        placeholder={t("embeddable.return-date")}
+                        className={`rounded-lg border bg-white pl-9 md:pl-10 pr-3 py-2 md:py-2.5 text-sm transition-all duration-200 ${
+                          errors.returnDate
+                            ? "border-red-400 focus:border-red-500 focus:ring-red-100"
+                            : "border-slate-200 focus:border-primary focus:ring-primary/20"
+                        }`}
+                      />
+                      {errors.returnDate && (
+                        <div className="flex items-center gap-1 mt-1 text-xs text-red-500">
+                          <AlertCircle className="h-3 w-3" />
+                          {errors.returnDate}
+                        </div>
+                      )}
+                    </div>
+                    <div className="relative">
+                      <div className="absolute left-3 top-1/2 -translate-y-1/2 text-primary">
+                        <Clock className="h-3.5 w-3.5 md:h-4 md:w-4" />
+                      </div>
+                      <Input
+                        type="time"
+                        value={formData.returnTime}
+                        onChange={(e) =>
+                          handleInputChange("returnTime", e.target.value)
+                        }
+                        placeholder={t("embeddable.return-time")}
+                        className={`rounded-lg border bg-white pl-9 md:pl-10 pr-3 py-2 md:py-2.5 text-sm transition-all duration-200 ${
+                          errors.returnTime
+                            ? "border-red-400 focus:border-red-500 focus:ring-red-100"
+                            : "border-slate-200 focus:border-primary focus:ring-primary/20"
+                        }`}
+                      />
+                      {errors.returnTime && (
+                        <div className="flex items-center gap-1 mt-1 text-xs text-red-500">
+                          <AlertCircle className="h-3 w-3" />
+                          {errors.returnTime}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
 
                 {/* Passengers */}
                 <div className="relative">

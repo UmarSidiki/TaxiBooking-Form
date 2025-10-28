@@ -236,7 +236,13 @@
       "Title": "Gestione delle giostre",
       "TotalAmount": "Importo totale",
       "TotalBookings": "Prenotazioni totali",
-      "TotalRevenue": "Entrate totali"
+      "TotalRevenue": "Entrate totali",
+      "DepartureDate": "Data di partenza",
+      "DepartureTime": "Orario di partenza",
+      "ReturnDate": "Data di ritorno",
+      "ReturnTime": "Orario di ritorno",
+      "departure": "Partenza",
+      "return": "Ritorno"
     },
     "Settings": {
       "a-custom-thank-you-page-on-your-site": "• Una pagina di ringraziamento personalizzata sul tuo sito",
@@ -480,7 +486,14 @@
     "price-based-on-distance-traveled": "Prezzo in base alla distanza percorsa",
     "price-based-on-hourly-rate": "Prezzo basato sulla tariffa oraria",
     "stop": "Fermare",
-    "time-is-required": "È necessario tempo"
+    "time-is-required": "È necessario tempo",
+    "DepartureDate": "Data di partenza",
+    "DepartureTime": "Orario di partenza",
+    "ReturnDate": "Data di ritorno",
+    "ReturnTime": "Orario di ritorno",
+    "return-date-is-required": "La data di restituzione è obbligatoria",
+    "return-date-must-be-after-departure": "La data di ritorno deve essere uguale o successiva alla data di partenza",
+    "return-time-is-required": "È richiesto l'orario di ritorno"
   },
   "Step2": {
     "24-7-support": "Supporto 24 ore su 24, 7 giorni su 7",
@@ -524,7 +537,15 @@
     "total-one-way": "Totale sola andata",
     "total-round-trip": "Viaggio di andata e ritorno totale",
     "vehicle-type": "Tipo di veicolo",
-    "your-trip": "Dettagli della prenotazione"
+    "your-trip": "Dettagli della prenotazione",
+    "date": "Data",
+    "departure": "Partenza",
+    "departure-date": "Data di partenza",
+    "departure-time": "Orario di partenza",
+    "return": "Ritorno",
+    "return-date": "Data di ritorno",
+    "return-time": "Orario di ritorno",
+    "time": "Tempo"
   },
   "Step3": {
     "24-7-customer-support": "Assistenza clienti 24 ore su 24, 7 giorni su 7",
@@ -595,7 +616,11 @@
     "confirming": {
       "continue-to-multisafepay": "Continua su MultiSafepay",
       "you-will-be-redirected-to-multisafepay-to-complete-your-payment-securely-multiple-payment-methods-available-including-ideal-bancontact-paypal-and-more": "Verrai reindirizzato a MultiSafepay per completare il pagamento in modo sicuro. \nSono disponibili diversi metodi di pagamento tra cui iDEAL, Bancontact, PayPal e altri."
-    }
+    },
+    "date": "Data",
+    "departure": "Partenza",
+    "flight-number-optional": "Numero del volo (facoltativo)",
+    "return": "Ritorno"
   },
   "Stripe": {
     "256-bit-ssl": "SSL a 256 bit",
@@ -686,7 +711,13 @@
     "time-is-required": "È necessario tempo",
     "trip": "Viaggio",
     "trip-booking": "Prenotazione",
-    "vehicle": "Veicolo"
+    "vehicle": "Veicolo",
+    "date": "Data",
+    "departure-date": "Data di partenza",
+    "departure-time": "Orario di partenza",
+    "return-date": "Data di ritorno",
+    "return-time": "Orario di ritorno",
+    "time": "Tempo"
   },
   "not-set": "Non impostato",
   "websiteName": "Nome del sito web"

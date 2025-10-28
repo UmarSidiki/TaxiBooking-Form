@@ -11,6 +11,8 @@ export interface IBooking extends Document {
   tripType: "oneway" | "roundtrip";
   date: string;
   time: string;
+  returnDate?: string;
+  returnTime?: string;
   passengers: number;
   selectedVehicle: string;
   vehicleDetails?: {
@@ -58,6 +60,8 @@ const BookingSchema: Schema = new Schema({
   tripType: { type: String, enum: ["oneway", "roundtrip"], required: true },
   date: { type: String, required: true },
   time: { type: String, required: true },
+  returnDate: { type: String },
+  returnTime: { type: String },
   passengers: { type: Number, required: true },
   selectedVehicle: { type: String, required: true },
   vehicleDetails: {
@@ -123,6 +127,8 @@ export interface BookingInput {
   duration?: number;
   date: string;
   time: string;
+  returnDate?: string;
+  returnTime?: string;
   passengers: number;
   selectedVehicle: string;
   childSeats: number;

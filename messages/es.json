@@ -236,7 +236,13 @@
       "trip": "Viaje",
       "trip-status": "Estado del viaje",
       "vehicle": "Vehículo",
-      "warning-this-action-cannot-be-undone": "Advertencia: esta acción no se puede deshacer"
+      "warning-this-action-cannot-be-undone": "Advertencia: esta acción no se puede deshacer",
+      "DepartureDate": "Fecha de salida",
+      "DepartureTime": "Hora de salida",
+      "ReturnDate": "Fecha de regreso",
+      "ReturnTime": "Hora de regreso",
+      "departure": "Partida",
+      "return": "Devolver"
     },
     "Settings": {
       "a-custom-thank-you-page-on-your-site": "• Una página de agradecimiento personalizada en su sitio",
@@ -480,7 +486,14 @@
     "price-based-on-distance-traveled": "Precio basado en la distancia recorrida",
     "price-based-on-hourly-rate": "Precio basado en tarifa por hora",
     "stop": "Detener",
-    "time-is-required": "Se requiere tiempo"
+    "time-is-required": "Se requiere tiempo",
+    "DepartureDate": "Fecha de salida",
+    "DepartureTime": "Hora de salida",
+    "ReturnDate": "Fecha de regreso",
+    "ReturnTime": "Hora de regreso",
+    "return-date-is-required": "Se requiere fecha de regreso",
+    "return-date-must-be-after-departure": "La fecha de regreso debe ser igual o posterior a la fecha de salida.",
+    "return-time-is-required": "Se requiere tiempo de regreso"
   },
   "Step2": {
     "24-7-support": "Soporte 24 horas al día, 7 días a la semana",
@@ -524,7 +537,15 @@
     "total-one-way": "Total de ida",
     "total-round-trip": "Total ida y vuelta",
     "vehicle-type": "Tipo de vehículo",
-    "your-trip": "Detalles de la reserva"
+    "your-trip": "Detalles de la reserva",
+    "date": "Fecha",
+    "departure": "Partida",
+    "departure-date": "Fecha de salida",
+    "departure-time": "Hora de salida",
+    "return": "Devolver",
+    "return-date": "Fecha de regreso",
+    "return-time": "Hora de regreso",
+    "time": "Tiempo"
   },
   "Step3": {
     "24-7-customer-support": "Atención al cliente 24 horas al día, 7 días a la semana",
@@ -595,7 +616,11 @@
     "confirming": {
       "continue-to-multisafepay": "Continuar a MultiSafepay",
       "you-will-be-redirected-to-multisafepay-to-complete-your-payment-securely-multiple-payment-methods-available-including-ideal-bancontact-paypal-and-more": "Serás redirigido a MultiSafepay para completar tu pago de forma segura. \nMúltiples métodos de pago disponibles, incluidos iDEAL, Bancontact, PayPal y más."
-    }
+    },
+    "date": "Fecha",
+    "departure": "Partida",
+    "flight-number-optional": "Número de vuelo (opcional)",
+    "return": "Devolver"
   },
   "Stripe": {
     "256-bit-ssl": "SSL de 256 bits",
@@ -686,7 +711,13 @@
     "time-is-required": "Se requiere tiempo",
     "trip": "Viaje",
     "trip-booking": "Reserva",
-    "vehicle": "Vehículo"
+    "vehicle": "Vehículo",
+    "date": "Fecha",
+    "departure-date": "Fecha de salida",
+    "departure-time": "Hora de salida",
+    "return-date": "Fecha de regreso",
+    "return-time": "Hora de regreso",
+    "time": "Tiempo"
   },
   "not-set": "No establecido",
   "websiteName": "Nombre del sitio web"

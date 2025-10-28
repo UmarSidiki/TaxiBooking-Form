@@ -153,8 +153,7 @@ export default function Step3Payment() {
             </div>
             <div>
               <label className="text-sm font-medium block mb-2">
-                Flight Number (Optional)
-              </label>
+                {t('Step3.flight-number-optional')} </label>
               <Input
                 placeholder="e.g. LH 1234"
                 value={formData.flightNumber}
@@ -741,9 +740,18 @@ export default function Step3Payment() {
             <div className="flex items-center gap-2">
               <Calendar className="h-4 w-4 text-gray-600" />
               <span className="text-gray-700">
-                {formData.date} at {formData.time}
+                {formData.tripType === "roundtrip" ? t('Step3.departure') : t('Step3.date')}: {formData.date} at {formData.time}
               </span>
             </div>
+
+            {formData.tripType === "roundtrip" && formData.returnDate && (
+              <div className="flex items-center gap-2">
+                <Calendar className="h-4 w-4 text-gray-600" />
+                <span className="text-gray-700">
+                  {t('Step3.return')}: {formData.returnDate} at {formData.returnTime}
+                </span>
+              </div>
+            )}
 
             <div className="flex items-center gap-2">
               <Users className="h-4 w-4 text-gray-600" />

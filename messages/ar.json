@@ -236,7 +236,13 @@
       "trip": "رحلة",
       "trip-status": "حالة الرحلة",
       "vehicle": "عربة",
-      "warning-this-action-cannot-be-undone": "تحذير: لا يمكن التراجع عن هذا الإجراء"
+      "warning-this-action-cannot-be-undone": "تحذير: لا يمكن التراجع عن هذا الإجراء",
+      "DepartureDate": "تاريخ المغادرة",
+      "DepartureTime": "وقت المغادرة",
+      "ReturnDate": "تاريخ العودة",
+      "ReturnTime": "وقت العودة",
+      "departure": "رحيل",
+      "return": "يعود"
     },
     "Settings": {
       "a-custom-thank-you-page-on-your-site": "• صفحة شكر مخصصة على موقعك",
@@ -480,7 +486,14 @@
     "price-based-on-distance-traveled": "السعر على أساس المسافة المقطوعة",
     "price-based-on-hourly-rate": "السعر على أساس سعر الساعة",
     "stop": "قف",
-    "time-is-required": "الوقت مطلوب"
+    "time-is-required": "الوقت مطلوب",
+    "DepartureDate": "تاريخ المغادرة",
+    "DepartureTime": "وقت المغادرة",
+    "ReturnDate": "تاريخ العودة",
+    "ReturnTime": "وقت العودة",
+    "return-date-is-required": "تاريخ العودة مطلوب",
+    "return-date-must-be-after-departure": "يجب أن يكون تاريخ العودة في نفس تاريخ المغادرة أو بعده",
+    "return-time-is-required": "وقت العودة مطلوب"
   },
   "Step2": {
     "24-7-support": "دعم 24/7",
@@ -524,7 +537,15 @@
     "total-one-way": "مجموع طريقة واحدة",
     "total-round-trip": "إجمالي الرحلة ذهابًا وإيابًا",
     "vehicle-type": "نوع المركبة",
-    "your-trip": "تفاصيل الحجز"
+    "your-trip": "تفاصيل الحجز",
+    "date": "تاريخ",
+    "departure": "رحيل",
+    "departure-date": "تاريخ المغادرة",
+    "departure-time": "وقت المغادرة",
+    "return": "يعود",
+    "return-date": "تاريخ العودة",
+    "return-time": "وقت العودة",
+    "time": "وقت"
   },
   "Step3": {
     "24-7-customer-support": "دعم العملاء على مدار 24 ساعة طوال أيام الأسبوع",
@@ -595,7 +616,11 @@
     "confirming": {
       "continue-to-multisafepay": "المتابعة إلى MultiSafepay",
       "you-will-be-redirected-to-multisafepay-to-complete-your-payment-securely-multiple-payment-methods-available-including-ideal-bancontact-paypal-and-more": "ستتم إعادة توجيهك إلى MultiSafepay لإكمال عملية الدفع بشكل آمن. \nتتوفر طرق دفع متعددة بما في ذلك iDEAL وBancontact وPayPal والمزيد."
-    }
+    },
+    "date": "تاريخ",
+    "departure": "رحيل",
+    "flight-number-optional": "رقم الرحلة (اختياري)",
+    "return": "يعود"
   },
   "Stripe": {
     "256-bit-ssl": "طبقة المقابس الآمنة 256 بت",
@@ -686,7 +711,13 @@
     "time-is-required": "الوقت مطلوب",
     "trip": "رحلة",
     "trip-booking": "حجز",
-    "vehicle": "عربة"
+    "vehicle": "عربة",
+    "date": "تاريخ",
+    "departure-date": "تاريخ المغادرة",
+    "departure-time": "وقت المغادرة",
+    "return-date": "تاريخ العودة",
+    "return-time": "وقت العودة",
+    "time": "وقت"
   },
   "not-set": "غير محدد",
   "websiteName": "اسم الموقع"

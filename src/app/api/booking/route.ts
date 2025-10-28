@@ -103,6 +103,8 @@ async function createEmailData(
     tripType: formData.tripType,
     date: formData.date,
     time: formData.time,
+    returnDate: formData.returnDate,
+    returnTime: formData.returnTime,
     passengers: formData.passengers,
     selectedVehicle: formData.selectedVehicle,
     vehicleDetails: {
@@ -214,6 +216,8 @@ export async function POST(request: NextRequest) {
       tripType: formData.tripType,
       date: formData.date,
       time: formData.time,
+      returnDate: formData.returnDate,
+      returnTime: formData.returnTime,
       passengers: formData.passengers,
       selectedVehicle: formData.selectedVehicle,
       vehicleDetails: {

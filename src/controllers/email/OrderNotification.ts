@@ -12,6 +12,8 @@ interface BookingData {
   tripType: string;
   date: string;
   time: string;
+  returnDate?: string;
+  returnTime?: string;
   passengers: number;
   selectedVehicle: string;
   vehicleDetails: {
@@ -83,8 +85,12 @@ function generateOwnerEmailHTML(bookingData: BookingData, currency: string = 'EU
             `<li><span class="highlight">Stop ${index + 1}:</span> ${stop.location}</li>`
           ).join('') : ''}
           <li><span class="highlight">Dropoff:</span> ${bookingData.dropoff}</li>
-          <li><span class="highlight">Date:</span> ${bookingData.date}</li>
-          <li><span class="highlight">Time:</span> ${bookingData.time}</li>
+          <li><span class="highlight">Departure Date:</span> ${bookingData.date}</li>
+          <li><span class="highlight">Departure Time:</span> ${bookingData.time}</li>
+          ${bookingData.tripType === 'roundtrip' && bookingData.returnDate ? 
+            `<li><span class="highlight">Return Date:</span> ${bookingData.returnDate}</li>` : ''}
+          ${bookingData.tripType === 'roundtrip' && bookingData.returnTime ? 
+            `<li><span class="highlight">Return Time:</span> ${bookingData.returnTime}</li>` : ''}
           <li><span class="highlight">Reservation Type:</span> ${bookingData.tripType}</li>
           ${bookingData.flightNumber ? `<li><span class="highlight">Flight Number:</span> ${bookingData.flightNumber}</li>` : ''}
           <li><span class="highlight">Vehicle:</span> ${bookingData.vehicleDetails.name}</li>
@@ -164,7 +170,7 @@ export async function sendOrderNotificationEmail(bookingData: BookingData) {
       to: ownerEmail,
       subject: `New Booking Alert - Reservation #${bookingData.tripId}`,
       html: htmlContent,
-      text: `New Booking Received!\n\nReservation ID: ${bookingData.tripId}\nCustomer: ${bookingData.firstName} ${bookingData.lastName}\nEmail: ${bookingData.email}\nPhone: ${bookingData.phone}\nFrom: ${bookingData.pickup}${bookingData.stops && bookingData.stops.length > 0 ? '\nStops: ' + bookingData.stops.map((stop, index) => `Stop ${index + 1}: ${stop.location}`).join(', ') : ''}\nTo: ${bookingData.dropoff}\nDate: ${bookingData.date} at ${bookingData.time}${bookingData.flightNumber ? `\nFlight Number: ${bookingData.flightNumber}` : ''}\nVehicle: ${bookingData.vehicleDetails.name}\nTotal Amount: ${currencySymbol}${bookingData.totalAmount}\n\nPlease review and confirm this booking.`,
+      text: `New Booking Received!\n\nReservation ID: ${bookingData.tripId}\nCustomer: ${bookingData.firstName} ${bookingData.lastName}\nEmail: ${bookingData.email}\nPhone: ${bookingData.phone}\nFrom: ${bookingData.pickup}${bookingData.stops && bookingData.stops.length > 0 ? '\nStops: ' + bookingData.stops.map((stop, index) => `Stop ${index + 1}: ${stop.location}`).join(', ') : ''}\nTo: ${bookingData.dropoff}\nDeparture Date: ${bookingData.date} at ${bookingData.time}${bookingData.tripType === 'roundtrip' && bookingData.returnDate ? `\nReturn Date: ${bookingData.returnDate} at ${bookingData.returnTime}` : ''}${bookingData.flightNumber ? `\nFlight Number: ${bookingData.flightNumber}` : ''}\nVehicle: ${bookingData.vehicleDetails.name}\nTotal Amount: ${currencySymbol}${bookingData.totalAmount}\n\nPlease review and confirm this booking.`,
     });
 
     if (!success) {

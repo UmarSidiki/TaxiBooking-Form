@@ -10,6 +10,8 @@ interface BookingData {
   tripType: string;
   date: string;
   time: string;
+  returnDate?: string;
+  returnTime?: string;
   passengers: number;
   selectedVehicle: string;
   vehicleDetails: {
@@ -91,8 +93,12 @@ function generateEmailHTML(bookingData: BookingData) {
             `<li><span class="highlight">Stop ${index + 1}:</span> ${stop.location}</li>`
           ).join('') : ''}
           <li><span class="highlight">To:</span> ${bookingData.dropoff}</li>
-          <li><span class="highlight">Date:</span> ${bookingData.date}</li>
-          <li><span class="highlight">Time:</span> ${bookingData.time}</li>
+          <li><span class="highlight">Departure Date:</span> ${bookingData.date}</li>
+          <li><span class="highlight">Departure Time:</span> ${bookingData.time}</li>
+          ${bookingData.tripType === 'roundtrip' && bookingData.returnDate ? 
+            `<li><span class="highlight">Return Date:</span> ${bookingData.returnDate}</li>` : ''}
+          ${bookingData.tripType === 'roundtrip' && bookingData.returnTime ? 
+            `<li><span class="highlight">Return Time:</span> ${bookingData.returnTime}</li>` : ''}
           ${
             bookingData.flightNumber
               ? `<li><span class="highlight">Flight Number:</span> ${bookingData.flightNumber}</li>`
@@ -138,7 +144,7 @@ export async function sendOrderThankYouEmail(bookingData: BookingData) {
       to: bookingData.email,
       subject: `Thank You for Your Trip - Reservation #${bookingData.tripId}`,
       html: htmlContent,
-      text: `Thank You!\n\nDear ${bookingData.firstName} ${bookingData.lastName},\n\nThank you for choosing our service for Reservation #${bookingData.tripId}.\n\nYour trip details:\nFrom: ${bookingData.pickup}${bookingData.stops && bookingData.stops.length > 0 ? '\nStops: ' + bookingData.stops.map((stop, index) => `Stop ${index + 1}: ${stop.location}`).join(', ') : ''}\nTo: ${bookingData.dropoff}\nDate: ${bookingData.date} at ${bookingData.time}${bookingData.flightNumber ? `\nFlight Number: ${bookingData.flightNumber}` : ''}\nVehicle: ${bookingData.vehicleDetails.name}\n\nWe hope to serve you again soon!`,
+      text: `Thank You!\n\nDear ${bookingData.firstName} ${bookingData.lastName},\n\nThank you for choosing our service for Reservation #${bookingData.tripId}.\n\nYour trip details:\nFrom: ${bookingData.pickup}${bookingData.stops && bookingData.stops.length > 0 ? '\nStops: ' + bookingData.stops.map((stop, index) => `Stop ${index + 1}: ${stop.location}`).join(', ') : ''}\nTo: ${bookingData.dropoff}\nDeparture Date: ${bookingData.date} at ${bookingData.time}${bookingData.tripType === 'roundtrip' && bookingData.returnDate ? `\nReturn Date: ${bookingData.returnDate} at ${bookingData.returnTime}` : ''}${bookingData.flightNumber ? `\nFlight Number: ${bookingData.flightNumber}` : ''}\nVehicle: ${bookingData.vehicleDetails.name}\n\nWe hope to serve you again soon!`,
     });
 
     if (!success) {

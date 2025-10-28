@@ -137,7 +137,13 @@
       "PickupLocation": "Ophaallocatie",
       "Price": "Prijs",
       "Processing": "Verwerking",
-      "Refresh": "Vernieuwen"
+      "Refresh": "Vernieuwen",
+      "DepartureDate": "Vertrekdatum",
+      "DepartureTime": "Vertrektijd",
+      "ReturnDate": "Terugkeerdatum",
+      "ReturnTime": "Terugkeertijd",
+      "departure": "Vertrek",
+      "return": "Opbrengst"
     },
     "Settings": {
       "a-custom-thank-you-page-on-your-site": "• Een aangepaste bedankpagina op uw site",
@@ -480,7 +486,14 @@
     "price-based-on-distance-traveled": "Prijs op basis van afgelegde afstand",
     "price-based-on-hourly-rate": "Prijs op basis van uurtarief",
     "stop": "Stop",
-    "time-is-required": "Er is tijd nodig"
+    "time-is-required": "Er is tijd nodig",
+    "DepartureDate": "Vertrekdatum",
+    "DepartureTime": "Vertrektijd",
+    "ReturnDate": "Terugkeerdatum",
+    "ReturnTime": "Terugkeertijd",
+    "return-date-is-required": "Datum van retour is vereist",
+    "return-date-must-be-after-departure": "De retourdatum moet op of na de vertrekdatum liggen",
+    "return-time-is-required": "Terugkeertijd is vereist"
   },
   "Step2": {
     "24-7-support": "24/7 ondersteuning",
@@ -524,7 +537,15 @@
     "total-one-way": "Totaal enkele reis",
     "total-round-trip": "Totale rondreis",
     "vehicle-type": "Voertuigtype",
-    "your-trip": "Reserveringsgegevens"
+    "your-trip": "Reserveringsgegevens",
+    "date": "Datum",
+    "departure": "Vertrek",
+    "departure-date": "Vertrekdatum",
+    "departure-time": "Vertrektijd",
+    "return": "Opbrengst",
+    "return-date": "Terugkeerdatum",
+    "return-time": "Terugkeertijd",
+    "time": "Tijd"
   },
   "Step3": {
     "24-7-customer-support": "24/7 klantenondersteuning",
@@ -595,7 +616,11 @@
     "confirming": {
       "continue-to-multisafepay": "Ga verder naar MultiSafepay",
       "you-will-be-redirected-to-multisafepay-to-complete-your-payment-securely-multiple-payment-methods-available-including-ideal-bancontact-paypal-and-more": "U wordt doorgestuurd naar MultiSafepay om uw betaling veilig af te ronden. \nMeerdere betaalmethoden beschikbaar waaronder iDEAL, Bancontact, PayPal en meer."
-    }
+    },
+    "date": "Datum",
+    "departure": "Vertrek",
+    "flight-number-optional": "Vluchtnummer (optioneel)",
+    "return": "Opbrengst"
   },
   "Stripe": {
     "256-bit-ssl": "256-bit SSL",
@@ -686,7 +711,13 @@
     "time-is-required": "Er is tijd nodig",
     "trip": "Reis",
     "trip-booking": "Reservering",
-    "vehicle": "Voertuig"
+    "vehicle": "Voertuig",
+    "date": "Datum",
+    "departure-date": "Vertrekdatum",
+    "departure-time": "Vertrektijd",
+    "return-date": "Terugkeerdatum",
+    "return-time": "Terugkeertijd",
+    "time": "Tijd"
   },
   "not-set": "Niet ingesteld",
   "websiteName": "Websitenaam"

@@ -31,7 +31,14 @@
     "DurationDescription": "How many hours do you need the vehicle?",
     "OneWay": "One Way",
     "RoundTrip": "Round Trip",
-    "Time": "Date",
+    "Time": "Time",
+    "DepartureDate": "Departure Date",
+    "DepartureTime": "Departure Time",
+    "ReturnDate": "Return Date",
+    "ReturnTime": "Return Time",
+    "return-date-is-required": "Return date is required",
+    "return-time-is-required": "Return time is required",
+    "return-date-must-be-after-departure": "Return date must be on or after departure date",
     "FreeCancellation": "Free cancellation",
     "FreeCancellationDescription": "up to 24 hours before pickup. Instant booking confirmation.",
     "Processing": "Processing...",
@@ -73,6 +80,14 @@
     "hourly-booking": "- Hourly Booking",
     "date-not-set": "Date not set",
     "time-not-set": "Time not set",
+    "date": "Date",
+    "time": "Time",
+    "departure-date": "Departure Date",
+    "departure-time": "Departure Time",
+    "return-date": "Return Date",
+    "return-time": "Return Time",
+    "departure": "Departure",
+    "return": "Return",
     "vehicle-type": "Vehicle Type",
     "economy": "Economy",
     "included-services": "Included Services",
@@ -142,6 +157,9 @@
     "one-way": "One Way",
     "round-trip": "Round Trip",
     "hourly-booking": "- Hourly Booking",
+    "date": "Date",
+    "departure": "Departure",
+    "return": "Return",
     "selected-vehicle": "Selected Vehicle",
     "base-fare": "Base fare",
     "extras": "Extras",
@@ -158,7 +176,8 @@
     "confirming": {
       "you-will-be-redirected-to-multisafepay-to-complete-your-payment-securely-multiple-payment-methods-available-including-ideal-bancontact-paypal-and-more": "You will be redirected to MultiSafepay to complete your payment securely. Multiple payment methods available including iDEAL, Bancontact, PayPal, and more.",
       "continue-to-multisafepay": "Continue to MultiSafepay"
-    }
+    },
+    "flight-number-optional": "Flight Number (Optional)"
   },
   "booking-failed-data-message": "Booking failed: {0}",
   "embeddable": {
@@ -185,7 +204,13 @@
     "date-cannot-be-in-the-past": "Date cannot be in the past",
     "stop-index-1-location": "Stop {0} location",
     "add-a-stop": "Add a stop",
-    "round": "Round"
+    "round": "Round",
+    "date": "Date",
+    "time": "Time",
+    "departure-date": "Departure Date",
+    "departure-time": "Departure Time",
+    "return-date": "Return Date",
+    "return-time": "Return Time"
   },
   "Dashboard": {
     "Rides": {
@@ -271,6 +296,10 @@
       "confirm-cancellation": "Confirm Cancellation",
       "Date": "Date",
       "Time": "Time",
+      "DepartureDate": "Departure Date",
+      "DepartureTime": "Departure Time",
+      "ReturnDate": "Return Date",
+      "ReturnTime": "Return Time",
       "Price": "Price",
       "Route": "Route",
       "FilterBookings": "Filter",
@@ -325,7 +354,9 @@
       "lowest-price": "Lowest Price",
       "sort-by": "Sort by",
       "highest-price": "Highest Price",
-      "flight-number2": "Flight Number"
+      "flight-number2": "Flight Number",
+      "departure": "Departure",
+      "return": "Return"
     },
     "Home": {
       "failed-to-fetch-dashboard-stats": "Failed to fetch dashboard stats",

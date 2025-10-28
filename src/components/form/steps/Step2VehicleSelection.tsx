@@ -325,19 +325,30 @@ export default function Step2VehicleSelection() {
               </div>
             )}
 
-            <div className="flex items-center gap-2">
-              <Calendar className="h-4 w-4 text-gray-600" />
-              <span className="text-gray-700">
-                {formData.date || t("Step2.date-not-set")}
-              </span>
-            </div>
+            {formData.tripType === "roundtrip" && formData.returnDate ? (
+              <>
+                <div className="flex items-center gap-2">
+                  <Calendar className="h-4 w-4 text-gray-600" />
+                  <span className="text-gray-700">
+                    {t("Step2.departure")}: {formData.date || t("Step2.date-not-set")} at {formData.time || t("Step2.time-not-set")}
+                  </span>
+                </div>
 
-            <div className="flex items-center gap-2">
-              <Clock className="h-4 w-4 text-gray-600" />
-              <span className="text-gray-700">
-                {formData.time || t("Step2.time-not-set")}
-              </span>
-            </div>
+                <div className="flex items-center gap-2">
+                  <Calendar className="h-4 w-4 text-gray-600" />
+                  <span className="text-gray-700">
+                    {t("Step2.return")}: {formData.returnDate} at {formData.returnTime}
+                  </span>
+                </div>
+              </>
+            ) : (
+              <div className="flex items-center gap-2">
+                <Calendar className="h-4 w-4 text-gray-600" />
+                <span className="text-gray-700">
+                  {formData.date || t("Step2.date-not-set")} at {formData.time || t("Step2.time-not-set")}
+                </span>
+              </div>
+            )}
 
             <div className="flex items-center gap-2">
               <Users className="h-4 w-4 text-gray-600" />

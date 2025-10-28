@@ -68,7 +68,11 @@
     "confirming": {
       "continue-to-multisafepay": "Weiter zu MultiSafepay",
       "you-will-be-redirected-to-multisafepay-to-complete-your-payment-securely-multiple-payment-methods-available-including-ideal-bancontact-paypal-and-more": "Sie werden zu MultiSafepay weitergeleitet, um Ihre Zahlung sicher abzuschließen. \nMehrere Zahlungsmethoden verfügbar, darunter iDEAL, Bancontact, PayPal und mehr."
-    }
+    },
+    "date": "Datum",
+    "departure": "Abfahrt",
+    "flight-number-optional": "Flugnummer (optional)",
+    "return": "Zurückkehren"
   },
   "Stripe": {
     "256-bit-ssl": "256-Bit-SSL",
@@ -159,7 +163,13 @@
     "time-is-required": "Zeit ist erforderlich",
     "trip": "Reise",
     "trip-booking": "Reservierung",
-    "vehicle": "Fahrzeug"
+    "vehicle": "Fahrzeug",
+    "date": "Datum",
+    "departure-date": "Abreisedatum",
+    "departure-time": "Abfahrtszeit",
+    "return-date": "Rückgabedatum",
+    "return-time": "Rückkehrzeit",
+    "time": "Zeit"
   },
   "not-set": "Nicht festgelegt",
   "websiteName": "Website-Name",
@@ -400,7 +410,13 @@
       "trip": "Reise",
       "trip-status": "Reisestatus",
       "vehicle": "Fahrzeug",
-      "warning-this-action-cannot-be-undone": "Warnung: Diese Aktion kann nicht rückgängig gemacht werden"
+      "warning-this-action-cannot-be-undone": "Warnung: Diese Aktion kann nicht rückgängig gemacht werden",
+      "DepartureDate": "Abreisedatum",
+      "DepartureTime": "Abfahrtszeit",
+      "ReturnDate": "Rückgabedatum",
+      "ReturnTime": "Rückkehrzeit",
+      "departure": "Abfahrt",
+      "return": "Zurückkehren"
     },
     "Settings": {
       "a-custom-thank-you-page-on-your-site": "• Eine benutzerdefinierte Dankesseite auf Ihrer Website",
@@ -644,7 +660,14 @@
     "price-based-on-distance-traveled": "Der Preis richtet sich nach der zurückgelegten Strecke",
     "price-based-on-hourly-rate": "Preis basierend auf Stundensatz",
     "stop": "Stoppen",
-    "time-is-required": "Zeit ist erforderlich"
+    "time-is-required": "Zeit ist erforderlich",
+    "DepartureDate": "Abreisedatum",
+    "DepartureTime": "Abfahrtszeit",
+    "ReturnDate": "Rückgabedatum",
+    "ReturnTime": "Rückkehrzeit",
+    "return-date-is-required": "Rückgabedatum ist erforderlich",
+    "return-date-must-be-after-departure": "Das Rückreisedatum muss am oder nach dem Abreisedatum liegen",
+    "return-time-is-required": "Rückkehrzeit ist erforderlich"
   },
   "Step2": {
     "24-7-support": "24/7-Support",
@@ -688,6 +711,14 @@
     "total-one-way": "Total One Way",
     "total-round-trip": "Gesamte Hin- und Rückfahrt",
     "vehicle-type": "Fahrzeugtyp",
-    "your-trip": "Reservierungsdetails"
+    "your-trip": "Reservierungsdetails",
+    "date": "Datum",
+    "departure": "Abfahrt",
+    "departure-date": "Abreisedatum",
+    "departure-time": "Abfahrtszeit",
+    "return": "Zurückkehren",
+    "return-date": "Rückgabedatum",
+    "return-time": "Rückkehrzeit",
+    "time": "Zeit"
   }
 }

@@ -393,7 +393,7 @@ export default function Step1TripDetails() {
             <div>
               <label className="block text-sm font-medium mb-1.5 text-gray-700">
                 <CalendarDays className="inline h-4 w-4 mr-1" />
-                {t("Step1.Date")} *
+                {formData.tripType === "roundtrip" ? t("Step1.DepartureDate") : t("Step1.Date")} *
               </label>
               <Input
                 type="date"
@@ -413,7 +413,7 @@ export default function Step1TripDetails() {
             <div>
               <label className="block text-sm font-medium mb-1.5 text-gray-700">
                 <Clock className="inline h-4 w-4 mr-1" />
-                {t("Step1.Time")} *
+                {formData.tripType === "roundtrip" ? t("Step1.DepartureTime") : t("Step1.Time")} *
               </label>
               <Input
                 type="time"
@@ -430,6 +430,51 @@ export default function Step1TripDetails() {
               )}
             </div>
           </div>
+
+          {/* Return Date & Time - Only for roundtrip */}
+          {formData.tripType === "roundtrip" && (
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="block text-sm font-medium mb-1.5 text-gray-700">
+                  <CalendarDays className="inline h-4 w-4 mr-1" />
+                  {t("Step1.ReturnDate")} *
+                </label>
+                <Input
+                  type="date"
+                  min={formData.date || today}
+                  className={`${
+                    errors.returnDate ? "border-red-500" : "border-gray-300"
+                  } focus:border-primary-500 focus:ring-primary-500`}
+                  value={formData.returnDate}
+                  onChange={(e) => {
+                    handleInputChange("returnDate", e.target.value);
+                  }}
+                />
+                {errors.returnDate && (
+                  <p className="text-red-500 text-xs mt-1">{errors.returnDate}</p>
+                )}
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1.5 text-gray-700">
+                  <Clock className="inline h-4 w-4 mr-1" />
+                  {t("Step1.ReturnTime")} *
+                </label>
+                <Input
+                  type="time"
+                  className={`${
+                    errors.returnTime ? "border-red-500" : "border-gray-300"
+                  } focus:border-primary-500 focus:ring-primary-500`}
+                  value={formData.returnTime}
+                  onChange={(e) => {
+                    handleInputChange("returnTime", e.target.value);
+                  }}
+                />
+                {errors.returnTime && (
+                  <p className="text-red-500 text-xs mt-1">{errors.returnTime}</p>
+                )}
+              </div>
+            </div>
+          )}
 
           {/* Passengers */}
           <div>

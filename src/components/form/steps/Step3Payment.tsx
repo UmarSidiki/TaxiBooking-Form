@@ -343,7 +343,7 @@ export default function Step3Payment() {
                       )}
                     </div>
                   </button>
-                )}=
+                )}
 
                 {paymentSettings.acceptedPaymentMethods.includes("cash") && (
                   <button
@@ -588,7 +588,7 @@ export default function Step3Payment() {
               {/* MultiSafepay Payment */}
               {selectedPaymentMethod === "multisafepay" && (
                 <div className="mt-4">
-                  <div className="bg-purple-50 border border-[#00ABEE] rounded-lg p-4 mb-4">
+                  <div className="bg-[#00ABEE]/10 border border-[#00ABEE] rounded-lg p-4 mb-4">
                     <div className="flex items-start gap-3">
                       <CreditCard className="h-5 w-5 text-[#00ABEE] flex-shrink-0 mt-0.5" />
                       <div>

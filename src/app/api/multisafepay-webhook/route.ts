@@ -1,46 +1,160 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { connectDB } from '@/lib/mongoose';
 import Booking from '@/models/Booking';
+import PendingBooking from '@/models/PendingBooking';
+import Vehicle from '@/models/Vehicle';
+import Setting from '@/models/Setting';
+import { sendOrderConfirmationEmail } from '@/controllers/email/OrderConfirmation';
+import { sendOrderNotificationEmail } from '@/controllers/email/OrderNotification';
+import { getCurrencySymbol } from '@/lib/utils';
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
     
     // MultiSafepay sends transaction ID and status
-    const { transactionid, order_id } = body;
+    const { transactionid, order_id, status } = body;
 
-    if (!transactionid) {
+    if (!transactionid || !order_id) {
       return NextResponse.json(
-        { success: false, message: 'Missing transaction ID' },
+        { success: false, message: 'Missing transaction ID or order ID' },
         { status: 400 }
       );
     }
 
     await connectDB();
 
-    // Find booking by order ID or transaction ID
-    const booking = await Booking.findOne({
+    console.log('MultiSafepay webhook received:', { order_id, transactionid, status });
+
+    // Check if payment is completed
+    if (status !== 'completed') {
+      console.log('Payment not completed, status:', status);
+      return NextResponse.json({ success: true, message: 'Payment not completed yet' });
+    }
+
+    // Check if booking already exists (avoid duplicate processing)
+    const existingBooking = await Booking.findOne({
       $or: [
         { multisafepayOrderId: order_id },
-        { multisafepayTransactionId: transactionid }
+        { multisafepayTransactionId: transactionid },
+        { tripId: order_id }
       ]
     });
 
-    if (!booking) {
-      console.error('Booking not found for MultiSafepay webhook:', { order_id, transactionid });
+    if (existingBooking) {
+      console.log('Booking already exists:', existingBooking.tripId);
+      return NextResponse.json({ success: true, message: 'Booking already processed' });
+    }
+
+    // Find pending booking
+    const pendingBooking = await PendingBooking.findOne({ orderId: order_id });
+
+    if (!pendingBooking) {
+      console.error('Pending booking not found for order:', order_id);
       return NextResponse.json(
-        { success: false, message: 'Booking not found' },
+        { success: false, message: 'Pending booking not found' },
         { status: 404 }
       );
     }
 
-    // Update booking payment status based on MultiSafepay status
-    // You would typically verify the status with MultiSafepay API here
-    booking.paymentStatus = 'completed';
-    booking.multisafepayTransactionId = transactionid;
-    await booking.save();
+    // Get vehicle details
+    const vehicle = await Vehicle.findById(pendingBooking.bookingData.selectedVehicle);
+    
+    if (!vehicle) {
+      console.error('Vehicle not found:', pendingBooking.bookingData.selectedVehicle);
+      return NextResponse.json(
+        { success: false, message: 'Vehicle not found' },
+        { status: 404 }
+      );
+    }
 
-    return NextResponse.json({ success: true, message: 'Webhook processed' });
+    // Get currency
+    const setting = await Setting.findOne();
+    const currency = setting?.currency || 'EUR';
+    const currencySymbol = getCurrencySymbol(currency);
+
+    // Create actual booking
+    const bookingData = {
+      tripId: order_id,
+      pickup: pendingBooking.bookingData.pickup,
+      dropoff: pendingBooking.bookingData.dropoff || '',
+      stops: pendingBooking.bookingData.stops || [],
+      tripType: pendingBooking.bookingData.tripType,
+      date: pendingBooking.bookingData.date,
+      time: pendingBooking.bookingData.time,
+      passengers: pendingBooking.bookingData.passengers,
+      selectedVehicle: pendingBooking.bookingData.selectedVehicle,
+      vehicleDetails: {
+        name: vehicle.name,
+        price: `${currencySymbol}${vehicle.price}`,
+        seats: `${vehicle.persons} persons`,
+      },
+      childSeats: pendingBooking.bookingData.childSeats,
+      babySeats: pendingBooking.bookingData.babySeats,
+      notes: pendingBooking.bookingData.notes,
+      flightNumber: pendingBooking.bookingData.flightNumber,
+      firstName: pendingBooking.bookingData.firstName,
+      lastName: pendingBooking.bookingData.lastName,
+      email: pendingBooking.bookingData.email,
+      phone: pendingBooking.bookingData.phone,
+      paymentMethod: 'multisafepay',
+      paymentStatus: 'completed',
+      multisafepayOrderId: order_id,
+      multisafepayTransactionId: transactionid,
+      status: 'upcoming',
+      totalAmount: pendingBooking.bookingData.totalAmount,
+    };
+
+    // Save booking to database
+    await Booking.create(bookingData);
+
+    console.log('✅ Booking created successfully:', order_id);
+
+    // Prepare email data
+    const emailData = {
+      tripId: order_id,
+      pickup: pendingBooking.bookingData.pickup,
+      dropoff: pendingBooking.bookingData.dropoff || 'N/A (Hourly booking)',
+      stops: pendingBooking.bookingData.stops || [],
+      tripType: pendingBooking.bookingData.tripType,
+      date: pendingBooking.bookingData.date,
+      time: pendingBooking.bookingData.time,
+      passengers: pendingBooking.bookingData.passengers,
+      selectedVehicle: pendingBooking.bookingData.selectedVehicle,
+      vehicleDetails: {
+        name: vehicle.name,
+        price: `${currencySymbol}${vehicle.price}`,
+        seats: `${vehicle.persons} persons`,
+      },
+      childSeats: pendingBooking.bookingData.childSeats,
+      babySeats: pendingBooking.bookingData.babySeats,
+      notes: pendingBooking.bookingData.notes,
+      flightNumber: pendingBooking.bookingData.flightNumber,
+      firstName: pendingBooking.bookingData.firstName,
+      lastName: pendingBooking.bookingData.lastName,
+      email: pendingBooking.bookingData.email,
+      phone: pendingBooking.bookingData.phone,
+      totalAmount: pendingBooking.bookingData.totalAmount,
+      paymentMethod: 'multisafepay',
+      paymentStatus: 'completed',
+    };
+
+    // Send confirmation emails
+    try {
+      console.log('📧 Sending confirmation email to:', emailData.email);
+      await sendOrderConfirmationEmail(emailData);
+      
+      console.log('📧 Sending notification email to admin');
+      await sendOrderNotificationEmail(emailData);
+    } catch (emailError) {
+      console.error('❌ Error sending emails:', emailError);
+      // Don't fail the webhook if emails fail
+    }
+
+    // Delete pending booking
+    await PendingBooking.deleteOne({ orderId: order_id });
+
+    return NextResponse.json({ success: true, message: 'Booking created and emails sent' });
   } catch (e: unknown) {
     console.error('Error processing MultiSafepay webhook:', e);
     const message = e instanceof Error ? e.message : 'Webhook processing failed';

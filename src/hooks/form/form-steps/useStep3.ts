@@ -449,40 +449,7 @@ export function useStep3() {
 
     setIsLoading(true);
     try {
-      // First create the booking
-      const bookingResponse = await fetch("/api/booking", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          ...formData,
-          paymentMethod: "multisafepay",
-          paymentStatus: "pending",
-          totalAmount: totalPrice,
-        }),
-      });
-
-      const bookingData = await bookingResponse.json();
-
-      if (!bookingResponse.ok) {
-        alert(`Booking failed: ${bookingData.message}`);
-        setIsLoading(false);
-        return;
-      }
-
-      // Store the order ID in the booking
-      const updateResponse = await fetch(`/api/bookings/${bookingData.tripId}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          multisafepayOrderId: bookingData.tripId,
-        }),
-      });
-
-      if (!updateResponse.ok) {
-        console.error("Failed to update booking with order ID");
-      }
-
-      // Create MultiSafepay order
+      // Create MultiSafepay order directly without creating booking
       const paymentResponse = await fetch("/api/create-multisafepay-order", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -492,7 +459,8 @@ export function useStep3() {
           customerEmail: formData.email,
           customerName: `${formData.firstName} ${formData.lastName}`,
           description: `Booking from ${formData.pickup} to ${formData.dropoff || 'destination'}`,
-          orderId: bookingData.tripId,
+          bookingData: formData,
+          totalAmount: totalPrice,
           locale: locale,
         }),
       });

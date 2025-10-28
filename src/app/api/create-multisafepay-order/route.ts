@@ -1,10 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import Setting from '@/models/Setting';
 import { connectDB } from '@/lib/mongoose';
+import PendingBooking from '@/models/PendingBooking';
+import { v4 as uuidv4 } from 'uuid';
 
 export async function POST(request: NextRequest) {
   try {
-    const { amount, currency, customerEmail, customerName, description, orderId, locale } = await request.json();
+    const { amount, currency, customerEmail, customerName, description, orderId, locale, bookingData, totalAmount } = await request.json();
 
     if (!amount || amount <= 0) {
       return NextResponse.json(
@@ -35,10 +37,26 @@ export async function POST(request: NextRequest) {
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || request.headers.get('origin') || '';
     const userLocale = locale || 'en';
     
+    // Generate unique order ID
+    const generatedOrderId = orderId || uuidv4();
+    
+    // Store pending booking data (will be converted to actual booking on successful payment)
+    if (bookingData) {
+      await PendingBooking.create({
+        orderId: generatedOrderId,
+        bookingData: {
+          ...bookingData,
+          totalAmount: totalAmount || amount,
+        },
+        paymentMethod: 'multisafepay',
+        expiresAt: new Date(Date.now() + 30 * 60 * 1000), // 30 minutes expiry
+      });
+    }
+    
     // Create order payload
     const orderPayload = {
       type: 'redirect',
-      order_id: orderId || `order_${Date.now()}`,
+      order_id: generatedOrderId,
       currency: (currency || 'EUR').toUpperCase(),
       amount: Math.round(amount * 100), // Amount in cents
       description: description || 'Booking payment',

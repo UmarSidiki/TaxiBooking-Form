@@ -279,7 +279,9 @@ function BookingFormUI() {
                                 stopInputRefs.current[index] = el;
                               }
                             }}
-                            placeholder={t('embeddable.stop-index-1-location', { 0: index + 1 })}
+                            placeholder={t("embeddable.stop-index-1-location", {
+                              0: index + 1,
+                            })}
                             value={stop.location}
                             onChange={(e) =>
                               handleStopChange(index, e.target.value)
@@ -308,7 +310,8 @@ function BookingFormUI() {
                         onClick={handleAddStop}
                         className="text-xs text-primary hover:text-primary/80 underline"
                       >
-                        {t('embeddable.add-a-stop')} </button>
+                        {t("embeddable.add-a-stop")}{" "}
+                      </button>
                     </div>
                     <div className="flex-1 relative">
                       <div className="absolute left-3 top-1/2 -translate-y-1/2 text-primary">
@@ -391,9 +394,6 @@ function BookingFormUI() {
                 {/* Compact Date and Time */}
                 <div className="grid grid-cols-2 gap-2">
                   <div className="relative">
-                    <div className="absolute left-3 top-1/2 -translate-y-1/2 text-primary">
-                      <Calendar className="h-3.5 w-3.5 md:h-4 md:w-4" />
-                    </div>
                     <Input
                       type="date"
                       value={formData.date}
@@ -401,7 +401,11 @@ function BookingFormUI() {
                       onChange={(e) =>
                         handleInputChange("date", e.target.value)
                       }
-                      placeholder={formData.tripType === "roundtrip" ? t("embeddable.departure-date") : t("embeddable.date")}
+                      placeholder={
+                        formData.tripType === "roundtrip"
+                          ? t("embeddable.departure-date")
+                          : t("embeddable.date")
+                      }
                       className={`rounded-lg border bg-white pl-9 md:pl-10 pr-3 py-2 md:py-2.5 text-sm transition-all duration-200 ${
                         errors.date
                           ? "border-red-400 focus:border-red-500 focus:ring-red-100"
@@ -416,16 +420,17 @@ function BookingFormUI() {
                     )}
                   </div>
                   <div className="relative">
-                    <div className="absolute left-3 top-1/2 -translate-y-1/2 text-primary">
-                      <Clock className="h-3.5 w-3.5 md:h-4 md:w-4" />
-                    </div>
                     <Input
                       type="time"
                       value={formData.time}
                       onChange={(e) =>
                         handleInputChange("time", e.target.value)
                       }
-                      placeholder={formData.tripType === "roundtrip" ? t("embeddable.departure-time") : t("embeddable.time")}
+                      placeholder={
+                        formData.tripType === "roundtrip"
+                          ? t("embeddable.departure-time")
+                          : t("embeddable.time")
+                      }
                       className={`rounded-lg border bg-white pl-9 md:pl-10 pr-3 py-2 md:py-2.5 text-sm transition-all duration-200 ${
                         errors.time
                           ? "border-red-400 focus:border-red-500 focus:ring-red-100"
@@ -445,9 +450,6 @@ function BookingFormUI() {
                 {formData.tripType === "roundtrip" && !isHourly && (
                   <div className="grid grid-cols-2 gap-2">
                     <div className="relative">
-                      <div className="absolute left-3 top-1/2 -translate-y-1/2 text-primary">
-                        <Calendar className="h-3.5 w-3.5 md:h-4 md:w-4" />
-                      </div>
                       <Input
                         type="date"
                         value={formData.returnDate}
@@ -470,9 +472,6 @@ function BookingFormUI() {
                       )}
                     </div>
                     <div className="relative">
-                      <div className="absolute left-3 top-1/2 -translate-y-1/2 text-primary">
-                        <Clock className="h-3.5 w-3.5 md:h-4 md:w-4" />
-                      </div>
                       <Input
                         type="time"
                         value={formData.returnTime}
@@ -575,7 +574,10 @@ function BookingFormUI() {
               </Button>
               <div>
                 <p className="text-xs text-center text-slate-500 mt-3">
-                  {t('embeddable.by-submitting-my-data-i-agree-to-be-contacted')} </p>
+                  {t(
+                    "embeddable.by-submitting-my-data-i-agree-to-be-contacted"
+                  )}{" "}
+                </p>
               </div>
               <div className="flex justify-center gap-2 flex-wrap pt-2">
                 <Image

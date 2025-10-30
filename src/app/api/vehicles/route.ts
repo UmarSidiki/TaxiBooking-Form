@@ -37,12 +37,36 @@ export async function POST(request: NextRequest) {
 
     const body: IVehicle = await request.json();
 
-    // Validate required fields
-    if (!body.name || !body.description || !body.persons || !body.price || !body.category) {
+    // Validate required fields.
+    // Use explicit undefined/null checks for numeric fields so 0 is accepted.
+    const missing: string[] = [];
+
+    if (typeof body.name !== "string" || body.name.trim() === "") {
+      missing.push("name");
+    }
+
+    if (typeof body.description !== "string" || body.description.trim() === "") {
+      missing.push("description");
+    }
+
+    // Allow numeric 0 — only treat as missing when undefined or null
+    if (body.persons === undefined || body.persons === null) {
+      missing.push("persons");
+    }
+
+    if (body.price === undefined || body.price === null) {
+      missing.push("price");
+    }
+
+    if (typeof body.category !== "string" || body.category.trim() === "") {
+      missing.push("category");
+    }
+
+    if (missing.length > 0) {
       return NextResponse.json(
         {
           success: false,
-          message: "Missing required fields",
+          message: `Missing required fields: ${missing.join(", ")}`,
         },
         { status: 400 }
       );

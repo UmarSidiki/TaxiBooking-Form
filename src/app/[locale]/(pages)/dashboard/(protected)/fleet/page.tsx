@@ -31,7 +31,6 @@ import {
   Car,
   Users,
   Package,
-  Euro,
   CheckCircle,
   XCircle,
 } from "lucide-react";
@@ -401,8 +400,7 @@ const VehicleCard = ({
   vehicle,
   onEdit,
   onDelete,
-  resolveImageSrc,
-  currencySymbol,
+  resolveImageSrc
 }: {
   vehicle: IVehicle;
   onEdit: (vehicle: IVehicle) => void;
@@ -484,12 +482,6 @@ const VehicleCard = ({
         <Separator className="bg-border" />
 
         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 sm:gap-4">
-          <div className="flex items-center gap-2">
-            <Euro className="h-4 w-4 text-primary flex-shrink-0" />
-            <span className="text-xl font-bold text-primary">
-              {currencySymbol}{vehicle.price}
-            </span>
-          </div>
           <Badge
             variant={vehicle.isActive ? "default" : "secondary"}
             className={

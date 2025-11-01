@@ -124,7 +124,10 @@
     "transfer-to-our-bank-account": "Virement sur notre compte bancaire",
     "try-again": "Essayer à nouveau",
     "what-and-apos-s-included": "Quoi",
-    "you-will-pay-eur": "Vous paierez"
+    "you-will-pay-eur": "Vous paierez",
+    "pay-online": "Payer en ligne",
+    "via-multisafepay": "(via MultiSafepay)",
+    "ideal-bancontact-paypal-and-more": "iDEAL, Bancontact, PayPal"
   },
   "Stripe": {
     "256-bit-ssl": "SSL 256 bits",

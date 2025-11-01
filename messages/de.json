@@ -124,7 +124,10 @@
     "door-to-door-service": "Tür-zu-Tür-Service",
     "dropoff": "Abgabe",
     "each": "jede",
-    "email-address": "E-Mail-Adresse *"
+    "email-address": "E-Mail-Adresse *",
+    "pay-online": "Bezahlen Sie online",
+    "via-multisafepay": "(über MultiSafepay)",
+    "ideal-bancontact-paypal-and-more": "iDEAL, Bancontact, PayPal"
   },
   "Stripe": {
     "256-bit-ssl": "256-Bit-SSL",

@@ -513,7 +513,10 @@
     "transfer-to-our-bank-account": "تحويل إلى حسابنا البنكي",
     "try-again": "حاول ثانية",
     "what-and-apos-s-included": "ماذا",
-    "you-will-pay-eur": "سوف تدفع"
+    "you-will-pay-eur": "سوف تدفع",
+    "pay-online": "الدفع عبر الإنترنت",
+    "via-multisafepay": "(عبر MultiSafepay)",
+    "ideal-bancontact-paypal-and-more": "آيديل، بانكونتاكت، باي بال"
   },
   "Stripe": {
     "256-bit-ssl": "طبقة المقابس الآمنة 256 بت",

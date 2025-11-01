@@ -110,11 +110,11 @@ export default function Step2VehicleSelection() {
                             src={vehicle.image}
                             alt={vehicle.name}
                             width={200}
-                            height={140}
-                            className="w-full sm:w-[200px] h-[140px] rounded-lg object-cover"
+                            height={150}
+                            className="w-full sm:w-[200px] sm:h-[180px] h-[150px] rounded-lg object-cover"
                           />
                         ) : (
-                          <div className="w-full sm:w-[200px] h-[140px] bg-gray-200 rounded-lg flex items-center justify-center">
+                          <div className="w-full sm:w-[200px] sm:h-[180px] h-[150px] bg-gray-200 rounded-lg flex items-center justify-center">
                             <span className="text-gray-400 text-sm">
                               {t("Step2.no-image")}
                             </span>

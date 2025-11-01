@@ -72,7 +72,10 @@
     "no-payment-methods-configured": "No hay métodos de pago configurados",
     "one-way": "De una sola mano",
     "optional-extras": "Extras opcionales",
-    "pay-in-cash-to-the-driver": "Paga en efectivo al conductor."
+    "pay-in-cash-to-the-driver": "Paga en efectivo al conductor.",
+    "pay-online": "Pagar en línea",
+    "via-multisafepay": "(a través de MultiSafepay)",
+    "ideal-bancontact-paypal-and-more": "iDEAL, Bancontact, PayPal"
   },
   "Stripe": {
     "256-bit-ssl": "SSL de 256 bits",

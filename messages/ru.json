@@ -620,7 +620,10 @@
     "transfer-to-our-bank-account": "Перевод на наш банковский счет",
     "try-again": "Попробуйте еще раз",
     "what-and-apos-s-included": "Что",
-    "you-will-pay-eur": "Вы заплатите"
+    "you-will-pay-eur": "Вы заплатите",
+    "pay-online": "Оплатить онлайн",
+    "via-multisafepay": "(через MultiSafepay)",
+    "ideal-bancontact-paypal-and-more": "iDEAL, Банкконтакт, PayPal"
   },
   "Stripe": {
     "256-bit-ssl": "256-битный SSL",

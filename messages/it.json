@@ -620,7 +620,10 @@
     "transfer-to-our-bank-account": "Trasferimento sul nostro conto bancario",
     "try-again": "Riprova",
     "what-and-apos-s-included": "Che cosa",
-    "you-will-pay-eur": "Pagherai"
+    "you-will-pay-eur": "Pagherai",
+    "pay-online": "Paga in linea",
+    "via-multisafepay": "(tramite MultiSafepay)",
+    "ideal-bancontact-paypal-and-more": "ideale, Bancontact, PayPal"
   },
   "Stripe": {
     "256-bit-ssl": "SSL a 256 bit",

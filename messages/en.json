@@ -177,7 +177,10 @@
       "you-will-be-redirected-to-multisafepay-to-complete-your-payment-securely-multiple-payment-methods-available-including-ideal-bancontact-paypal-and-more": "You will be redirected to MultiSafepay to complete your payment securely. Multiple payment methods available including iDEAL, Bancontact, PayPal, and more.",
       "continue-to-multisafepay": "Continue to MultiSafepay"
     },
-    "flight-number-optional": "Flight Number (Optional)"
+    "flight-number-optional": "Flight Number (Optional)",
+    "pay-online": "Pay Online",
+    "via-multisafepay": "(via MultiSafepay)",
+    "ideal-bancontact-paypal-and-more": "iDEAL, Bancontact, PayPal & more"
   },
   "booking-failed-data-message": "Booking failed: {0}",
   "embeddable": {

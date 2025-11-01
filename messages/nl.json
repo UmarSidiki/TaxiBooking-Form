@@ -620,7 +620,10 @@
     "transfer-to-our-bank-account": "Maak over naar onze bankrekening",
     "try-again": "Probeer het opnieuw",
     "what-and-apos-s-included": "Wat",
-    "you-will-pay-eur": "Je zult betalen"
+    "you-will-pay-eur": "Je zult betalen",
+    "pay-online": "Betaal online",
+    "via-multisafepay": "(via MultiSafepay)",
+    "ideal-bancontact-paypal-and-more": "iDEAL, Bancontact, PayPal"
   },
   "Stripe": {
     "256-bit-ssl": "256-bit SSL",

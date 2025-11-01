@@ -52,21 +52,27 @@ export default function Step1TripDetails() {
   const handlePassengerChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
 
+    // Allow empty string for clearing the field
+    if (value === "") {
+      setFormData((prev) => ({ ...prev, passengers: 0 }));
+      return;
+    }
+
     // Only update form data if it's a valid number
     const numValue = parseInt(value, 10);
-    if (value === "" || (!isNaN(numValue) && numValue >= 1 && numValue <= 8)) {
-      const finalValue = value === "" ? 1 : numValue;
-      handleInputChange("passengers", finalValue);
+    if (!isNaN(numValue) && numValue >= 1 && numValue <= 15) {
+      handleInputChange("passengers", numValue);
     }
   };
 
   // Handle passenger input blur - simplified logic
   const handlePassengerBlur = () => {
-    if (formData.passengers < 1) {
+    const currentValue = Number(formData.passengers);
+    if (isNaN(currentValue) || currentValue < 1) {
       handleInputChange("passengers", 1);
     } else {
       // Ensure the value is within bounds
-      const numValue = Math.min(8, Math.max(1, formData.passengers));
+      const numValue = Math.min(15, Math.max(1, currentValue));
       handleInputChange("passengers", numValue);
     }
   };

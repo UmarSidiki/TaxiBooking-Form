@@ -97,11 +97,7 @@ function BookingFormUI() {
   };
 
   const setPassengers = (passengers: number) => {
-    // Allow empty value or 0 for input, but don't update state with 0
-    if (passengers === 0 || isNaN(passengers)) {
-      // Don't update state, allowing the input to be cleared
-      return;
-    }
+    // Allow any value including 0 for clearing the field
     handleInputChange("passengers", passengers);
   };
 
@@ -503,24 +499,26 @@ function BookingFormUI() {
                   <Input
                     type="number"
                     placeholder={t("embeddable.passengers")}
-                    value={formData.passengers}
+                    value={formData.passengers || ""}
+                    min="1"
                     max="15"
                     onChange={(e) => {
                       const value = e.target.value;
                       // Allow empty string for clearing
                       if (value === "") {
-                        handleInputChange("passengers", "");
+                        setPassengers(0);
                         return;
                       }
                       // Convert to number and validate
                       const numValue = Number(value);
-                      if (!isNaN(numValue) && numValue >= 0) {
+                      if (!isNaN(numValue) && numValue >= 1 && numValue <= 15) {
                         setPassengers(numValue);
                       }
                     }}
                     onBlur={() => {
                       // On blur, ensure we have at least 1 passenger
-                      if (Number(formData.passengers) < 1) {
+                      const currentValue = Number(formData.passengers);
+                      if (isNaN(currentValue) || currentValue < 1) {
                         handleInputChange("passengers", 1);
                       }
                       handleInputBlur("passengers");

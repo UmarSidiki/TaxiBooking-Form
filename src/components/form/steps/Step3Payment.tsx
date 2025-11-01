@@ -109,13 +109,23 @@ export default function Step3Payment() {
                   min="0"
                   max="5"
                   className="w-20"
-                  value={formData.childSeats}
-                  onChange={(e) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      childSeats: parseInt(e.target.value) || 0,
-                    }))
-                  }
+                  value={formData.childSeats || ""}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    if (value === "") {
+                      setFormData((prev) => ({ ...prev, childSeats: 0 }));
+                      return;
+                    }
+                    const numValue = parseInt(value, 10);
+                    if (!isNaN(numValue) && numValue >= 0 && numValue <= 5) {
+                      setFormData((prev) => ({ ...prev, childSeats: numValue }));
+                    }
+                  }}
+                  onBlur={() => {
+                    if (isNaN(formData.childSeats) || formData.childSeats < 0) {
+                      setFormData((prev) => ({ ...prev, childSeats: 0 }));
+                    }
+                  }}
                 />
               </div>
             </div>
@@ -130,13 +140,23 @@ export default function Step3Payment() {
                   min="0"
                   max="5"
                   className="w-20"
-                  value={formData.babySeats}
-                  onChange={(e) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      babySeats: parseInt(e.target.value) || 0,
-                    }))
-                  }
+                  value={formData.babySeats || ""}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    if (value === "") {
+                      setFormData((prev) => ({ ...prev, babySeats: 0 }));
+                      return;
+                    }
+                    const numValue = parseInt(value, 10);
+                    if (!isNaN(numValue) && numValue >= 0 && numValue <= 5) {
+                      setFormData((prev) => ({ ...prev, babySeats: numValue }));
+                    }
+                  }}
+                  onBlur={() => {
+                    if (isNaN(formData.babySeats) || formData.babySeats < 0) {
+                      setFormData((prev) => ({ ...prev, babySeats: 0 }));
+                    }
+                  }}
                 />
               </div>
             </div>
@@ -328,11 +348,10 @@ export default function Step3Payment() {
                         </div>
                         <div>
                           <p className="font-semibold text-gray-900">
-                            MultiSafepay
+                            {t('Step3.pay-online')} <span className="text-sm font-normal">{t('Step3.via-multisafepay')}</span>
                           </p>
                           <p className="text-xs text-gray-500">
-                            iDEAL, Bancontact, PayPal & more
-                          </p>
+                            {t('Step3.ideal-bancontact-paypal-and-more')} </p>
                         </div>
                       </div>
                       {selectedPaymentMethod === "multisafepay" && (

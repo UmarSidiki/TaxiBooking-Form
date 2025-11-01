@@ -494,7 +494,7 @@ export default function Step1TripDetails() {
               max="15"
               placeholder="1"
               className="border-gray-300 focus:border-primary-500 focus:ring-primary-500"
-              value={formData.passengers}
+              value={formData.passengers === 0 ? "" : formData.passengers}
               onChange={handlePassengerChange}
               onBlur={handlePassengerBlur}
             />

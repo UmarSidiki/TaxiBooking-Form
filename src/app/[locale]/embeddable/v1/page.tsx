@@ -499,7 +499,7 @@ function BookingFormUI() {
                   <Input
                     type="number"
                     placeholder={t("embeddable.passengers")}
-                    value={formData.passengers || ""}
+                    value={formData.passengers === 0 ? "" : formData.passengers}
                     min="1"
                     max="15"
                     onChange={(e) => {

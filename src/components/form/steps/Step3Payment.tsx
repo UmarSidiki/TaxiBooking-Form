@@ -109,7 +109,8 @@ export default function Step3Payment() {
                   min="0"
                   max="5"
                   className="w-20"
-                  value={formData.childSeats || ""}
+                  value={formData.childSeats === 0 ? "" : formData.childSeats}
+                  placeholder="0"
                   onChange={(e) => {
                     const value = e.target.value;
                     if (value === "") {
@@ -140,7 +141,8 @@ export default function Step3Payment() {
                   min="0"
                   max="5"
                   className="w-20"
-                  value={formData.babySeats || ""}
+                  value={formData.babySeats === 0 ? "" : formData.babySeats}
+                  placeholder="0"
                   onChange={(e) => {
                     const value = e.target.value;
                     if (value === "") {

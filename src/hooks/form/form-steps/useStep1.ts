@@ -33,6 +33,7 @@ export function useStep1() {
   const stopInputRefs = useRef<(HTMLInputElement | null)[]>([]);
   const formDataRef = useRef(formData);
   const { settings } = useTheme();
+  const distanceCalculationTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     formDataRef.current = formData;
@@ -145,6 +146,27 @@ export function useStep1() {
     [setCalculatingDistance, setDistanceData]
   );
 
+  // Debounced distance calculation to prevent excessive API calls
+  const debouncedCalculateDistance = useCallback(
+    (
+      origin: string,
+      destination: string,
+      stops: Array<{ location: string; order: number }> = [],
+      isRoundTrip: boolean = false
+    ) => {
+      // Clear existing timer
+      if (distanceCalculationTimerRef.current) {
+        clearTimeout(distanceCalculationTimerRef.current);
+      }
+
+      // Set new timer
+      distanceCalculationTimerRef.current = setTimeout(() => {
+        calculateDistance(origin, destination, stops, isRoundTrip);
+      }, 500); // 500ms debounce
+    },
+    [calculateDistance]
+  );
+
   // Effect to setup autocomplete for stops when they change
   useEffect(() => {
     formData.stops.forEach((_, index) => {
@@ -152,26 +174,10 @@ export function useStep1() {
         setupStopAutocomplete(index);
       }
     });
-  }, [formData.stops, setupStopAutocomplete]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [formData.stops.length]); // Only re-run when number of stops changes
 
-  // Effect to recalculate distance when stops change
-  useEffect(() => {
-    if (formData.pickup && formData.dropoff) {
-      calculateDistance(
-        formData.pickup,
-        formData.dropoff,
-        formData.stops,
-        formData.tripType === "roundtrip"
-      );
-    }
-  }, [
-    formData.stops,
-    calculateDistance,
-    formData.pickup,
-    formData.dropoff,
-    formData.tripType,
-  ]);
-
+  // Initialize Google Maps ONCE
   useEffect(() => {
     const initGoogleMaps = async () => {
       const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
@@ -216,8 +222,12 @@ export function useStep1() {
             : undefined,
         };
 
-        // Setup Autocomplete
-        if (pickupInputRef.current) {
+        // Setup Autocomplete for pickup (only once)
+        if (
+          pickupInputRef.current &&
+          !pickupInputRef.current.dataset.autocompleteInitialized
+        ) {
+          pickupInputRef.current.dataset.autocompleteInitialized = "true";
           const autocompletePickup = new places.Autocomplete(
             pickupInputRef.current,
             autocompleteOptions
@@ -237,7 +247,12 @@ export function useStep1() {
           });
         }
 
-        if (dropoffInputRef.current) {
+        // Setup Autocomplete for dropoff (only once)
+        if (
+          dropoffInputRef.current &&
+          !dropoffInputRef.current.dataset.autocompleteInitialized
+        ) {
+          dropoffInputRef.current.dataset.autocompleteInitialized = "true";
           const autocompleteDropoff = new places.Autocomplete(
             dropoffInputRef.current,
             autocompleteOptions
@@ -257,8 +272,12 @@ export function useStep1() {
           });
         }
 
-        // If we have pickup and dropoff from context, show the route
-        if (formData.pickup && formData.dropoff) {
+        // If we have pickup and dropoff from context, show the route (only on initial load)
+        if (
+          formData.pickup &&
+          formData.dropoff &&
+          !directionsRendererRef.current
+        ) {
           calculateDistance(
             formData.pickup,
             formData.dropoff,
@@ -271,18 +290,12 @@ export function useStep1() {
       }
     };
 
-    if (settings) {
+    // Only initialize once when settings are available
+    if (settings && !googleMapRef.current) {
       initGoogleMaps();
     }
-  }, [
-    settings,
-    calculateDistance,
-    formData.pickup,
-    formData.dropoff,
-    formData.stops,
-    formData.tripType,
-    setFormData,
-  ]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [settings]); // Only run when settings change, not on every formData change
 
   const validateStep = (): boolean => {
     const newErrors: typeof errors = {};
@@ -440,15 +453,12 @@ export function useStep1() {
 
   const handleInputBlur = (field: string) => {
     // Trigger distance calculation when both pickup and dropoff are filled
-    if (field === "pickup" && formData.pickup && formData.dropoff) {
-      calculateDistance(
-        formData.pickup,
-        formData.dropoff,
-        formData.stops,
-        formData.tripType === "roundtrip"
-      );
-    } else if (field === "dropoff" && formData.pickup && formData.dropoff) {
-      calculateDistance(
+    if (
+      (field === "pickup" || field === "dropoff") &&
+      formData.pickup &&
+      formData.dropoff
+    ) {
+      debouncedCalculateDistance(
         formData.pickup,
         formData.dropoff,
         formData.stops,

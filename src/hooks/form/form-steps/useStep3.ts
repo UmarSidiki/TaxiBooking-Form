@@ -46,7 +46,7 @@ export function useStep3() {
   const [paymentError, setPaymentError] = useState<string | null>(null);
   const [paymentInitialized, setPaymentInitialized] = useState(false);
 
-  // Initialize Google Maps
+  // Initialize Google Maps ONCE
   useEffect(() => {
     const initGoogleMaps = async () => {
       const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
@@ -84,7 +84,7 @@ export function useStep3() {
           });
           setMapLoaded(true);
 
-          // If we have pickup and dropoff, show the route
+          // If we have pickup and dropoff, show the route (only on initial load)
           if (formData.pickup && formData.dropoff) {
             const directionsService = new routes.DirectionsService();
 
@@ -131,10 +131,12 @@ export function useStep3() {
       }
     };
 
-    if (settings) {
+    // Only initialize once when settings are available
+    if (settings && !googleMapRef.current) {
       initGoogleMaps();
     }
-  }, [settings, formData.pickup, formData.dropoff, formData.stops]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [settings]); // Only run when settings change, not on every formData change
 
   // Fetch payment configuration
   useEffect(() => {

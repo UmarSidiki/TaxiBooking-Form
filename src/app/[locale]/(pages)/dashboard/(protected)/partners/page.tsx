@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import {
   Users,
   CheckCircle2,
@@ -36,6 +36,7 @@ import {
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import Image from "next/image";
 
 interface PartnerDocument {
   type: string;
@@ -78,16 +79,9 @@ export default function AdminPartnersPage() {
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState("");
 
-  useEffect(() => {
-    fetchPartners();
-  }, []);
-
-  useEffect(() => {
-    filterPartners();
-  }, [partners, statusFilter, searchQuery]);
-
-  const fetchPartners = async () => {
+  const fetchPartners = useCallback(async () => {
     try {
+      setLoading(true);
       const response = await fetch("/api/admin/partners");
       const data = await response.json();
 
@@ -99,9 +93,9 @@ export default function AdminPartnersPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
-  const filterPartners = () => {
+  const filterPartners = useCallback(() => {
     let filtered = partners;
 
     if (statusFilter !== "all") {
@@ -117,7 +111,15 @@ export default function AdminPartnersPage() {
     }
 
     setFilteredPartners(filtered);
-  };
+  }, [partners, statusFilter, searchQuery]);
+
+  useEffect(() => {
+    fetchPartners();
+  }, [fetchPartners]);
+
+  useEffect(() => {
+    filterPartners();
+  }, [filterPartners]);
 
   const handleApprove = async (partnerId: string) => {
     setProcessing(true);
@@ -615,11 +617,16 @@ export default function AdminPartnersPage() {
             <div className="space-y-4">
               <div className="border rounded-lg overflow-hidden bg-gray-50 dark:bg-gray-900 flex items-center justify-center min-h-[400px] max-h-[600px]">
                 {selectedDocument.mimeType.startsWith("image/") ? (
-                  <img
-                    src={selectedDocument.fileData}
-                    alt={selectedDocument.fileName}
-                    className="max-w-full max-h-[600px] object-contain"
-                  />
+                  <div className="relative w-full h-[400px] md:h-[600px]">
+                    <Image
+                      src={selectedDocument.fileData}
+                      alt={selectedDocument.fileName}
+                      fill
+                      className="object-contain"
+                      sizes="(min-width: 768px) 600px, 400px"
+                      unoptimized
+                    />
+                  </div>
                 ) : selectedDocument.mimeType === "application/pdf" ? (
                   <iframe
                     src={selectedDocument.fileData}

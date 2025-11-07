@@ -302,7 +302,7 @@ export default function PartnerSignInPage() {
 
             <div className="mt-8 text-center space-y-3">
               <p className="text-sm text-muted-foreground">
-                Don't have an account?{" "}
+                Don&apos;t have an account?{" "}
                 <Link
                   href="/partners/register"
                   className="text-primary font-medium hover:underline"

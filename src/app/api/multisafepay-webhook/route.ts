@@ -70,7 +70,7 @@ export async function POST(request: NextRequest) {
 
     // Get currency
     const setting = await Setting.findOne();
-    const currency = setting?.currency || 'EUR';
+    const currency = setting?.stripeCurrency?.toUpperCase() || 'EUR';
     const currencySymbol = getCurrencySymbol(currency);
 
     // Create actual booking

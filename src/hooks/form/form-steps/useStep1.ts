@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useCallback, useRef, useMemo } from "react";
+import { useState, useEffect, useCallback, useRef, useMemo } from "react";
 import { useBookingForm } from "@/contexts/BookingFormContext";
 import { importLibrary, setOptions } from "@googlemaps/js-api-loader";
 import { useTheme } from "@/contexts/ThemeContext";
@@ -170,13 +170,15 @@ export function useStep1() {
 
   // Effect to setup autocomplete for stops when they change
   useEffect(() => {
-    formData.stops.forEach((_, index) => {
-      if (stopInputRefs.current[index]) {
-        setupStopAutocomplete(index);
-      }
-    });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [formData.stops.length]); // Only re-run when number of stops changes
+    if (formData.stops.length === 0) {
+      return;
+    }
+
+    const lastIndex = formData.stops.length - 1;
+    if (stopInputRefs.current[lastIndex]) {
+      setupStopAutocomplete(lastIndex);
+    }
+  }, [formData.stops.length, setupStopAutocomplete]);
 
   // Effect to recalculate distance when stops change
   // Using useMemo to prevent unnecessary recalculations
@@ -206,6 +208,7 @@ export function useStep1() {
     formData.dropoff,
     formData.bookingType,
     formData.tripType,
+    formData.stops,
     stopsKey, // Use memoized key instead of inline calculation
     debouncedCalculateDistance,
   ]);

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -93,16 +93,7 @@ export default function RidesPage() {
     </span>
   );
 
-  useEffect(() => {
-    fetchBookings();
-    fetchDrivers();
-  }, []);
-
-  useEffect(() => {
-    filterBookings();
-  }, [bookings, activeTab, searchQuery, paymentFilter, dateRange, sortBy]);
-
-  const fetchBookings = async () => {
+  const fetchBookings = useCallback(async () => {
     setIsLoading(true);
     try {
       const data = await apiGet<{ success: boolean; data: IBooking[] }>(
@@ -116,9 +107,9 @@ export default function RidesPage() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, []);
 
-  const fetchDrivers = async () => {
+  const fetchDrivers = useCallback(async () => {
     try {
       const data = await apiGet<{ success: boolean; data: IDriver[] }>(
         "/api/drivers"
@@ -129,9 +120,9 @@ export default function RidesPage() {
     } catch (error) {
       console.error("Error fetching drivers:", error);
     }
-  };
+  }, []);
 
-  const filterBookings = () => {
+  const filterBookings = useCallback(() => {
     let filtered: IBooking[] = [];
 
     // First filter by tab
@@ -154,7 +145,7 @@ export default function RidesPage() {
         filtered = bookings.filter((b) => b.status === "canceled");
         break;
       default:
-        filtered = bookings;
+        filtered = [...bookings];
     }
 
     // Apply search filter
@@ -210,7 +201,16 @@ export default function RidesPage() {
     }
 
     setFilteredBookings(filtered);
-  };
+  }, [bookings, activeTab, searchQuery, paymentFilter, dateRange, sortBy]);
+
+  useEffect(() => {
+    fetchBookings();
+    fetchDrivers();
+  }, [fetchBookings, fetchDrivers]);
+
+  useEffect(() => {
+    filterBookings();
+  }, [filterBookings]);
 
   const handleCancelClick = (booking: IBooking) => {
     setSelectedBooking(booking);

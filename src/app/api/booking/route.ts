@@ -95,7 +95,7 @@ async function calculateBookingTotal(
 async function getCurrencyFromSettings() {
   try {
     const setting = await Setting.findOne();
-    return setting?.currency || 'EUR';
+    return setting?.stripeCurrency?.toUpperCase() || 'EUR';
   } catch (error) {
     console.error('Error fetching currency from settings:', error);
     return 'EUR';

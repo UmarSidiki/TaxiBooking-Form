@@ -80,7 +80,8 @@ export default function PartnerDashboardPage() {
       } else {
         setError(data.error || "Failed to fetch partner data");
       }
-    } catch (err) {
+    } catch (error) {
+      console.error("Error fetching partner data:", error);
       setError("An error occurred while fetching data");
     } finally {
       setLoading(false);
@@ -154,7 +155,8 @@ export default function PartnerDashboardPage() {
           } else {
             setError(data.error || t("failed-to-upload-document"));
           }
-        } catch (err) {
+        } catch (error) {
+          console.error("Error uploading partner document:", error);
           setError(t("an-error-occurred-while-uploading"));
         } finally {
           setUploading(false);
@@ -167,7 +169,8 @@ export default function PartnerDashboardPage() {
       };
 
       reader.readAsDataURL(selectedFile);
-    } catch (err) {
+    } catch (error) {
+      console.error("Error processing partner document:", error);
       setError(t("an-error-occurred-while-processing-the-file"));
       setUploading(false);
     }

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -73,15 +73,7 @@ export default function DriverDashboard() {
     </span>
   );
 
-  useEffect(() => {
-    fetchAssignedRides();
-  }, []);
-
-  useEffect(() => {
-    filterBookings();
-  }, [bookings, activeTab, searchQuery, dateRange]);
-
-  const fetchAssignedRides = async () => {
+  const fetchAssignedRides = useCallback(async () => {
     setIsLoading(true);
     try {
       const data = await apiGet<{ success: boolean; data: IBooking[] }>(
@@ -95,9 +87,9 @@ export default function DriverDashboard() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, []);
 
-  const filterBookings = () => {
+  const filterBookings = useCallback(() => {
     let filtered: IBooking[] = [];
 
     // First filter by tab
@@ -120,7 +112,7 @@ export default function DriverDashboard() {
         filtered = bookings.filter((b) => b.status === "canceled");
         break;
       default:
-        filtered = bookings;
+        filtered = [...bookings];
     }
 
     // Apply search filter
@@ -154,7 +146,15 @@ export default function DriverDashboard() {
     }
 
     setFilteredBookings(filtered);
-  };
+  }, [activeTab, bookings, dateRange, searchQuery]);
+
+  useEffect(() => {
+    fetchAssignedRides();
+  }, [fetchAssignedRides]);
+
+  useEffect(() => {
+    filterBookings();
+  }, [filterBookings]);
 
   const getStatusBadge = (booking: IBooking) => {
     const badgeClasses =

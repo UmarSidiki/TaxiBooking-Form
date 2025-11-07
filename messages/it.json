@@ -61,7 +61,12 @@
       "try-adjusting-your-search-or-filter-criteria": "Prova a modificare i criteri di ricerca o di filtro.",
       "update-vehicle": "Aggiorna veicolo",
       "van": "Furgone",
-      "vehicle-name": "Nome del veicolo *"
+      "vehicle-name": "Nome del veicolo *",
+      "stop-base-price": "Prezzo base stop ({0})",
+      "stop-base-price-description": "Tariffa base per fermata (indipendentemente dal tempo di attesa)",
+      "stop-price-per-hour": "Prezzo stop all'ora ({0})",
+      "stop-price-per-hour-description": "Supplemento per ora di attesa alle fermate",
+      "stop-pricing": "Smettere di prezzi"
     },
     "Home": {
       "all-time-bookings": "Prenotazioni in ogni momento",

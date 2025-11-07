@@ -290,7 +290,12 @@
       "try-adjusting-your-search-or-filter-criteria": "Essayez d'ajuster vos critères de recherche ou de filtrage.",
       "update-vehicle": "Mettre à jour le véhicule",
       "van": "Van",
-      "vehicle-name": "Nom du véhicule *"
+      "vehicle-name": "Nom du véhicule *",
+      "stop-base-price": "Prix ​​de base d'arrêt ({0})",
+      "stop-base-price-description": "Frais de base par arrêt (quel que soit le temps d'attente)",
+      "stop-price-per-hour": "Prix ​​d'arrêt par heure ({0})",
+      "stop-price-per-hour-description": "Supplément par heure d'attente aux arrêts",
+      "stop-pricing": "Arrêter la tarification"
     },
     "Home": {
       "all-time-bookings": "Réservations à tout moment",

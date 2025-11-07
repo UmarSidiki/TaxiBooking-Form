@@ -61,7 +61,12 @@
       "try-adjusting-your-search-or-filter-criteria": "Probeer uw zoek- of filtercriteria aan te passen.",
       "update-vehicle": "Voertuig bijwerken",
       "van": "Van",
-      "vehicle-name": "Voertuignaam *"
+      "vehicle-name": "Voertuignaam *",
+      "stop-base-price": "Stopbasisprijs ({0})",
+      "stop-base-price-description": "Basistarief per stop (ongeacht de wachttijd)",
+      "stop-price-per-hour": "Stopprijs per uur ({0})",
+      "stop-price-per-hour-description": "Toeslag per uur wachttijd bij haltes",
+      "stop-pricing": "Stop met prijzen"
     },
     "Home": {
       "all-time-bookings": "Alle tijdboekingen",

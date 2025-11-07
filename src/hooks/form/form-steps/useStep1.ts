@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback, useRef } from "react";
+import React, { useState, useEffect, useCallback, useRef, useMemo } from "react";
 import { useBookingForm } from "@/contexts/BookingFormContext";
 import { importLibrary, setOptions } from "@googlemaps/js-api-loader";
 import { useTheme } from "@/contexts/ThemeContext";
@@ -66,6 +66,7 @@ export function useStep1() {
             i === index ? { ...stop, location: newLocation } : stop
           ),
         }));
+        // Distance calculation will be triggered by the useEffect that monitors stops
       });
     },
     [settings, setFormData]
@@ -177,6 +178,47 @@ export function useStep1() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [formData.stops.length]); // Only re-run when number of stops changes
 
+  // Effect to recalculate distance when stops change
+  // Using useMemo to prevent unnecessary recalculations
+  const stopsKey = useMemo(
+    () => formData.stops.map(s => s.location).join('|'),
+    [formData.stops]
+  );
+
+  useEffect(() => {
+    // Only recalculate if we have pickup and dropoff
+    if (formData.pickup && formData.dropoff && formData.bookingType === "destination") {
+      // Only recalculate if all stops have locations (or no stops)
+      const allStopsValid = formData.stops.length === 0 || 
+        formData.stops.every(stop => stop.location.trim());
+      
+      if (allStopsValid) {
+        debouncedCalculateDistance(
+          formData.pickup,
+          formData.dropoff,
+          formData.stops,
+          formData.tripType === "roundtrip"
+        );
+      }
+    }
+  }, [
+    formData.pickup,
+    formData.dropoff,
+    formData.bookingType,
+    formData.tripType,
+    stopsKey, // Use memoized key instead of inline calculation
+    debouncedCalculateDistance,
+  ]);
+
+  // Cleanup timer on unmount
+  useEffect(() => {
+    return () => {
+      if (distanceCalculationTimerRef.current) {
+        clearTimeout(distanceCalculationTimerRef.current);
+      }
+    };
+  }, []);
+
   // Initialize Google Maps ONCE
   useEffect(() => {
     const initGoogleMaps = async () => {
@@ -236,14 +278,7 @@ export function useStep1() {
             const place = autocompletePickup.getPlace();
             const newPickup = place.formatted_address || place.name || "";
             setFormData((prev) => ({ ...prev, pickup: newPickup }));
-            if (formDataRef.current.dropoff) {
-              calculateDistance(
-                newPickup,
-                formDataRef.current.dropoff,
-                formDataRef.current.stops,
-                formDataRef.current.tripType === "roundtrip"
-              );
-            }
+            // Distance calculation will be triggered by the useEffect
           });
         }
 
@@ -261,14 +296,7 @@ export function useStep1() {
             const place = autocompleteDropoff.getPlace();
             const newDropoff = place.formatted_address || place.name || "";
             setFormData((prev) => ({ ...prev, dropoff: newDropoff }));
-            if (formDataRef.current.pickup) {
-              calculateDistance(
-                formDataRef.current.pickup,
-                newDropoff,
-                formDataRef.current.stops,
-                formDataRef.current.tripType === "roundtrip"
-              );
-            }
+            // Distance calculation will be triggered by the useEffect
           });
         }
 

@@ -7,7 +7,7 @@ interface RideCancellationData {
   tripId: string;
   pickup: string;
   dropoff: string;
-  stops: Array<{ location: string; order: number }>;
+  stops: Array<{ location: string; order: number; duration?: number }>;
   tripType: string;
   date: string;
   time: string;
@@ -201,7 +201,10 @@ export async function sendRideCancellationEmail(cancellationData: RideCancellati
       to: cancellationData.driverEmail,
       subject: `Ride Assignment Cancelled - Reservation #${cancellationData.tripId}`,
       html: htmlContent,
-      text: `Ride Assignment Cancelled!\n\nReservation ID: ${cancellationData.tripId}\nCustomer: ${cancellationData.firstName} ${cancellationData.lastName}\nFrom: ${cancellationData.pickup}${cancellationData.stops && cancellationData.stops.length > 0 ? '\nStops: ' + cancellationData.stops.map((stop, index) => `Stop ${index + 1}: ${stop.location}`).join(', ') : ''}\nTo: ${cancellationData.dropoff}\nDeparture Date: ${cancellationData.date} at ${cancellationData.time}${cancellationData.tripType === 'roundtrip' && cancellationData.returnDate ? `\nReturn Date: ${cancellationData.returnDate} at ${cancellationData.returnTime}` : ''}${cancellationData.flightNumber ? `\nFlight Number: ${cancellationData.flightNumber}` : ''}\nVehicle: ${cancellationData.vehicleDetails.name}\nTotal Amount: ${currencySymbol}${cancellationData.totalAmount}\n\nCustomer Contact: ${cancellationData.email} | ${cancellationData.phone}\n\nThis ride has been reassigned to another driver.`,
+      text: `Ride Assignment Cancelled!\n\nReservation ID: ${cancellationData.tripId}\nCustomer: ${cancellationData.firstName} ${cancellationData.lastName}\nFrom: ${cancellationData.pickup}${cancellationData.stops && cancellationData.stops.length > 0 ? '\nStops: ' + cancellationData.stops.map((stop, index) => {
+        const durationText = stop.duration && stop.duration > 0 ? ` (Wait: ${stop.duration >= 60 ? `${Math.floor(stop.duration / 60)}h${stop.duration % 60 > 0 ? ` ${stop.duration % 60}m` : ''}` : `${stop.duration}m`})` : '';
+        return `Stop ${index + 1}: ${stop.location}${durationText}`;
+      }).join(', ') : ''}\nTo: ${cancellationData.dropoff}\nDeparture Date: ${cancellationData.date} at ${cancellationData.time}${cancellationData.tripType === 'roundtrip' && cancellationData.returnDate ? `\nReturn Date: ${cancellationData.returnDate} at ${cancellationData.returnTime}` : ''}${cancellationData.flightNumber ? `\nFlight Number: ${cancellationData.flightNumber}` : ''}\nVehicle: ${cancellationData.vehicleDetails.name}\nTotal Amount: ${currencySymbol}${cancellationData.totalAmount}\n\nCustomer Contact: ${cancellationData.email} | ${cancellationData.phone}\n\nThis ride has been reassigned to another driver.`,
     });
 
     if (!success) {

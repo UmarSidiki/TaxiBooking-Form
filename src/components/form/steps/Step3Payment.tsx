@@ -61,6 +61,7 @@ export default function Step3Payment() {
     vehiclePrice,
     childSeatPrice,
     babySeatPrice,
+    stopsTotalPrice,
     totalPrice,
 
     // Functions
@@ -805,7 +806,7 @@ export default function Step3Payment() {
           )}
 
           {/* Extras */}
-          {(formData.childSeats > 0 || formData.babySeats > 0) && (
+          {(formData.childSeats > 0 || formData.babySeats > 0 || stopsTotalPrice > 0) && (
             <div className="border-t pt-3">
               <p className="font-semibold text-sm mb-2">{t('Step3.extras')}</p>
               <div className="space-y-1 text-sm">
@@ -826,6 +827,16 @@ export default function Step3Payment() {
                     </span>
                     <span className="font-medium">
                       {currencySymbol}{(formData.babySeats * babySeatPrice).toFixed(2)}
+                    </span>
+                  </div>
+                )}
+                {stopsTotalPrice > 0 && (
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">
+                      Stops ({formData.stops?.length || 0})
+                    </span>
+                    <span className="font-medium">
+                      {currencySymbol}{stopsTotalPrice.toFixed(2)}
                     </span>
                   </div>
                 )}

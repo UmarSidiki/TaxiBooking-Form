@@ -213,8 +213,27 @@ export function useStep3() {
 
   const childSeatPrice = selectedVehicle?.childSeatPrice || 10;
   const babySeatPrice = selectedVehicle?.babySeatPrice || 10;
+  
+  // Calculate stop costs
+  const stopBasePrice = selectedVehicle?.stopPrice || 0;
+  const stopPricePerHour = selectedVehicle?.stopPricePerHour || 0;
+  let stopsTotalPrice = 0;
+  
+  if (formData.stops && formData.stops.length > 0) {
+    formData.stops.forEach(stop => {
+      // Add base stop price
+      stopsTotalPrice += stopBasePrice;
+      
+      // Add duration-based price if stop has wait time
+      if (stop.duration && stop.duration > 0) {
+        const hours = stop.duration / 60; // Convert minutes to hours
+        stopsTotalPrice += stopPricePerHour * hours;
+      }
+    });
+  }
+  
   const extrasPrice =
-    formData.childSeats * childSeatPrice + formData.babySeats * babySeatPrice;
+    formData.childSeats * childSeatPrice + formData.babySeats * babySeatPrice + stopsTotalPrice;
   const totalPrice = discountedVehiclePrice + extrasPrice;
 
   // Create payment intent function
@@ -515,6 +534,9 @@ export function useStep3() {
     discountedVehiclePrice,
     childSeatPrice,
     babySeatPrice,
+    stopBasePrice,
+    stopPricePerHour,
+    stopsTotalPrice,
     extrasPrice,
     totalPrice,
 

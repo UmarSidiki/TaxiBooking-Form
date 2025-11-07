@@ -61,7 +61,12 @@
       "try-adjusting-your-search-or-filter-criteria": "Попробуйте изменить критерии поиска или фильтра.",
       "update-vehicle": "Обновить автомобиль",
       "van": "Ван",
-      "vehicle-name": "Название автомобиля *"
+      "vehicle-name": "Название автомобиля *",
+      "stop-base-price": "Стоп-базовая цена ({0})",
+      "stop-base-price-description": "Базовая плата за остановку (независимо от времени ожидания)",
+      "stop-price-per-hour": "Стоп-цена в час ({0})",
+      "stop-price-per-hour-description": "Доплата за час ожидания на остановках",
+      "stop-pricing": "Остановить ценообразование"
     },
     "Home": {
       "all-time-bookings": "Бронирование на все время",

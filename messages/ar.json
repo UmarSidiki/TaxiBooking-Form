@@ -61,7 +61,12 @@
       "try-adjusting-your-search-or-filter-criteria": "حاول تعديل معايير البحث أو التصفية.",
       "update-vehicle": "تحديث المركبة",
       "van": "فان",
-      "vehicle-name": "اسم المركبة *"
+      "vehicle-name": "اسم المركبة *",
+      "stop-base-price": "إيقاف السعر الأساسي ({0})",
+      "stop-base-price-description": "الرسوم الأساسية لكل محطة (بغض النظر عن وقت الانتظار)",
+      "stop-price-per-hour": "سعر الإيقاف لكل ساعة ({0})",
+      "stop-price-per-hour-description": "رسوم إضافية لكل ساعة من وقت الانتظار في المحطات",
+      "stop-pricing": "وقف التسعير"
     },
     "Home": {
       "all-time-bookings": "حجوزات لجميع الأوقات",

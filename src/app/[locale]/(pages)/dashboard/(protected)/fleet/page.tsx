@@ -69,6 +69,8 @@ const FleetPage = () => {
     category: "economy",
     childSeatPrice: 10,
     babySeatPrice: 10,
+    stopPrice: 0,
+    stopPricePerHour: 0,
     isActive: true,
   });
 
@@ -154,6 +156,8 @@ const FleetPage = () => {
           ? 100
           : vehicle.returnPricePercentage,
       discount: vehicle.discount === undefined ? 0 : vehicle.discount,
+      stopPrice: vehicle.stopPrice || 0,
+      stopPricePerHour: vehicle.stopPricePerHour || 0,
     });
     setEditingId(vehicle._id!);
     setShowForm(true);
@@ -206,6 +210,8 @@ const FleetPage = () => {
       category: "economy",
       childSeatPrice: 10,
       babySeatPrice: 10,
+      stopPrice: 0,
+      stopPricePerHour: 0,
       isActive: true,
     });
     setEditingId(null);
@@ -857,6 +863,57 @@ const VehicleForm = ({
               })
             }
           />
+        </div>
+
+        {/* Stop Pricing Section */}
+        <div className="md:col-span-2">
+          <h3 className="text-lg font-semibold mb-4">
+            {t("Dashboard.Fleet.stop-pricing")}
+          </h3>
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium mb-2">
+            {t("Dashboard.Fleet.stop-base-price", {0: currencySymbol})}
+          </label>
+          <Input
+            type="number"
+            min="0"
+            step="0.01"
+            placeholder="0"
+            value={formData.stopPrice}
+            onChange={(e) =>
+              setFormData({
+                ...formData,
+                stopPrice: parseFloat(e.target.value) || 0,
+              })
+            }
+          />
+          <p className="text-xs text-muted-foreground mt-1">
+            {t("Dashboard.Fleet.stop-base-price-description")}
+          </p>
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium mb-2">
+            {t("Dashboard.Fleet.stop-price-per-hour", {0: currencySymbol})}
+          </label>
+          <Input
+            type="number"
+            min="0"
+            step="0.01"
+            placeholder="0"
+            value={formData.stopPricePerHour}
+            onChange={(e) =>
+              setFormData({
+                ...formData,
+                stopPricePerHour: parseFloat(e.target.value) || 0,
+              })
+            }
+          />
+          <p className="text-xs text-muted-foreground mt-1">
+            {t("Dashboard.Fleet.stop-price-per-hour-description")}
+          </p>
         </div>
 
         {/* Status */}

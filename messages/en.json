@@ -456,6 +456,11 @@
       "baggages-capacity": "Baggages Capacity *",
       "child-seat-price-eur": "Child Seat Price {0}",
       "baby-seat-price-eur": "Baby Seat Price {0}",
+      "stop-pricing": "Stop Pricing",
+      "stop-base-price": "Stop Base Price ({0})",
+      "stop-base-price-description": "Base charge per stop (regardless of wait time)",
+      "stop-price-per-hour": "Stop Price Per Hour ({0})",
+      "stop-price-per-hour-description": "Additional charge per hour of wait time at stops",
       "active-available-for-booking": "Active (Available for booking)",
       "update-vehicle": "Update Vehicle",
       "cancel": "Cancel"

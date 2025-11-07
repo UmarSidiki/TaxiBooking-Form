@@ -203,6 +203,23 @@ export function useStep2() {
       }
     }
 
+    // Add stop costs
+    if (formData.stops && formData.stops.length > 0) {
+      const stopBasePrice = vehicle.stopPrice || 0;
+      const stopPricePerHour = vehicle.stopPricePerHour || 0;
+      
+      formData.stops.forEach(stop => {
+        // Add base stop price
+        totalPrice += stopBasePrice;
+        
+        // Add duration-based price if stop has wait time
+        if (stop.duration && stop.duration > 0) {
+          const hours = stop.duration / 60; // Convert minutes to hours
+          totalPrice += stopPricePerHour * hours;
+        }
+      });
+    }
+
     // Apply discount after all other calculations
     const discount = vehicle.discount === undefined ? 0 : vehicle.discount;
     if (discount > 0) {
@@ -213,28 +230,50 @@ export function useStep2() {
   };
 
   const calculateOriginalPrice = (vehicle: (typeof vehicles)[0]) => {
+    let totalPrice = 0;
+    
     // Hourly booking - show price without discount
     if (formData.bookingType === "hourly") {
       const pricePerHour = vehicle.pricePerHour || 30;
       const minimumHours = vehicle.minimumHours || 2;
       const hours = Math.max(formData.duration, minimumHours);
-      return pricePerHour * hours;
+      totalPrice = pricePerHour * hours;
+    } else {
+      // Destination-based booking
+      if (!distanceData) {
+        totalPrice = vehicle.price;
+      } else {
+        // Calculate without minimum fare applied - just base + distance
+        const distancePrice = vehicle.pricePerKm * distanceData.distance.km;
+        const oneWayPrice = vehicle.price + distancePrice;
+
+        if (formData.tripType === "roundtrip") {
+          // For round trip, show what it would cost at full price (200% of one-way)
+          totalPrice = oneWayPrice * 2;
+        } else {
+          totalPrice = oneWayPrice;
+        }
+      }
     }
 
-    // Destination-based booking
-    if (!distanceData) {
-      return vehicle.price;
+    // Add stop costs (same as in calculatePrice)
+    if (formData.stops && formData.stops.length > 0) {
+      const stopBasePrice = vehicle.stopPrice || 0;
+      const stopPricePerHour = vehicle.stopPricePerHour || 0;
+      
+      formData.stops.forEach(stop => {
+        // Add base stop price
+        totalPrice += stopBasePrice;
+        
+        // Add duration-based price if stop has wait time
+        if (stop.duration && stop.duration > 0) {
+          const hours = stop.duration / 60; // Convert minutes to hours
+          totalPrice += stopPricePerHour * hours;
+        }
+      });
     }
-    // Calculate without minimum fare applied - just base + distance
-    const distancePrice = vehicle.pricePerKm * distanceData.distance.km;
-    const oneWayPrice = vehicle.price + distancePrice;
 
-    if (formData.tripType === "roundtrip") {
-      // For round trip, show what it would cost at full price (200% of one-way)
-      return oneWayPrice * 2;
-    }
-
-    return oneWayPrice;
+    return totalPrice;
   };
 
   const handleVehicleSelect = (vehicleId: string) => {

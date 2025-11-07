@@ -238,7 +238,12 @@
       "try-adjusting-your-search-or-filter-criteria": "Intente ajustar sus criterios de búsqueda o filtrado.",
       "update-vehicle": "Actualizar vehículo",
       "van": "Furgoneta",
-      "vehicle-name": "Nombre del vehículo *"
+      "vehicle-name": "Nombre del vehículo *",
+      "stop-base-price": "Precio base de parada ({0})",
+      "stop-base-price-description": "Cargo base por parada (independientemente del tiempo de espera)",
+      "stop-price-per-hour": "Precio de parada por hora ({0})",
+      "stop-price-per-hour-description": "Cargo adicional por hora de espera en paradas",
+      "stop-pricing": "Dejar de fijar precios"
     },
     "Home": {
       "all-time-bookings": "Reservas de todos los tiempos",

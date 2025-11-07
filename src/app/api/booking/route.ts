@@ -71,6 +71,23 @@ async function calculateBookingTotal(
   const babySeatsCost = formData.babySeats * (vehicle.babySeatPrice || 10);
   totalAmount += childSeatsCost + babySeatsCost;
 
+  // Calculate stop costs
+  if (formData.stops && formData.stops.length > 0) {
+    const stopBasePrice = vehicle.stopPrice || 0;
+    const stopPricePerHour = vehicle.stopPricePerHour || 0;
+    
+    formData.stops.forEach(stop => {
+      // Add base stop price
+      totalAmount += stopBasePrice;
+      
+      // Add duration-based price if stop has wait time
+      if (stop.duration && stop.duration > 0) {
+        const hours = stop.duration / 60; // Convert minutes to hours
+        totalAmount += stopPricePerHour * hours;
+      }
+    });
+  }
+
   return totalAmount;
 }
 

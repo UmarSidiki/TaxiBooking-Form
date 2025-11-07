@@ -7,6 +7,7 @@ export interface IBooking extends Document {
   stops?: Array<{
     location: string;
     order: number;
+    duration?: number;
   }>;
   tripType: "oneway" | "roundtrip";
   date: string;
@@ -55,7 +56,8 @@ const BookingSchema: Schema = new Schema({
   dropoff: { type: String },
   stops: [{
     location: { type: String, required: true },
-    order: { type: Number, required: true }
+    order: { type: Number, required: true },
+    duration: { type: Number, default: 0 }
   }],
   tripType: { type: String, enum: ["oneway", "roundtrip"], required: true },
   date: { type: String, required: true },
@@ -122,6 +124,7 @@ export interface BookingInput {
   stops?: Array<{
     location: string;
     order: number;
+    duration?: number;
   }>;
   tripType: "oneway" | "roundtrip";
   duration?: number;

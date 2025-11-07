@@ -116,6 +116,7 @@ function BookingFormUI() {
     const newStop = {
       location: "",
       order: formData.stops.length + 1,
+      duration: 0,
     };
     setFormData((prev) => ({ ...prev, stops: [...prev.stops, newStop] }));
   };
@@ -139,6 +140,16 @@ function BookingFormUI() {
       ...prev,
       stops: prev.stops.map((stop, i) =>
         i === index ? { ...stop, location } : stop
+      ),
+    }));
+  };
+
+  // Handle stop duration change
+  const handleStopDurationChange = (index: number, duration: number) => {
+    setFormData((prev) => ({
+      ...prev,
+      stops: prev.stops.map((stop, i) =>
+        i === index ? { ...stop, duration } : stop
       ),
     }));
   };
@@ -265,30 +276,62 @@ function BookingFormUI() {
                   <div className="space-y-2">
                     {formData.stops.map((stop, index) => (
                       <div key={index} className="flex items-center gap-2">
-                        <div className="flex-1 relative">
-                          <div className="absolute left-3 top-1/2 -translate-y-1/2 text-primary">
-                            <MapPin className="h-3.5 w-3.5 md:h-4 md:w-4" />
-                          </div>
-                          <Input
-                            ref={(el) => {
-                              if (stopInputRefs.current) {
-                                stopInputRefs.current[index] = el;
+                        <div className="flex-1 flex gap-2">
+                          <div className="relative flex-[3]">
+                            <div className="absolute left-3 top-1/2 -translate-y-1/2 text-primary pointer-events-none">
+                              <MapPin className="h-3.5 w-3.5 md:h-4 md:w-4" />
+                            </div>
+                            <Input
+                              ref={(el) => {
+                                if (stopInputRefs.current) {
+                                  stopInputRefs.current[index] = el;
+                                }
+                              }}
+                              placeholder={t("embeddable.stop-index-1-location", {
+                                0: index + 1,
+                              })}
+                              value={stop.location}
+                              onChange={(e) =>
+                                handleStopChange(index, e.target.value)
                               }
-                            }}
-                            placeholder={t("embeddable.stop-index-1-location", {
-                              0: index + 1,
-                            })}
-                            value={stop.location}
-                            onChange={(e) =>
-                              handleStopChange(index, e.target.value)
-                            }
-                            className="rounded-lg border bg-white pl-9 md:pl-10 pr-3 py-2 md:py-2.5 text-sm border-slate-200 focus:border-primary focus:ring-primary/20 transition-all duration-200"
-                          />
+                              className="rounded-lg border bg-white pl-9 md:pl-10 pr-3 py-2 md:py-2.5 text-sm border-slate-200 hover:border-slate-300 focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all duration-200"
+                            />
+                          </div>
+                          <div className="relative flex-1 min-w-[90px]">
+                            <div className="absolute left-2 top-1/2 -translate-y-1/2 text-primary pointer-events-none z-10">
+                              <Clock className="h-3.5 w-3.5" />
+                            </div>
+                            <select
+                              value={stop.duration || 0}
+                              onChange={(e) => handleStopDurationChange(index, parseInt(e.target.value))}
+                              className="w-full rounded-lg border bg-white pl-7 pr-7 py-2 md:py-2.5 text-xs font-medium text-slate-700 border-slate-200 hover:border-slate-300 focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none transition-all duration-200 cursor-pointer appearance-none"
+                              style={{
+                                backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%2394a3b8' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`,
+                                backgroundPosition: 'right 0.25rem center',
+                                backgroundRepeat: 'no-repeat',
+                                backgroundSize: '1.25em 1.25em',
+                              }}
+                            >
+                              <option value={0}>—</option>
+                              <option value={10}>10m</option>
+                              <option value={20}>20m</option>
+                              <option value={30}>30m</option>
+                              <option value={40}>40m</option>
+                              <option value={50}>50m</option>
+                              <option value={60}>1h</option>
+                              <option value={70}>1h 10m</option>
+                              <option value={80}>1h 20m</option>
+                              <option value={90}>1h 30m</option>
+                              <option value={100}>1h 40m</option>
+                              <option value={110}>1h 50m</option>
+                              <option value={120}>2h</option>
+                            </select>
+                          </div>
                         </div>
                         <button
                           type="button"
                           onClick={() => handleRemoveStop(index)}
-                          className="flex-shrink-0 p-1 text-slate-400 hover:text-red-500 transition-colors"
+                          className="flex-shrink-0 p-1.5 rounded-lg text-slate-400 hover:text-red-500 hover:bg-red-50 transition-all duration-200"
                         >
                           <X className="h-3.5 w-3.5 md:h-4 md:w-4" />
                         </button>

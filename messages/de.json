@@ -290,7 +290,12 @@
       "try-adjusting-your-search-or-filter-criteria": "Versuchen Sie, Ihre Such- oder Filterkriterien anzupassen.",
       "update-vehicle": "Fahrzeug aktualisieren",
       "van": "Van",
-      "vehicle-name": "Fahrzeugname *"
+      "vehicle-name": "Fahrzeugname *",
+      "stop-base-price": "Stopp-Basispreis ({0})",
+      "stop-base-price-description": "Grundgebühr pro Stopp (unabhängig von der Wartezeit)",
+      "stop-price-per-hour": "Stopppreis pro Stunde ({0})",
+      "stop-price-per-hour-description": "Aufpreis pro Stunde Wartezeit an Haltestellen",
+      "stop-pricing": "Schluss mit der Preisgestaltung"
     },
     "Home": {
       "all-time-bookings": "Alle Zeitbuchungen",

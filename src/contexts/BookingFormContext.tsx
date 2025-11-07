@@ -12,6 +12,7 @@ export interface FormData {
   stops: Array<{
     location: string;
     order: number;
+    duration?: number; // Duration in minutes (0-120)
   }>;
   tripType: "oneway" | "roundtrip";
   duration: number;

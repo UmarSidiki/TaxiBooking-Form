@@ -82,6 +82,7 @@ export default function Step1TripDetails() {
     const newStop = {
       location: "",
       order: formData.stops.length + 1,
+      duration: 0,
     };
     setFormData((prev) => ({
       ...prev,
@@ -106,6 +107,16 @@ export default function Step1TripDetails() {
       ...prev,
       stops: prev.stops.map((stop, i) =>
         i === index ? { ...stop, location } : stop
+      ),
+    }));
+  };
+
+  // Handle stop duration change
+  const handleStopDurationChange = (index: number, duration: number) => {
+    setFormData((prev) => ({
+      ...prev,
+      stops: prev.stops.map((stop, i) =>
+        i === index ? { ...stop, duration } : stop
       ),
     }));
   };
@@ -254,24 +265,54 @@ export default function Step1TripDetails() {
             <div className="space-y-2">
               {formData.stops.map((stop, index) => (
                 <div key={index} className="flex items-center gap-2">
-                  <div className="flex-1 relative">
-                    <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-primary" />
-                    <Input
-                      ref={(el) => {
-                        stopInputRefs.current[index] = el;
-                      }}
-                      placeholder={`Stop ${index + 1} location`}
-                      value={stop.location}
-                      onChange={(e) => handleStopChange(index, e.target.value)}
-                      className="pl-10 focus:border-primary-500 focus:ring-primary-500"
-                    />
+                  <div className="flex-1 flex gap-2">
+                    <div className="relative flex-[3]">
+                      <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-primary pointer-events-none" />
+                      <Input
+                        ref={(el) => {
+                          stopInputRefs.current[index] = el;
+                        }}
+                        placeholder={`Stop ${index + 1} location`}
+                        value={stop.location}
+                        onChange={(e) => handleStopChange(index, e.target.value)}
+                        className="pl-10 pr-3 h-9 focus:border-primary-500 focus:ring-primary-500 transition-colors"
+                      />
+                    </div>
+                    <div className="relative flex-1 min-w-[100px]">
+                      <Clock className="absolute left-2.5 top-1/2 transform -translate-y-1/2 h-3.5 w-3.5 text-primary pointer-events-none z-10" />
+                      <select
+                        value={stop.duration || 0}
+                        onChange={(e) => handleStopDurationChange(index, parseInt(e.target.value))}
+                        className="w-full h-9 pl-8 pr-2 rounded-md border border-input bg-background text-xs font-medium text-gray-700 cursor-pointer hover:border-primary/50 focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none transition-all appearance-none"
+                        style={{
+                          backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`,
+                          backgroundPosition: 'right 0.25rem center',
+                          backgroundRepeat: 'no-repeat',
+                          backgroundSize: '1.25em 1.25em',
+                        }}
+                      >
+                        <option value={0}>—</option>
+                        <option value={10}>10m</option>
+                        <option value={20}>20m</option>
+                        <option value={30}>30m</option>
+                        <option value={40}>40m</option>
+                        <option value={50}>50m</option>
+                        <option value={60}>1h</option>
+                        <option value={70}>1h 10m</option>
+                        <option value={80}>1h 20m</option>
+                        <option value={90}>1h 30m</option>
+                        <option value={100}>1h 40m</option>
+                        <option value={110}>1h 50m</option>
+                        <option value={120}>2h</option>
+                      </select>
+                    </div>
                   </div>
                   <Button
                     type="button"
                     variant="outline"
                     size="icon"
                     onClick={() => handleRemoveStop(index)}
-                    className="flex-shrink-0 h-9 w-9"
+                    className="flex-shrink-0 h-9 w-9 hover:bg-red-50 hover:text-red-600 hover:border-red-200 transition-colors"
                   >
                     <X className="h-4 w-4" />
                   </Button>

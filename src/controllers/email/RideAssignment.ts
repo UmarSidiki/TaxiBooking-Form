@@ -7,7 +7,7 @@ interface RideAssignmentData {
   tripId: string;
   pickup: string;
   dropoff: string;
-  stops: Array<{ location: string; order: number }>;
+  stops: Array<{ location: string; order: number; duration?: number }>;
   tripType: string;
   date: string;
   time: string;
@@ -219,7 +219,10 @@ export async function sendRideAssignmentEmail(assignmentData: RideAssignmentData
       to: assignmentData.driverEmail,
       subject: `Ride Assignment - Reservation #${assignmentData.tripId}`,
       html: htmlContent,
-      text: `Ride Assignment!\n\nReservation ID: ${assignmentData.tripId}\nCustomer: ${assignmentData.firstName} ${assignmentData.lastName}\nFrom: ${assignmentData.pickup}${assignmentData.stops && assignmentData.stops.length > 0 ? '\nStops: ' + assignmentData.stops.map((stop, index) => `Stop ${index + 1}: ${stop.location}`).join(', ') : ''}\nTo: ${assignmentData.dropoff}\nDeparture Date: ${assignmentData.date} at ${assignmentData.time}${assignmentData.tripType === 'roundtrip' && assignmentData.returnDate ? `\nReturn Date: ${assignmentData.returnDate} at ${assignmentData.returnTime}` : ''}${assignmentData.flightNumber ? `\nFlight Number: ${assignmentData.flightNumber}` : ''}\nVehicle: ${assignmentData.vehicleDetails.name}\nTotal Amount: ${currencySymbol}${assignmentData.totalAmount}\n\nCustomer Contact: ${assignmentData.email} | ${assignmentData.phone}`,
+      text: `Ride Assignment!\n\nReservation ID: ${assignmentData.tripId}\nCustomer: ${assignmentData.firstName} ${assignmentData.lastName}\nFrom: ${assignmentData.pickup}${assignmentData.stops && assignmentData.stops.length > 0 ? '\nStops: ' + assignmentData.stops.map((stop, index) => {
+        const durationText = stop.duration && stop.duration > 0 ? ` (Wait: ${stop.duration >= 60 ? `${Math.floor(stop.duration / 60)}h${stop.duration % 60 > 0 ? ` ${stop.duration % 60}m` : ''}` : `${stop.duration}m`})` : '';
+        return `Stop ${index + 1}: ${stop.location}${durationText}`;
+      }).join(', ') : ''}\nTo: ${assignmentData.dropoff}\nDeparture Date: ${assignmentData.date} at ${assignmentData.time}${assignmentData.tripType === 'roundtrip' && assignmentData.returnDate ? `\nReturn Date: ${assignmentData.returnDate} at ${assignmentData.returnTime}` : ''}${assignmentData.flightNumber ? `\nFlight Number: ${assignmentData.flightNumber}` : ''}\nVehicle: ${assignmentData.vehicleDetails.name}\nTotal Amount: ${currencySymbol}${assignmentData.totalAmount}\n\nCustomer Contact: ${assignmentData.email} | ${assignmentData.phone}`,
     });
 
     if (!success) {

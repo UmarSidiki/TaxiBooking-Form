@@ -1182,12 +1182,22 @@ export default function RidesPage() {
                             .map((stop, index) => (
                               <div
                                 key={index}
-                                className="flex items-center gap-2 text-sm text-gray-600 p-2 bg-secondary/10 rounded-lg"
+                                className="flex items-center justify-between gap-2 text-sm text-gray-600 p-2 bg-secondary/10 rounded-lg"
                               >
-                                <span className="w-6 h-6 bg-secondary/20 text-secondary-foreground rounded-full flex items-center justify-center text-xs font-medium">
-                                  {index + 1}
-                                </span>
-                                <span>{stop.location}</span>
+                                <div className="flex items-center gap-2">
+                                  <span className="w-6 h-6 bg-secondary/20 text-secondary-foreground rounded-full flex items-center justify-center text-xs font-medium">
+                                    {index + 1}
+                                  </span>
+                                  <span>{stop.location}</span>
+                                </div>
+                                {stop.duration && stop.duration > 0 && (
+                                  <span className="text-xs text-gray-500 flex items-center gap-1">
+                                    <Clock className="w-3 h-3" />
+                                    {stop.duration >= 60 
+                                      ? `${Math.floor(stop.duration / 60)}h${stop.duration % 60 > 0 ? ` ${stop.duration % 60}m` : ''}`
+                                      : `${stop.duration}m`}
+                                  </span>
+                                )}
                               </div>
                             ))}
                         </div>

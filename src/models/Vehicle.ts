@@ -17,6 +17,8 @@ export interface IVehicle {
   category: string;
   childSeatPrice: number;
   babySeatPrice: number;
+  stopPrice: number;
+  stopPricePerHour: number;
   isActive: boolean;
   createdAt?: Date;
   updatedAt?: Date;
@@ -110,6 +112,18 @@ const VehicleSchema = new Schema<IVehicle>(
       required: false,
       min: [0, "Baby seat price must be positive"],
       default: 10,
+    },
+    stopPrice: {
+      type: Number,
+      required: false,
+      min: [0, "Stop price must be positive"],
+      default: 0,
+    },
+    stopPricePerHour: {
+      type: Number,
+      required: false,
+      min: [0, "Stop price per hour must be positive"],
+      default: 0,
     },
     isActive: {
       type: Boolean,

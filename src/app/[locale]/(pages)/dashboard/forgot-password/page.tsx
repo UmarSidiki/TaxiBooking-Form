@@ -6,7 +6,6 @@ import Link from "next/link";
 import {
   Lock,
   Mail,
-  Shield,
   Sparkles,
   ArrowRight,
   ArrowLeft,
@@ -107,8 +106,8 @@ export default function ForgotPasswordPage() {
 
       setSuccess("OTP sent to your email. Please check your inbox.");
       setStep("otp");
-    } catch (err: any) {
-      setError(err.message || "An error occurred");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "An error occurred");
     } finally {
       setLoading(false);
     }
@@ -135,8 +134,8 @@ export default function ForgotPasswordPage() {
 
       setSuccess("OTP verified! Please set your new password.");
       setStep("password");
-    } catch (err: any) {
-      setError(err.message || "An error occurred");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "An error occurred");
     } finally {
       setLoading(false);
     }
@@ -176,8 +175,8 @@ export default function ForgotPasswordPage() {
       setTimeout(() => {
         router.push("/dashboard/signin");
       }, 2000);
-    } catch (err: any) {
-      setError(err.message || "An error occurred");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "An error occurred");
     } finally {
       setLoading(false);
     }

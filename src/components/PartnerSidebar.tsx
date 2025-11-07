@@ -2,8 +2,8 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { Calendar, Car, Home, Settings, Users } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useTranslations } from "next-intl";
+import { LayoutDashboard, Car } from "lucide-react";
 
 import {
   Sidebar,
@@ -20,87 +20,22 @@ import {
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import LogoutButton from "@/components/auth/LogoutButton";
 import { Separator } from "@/components/ui/separator";
-import { useTranslations } from "next-intl";
-import type { ISetting } from "@/models/Setting";
 
-export function AppSidebar({ locale }: { locale: string }) {
-  const t = useTranslations();
-  const [settings, setSettings] = useState<Partial<ISetting>>({
-    enablePartners: false,
-    enableDrivers: false,
-  });
-
-  useEffect(() => {
-    const fetchSettings = async () => {
-      try {
-        const response = await fetch("/api/settings", {
-          cache: 'no-store',
-          headers: {
-            'Cache-Control': 'no-cache',
-          },
-        });
-        const data = await response.json();
-        if (data.success) {
-          setSettings(data.data);
-        }
-      } catch (error) {
-        console.error("Error fetching settings:", error);
-      }
-    };
-    
-    fetchSettings();
-
-    const handleSettingsUpdate = () => {
-      fetchSettings();
-    };
-
-    window.addEventListener('settingsUpdated', handleSettingsUpdate);
-
-    return () => {
-      window.removeEventListener('settingsUpdated', handleSettingsUpdate);
-    };
-  }, []);
-
-  const allItems = [
+export function PartnerSidebar({ locale }: { locale: string }) {
+  const t = useTranslations("Dashboard.Partners.Sidebar");
+  
+  const items = [
     {
-      title: t("Sidebar.dashboard"),
-      href: (locale: string) => `/${locale}/dashboard/home`,
-      icon: Home,
-      enabled: true,
+      title: t("dashboard"),
+      href: (locale: string) => `/${locale}/partners/dashboard`,
+      icon: LayoutDashboard,
     },
     {
-      title: t("Sidebar.rides"),
-      href: (locale: string) => `/${locale}/dashboard/rides`,
-      icon: Calendar,
-      enabled: true,
-    },
-    {
-      title: t("Sidebar.fleet"),
-      href: (locale: string) => `/${locale}/dashboard/fleet`,
+      title: t("my-rides"),
+      href: (locale: string) => `/${locale}/partners/rides`,
       icon: Car,
-      enabled: true,
-    },
-    {
-      title: "Drivers",
-      href: (locale: string) => `/${locale}/dashboard/drivers`,
-      icon: Users,
-      enabled: settings.enableDrivers ?? false,
-    },
-    {
-      title: "Partners",
-      href: (locale: string) => `/${locale}/dashboard/partners`,
-      icon: Users,
-      enabled: settings.enablePartners ?? false,
-    },
-    {
-      title: t("Sidebar.settings"),
-      href: (locale: string) => `/${locale}/dashboard/settings`,
-      icon: Settings,
-      enabled: true,
     },
   ];
-
-  const items = allItems.filter((item) => item.enabled);
 
   return (
     <Sidebar className="border-r-2 border-border/50">
@@ -109,23 +44,24 @@ export function AppSidebar({ locale }: { locale: string }) {
           <div className="relative h-12 w-12 overflow-hidden rounded-xl bg-primary/10 border border-primary/20">
             <Image
               src="/icon.png"
-              alt="TaxiBooking Logo"
+              alt="Partner Portal Logo"
               fill
               className="object-cover"
               onError={(e) => {
-                // Fallback to building icon if image fails to load
                 e.currentTarget.style.display = "none";
                 const parent = e.currentTarget.parentElement;
                 if (parent) {
                   parent.innerHTML =
-                    '<div class="flex h-full w-full items-center justify-center"><svg class="h-6 w-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg></div>';
+                    '<div class="flex h-full w-full items-center justify-center"><svg class="h-6 w-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg></div>';
                 }
               }}
             />
           </div>
           <div>
-            <h1 className="text-xl font-bold text-foreground">{process.env.NEXT_PUBLIC_WEBSITE_NAME}</h1>
-            <p className="text-xs text-muted-foreground">{t("Sidebar.management_portal")}</p>
+            <h1 className="text-xl font-bold text-foreground">
+              {process.env.NEXT_PUBLIC_WEBSITE_NAME || t("partner-portal")}
+            </h1>
+            <p className="text-xs text-muted-foreground">{t("partner-portal")}</p>
           </div>
         </div>
       </SidebarHeader>
@@ -133,7 +69,7 @@ export function AppSidebar({ locale }: { locale: string }) {
       <SidebarContent className="px-3 py-4">
         <SidebarGroup>
           <SidebarGroupLabel className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">
-            {t("Sidebar.navigation")}
+            {t("navigation")}
           </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu className="space-y-1">
@@ -161,7 +97,7 @@ export function AppSidebar({ locale }: { locale: string }) {
 
         <SidebarGroup>
           <SidebarGroupLabel className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">
-            {t('Sidebar.preferences')}
+            {t("preferences")}
           </SidebarGroupLabel>
           <SidebarGroupContent>
             <div className="px-3">
@@ -174,9 +110,9 @@ export function AppSidebar({ locale }: { locale: string }) {
       <SidebarFooter className="border-t border-border/50 bg-muted/30 p-4">
         <div className="flex items-center justify-between">
           <div className="text-xs text-muted-foreground">
-            © 2025 {process.env.NEXT_PUBLIC_WEBSITE_NAME}
+            © 2025 {process.env.NEXT_PUBLIC_WEBSITE_NAME || t("partner-portal")}
           </div>
-          <LogoutButton callbackUrl={`/${locale}/dashboard/signin`} />
+          <LogoutButton callbackUrl={`/${locale}/partners/login`} />
         </div>
       </SidebarFooter>
     </Sidebar>

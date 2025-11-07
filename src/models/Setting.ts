@@ -32,6 +32,8 @@ export interface ISetting {
   smtpTestEmail?: string;
   smtpFrom?: string;
   smtpSenderName?: string;
+  enablePartners?: boolean;
+  enableDrivers?: boolean;
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -159,12 +161,26 @@ const SettingSchema = new Schema<ISetting>(
       type: String,
       default: "",
     },
+    enablePartners: {
+      type: Boolean,
+      default: false,
+    },
+    enableDrivers: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     timestamps: true,
+    strict: false, // Allow fields not in schema (for development)
   }
 );
 
-const Setting = models.Setting || model<ISetting>("Setting", SettingSchema);
+// Force model recompilation in development
+if (models.Setting) {
+  delete models.Setting;
+}
+
+const Setting = model<ISetting>("Setting", SettingSchema);
 
 export default Setting;

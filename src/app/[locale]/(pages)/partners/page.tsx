@@ -3,21 +3,20 @@ import { redirect } from "next/navigation";
 import { authOptions } from "@/lib/auth/options";
 import { connectDB } from "@/lib/mongoose";
 import Setting from "@/models/Setting";
-import DriverLoginForm from "./components/DriverLoginForm";
 
-export default async function DriversPage() {
-  // Check if drivers module is enabled
+export default async function PartnersPage() {
+  // Check if partners module is enabled
   await connectDB();
   const settings = await Setting.findOne();
-  if (settings && settings.enableDrivers === false) {
+  if (settings && settings.enablePartners === false) {
     redirect(`/`);
   }
 
   const session = await getServerSession(authOptions);
 
-  // If user is logged in and is a driver, redirect to driver dashboard
-  if (session?.user && session.user.role === "driver") {
-    redirect(`/drivers/dashboard`);
+  // If user is logged in and is a partner, redirect to partner dashboard
+  if (session?.user && session.user.role === "partner") {
+    redirect(`/partners/dashboard`);
   }
 
   // If user is logged in and is an admin, redirect to admin dashboard
@@ -30,6 +29,6 @@ export default async function DriversPage() {
     redirect(`/`);
   }
 
-  // If not logged in, show login form
-  return <DriverLoginForm />;
+  // If not logged in, redirect to login
+  redirect(`/partners/login`);
 }

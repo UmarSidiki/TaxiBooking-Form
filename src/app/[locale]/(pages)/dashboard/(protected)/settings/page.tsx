@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Loader2, Save, Palette, CreditCard, MapPin, Mail } from "lucide-react";
+import { Loader2, Save, Palette, CreditCard, MapPin, Mail, Settings as SettingsIcon } from "lucide-react";
 import type { ISetting } from "@/models/Setting";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useTranslations } from "next-intl";
@@ -12,6 +12,7 @@ import BookingTab from "@/components/settings/BookingTab";
 import MapTab from "@/components/settings/MapTab";
 import PaymentTab from "@/components/settings/PaymentTab";
 import SmtpTab from "@/components/settings/SmtpTab";
+import FeaturesTab from "@/components/settings/FeaturesTab";
 
 const SettingsPage = () => {
   const [settings, setSettings] = useState<Partial<ISetting>>({});
@@ -29,7 +30,12 @@ const SettingsPage = () => {
           data: Partial<ISetting>;
         }>("/api/settings");
         if (data.success) {
-          setSettings(data.data);
+          const settingsWithDefaults = {
+            ...data.data,
+            enablePartners: data.data.enablePartners ?? false,
+            enableDrivers: data.data.enableDrivers ?? false,
+          };
+          setSettings(settingsWithDefaults);
         }
       } catch (error) {
         console.error("Error fetching settings:", error);
@@ -49,9 +55,11 @@ const SettingsPage = () => {
         settings
       );
       if (data.success) {
+        window.dispatchEvent(new Event('settingsUpdated'));
         alert(t("Dashboard.Settings.settings-saved-successfully"));
-        // Optional: trigger a global state update or page reload to apply changes
-        window.location.reload();
+        setTimeout(() => {
+          window.location.reload();
+        }, 500);
       } else {
         alert(`Error: ${data.message}`);
       }
@@ -116,7 +124,7 @@ const SettingsPage = () => {
       </div>
 
       <Tabs defaultValue="appearance">
-        <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 md:grid-cols-5 bg-white p-1 rounded-lg shadow-sm h-auto">
+        <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 md:grid-cols-6 bg-white p-1 rounded-lg shadow-sm h-auto">
           <TabsTrigger
             value="appearance"
             className="flex items-center justify-center gap-2 py-3 px-4 rounded-md transition-all data-[state=active]:bg-blue-50 data-[state=active]:text-blue-600 data-[state=active]:shadow-sm"
@@ -162,6 +170,15 @@ const SettingsPage = () => {
               SMTP
             </span>
           </TabsTrigger>
+          <TabsTrigger
+            value="features"
+            className="flex items-center justify-center gap-2 py-3 px-4 rounded-md transition-all data-[state=active]:bg-teal-50 data-[state=active]:text-teal-600 data-[state=active]:shadow-sm"
+          >
+            <SettingsIcon className="w-4 h-4" />
+            <span className="font-medium">
+              Features
+            </span>
+          </TabsTrigger>
         </TabsList>
         <TabsContent value="appearance">
           <AppearanceTab
@@ -196,6 +213,12 @@ const SettingsPage = () => {
             setSettings={setSettings}
             isLoading={isLoading}
             setIsLoading={setIsLoading}
+          />
+        </TabsContent>
+        <TabsContent value="features">
+          <FeaturesTab
+            settings={settings}
+            onSettingsChange={handleMapSettingsChange}
           />
         </TabsContent>
       </Tabs>

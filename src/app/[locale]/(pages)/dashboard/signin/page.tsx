@@ -3,6 +3,7 @@
 import { useState, type FormEvent, useEffect, useRef } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import {
   Eye,
   EyeOff,
@@ -322,7 +323,13 @@ export default function SignInPage() {
               </Button>
             </form>
 
-            <div className="mt-6 text-center">
+            <div className="mt-6 text-center space-y-2">
+              <Link
+                href="/dashboard/forgot-password"
+                className="text-sm text-primary hover:underline transition-colors block"
+              >
+                Forgot your password?
+              </Link>
               <p className="text-sm text-muted-foreground">
                 Need assistance?{" "}
                 <a

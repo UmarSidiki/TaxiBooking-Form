@@ -32,6 +32,9 @@ export interface IPartner {
   approvedAt?: Date;
   approvedBy?: string;
   rejectionReason?: string;
+  suspendedAt?: Date;
+  suspendedBy?: string;
+  scheduledDeletionAt?: Date;
   notes?: string;
   createdAt?: Date;
   updatedAt?: Date;
@@ -125,6 +128,9 @@ const PartnerSchema = new Schema<IPartner>(
     approvedAt: Date,
     approvedBy: String,
     rejectionReason: String,
+    suspendedAt: Date,
+    suspendedBy: String,
+    scheduledDeletionAt: Date,
     notes: String,
   },
   {

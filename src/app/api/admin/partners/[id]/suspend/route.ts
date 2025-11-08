@@ -3,7 +3,7 @@ import { getServerSession } from "next-auth";
 import { connectDB } from "@/lib/mongoose";
 import Partner from "@/models/Partner";
 import { authOptions } from "@/lib/auth/options";
-import { sendPartnerRejectionEmail } from "@/controllers/email/PartnerNotification";
+import { sendPartnerSuspensionEmail } from "@/controllers/email/PartnerNotification";
 
 export async function PATCH(
   request: NextRequest,
@@ -21,7 +21,7 @@ export async function PATCH(
 
     if (!reason) {
       return NextResponse.json(
-        { error: "Rejection reason is required" },
+        { error: "Suspension reason is required" },
         { status: 400 }
       );
     }
@@ -34,30 +34,40 @@ export async function PATCH(
       return NextResponse.json({ error: "Partner not found" }, { status: 404 });
     }
 
-    partner.status = "rejected";
+    // Calculate deletion date (30 days from now)
+    const deletionDate = new Date();
+    deletionDate.setDate(deletionDate.getDate() + 30);
+
+    partner.status = "suspended";
     partner.rejectionReason = reason;
-    partner.approvedAt = undefined;
-    partner.approvedBy = undefined;
+    partner.suspendedAt = new Date();
+    partner.suspendedBy = session.user.id;
+    partner.scheduledDeletionAt = deletionDate;
+    partner.isActive = false;
 
     await partner.save();
 
-    // Send rejection email (don't wait for it)
-    sendPartnerRejectionEmail({
+    // Send suspension email (don't wait for it)
+    sendPartnerSuspensionEmail({
       name: partner.name,
       email: partner.email,
       rejectionReason: reason,
     }).catch((error) => {
-      console.error("Failed to send rejection email:", error);
+      console.error("Failed to send suspension email:", error);
     });
 
     return NextResponse.json(
-      { message: "Partner rejected successfully", partner },
+      {
+        message: "Partner suspended successfully",
+        partner,
+        scheduledDeletionAt: deletionDate,
+      },
       { status: 200 }
     );
   } catch (error) {
-    console.error("Error rejecting partner:", error);
+    console.error("Error suspending partner:", error);
     return NextResponse.json(
-      { error: "An error occurred while rejecting partner" },
+      { error: "An error occurred while suspending partner" },
       { status: 500 }
     );
   }

@@ -11,12 +11,10 @@ import {
   ChevronRight,
   Phone,
   Mail,
-  FileText,
   Baby,
   Plane,
 } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 
 interface Booking {
@@ -53,7 +51,6 @@ export default function PartnerRidesPage() {
   const t = useTranslations("Dashboard.Partners.Rides");
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState("upcoming");
 
   useEffect(() => {
     fetchRides();
@@ -74,26 +71,14 @@ export default function PartnerRidesPage() {
     }
   };
 
-  const getFilteredBookings = () => {
+  const getUpcomingBookings = () => {
     const now = new Date();
-
-    switch (activeTab) {
-      case "upcoming":
-        return bookings.filter(
-          (b) => b.status !== "canceled" && new Date(b.date) >= now
-        );
-      case "completed":
-        return bookings.filter(
-          (b) => b.status !== "canceled" && new Date(b.date) < now
-        );
-      case "canceled":
-        return bookings.filter((b) => b.status === "canceled");
-      default:
-        return bookings;
-    }
+    return bookings.filter(
+      (b) => b.status !== "canceled" && new Date(b.date) >= now
+    );
   };
 
-  const filteredBookings = getFilteredBookings();
+  const upcomingBookings = getUpcomingBookings();
 
   const getStatusBadge = (booking: Booking) => {
     if (booking.status === "canceled") {
@@ -131,101 +116,31 @@ export default function PartnerRidesPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold">{t("my-rides")}</h1>
+        <h1 className="text-3xl font-bold">{t("rides")}</h1>
         <p className="text-muted-foreground mt-2">
-          {t("view-and-manage-your-assigned-rides")}
+          {t("your-upcoming-scheduled-rides")}
         </p>
-      </div>
-
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <Card>
-          <CardContent className="pt-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-muted-foreground">
-                  {t("upcoming-rides")}
-                </p>
-                <p className="text-2xl font-bold">
-                  {
-                    bookings.filter(
-                      (b) =>
-                        b.status !== "canceled" && new Date(b.date) >= new Date()
-                    ).length
-                  }
-                </p>
-              </div>
-              <Calendar className="w-8 h-8 text-primary opacity-50" />
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="pt-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-muted-foreground">
-                  {t("completed-rides")}
-                </p>
-                <p className="text-2xl font-bold">
-                  {
-                    bookings.filter(
-                      (b) =>
-                        b.status !== "canceled" && new Date(b.date) < new Date()
-                    ).length
-                  }
-                </p>
-              </div>
-              <Car className="w-8 h-8 text-green-600 opacity-50" />
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="pt-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-muted-foreground">
-                  {t("canceled-rides")}
-                </p>
-                <p className="text-2xl font-bold">
-                  {bookings.filter((b) => b.status === "canceled").length}
-                </p>
-              </div>
-              <FileText className="w-8 h-8 text-red-600 opacity-50" />
-            </div>
-          </CardContent>
-        </Card>
       </div>
 
       {/* Rides List */}
       <Card>
         <CardHeader>
-          <CardTitle>{t("rides")}</CardTitle>
+          <CardTitle>
+            {t("upcoming-rides")} ({upcomingBookings.length})
+          </CardTitle>
+          <CardDescription>
+            {t("view-and-manage-your-assigned-rides")}
+          </CardDescription>
         </CardHeader>
         <CardContent>
-          <Tabs value={activeTab} onValueChange={setActiveTab}>
-            <TabsList className="grid w-full grid-cols-3">
-              <TabsTrigger value="upcoming">
-                {t("upcoming")} ({bookings.filter((b) => b.status !== "canceled" && new Date(b.date) >= new Date()).length})
-              </TabsTrigger>
-              <TabsTrigger value="completed">
-                {t("completed")} ({bookings.filter((b) => b.status !== "canceled" && new Date(b.date) < new Date()).length})
-              </TabsTrigger>
-              <TabsTrigger value="canceled">
-                {t("canceled")} ({bookings.filter((b) => b.status === "canceled").length})
-              </TabsTrigger>
-            </TabsList>
-
-            <TabsContent value={activeTab} className="mt-6">
-              {filteredBookings.length === 0 ? (
-                <div className="text-center py-12 text-muted-foreground">
-                  <Car className="w-12 h-12 mx-auto mb-3 opacity-50" />
-                  <p>{t(`no-${activeTab}-rides-found`)}</p>
-                </div>
-              ) : (
-                <div className="space-y-4">
-                  {filteredBookings.map((booking) => (
+          {upcomingBookings.length === 0 ? (
+            <div className="text-center py-12 text-muted-foreground">
+              <Car className="w-12 h-12 mx-auto mb-3 opacity-50" />
+              <p>{t("no-upcoming-rides-found")}</p>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {upcomingBookings.map((booking) => (
                     <Card
                       key={booking._id}
                       className="hover:shadow-md transition-shadow"
@@ -428,8 +343,6 @@ export default function PartnerRidesPage() {
                   ))}
                 </div>
               )}
-            </TabsContent>
-          </Tabs>
         </CardContent>
       </Card>
     </div>

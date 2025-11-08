@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import { useTranslations } from "next-intl";
 import {
   Users,
   CheckCircle2,
@@ -66,15 +67,18 @@ interface Partner {
 }
 
 export default function AdminPartnersPage() {
+  const t = useTranslations("Dashboard.Admin.Partners");
   const [partners, setPartners] = useState<Partner[]>([]);
   const [filteredPartners, setFilteredPartners] = useState<Partner[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedPartner, setSelectedPartner] = useState<Partner | null>(null);
   const [showDetailsDialog, setShowDetailsDialog] = useState(false);
   const [showRejectDialog, setShowRejectDialog] = useState(false);
+  const [showSuspendDialog, setShowSuspendDialog] = useState(false);
   const [showDocumentDialog, setShowDocumentDialog] = useState(false);
   const [selectedDocument, setSelectedDocument] = useState<PartnerDocument | null>(null);
   const [rejectionReason, setRejectionReason] = useState("");
+  const [suspensionReason, setSuspensionReason] = useState("");
   const [processing, setProcessing] = useState(false);
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState("");
@@ -166,34 +170,61 @@ export default function AdminPartnersPage() {
     }
   };
 
+  const handleSuspend = async () => {
+    if (!selectedPartner || !suspensionReason.trim()) return;
+
+    setProcessing(true);
+    try {
+      const response = await fetch(
+        `/api/admin/partners/${selectedPartner._id}/suspend`,
+        {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ reason: suspensionReason }),
+        }
+      );
+
+      if (response.ok) {
+        fetchPartners();
+        setShowSuspendDialog(false);
+        setShowDetailsDialog(false);
+        setSuspensionReason("");
+      }
+    } catch (error) {
+      console.error("Error suspending partner:", error);
+    } finally {
+      setProcessing(false);
+    }
+  };
+
   const getStatusBadge = (status: string) => {
     switch (status) {
       case "approved":
         return (
           <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300">
             <CheckCircle2 className="w-3 h-3" />
-            Approved
+            {t("approved")}
           </span>
         );
       case "rejected":
         return (
           <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300">
             <XCircle className="w-3 h-3" />
-            Rejected
+            {t("rejected")}
           </span>
         );
       case "suspended":
         return (
           <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-700 dark:bg-gray-900 dark:text-gray-300">
             <XCircle className="w-3 h-3" />
-            Suspended
+            {t("suspended")}
           </span>
         );
       default:
         return (
           <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-300">
             <Clock className="w-3 h-3" />
-            Pending
+            {t("pending")}
           </span>
         );
     }
@@ -204,19 +235,19 @@ export default function AdminPartnersPage() {
       case "approved":
         return (
           <span className="text-xs text-green-600 dark:text-green-400">
-            ✓ Approved
+            ✓ {t("approved")}
           </span>
         );
       case "rejected":
         return (
           <span className="text-xs text-red-600 dark:text-red-400">
-            ✕ Rejected
+            ✕ {t("rejected")}
           </span>
         );
       default:
         return (
           <span className="text-xs text-yellow-600 dark:text-yellow-400">
-            ⏱ Pending
+            ⏱ {t("pending")}
           </span>
         );
     }
@@ -227,6 +258,7 @@ export default function AdminPartnersPage() {
     pending: partners.filter((p) => p.status === "pending").length,
     approved: partners.filter((p) => p.status === "approved").length,
     rejected: partners.filter((p) => p.status === "rejected").length,
+    suspended: partners.filter((p) => p.status === "suspended").length,
   };
 
   if (loading) {
@@ -240,9 +272,9 @@ export default function AdminPartnersPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold">Partner Management</h1>
+        <h1 className="text-3xl font-bold">{t("title")}</h1>
         <p className="text-muted-foreground mt-2">
-          Review and manage partner applications
+          {t("description")}
         </p>
       </div>
 
@@ -253,7 +285,7 @@ export default function AdminPartnersPage() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-muted-foreground">
-                  Total Partners
+                  {t("total-partners")}
                 </p>
                 <p className="text-2xl font-bold">{stats.total}</p>
               </div>
@@ -267,7 +299,7 @@ export default function AdminPartnersPage() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-muted-foreground">
-                  Pending
+                  {t("pending")}
                 </p>
                 <p className="text-2xl font-bold text-yellow-600">
                   {stats.pending}
@@ -283,7 +315,7 @@ export default function AdminPartnersPage() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-muted-foreground">
-                  Approved
+                  {t("approved")}
                 </p>
                 <p className="text-2xl font-bold text-green-600">
                   {stats.approved}
@@ -299,7 +331,7 @@ export default function AdminPartnersPage() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-muted-foreground">
-                  Rejected
+                  {t("rejected")}
                 </p>
                 <p className="text-2xl font-bold text-red-600">
                   {stats.rejected}
@@ -319,7 +351,7 @@ export default function AdminPartnersPage() {
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                 <Input
-                  placeholder="Search by name or email..."
+                  placeholder={t("search-placeholder")}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="pl-10"
@@ -330,14 +362,14 @@ export default function AdminPartnersPage() {
               <Select value={statusFilter} onValueChange={setStatusFilter}>
                 <SelectTrigger>
                   <Filter className="w-4 h-4 mr-2" />
-                  <SelectValue placeholder="Filter by status" />
+                  <SelectValue placeholder={t("filter-by-status")} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">All Status</SelectItem>
-                  <SelectItem value="pending">Pending</SelectItem>
-                  <SelectItem value="approved">Approved</SelectItem>
-                  <SelectItem value="rejected">Rejected</SelectItem>
-                  <SelectItem value="suspended">Suspended</SelectItem>
+                  <SelectItem value="all">{t("all-status")}</SelectItem>
+                  <SelectItem value="pending">{t("pending")}</SelectItem>
+                  <SelectItem value="approved">{t("approved")}</SelectItem>
+                  <SelectItem value="rejected">{t("rejected")}</SelectItem>
+                  <SelectItem value="suspended">{t("suspended")}</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -348,16 +380,16 @@ export default function AdminPartnersPage() {
       {/* Partners List */}
       <Card>
         <CardHeader>
-          <CardTitle>Partners ({filteredPartners.length})</CardTitle>
+          <CardTitle>{t("partners-count", { 0: filteredPartners.length })}</CardTitle>
           <CardDescription>
-            Click on a partner to view details and manage their application
+            {t("click-to-view-details")}
           </CardDescription>
         </CardHeader>
         <CardContent>
           {filteredPartners.length === 0 ? (
             <div className="text-center py-12 text-muted-foreground">
               <Users className="w-12 h-12 mx-auto mb-3 opacity-50" />
-              <p>No partners found</p>
+              <p>{t("no-partners-found")}</p>
             </div>
           ) : (
             <div className="space-y-3">
@@ -381,7 +413,7 @@ export default function AdminPartnersPage() {
                           {partner.email}
                         </p>
                         <p className="text-xs text-muted-foreground mt-1">
-                          Registered:{" "}
+                          {t("registered")}{" "}
                           {new Date(partner.registeredAt).toLocaleDateString()}
                         </p>
                       </div>
@@ -389,9 +421,9 @@ export default function AdminPartnersPage() {
                   </div>
                   <div className="flex items-center gap-4">
                     <div className="text-right hidden md:block">
-                      <p className="text-sm text-muted-foreground">Documents</p>
+                      <p className="text-sm text-muted-foreground">{t("documents")}</p>
                       <p className="text-sm font-medium">
-                        {partner.documents.length} uploaded
+                        {partner.documents.length} {t("uploaded")}
                       </p>
                     </div>
                     <div className="flex items-center gap-2">
@@ -412,9 +444,9 @@ export default function AdminPartnersPage() {
       <Dialog open={showDetailsDialog} onOpenChange={setShowDetailsDialog}>
         <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>Partner Details</DialogTitle>
+            <DialogTitle>{t("partner-details")}</DialogTitle>
             <DialogDescription>
-              Review partner information and documents
+              {t("review-partner-info")}
             </DialogDescription>
           </DialogHeader>
 
@@ -423,38 +455,38 @@ export default function AdminPartnersPage() {
               {/* Status */}
               <div>
                 <p className="text-sm font-medium text-muted-foreground mb-2">
-                  Status
+                  {t("status")}
                 </p>
                 {getStatusBadge(selectedPartner.status)}
               </div>
 
               {/* Personal Information */}
               <div>
-                <h3 className="font-semibold mb-3">Personal Information</h3>
+                <h3 className="font-semibold mb-3">{t("personal-information")}</h3>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <p className="text-sm text-muted-foreground">Name</p>
+                    <p className="text-sm text-muted-foreground">{t("name")}</p>
                     <p className="font-medium">{selectedPartner.name}</p>
                   </div>
                   <div>
-                    <p className="text-sm text-muted-foreground">Email</p>
+                    <p className="text-sm text-muted-foreground">{t("email")}</p>
                     <p className="font-medium">{selectedPartner.email}</p>
                   </div>
                   {selectedPartner.phone && (
                     <div>
-                      <p className="text-sm text-muted-foreground">Phone</p>
+                      <p className="text-sm text-muted-foreground">{t("phone")}</p>
                       <p className="font-medium">{selectedPartner.phone}</p>
                     </div>
                   )}
                   {selectedPartner.city && (
                     <div>
-                      <p className="text-sm text-muted-foreground">City</p>
+                      <p className="text-sm text-muted-foreground">{t("city")}</p>
                       <p className="font-medium">{selectedPartner.city}</p>
                     </div>
                   )}
                   {selectedPartner.country && (
                     <div>
-                      <p className="text-sm text-muted-foreground">Country</p>
+                      <p className="text-sm text-muted-foreground">{t("country")}</p>
                       <p className="font-medium">{selectedPartner.country}</p>
                     </div>
                   )}
@@ -464,11 +496,11 @@ export default function AdminPartnersPage() {
               {/* Documents */}
               <div>
                 <h3 className="font-semibold mb-3">
-                  Documents ({selectedPartner.documents.length})
+                  {t("documents-count", { 0: selectedPartner.documents.length })}
                 </h3>
                 {selectedPartner.documents.length === 0 ? (
                   <p className="text-sm text-muted-foreground">
-                    No documents uploaded yet
+                    {t("no-documents-uploaded")}
                   </p>
                 ) : (
                   <div className="space-y-2">
@@ -512,7 +544,7 @@ export default function AdminPartnersPage() {
                 selectedPartner.rejectionReason && (
                   <div>
                     <h3 className="font-semibold mb-2 text-red-600">
-                      Rejection Reason
+                      {t("rejection-reason")}
                     </h3>
                     <p className="text-sm">{selectedPartner.rejectionReason}</p>
                   </div>
@@ -529,7 +561,7 @@ export default function AdminPartnersPage() {
                   disabled={processing}
                 >
                   <XCircle className="w-4 h-4 mr-2" />
-                  Reject
+                  {t("reject")}
                 </Button>
                 <Button
                   onClick={() => handleApprove(selectedPartner._id)}
@@ -538,16 +570,26 @@ export default function AdminPartnersPage() {
                   {processing ? (
                     <>
                       <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
-                      Processing...
+                      {t("processing")}
                     </>
                   ) : (
                     <>
                       <CheckCircle2 className="w-4 h-4 mr-2" />
-                      Approve Partner
+                      {t("approve-partner")}
                     </>
                   )}
                 </Button>
               </>
+            )}
+            {selectedPartner?.status === "approved" && (
+              <Button
+                variant="destructive"
+                onClick={() => setShowSuspendDialog(true)}
+                disabled={processing}
+              >
+                <XCircle className="w-4 h-4 mr-2" />
+                {t("suspend-partner")}
+              </Button>
             )}
           </DialogFooter>
         </DialogContent>
@@ -557,15 +599,15 @@ export default function AdminPartnersPage() {
       <Dialog open={showRejectDialog} onOpenChange={setShowRejectDialog}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Reject Partner Application</DialogTitle>
+            <DialogTitle>{t("reject-application")}</DialogTitle>
             <DialogDescription>
-              Please provide a reason for rejecting this application
+              {t("provide-rejection-reason")}
             </DialogDescription>
           </DialogHeader>
 
           <div className="space-y-4">
             <Textarea
-              placeholder="Enter rejection reason..."
+              placeholder={t("enter-rejection-reason")}
               value={rejectionReason}
               onChange={(e) => setRejectionReason(e.target.value)}
               rows={4}
@@ -580,7 +622,7 @@ export default function AdminPartnersPage() {
                 setRejectionReason("");
               }}
             >
-              Cancel
+              {t("cancel")}
             </Button>
             <Button
               variant="destructive"
@@ -590,10 +632,62 @@ export default function AdminPartnersPage() {
               {processing ? (
                 <>
                   <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
-                  Rejecting...
+                  {t("rejecting")}
                 </>
               ) : (
-                "Confirm Rejection"
+                t("confirm-rejection")
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Suspend Dialog */}
+      <Dialog open={showSuspendDialog} onOpenChange={setShowSuspendDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{t("suspend-account")}</DialogTitle>
+            <DialogDescription>
+              {t("suspend-warning")}
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-4">
+            <div className="bg-yellow-50 dark:bg-yellow-950/20 border border-yellow-200 dark:border-yellow-900 rounded-lg p-4">
+              <p className="text-sm text-yellow-900 dark:text-yellow-100">
+                <strong>{t("warning-label")}</strong> {t("data-deletion-notice")}
+              </p>
+            </div>
+            <Textarea
+              placeholder={t("enter-suspension-reason")}
+              value={suspensionReason}
+              onChange={(e) => setSuspensionReason(e.target.value)}
+              rows={4}
+            />
+          </div>
+
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setShowSuspendDialog(false);
+                setSuspensionReason("");
+              }}
+            >
+              {t("cancel")}
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={handleSuspend}
+              disabled={!suspensionReason.trim() || processing}
+            >
+              {processing ? (
+                <>
+                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
+                  {t("suspending")}
+                </>
+              ) : (
+                t("confirm-suspension")
               )}
             </Button>
           </DialogFooter>
@@ -605,11 +699,13 @@ export default function AdminPartnersPage() {
         <DialogContent className="max-w-4xl max-h-[90vh]">
           <DialogHeader>
             <DialogTitle>
-              {selectedDocument?.type.replace("_", " ").toUpperCase()} -{" "}
-              {selectedDocument?.fileName}
+              {t("document-viewer-title", {
+                0: selectedDocument?.type.replace("_", " ").toUpperCase() || "",
+                1: selectedDocument?.fileName || ""
+              })}
             </DialogTitle>
             <DialogDescription>
-              File size: {selectedDocument ? (selectedDocument.fileSize / 1024).toFixed(0) : 0} KB
+              {t("file-size", { 0: selectedDocument ? (selectedDocument.fileSize / 1024).toFixed(0) : 0 })}
             </DialogDescription>
           </DialogHeader>
 
@@ -637,7 +733,7 @@ export default function AdminPartnersPage() {
                   <div className="text-center p-8">
                     <FileText className="w-16 h-16 mx-auto mb-4 text-muted-foreground" />
                     <p className="text-muted-foreground">
-                      Preview not available for this file type
+                      {t("preview-not-available")}
                     </p>
                     <Button
                       variant="outline"
@@ -649,7 +745,7 @@ export default function AdminPartnersPage() {
                         link.click();
                       }}
                     >
-                      Download File
+                      {t("download-file")}
                     </Button>
                   </div>
                 )}
@@ -657,7 +753,7 @@ export default function AdminPartnersPage() {
 
               <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
                 <div>
-                  <p className="text-sm font-medium">Document Status</p>
+                  <p className="text-sm font-medium">{t("document-status")}</p>
                   <div className="mt-1">{getDocumentStatusBadge(selectedDocument.status)}</div>
                 </div>
                 <Button
@@ -669,7 +765,7 @@ export default function AdminPartnersPage() {
                     link.click();
                   }}
                 >
-                  Download
+                  {t("download")}
                 </Button>
               </div>
             </div>
@@ -680,7 +776,7 @@ export default function AdminPartnersPage() {
               variant="outline"
               onClick={() => setShowDocumentDialog(false)}
             >
-              Close
+              {t("close")}
             </Button>
           </DialogFooter>
         </DialogContent>

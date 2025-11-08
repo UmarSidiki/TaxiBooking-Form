@@ -1,9 +1,10 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
-import { LayoutDashboard, Car } from "lucide-react";
+import { LayoutDashboard, Car, User, History } from "lucide-react";
 
 import {
   Sidebar,
@@ -23,19 +24,57 @@ import { Separator } from "@/components/ui/separator";
 
 export function PartnerSidebar({ locale }: { locale: string }) {
   const t = useTranslations("Dashboard.Partners.Sidebar");
+  const [isApproved, setIsApproved] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    const fetchPartnerStatus = async () => {
+      try {
+        const response = await fetch("/api/partners/profile");
+        const data = await response.json();
+        if (response.ok) {
+          setIsApproved(data.partner.status === "approved");
+        }
+      } catch (error) {
+        console.error("Error fetching partner status:", error);
+      }
+    };
+
+    fetchPartnerStatus();
+  }, []);
   
-  const items = [
+  const allItems = [
     {
       title: t("dashboard"),
       href: (locale: string) => `/${locale}/partners/dashboard`,
       icon: LayoutDashboard,
+      showAlways: false,
     },
     {
-      title: t("my-rides"),
+      title: t("rides"),
       href: (locale: string) => `/${locale}/partners/rides`,
       icon: Car,
+      showAlways: false,
+    },
+    {
+      title: t("history"),
+      href: (locale: string) => `/${locale}/partners/history`,
+      icon: History,
+      showAlways: false,
+    },
+        {
+      title: t("account"),
+      href: (locale: string) => `/${locale}/partners/account`,
+      icon: User,
+      showAlways: true,
     },
   ];
+
+  // Filter items based on approval status
+  const items = isApproved === null 
+    ? [] // Loading
+    : isApproved 
+      ? allItems // Show all items if approved
+      : allItems.filter(item => item.showAlways); // Show only account if not approved
 
   return (
     <Sidebar className="border-r-2 border-border/50">

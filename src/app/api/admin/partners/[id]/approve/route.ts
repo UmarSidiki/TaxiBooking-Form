@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth";
 import { connectDB } from "@/lib/mongoose";
 import Partner from "@/models/Partner";
 import { authOptions } from "@/lib/auth/options";
+import { sendPartnerApprovalEmail } from "@/controllers/email/PartnerNotification";
 
 export async function PATCH(
   request: NextRequest,
@@ -28,8 +29,28 @@ export async function PATCH(
     partner.approvedAt = new Date();
     partner.approvedBy = session.user.id;
     partner.rejectionReason = undefined;
+    partner.suspendedAt = undefined;
+    partner.suspendedBy = undefined;
+    partner.scheduledDeletionAt = undefined;
+
+    // Approve all documents when partner is approved
+    if (partner.documents && partner.documents.length > 0) {
+      partner.documents.forEach((doc: any) => {
+        if (doc.status === "pending") {
+          doc.status = "approved";
+        }
+      });
+    }
 
     await partner.save();
+
+    // Send approval email (don't wait for it)
+    sendPartnerApprovalEmail({
+      name: partner.name,
+      email: partner.email,
+    }).catch((error) => {
+      console.error("Failed to send approval email:", error);
+    });
 
     return NextResponse.json(
       { message: "Partner approved successfully", partner },

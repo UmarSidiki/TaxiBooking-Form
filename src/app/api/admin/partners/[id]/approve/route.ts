@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { connectDB } from "@/lib/mongoose";
 import Partner from "@/models/Partner";
+import { IPartnerDocument } from "@/models/Partner";
 import { authOptions } from "@/lib/auth/options";
 import { sendPartnerApprovalEmail } from "@/controllers/email/PartnerNotification";
 
@@ -35,7 +36,7 @@ export async function PATCH(
 
     // Approve all documents when partner is approved
     if (partner.documents && partner.documents.length > 0) {
-      partner.documents.forEach((doc: any) => {
+      partner.documents.forEach((doc: IPartnerDocument) => {
         if (doc.status === "pending") {
           doc.status = "approved";
         }

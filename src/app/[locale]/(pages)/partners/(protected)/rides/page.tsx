@@ -89,8 +89,8 @@ export default function PartnerRidesPage() {
       );
     }
 
-    const bookingDate = new Date(booking.date);
     const now = new Date();
+    const bookingDate = new Date(booking.date);
 
     if (bookingDate < now) {
       return (

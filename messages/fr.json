@@ -476,7 +476,15 @@
       "trip": "Voyage",
       "trip-status": "Statut du voyage",
       "vehicle": "Véhicule",
-      "warning-this-action-cannot-be-undone": "Attention : cette action est irréversible"
+      "warning-this-action-cannot-be-undone": "Attention : cette action est irréversible",
+      "assign-partner": "Attribuer un partenaire :",
+      "assigned-partner": "Partenaire assigné :",
+      "change-partner": "Changer de partenaire",
+      "failed-to-assign-partner": "Échec de l'attribution du partenaire",
+      "partner-assigned-successfully": "Partenaire attribué avec succès",
+      "partner-reassigned-successfully": "Partenaire réaffecté avec succès",
+      "reassign-partner": "Réaffecter le partenaire :",
+      "select-partner": "Sélectionnez un partenaire"
     },
     "Settings": {
       "a-custom-thank-you-page-on-your-site": "• Une page de remerciement personnalisée sur votre site",

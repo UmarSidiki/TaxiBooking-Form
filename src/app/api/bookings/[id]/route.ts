@@ -7,6 +7,7 @@ import { sendOrderCancellationEmail } from "@/controllers/email/OrderCancellatio
 import { sendRideAssignmentEmail } from "@/controllers/email/RideAssignment";
 import { sendRideCancellationEmail } from "@/controllers/email/RideCancellation";
 import Driver from "@/models/Driver";
+import Partner from "@/models/Partner";
 
 // Helper function to process Stripe refund
 async function processStripeRefund(
@@ -167,7 +168,7 @@ export async function PATCH(
       );
     }
 
-    const supportedActions = new Set(["cancel", "complete", "assign"]);
+    const supportedActions = new Set(["cancel", "complete", "assign", "assignpartner"]);
     if (!supportedActions.has(rawAction)) {
       return NextResponse.json(
         { success: false, message: `Unsupported action: ${rawAction}` },
@@ -206,6 +207,7 @@ export async function PATCH(
 
     // Check if this is a reassignment (for email sending)
     const isReassignment = rawAction === "assign" && booking.assignedDriver && booking.assignedDriver._id !== body.driverId;
+    const isPartnerReassignment = rawAction === "assignpartner" && booking.assignedPartner && booking.assignedPartner._id !== body.partnerId;
 
     // Handle different actions
     if (rawAction === "cancel") {
@@ -268,6 +270,40 @@ export async function PATCH(
 
       // Reset assignment email sent flag for new assignment
       updateData.assignmentEmailSent = false;
+    } else if (rawAction === "assignpartner") {
+      const partnerId = body.partnerId;
+      if (!partnerId) {
+        return NextResponse.json(
+          { success: false, message: "Partner ID is required for assignment" },
+          { status: 400 }
+        );
+      }
+
+      // Fetch partner details
+      const partner = await Partner.findById(partnerId);
+      if (!partner) {
+        return NextResponse.json(
+          { success: false, message: "Partner not found" },
+          { status: 404 }
+        );
+      }
+
+      // Check if partner is approved
+      if (partner.status !== "approved") {
+        return NextResponse.json(
+          { success: false, message: "Partner must be approved to receive assignments" },
+          { status: 400 }
+        );
+      }
+
+      updateData.assignedPartner = {
+        _id: partner._id.toString(),
+        name: partner.name,
+        email: partner.email,
+      };
+
+      // Reset assignment email sent flag for new assignment
+      updateData.assignmentEmailSent = false;
     }
     
     // Update booking
@@ -296,6 +332,48 @@ export async function PATCH(
         }
       } catch (emailError) {
         console.error("Error sending cancellation email:", emailError);
+        // Continue with the response even if email fails
+      }
+    }
+
+    // Send cancellation email to old partner if this is a partner reassignment
+    if (rawAction === "assignpartner" && isPartnerReassignment && booking.assignedPartner) {
+      try {
+        const cancellationPayload = {
+          tripId: updatedBooking.tripId,
+          pickup: updatedBooking.pickup,
+          dropoff: updatedBooking.dropoff || 'N/A',
+          stops: updatedBooking.stops || [],
+          tripType: updatedBooking.tripType,
+          date: updatedBooking.date,
+          time: updatedBooking.time,
+          returnDate: updatedBooking.returnDate,
+          returnTime: updatedBooking.returnTime,
+          passengers: updatedBooking.passengers,
+          selectedVehicle: updatedBooking.selectedVehicle,
+          vehicleDetails: updatedBooking.vehicleDetails || { name: 'N/A', price: '0', seats: '4' },
+          childSeats: updatedBooking.childSeats,
+          babySeats: updatedBooking.babySeats,
+          notes: updatedBooking.notes,
+          firstName: updatedBooking.firstName,
+          lastName: updatedBooking.lastName,
+          email: updatedBooking.email,
+          phone: updatedBooking.phone,
+          totalAmount: typeof updatedBooking.totalAmount === "number" ? updatedBooking.totalAmount : 0,
+          paymentMethod: updatedBooking.paymentMethod,
+          paymentStatus: updatedBooking.paymentStatus,
+          flightNumber: updatedBooking.flightNumber,
+          driverName: booking.assignedPartner.name,
+          driverEmail: booking.assignedPartner.email,
+        };
+
+        const emailSent = await sendRideCancellationEmail(cancellationPayload);
+
+        if (!emailSent) {
+          console.error("Failed to send cancellation email to old partner:", booking.assignedPartner.email);
+        }
+      } catch (emailError) {
+        console.error("Error sending cancellation email to old partner:", emailError);
         // Continue with the response even if email fails
       }
     }
@@ -338,6 +416,51 @@ export async function PATCH(
         }
       } catch (emailError) {
         console.error("Error sending cancellation email to old driver:", emailError);
+        // Continue with the response even if email fails
+      }
+    }
+
+    // Send assignment email to partner if applicable
+    if (rawAction === "assignpartner" && updatedBooking.assignedPartner && !updatedBooking.assignmentEmailSent) {
+      try {
+        const assignmentPayload = {
+          tripId: updatedBooking.tripId,
+          pickup: updatedBooking.pickup,
+          dropoff: updatedBooking.dropoff || 'N/A',
+          stops: updatedBooking.stops || [],
+          tripType: updatedBooking.tripType,
+          date: updatedBooking.date,
+          time: updatedBooking.time,
+          returnDate: updatedBooking.returnDate,
+          returnTime: updatedBooking.returnTime,
+          passengers: updatedBooking.passengers,
+          selectedVehicle: updatedBooking.selectedVehicle,
+          vehicleDetails: updatedBooking.vehicleDetails || { name: 'N/A', price: '0', seats: '4' },
+          childSeats: updatedBooking.childSeats,
+          babySeats: updatedBooking.babySeats,
+          notes: updatedBooking.notes,
+          firstName: updatedBooking.firstName,
+          lastName: updatedBooking.lastName,
+          email: updatedBooking.email,
+          phone: updatedBooking.phone,
+          totalAmount: typeof updatedBooking.totalAmount === "number" ? updatedBooking.totalAmount : 0,
+          paymentMethod: updatedBooking.paymentMethod,
+          paymentStatus: updatedBooking.paymentStatus,
+          flightNumber: updatedBooking.flightNumber,
+          driverName: updatedBooking.assignedPartner.name,
+          driverEmail: updatedBooking.assignedPartner.email,
+        };
+
+        const emailSent = await sendRideAssignmentEmail(assignmentPayload);
+
+        if (emailSent) {
+          // Mark that assignment email was sent
+          await Booking.findByIdAndUpdate(id, { assignmentEmailSent: true });
+        } else {
+          console.error("Failed to send assignment email to:", updatedBooking.assignedPartner.email);
+        }
+      } catch (emailError) {
+        console.error("Error sending assignment email:", emailError);
         // Continue with the response even if email fails
       }
     }

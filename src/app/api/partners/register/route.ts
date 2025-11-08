@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { hash } from "bcryptjs";
 import { connectDB } from "@/lib/mongoose";
 import Partner from "@/models/Partner";
+import { sendAdminPartnerRegistrationEmail } from "@/controllers/email/AdminPartnerNotification";
 
 export async function POST(request: NextRequest) {
   try {
@@ -52,6 +53,20 @@ export async function POST(request: NextRequest) {
     });
 
     console.log("✅ Partner registered successfully:", partner.email);
+
+    // Send notification email to admin
+    try {
+      await sendAdminPartnerRegistrationEmail({
+        name: partner.name,
+        email: partner.email,
+        phone: partner.phone,
+        city: partner.city,
+        country: partner.country,
+      });
+    } catch (emailError) {
+      console.error("Failed to send admin notification email:", emailError);
+      // Continue with registration even if email fails
+    }
 
     return NextResponse.json(
       {

@@ -89,10 +89,19 @@ export default function PartnerHistoryPage() {
       );
     }
 
+    const now = new Date();
+    const bookingDate = new Date(booking.date);
+
+    if (bookingDate < now) {
+      return (
+        <Badge variant="secondary" className="flex items-center gap-1">
+          {t("completed")}
+        </Badge>
+      );
+    }
+
     return (
-      <Badge variant="secondary" className="flex items-center gap-1">
-        {t("completed")}
-      </Badge>
+      <Badge className="flex items-center gap-1 bg-primary">{t("upcoming")}</Badge>
     );
   };
 

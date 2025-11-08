@@ -476,7 +476,15 @@
       "trip": "Reise",
       "trip-status": "Reisestatus",
       "vehicle": "Fahrzeug",
-      "warning-this-action-cannot-be-undone": "Warnung: Diese Aktion kann nicht rückgängig gemacht werden"
+      "warning-this-action-cannot-be-undone": "Warnung: Diese Aktion kann nicht rückgängig gemacht werden",
+      "assign-partner": "Partner zuweisen:",
+      "assigned-partner": "Zugewiesener Partner:",
+      "change-partner": "Partner wechseln",
+      "failed-to-assign-partner": "Partner konnte nicht zugewiesen werden",
+      "partner-assigned-successfully": "Partner erfolgreich zugewiesen",
+      "partner-reassigned-successfully": "Partner erfolgreich neu zugewiesen",
+      "reassign-partner": "Partner neu zuweisen:",
+      "select-partner": "Wählen Sie Partner aus"
     },
     "Settings": {
       "a-custom-thank-you-page-on-your-site": "• Eine benutzerdefinierte Dankesseite auf Ihrer Website",

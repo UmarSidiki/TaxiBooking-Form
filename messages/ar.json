@@ -247,7 +247,15 @@
       "trip": "رحلة",
       "trip-status": "حالة الرحلة",
       "vehicle": "عربة",
-      "warning-this-action-cannot-be-undone": "تحذير: لا يمكن التراجع عن هذا الإجراء"
+      "warning-this-action-cannot-be-undone": "تحذير: لا يمكن التراجع عن هذا الإجراء",
+      "assign-partner": "تعيين شريك:",
+      "assigned-partner": "الشريك المعين:",
+      "change-partner": "تغيير الشريك",
+      "failed-to-assign-partner": "فشل تعيين الشريك",
+      "partner-assigned-successfully": "تم تعيين الشريك بنجاح",
+      "partner-reassigned-successfully": "تمت إعادة تعيين الشريك بنجاح",
+      "reassign-partner": "إعادة تعيين الشريك:",
+      "select-partner": "حدد الشريك"
     },
     "Settings": {
       "a-custom-thank-you-page-on-your-site": "• صفحة شكر مخصصة على موقعك",

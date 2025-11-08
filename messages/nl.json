@@ -247,7 +247,15 @@
       "trip": "Reis",
       "trip-status": "Reisstatus",
       "vehicle": "Voertuig",
-      "warning-this-action-cannot-be-undone": "Waarschuwing: deze actie kan niet ongedaan worden gemaakt"
+      "warning-this-action-cannot-be-undone": "Waarschuwing: deze actie kan niet ongedaan worden gemaakt",
+      "assign-partner": "Partner toewijzen:",
+      "assigned-partner": "Toegewezen partner:",
+      "change-partner": "Partner wijzigen",
+      "failed-to-assign-partner": "Kan partner niet toewijzen",
+      "partner-assigned-successfully": "Partner succesvol toegewezen",
+      "partner-reassigned-successfully": "Partner opnieuw toegewezen",
+      "reassign-partner": "Partner opnieuw toewijzen:",
+      "select-partner": "Selecteer Partner"
     },
     "Settings": {
       "a-custom-thank-you-page-on-your-site": "• Een aangepaste bedankpagina op uw site",

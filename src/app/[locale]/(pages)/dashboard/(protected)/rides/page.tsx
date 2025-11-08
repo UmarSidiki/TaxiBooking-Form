@@ -56,6 +56,8 @@ import {
 } from "lucide-react";
 import type { IBooking } from "@/models/Booking";
 import type { IDriver } from "@/models/Driver";
+import type { IPartner } from "@/models/Partner";
+import type { ISetting } from "@/models/Setting";
 import { apiGet, apiPatch } from "@/utils/api";
 import { DateRangePicker } from "@/components/ui/date-range-picker";
 import { DateRange } from "react-day-picker";
@@ -78,8 +80,11 @@ export default function RidesPage() {
   const [dateRange, setDateRange] = useState<DateRange | undefined>();
   const [showFilters, setShowFilters] = useState(false);
   const [drivers, setDrivers] = useState<IDriver[]>([]);
+  const [partners, setPartners] = useState<IPartner[]>([]);
   const [assigningId, setAssigningId] = useState<string | null>(null);
   const [sortBy, setSortBy] = useState("date-asc");
+  const [enableDrivers, setEnableDrivers] = useState(false);
+  const [enablePartners, setEnablePartners] = useState(false);
 
   const MapLine = ({ start, end }: { start: string; end: string }) => (
     <span className="flex items-center gap-1 truncate">
@@ -119,6 +124,33 @@ export default function RidesPage() {
       }
     } catch (error) {
       console.error("Error fetching drivers:", error);
+    }
+  }, []);
+
+  const fetchPartners = useCallback(async () => {
+    try {
+      const data = await apiGet<{ partners: IPartner[] }>(
+        "/api/admin/partners?status=approved"
+      );
+      if (data.partners) {
+        setPartners(data.partners);
+      }
+    } catch (error) {
+      console.error("Error fetching partners:", error);
+    }
+  }, []);
+
+  const fetchSettings = useCallback(async () => {
+    try {
+      const data = await apiGet<{ success: boolean; data: ISetting }>(
+        "/api/settings"
+      );
+      if (data.success) {
+        setEnableDrivers(data.data.enableDrivers ?? false);
+        setEnablePartners(data.data.enablePartners ?? false);
+      }
+    } catch (error) {
+      console.error("Error fetching settings:", error);
     }
   }, []);
 
@@ -206,7 +238,9 @@ export default function RidesPage() {
   useEffect(() => {
     fetchBookings();
     fetchDrivers();
-  }, [fetchBookings, fetchDrivers]);
+    fetchPartners();
+    fetchSettings();
+  }, [fetchBookings, fetchDrivers, fetchPartners, fetchSettings]);
 
   useEffect(() => {
     filterBookings();
@@ -280,6 +314,37 @@ export default function RidesPage() {
     } catch (error) {
       console.error("Error assigning driver:", error);
       alert(t('Dashboard.Rides.failed-to-assign-driver'));
+    } finally {
+      setAssigningId(null);
+    }
+  };
+
+  const handleAssignPartner = async (bookingId: string, partnerId: string) => {
+    setAssigningId(bookingId);
+    try {
+      const data = await apiPatch<{
+        success: boolean;
+        message: string;
+        data: IBooking;
+      }>(`/api/bookings/${bookingId}`, {
+        action: "assignpartner",
+        partnerId: partnerId,
+      });
+
+      if (data.success) {
+        // Update local state
+        setBookings((prev) =>
+          prev.map((b) => (b._id?.toString() === bookingId ? data.data : b))
+        );
+        // Reset edit mode
+        setSelectedBooking(null);
+        alert(data.data.assignedPartner && bookingId !== data.data.assignedPartner._id ? t('Dashboard.Rides.partner-reassigned-successfully') : t('Dashboard.Rides.partner-assigned-successfully'));
+      } else {
+        alert(t('Dashboard.Rides.assignment-failed-data-message', { 0: data.message }));
+      }
+    } catch (error) {
+      console.error("Error assigning partner:", error);
+      alert(t('Dashboard.Rides.failed-to-assign-partner'));
     } finally {
       setAssigningId(null);
     }
@@ -360,7 +425,9 @@ export default function RidesPage() {
 
   const BookingCard = ({ booking }: { booking: IBooking }) => {
     const [selectedDriver, setSelectedDriver] = useState<string>(booking.assignedDriver?._id || "");
+    const [selectedPartner, setSelectedPartner] = useState<string>(booking.assignedPartner?._id || "");
     const [isEditMode, setIsEditMode] = useState(false);
+    const [isPartnerEditMode, setIsPartnerEditMode] = useState(false);
 
     const getStatusColor = () => {
       if (booking.status === "canceled") return "destructive";
@@ -625,8 +692,8 @@ export default function RidesPage() {
               </div>
             </div>
 
-            {/* Driver Assignment Section - Only show for upcoming rides */}
-            {booking.status !== "canceled" && new Date(booking.date) >= new Date() && (
+            {/* Driver Assignment Section - Only show for upcoming rides and when driver feature is enabled */}
+            {enableDrivers && booking.status !== "canceled" && new Date(booking.date) >= new Date() && (
               <div className="border-t pt-3">
                 {booking.assignedDriver && !isEditMode ? (
                   <div className="bg-primary/10 border border-primary/20 rounded-lg p-3">
@@ -717,6 +784,111 @@ export default function RidesPage() {
                               onClick={() => {
                                 setIsEditMode(false);
                                 setSelectedDriver(booking.assignedDriver?._id || "");
+                              }}
+                              className="flex items-center gap-2"
+                            >
+                              {t('Dashboard.Rides.cancel')} </Button>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Partner Assignment Section - Only show for upcoming rides and when partner feature is enabled */}
+            {enablePartners && booking.status !== "canceled" && new Date(booking.date) >= new Date() && (
+              <div className="border-t pt-3">
+                {booking.assignedPartner && !isPartnerEditMode ? (
+                  <div className="bg-primary/10 border border-primary/20 rounded-lg p-3">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                      <div className="flex items-center gap-2">
+                        <Users className="w-4 h-4 text-primary" />
+                        <div>
+                          <span className="text-primary font-medium text-sm">
+                            {t('Dashboard.Rides.assigned-partner')} </span>
+                          <p className="text-primary font-medium">{booking.assignedPartner.name}</p>
+                          <p className="text-primary/70 text-xs">{booking.assignedPartner.email}</p>
+                        </div>
+                      </div>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setIsPartnerEditMode(true)}
+                        className="text-xs h-8 px-3 border-primary/30 text-primary hover:bg-primary/10"
+                      >
+                        <Edit className="w-3 h-3 mr-1" />
+                        {t('Dashboard.Rides.reassign')} </Button>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="bg-secondary/10 border border-secondary/20 rounded-lg p-3">
+                    <div className="flex flex-col gap-3">
+                      <div className="flex items-center gap-2">
+                        <Users className="w-4 h-4 text-secondary-foreground" />
+                        <span className="text-secondary-foreground font-medium text-sm">
+                          {booking.assignedPartner ? t('Dashboard.Rides.reassign-partner') : t('Dashboard.Rides.assign-partner')}
+                        </span>
+                      </div>
+
+                      <div className="flex flex-col sm:flex-row gap-2">
+                        <Select
+                          value={selectedPartner}
+                          onValueChange={setSelectedPartner}
+                        >
+                          <SelectTrigger className="w-full">
+                            <Users className="w-4 h-4 mr-2" />
+                            <SelectValue placeholder={booking.assignedPartner ? t('Dashboard.Rides.change-partner') : t('Dashboard.Rides.select-partner')} />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {partners.map((partner) => (
+                              <SelectItem
+                                key={partner._id?.toString()}
+                                value={partner._id?.toString() || ""}
+                              >
+                                {partner.name} ({partner.email})
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+
+                        <div className="flex gap-2">
+                          <Button
+                            onClick={() =>
+                              handleAssignPartner(
+                                booking._id?.toString() || "",
+                                selectedPartner
+                              )
+                            }
+                            disabled={
+                              !selectedPartner ||
+                              assigningId === booking._id?.toString() ||
+                              (booking.assignedPartner && selectedPartner === booking.assignedPartner._id)
+                            }
+                            size="sm"
+                            className="flex items-center gap-2 bg-primary hover:bg-primary/90"
+                          >
+                            {assigningId === booking._id ? (
+                              <>
+                                <Loader2 className="w-4 h-4 animate-spin" />
+                                {booking.assignedPartner ? "Reassigning..." : "Assigning..."}
+                              </>
+                            ) : (
+                              <>
+                                <Users className="w-4 h-4" />
+                                {booking.assignedPartner ? t('Dashboard.Rides.reassign') : t('Dashboard.Rides.assign')}
+                              </>
+                            )}
+                          </Button>
+
+                          {isPartnerEditMode && (
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => {
+                                setIsPartnerEditMode(false);
+                                setSelectedPartner(booking.assignedPartner?._id || "");
                               }}
                               className="flex items-center gap-2"
                             >

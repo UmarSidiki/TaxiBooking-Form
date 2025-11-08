@@ -396,20 +396,20 @@ export default function AdminPartnersPage() {
               {filteredPartners.map((partner) => (
                 <div
                   key={partner._id}
-                  className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors cursor-pointer"
+                  className="flex flex-col sm:flex-row sm:items-center gap-3 p-4 border rounded-lg hover:bg-muted/50 transition-colors cursor-pointer"
                   onClick={() => {
                     setSelectedPartner(partner);
                     setShowDetailsDialog(true);
                   }}
                 >
-                  <div className="flex-1">
+                  <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                      <div className="w-10 h-10 flex-shrink-0 rounded-full bg-primary/10 flex items-center justify-center">
                         <Users className="w-5 h-5 text-primary" />
                       </div>
-                      <div>
-                        <p className="font-semibold">{partner.name}</p>
-                        <p className="text-sm text-muted-foreground">
+                      <div className="min-w-0 flex-1">
+                        <p className="font-semibold truncate">{partner.name}</p>
+                        <p className="text-sm text-muted-foreground truncate">
                           {partner.email}
                         </p>
                         <p className="text-xs text-muted-foreground mt-1">
@@ -419,16 +419,16 @@ export default function AdminPartnersPage() {
                       </div>
                     </div>
                   </div>
-                  <div className="flex items-center gap-4">
-                    <div className="text-right hidden md:block">
+                  <div className="flex items-center justify-between sm:justify-end gap-3 sm:gap-4">
+                    <div className="text-left sm:text-right">
                       <p className="text-sm text-muted-foreground">{t("documents")}</p>
                       <p className="text-sm font-medium">
                         {partner.documents.length} {t("uploaded")}
                       </p>
                     </div>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 flex-shrink-0">
                       {getStatusBadge(partner.status)}
-                      <Button variant="ghost" size="sm">
+                      <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
                         <Eye className="w-4 h-4" />
                       </Button>
                     </div>
@@ -442,7 +442,7 @@ export default function AdminPartnersPage() {
 
       {/* Partner Details Dialog */}
       <Dialog open={showDetailsDialog} onOpenChange={setShowDetailsDialog}>
-        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto w-[95vw] sm:w-full">
           <DialogHeader>
             <DialogTitle>{t("partner-details")}</DialogTitle>
             <DialogDescription>
@@ -507,24 +507,25 @@ export default function AdminPartnersPage() {
                     {selectedPartner.documents.map((doc, index) => (
                       <div
                         key={index}
-                        className="flex items-center justify-between p-3 border rounded-lg hover:bg-muted/50 transition-colors"
+                        className="flex flex-col sm:flex-row sm:items-center gap-3 p-3 border rounded-lg hover:bg-muted/50 transition-colors"
                       >
-                        <div className="flex items-center gap-3 flex-1">
-                          <FileText className="w-5 h-5 text-primary" />
-                          <div className="flex-1">
-                            <p className="font-medium capitalize">
+                        <div className="flex items-center gap-3 flex-1 min-w-0">
+                          <FileText className="w-5 h-5 text-primary flex-shrink-0" />
+                          <div className="flex-1 min-w-0">
+                            <p className="font-medium capitalize truncate">
                               {doc.type.replace("_", " ")}
                             </p>
-                            <p className="text-sm text-muted-foreground">
+                            <p className="text-sm text-muted-foreground truncate">
                               {doc.fileName} • {(doc.fileSize / 1024).toFixed(0)} KB
                             </p>
                           </div>
                         </div>
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-2 flex-shrink-0">
                           {getDocumentStatusBadge(doc.status)}
                           <Button
                             variant="outline"
                             size="sm"
+                            className="h-8 w-8 p-0"
                             onClick={() => {
                               setSelectedDocument(doc);
                               setShowDocumentDialog(true);
@@ -552,13 +553,14 @@ export default function AdminPartnersPage() {
             </div>
           )}
 
-          <DialogFooter className="flex gap-2">
+          <DialogFooter className="flex flex-col sm:flex-row gap-2">
             {selectedPartner?.status === "pending" && (
               <>
                 <Button
                   variant="destructive"
                   onClick={() => setShowRejectDialog(true)}
                   disabled={processing}
+                  className="w-full sm:w-auto"
                 >
                   <XCircle className="w-4 h-4 mr-2" />
                   {t("reject")}
@@ -566,6 +568,7 @@ export default function AdminPartnersPage() {
                 <Button
                   onClick={() => handleApprove(selectedPartner._id)}
                   disabled={processing}
+                  className="w-full sm:w-auto"
                 >
                   {processing ? (
                     <>
@@ -586,6 +589,7 @@ export default function AdminPartnersPage() {
                 variant="destructive"
                 onClick={() => setShowSuspendDialog(true)}
                 disabled={processing}
+                className="w-full sm:w-auto"
               >
                 <XCircle className="w-4 h-4 mr-2" />
                 {t("suspend-partner")}
@@ -614,13 +618,14 @@ export default function AdminPartnersPage() {
             />
           </div>
 
-          <DialogFooter>
+          <DialogFooter className="flex flex-col sm:flex-row gap-2">
             <Button
               variant="outline"
               onClick={() => {
                 setShowRejectDialog(false);
                 setRejectionReason("");
               }}
+              className="w-full sm:w-auto"
             >
               {t("cancel")}
             </Button>
@@ -628,6 +633,7 @@ export default function AdminPartnersPage() {
               variant="destructive"
               onClick={handleReject}
               disabled={!rejectionReason.trim() || processing}
+              className="w-full sm:w-auto"
             >
               {processing ? (
                 <>
@@ -666,13 +672,14 @@ export default function AdminPartnersPage() {
             />
           </div>
 
-          <DialogFooter>
+          <DialogFooter className="flex flex-col sm:flex-row gap-2">
             <Button
               variant="outline"
               onClick={() => {
                 setShowSuspendDialog(false);
                 setSuspensionReason("");
               }}
+              className="w-full sm:w-auto"
             >
               {t("cancel")}
             </Button>
@@ -680,6 +687,7 @@ export default function AdminPartnersPage() {
               variant="destructive"
               onClick={handleSuspend}
               disabled={!suspensionReason.trim() || processing}
+              className="w-full sm:w-auto"
             >
               {processing ? (
                 <>
@@ -696,9 +704,9 @@ export default function AdminPartnersPage() {
 
       {/* Document Viewer Dialog */}
       <Dialog open={showDocumentDialog} onOpenChange={setShowDocumentDialog}>
-        <DialogContent className="max-w-4xl max-h-[90vh]">
-          <DialogHeader>
-            <DialogTitle>
+        <DialogContent className="max-w-6xl max-h-[95vh] w-[95vw] sm:w-full overflow-hidden flex flex-col">
+          <DialogHeader className="flex-shrink-0">
+            <DialogTitle className="text-base sm:text-lg truncate pr-8">
               {t("document-viewer-title", {
                 0: selectedDocument?.type.replace("_", " ").toUpperCase() || "",
                 1: selectedDocument?.fileName || ""
@@ -710,23 +718,24 @@ export default function AdminPartnersPage() {
           </DialogHeader>
 
           {selectedDocument && (
-            <div className="space-y-4">
-              <div className="border rounded-lg overflow-hidden bg-gray-50 dark:bg-gray-900 flex items-center justify-center min-h-[400px] max-h-[600px]">
+            <div className="space-y-4 overflow-y-auto flex-1 pr-2">
+              <div className="border rounded-lg overflow-auto bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
                 {selectedDocument.mimeType.startsWith("image/") ? (
-                  <div className="relative w-full h-[400px] md:h-[600px]">
-                    <Image
-                      src={selectedDocument.fileData}
-                      alt={selectedDocument.fileName}
-                      fill
-                      className="object-contain"
-                      sizes="(min-width: 768px) 600px, 400px"
-                      unoptimized
-                    />
+                  <div className="w-full p-4">
+                    <div className="relative w-full h-[70vh] mx-auto">
+                      <Image
+                        src={selectedDocument.fileData}
+                        alt={selectedDocument.fileName}
+                        fill
+                        className="object-contain"
+                        unoptimized
+                      />
+                    </div>
                   </div>
                 ) : selectedDocument.mimeType === "application/pdf" ? (
                   <iframe
                     src={selectedDocument.fileData}
-                    className="w-full h-[600px]"
+                    className="w-full h-[70vh] min-h-[500px]"
                     title={selectedDocument.fileName}
                   />
                 ) : (
@@ -751,13 +760,14 @@ export default function AdminPartnersPage() {
                 )}
               </div>
 
-              <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 p-3 bg-muted rounded-lg flex-shrink-0">
                 <div>
                   <p className="text-sm font-medium">{t("document-status")}</p>
                   <div className="mt-1">{getDocumentStatusBadge(selectedDocument.status)}</div>
                 </div>
                 <Button
                   variant="outline"
+                  className="w-full sm:w-auto"
                   onClick={() => {
                     const link = document.createElement("a");
                     link.href = selectedDocument.fileData;

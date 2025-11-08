@@ -447,15 +447,15 @@ export default function PartnerAccountPage() {
               {partner.documents.map((doc, index) => (
                 <div
                   key={index}
-                  className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors"
+                  className="flex flex-col sm:flex-row sm:items-center gap-3 p-4 border rounded-lg hover:bg-muted/50 transition-colors"
                 >
-                  <div className="flex items-center gap-3 flex-1">
-                    <FileText className="w-5 h-5 text-primary" />
-                    <div className="flex-1">
-                      <p className="font-medium capitalize">
+                  <div className="flex items-center gap-3 flex-1 min-w-0">
+                    <FileText className="w-5 h-5 text-primary flex-shrink-0" />
+                    <div className="flex-1 min-w-0">
+                      <p className="font-medium capitalize truncate">
                         {doc.type.replace("_", " ")}
                       </p>
-                      <p className="text-sm text-muted-foreground">
+                      <p className="text-sm text-muted-foreground truncate">
                         {doc.fileName}
                       </p>
                       <p className="text-xs text-muted-foreground mt-1">
@@ -470,7 +470,7 @@ export default function PartnerAccountPage() {
                       )}
                     </div>
                   </div>
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 flex-shrink-0">
                     {getStatusBadge(doc.status)}
                     <Button
                       variant="outline"

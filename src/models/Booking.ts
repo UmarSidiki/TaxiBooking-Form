@@ -45,6 +45,11 @@ export interface IBooking extends Document {
     name: string;
     email: string;
   };
+  assignedPartner?: {
+    _id: string;
+    name: string;
+    email: string;
+  };
   assignmentEmailSent?: boolean;
   createdAt: Date;
   updatedAt: Date;
@@ -99,6 +104,11 @@ const BookingSchema: Schema = new Schema({
   canceledAt: { type: Date },
   thankYouEmailSent: { type: Boolean, default: false },
   assignedDriver: {
+    _id: { type: String },
+    name: { type: String },
+    email: { type: String },
+  },
+  assignedPartner: {
     _id: { type: String },
     name: { type: String },
     email: { type: String },

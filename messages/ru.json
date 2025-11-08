@@ -247,7 +247,15 @@
       "trip": "Путешествие",
       "trip-status": "Статус поездки",
       "vehicle": "Транспортное средство",
-      "warning-this-action-cannot-be-undone": "Внимание: это действие невозможно отменить."
+      "warning-this-action-cannot-be-undone": "Внимание: это действие невозможно отменить.",
+      "assign-partner": "Назначить партнера:",
+      "assigned-partner": "Назначенный партнер:",
+      "change-partner": "Сменить партнера",
+      "failed-to-assign-partner": "Не удалось назначить партнера.",
+      "partner-assigned-successfully": "Партнер успешно назначен",
+      "partner-reassigned-successfully": "Партнер успешно переназначен",
+      "reassign-partner": "Переназначить партнера:",
+      "select-partner": "Выберите партнера"
     },
     "Settings": {
       "a-custom-thank-you-page-on-your-site": "• Пользовательская страница благодарности на вашем сайте.",

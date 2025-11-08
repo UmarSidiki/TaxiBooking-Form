@@ -424,7 +424,15 @@
       "trip": "Viaje",
       "trip-status": "Estado del viaje",
       "vehicle": "Vehículo",
-      "warning-this-action-cannot-be-undone": "Advertencia: esta acción no se puede deshacer"
+      "warning-this-action-cannot-be-undone": "Advertencia: esta acción no se puede deshacer",
+      "assign-partner": "Asignar socio:",
+      "assigned-partner": "Socio asignado:",
+      "change-partner": "Cambiar socio",
+      "failed-to-assign-partner": "No se pudo asignar socio",
+      "partner-assigned-successfully": "Socio asignado exitosamente",
+      "partner-reassigned-successfully": "Socio reasignado exitosamente",
+      "reassign-partner": "Reasignar socio:",
+      "select-partner": "Seleccionar socio"
     },
     "Settings": {
       "a-custom-thank-you-page-on-your-site": "• Una página de agradecimiento personalizada en su sitio",

@@ -247,7 +247,15 @@
       "trip": "Viaggio",
       "trip-status": "Stato del viaggio",
       "vehicle": "Veicolo",
-      "warning-this-action-cannot-be-undone": "Avvertenza: questa azione non può essere annullata"
+      "warning-this-action-cannot-be-undone": "Avvertenza: questa azione non può essere annullata",
+      "assign-partner": "Assegna partner:",
+      "assigned-partner": "Partner assegnato:",
+      "change-partner": "Cambia compagno",
+      "failed-to-assign-partner": "Impossibile assegnare il partner",
+      "partner-assigned-successfully": "Partner assegnato correttamente",
+      "partner-reassigned-successfully": "Partner riassegnato correttamente",
+      "reassign-partner": "Riassegna partner:",
+      "select-partner": "Seleziona Partner"
     },
     "Settings": {
       "a-custom-thank-you-page-on-your-site": "• Una pagina di ringraziamento personalizzata sul tuo sito",

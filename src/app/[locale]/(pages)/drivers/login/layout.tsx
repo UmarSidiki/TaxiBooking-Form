@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
-import { connectDB } from "@/lib/mongoose";
-import Setting from "@/models/Setting";
+import { connectDB } from "@/lib/database";
+import { Setting } from "@/models/settings";
 
 export default async function DriverLoginLayout({
   children,

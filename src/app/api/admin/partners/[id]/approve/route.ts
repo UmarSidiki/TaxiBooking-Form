@@ -1,10 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
-import { connectDB } from "@/lib/mongoose";
-import Partner from "@/models/Partner";
-import { IPartnerDocument } from "@/models/Partner";
+import { connectDB } from "@/lib/database";
+import { Partner, type IPartnerDocument } from "@/models/partner";
 import { authOptions } from "@/lib/auth/options";
-import { sendPartnerApprovalEmail } from "@/controllers/email/PartnerNotification";
+import { sendPartnerApprovalEmail } from "@/controllers/email/partners";
 
 export async function PATCH(
   request: NextRequest,

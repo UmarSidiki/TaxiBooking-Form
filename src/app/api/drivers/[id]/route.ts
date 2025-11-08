@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { connectDB } from "@/lib/mongoose";
-import Driver from "@/models/Driver";
+import { connectDB } from "@/lib/database";
+import {Driver} from "@/models/driver";
 import bcrypt from "bcryptjs";
 
 // GET - Fetch a single driver

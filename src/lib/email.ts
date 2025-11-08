@@ -1,6 +1,6 @@
 import nodemailer from "nodemailer";
-import { connectDB } from "@/lib/mongoose";
-import Setting from "@/models/Setting";
+import { connectDB } from "@/lib/database";
+import { Setting } from "@/models/settings";
 
 export async function sendEmail(
   mailOptions: nodemailer.SendMailOptions

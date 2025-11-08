@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { connectDB } from "@/lib/mongoose";
-import User from "@/models/User";
-import PasswordReset from "@/models/PasswordReset";
+import { connectDB } from "@/lib/database";
+import { User } from "@/models/user";
+import { PasswordReset } from "@/models/user";
 import { sendPasswordResetOTP } from "@/controllers/email/PasswordResetOTP";
 
 // Generate 6-digit OTP

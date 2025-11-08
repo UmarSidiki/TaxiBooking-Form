@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import { apiFetch } from "@/utils/api";
-import type { ISetting } from "@/models/Setting";
+import type { ISetting } from "@/models/settings";
 import type { ThemeSettings } from "@/lib/theme-settings";
 
 interface ThemeContextType {

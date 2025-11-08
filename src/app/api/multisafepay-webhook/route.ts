@@ -1,11 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { connectDB } from '@/lib/mongoose';
-import Booking from '@/models/Booking';
-import PendingBooking from '@/models/PendingBooking';
-import Vehicle from '@/models/Vehicle';
-import Setting from '@/models/Setting';
-import { sendOrderConfirmationEmail } from '@/controllers/email/OrderConfirmation';
-import { sendOrderNotificationEmail } from '@/controllers/email/OrderNotification';
+import { connectDB } from '@/lib/database';
+import { Booking, PendingBooking } from '@/models/booking';
+import { Vehicle } from '@/models/vehicle';
+import { Setting } from '@/models/settings';
+import { sendOrderConfirmationEmail } from '@/controllers/email/bookings';
+import { sendOrderNotificationEmail } from '@/controllers/email/bookings';
 import { getCurrencySymbol } from '@/lib/utils';
 
 export async function POST(request: NextRequest) {

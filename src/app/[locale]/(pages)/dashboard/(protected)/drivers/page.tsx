@@ -23,7 +23,7 @@ import {
   CheckCircle,
   XCircle,
 } from "lucide-react";
-import type { IDriver } from "@/models/Driver";
+import type { IDriver } from "@/models/driver";
 import { apiGet, apiPost, apiPatch, apiDelete } from "@/utils/api";
 import { useTranslations } from "next-intl";
 

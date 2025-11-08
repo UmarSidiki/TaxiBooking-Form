@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Loader2, Save, Palette, CreditCard, MapPin, Mail, Settings as SettingsIcon } from "lucide-react";
-import type { ISetting } from "@/models/Setting";
+import type { ISetting } from "@/models/settings";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useTranslations } from "next-intl";
 import { apiGet, apiPost } from "@/utils/api";

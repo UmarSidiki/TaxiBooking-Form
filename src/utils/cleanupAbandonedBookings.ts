@@ -1,5 +1,5 @@
-import { connectDB } from "@/lib/mongoose";
-import Booking from "@/models/Booking";
+import { connectDB } from "@/lib/database";
+import { Booking } from "@/models/booking";
 
 /**
  * Cleanup abandoned MultiSafepay bookings

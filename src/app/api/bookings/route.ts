@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { connectDB } from "@/lib/mongoose";
-import Booking, { IBooking } from "@/models/Booking";
+import { connectDB } from "@/lib/database";
+import { Booking, type IBooking } from "@/models/booking";
 
 // GET all bookings
 export async function GET(request: NextRequest) {

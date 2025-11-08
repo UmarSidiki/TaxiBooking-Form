@@ -1,7 +1,7 @@
 import { sendEmail } from "@/lib/email";
-import { getMongoDb } from "@/lib/mongodb";
-import { connectDB } from "@/lib/mongoose";
-import Setting from "@/models/Setting";
+import { getMongoDb } from "@/lib/database/mongodb";
+import { connectDB } from "@/lib/database";
+import { Setting } from "@/models/settings";
 import { getCurrencySymbol } from "@/lib/utils";
 
 interface BookingData {

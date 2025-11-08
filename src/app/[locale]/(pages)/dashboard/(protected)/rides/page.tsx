@@ -54,10 +54,10 @@ import {
   AlertTriangle,
   Edit,
 } from "lucide-react";
-import type { IBooking } from "@/models/Booking";
-import type { IDriver } from "@/models/Driver";
-import type { IPartner } from "@/models/Partner";
-import type { ISetting } from "@/models/Setting";
+import type { IBooking } from "@/models/booking";
+import type { IDriver } from "@/models/driver";
+import type { IPartner } from "@/models/partner";
+import type { ISetting } from "@/models/settings";
 import { apiGet, apiPatch } from "@/utils/api";
 import { DateRangePicker } from "@/components/ui/date-range-picker";
 import { DateRange } from "react-day-picker";

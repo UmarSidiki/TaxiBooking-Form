@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import Setting from '@/models/Setting';
-import { connectDB } from '@/lib/mongoose';
-import PendingBooking from '@/models/PendingBooking';
+import { Setting } from '@/models/settings';
+import { connectDB } from '@/lib/database';
+import { PendingBooking } from '@/models/booking';
 import { v4 as uuidv4 } from 'uuid';
 
 export async function POST(request: NextRequest) {

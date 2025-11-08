@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { connectDB } from "@/lib/mongoose";
-import Vehicle, { IVehicle } from "@/models/Vehicle";
+import { connectDB } from "@/lib/database";
+import {Vehicle, IVehicle } from "@/models/vehicle";
 
 // GET - Fetch a single vehicle by ID
 export async function GET(

@@ -1,5 +1,5 @@
-import { connectDB } from "@/lib/mongoose";
-import Partner from "@/models/Partner";
+import { connectDB } from "@/lib/database";
+import { Partner } from "@/models/partner";
 
 export async function deleteSuspendedPartners() {
   try {

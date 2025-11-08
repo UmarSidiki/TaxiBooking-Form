@@ -21,7 +21,7 @@ import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import LogoutButton from "@/components/auth/LogoutButton";
 import { Separator } from "@/components/ui/separator";
 import { useTranslations } from "next-intl";
-import type { ISetting } from "@/models/Setting";
+import type { ISetting } from "@/models/settings";
 
 export function AppSidebar({ locale }: { locale: string }) {
   const t = useTranslations();

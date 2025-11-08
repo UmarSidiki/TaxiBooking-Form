@@ -1,7 +1,7 @@
 import { sendEmail } from "@/lib/email";
-import { connectDB } from "@/lib/mongoose";
-import Setting from "@/models/Setting";
-import User from "@/models/User";
+import { connectDB } from "@/lib/database";
+import { Setting } from "@/models/settings";
+import { User } from "@/models/user";
 
 interface PartnerRegistrationData {
   name: string;

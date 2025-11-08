@@ -1,6 +1,6 @@
-import { connectDB } from "@/lib/mongoose";
-import Booking from "@/models/Booking";
-import { sendOrderThankYouEmail } from "@/controllers/email/OrderThankYou";
+import { connectDB } from "@/lib/database";
+import { Booking } from "@/models/booking";
+import { sendOrderThankYouEmail } from "@/controllers/email/bookings";
 
 export async function sendThankYouEmails() {
   try {

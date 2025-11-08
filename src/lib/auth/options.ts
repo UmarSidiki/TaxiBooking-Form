@@ -3,11 +3,11 @@ import type { NextAuthOptions } from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials"
 import { compare, hash } from "bcryptjs"
 
-import clientPromise from "@/lib/mongodb"
-import { connectDB } from "@/lib/mongoose"
-import Driver from "@/models/Driver"
-import Partner from "@/models/Partner"
-import User from "@/models/User"
+import clientPromise from "@/lib/database/mongodb"
+import { connectDB } from "@/lib/database"
+import { Driver } from "@/models/driver"
+import { Partner } from "@/models/partner"
+import { User } from "@/models/user"
 
 const DEFAULT_ROLE = "admin"
 

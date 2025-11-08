@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { hash } from "bcryptjs";
-import { connectDB } from "@/lib/mongoose";
-import Partner from "@/models/Partner";
-import { sendAdminPartnerRegistrationEmail } from "@/controllers/email/AdminPartnerNotification";
+import { connectDB } from "@/lib/database";
+import { Partner } from "@/models/partner";
+import { sendAdminPartnerRegistrationEmail } from "@/controllers/email/admin";
 
 export async function POST(request: NextRequest) {
   try {

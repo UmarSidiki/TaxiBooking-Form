@@ -2,7 +2,7 @@ import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import {  Building2, CreditCard, Banknote } from "lucide-react";
-import { ISetting } from "@/models/Setting";
+import { ISetting } from "@/models/settings";
 import { useTranslations } from "next-intl";
 import { useCurrency } from "@/contexts/CurrencyContext";
 

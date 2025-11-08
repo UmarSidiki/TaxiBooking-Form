@@ -1,6 +1,5 @@
-import { connectDB } from "@/lib/mongoose";
-import Setting from "@/models/Setting";
-import type { ISetting } from "@/models/Setting";
+import { connectDB } from "@/lib/database";
+import { Setting, type ISetting } from "@/models/settings";
 
 export type ThemeSettings = Pick<ISetting, "primaryColor" | "secondaryColor" | "borderRadius"> &
   Partial<Omit<ISetting, "primaryColor" | "secondaryColor" | "borderRadius">>;

@@ -1,6 +1,6 @@
 import { sendEmail } from "@/lib/email";
-import { connectDB } from "@/lib/mongoose";
-import Setting from "@/models/Setting";
+import { connectDB } from "@/lib/database";
+import { Setting } from "@/models/settings";
 import { getCurrencySymbol } from "@/lib/utils";
 
 interface RideAssignmentData {

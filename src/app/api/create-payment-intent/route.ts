@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import Stripe from 'stripe';
-import Setting from '@/models/Setting';
-import { connectDB } from '@/lib/mongoose';
+import { Setting } from '@/models/settings';
+import { connectDB } from '@/lib/database';
 
 export async function POST(request: NextRequest) {
   try {

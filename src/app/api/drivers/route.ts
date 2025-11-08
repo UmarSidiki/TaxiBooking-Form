@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { connectDB } from "@/lib/mongoose";
-import Driver, { IDriver } from "@/models/Driver";
+import { connectDB } from "@/lib/database";
+import { Driver, type IDriver } from "@/models/driver";
 import bcrypt from "bcryptjs";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth/options";

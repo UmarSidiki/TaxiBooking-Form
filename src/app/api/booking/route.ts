@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
-import { sendOrderConfirmationEmail } from "@/controllers/email/OrderConfirmation";
-import { sendOrderNotificationEmail } from "@/controllers/email/OrderNotification";
-import Booking, { BookingInput } from "@/models/Booking";
+import { sendOrderConfirmationEmail } from "@/controllers/email/bookings";
+import { sendOrderNotificationEmail } from "@/controllers/email/bookings";
+import { Booking, type BookingInput } from "@/models/booking";
 import { v4 as uuidv4 } from "uuid";
-import { connectDB } from "@/lib/mongoose";
-import Vehicle, { IVehicle } from "@/models/Vehicle";
-import Setting from "@/models/Setting";
+import { connectDB } from "@/lib/database";
+import { Vehicle, type IVehicle } from "@/models/vehicle";
+import { Setting } from "@/models/settings";
 import { getCurrencySymbol } from "@/lib/utils";
 
 // Helper function to calculate booking total

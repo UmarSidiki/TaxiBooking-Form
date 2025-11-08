@@ -1,7 +1,7 @@
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { ISetting } from "@/models/Setting";
+import { ISetting } from "@/models/settings";
 import { useTranslations } from "next-intl";
 
 interface BookingTabProps {

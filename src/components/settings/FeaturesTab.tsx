@@ -3,7 +3,7 @@ import { useTranslations } from "next-intl";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 import { Users, Car } from "lucide-react";
-import type { ISetting } from "@/models/Setting";
+import type { ISetting } from "@/models/settings";
 
 // Simple Label component inline
 const Label = ({ htmlFor, className, children, ...props }: React.LabelHTMLAttributes<HTMLLabelElement>) => (

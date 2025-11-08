@@ -1,13 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
-import Booking, { IBooking } from "@/models/Booking";
+import { Booking, type IBooking } from "@/models/booking";
 import Stripe from "stripe";
-import Setting from "@/models/Setting";
-import { connectDB } from "@/lib/mongoose";
-import { sendOrderCancellationEmail } from "@/controllers/email/OrderCancellation";
-import { sendRideAssignmentEmail } from "@/controllers/email/RideAssignment";
-import { sendRideCancellationEmail } from "@/controllers/email/RideCancellation";
-import Driver from "@/models/Driver";
-import Partner from "@/models/Partner";
+import { Setting } from "@/models/settings";
+import { connectDB } from "@/lib/database";
+import { sendOrderCancellationEmail } from "@/controllers/email/bookings";
+import { sendRideAssignmentEmail } from "@/controllers/email/bookings";
+import { sendRideCancellationEmail } from "@/controllers/email/bookings";
+import { Driver } from "@/models/driver";
+import { Partner } from "@/models/partner";
 
 // Helper function to process Stripe refund
 async function processStripeRefund(
@@ -190,17 +190,17 @@ export async function PATCH(
         { status: 400 }
       );
     }
-    
+
     // Fetch the booking
     const booking = await Booking.findById(id);
-    
+
     if (!booking) {
       return NextResponse.json(
         { success: false, message: "Booking not found" },
         { status: 404 }
       );
     }
-    
+
     const updateData: Partial<IBooking> = {
       updatedAt: new Date(),
     };
@@ -305,7 +305,7 @@ export async function PATCH(
       // Reset assignment email sent flag for new assignment
       updateData.assignmentEmailSent = false;
     }
-    
+
     // Update booking
     const updatedBooking = await Booking.findByIdAndUpdate(
       id,
@@ -319,7 +319,7 @@ export async function PATCH(
         { status: 500 }
       );
     }
-    
+
     // Send cancellation email if applicable - NOW PROPERLY AWAITED
     if (rawAction === "cancel" && updatedBooking.email) {
       try {

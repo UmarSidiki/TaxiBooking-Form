@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { apiFetch } from "@/utils/api";
-import { IVehicle } from '@/models/Vehicle';
+import { IVehicle } from '@/models/vehicle';
 import { useSearchParams } from 'next/navigation';
 
 export interface FormData {

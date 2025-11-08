@@ -1,8 +1,8 @@
 import { type ReactNode } from "react";
 import { redirect } from "next/navigation";
 import { getServerSession } from "next-auth";
-import { connectDB } from "@/lib/mongoose";
-import Setting from "@/models/Setting";
+import { connectDB } from "@/lib/database";
+import { Setting } from "@/models/settings";
 
 import { authOptions } from "@/lib/auth/options";
 import LogoutButton from "@/components/auth/LogoutButton";

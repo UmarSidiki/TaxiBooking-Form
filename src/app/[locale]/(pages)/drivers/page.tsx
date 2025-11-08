@@ -1,8 +1,8 @@
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 import { authOptions } from "@/lib/auth/options";
-import { connectDB } from "@/lib/mongoose";
-import Setting from "@/models/Setting";
+import { connectDB } from "@/lib/database";
+import { Setting } from "@/models/settings";
 import DriverLoginForm from "./components/DriverLoginForm";
 
 export default async function DriversPage() {

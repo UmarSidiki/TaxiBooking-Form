@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { connectDB } from "@/lib/mongoose";
-import PasswordReset from "@/models/PasswordReset";
+import { connectDB } from "@/lib/database";
+import { PasswordReset } from "@/models/user";
 
 export async function POST(request: NextRequest) {
   try {

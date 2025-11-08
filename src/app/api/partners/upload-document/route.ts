@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
-import { connectDB } from "@/lib/mongoose";
-import Partner from "@/models/Partner";
+import { connectDB } from "@/lib/database";
+import { Partner } from "@/models/partner";
 import { authOptions } from "@/lib/auth/options";
 
 const MAX_FILE_SIZE = 1 * 1024 * 1024; // 1MB in bytes

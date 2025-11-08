@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Loader2, Mail } from "lucide-react";
-import { ISetting } from "@/models/Setting";
+import { ISetting } from "@/models/settings";
 import { apiPost } from "@/utils/api";
 import { useTranslations } from "next-intl";
 

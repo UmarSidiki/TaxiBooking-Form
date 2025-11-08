@@ -34,7 +34,7 @@ import {
   CheckCircle,
   XCircle,
 } from "lucide-react";
-import type { IVehicle } from "@/models/Vehicle";
+import type { IVehicle } from "@/models/vehicle";
 import Image from "next/image";
 import { apiGet, apiPost, apiPatch, apiDelete } from "@/utils/api";
 import { useCurrency } from "@/contexts/CurrencyContext";

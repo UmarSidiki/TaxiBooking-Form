@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { useTranslations, useLocale } from "next-intl";
 import { importLibrary, setOptions } from "@googlemaps/js-api-loader";
 import { useTheme } from "@/contexts/ThemeContext";
-import { ISetting } from "@/models/Setting";
+import { ISetting } from "@/models/settings";
 
 export function useStep3() {
   const t = useTranslations();

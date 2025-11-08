@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { connectDB } from "@/lib/mongoose";
-import Booking from "@/models/Booking";
+import { connectDB } from "@/lib/database";
+import { Booking } from "@/models/booking";
 
 export async function POST(request: NextRequest) {
   try {
@@ -17,7 +17,7 @@ export async function POST(request: NextRequest) {
 
     // Delete pending booking if exists (user cancelled before payment)
     if (orderId) {
-      const PendingBooking = (await import("@/models/PendingBooking")).default;
+      const { PendingBooking } = await import("@/models/booking");
       const pendingBooking = await PendingBooking.findOne({ orderId });
 
       if (pendingBooking) {

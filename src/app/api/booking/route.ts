@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { sendOrderConfirmationEmail } from "@/controllers/email/bookings";
 import { sendOrderNotificationEmail } from "@/controllers/email/bookings";
 import { Booking, type BookingInput } from "@/models/booking";
-import { v4 as uuidv4 } from "uuid";
+import { generateTripId } from "@/lib/generate-id";
 import { connectDB } from "@/lib/database";
 import { Vehicle, type IVehicle } from "@/models/vehicle";
 import { Setting } from "@/models/settings";
@@ -217,8 +217,8 @@ export async function POST(request: NextRequest) {
     // Calculate total amount
     const totalAmount = await calculateBookingTotal(formData, vehicle, request.nextUrl.origin);
 
-    // Generate unique trip ID
-    const tripId = uuidv4();
+    // Generate unique trip ID (short format: 5 characters)
+    const tripId = generateTripId();
 
     // Get currency for booking data
     const currency = await getCurrencyFromSettings();

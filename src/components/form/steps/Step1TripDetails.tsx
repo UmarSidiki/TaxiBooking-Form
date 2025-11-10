@@ -334,7 +334,7 @@ export default function Step1TripDetails() {
                   onClick={handleAddStop}
                   className="text-sm text-primary hover:text-primary/80 underline"
                 >
-                  Add a stop
+                  {t("embeddable.add-a-stop")}
                 </button>
               </div>
               <Input

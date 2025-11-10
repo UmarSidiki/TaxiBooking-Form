@@ -135,7 +135,7 @@ export default function Step3Payment() {
               <label className="text-sm font-medium">{t('Step3.baby-seats')}</label>
               <div className="flex items-center gap-3">
                 <span className="text-sm text-gray-600">
-                  {currencySymbol}{babySeatPrice} each
+                  {currencySymbol}{babySeatPrice} {t('Step3.each')}
                 </span>
                 <Input
                   type="number"

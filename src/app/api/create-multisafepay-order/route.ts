@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { Setting } from '@/models/settings';
 import { connectDB } from '@/lib/database';
 import { PendingBooking } from '@/models/booking';
-import { v4 as uuidv4 } from 'uuid';
+import { generateShortId } from '@/lib/generate-id';
 
 export async function POST(request: NextRequest) {
   try {
@@ -37,8 +37,8 @@ export async function POST(request: NextRequest) {
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || request.headers.get('origin') || '';
     const userLocale = locale || 'en';
     
-    // Generate unique order ID
-    const generatedOrderId = orderId || uuidv4();
+    // Generate unique order ID (short format: 5 characters)
+    const generatedOrderId = orderId || generateShortId(5);
     
     // Store pending booking data (will be converted to actual booking on successful payment)
     if (bookingData) {

@@ -178,7 +178,7 @@ export default function Step2VehicleSelection() {
                             <Users className="h-4 w-4 text-blue-600 flex-shrink-0" />
                             <span>
                               {t("Step2.passenger-allowance", {
-                                persons: vehicle.persons || "",
+                                0: vehicle.persons || "",
                               })}
                             </span>
                           </div>
@@ -193,7 +193,7 @@ export default function Step2VehicleSelection() {
                             </svg>
                             <span>
                               {t("Step2.baggage-allowance", {
-                                baggages: vehicle.baggages || "",
+                                0: vehicle.baggages || "",
                               })}
                             </span>
                           </div>

@@ -54,6 +54,12 @@ export async function POST(request: NextRequest) {
 
     console.log("✅ Partner registered successfully:", partner.email);
 
+    // Get base URL from request
+    const baseUrl = request.headers.get('origin') || 
+                    request.headers.get('referer')?.split('/').slice(0, 3).join('/') || 
+                    process.env.NEXT_PUBLIC_BASE_URL || 
+                    'http://localhost:3000';
+
     // Send notification email to admin
     try {
       await sendAdminPartnerRegistrationEmail({
@@ -62,6 +68,7 @@ export async function POST(request: NextRequest) {
         phone: partner.phone,
         city: partner.city,
         country: partner.country,
+        baseUrl: baseUrl,
       });
     } catch (emailError) {
       console.error("Failed to send admin notification email:", emailError);

@@ -107,7 +107,8 @@ async function createEmailData(
   formData: BookingInput,
   vehicle: IVehicle,
   tripId: string,
-  totalAmount: number
+  totalAmount: number,
+  baseUrl?: string
 ) {
   const currency = await getCurrencyFromSettings();
   const currencySymbol = getCurrencySymbol(currency);
@@ -140,6 +141,7 @@ async function createEmailData(
     totalAmount: formData.totalAmount || totalAmount,
     paymentMethod: formData.paymentMethod,
     paymentStatus: formData.paymentStatus,
+    baseUrl: baseUrl,
   };
 }
 
@@ -260,8 +262,14 @@ export async function POST(request: NextRequest) {
     // Save to database using Mongoose
     await Booking.create(bookingData);
 
+    // Get base URL for invoice link in email
+    const baseUrl = request.headers.get('origin') || 
+                    request.headers.get('referer')?.split('/').slice(0, 3).join('/') || 
+                    process.env.NEXT_PUBLIC_BASE_URL || 
+                    'http://localhost:3000';
+
     // Send emails - NOW PROPERLY AWAITED
-    const emailData = await createEmailData(formData, vehicle, tripId, totalAmount);
+    const emailData = await createEmailData(formData, vehicle, tripId, totalAmount, baseUrl);
 
     try {
       console.log("📧 Sending confirmation email to:", emailData.email);

@@ -31,6 +31,7 @@ interface BookingData {
   paymentMethod?: string;
   paymentStatus?: string;
   flightNumber?: string;
+  baseUrl?: string;
 }
 
 // Email validation utility
@@ -69,11 +70,19 @@ function generateEmailHTML(bookingData: BookingData, currency: string = 'EUR') {
       text-decoration: none; 
       border-radius: 5px; 
       margin-top: 15px;
+      margin-right: 10px;
       font-weight: bold;
       text-align: center;
     }
+    .cta-button.secondary {
+      background-color: #059669;
+    }
     .cta-button span {
       color: #ffffff !important;
+    }
+    .button-container {
+      text-align: center;
+      margin: 20px 0;
     }
   </style>
 </head>
@@ -182,9 +191,14 @@ function generateEmailHTML(bookingData: BookingData, currency: string = 'EUR') {
 
     <div class="section">
       <p>If you have any questions, please contact us.</p>
-      <a href="mailto:${process.env.NEXT_PUBLIC_SUPPORT_EMAIL}" class="cta-button">
-        <span>Contact Support</span>
-      </a>
+      <div class="button-container">
+        <a href="${bookingData.baseUrl || process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/invoice/${bookingData.tripId}" class="cta-button secondary">
+          <span>📄 Download Invoice PDF</span>
+        </a>
+        <a href="mailto:${process.env.NEXT_PUBLIC_SUPPORT_EMAIL}" class="cta-button">
+          <span>Contact Support</span>
+        </a>
+      </div>
     </div>
 
     <div class="footer">

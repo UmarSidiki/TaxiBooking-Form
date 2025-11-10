@@ -111,6 +111,12 @@ export async function POST(request: NextRequest) {
 
     console.log('✅ Booking created successfully:', order_id);
 
+    // Get base URL for invoice link
+    const baseUrl = request.headers.get('origin') || 
+                    request.headers.get('referer')?.split('/').slice(0, 3).join('/') || 
+                    process.env.NEXT_PUBLIC_BASE_URL || 
+                    'http://localhost:3000';
+
     // Prepare email data
     const emailData = {
       tripId: order_id,
@@ -140,6 +146,7 @@ export async function POST(request: NextRequest) {
       totalAmount: pendingBooking.bookingData.totalAmount,
       paymentMethod: 'multisafepay',
       paymentStatus: 'completed',
+      baseUrl: baseUrl,
     };
 
     // Send confirmation emails

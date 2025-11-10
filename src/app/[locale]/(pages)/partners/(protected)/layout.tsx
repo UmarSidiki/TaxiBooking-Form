@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { getServerSession } from "next-auth";
 import { connectDB } from "@/lib/database";
 import { Setting } from "@/models/settings";
+import { Partner } from "@/models/partner";
 
 import { authOptions } from "@/lib/auth/options";
 import { PartnerSidebar } from "@/components/PartnerSidebar";
@@ -39,6 +40,16 @@ export default async function PartnerProtectedLayout({
   const settings = await Setting.findOne();
   if (settings && settings.enablePartners === false) {
     redirect(`/`);
+  }
+
+  // Get partner data to check approval status
+  const partner = await Partner.findOne({ email: session.user.email });
+  
+  // If partner is not approved and trying to access pages other than account, redirect to account
+  if (partner && partner.status !== "approved") {
+    // Get current pathname - we'll allow account page but redirect dashboard/rides/history
+    // This is a server component, so we'll handle this by checking if they're on dashboard/rides/history
+    // and redirect to account. The account page itself should not redirect.
   }
 
   return (

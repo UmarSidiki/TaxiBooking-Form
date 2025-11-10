@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { authOptions } from "@/lib/auth/options";
 import { connectDB } from "@/lib/database";
 import { Setting } from "@/models/settings";
+import { Partner } from "@/models/partner";
 
 export default async function PartnersPage() {
   // Check if partners module is enabled
@@ -14,9 +15,16 @@ export default async function PartnersPage() {
 
   const session = await getServerSession(authOptions);
 
-  // If user is logged in and is a partner, redirect to partner dashboard
+  // If user is logged in and is a partner, check approval status
   if (session?.user && session.user.role === "partner") {
-    redirect(`/partners/dashboard`);
+    const partner = await Partner.findOne({ email: session.user.email });
+    
+    // Redirect based on approval status
+    if (partner && partner.status !== "approved") {
+      redirect(`/partners/account`);
+    } else {
+      redirect(`/partners/dashboard`);
+    }
   }
 
   // If user is logged in and is an admin, redirect to admin dashboard

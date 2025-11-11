@@ -428,7 +428,7 @@
         "suspended": "Suspended",
         "pending": "Pending",
         "upload-documents": "Upload Documents",
-        "upload-required-documents-for-verification": "Upload required documents for verification (PDF, JPG, PNG - Max 1MB)",
+        "upload-required-documents-for-verification": "Upload required documents for verification (PDF, JPG, PNG)",
         "document-type": "Document Type",
         "select-document-type": "Select Document Type",
         "drivers-license": "Driver's License",

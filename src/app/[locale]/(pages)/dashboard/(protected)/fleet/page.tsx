@@ -45,7 +45,6 @@ interface VehicleForm
 }
 
 const FleetPage = () => {
-  const { currencySymbol } = useCurrency();
   const [vehicles, setVehicles] = useState<IVehicle[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [showForm, setShowForm] = useState(false);
@@ -56,7 +55,7 @@ const FleetPage = () => {
   const [formData, setFormData] = useState<VehicleForm>({
     name: "",
     description: "",
-    image: "/placeholder-car.jpg",
+    image: "",
     persons: 4,
     baggages: 2,
     price: 0,
@@ -386,13 +385,12 @@ const FleetPage = () => {
           ) : (
             filteredVehicles.map((vehicle) => (
               <VehicleCard
-                key={vehicle._id}
-                vehicle={vehicle}
-                onEdit={handleEdit}
-                onDelete={handleDelete}
-                resolveImageSrc={resolveImageSrc}
-                currencySymbol={currencySymbol}
-              />
+                  key={vehicle._id}
+                  vehicle={vehicle}
+                  onEdit={handleEdit}
+                  onDelete={handleDelete}
+                  resolveImageSrc={resolveImageSrc}
+                />
             ))
           )}
         </div>
@@ -412,7 +410,6 @@ const VehicleCard = ({
   onEdit: (vehicle: IVehicle) => void;
   onDelete: (id: string) => void;
   resolveImageSrc: (src: string) => string;
-  currencySymbol: string;
 }) => {
   const t = useTranslations();
   return (
@@ -461,6 +458,7 @@ const VehicleCard = ({
               src={resolveImageSrc(vehicle.image)}
               alt={vehicle.name}
               fill
+              unoptimized
               className="object-cover"
             />
           </div>
@@ -606,11 +604,17 @@ const VehicleForm = ({
             {t("Dashboard.Fleet.image-url")}
           </label>
           <Input
-            placeholder="/images/car.jpg"
+            placeholder="Use any Custom Image URL or Select from Suggestions"
             value={formData.image}
-            onChange={(e) =>
-              setFormData({ ...formData, image: e.target.value })
-            }
+            onChange={(e) => {
+              setFormData({ ...formData, image: e.target.value });
+            }}
+          />
+
+          {/* Image suggestions fetched from public folder */}
+          <ImageSuggestions
+            currentValue={formData.image}
+            onSelect={(img) => setFormData({ ...formData, image: img })}
           />
         </div>
 
@@ -960,3 +964,64 @@ const VehicleForm = ({
 };
 
 export default FleetPage;
+
+// Small ImageSuggestions component (client-side) that queries the new API
+function ImageSuggestions({
+  currentValue,
+  onSelect,
+}: {
+  currentValue: string;
+  onSelect: (img: string) => void;
+}) {
+  const [images, setImages] = React.useState<string[]>([]);
+  const [query, setQuery] = React.useState(currentValue || "");
+
+  React.useEffect(() => setQuery(currentValue || ""), [currentValue]);
+
+  React.useEffect(() => {
+    let mounted = true;
+    (async () => {
+      try {
+        const res = await fetch("/api/fleet-images");
+        const json = await res.json();
+        if (!mounted) return;
+        if (json && json.success && Array.isArray(json.data)) {
+          setImages(json.data);
+        }
+      } catch (err) {
+        console.warn("Failed to fetch fleet images", err);
+      }
+    })();
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  const suggestions = React.useMemo(() => {
+    if (!query) return images.slice(0, 12);
+    return images.filter((i) => i.toLowerCase().includes(query.toLowerCase())).slice(0, 12);
+  }, [images, query]);
+
+  if (!images || images.length === 0) return null;
+
+  return (
+    <div className="mt-4">
+      <div className="grid grid-cols-4 sm:grid-cols-6 gap-2">
+        {suggestions.map((img) => (
+          <button
+            type="button"
+            key={img}
+            onClick={() => onSelect(img)}
+            className="group flex flex-col items-start text-left text-xs"
+            title={img}
+          >
+            <div className="relative w-full h-14 bg-muted rounded overflow-hidden">
+              <Image src={img} alt={img} fill unoptimized className="object-cover" />
+            </div>
+            <div className="truncate w-full mt-1 text-xxs text-muted-foreground">{img.replace(/^\//, "")}</div>
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}

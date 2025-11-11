@@ -257,7 +257,8 @@
         "upcoming-rides": "Prossime corse",
         "view-and-manage-your-assigned-rides": "Visualizza e gestisci le corse assegnate",
         "view-your-completed-and-canceled-rides": "Visualizza le tue corse completate e annullate",
-        "your-upcoming-scheduled-rides": "Le tue prossime corse programmate"
+        "your-upcoming-scheduled-rides": "Le tue prossime corse programmate",
+        "view-details": "Visualizza dettagli"
       },
       "Sidebar": {
         "account": "Account",

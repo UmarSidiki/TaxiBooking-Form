@@ -41,11 +41,18 @@ export async function PATCH(
 
     await partner.save();
 
+    // Get base URL from request headers
+    const baseUrl = request.headers.get('origin') || 
+                   request.headers.get('referer')?.split('/').slice(0, 3).join('/') || 
+                   process.env.NEXTAUTH_URL || 
+                   'http://localhost:3000';
+
     // Send rejection email (don't wait for it)
     sendPartnerRejectionEmail({
       name: partner.name,
       email: partner.email,
       rejectionReason: reason,
+      baseUrl: baseUrl,
     }).catch((error) => {
       console.error("Failed to send rejection email:", error);
     });

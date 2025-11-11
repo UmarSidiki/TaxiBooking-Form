@@ -4,8 +4,6 @@ import { connectDB } from "@/lib/database";
 import { Partner } from "@/models/partner";
 import { authOptions } from "@/lib/auth/options";
 
-const MAX_FILE_SIZE = 1 * 1024 * 1024; // 1MB in bytes
-
 export async function POST(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
@@ -23,14 +21,6 @@ export async function POST(request: NextRequest) {
           error:
             "Document type, file name, file data, mime type, and file size are required",
         },
-        { status: 400 }
-      );
-    }
-
-    // Validate file size
-    if (fileSize > MAX_FILE_SIZE) {
-      return NextResponse.json(
-        { error: "File size must be less than 1MB" },
         { status: 400 }
       );
     }

@@ -192,7 +192,7 @@ function generateEmailHTML(bookingData: BookingData, currency: string = 'EUR') {
     <div class="section">
       <p>If you have any questions, please contact us.</p>
       <div class="button-container">
-        <a href="${bookingData.baseUrl || process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/invoice/${bookingData.tripId}" class="cta-button secondary">
+        <a href="${bookingData.baseUrl}/api/invoice/${bookingData.tripId}" class="cta-button secondary">
           <span>📄 Download Invoice PDF</span>
         </a>
         <a href="mailto:${process.env.NEXT_PUBLIC_SUPPORT_EMAIL}" class="cta-button">

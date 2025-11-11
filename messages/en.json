@@ -435,6 +435,7 @@
         "insurance": "Insurance",
         "vehicle-registration": "Vehicle Registration",
         "id-card": "ID Card",
+        "vtc-card": "VTC card/cantonal authorisation",
         "other": "Other",
         "select-file": "Select File",
         "file-size-must-be-less-than-1mb": "File size must be less than 1MB",

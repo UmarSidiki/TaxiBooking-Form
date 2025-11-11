@@ -93,12 +93,6 @@ export default function PartnerAccountPage() {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
 
-      // Validate file size (1MB max)
-      if (file.size > 1 * 1024 * 1024) {
-        setError(t("file-size-must-be-less-than-1mb"));
-        return;
-      }
-
       // Validate file type
       const allowedTypes = [
         "application/pdf",
@@ -366,6 +360,7 @@ export default function PartnerAccountPage() {
                       {t("vehicle-registration")}
                     </SelectItem>
                     <SelectItem value="id">{t("id-card")}</SelectItem>
+                    <SelectItem value="vtc">{t("vtc-card")}</SelectItem>
                     <SelectItem value="other">{t("other")}</SelectItem>
                   </SelectContent>
                 </Select>

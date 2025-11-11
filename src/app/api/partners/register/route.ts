@@ -57,8 +57,7 @@ export async function POST(request: NextRequest) {
     // Get base URL from request
     const baseUrl = request.headers.get('origin') || 
                     request.headers.get('referer')?.split('/').slice(0, 3).join('/') || 
-                    process.env.NEXT_PUBLIC_BASE_URL || 
-                    'http://localhost:3000';
+                    process.env.NEXT_PUBLIC_BASE_URL;
 
     // Send notification email to admin
     try {

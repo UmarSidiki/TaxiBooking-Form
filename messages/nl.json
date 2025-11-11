@@ -225,7 +225,8 @@
         "your-account-has-been-approved": "Uw account is goedgekeurd! \nU kunt nu ritten accepteren.",
         "your-account-has-been-rejected": "Uw account is afgewezen. \nNeem contact op met support voor meer informatie.",
         "your-documents-are-currently-being-reviewed": "Uw documenten worden momenteel beoordeeld door ons beheerteam. \nU wordt op de hoogte gebracht zodra de beoordeling is voltooid.",
-        "your-partner-account-details": "Uw partneraccountdetails"
+        "your-partner-account-details": "Uw partneraccountdetails",
+        "vtc-card": "VTC-kaart/kantonale autorisatie"
       },
       "Rides": {
         "baby-seats": "Babyzitjes",
@@ -564,7 +565,8 @@
       "your-smtp-server-hostname": "Hostnaam van uw SMTP-server",
       "your-smtp-username-email": "Uw SMTP-gebruikersnaam/e-mail",
       "your-stripe": "Uw Stripe",
-      "your-stripe-0": "Uw Stripe"
+      "your-stripe-0": "Uw Stripe",
+      "httpss-yourwebsite-com-or-leave-empty-for-home-page": ""
     }
   },
   "Driver": {

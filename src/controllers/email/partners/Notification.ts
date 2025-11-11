@@ -6,6 +6,7 @@ interface PartnerData {
   name: string;
   email: string;
   rejectionReason?: string;
+  baseUrl?: string;
 }
 
 // Email validation utility
@@ -71,7 +72,7 @@ function generateApprovalEmailHTML(partnerData: PartnerData) {
     </div>
 
     <div style="text-align: center;">
-      <a href="${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/partners/login" class="cta-button">
+      <a href="${partnerData.baseUrl}/partners/login" class="cta-button">
         Go to Partner Dashboard
       </a>
     </div>
@@ -147,7 +148,7 @@ function generateRejectionEmailHTML(partnerData: PartnerData) {
     </div>
 
     <div style="text-align: center;">
-      <a href="${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/contact" class="cta-button">
+      <a href="${partnerData.baseUrl}/contact" class="cta-button">
         Contact Support
       </a>
     </div>
@@ -241,7 +242,7 @@ function generateSuspensionEmailHTML(partnerData: PartnerData) {
     </div>
 
     <div style="text-align: center;">
-      <a href="${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/contact" class="cta-button">
+      <a href="${partnerData.baseUrl}/contact" class="cta-button">
         Contact Support
       </a>
     </div>

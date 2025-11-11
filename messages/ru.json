@@ -225,7 +225,8 @@
         "your-account-has-been-approved": "Ваш аккаунт одобрен! \nТеперь вы можете начать принимать поездки.",
         "your-account-has-been-rejected": "Ваш аккаунт был отклонен. \nПожалуйста, свяжитесь со службой поддержки для получения дополнительной информации.",
         "your-documents-are-currently-being-reviewed": "Ваши документы в настоящее время рассматриваются нашей командой. \nВы будете уведомлены, как только проверка будет завершена.",
-        "your-partner-account-details": "Данные вашего партнерского аккаунта"
+        "your-partner-account-details": "Данные вашего партнерского аккаунта",
+        "vtc-card": "Карта VTC/кантональная авторизация"
       },
       "Rides": {
         "baby-seats": "Детские кресла (0-1)",
@@ -564,7 +565,8 @@
       "your-smtp-server-hostname": "Имя хоста вашего SMTP-сервера",
       "your-smtp-username-email": "Ваше имя пользователя/email SMTP",
       "your-stripe": "Ваш Stripe",
-      "your-stripe-0": "Ваш Stripe"
+      "your-stripe-0": "Ваш Stripe",
+      "https-yourwebsite-com-or-leave-empty-for-home-page": "https://yourwebsite.com или оставьте пустым для домашней страницы."
     }
   },
   "Driver": {

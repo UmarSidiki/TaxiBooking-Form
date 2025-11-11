@@ -225,7 +225,8 @@
         "your-account-has-been-approved": "تمت الموافقة على حسابك! \nيمكنك الآن البدء في قبول الرحلات.",
         "your-account-has-been-rejected": "لقد تم رفض حسابك. \nيرجى الاتصال بالدعم لمزيد من المعلومات.",
         "your-documents-are-currently-being-reviewed": "تتم حاليًا مراجعة مستنداتك بواسطة فريق الإدارة لدينا. \nسيتم إعلامك بمجرد اكتمال المراجعة.",
-        "your-partner-account-details": "تفاصيل حساب الشريك الخاص بك"
+        "your-partner-account-details": "تفاصيل حساب الشريك الخاص بك",
+        "vtc-card": "بطاقة VTC/تفويض الكانتونات"
       },
       "Rides": {
         "baby-seats": "مقاعد أطفال",
@@ -564,7 +565,8 @@
       "your-smtp-server-hostname": "اسم مضيف خادم SMTP الخاص بك",
       "your-smtp-username-email": "اسم مستخدم/البريد الإلكتروني لـ SMTP",
       "your-stripe": "Stripe الخاص بك",
-      "your-stripe-0": "Stripe الخاص بك"
+      "your-stripe-0": "Stripe الخاص بك",
+      "httpss-yourwebsite-com-or-leave-empty-for-home-page": ""
     }
   },
   "Driver": {

@@ -62,6 +62,7 @@ export default function PartnerAccountPage() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+  const [fileInputKey, setFileInputKey] = useState<number>(0);
 
   // Check if documents are under review
   const hasDocumentsUnderReview =
@@ -146,6 +147,7 @@ export default function PartnerAccountPage() {
             setSuccess(t("document-uploaded-successfully"));
             setSelectedFile(null);
             setDocumentType("");
+            setFileInputKey(prev => prev + 1); // Reset file input
             fetchPartnerData();
           } else {
             setError(data.error || t("failed-to-upload-document"));
@@ -369,6 +371,7 @@ export default function PartnerAccountPage() {
               <div className="space-y-2">
                 <label className="text-sm font-medium">{t("select-file")}</label>
                 <Input
+                  key={fileInputKey}
                   type="file"
                   accept=".pdf,.jpg,.jpeg,.png"
                   onChange={handleFileChange}

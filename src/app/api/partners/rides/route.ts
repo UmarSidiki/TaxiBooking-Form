@@ -22,8 +22,7 @@ export async function GET() {
 
     // Find all bookings assigned to this partner
     const bookings = await Booking.find({
-      "assignedDriver._id": session.user.id,
-      status: { $in: ["upcoming", "completed"] },
+      "assignedPartner._id": session.user.id,
     })
       .sort({ date: 1, time: 1 })
       .select("-__v");

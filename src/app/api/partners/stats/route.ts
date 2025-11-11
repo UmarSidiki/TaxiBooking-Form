@@ -19,7 +19,7 @@ export async function GET() {
 
     // Get all bookings assigned to this partner
     const allBookings = await Booking.find({
-      "assignedDriver._id": partnerId,
+      "assignedPartner._id": partnerId,
     });
 
     // Calculate stats

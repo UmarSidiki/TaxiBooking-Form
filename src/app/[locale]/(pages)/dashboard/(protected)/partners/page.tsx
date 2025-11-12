@@ -51,6 +51,13 @@ interface PartnerDocument {
   rejectionReason?: string;
 }
 
+interface Vehicle {
+  _id: string;
+  name: string;
+  category: string;
+  image?: string;
+}
+
 interface Partner {
   _id: string;
   name: string;
@@ -65,7 +72,17 @@ interface Partner {
   approvedAt?: string;
   rejectionReason?: string;
   notes?: string;
-  // Fleet fields
+  // Fleet fields - new structure for multiple fleets
+  fleetRequests?: Array<{
+    vehicleId: string;
+    status: "none" | "pending" | "approved" | "rejected";
+    requestedAt: string;
+    approvedAt?: string;
+    approvedBy?: string;
+    rejectionReason?: string;
+  }>;
+  currentFleet?: string;
+  // Keep backward compatibility
   requestedFleet?: string;
   fleetStatus: "none" | "pending" | "approved" | "rejected";
   fleetRequestedAt?: string;
@@ -77,6 +94,7 @@ export default function AdminPartnersPage() {
   const t = useTranslations("Dashboard.Admin.Partners");
   const [partners, setPartners] = useState<Partner[]>([]);
   const [filteredPartners, setFilteredPartners] = useState<Partner[]>([]);
+  const [vehicles, setVehicles] = useState<Vehicle[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedPartner, setSelectedPartner] = useState<Partner | null>(null);
   const [showDetailsDialog, setShowDetailsDialog] = useState(false);
@@ -84,10 +102,13 @@ export default function AdminPartnersPage() {
   const [showSuspendDialog, setShowSuspendDialog] = useState(false);
   const [showDocumentDialog, setShowDocumentDialog] = useState(false);
   const [showFleetRejectDialog, setShowFleetRejectDialog] = useState(false);
+  const [showFleetRemoveDialog, setShowFleetRemoveDialog] = useState(false);
+  const [showFleetDeleteDialog, setShowFleetDeleteDialog] = useState(false);
   const [selectedDocument, setSelectedDocument] = useState<PartnerDocument | null>(null);
   const [rejectionReason, setRejectionReason] = useState("");
   const [suspensionReason, setSuspensionReason] = useState("");
   const [fleetRejectionReason, setFleetRejectionReason] = useState("");
+  const [selectedVehicleId, setSelectedVehicleId] = useState<string | null>(null);
   const [processing, setProcessing] = useState(false);
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState("");
@@ -95,14 +116,23 @@ export default function AdminPartnersPage() {
   const fetchPartners = useCallback(async () => {
     try {
       setLoading(true);
-      const response = await fetch("/api/admin/partners");
-      const data = await response.json();
+      const [partnersResponse, vehiclesResponse] = await Promise.all([
+        fetch("/api/admin/partners"),
+        fetch("/api/vehicles")
+      ]);
+      
+      const partnersData = await partnersResponse.json();
+      const vehiclesData = await vehiclesResponse.json();
 
-      if (response.ok) {
-        setPartners(data.partners);
+      if (partnersResponse.ok) {
+        setPartners(partnersData.partners);
+      }
+      
+      if (vehiclesResponse.ok && vehiclesData.success) {
+        setVehicles(vehiclesData.data);
       }
     } catch (error) {
-      console.error("Error fetching partners:", error);
+      console.error("Error fetching data:", error);
     } finally {
       setLoading(false);
     }
@@ -206,11 +236,13 @@ export default function AdminPartnersPage() {
     }
   };
 
-  const handleFleetApprove = async (partnerId: string) => {
+  const handleFleetApprove = async (partnerId: string, vehicleId: string) => {
     setProcessing(true);
     try {
       const response = await fetch(`/api/admin/partners/${partnerId}/fleet/approve`, {
         method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ vehicleId }),
       });
 
       if (response.ok) {
@@ -224,7 +256,7 @@ export default function AdminPartnersPage() {
     }
   };
 
-  const handleFleetReject = async () => {
+  const handleFleetReject = async (vehicleId: string) => {
     if (!selectedPartner || !fleetRejectionReason.trim()) return;
 
     setProcessing(true);
@@ -234,7 +266,7 @@ export default function AdminPartnersPage() {
         {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ reason: fleetRejectionReason }),
+          body: JSON.stringify({ reason: fleetRejectionReason, vehicleId }),
         }
       );
 
@@ -243,9 +275,64 @@ export default function AdminPartnersPage() {
         setShowFleetRejectDialog(false);
         setShowDetailsDialog(false);
         setFleetRejectionReason("");
+        setSelectedVehicleId(null);
       }
     } catch (error) {
       console.error("Error rejecting fleet:", error);
+    } finally {
+      setProcessing(false);
+    }
+  };
+
+  const handleFleetRemove = async (vehicleId: string) => {
+    if (!selectedPartner) return;
+
+    setProcessing(true);
+    try {
+      const response = await fetch(
+        `/api/admin/partners/${selectedPartner._id}/fleet/remove`,
+        {
+          method: "DELETE",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ vehicleId }),
+        }
+      );
+
+      if (response.ok) {
+        fetchPartners();
+        setShowFleetRemoveDialog(false);
+        setShowDetailsDialog(false);
+        setSelectedVehicleId(null);
+      }
+    } catch (error) {
+      console.error("Error removing fleet:", error);
+    } finally {
+      setProcessing(false);
+    }
+  };
+
+  const handleFleetDelete = async () => {
+    if (!selectedPartner || !selectedVehicleId) return;
+
+    setProcessing(true);
+    try {
+      const response = await fetch(
+        `/api/admin/partners/${selectedPartner._id}/fleet/delete`,
+        {
+          method: "DELETE",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ vehicleId: selectedVehicleId }),
+        }
+      );
+
+      if (response.ok) {
+        fetchPartners();
+        setShowFleetDeleteDialog(false);
+        setShowDetailsDialog(false);
+        setSelectedVehicleId(null);
+      }
+    } catch (error) {
+      console.error("Error deleting fleet request:", error);
     } finally {
       setProcessing(false);
     }
@@ -613,45 +700,161 @@ export default function AdminPartnersPage() {
                   <Truck className="w-5 h-5" />
                   {t("fleet-information")}
                 </h3>
-                <div className="p-4 border rounded-lg bg-muted/30">
-                  <div className="flex items-center justify-between mb-2">
-                    <p className="text-sm font-medium">{t("fleet-status")}</p>
-                    <span className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium ${
-                      selectedPartner.fleetStatus === "approved"
-                        ? "bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300"
-                        : selectedPartner.fleetStatus === "pending"
-                        ? "bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-300"
-                        : selectedPartner.fleetStatus === "rejected"
-                        ? "bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300"
-                        : "bg-gray-100 text-gray-700 dark:bg-gray-900 dark:text-gray-300"
-                    }`}>
-                      {selectedPartner.fleetStatus === "approved" && <CheckCircle2 className="w-3 h-3" />}
-                      {selectedPartner.fleetStatus === "pending" && <Clock className="w-3 h-3" />}
-                      {selectedPartner.fleetStatus === "rejected" && <XCircle className="w-3 h-3" />}
-                      {selectedPartner.fleetStatus === "none" && <Truck className="w-3 h-3" />}
-                      {t(`fleet-${selectedPartner.fleetStatus}`)}
-                    </span>
+                
+                {(!selectedPartner.fleetRequests || selectedPartner.fleetRequests.length === 0) && 
+                 selectedPartner.fleetStatus === "none" ? (
+                  <div className="p-4 border rounded-lg bg-muted/30 text-center text-muted-foreground">
+                    <Truck className="w-8 h-8 mx-auto mb-2 opacity-50" />
+                    <p className="text-sm">{t("fleet-none")}</p>
                   </div>
-
-                  {selectedPartner.fleetRequestedAt && (
-                    <p className="text-sm text-muted-foreground">
-                      {t("requested-at")}: {new Date(selectedPartner.fleetRequestedAt).toLocaleString()}
-                    </p>
-                  )}
-
-                  {selectedPartner.fleetApprovedAt && (
-                    <p className="text-sm text-muted-foreground">
-                      {t("approved-at")}: {new Date(selectedPartner.fleetApprovedAt).toLocaleString()}
-                    </p>
-                  )}
-
-                  {selectedPartner.fleetStatus === "rejected" && selectedPartner.fleetRejectionReason && (
-                    <div className="mt-2 p-3 bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900 rounded">
-                      <p className="text-sm font-medium text-red-900 dark:text-red-100">{t("rejection-reason")}</p>
-                      <p className="text-sm text-red-700 dark:text-red-300">{selectedPartner.fleetRejectionReason}</p>
-                    </div>
-                  )}
-                </div>
+                ) : (
+                  <div className="space-y-3">
+                    {/* Show legacy single fleet if exists and no fleetRequests */}
+                    {selectedPartner.fleetStatus !== "none" && (!selectedPartner.fleetRequests || selectedPartner.fleetRequests.length === 0) && (
+                      <div className="p-4 border rounded-lg bg-muted/30">
+                        <div className="flex items-center justify-between mb-2">
+                          <p className="text-sm font-medium">
+                            {vehicles.find(v => v._id === selectedPartner.requestedFleet)?.name || selectedPartner.requestedFleet || "Unknown Vehicle"}
+                          </p>
+                          <span className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium ${
+                            selectedPartner.fleetStatus === "approved"
+                              ? "bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300"
+                              : selectedPartner.fleetStatus === "pending"
+                              ? "bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-300"
+                              : "bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300"
+                          }`}>
+                            {selectedPartner.fleetStatus === "approved" && <CheckCircle2 className="w-3 h-3" />}
+                            {selectedPartner.fleetStatus === "pending" && <Clock className="w-3 h-3" />}
+                            {selectedPartner.fleetStatus === "rejected" && <XCircle className="w-3 h-3" />}
+                            {t(`fleet-${selectedPartner.fleetStatus}`)}
+                          </span>
+                        </div>
+                        {selectedPartner.fleetRequestedAt && (
+                          <p className="text-xs text-muted-foreground">
+                            {t("requested-at")}: {new Date(selectedPartner.fleetRequestedAt).toLocaleString()}
+                          </p>
+                        )}
+                      </div>
+                    )}
+                    
+                    {/* Show all fleet requests */}
+                    {selectedPartner.fleetRequests?.map((request, index) => {
+                      const vehicle = vehicles.find(v => v._id === request.vehicleId);
+                      return (
+                        <div key={index} className="p-4 border rounded-lg bg-muted/30">
+                          <div className="flex items-start justify-between gap-3 mb-2">
+                            <div className="flex-1 min-w-0">
+                              <p className="font-medium">
+                                {vehicle?.name || request.vehicleId}
+                              </p>
+                              {vehicle?.category && (
+                                <p className="text-xs text-muted-foreground capitalize">
+                                  {vehicle.category}
+                                </p>
+                              )}
+                            </div>
+                            <span className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium flex-shrink-0 ${
+                              request.status === "approved"
+                                ? "bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300"
+                                : request.status === "pending"
+                                ? "bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-300"
+                                : "bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300"
+                            }`}>
+                              {request.status === "approved" && <CheckCircle2 className="w-3 h-3" />}
+                              {request.status === "pending" && <Clock className="w-3 h-3" />}
+                              {request.status === "rejected" && <XCircle className="w-3 h-3" />}
+                              {t(`fleet-${request.status}`)}
+                            </span>
+                          </div>
+                          
+                          <p className="text-xs text-muted-foreground mb-2">
+                            {t("requested-at")}: {new Date(request.requestedAt).toLocaleString()}
+                          </p>
+                          
+                          {request.approvedAt && (
+                            <p className="text-xs text-muted-foreground mb-2">
+                              {t("approved-at")}: {new Date(request.approvedAt).toLocaleString()}
+                            </p>
+                          )}
+                          
+                          {request.status === "rejected" && request.rejectionReason && (
+                            <div className="mt-2 p-2 bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900 rounded">
+                              <p className="text-xs font-medium text-red-900 dark:text-red-100">{t("rejection-reason")}</p>
+                              <p className="text-xs text-red-700 dark:text-red-300">{request.rejectionReason}</p>
+                            </div>
+                          )}
+                          
+                          {/* Action buttons for each request */}
+                          <div className="flex gap-2 mt-3">
+                            {request.status === "pending" && (
+                              <>
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => handleFleetApprove(selectedPartner._id, request.vehicleId)}
+                                  disabled={processing}
+                                  className="flex-1"
+                                >
+                                  {processing ? (
+                                    <div className="w-3 h-3 border-2 border-current border-t-transparent rounded-full animate-spin mr-1"></div>
+                                  ) : (
+                                    <CheckCircle2 className="w-3 h-3 mr-1" />
+                                  )}
+                                  {t("approve-fleet")}
+                                </Button>
+                                <Button
+                                  variant="destructive"
+                                  size="sm"
+                                  onClick={() => {
+                                    setSelectedVehicleId(request.vehicleId);
+                                    setShowFleetRejectDialog(true);
+                                  }}
+                                  disabled={processing}
+                                  className="flex-1"
+                                >
+                                  <XCircle className="w-3 h-3 mr-1" />
+                                  {t("reject-fleet")}
+                                </Button>
+                              </>
+                            )}
+                            
+                            {request.status === "approved" && (
+                              <Button
+                                variant="destructive"
+                                size="sm"
+                                onClick={() => {
+                                  setSelectedVehicleId(request.vehicleId);
+                                  setShowFleetRemoveDialog(true);
+                                }}
+                                disabled={processing}
+                                className="w-full"
+                              >
+                                <XCircle className="w-3 h-3 mr-1" />
+                                {t("remove-fleet")}
+                              </Button>
+                            )}
+                            
+                            {request.status === "rejected" && (
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => {
+                                  setSelectedVehicleId(request.vehicleId);
+                                  setShowFleetDeleteDialog(true);
+                                }}
+                                disabled={processing}
+                                className="w-full border-red-300 text-red-600 hover:bg-red-50"
+                              >
+                                <XCircle className="w-3 h-3 mr-1" />
+                                {t("delete-fleet-request")}
+                              </Button>
+                            )}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
               </div>
 
               {/* Rejection Reason */}
@@ -668,38 +871,6 @@ export default function AdminPartnersPage() {
           )}
 
           <DialogFooter className="flex flex-col sm:flex-row gap-2">
-            {/* Fleet Actions */}
-            {selectedPartner?.status === "approved" && selectedPartner.fleetStatus === "pending" && (
-              <div className="flex flex-col sm:flex-row gap-2 w-full">
-                <Button
-                  variant="destructive"
-                  onClick={() => setShowFleetRejectDialog(true)}
-                  disabled={processing}
-                  className="w-full sm:w-auto"
-                >
-                  <XCircle className="w-4 h-4 mr-2" />
-                  {t("reject-fleet")}
-                </Button>
-                <Button
-                  onClick={() => handleFleetApprove(selectedPartner._id)}
-                  disabled={processing}
-                  className="w-full sm:w-auto"
-                >
-                  {processing ? (
-                    <>
-                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
-                      {t("approving")}
-                    </>
-                  ) : (
-                    <>
-                      <CheckCircle2 className="w-4 h-4 mr-2" />
-                      {t("approve-fleet")}
-                    </>
-                  )}
-                </Button>
-              </div>
-            )}
-
             {/* Partner Status Actions */}
             {selectedPartner?.status === "pending" && (
               <>
@@ -971,7 +1142,7 @@ export default function AdminPartnersPage() {
             </Button>
             <Button
               variant="destructive"
-              onClick={handleFleetReject}
+              onClick={() => selectedVehicleId && handleFleetReject(selectedVehicleId)}
               disabled={!fleetRejectionReason.trim() || processing}
               className="w-full sm:w-auto"
             >
@@ -982,6 +1153,89 @@ export default function AdminPartnersPage() {
                 </>
               ) : (
                 t("confirm-fleet-rejection")
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Fleet Remove Dialog */}
+      <Dialog open={showFleetRemoveDialog} onOpenChange={setShowFleetRemoveDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{t("remove-fleet-assignment")}</DialogTitle>
+            <DialogDescription>
+              {t("confirm-remove-partner-fleet")}
+            </DialogDescription>
+          </DialogHeader>
+
+          <DialogFooter className="flex flex-col sm:flex-row gap-2">
+            <Button
+              variant="outline"
+              onClick={() => setShowFleetRemoveDialog(false)}
+              className="w-full sm:w-auto"
+            >
+              {t("cancel")}
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={() => selectedVehicleId && handleFleetRemove(selectedVehicleId)}
+              disabled={processing}
+              className="w-full sm:w-auto"
+            >
+              {processing ? (
+                <>
+                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
+                  {t("removing")}
+                </>
+              ) : (
+                <>
+                  <XCircle className="w-4 h-4 mr-2" />
+                  {t("remove-fleet")}
+                </>
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Fleet Delete Dialog */}
+      <Dialog open={showFleetDeleteDialog} onOpenChange={setShowFleetDeleteDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{t("delete-fleet-request")}</DialogTitle>
+            <DialogDescription>
+              {t("confirm-delete-fleet-request")}
+            </DialogDescription>
+          </DialogHeader>
+
+          <DialogFooter className="flex flex-col sm:flex-row gap-2">
+            <Button
+              variant="outline"
+              onClick={() => {
+                setShowFleetDeleteDialog(false);
+                setSelectedVehicleId(null);
+              }}
+              className="w-full sm:w-auto"
+            >
+              {t("cancel")}
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={handleFleetDelete}
+              disabled={processing}
+              className="w-full sm:w-auto"
+            >
+              {processing ? (
+                <>
+                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
+                  {t("deleting")}
+                </>
+              ) : (
+                <>
+                  <XCircle className="w-4 h-4 mr-2" />
+                  {t("delete")}
+                </>
               )}
             </Button>
           </DialogFooter>

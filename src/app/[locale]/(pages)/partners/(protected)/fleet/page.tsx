@@ -13,6 +13,7 @@ import {
   Clock,
   AlertCircle,
   Info,
+  X,
 } from "lucide-react";
 import type { IVehicle } from "@/models/vehicle";
 import Image from "next/image";
@@ -47,6 +48,8 @@ export default function PartnerFleetPage() {
   const [partner, setPartner] = useState<PartnerData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
+  const [cancellingVehicleId, setCancellingVehicleId] = useState<string | null>(null);
+  const [removingFleet, setRemovingFleet] = useState(false);
 
   const resolveImageSrc = (src: string) => {
     if (!src) return "/placeholder-car.jpg";
@@ -127,6 +130,58 @@ export default function PartnerFleetPage() {
       alert(t("fleet-request-failed"));
     } finally {
       setSubmitting(false);
+    }
+  };
+
+  const handleCancelRequest = async (vehicleId: string) => {
+    if (!partner || cancellingVehicleId) return;
+    
+    const confirmed = window.confirm(t("confirm-cancel-request"));
+    if (!confirmed) return;
+    
+    setCancellingVehicleId(vehicleId);
+    try {
+      const response = await fetch("/api/partners/fleet/cancel", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ vehicleId }),
+      });
+      const data = await response.json();
+      if (response.ok && data.success) {
+        await fetchData(); // Refresh all data
+      } else {
+        alert(data.message || t("cancel-request-failed"));
+      }
+    } catch (error) {
+      console.error("Error cancelling fleet request:", error);
+      alert(t("cancel-request-failed"));
+    } finally {
+      setCancellingVehicleId(null);
+    }
+  };
+
+  const handleRemoveFleet = async () => {
+    if (!partner || removingFleet) return;
+    
+    const confirmed = window.confirm(t("confirm-remove-fleet"));
+    if (!confirmed) return;
+    
+    setRemovingFleet(true);
+    try {
+      const response = await fetch("/api/partners/fleet/remove", {
+        method: "DELETE",
+      });
+      const data = await response.json();
+      if (response.ok && data.success) {
+        await fetchData(); // Refresh all data
+      } else {
+        alert(data.message || t("remove-fleet-failed"));
+      }
+    } catch (error) {
+      console.error("Error removing fleet:", error);
+      alert(t("remove-fleet-failed"));
+    } finally {
+      setRemovingFleet(false);
     }
   };
 
@@ -245,7 +300,7 @@ export default function PartnerFleetPage() {
             <h2 className="text-2xl font-semibold tracking-tight">{t("currently-assigned")}</h2>
             <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
               <Info className="w-3 h-3 mr-1" />
-              {t("can-request-change-below")}
+              {t("can-request-additional-vehicles")}
             </Badge>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
@@ -256,7 +311,41 @@ export default function PartnerFleetPage() {
               resolveImageSrc={resolveImageSrc}
               isRequested={false}
               hasApprovedFleet={true}
+              onRemove={handleRemoveFleet}
+              isRemoving={removingFleet}
             />
+          </div>
+          <Separator className="my-8" />
+        </div>
+      )}
+
+      {pendingRequests.length > 0 && (
+        <div>
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-2xl font-semibold tracking-tight">{t("pending-requests")}</h2>
+            <Badge variant="outline" className="bg-yellow-50 text-yellow-700 border-yellow-200">
+              <Clock className="w-3 h-3 mr-1" />
+              {t("awaiting-approval")}
+            </Badge>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {pendingRequests.map((request) => {
+              const vehicle = vehicles.find(v => v._id === request.vehicleId);
+              if (!vehicle) return null;
+              return (
+                <VehicleCard
+                  key={vehicle._id}
+                  vehicle={vehicle}
+                  isRequested
+                  isSubmitting={false}
+                  resolveImageSrc={resolveImageSrc}
+                  isApproved={false}
+                  hasApprovedFleet={!!approvedVehicle}
+                  onCancel={handleCancelRequest}
+                  isCancelling={cancellingVehicleId === vehicle._id}
+                />
+              );
+            })}
           </div>
           <Separator className="my-8" />
         </div>
@@ -305,6 +394,10 @@ const VehicleCard = ({
   isRequested,
   isApproved,
   hasApprovedFleet,
+  onCancel,
+  isCancelling,
+  onRemove,
+  isRemoving,
 }: {
   vehicle: IVehicle;
   onRequest?: (vehicleId: string) => void;
@@ -313,6 +406,10 @@ const VehicleCard = ({
   isRequested: boolean;
   isApproved: boolean;
   hasApprovedFleet?: boolean;
+  onCancel?: (vehicleId: string) => void;
+  isCancelling?: boolean;
+  onRemove?: () => void;
+  isRemoving?: boolean;
 }) => {
   const t = useTranslations("Dashboard.Partners.Fleet");
 
@@ -374,21 +471,57 @@ const VehicleCard = ({
                 {t("requesting")}
               </>
             ) : (
-              hasApprovedFleet ? t("request-fleet-change") : t("request-fleet")
+              hasApprovedFleet ? t("request-additional-fleet") : t("request-fleet")
             )}
           </Button>
         )}
         {isRequested && (
-          <Badge variant="outline" className="w-full justify-center py-2 bg-yellow-100 text-yellow-800 border-yellow-300">
-            <Clock className="w-4 h-4 mr-2" />
-            <span className="font-semibold">{t("requested")}</span>
-          </Badge>
+          <div className="flex gap-2 w-full">
+            <Badge variant="outline" className="flex-1 justify-center py-2 bg-yellow-100 text-yellow-800 border-yellow-300">
+              <Clock className="w-4 h-4 mr-2" />
+              <span className="font-semibold">{t("requested")}</span>
+            </Badge>
+            {onCancel && (
+              <Button
+                variant="destructive"
+                size="sm"
+                onClick={() => onCancel(vehicle._id!)}
+                disabled={isCancelling}
+                className="px-3"
+                title={t("cancel-request")}
+              >
+                {isCancelling ? (
+                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                ) : (
+                  <X className="w-4 h-4" />
+                )}
+              </Button>
+            )}
+          </div>
         )}
         {isApproved && (
-          <Badge variant="outline" className="w-full justify-center py-2 bg-green-100 text-green-800 border-green-300">
-            <CheckCircle className="w-4 h-4 mr-2" />
-            <span className="font-semibold">{t("currently-assigned")}</span>
-          </Badge>
+          <div className="flex gap-2 w-full">
+            <Badge variant="outline" className="flex-1 justify-center py-2 bg-green-100 text-green-800 border-green-300">
+              <CheckCircle className="w-4 h-4 mr-2" />
+              <span className="font-semibold">{t("currently-assigned")}</span>
+            </Badge>
+            {onRemove && (
+              <Button
+                variant="destructive"
+                size="sm"
+                onClick={onRemove}
+                disabled={isRemoving}
+                className="px-3"
+                title={t("remove-fleet")}
+              >
+                {isRemoving ? (
+                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                ) : (
+                  <X className="w-4 h-4" />
+                )}
+              </Button>
+            )}
+          </div>
         )}
       </CardFooter>
     </Card>

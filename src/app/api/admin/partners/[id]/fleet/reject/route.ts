@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { connectDB } from "@/lib/database";
-import Partner from "@/models/partner/Partner";
+import Partner, { type IFleetRequest } from "@/models/partner/Partner";
 import Vehicle from "@/models/vehicle/Vehicle";
 import { authOptions } from "@/lib/auth/options";
 import { sendFleetRejectionEmail } from "@/controllers/email/admin/FleetNotification";
@@ -21,11 +21,18 @@ export async function PATCH(
     }
 
     const { id: partnerId } = await params;
-    const { reason } = await request.json();
+    const { reason, vehicleId } = await request.json();
 
     if (!partnerId) {
       return NextResponse.json(
         { success: false, message: "Partner ID is required" },
+        { status: 400 }
+      );
+    }
+
+    if (!vehicleId) {
+      return NextResponse.json(
+        { success: false, message: "Vehicle ID is required" },
         { status: 400 }
       );
     }
@@ -49,18 +56,28 @@ export async function PATCH(
       );
     }
 
-    // Check if partner has a pending fleet request
-    if (partner.fleetStatus !== "pending") {
+    // Find the specific fleet request
+    const fleetRequest = partner.fleetRequests?.find(
+      (req: IFleetRequest) => req.vehicleId === vehicleId && req.status === "pending"
+    );
+
+    if (!fleetRequest) {
       return NextResponse.json(
-        { success: false, message: "Partner does not have a pending fleet request" },
+        { success: false, message: "No pending fleet request found for this vehicle" },
         { status: 400 }
       );
     }
 
     // Get vehicle info for email
-    const vehicle = await Vehicle.findById(partner.requestedFleet);
+    const vehicle = await Vehicle.findById(vehicleId);
 
-    // Update partner with rejected fleet
+    // Update the specific fleet request
+    fleetRequest.status = "rejected";
+    fleetRequest.rejectionReason = reason;
+    fleetRequest.approvedAt = new Date();
+    fleetRequest.approvedBy = session.user.email;
+
+    // Update backward compatibility fields
     partner.fleetStatus = "rejected";
     partner.fleetRejectionReason = reason;
     partner.fleetApprovedAt = new Date();

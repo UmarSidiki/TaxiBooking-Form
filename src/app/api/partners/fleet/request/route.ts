@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { connectDB } from "@/lib/database";
-import Partner from "@/models/partner/Partner";
+import Partner, { type IFleetRequest } from "@/models/partner/Partner";
 import Vehicle from "@/models/vehicle/Vehicle";
 import { authOptions } from "@/lib/auth/options";
 import { sendFleetRequestNotificationEmail } from "@/controllers/email/admin/FleetNotification";
@@ -46,47 +46,42 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Check if partner already has a pending fleet request
-    if (partner.fleetStatus === "pending") {
+    // Check if partner already has a pending fleet request for this vehicle
+    const existingRequest = partner.fleetRequests?.find(
+      (req: IFleetRequest) => req.vehicleId === vehicleId && req.status === "pending"
+    );
+    
+    if (existingRequest) {
       return NextResponse.json(
-        { success: false, message: "You already have a pending fleet request" },
+        { success: false, message: "You already have a pending request for this vehicle" },
         { status: 400 }
       );
     }
 
-    // Allow partners to request different vehicles even if they have approved assignments
-    // Reset the fleet status to pending for new requests
-    // if (partner.fleetStatus === "approved") {
-    //   return NextResponse.json(
-    //     { success: false, message: "You already have an approved fleet assignment" },
-    //     { status: 400 }
-    //   );
-    // }
-
-    // Verify vehicle exists
-    const vehicle = await Vehicle.findById(vehicleId);
-
-    if (!vehicle) {
-      return NextResponse.json(
-        { success: false, message: "Vehicle not found" },
-        { status: 404 }
-      );
+    // Initialize fleetRequests array if it doesn't exist
+    if (!partner.fleetRequests) {
+      partner.fleetRequests = [];
     }
 
-    // Update partner with fleet request
-    partner.requestedFleet = vehicleId;
-    partner.fleetStatus = "pending";
-    partner.fleetRequestedAt = new Date();
+    // Add new fleet request
+    partner.fleetRequests.push({
+      vehicleId,
+      status: "pending",
+      requestedAt: new Date(),
+    });
 
     await partner.save();
 
     // Send email notification to admin
     try {
+      // Fetch vehicle details for the email
+      const vehicle = await Vehicle.findById(vehicleId);
+      
       await sendFleetRequestNotificationEmail({
         partnerName: partner.name,
         partnerEmail: partner.email,
-        vehicleName: vehicle.name,
-        vehicleCategory: vehicle.category,
+        vehicleName: vehicle?.name || 'Unknown Vehicle',
+        vehicleCategory: vehicle?.category || 'Unknown',
         baseUrl: process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000",
       });
     } catch (emailError) {

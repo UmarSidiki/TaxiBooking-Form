@@ -336,7 +336,14 @@
         "you-can-now-accept-rides": "Vous pouvez désormais accepter des assignations de courses",
         "you-can-request-different-vehicle": "Vous pouvez demander un autre véhicule",
         "requesting": "Demander...",
-        "select-vehicle-to-request": "Sélectionnez un véhicule pour demander une affectation"
+        "select-vehicle-to-request": "Sélectionnez un véhicule pour demander une affectation",
+        "can-request-change-below": "Peut demander un changement ci-dessous",
+        "check-back-later": "Revenez plus tard pour connaître les véhicules disponibles",
+        "confirm-fleet-change-message": "Êtes-vous sûr de vouloir demander une flotte différente ? \nVotre attribution de flotte actuelle passera au statut en attente et vous ne pourrez pas accepter de courses tant que l'administrateur n'aura pas approuvé votre nouvelle demande.",
+        "no-description": "Aucune description disponible",
+        "request-fleet-change": "Demander un changement de flotte",
+        "already-requested-this-vehicle": "Vous avez déjà demandé ce véhicule. \nVeuillez attendre l'approbation de l'administrateur.",
+        "requested-vehicles": "Véhicules demandés :"
       }
     },
     "Rides": {

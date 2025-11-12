@@ -336,7 +336,14 @@
         "waiting-for-admin-approval": "Wachten op goedkeuring van de beheerder",
         "what-and-apos-s-included": "Wat is inbegrepen",
         "you-can-now-accept-rides": "U kunt nu ritopdrachten accepteren",
-        "you-can-request-different-vehicle": "U kunt een ander voertuig aanvragen"
+        "you-can-request-different-vehicle": "U kunt een ander voertuig aanvragen",
+        "can-request-change-below": "U kunt hieronder een wijziging aanvragen",
+        "check-back-later": "Kom later terug voor beschikbare voertuigen",
+        "confirm-fleet-change-message": "Weet u zeker dat u een ander wagenpark wilt aanvragen? \nUw huidige wagenparktoewijzing wordt gewijzigd in de status In behandeling en u kunt pas ritten accepteren als de beheerder uw nieuwe aanvraag goedkeurt.",
+        "no-description": "Geen beschrijving beschikbaar",
+        "request-fleet-change": "Vlootwijziging aanvragen",
+        "already-requested-this-vehicle": "U heeft dit voertuig al aangevraagd. \nWacht op goedkeuring van de beheerder.",
+        "requested-vehicles": "Gevraagde voertuigen:"
       }
     },
     "Rides": {

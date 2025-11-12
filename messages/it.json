@@ -336,7 +336,14 @@
         "waiting-for-admin-approval": "In attesa dell'approvazione dell'amministratore",
         "what-and-apos-s-included": "Cosa è incluso",
         "you-can-now-accept-rides": "Ora puoi accettare le assegnazioni di corse",
-        "you-can-request-different-vehicle": "Puoi richiedere un veicolo diverso"
+        "you-can-request-different-vehicle": "Puoi richiedere un veicolo diverso",
+        "can-request-change-below": "Puoi richiedere la modifica di seguito",
+        "check-back-later": "Controlla più tardi per verificare i veicoli disponibili",
+        "confirm-fleet-change-message": "Sei sicuro di voler richiedere una flotta diversa? \nLa tua attuale assegnazione alla flotta verrà modificata nello stato in sospeso e non potrai accettare corse finché l'amministratore non avrà approvato la tua nuova richiesta.",
+        "no-description": "Nessuna descrizione disponibile",
+        "request-fleet-change": "Richiedi cambio flotta",
+        "already-requested-this-vehicle": "Hai già richiesto questo veicolo. \nAttendi l'approvazione dell'amministratore.",
+        "requested-vehicles": "Veicoli richiesti:"
       }
     },
     "Rides": {

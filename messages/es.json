@@ -336,7 +336,14 @@
         "failed-to-load-partner-data": "No se pudieron cargar los datos del socio",
         "fleet-assigned": "Flota asignada",
         "fleet-management": "Gestión de flotas",
-        "rejected": "Rechazado"
+        "rejected": "Rechazado",
+        "can-request-change-below": "Puede solicitar el cambio a continuación",
+        "check-back-later": "Vuelve más tarde para ver los vehículos disponibles.",
+        "confirm-fleet-change-message": "¿Estás seguro de que quieres solicitar una flota diferente? \nLa asignación de tu flota actual cambiará al estado pendiente y no podrás aceptar viajes hasta que el administrador apruebe tu nueva solicitud.",
+        "no-description": "No hay descripción disponible",
+        "request-fleet-change": "Solicitar cambio de flota",
+        "already-requested-this-vehicle": "Ya has solicitado este vehículo. \nEspere la aprobación del administrador.",
+        "requested-vehicles": "Vehículos solicitados:"
       }
     },
     "Rides": {

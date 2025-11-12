@@ -18,6 +18,15 @@ export interface IPartnerDocument {
 
 export type FleetStatus = "none" | "pending" | "approved" | "rejected";
 
+export interface IFleetRequest {
+  vehicleId: string;
+  status: FleetStatus;
+  requestedAt: Date;
+  approvedAt?: Date;
+  approvedBy?: string;
+  rejectionReason?: string;
+}
+
 export interface IPartner {
   _id?: string;
   name: string;
@@ -38,13 +47,10 @@ export interface IPartner {
   suspendedBy?: string;
   scheduledDeletionAt?: Date;
   notes?: string;
-  // Fleet assignment fields
-  requestedFleet?: string; // Vehicle ID
-  fleetStatus: FleetStatus;
-  fleetRequestedAt?: Date;
-  fleetApprovedAt?: Date;
-  fleetApprovedBy?: string;
-  fleetRejectionReason?: string;
+  // Fleet assignment fields - now supports multiple requests
+  fleetRequests: IFleetRequest[];
+  // Keep backward compatibility - current approved fleet
+  currentFleet?: string; // Vehicle ID of currently approved fleet
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -141,20 +147,31 @@ const PartnerSchema = new Schema<IPartner>(
     suspendedBy: String,
     scheduledDeletionAt: Date,
     notes: String,
-    // Fleet assignment fields
-    requestedFleet: {
+    // Fleet assignment fields - now supports multiple requests
+    fleetRequests: [{
+      vehicleId: {
+        type: String,
+        ref: "Vehicle",
+        required: true,
+      },
+      status: {
+        type: String,
+        enum: ["none", "pending", "approved", "rejected"],
+        default: "pending",
+      },
+      requestedAt: {
+        type: Date,
+        default: Date.now,
+      },
+      approvedAt: Date,
+      approvedBy: String,
+      rejectionReason: String,
+    }],
+    // Keep backward compatibility - current approved fleet
+    currentFleet: {
       type: String,
       ref: "Vehicle",
     },
-    fleetStatus: {
-      type: String,
-      enum: ["none", "pending", "approved", "rejected"],
-      default: "none",
-    },
-    fleetRequestedAt: Date,
-    fleetApprovedAt: Date,
-    fleetApprovedBy: String,
-    fleetRejectionReason: String,
   },
   {
     timestamps: true,

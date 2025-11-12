@@ -25,8 +25,18 @@ interface PartnerData {
   _id: string;
   name: string;
   email: string;
+  fleetRequests?: Array<{
+    vehicleId: string;
+    status: "none" | "pending" | "approved" | "rejected";
+    requestedAt: string;
+    approvedAt?: string;
+    approvedBy?: string;
+    rejectionReason?: string;
+  }>;
+  currentFleet?: string;
+  // Keep backward compatibility
   requestedFleet?: string;
-  fleetStatus: "none" | "pending" | "approved" | "rejected";
+  fleetStatus?: "none" | "pending" | "approved" | "rejected";
   fleetRequestedAt?: string;
   fleetRejectionReason?: string;
 }
@@ -83,6 +93,22 @@ export default function PartnerFleetPage() {
 
   const handleFleetRequest = async (vehicleId: string) => {
     if (!partner || submitting) return;
+    
+    // Check if already has a pending request for this vehicle
+    const existingRequest = pendingRequests.find(req => req.vehicleId === vehicleId);
+    if (existingRequest) {
+      alert(t("already-requested-this-vehicle"));
+      return;
+    }
+    
+    // Show confirmation dialog if partner already has an approved fleet
+    if (partner.fleetStatus === "approved" || approvedRequests.length > 0) {
+      const confirmed = window.confirm(
+        t("confirm-fleet-change-message")
+      );
+      if (!confirmed) return;
+    }
+    
     setSubmitting(true);
     try {
       const response = await fetch("/api/partners/fleet/request", {
@@ -114,6 +140,21 @@ export default function PartnerFleetPage() {
     | null => {
     if (!partner) return null;
 
+    // Check for multiple pending requests
+    if (pendingRequests.length > 0) {
+      const requestedVehicles = pendingRequests.map(req => {
+        const vehicle = vehicles.find(v => v._id === req.vehicleId);
+        return vehicle?.name || 'Unknown Vehicle';
+      }).join(', ');
+      
+      return {
+        variant: "default",
+        icon: <Clock className="h-4 w-4" />,
+        title: t("pending-approval"),
+        description: `${t("requested-vehicles")}: ${requestedVehicles}. ${t("waiting-for-admin-approval")}`,
+      };
+    }
+
     const requestedVehicle = vehicles.find(v => v._id === partner.requestedFleet);
 
     switch (partner.fleetStatus) {
@@ -129,7 +170,7 @@ export default function PartnerFleetPage() {
           variant: "success",
           icon: <CheckCircle className="h-4 w-4" />,
           title: t("approved"),
-          description: t("you-can-now-accept-rides"),
+          description: `${t("you-can-now-accept-rides")} ${t("you-can-request-different-vehicle")}`,
         };
       case "rejected":
         return {
@@ -171,8 +212,14 @@ export default function PartnerFleetPage() {
     );
   }
 
-  const canRequestFleet = partner.fleetStatus === "none" || partner.fleetStatus === "rejected";
-  const approvedVehicle = partner.fleetStatus === "approved" ? vehicles.find(v => v._id === partner.requestedFleet) : null;
+  const canRequestFleet = partner.fleetStatus === "none" || partner.fleetStatus === "rejected" || partner.fleetStatus === "approved" || !!partner.fleetRequests;
+  const approvedVehicle = partner.fleetStatus === "approved" ? vehicles.find(v => v._id === partner.requestedFleet) : 
+                         partner.currentFleet ? vehicles.find(v => v._id === partner.currentFleet) : null;
+  
+  // Get pending fleet requests
+  const pendingRequests = partner.fleetRequests?.filter(req => req.status === "pending") || [];
+  const approvedRequests = partner.fleetRequests?.filter(req => req.status === "approved") || [];
+  
   const statusInfo = getStatusInfo();
 
   return (
@@ -194,7 +241,13 @@ export default function PartnerFleetPage() {
 
       {approvedVehicle && (
         <div>
-          <h2 className="text-2xl font-semibold tracking-tight mb-4">{t("currently-assigned")}</h2>
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-2xl font-semibold tracking-tight">{t("currently-assigned")}</h2>
+            <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
+              <Info className="w-3 h-3 mr-1" />
+              {t("can-request-change-below")}
+            </Badge>
+          </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
             <VehicleCard
               vehicle={approvedVehicle}
@@ -202,6 +255,7 @@ export default function PartnerFleetPage() {
               isSubmitting={false}
               resolveImageSrc={resolveImageSrc}
               isRequested={false}
+              hasApprovedFleet={true}
             />
           </div>
           <Separator className="my-8" />
@@ -220,17 +274,21 @@ export default function PartnerFleetPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {vehicles
               .filter(v => v._id !== approvedVehicle?._id)
-              .map((vehicle) => (
-                <VehicleCard
-                  key={vehicle._id}
-                  vehicle={vehicle}
-                  onRequest={canRequestFleet ? handleFleetRequest : undefined}
-                  isSubmitting={submitting}
-                  resolveImageSrc={resolveImageSrc}
-                  isRequested={partner.requestedFleet === vehicle._id && partner.fleetStatus === "pending"}
-                  isApproved={false}
-                />
-              ))}
+              .map((vehicle) => {
+                const hasPendingRequest = pendingRequests.some(req => req.vehicleId === vehicle._id);
+                return (
+                  <VehicleCard
+                    key={vehicle._id}
+                    vehicle={vehicle}
+                    onRequest={canRequestFleet && !hasPendingRequest ? handleFleetRequest : undefined}
+                    isSubmitting={submitting}
+                    resolveImageSrc={resolveImageSrc}
+                    isRequested={hasPendingRequest || (partner.requestedFleet === vehicle._id && partner.fleetStatus === "pending")}
+                    isApproved={false}
+                    hasApprovedFleet={!!approvedVehicle}
+                  />
+                );
+              })}
           </div>
         )}
       </div>
@@ -246,6 +304,7 @@ const VehicleCard = ({
   resolveImageSrc,
   isRequested,
   isApproved,
+  hasApprovedFleet,
 }: {
   vehicle: IVehicle;
   onRequest?: (vehicleId: string) => void;
@@ -253,6 +312,7 @@ const VehicleCard = ({
   resolveImageSrc: (src: string) => string;
   isRequested: boolean;
   isApproved: boolean;
+  hasApprovedFleet?: boolean;
 }) => {
   const t = useTranslations("Dashboard.Partners.Fleet");
 
@@ -279,7 +339,7 @@ const VehicleCard = ({
             <CardTitle className="text-lg font-semibold">
               {vehicle.name}
             </CardTitle>
-            <Badge variant="secondary" className="capitalize shrink-0">
+            <Badge variant="secondary" className="capitalize shrink-0 text-white">
               {vehicle.category}
             </Badge>
           </div>
@@ -314,7 +374,7 @@ const VehicleCard = ({
                 {t("requesting")}
               </>
             ) : (
-              t("request-fleet")
+              hasApprovedFleet ? t("request-fleet-change") : t("request-fleet")
             )}
           </Button>
         )}

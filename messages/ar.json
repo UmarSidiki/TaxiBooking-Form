@@ -336,7 +336,14 @@
         "you-can-request-different-vehicle": "يمكنك طلب سيارة مختلفة",
         "requested-vehicle": "المركبة المطلوبة:",
         "what-and-apos-s-included": "ما هو مدرج",
-        "you-can-now-accept-rides": "يمكنك الآن قبول مهام الركوب"
+        "you-can-now-accept-rides": "يمكنك الآن قبول مهام الركوب",
+        "can-request-change-below": "يمكن طلب التغيير أدناه",
+        "check-back-later": "التحقق مرة أخرى في وقت لاحق لمعرفة المركبات المتاحة",
+        "confirm-fleet-change-message": "هل أنت متأكد أنك تريد طلب أسطول مختلف؟ \nسيتم تغيير تعيين أسطولك الحالي إلى الحالة المعلقة ولن تتمكن من قبول الرحلات حتى يوافق المسؤول على طلبك الجديد.",
+        "no-description": "لا يوجد وصف متاح",
+        "request-fleet-change": "طلب تغيير الأسطول",
+        "already-requested-this-vehicle": "لقد طلبت هذه السيارة بالفعل. \nالرجاء الانتظار لموافقة المشرف.",
+        "requested-vehicles": "المركبات المطلوبة:"
       }
     },
     "Rides": {

@@ -69,6 +69,7 @@
         "fleet-none": "Geen vloot toegewezen",
         "fleet-pending": "Vlootaanvraag in behandeling",
         "fleet-rejected": "Vloot afgewezen",
+        "fleet-undefined": "Onbekende status",
         "fleet-status": "Vlootstatus",
         "partner-assigned-successfully": "Partner succesvol toegewezen",
         "partner-reassigned-successfully": "Partner opnieuw toegewezen",

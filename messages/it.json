@@ -69,6 +69,7 @@
         "fleet-none": "Nessuna flotta assegnata",
         "fleet-pending": "Richiesta flotta in sospeso",
         "fleet-rejected": "Flotta respinta",
+        "fleet-undefined": "Stato sconosciuto",
         "fleet-status": "Stato della flotta",
         "partner-assigned-successfully": "Partner assegnato correttamente",
         "partner-reassigned-successfully": "Partner riassegnato correttamente",

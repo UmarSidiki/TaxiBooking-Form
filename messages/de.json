@@ -68,6 +68,7 @@
         "fleet-information": "Flotteninformationen",
         "fleet-none": "Keine Flotte zugewiesen",
         "fleet-rejected": "Flotte abgelehnt",
+        "fleet-undefined": "Unbekannter Status",
         "provide-fleet-rejection-reason": "Bitte geben Sie einen Grund für die Ablehnung dieser Flottenanfrage an",
         "reject-fleet": "Flottenanfrage ablehnen",
         "reject-fleet-request": "Anfrage zur Flottenzuweisung ablehnen",

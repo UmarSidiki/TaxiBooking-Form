@@ -638,6 +638,7 @@
         "fleet-pending": "Fleet Request Pending",
         "fleet-approved": "Fleet Approved",
         "fleet-rejected": "Fleet Rejected",
+        "fleet-undefined": "Unknown Status",
         "requested-at": "Requested At:",
         "approved-at": "Approved At:",
         "reject-fleet": "Reject Fleet Request",

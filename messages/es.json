@@ -69,6 +69,7 @@
         "fleet-none": "Ninguna flota asignada",
         "fleet-pending": "Solicitud de flota pendiente",
         "fleet-rejected": "Flota rechazada",
+        "fleet-undefined": "Estado desconocido",
         "fleet-status": "Estado de la flota",
         "partner-assigned-successfully": "Socio asignado exitosamente",
         "partner-reassigned-successfully": "Socio reasignado exitosamente",

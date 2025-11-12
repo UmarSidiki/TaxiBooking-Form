@@ -69,6 +69,7 @@
         "fleet-none": "Флот не назначен",
         "fleet-pending": "Запрос на флот находится на рассмотрении",
         "fleet-rejected": "Флот отклонен",
+        "fleet-undefined": "Неизвестный статус",
         "fleet-status": "Статус флота",
         "partner-assigned-successfully": "Партнер успешно назначен",
         "partner-reassigned-successfully": "Партнер успешно переназначен",

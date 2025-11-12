@@ -867,7 +867,7 @@
     "free-cancellation-24h": "Gratis annuleren (24u)",
     "hourly-booking": "- Boeking per uur",
     "ideal-bancontact-paypal-and-more": "iDEAL, Bancontact, PayPal en meer",
-    "in-cash-directly-to-the-driver-at-pickup": "Contant betalen, direct aan de chauffeur bij ophalen.",
+    "in-cash-directly-to-the-driver-at-pickup": "direct betalen aan de chauffeur bij het ophalen.",
     "instant-confirmation": "Directe bevestiging",
     "john": "Jan",
     "last-name": "Achternaam *",
@@ -900,7 +900,7 @@
     "try-again": "Probeer opnieuw",
     "via-multisafepay": "(via MultiSafepay)",
     "what-and-apos-s-included": "Wat is inbegrepen?",
-    "you-will-pay-eur": "U betaalt"
+    "you-will-pay-eur": "U kunt de betaling"
   },
   "Stripe": {
     "256-bit-ssl": "256-bit SSL",

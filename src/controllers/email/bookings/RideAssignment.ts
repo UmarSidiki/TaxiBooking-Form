@@ -7,22 +7,22 @@ interface RideAssignmentData {
   tripId: string;
   pickup: string;
   dropoff: string;
-  stops: Array<{ location: string; order: number; duration?: number }>;
-  tripType: string;
+  stops?: Array<{ location: string; order: number; duration?: number }>;
+  tripType?: string;
   date: string;
   time: string;
   returnDate?: string;
   returnTime?: string;
-  passengers: number;
-  selectedVehicle: string;
-  vehicleDetails: {
+  passengers?: number;
+  selectedVehicle?: string;
+  vehicleDetails?: {
     name: string;
     price: string;
     seats: string;
   };
-  childSeats: number;
-  babySeats: number;
-  notes: string;
+  childSeats?: number;
+  babySeats?: number;
+  notes?: string;
   firstName: string;
   lastName: string;
   email: string;
@@ -33,6 +33,11 @@ interface RideAssignmentData {
   flightNumber?: string;
   driverName: string;
   driverEmail: string;
+  // For partner assignments
+  vehicleType?: string;
+  passengerName?: string;
+  passengerPhone?: string;
+  baseUrl?: string;
 }
 
 // Email validation utility
@@ -97,8 +102,8 @@ function generateEmailHTML(assignmentData: RideAssignmentData, currency: string 
     <div class="assignment-notice">
       <h3 style="margin: 0 0 10px 0; color: #92400e;">Ride Assignment Details</h3>
       <p style="margin: 0; color: #92400e;"><strong>Reservation ID:</strong> #${assignmentData.tripId}</p>
-      <p style="margin: 0; color: #92400e;"><strong>Customer:</strong> ${assignmentData.firstName} ${assignmentData.lastName}</p>
-      <p style="margin: 0; color: #92400e;"><strong>Contact:</strong> ${assignmentData.email} | ${assignmentData.phone}</p>
+      <p style="margin: 0; color: #92400e;"><strong>Passenger:</strong> ${assignmentData.passengerName || `${assignmentData.firstName} ${assignmentData.lastName}`}</p>
+      <p style="margin: 0; color: #92400e;"><strong>Contact:</strong> ${assignmentData.passengerPhone || assignmentData.phone}</p>
     </div>
 
     <div class="section">
@@ -131,16 +136,16 @@ function generateEmailHTML(assignmentData: RideAssignmentData, currency: string 
       <h2>Vehicle & Passengers</h2>
       <div class="details">
         <ul>
-          <li><span class="highlight">Vehicle:</span> ${assignmentData.vehicleDetails.name}</li>
-          <li><span class="highlight">Max Seats:</span> ${assignmentData.vehicleDetails.seats}</li>
+          <li><span class="highlight">Vehicle:</span> ${assignmentData.vehicleType || assignmentData.vehicleDetails?.name || 'N/A'}</li>
+          <li><span class="highlight">Max Seats:</span> ${assignmentData.vehicleDetails?.seats || 'N/A'}</li>
           <li><span class="highlight">Passengers:</span> ${assignmentData.passengers}</li>
           ${
-            assignmentData.childSeats > 0
+            assignmentData.childSeats && assignmentData.childSeats > 0
               ? `<li><span class="highlight">Child Seats:</span> ${assignmentData.childSeats}</li>`
               : ""
           }
           ${
-            assignmentData.babySeats > 0
+            assignmentData.babySeats && assignmentData.babySeats > 0
               ? `<li><span class="highlight">Baby Seats:</span> ${assignmentData.babySeats}</li>`
               : ""
           }
@@ -177,10 +182,10 @@ function generateEmailHTML(assignmentData: RideAssignmentData, currency: string 
     </div>
 
     <div class="section">
-      <p>Please contact the customer directly if you need any clarification about the ride details.</p>
-      <p><strong>Customer Contact:</strong> ${assignmentData.email} | ${assignmentData.phone}</p>
+      <p>Please contact the passenger directly if you need any clarification about the ride details.</p>
+      <p><strong>Passenger Contact:</strong> ${assignmentData.passengerPhone || assignmentData.phone}</p>
       <a href="mailto:${assignmentData.email}" class="cta-button">
-        <span>Contact Customer</span>
+        <span>Contact Passenger</span>
       </a>
     </div>
 
@@ -219,10 +224,10 @@ export async function sendRideAssignmentEmail(assignmentData: RideAssignmentData
       to: assignmentData.driverEmail,
       subject: `Ride Assignment - Reservation #${assignmentData.tripId}`,
       html: htmlContent,
-      text: `Ride Assignment!\n\nReservation ID: ${assignmentData.tripId}\nCustomer: ${assignmentData.firstName} ${assignmentData.lastName}\nFrom: ${assignmentData.pickup}${assignmentData.stops && assignmentData.stops.length > 0 ? '\nStops: ' + assignmentData.stops.map((stop, index) => {
+      text: `Ride Assignment!\n\nReservation ID: ${assignmentData.tripId}\nPassenger: ${assignmentData.passengerName || `${assignmentData.firstName} ${assignmentData.lastName}`}\nFrom: ${assignmentData.pickup}${assignmentData.stops && assignmentData.stops.length > 0 ? '\nStops: ' + assignmentData.stops.map((stop, index) => {
         const durationText = stop.duration && stop.duration > 0 ? ` (Wait: ${stop.duration >= 60 ? `${Math.floor(stop.duration / 60)}h${stop.duration % 60 > 0 ? ` ${stop.duration % 60}m` : ''}` : `${stop.duration}m`})` : '';
         return `Stop ${index + 1}: ${stop.location}${durationText}`;
-      }).join(', ') : ''}\nTo: ${assignmentData.dropoff}\nDeparture Date: ${assignmentData.date} at ${assignmentData.time}${assignmentData.tripType === 'roundtrip' && assignmentData.returnDate ? `\nReturn Date: ${assignmentData.returnDate} at ${assignmentData.returnTime}` : ''}${assignmentData.flightNumber ? `\nFlight Number: ${assignmentData.flightNumber}` : ''}\nVehicle: ${assignmentData.vehicleDetails.name}\nTotal Amount: ${currencySymbol}${assignmentData.totalAmount}\n\nCustomer Contact: ${assignmentData.email} | ${assignmentData.phone}`,
+      }).join(', ') : ''}\nTo: ${assignmentData.dropoff}\nDeparture Date: ${assignmentData.date} at ${assignmentData.time}${assignmentData.tripType === 'roundtrip' && assignmentData.returnDate ? `\nReturn Date: ${assignmentData.returnDate} at ${assignmentData.returnTime}` : ''}${assignmentData.flightNumber ? `\nFlight Number: ${assignmentData.flightNumber}` : ''}\nVehicle: ${assignmentData.vehicleType || assignmentData.vehicleDetails?.name || 'N/A'}\nTotal Amount: ${currencySymbol}${assignmentData.totalAmount}\n\nPassenger Contact: ${assignmentData.passengerPhone || assignmentData.phone}`,
     });
 
     if (!success) {

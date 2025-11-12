@@ -51,6 +51,11 @@ export interface IBooking extends Document {
     email: string;
   };
   assignmentEmailSent?: boolean;
+  // Partner notification fields
+  partnerNotificationSent?: boolean;
+  eligiblePartnersCount?: number;
+  availableForPartners?: boolean; // Track if ride is still available for partner acceptance
+  partnerAcceptanceDeadline?: Date; // Optional deadline for partner acceptance
   createdAt: Date;
   updatedAt: Date;
 }
@@ -114,6 +119,11 @@ const BookingSchema: Schema = new Schema({
     email: { type: String },
   },
   assignmentEmailSent: { type: Boolean, default: false },
+  // Partner notification fields
+  partnerNotificationSent: { type: Boolean, default: false },
+  eligiblePartnersCount: { type: Number, default: 0 },
+  availableForPartners: { type: Boolean, default: false },
+  partnerAcceptanceDeadline: { type: Date },
 }, {
   timestamps: true,
 });

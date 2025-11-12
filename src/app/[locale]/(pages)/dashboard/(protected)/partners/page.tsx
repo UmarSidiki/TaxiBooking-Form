@@ -11,6 +11,7 @@ import {
   FileText,
   Search,
   Filter,
+  Truck,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -64,6 +65,12 @@ interface Partner {
   approvedAt?: string;
   rejectionReason?: string;
   notes?: string;
+  // Fleet fields
+  requestedFleet?: string;
+  fleetStatus: "none" | "pending" | "approved" | "rejected";
+  fleetRequestedAt?: string;
+  fleetApprovedAt?: string;
+  fleetRejectionReason?: string;
 }
 
 export default function AdminPartnersPage() {
@@ -76,9 +83,11 @@ export default function AdminPartnersPage() {
   const [showRejectDialog, setShowRejectDialog] = useState(false);
   const [showSuspendDialog, setShowSuspendDialog] = useState(false);
   const [showDocumentDialog, setShowDocumentDialog] = useState(false);
+  const [showFleetRejectDialog, setShowFleetRejectDialog] = useState(false);
   const [selectedDocument, setSelectedDocument] = useState<PartnerDocument | null>(null);
   const [rejectionReason, setRejectionReason] = useState("");
   const [suspensionReason, setSuspensionReason] = useState("");
+  const [fleetRejectionReason, setFleetRejectionReason] = useState("");
   const [processing, setProcessing] = useState(false);
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState("");
@@ -192,6 +201,51 @@ export default function AdminPartnersPage() {
       }
     } catch (error) {
       console.error("Error suspending partner:", error);
+    } finally {
+      setProcessing(false);
+    }
+  };
+
+  const handleFleetApprove = async (partnerId: string) => {
+    setProcessing(true);
+    try {
+      const response = await fetch(`/api/admin/partners/${partnerId}/fleet/approve`, {
+        method: "PATCH",
+      });
+
+      if (response.ok) {
+        fetchPartners();
+        setShowDetailsDialog(false);
+      }
+    } catch (error) {
+      console.error("Error approving fleet:", error);
+    } finally {
+      setProcessing(false);
+    }
+  };
+
+  const handleFleetReject = async () => {
+    if (!selectedPartner || !fleetRejectionReason.trim()) return;
+
+    setProcessing(true);
+    try {
+      const response = await fetch(
+        `/api/admin/partners/${selectedPartner._id}/fleet/reject`,
+        {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ reason: fleetRejectionReason }),
+        }
+      );
+
+      if (response.ok) {
+        fetchPartners();
+        setShowFleetRejectDialog(false);
+        setShowDetailsDialog(false);
+        setFleetRejectionReason("");
+      }
+    } catch (error) {
+      console.error("Error rejecting fleet:", error);
     } finally {
       setProcessing(false);
     }
@@ -421,11 +475,24 @@ export default function AdminPartnersPage() {
                   </div>
                   <div className="flex items-center justify-between sm:justify-end gap-3 sm:gap-4">
                     <div className="text-left sm:text-right">
-                      <p className="text-sm text-muted-foreground">{t("documents")}</p>
-                      <p className="text-sm font-medium">
-                        {partner.documents.length} {t("uploaded")}
-                      </p>
-                    </div>
+                          <p className="text-sm text-muted-foreground">{t("documents")}</p>
+                          <p className="text-sm font-medium">
+                            {partner.documents.length} {t("uploaded")}
+                          </p>
+                          {partner.fleetStatus === "pending" && (
+                            <div className="mt-1">
+                              <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-300">
+                                <Clock className="w-3 h-3" />
+                                {t("fleet-pending")}
+                              </span>
+                              {partner.requestedFleet && (
+                                <p className="text-xs text-muted-foreground mt-1">
+                                  Vehicle requested
+                                </p>
+                              )}
+                            </div>
+                          )}
+                        </div>
                     <div className="flex items-center gap-2 flex-shrink-0">
                       {getStatusBadge(partner.status)}
                       <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
@@ -540,12 +607,59 @@ export default function AdminPartnersPage() {
                 )}
               </div>
 
+              {/* Fleet Information */}
+              <div>
+                <h3 className="font-semibold mb-3 flex items-center gap-2">
+                  <Truck className="w-5 h-5" />
+                  {t("fleet-information")}
+                </h3>
+                <div className="p-4 border rounded-lg bg-muted/30">
+                  <div className="flex items-center justify-between mb-2">
+                    <p className="text-sm font-medium">{t("fleet-status")}</p>
+                    <span className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium ${
+                      selectedPartner.fleetStatus === "approved"
+                        ? "bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300"
+                        : selectedPartner.fleetStatus === "pending"
+                        ? "bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-300"
+                        : selectedPartner.fleetStatus === "rejected"
+                        ? "bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300"
+                        : "bg-gray-100 text-gray-700 dark:bg-gray-900 dark:text-gray-300"
+                    }`}>
+                      {selectedPartner.fleetStatus === "approved" && <CheckCircle2 className="w-3 h-3" />}
+                      {selectedPartner.fleetStatus === "pending" && <Clock className="w-3 h-3" />}
+                      {selectedPartner.fleetStatus === "rejected" && <XCircle className="w-3 h-3" />}
+                      {selectedPartner.fleetStatus === "none" && <Truck className="w-3 h-3" />}
+                      {t(`fleet-${selectedPartner.fleetStatus}`)}
+                    </span>
+                  </div>
+
+                  {selectedPartner.fleetRequestedAt && (
+                    <p className="text-sm text-muted-foreground">
+                      {t("requested-at")}: {new Date(selectedPartner.fleetRequestedAt).toLocaleString()}
+                    </p>
+                  )}
+
+                  {selectedPartner.fleetApprovedAt && (
+                    <p className="text-sm text-muted-foreground">
+                      {t("approved-at")}: {new Date(selectedPartner.fleetApprovedAt).toLocaleString()}
+                    </p>
+                  )}
+
+                  {selectedPartner.fleetStatus === "rejected" && selectedPartner.fleetRejectionReason && (
+                    <div className="mt-2 p-3 bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900 rounded">
+                      <p className="text-sm font-medium text-red-900 dark:text-red-100">{t("rejection-reason")}</p>
+                      <p className="text-sm text-red-700 dark:text-red-300">{selectedPartner.fleetRejectionReason}</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+
               {/* Rejection Reason */}
               {selectedPartner.status === "rejected" &&
                 selectedPartner.rejectionReason && (
                   <div>
                     <h3 className="font-semibold mb-2 text-red-600">
-                      {t("rejection-reason")}
+                      {t("partner-rejection-reason")}
                     </h3>
                     <p className="text-sm">{selectedPartner.rejectionReason}</p>
                   </div>
@@ -554,6 +668,39 @@ export default function AdminPartnersPage() {
           )}
 
           <DialogFooter className="flex flex-col sm:flex-row gap-2">
+            {/* Fleet Actions */}
+            {selectedPartner?.status === "approved" && selectedPartner.fleetStatus === "pending" && (
+              <div className="flex flex-col sm:flex-row gap-2 w-full">
+                <Button
+                  variant="destructive"
+                  onClick={() => setShowFleetRejectDialog(true)}
+                  disabled={processing}
+                  className="w-full sm:w-auto"
+                >
+                  <XCircle className="w-4 h-4 mr-2" />
+                  {t("reject-fleet")}
+                </Button>
+                <Button
+                  onClick={() => handleFleetApprove(selectedPartner._id)}
+                  disabled={processing}
+                  className="w-full sm:w-auto"
+                >
+                  {processing ? (
+                    <>
+                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
+                      {t("approving")}
+                    </>
+                  ) : (
+                    <>
+                      <CheckCircle2 className="w-4 h-4 mr-2" />
+                      {t("approve-fleet")}
+                    </>
+                  )}
+                </Button>
+              </div>
+            )}
+
+            {/* Partner Status Actions */}
             {selectedPartner?.status === "pending" && (
               <>
                 <Button
@@ -584,7 +731,7 @@ export default function AdminPartnersPage() {
                 </Button>
               </>
             )}
-            {selectedPartner?.status === "approved" && (
+            {selectedPartner?.status === "approved" && selectedPartner.fleetStatus !== "pending" && (
               <Button
                 variant="destructive"
                 onClick={() => setShowSuspendDialog(true)}
@@ -787,6 +934,55 @@ export default function AdminPartnersPage() {
               onClick={() => setShowDocumentDialog(false)}
             >
               {t("close")}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Fleet Reject Dialog */}
+      <Dialog open={showFleetRejectDialog} onOpenChange={setShowFleetRejectDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{t("reject-fleet-request")}</DialogTitle>
+            <DialogDescription>
+              {t("provide-fleet-rejection-reason")}
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-4">
+            <Textarea
+              placeholder={t("enter-fleet-rejection-reason")}
+              value={fleetRejectionReason}
+              onChange={(e) => setFleetRejectionReason(e.target.value)}
+              rows={4}
+            />
+          </div>
+
+          <DialogFooter className="flex flex-col sm:flex-row gap-2">
+            <Button
+              variant="outline"
+              onClick={() => {
+                setShowFleetRejectDialog(false);
+                setFleetRejectionReason("");
+              }}
+              className="w-full sm:w-auto"
+            >
+              {t("cancel")}
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={handleFleetReject}
+              disabled={!fleetRejectionReason.trim() || processing}
+              className="w-full sm:w-auto"
+            >
+              {processing ? (
+                <>
+                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
+                  {t("rejecting")}
+                </>
+              ) : (
+                t("confirm-fleet-rejection")
+              )}
             </Button>
           </DialogFooter>
         </DialogContent>

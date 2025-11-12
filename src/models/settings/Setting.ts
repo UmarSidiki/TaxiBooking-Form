@@ -34,6 +34,7 @@ export interface ISetting {
   smtpSenderName?: string;
   enablePartners?: boolean;
   enableDrivers?: boolean;
+  adminEmail?: string;
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -168,6 +169,10 @@ const SettingSchema = new Schema<ISetting>(
     enableDrivers: {
       type: Boolean,
       default: false,
+    },
+    adminEmail: {
+      type: String,
+      default: "",
     },
   },
   {

@@ -19,6 +19,9 @@ export const authOptions: NextAuthOptions = {
     strategy: "jwt",
   },
   secret: process.env.NEXTAUTH_SECRET,
+  pages: {
+    signIn: '/dashboard/signin',
+  },
   providers: [
     CredentialsProvider({
       name: "Email & Password",

@@ -9,7 +9,10 @@ export async function GET() {
     const session = await getServerSession(authOptions);
 
     if (!session?.user || session.user.role !== "partner") {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      return NextResponse.json(
+        { success: false, error: "Unauthorized" },
+        { status: 401 }
+      );
     }
 
     await connectDB();
@@ -28,26 +31,26 @@ export async function GET() {
     const upcomingRides = allBookings.filter(
       (booking) =>
         booking.status !== "canceled" &&
-        new Date(booking.date) >= now
+        new Date(`${booking.date}T${booking.time || '00:00'}`) >= now
     ).length;
 
     const completedRides = allBookings.filter(
       (booking) =>
         booking.status !== "canceled" &&
-        new Date(booking.date) < now
+        new Date(`${booking.date}T${booking.time || '00:00'}`) < now
     ).length;
 
     const canceledRides = allBookings.filter(
       (booking) => booking.status === "canceled"
     ).length;
 
-    // Calculate total earnings (only from completed rides)
+    // Calculate total earnings (only from completed rides with completed payment)
     const totalEarnings = allBookings
       .filter(
         (booking) =>
           booking.status !== "canceled" &&
-          new Date(booking.date) < now &&
-          booking.paymentStatus === "paid"
+          new Date(`${booking.date}T${booking.time || '00:00'}`) < now &&
+          booking.paymentStatus === "completed"
       )
       .reduce((sum, booking) => sum + (booking.totalAmount || 0), 0);
 

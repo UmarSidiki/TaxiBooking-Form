@@ -18,16 +18,16 @@ export async function GET() {
 
     if (!partner) {
       return NextResponse.json(
-        { error: "Partner not found" },
+        { success: false, error: "Partner not found" },
         { status: 404 }
       );
     }
 
-    return NextResponse.json({ partner }, { status: 200 });
+    return NextResponse.json({ success: true, partner }, { status: 200 });
   } catch (error) {
     console.error("Error fetching partner profile:", error);
     return NextResponse.json(
-      { error: "An error occurred while fetching profile" },
+      { success: false, error: "An error occurred while fetching profile" },
       { status: 500 }
     );
   }

@@ -16,6 +16,8 @@ export interface IPartnerDocument {
   rejectionReason?: string;
 }
 
+export type FleetStatus = "none" | "pending" | "approved" | "rejected";
+
 export interface IPartner {
   _id?: string;
   name: string;
@@ -36,6 +38,13 @@ export interface IPartner {
   suspendedBy?: string;
   scheduledDeletionAt?: Date;
   notes?: string;
+  // Fleet assignment fields
+  requestedFleet?: string; // Vehicle ID
+  fleetStatus: FleetStatus;
+  fleetRequestedAt?: Date;
+  fleetApprovedAt?: Date;
+  fleetApprovedBy?: string;
+  fleetRejectionReason?: string;
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -132,6 +141,20 @@ const PartnerSchema = new Schema<IPartner>(
     suspendedBy: String,
     scheduledDeletionAt: Date,
     notes: String,
+    // Fleet assignment fields
+    requestedFleet: {
+      type: String,
+      ref: "Vehicle",
+    },
+    fleetStatus: {
+      type: String,
+      enum: ["none", "pending", "approved", "rejected"],
+      default: "none",
+    },
+    fleetRequestedAt: Date,
+    fleetApprovedAt: Date,
+    fleetApprovedBy: String,
+    fleetRejectionReason: String,
   },
   {
     timestamps: true,

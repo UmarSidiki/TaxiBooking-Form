@@ -7,6 +7,8 @@ import { connectDB } from "@/lib/database";
 import { Vehicle, type IVehicle } from "@/models/vehicle";
 import { Setting } from "@/models/settings";
 import { getCurrencySymbol } from "@/lib/utils";
+import { Partner } from "@/models/partner";
+import { sendRideNotificationEmail } from "@/controllers/email/partners";
 
 // Helper function to calculate booking total
 async function calculateBookingTotal(
@@ -260,11 +262,69 @@ export async function POST(request: NextRequest) {
     };
 
     // Save to database using Mongoose
-    await Booking.create(bookingData);
+    const savedBooking = await Booking.create(bookingData);
+
+    // Check if partners feature is enabled and notify eligible partners
+    const settings = await Setting.findOne();
+    if (settings?.enablePartners) {
+      try {
+        // Find partners with approved fleet matching the booked vehicle type
+        const eligiblePartners = await Partner.find({
+          status: "approved",
+          fleetStatus: "approved",
+          requestedFleet: formData.selectedVehicle,
+          isActive: true,
+        });
+
+        if (eligiblePartners.length > 0) {
+          console.log(`📢 Notifying ${eligiblePartners.length} eligible partners for booking ${tripId}`);
+
+          // Get base URL for email links
+          const baseUrl = request.headers.get('origin') ||
+                         request.headers.get('referer')?.split('/').slice(0, 3).join('/') ||
+                         process.env.NEXT_PUBLIC_BASE_URL;
+
+          // Send notification emails to all eligible partners
+          const notificationPromises = eligiblePartners.map(partner =>
+            sendRideNotificationEmail({
+              tripId,
+              pickup: formData.pickup,
+              dropoff: formData.dropoff || '',
+              date: formData.date,
+              time: formData.time,
+              vehicleType: vehicle.name,
+              passengerCount: formData.passengers,
+              partnerName: partner.name,
+              partnerEmail: partner.email,
+              baseUrl,
+            })
+          );
+
+          // Send notifications asynchronously (don't wait for completion)
+          Promise.all(notificationPromises).then(results => {
+            const successCount = results.filter(Boolean).length;
+            console.log(`✅ Sent ride notifications to ${successCount}/${eligiblePartners.length} partners`);
+          }).catch(error => {
+            console.error("❌ Error sending partner notifications:", error);
+          });
+
+          // Store partner notification info in booking for tracking
+          await Booking.findByIdAndUpdate(savedBooking._id, {
+            partnerNotificationSent: true,
+            eligiblePartnersCount: eligiblePartners.length,
+            availableForPartners: true,
+            partnerAcceptanceDeadline: new Date(Date.now() + 30 * 60 * 1000), // 30 minutes from now
+          });
+        }
+      } catch (partnerError) {
+        console.error("❌ Error notifying partners:", partnerError);
+        // Continue with booking process even if partner notification fails
+      }
+    }
 
     // Get base URL for invoice link in email
-    const baseUrl = request.headers.get('origin') || 
-                    request.headers.get('referer')?.split('/').slice(0, 3).join('/') || 
+    const baseUrl = request.headers.get('origin') ||
+                    request.headers.get('referer')?.split('/').slice(0, 3).join('/') ||
                     process.env.NEXT_PUBLIC_BASE_URL;
 
     // Send emails - NOW PROPERLY AWAITED

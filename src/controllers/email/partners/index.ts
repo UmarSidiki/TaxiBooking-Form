@@ -1,1 +1,1 @@
-export { sendPartnerApprovalEmail, sendPartnerRejectionEmail, sendPartnerSuspensionEmail } from './Notification';
+export { sendPartnerApprovalEmail, sendPartnerRejectionEmail, sendPartnerSuspensionEmail, sendRideNotificationEmail } from './Notification';

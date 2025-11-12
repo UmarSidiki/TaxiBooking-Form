@@ -342,7 +342,7 @@ export async function sendPartnerSuspensionEmail(partnerData: PartnerData) {
 
     const fromAddress = settings?.smtpFrom || settings?.smtpUser || "noreply@booking.com";
     const fromField = settings?.smtpSenderName ? `${settings.smtpSenderName} <${fromAddress}>` : fromAddress;
-    
+
     const emailHTML = generateSuspensionEmailHTML(partnerData);
 
     const success = await sendEmail({
@@ -356,6 +356,163 @@ export async function sendPartnerSuspensionEmail(partnerData: PartnerData) {
     return success;
   } catch (error) {
     console.error("Error sending partner suspension email:", error);
+    return false;
+  }
+}
+
+interface RideNotificationData {
+  tripId: string;
+  pickup: string;
+  dropoff: string;
+  date: string;
+  time: string;
+  vehicleType: string;
+  passengerCount: number;
+  partnerName: string;
+  partnerEmail: string;
+  baseUrl?: string;
+}
+
+function generateRideNotificationEmailHTML(rideData: RideNotificationData) {
+  return `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>New Ride Assignment Available</title>
+  <style>
+    body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+    .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+    .header { background-color: #e0f2fe; padding: 20px; border-radius: 5px; margin-bottom: 20px; text-align: center; border: 2px solid #0ea5e9; }
+    .header h1 { margin: 0; color: #0369a1; }
+    .notification-icon { font-size: 48px; margin-bottom: 10px; }
+    .section { margin-bottom: 20px; }
+    .ride-details { background-color: #f0f9ff; padding: 15px; border-radius: 5px; border-left: 4px solid #0ea5e9; }
+    .ride-details h3 { color: #0369a1; margin-top: 0; }
+    .details-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 15px 0; }
+    .detail-item { background-color: white; padding: 8px; border-radius: 3px; }
+    .detail-label { font-weight: bold; color: #64748b; font-size: 0.9em; }
+    .detail-value { color: #1e293b; margin-top: 2px; }
+    .footer { color: #718096; font-size: 12px; margin-top: 30px; border-top: 1px solid #e2e8f0; padding-top: 15px; }
+    .cta-button {
+      display: inline-block;
+      background-color: #0369a1;
+      color: #ffffff !important;
+      padding: 12px 30px;
+      text-decoration: none;
+      border-radius: 5px;
+      margin-top: 15px;
+      font-weight: bold;
+      text-align: center;
+    }
+    .urgent { color: #dc2626; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="notification-icon">🚗</div>
+      <h1>New Ride Available!</h1>
+      <p>A new ride assignment is waiting for you</p>
+    </div>
+
+    <div class="section">
+      <p>Dear ${rideData.partnerName},</p>
+      <p>A new ride has been booked that matches your approved fleet type. You have the opportunity to accept this ride assignment.</p>
+      <p class="urgent">⚡ First-come, first-served: Accept quickly to secure this assignment!</p>
+    </div>
+
+    <div class="section">
+      <div class="ride-details">
+        <h3>Ride Details</h3>
+        <div class="details-grid">
+          <div class="detail-item">
+            <div class="detail-label">Trip ID</div>
+            <div class="detail-value">${rideData.tripId}</div>
+          </div>
+          <div class="detail-item">
+            <div class="detail-label">Date & Time</div>
+            <div class="detail-value">${rideData.date} at ${rideData.time}</div>
+          </div>
+          <div class="detail-item">
+            <div class="detail-label">Pickup Location</div>
+            <div class="detail-value">${rideData.pickup}</div>
+          </div>
+          <div class="detail-item">
+            <div class="detail-label">Drop-off Location</div>
+            <div class="detail-value">${rideData.dropoff || 'N/A'}</div>
+          </div>
+          <div class="detail-item">
+            <div class="detail-label">Vehicle Type</div>
+            <div class="detail-value">${rideData.vehicleType}</div>
+          </div>
+          <div class="detail-item">
+            <div class="detail-label">Passengers</div>
+            <div class="detail-value">${rideData.passengerCount}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h3>What happens next?</h3>
+      <ul>
+        <li>Log in to your dashboard to view the full ride details</li>
+        <li>Accept the ride assignment if available</li>
+        <li>Prepare for the pickup time</li>
+        <li>Contact the passenger if needed</li>
+      </ul>
+    </div>
+
+    <div style="text-align: center;">
+      <a href="${rideData.baseUrl}/partners/dashboard" class="cta-button">
+        View Ride & Accept
+      </a>
+    </div>
+
+    <div class="footer">
+      <p>This is an automated notification. Please do not reply to this email.</p>
+      <p>If you have questions about your account, contact our support team.</p>
+    </div>
+  </div>
+</body>
+</html>
+  `;
+}
+
+export async function sendRideNotificationEmail(rideData: RideNotificationData) {
+  try {
+    // Validate email
+    if (!isValidEmail(rideData.partnerEmail)) {
+      console.error("Invalid email address:", rideData.partnerEmail);
+      return false;
+    }
+
+    // Get SMTP settings
+    await connectDB();
+    const settings = await Setting.findOne();
+
+    if (!settings?.smtpHost) {
+      console.error("SMTP not configured");
+      return false;
+    }
+
+    const fromAddress = settings?.smtpFrom || settings?.smtpUser;
+    const fromField = settings?.smtpSenderName ? `${settings.smtpSenderName} <${fromAddress}>` : fromAddress;
+
+    const emailHTML = generateRideNotificationEmailHTML(rideData);
+
+    const success = await sendEmail({
+      from: fromField,
+      to: rideData.partnerEmail,
+      subject: "🚗 New Ride Assignment Available - Action Required",
+      html: emailHTML,
+      text: `Dear ${rideData.partnerName}, A new ride (${rideData.tripId}) is available for ${rideData.date} at ${rideData.time}. Please log in to your dashboard to accept this assignment.`,
+    });
+
+    return success;
+  } catch (error) {
+    console.error("Error sending ride notification email:", error);
     return false;
   }
 }

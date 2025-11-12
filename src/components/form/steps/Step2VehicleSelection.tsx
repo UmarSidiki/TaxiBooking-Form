@@ -111,7 +111,7 @@ export default function Step2VehicleSelection() {
                             alt={vehicle.name}
                             width={200}
                             height={150}
-                            className="w-full sm:w-[200px] sm:h-[180px] h-[150px] rounded-lg object-cover"
+                            className="w-full sm:w-[300px] sm:h-[180px] h-[150px] rounded-lg object-cover"
                           />
                         ) : (
                           <div className="w-full sm:w-[200px] sm:h-[180px] h-[150px] bg-gray-200 rounded-lg flex items-center justify-center">
@@ -147,11 +147,13 @@ export default function Step2VehicleSelection() {
                             {distanceData &&
                               originalPrice > calculatedPrice && (
                                 <p className="text-xs text-gray-500 line-through">
-                                  {currencySymbol}{originalPrice.toFixed(2)}
+                                  {currencySymbol}
+                                  {originalPrice.toFixed(2)}
                                 </p>
                               )}
                             <p className="text-xl font-bold text-gray-900">
-                              {currencySymbol}{calculatedPrice.toFixed(2)}
+                              {currencySymbol}
+                              {calculatedPrice.toFixed(2)}
                             </p>
                             <p className="text-xs text-gray-500">
                               {formData.bookingType === "hourly"
@@ -330,14 +332,17 @@ export default function Step2VehicleSelection() {
                 <div className="flex items-center gap-2">
                   <Calendar className="h-4 w-4 text-gray-600" />
                   <span className="text-gray-700">
-                    {t("Step2.departure")}: {formData.date || t("Step2.date-not-set")} at {formData.time || t("Step2.time-not-set")}
+                    {t("Step2.departure")}:{" "}
+                    {formData.date || t("Step2.date-not-set")} at{" "}
+                    {formData.time || t("Step2.time-not-set")}
                   </span>
                 </div>
 
                 <div className="flex items-center gap-2">
                   <Calendar className="h-4 w-4 text-gray-600" />
                   <span className="text-gray-700">
-                    {t("Step2.return")}: {formData.returnDate} at {formData.returnTime}
+                    {t("Step2.return")}: {formData.returnDate} at{" "}
+                    {formData.returnTime}
                   </span>
                 </div>
               </>
@@ -345,7 +350,8 @@ export default function Step2VehicleSelection() {
               <div className="flex items-center gap-2">
                 <Calendar className="h-4 w-4 text-gray-600" />
                 <span className="text-gray-700">
-                  {formData.date || t("Step2.date-not-set")} at {formData.time || t("Step2.time-not-set")}
+                  {formData.date || t("Step2.date-not-set")} at{" "}
+                  {formData.time || t("Step2.time-not-set")}
                 </span>
               </div>
             )}
@@ -359,59 +365,65 @@ export default function Step2VehicleSelection() {
           </div>
 
           {/* Selected Vehicle Price */}
-          {formData.selectedVehicle && vehicles.length > 0 && (() => {
-            const selectedVehicle = vehicles.find((v) => v._id === formData.selectedVehicle)!;
-            const totalPrice = calculatePrice(selectedVehicle);
-            
-            // Calculate stop costs separately for display
-            let stopCosts = 0;
-            if (formData.stops && formData.stops.length > 0) {
-              const stopBasePrice = selectedVehicle.stopPrice || 0;
-              const stopPricePerHour = selectedVehicle.stopPricePerHour || 0;
-              
-              formData.stops.forEach(stop => {
-                stopCosts += stopBasePrice;
-                if (stop.duration && stop.duration > 0) {
-                  const hours = stop.duration / 60;
-                  stopCosts += stopPricePerHour * hours;
-                }
-              });
-            }
-            
-            return (
-              <div className="border-t pt-3">
-                <div className="flex justify-between items-center mb-1">
-                  <span className="text-sm text-gray-600">
-                    {t("Step2.vehicle-type")}
-                  </span>
-                  <span className="text-sm font-medium">
-                    {selectedVehicle.category}
-                  </span>
-                </div>
-                
-                {/* Stop costs breakdown */}
-                {stopCosts > 0 && (
-                  <div className="flex justify-between items-center mb-1 text-sm">
-                    <span className="text-gray-600">
-                      Stops ({formData.stops?.length || 0})
+          {formData.selectedVehicle &&
+            vehicles.length > 0 &&
+            (() => {
+              const selectedVehicle = vehicles.find(
+                (v) => v._id === formData.selectedVehicle
+              )!;
+              const totalPrice = calculatePrice(selectedVehicle);
+
+              // Calculate stop costs separately for display
+              let stopCosts = 0;
+              if (formData.stops && formData.stops.length > 0) {
+                const stopBasePrice = selectedVehicle.stopPrice || 0;
+                const stopPricePerHour = selectedVehicle.stopPricePerHour || 0;
+
+                formData.stops.forEach((stop) => {
+                  stopCosts += stopBasePrice;
+                  if (stop.duration && stop.duration > 0) {
+                    const hours = stop.duration / 60;
+                    stopCosts += stopPricePerHour * hours;
+                  }
+                });
+              }
+
+              return (
+                <div className="border-t pt-3">
+                  <div className="flex justify-between items-center mb-1">
+                    <span className="text-sm text-gray-600">
+                      {t("Step2.vehicle-type")}
                     </span>
-                    <span className="font-medium">
-                      {currencySymbol}{stopCosts.toFixed(2)}
+                    <span className="text-sm font-medium">
+                      {selectedVehicle.category}
                     </span>
                   </div>
-                )}
-                
-                <div className="flex justify-between items-center text-lg font-bold">
-                  <span>TOTAL</span>
-                  <div className="text-right">
-                    <p className="text-gray-900">
-                      {currencySymbol}{totalPrice.toFixed(2)}
-                    </p>
+
+                  {/* Stop costs breakdown */}
+                  {stopCosts > 0 && (
+                    <div className="flex justify-between items-center mb-1 text-sm">
+                      <span className="text-gray-600">
+                        Stops ({formData.stops?.length || 0})
+                      </span>
+                      <span className="font-medium">
+                        {currencySymbol}
+                        {stopCosts.toFixed(2)}
+                      </span>
+                    </div>
+                  )}
+
+                  <div className="flex justify-between items-center text-lg font-bold">
+                    <span>TOTAL</span>
+                    <div className="text-right">
+                      <p className="text-gray-900">
+                        {currencySymbol}
+                        {totalPrice.toFixed(2)}
+                      </p>
+                    </div>
                   </div>
                 </div>
-              </div>
-            );
-          })()}
+              );
+            })()}
 
           {/* Benefits */}
           <div className="border-t pt-3 space-y-2">

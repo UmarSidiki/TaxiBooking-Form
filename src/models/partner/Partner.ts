@@ -56,6 +56,7 @@ export interface IPartner {
   requestedFleet?: string;
   fleetApprovedAt?: Date;
   fleetApprovedBy?: string;
+  fleetRejectionReason?: string;
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -188,6 +189,7 @@ const PartnerSchema = new Schema<IPartner>(
     },
     fleetApprovedAt: Date,
     fleetApprovedBy: String,
+    fleetRejectionReason: String,
   },
   {
     timestamps: true,

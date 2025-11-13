@@ -49,7 +49,7 @@ export async function DELETE(
 
     // Find the specific approved fleet request
     const fleetRequestIndex = partner.fleetRequests?.findIndex(
-      (req: IFleetRequest) => req.vehicleId === vehicleId && req.status === "approved"
+      (req: IFleetRequest) => req.vehicleId.toString() === vehicleId && req.status === "approved"
     );
 
     if (fleetRequestIndex === -1 || fleetRequestIndex === undefined) {
@@ -63,7 +63,7 @@ export async function DELETE(
     partner.fleetRequests.splice(fleetRequestIndex, 1);
 
     // Clear currentFleet if it matches this vehicle
-    if (partner.currentFleet === vehicleId) {
+    if (partner.currentFleet?.toString() === vehicleId) {
       // Set currentFleet to another approved fleet if exists
       const anotherApprovedFleet = partner.fleetRequests?.find(
         (req: IFleetRequest) => req.status === "approved"
@@ -72,7 +72,7 @@ export async function DELETE(
     }
 
     // Update backward compatibility fields
-    if (partner.requestedFleet === vehicleId && partner.fleetStatus === "approved") {
+    if (partner.requestedFleet?.toString() === vehicleId && partner.fleetStatus === "approved") {
       // Check if there are other approved fleets
       const hasOtherApprovedFleets = partner.fleetRequests?.some(
         (req: IFleetRequest) => req.status === "approved"

@@ -287,7 +287,7 @@ export async function POST(request: NextRequest) {
         });
 
         if (eligiblePartners.length > 0) {
-          console.log(`📢 Notifying ${eligiblePartners.length} eligible partners for booking ${tripId}`);
+          console.log(`📢 Notifying ${eligiblePartners.length} eligible partners for booking ${tripId} with vehicle ${formData.selectedVehicle}`);
 
           // Get base URL for email links
           const baseUrl = request.headers.get('origin') ||

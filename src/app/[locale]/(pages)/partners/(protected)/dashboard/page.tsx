@@ -110,7 +110,7 @@ export default function PartnerDashboardPage() {
       if (response.ok) {
         setPartner(data.partner);
         setFleetInfo({
-          fleetStatus: data.partner.fleetStatus || "none",
+          fleetStatus: data.partner.currentFleet ? "approved" : (data.partner.fleetStatus || "none"),
           requestedFleet: data.partner.requestedFleet,
           fleetRejectionReason: data.partner.fleetRejectionReason,
         });

@@ -43,12 +43,12 @@ export async function DELETE() {
     // Also remove the approved fleet request from fleetRequests array
     if (partner.fleetRequests && partner.fleetRequests.length > 0) {
       partner.fleetRequests = partner.fleetRequests.filter(
-        (req: IFleetRequest) => !(req.vehicleId === removedFleetId && req.status === "approved")
+        (req: IFleetRequest) => !(req.vehicleId.toString() === removedFleetId.toString() && req.status === "approved")
       );
     }
 
     // Clear backward compatibility fields if they match the removed fleet
-    if (partner.requestedFleet === removedFleetId && partner.fleetStatus === "approved") {
+    if (partner.requestedFleet?.toString() === removedFleetId.toString() && partner.fleetStatus === "approved") {
       partner.requestedFleet = undefined;
       partner.fleetStatus = "none";
     }

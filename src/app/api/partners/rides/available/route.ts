@@ -22,9 +22,9 @@ export async function GET() {
     const partner = await Partner.findById(session.user.id);
     
     // Check if partner has an approved fleet (check both new and old system)
-    const hasApprovedFleet = partner?.currentFleet || 
-                              (partner?.fleetStatus === "approved" && partner?.requestedFleet);
-    
+    const hasApprovedFleet = partner?.currentFleet ||
+                             (partner?.fleetStatus === "approved" && partner?.requestedFleet);
+
     if (!partner || !hasApprovedFleet) {
       return NextResponse.json(
         { success: false, message: "Partner not approved for fleet operations" },
@@ -34,6 +34,8 @@ export async function GET() {
 
     // Get the vehicle ID from currentFleet or requestedFleet
     const partnerVehicleId = partner.currentFleet || partner.requestedFleet;
+
+    console.log(`Partner ${partner.name} (${partner._id}) has approved fleet: ${partnerVehicleId}`);
 
     // Find available rides that match the partner's fleet and are still available
     const availableRides = await Booking.find({
@@ -45,6 +47,8 @@ export async function GET() {
     })
     .sort({ createdAt: -1 }) // Most recent first
     .limit(50); // Limit results for performance
+
+    console.log(`Found ${availableRides.length} available rides for partner ${partner.name}`);
 
     return NextResponse.json({
       success: true,

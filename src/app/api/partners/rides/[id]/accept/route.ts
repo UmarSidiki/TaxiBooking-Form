@@ -48,6 +48,8 @@ export async function POST(
     // Get the vehicle ID from currentFleet or requestedFleet
     const partnerVehicleId = partner.currentFleet || partner.requestedFleet;
 
+    console.log(`Partner ${partner.name} (${partner._id}) attempting to accept ride ${rideId}`);
+
     // Use MongoDB's atomic findOneAndUpdate to ensure first-come-first-served
     // All validations are done atomically to prevent race conditions
     const updatedRide = await Booking.findOneAndUpdate(
@@ -75,11 +77,14 @@ export async function POST(
     );
 
     if (!updatedRide) {
+      console.log(`Ride ${rideId} was already assigned to another partner or unavailable`);
       return NextResponse.json(
         { success: false, message: "Ride was already assigned to another partner" },
         { status: 409 }
       );
     }
+
+    console.log(`Successfully assigned ride ${rideId} to partner ${partner.name}`);
 
     // Send assignment confirmation email
     try {

@@ -53,7 +53,7 @@ export async function PATCH(
 
     // Find the specific fleet request
     const fleetRequest = partner.fleetRequests?.find(
-      (req: IFleetRequest) => req.vehicleId === vehicleId && req.status === "pending"
+      (req: IFleetRequest) => req.vehicleId.toString() === vehicleId && req.status === "pending"
     );
 
     if (!fleetRequest) {

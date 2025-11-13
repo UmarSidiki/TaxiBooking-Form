@@ -38,7 +38,7 @@ export async function DELETE(request: NextRequest) {
 
     // Check if partner has this fleet request
     const requestIndex = partner.fleetRequests?.findIndex(
-      (req: IFleetRequest) => req.vehicleId === vehicleId && req.status === "pending"
+      (req: IFleetRequest) => req.vehicleId.toString() === vehicleId && req.status === "pending"
     );
 
     if (requestIndex === -1 || requestIndex === undefined) {

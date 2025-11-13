@@ -49,7 +49,7 @@ export async function POST(request: NextRequest) {
 
     // Check if partner already has a pending fleet request for this vehicle
     const existingRequest = partner.fleetRequests?.find(
-      (req: IFleetRequest) => req.vehicleId === vehicleId && req.status === "pending"
+      (req: IFleetRequest) => req.vehicleId.toString() === vehicleId && req.status === "pending"
     );
     
     if (existingRequest) {

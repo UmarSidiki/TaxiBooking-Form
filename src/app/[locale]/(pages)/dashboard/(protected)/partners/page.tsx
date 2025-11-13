@@ -84,7 +84,7 @@ interface Partner {
   currentFleet?: string;
   // Keep backward compatibility
   requestedFleet?: string;
-  fleetStatus: "none" | "pending" | "approved" | "rejected";
+  fleetStatus?: "none" | "pending" | "approved" | "rejected";
   fleetRequestedAt?: string;
   fleetApprovedAt?: string;
   fleetRejectionReason?: string;
@@ -704,10 +704,12 @@ export default function AdminPartnersPage() {
                 {(() => {
                   // Filter out invalid fleet requests (status "none" or no vehicleId)
                   const validFleetRequests = selectedPartner.fleetRequests?.filter(
-                    request => request.status !== "none" && request.vehicleId
+                    request => request.status && request.status !== "none" && request.vehicleId && request.vehicleId.trim() !== ""
                   ) || [];
                   
-                  const hasNoFleet = validFleetRequests.length === 0 && selectedPartner.fleetStatus === "none";
+                  // Check if partner has no fleet at all
+                  const hasNoFleet = validFleetRequests.length === 0 && 
+                    (!selectedPartner.fleetStatus || selectedPartner.fleetStatus === "none");
                   
                   if (hasNoFleet) {
                     return (
@@ -721,7 +723,7 @@ export default function AdminPartnersPage() {
                   return (
                     <div className="space-y-3">
                       {/* Show legacy single fleet if exists and no valid fleetRequests */}
-                      {selectedPartner.fleetStatus !== "none" && validFleetRequests.length === 0 && (
+                      {selectedPartner.fleetStatus && selectedPartner.fleetStatus !== "none" && validFleetRequests.length === 0 && (
                         <div className="p-4 border rounded-lg bg-muted/30">
                           <div className="flex items-center justify-between mb-2">
                             <p className="text-sm font-medium">

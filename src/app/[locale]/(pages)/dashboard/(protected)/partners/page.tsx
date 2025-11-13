@@ -701,60 +701,71 @@ export default function AdminPartnersPage() {
                   {t("fleet-information")}
                 </h3>
                 
-                {(!selectedPartner.fleetRequests || selectedPartner.fleetRequests.length === 0) && 
-                 selectedPartner.fleetStatus === "none" ? (
-                  <div className="p-4 border rounded-lg bg-muted/30 text-center text-muted-foreground">
-                    <Truck className="w-8 h-8 mx-auto mb-2 opacity-50" />
-                    <p className="text-sm">{t("fleet-none")}</p>
-                  </div>
-                ) : (
-                  <div className="space-y-3">
-                    {/* Show legacy single fleet if exists and no fleetRequests */}
-                    {selectedPartner.fleetStatus !== "none" && (!selectedPartner.fleetRequests || selectedPartner.fleetRequests.length === 0) && (
-                      <div className="p-4 border rounded-lg bg-muted/30">
-                        <div className="flex items-center justify-between mb-2">
-                          <p className="text-sm font-medium">
-                            {vehicles.find(v => v._id === selectedPartner.requestedFleet)?.name || selectedPartner.requestedFleet || "Unknown Vehicle"}
-                          </p>
-                          <span className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium ${
-                            selectedPartner.fleetStatus === "approved"
-                              ? "bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300"
-                              : selectedPartner.fleetStatus === "pending"
-                              ? "bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-300"
-                              : "bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300"
-                          }`}>
-                            {selectedPartner.fleetStatus === "approved" && <CheckCircle2 className="w-3 h-3" />}
-                            {selectedPartner.fleetStatus === "pending" && <Clock className="w-3 h-3" />}
-                            {selectedPartner.fleetStatus === "rejected" && <XCircle className="w-3 h-3" />}
-                            {t(`fleet-${selectedPartner.fleetStatus}`)}
-                          </span>
-                        </div>
-                        {selectedPartner.fleetRequestedAt && (
-                          <p className="text-xs text-muted-foreground">
-                            {t("requested-at")}: {new Date(selectedPartner.fleetRequestedAt).toLocaleString()}
-                          </p>
-                        )}
+                {(() => {
+                  // Filter out invalid fleet requests (status "none" or no vehicleId)
+                  const validFleetRequests = selectedPartner.fleetRequests?.filter(
+                    request => request.status !== "none" && request.vehicleId
+                  ) || [];
+                  
+                  const hasNoFleet = validFleetRequests.length === 0 && selectedPartner.fleetStatus === "none";
+                  
+                  if (hasNoFleet) {
+                    return (
+                      <div className="p-4 border rounded-lg bg-muted/30 text-center text-muted-foreground">
+                        <Truck className="w-8 h-8 mx-auto mb-2 opacity-50" />
+                        <p className="text-sm">{t("fleet-none")}</p>
                       </div>
-                    )}
-                    
-                    {/* Show all fleet requests */}
-                    {selectedPartner.fleetRequests?.map((request, index) => {
-                      const vehicle = vehicles.find(v => v._id === request.vehicleId);
-                      return (
-                        <div key={index} className="p-4 border rounded-lg bg-muted/30">
-                          <div className="flex items-start justify-between gap-3 mb-2">
-                            <div className="flex-1 min-w-0">
-                              <p className="font-medium">
-                                {vehicle?.name || request.vehicleId}
-                              </p>
-                              {vehicle?.category && (
-                                <p className="text-xs text-muted-foreground capitalize">
-                                  {vehicle.category}
+                    );
+                  }
+                  
+                  return (
+                    <div className="space-y-3">
+                      {/* Show legacy single fleet if exists and no valid fleetRequests */}
+                      {selectedPartner.fleetStatus !== "none" && validFleetRequests.length === 0 && (
+                        <div className="p-4 border rounded-lg bg-muted/30">
+                          <div className="flex items-center justify-between mb-2">
+                            <p className="text-sm font-medium">
+                              {vehicles.find(v => v._id === selectedPartner.requestedFleet)?.name || selectedPartner.requestedFleet || "Unknown Vehicle"}
+                            </p>
+                            <span className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium ${
+                              selectedPartner.fleetStatus === "approved"
+                                ? "bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300"
+                                : selectedPartner.fleetStatus === "pending"
+                                ? "bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-300"
+                                : "bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300"
+                            }`}>
+                              {selectedPartner.fleetStatus === "approved" && <CheckCircle2 className="w-3 h-3" />}
+                              {selectedPartner.fleetStatus === "pending" && <Clock className="w-3 h-3" />}
+                              {selectedPartner.fleetStatus === "rejected" && <XCircle className="w-3 h-3" />}
+                              {t(`fleet-${selectedPartner.fleetStatus}`)}
+                            </span>
+                          </div>
+                          {selectedPartner.fleetRequestedAt && (
+                            <p className="text-xs text-muted-foreground">
+                              {t("requested-at")}: {new Date(selectedPartner.fleetRequestedAt).toLocaleString()}
+                            </p>
+                          )}
+                        </div>
+                      )}
+                      
+                      {/* Show all valid fleet requests */}
+                      {validFleetRequests.map((request, index) => {
+                        const vehicle = vehicles.find(v => v._id === request.vehicleId);
+                        return (
+                          <div key={index} className="p-4 border rounded-lg bg-muted/30">
+                            <div className="flex items-start justify-between gap-3 mb-2">
+                              <div className="flex-1 min-w-0">
+                                <p className="font-medium">
+                                  {vehicle?.name || request.vehicleId}
                                 </p>
-                              )}
-                            </div>
-                            <span className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium flex-shrink-0 ${
-                              request.status === "approved"
+                                {vehicle?.category && (
+                                  <p className="text-xs text-muted-foreground capitalize">
+                                    {vehicle.category}
+                                  </p>
+                                )}
+                              </div>
+                              <span className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium flex-shrink-0 ${
+                                request.status === "approved"
                                 ? "bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300"
                                 : request.status === "pending"
                                 ? "bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-300"
@@ -854,7 +865,8 @@ export default function AdminPartnersPage() {
                       );
                     })}
                   </div>
-                )}
+                  );
+                })()}
               </div>
 
               {/* Rejection Reason */}

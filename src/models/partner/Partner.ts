@@ -57,6 +57,10 @@ export interface IPartner {
   fleetApprovedAt?: Date;
   fleetApprovedBy?: string;
   fleetRejectionReason?: string;
+  // Earnings tracking fields
+  totalEarnings?: number; // Total earnings from completed rides
+  onlineEarnings?: number; // Earnings from online payments
+  cashEarnings?: number; // Earnings from cash payments
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -190,6 +194,19 @@ const PartnerSchema = new Schema<IPartner>(
     fleetApprovedAt: Date,
     fleetApprovedBy: String,
     fleetRejectionReason: String,
+    // Earnings tracking fields
+    totalEarnings: {
+      type: Number,
+      default: 0,
+    },
+    onlineEarnings: {
+      type: Number,
+      default: 0,
+    },
+    cashEarnings: {
+      type: Number,
+      default: 0,
+    },
   },
   {
     timestamps: true,

@@ -88,6 +88,10 @@ interface Partner {
   fleetRequestedAt?: string;
   fleetApprovedAt?: string;
   fleetRejectionReason?: string;
+  // Earnings fields
+  totalEarnings?: number;
+  onlineEarnings?: number;
+  cashEarnings?: number;
 }
 
 export default function AdminPartnersPage() {
@@ -579,6 +583,27 @@ export default function AdminPartnersPage() {
                               )}
                             </div>
                           )}
+                          {/* Earnings display */}
+                          {partner.totalEarnings !== undefined && partner.totalEarnings > 0 && (
+                            <div className="mt-2">
+                              <p className="text-xs text-muted-foreground">{t("total-earnings")}</p>
+                              <p className="text-sm font-bold text-green-600">
+                                €{partner.totalEarnings.toFixed(2)}
+                              </p>
+                              {partner.onlineEarnings !== undefined && partner.cashEarnings !== undefined && (
+                                <div className="text-xs text-muted-foreground mt-1 space-y-1">
+                                  <div className="flex justify-between">
+                                    <span>{t("online-payment")}</span>
+                                    <span>€{partner.onlineEarnings.toFixed(2)}</span>
+                                  </div>
+                                  <div className="flex justify-between">
+                                    <span>{t("cash-payment")}</span>
+                                    <span>€{partner.cashEarnings.toFixed(2)}</span>
+                                  </div>
+                                </div>
+                              )}
+                            </div>
+                          )}
                         </div>
                     <div className="flex items-center gap-2 flex-shrink-0">
                       {getStatusBadge(partner.status)}
@@ -645,6 +670,36 @@ export default function AdminPartnersPage() {
                     </div>
                   )}
                 </div>
+
+                {/* Earnings Summary */}
+                {(selectedPartner.totalEarnings !== undefined && selectedPartner.totalEarnings > 0) && (
+                  <div className="mt-6 p-4 bg-green-50 dark:bg-green-950/20 border border-green-200 dark:border-green-900 rounded-lg">
+                    <h4 className="font-semibold text-green-900 dark:text-green-100 mb-3 flex items-center gap-2">
+                      <span className="text-lg">💰</span>
+                      {t("earnings-summary")}
+                    </h4>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <div className="text-center">
+                        <p className="text-sm text-green-700 dark:text-green-300">{t("total-earnings")}</p>
+                        <p className="text-xl font-bold text-green-900 dark:text-green-100">
+                          €{selectedPartner.totalEarnings?.toFixed(2)}
+                        </p>
+                      </div>
+                      <div className="text-center">
+                        <p className="text-sm text-green-700 dark:text-green-300">{t("online-payment")}</p>
+                        <p className="text-lg font-semibold text-green-800 dark:text-green-200">
+                          €{selectedPartner.onlineEarnings?.toFixed(2) || "0.00"}
+                        </p>
+                      </div>
+                      <div className="text-center">
+                        <p className="text-sm text-green-700 dark:text-green-300">{t("cash-payment")}</p>
+                        <p className="text-lg font-semibold text-green-800 dark:text-green-200">
+                          €{selectedPartner.cashEarnings?.toFixed(2) || "0.00"}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* Documents */}

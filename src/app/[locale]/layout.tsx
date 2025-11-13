@@ -1,6 +1,5 @@
 import type { CSSProperties } from "react";
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import "@/style/globals.css";
 import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { notFound } from "next/navigation";
@@ -10,16 +9,6 @@ import { ThemeProvider } from "@/contexts/ThemeContext";
 import { CurrencyProvider } from "@/contexts/CurrencyContext";
 import { getThemeSettings } from "@/lib/theme-settings";
 import type { ThemeSettings } from "@/lib/theme-settings";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
 
 export const metadata: Metadata = {
   title: process.env.NEXT_PUBLIC_WEBSITE_NAME,
@@ -52,7 +41,7 @@ export default async function RootLayout({ children, params }: Props) {
     <html lang={locale}>
       <body
         style={cssVariables}
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className="antialiased"
       >
         <AuthSessionProvider>
           <ThemeProvider initialSettings={serializedThemeSettings}>

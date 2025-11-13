@@ -5,6 +5,7 @@ import Partner, { type IFleetRequest } from "@/models/partner/Partner";
 import Vehicle from "@/models/vehicle/Vehicle";
 import { authOptions } from "@/lib/auth/options";
 import { sendFleetRequestNotificationEmail } from "@/controllers/email/admin/FleetNotification";
+import { getBaseUrl } from "@/lib/get-base-url";
 
 export async function POST(request: NextRequest) {
   try {
@@ -76,13 +77,14 @@ export async function POST(request: NextRequest) {
     try {
       // Fetch vehicle details for the email
       const vehicle = await Vehicle.findById(vehicleId);
+      const baseUrl = getBaseUrl(request);
       
       await sendFleetRequestNotificationEmail({
         partnerName: partner.name,
         partnerEmail: partner.email,
         vehicleName: vehicle?.name || 'Unknown Vehicle',
         vehicleCategory: vehicle?.category || 'Unknown',
-        baseUrl: process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000",
+        baseUrl,
       });
     } catch (emailError) {
       console.error("Failed to send fleet request notification email:", emailError);

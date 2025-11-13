@@ -75,7 +75,7 @@ const BookingSchema: Schema = new Schema({
   returnDate: { type: String },
   returnTime: { type: String },
   passengers: { type: Number, required: true },
-  selectedVehicle: { type: String, required: true },
+  selectedVehicle: { type: Schema.Types.ObjectId, ref: "Vehicle", required: true },
   vehicleDetails: {
     name: { type: String },
     price: { type: String },
@@ -109,12 +109,12 @@ const BookingSchema: Schema = new Schema({
   canceledAt: { type: Date },
   thankYouEmailSent: { type: Boolean, default: false },
   assignedDriver: {
-    _id: { type: String },
+    _id: { type: Schema.Types.ObjectId, ref: "Driver" },
     name: { type: String },
     email: { type: String },
   },
   assignedPartner: {
-    _id: { type: String },
+    _id: { type: Schema.Types.ObjectId, ref: "Partner" },
     name: { type: String },
     email: { type: String },
   },

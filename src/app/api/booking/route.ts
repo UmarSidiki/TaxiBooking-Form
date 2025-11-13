@@ -269,11 +269,21 @@ export async function POST(request: NextRequest) {
     if (settings?.enablePartners) {
       try {
         // Find partners with approved fleet matching the booked vehicle type
+        // Check both new (currentFleet) and old (requestedFleet) fields for compatibility
         const eligiblePartners = await Partner.find({
           status: "approved",
-          fleetStatus: "approved",
-          requestedFleet: formData.selectedVehicle,
           isActive: true,
+          $or: [
+            { 
+              // New system: currentFleet field
+              currentFleet: formData.selectedVehicle,
+            },
+            { 
+              // Old system: fleetStatus + requestedFleet (for backward compatibility)
+              fleetStatus: "approved",
+              requestedFleet: formData.selectedVehicle,
+            }
+          ]
         });
 
         if (eligiblePartners.length > 0) {

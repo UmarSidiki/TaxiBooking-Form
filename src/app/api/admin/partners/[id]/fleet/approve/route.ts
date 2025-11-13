@@ -5,6 +5,7 @@ import Partner, { type IFleetRequest } from "@/models/partner/Partner";
 import Vehicle from "@/models/vehicle/Vehicle";
 import { authOptions } from "@/lib/auth/options";
 import { sendFleetApprovalEmail } from "@/controllers/email/admin/FleetNotification";
+import { getBaseUrl } from "@/lib/get-base-url";
 
 export async function PATCH(
   request: NextRequest,
@@ -92,12 +93,14 @@ export async function PATCH(
 
     // Send email notification to partner
     try {
+      const baseUrl = getBaseUrl(request);
+      
       await sendFleetApprovalEmail({
         partnerName: partner.name,
         partnerEmail: partner.email,
         vehicleName: vehicle.name,
         vehicleCategory: vehicle.category,
-        baseUrl: process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000",
+        baseUrl,
       });
     } catch (emailError) {
       console.error("Failed to send fleet approval email:", emailError);

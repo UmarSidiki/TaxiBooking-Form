@@ -33,19 +33,27 @@ export async function POST(
 
     // Get the partner
     const partner = await Partner.findById(session.user.id);
-    if (!partner || partner.fleetStatus !== "approved") {
+    
+    // Check if partner has an approved fleet (check both new and old system)
+    const hasApprovedFleet = partner?.currentFleet || 
+                              (partner?.fleetStatus === "approved" && partner?.requestedFleet);
+    
+    if (!partner || !hasApprovedFleet) {
       return NextResponse.json(
         { success: false, message: "Partner not approved for fleet operations" },
         { status: 403 }
       );
     }
 
+    // Get the vehicle ID from currentFleet or requestedFleet
+    const partnerVehicleId = partner.currentFleet || partner.requestedFleet;
+
     // Use MongoDB's atomic findOneAndUpdate to ensure first-come-first-served
     // All validations are done atomically to prevent race conditions
     const updatedRide = await Booking.findOneAndUpdate(
       {
         _id: rideId,
-        selectedVehicle: partner.requestedFleet, // Ensure it matches partner's fleet
+        selectedVehicle: partnerVehicleId, // Ensure it matches partner's fleet
         availableForPartners: true,
         status: "upcoming", // Only upcoming rides can be accepted
         assignedPartner: { $exists: false }, // Not assigned yet

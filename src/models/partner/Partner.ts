@@ -51,6 +51,11 @@ export interface IPartner {
   fleetRequests: IFleetRequest[];
   // Keep backward compatibility - current approved fleet
   currentFleet?: string; // Vehicle ID of currently approved fleet
+  // Backward compatibility fields for old fleet system
+  fleetStatus?: FleetStatus;
+  requestedFleet?: string;
+  fleetApprovedAt?: Date;
+  fleetApprovedBy?: string;
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -150,7 +155,7 @@ const PartnerSchema = new Schema<IPartner>(
     // Fleet assignment fields - now supports multiple requests
     fleetRequests: [{
       vehicleId: {
-        type: String,
+        type: Schema.Types.ObjectId,
         ref: "Vehicle",
         required: true,
       },
@@ -169,9 +174,20 @@ const PartnerSchema = new Schema<IPartner>(
     }],
     // Keep backward compatibility - current approved fleet
     currentFleet: {
-      type: String,
+      type: Schema.Types.ObjectId,
       ref: "Vehicle",
     },
+    // Backward compatibility fields for old fleet system
+    fleetStatus: {
+      type: String,
+      enum: ["none", "pending", "approved", "rejected"],
+    },
+    requestedFleet: {
+      type: Schema.Types.ObjectId,
+      ref: "Vehicle",
+    },
+    fleetApprovedAt: Date,
+    fleetApprovedBy: String,
   },
   {
     timestamps: true,

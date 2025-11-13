@@ -6,6 +6,7 @@ export interface IDriver {
   email: string;
   password: string;
   isActive: boolean;
+  assignedVehicle?: string;
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -32,6 +33,10 @@ const DriverSchema = new Schema<IDriver>(
     isActive: {
       type: Boolean,
       default: true,
+    },
+    assignedVehicle: {
+      type: Schema.Types.ObjectId,
+      ref: "Vehicle",
     },
   },
   {

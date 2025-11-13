@@ -20,16 +20,24 @@ export async function GET() {
 
     // Get partner's approved fleet type
     const partner = await Partner.findById(session.user.id);
-    if (!partner || partner.fleetStatus !== "approved") {
+    
+    // Check if partner has an approved fleet (check both new and old system)
+    const hasApprovedFleet = partner?.currentFleet || 
+                              (partner?.fleetStatus === "approved" && partner?.requestedFleet);
+    
+    if (!partner || !hasApprovedFleet) {
       return NextResponse.json(
         { success: false, message: "Partner not approved for fleet operations" },
         { status: 403 }
       );
     }
 
+    // Get the vehicle ID from currentFleet or requestedFleet
+    const partnerVehicleId = partner.currentFleet || partner.requestedFleet;
+
     // Find available rides that match the partner's fleet and are still available
     const availableRides = await Booking.find({
-      selectedVehicle: partner.requestedFleet, // Match partner's approved fleet
+      selectedVehicle: partnerVehicleId, // Match partner's approved fleet
       availableForPartners: true,
       status: "upcoming",
       assignedPartner: { $exists: false }, // Not yet assigned to any partner

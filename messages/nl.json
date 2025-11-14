@@ -77,7 +77,11 @@
         "provide-fleet-rejection-reason": "Geef een reden op waarom u deze wagenparkaanvraag afwijst",
         "reject-fleet": "Vlootverzoek afwijzen",
         "reject-fleet-request": "Verzoek om vloottoewijzing afwijzen",
-        "requested-at": "Aangevraagd bij:"
+        "requested-at": "Aangevraagd bij:",
+        "confirm-delete-fleet-request": "Weet u zeker dat u deze afgewezen wagenparkaanvraag wilt verwijderen? \nDeze actie kan niet ongedaan worden gemaakt.",
+        "delete": "Verwijderen",
+        "delete-fleet-request": "Vlootverzoek verwijderen",
+        "deleting": "Verwijderen..."
       }
     },
     "Features": {
@@ -1001,5 +1005,40 @@
     "vehicle": "Voertuig"
   },
   "not-set": "Niet ingesteld",
-  "websiteName": "Websitenaam"
+  "websiteName": "Websitenaam",
+  "Review": {
+    "already-reviewed": "Al beoordeeld",
+    "at": "bij",
+    "booking-not-found": "Boeking niet gevonden",
+    "date": "Datum:",
+    "excellent": "Uitstekend",
+    "failed-to-load-booking": "Kan boekingsgegevens niet laden",
+    "failed-to-submit-review": "Het is niet gelukt om een ​​beoordeling in te dienen. \nProbeer het opnieuw.",
+    "fair": "Eerlijk",
+    "from": "Van:",
+    "good": "Goed",
+    "hourly-booking": "Boeking per uur",
+    "how-was-your-experience": "Hoe was jouw ervaring?",
+    "invalid-booking-link": "Ongeldige boekingslink",
+    "loading-booking-details": "Boekingsgegevens laden...",
+    "oops": "Oeps!",
+    "please-select-rating": "Selecteer een beoordeling",
+    "please-write-review": "Schrijf alstublieft een recensie",
+    "poor": "Arm",
+    "rate-your-experience": "Beoordeel uw ervaring",
+    "return-to-home": "Keer terug naar Thuis",
+    "review-already-submitted": "U heeft al een beoordeling voor deze boeking ingediend. \nBedankt voor uw feedback!",
+    "review-submitted-successfully": "Uw beoordeling is succesvol verzonden. \nWij waarderen uw feedback!",
+    "share-your-thoughts": "Deel uw mening over de service, de chauffeur, het voertuig of de algehele ervaring...",
+    "submit-review": "Beoordeling indienen",
+    "submitting": "Verzenden...",
+    "tell-us-more": "Vertel ons meer over uw ervaring",
+    "thank-you": "Bedankt!",
+    "to": "Naar:",
+    "trip-details": "Reisdetails",
+    "trip-id": "Reis-ID:",
+    "vehicle": "Voertuig:",
+    "very-good": "Erg goed",
+    "we-love-to-hear-about-your-trip": "Wij horen graag over uw reis met ons"
+  }
 }

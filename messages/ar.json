@@ -77,7 +77,11 @@
         "fleet-status": "حالة الأسطول",
         "partner-assigned-successfully": "تم تعيين الشريك بنجاح",
         "partner-reassigned-successfully": "تمت إعادة تعيين الشريك بنجاح",
-        "provide-fleet-rejection-reason": "يرجى تقديم سبب لرفض طلب الأسطول هذا"
+        "provide-fleet-rejection-reason": "يرجى تقديم سبب لرفض طلب الأسطول هذا",
+        "confirm-delete-fleet-request": "هل أنت متأكد أنك تريد حذف طلب الأسطول المرفوض هذا؟ \nلا يمكن التراجع عن هذا الإجراء.",
+        "delete": "يمسح",
+        "delete-fleet-request": "حذف طلب الأسطول",
+        "deleting": "جارٍ الحذف..."
       }
     },
     "Features": {
@@ -1001,5 +1005,40 @@
     "vehicle": "المركبة"
   },
   "not-set": "غير محدد",
-  "websiteName": "اسم الموقع"
+  "websiteName": "اسم الموقع",
+  "Review": {
+    "already-reviewed": "تمت مراجعته بالفعل",
+    "at": "في",
+    "booking-not-found": "لم يتم العثور على الحجز",
+    "date": "تاريخ:",
+    "excellent": "ممتاز",
+    "failed-to-load-booking": "فشل في تحميل تفاصيل الحجز",
+    "failed-to-submit-review": "فشل في تقديم المراجعة. \nيرجى المحاولة مرة أخرى.",
+    "fair": "عدل",
+    "from": "من:",
+    "good": "جيد",
+    "hourly-booking": "الحجز بالساعة",
+    "how-was-your-experience": "كيف كانت تجربتك؟",
+    "invalid-booking-link": "رابط الحجز غير صالح",
+    "loading-booking-details": "جارٍ تحميل تفاصيل الحجز...",
+    "oops": "أُووبس!",
+    "please-select-rating": "الرجاء تحديد التقييم",
+    "please-write-review": "يرجى كتابة مراجعة",
+    "poor": "فقير",
+    "rate-your-experience": "قيم تجربتك",
+    "return-to-home": "العودة إلى المنزل",
+    "review-already-submitted": "لقد قمت بالفعل بتقديم مراجعة لهذا الحجز. \nشكرا لتعليقاتك!",
+    "review-submitted-successfully": "لقد تم إرسال رأيك بنجاح. \nنحن نقدر ملاحظاتك!",
+    "share-your-thoughts": "شارك أفكارك حول الخدمة أو السائق أو السيارة أو التجربة الشاملة...",
+    "submit-review": "إرسال المراجعة",
+    "submitting": "تقديم...",
+    "tell-us-more": "أخبرنا المزيد عن تجربتك",
+    "thank-you": "شكرًا لك!",
+    "to": "ل:",
+    "trip-details": "تفاصيل الرحلة",
+    "trip-id": "معرف الرحلة:",
+    "vehicle": "عربة:",
+    "very-good": "جيد جدًا",
+    "we-love-to-hear-about-your-trip": "نحن نحب أن نسمع عن رحلتك معنا"
+  }
 }

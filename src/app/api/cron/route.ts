@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { sendThankYouEmails } from "@/utils/sendThankYouEmails";
 import { cleanupAbandonedBookings } from "@/utils/cleanupAbandonedBookings";
 import { deleteSuspendedPartners } from "@/utils/deleteSuspendedPartners";
+import { deleteOldCompletedRides } from "@/utils/deleteOldCompletedRides";
 
 export async function GET() {
   console.log('🕒 Cron job triggered');
@@ -18,11 +19,16 @@ export async function GET() {
   console.log('🗑️ Deleting suspended partners...');
   const partnerDeletionResult = await deleteSuspendedPartners();
 
+  // Delete old completed rides (90+ days old)
+  console.log('🗑️ Deleting old completed rides...');
+  const oldRidesDeletionResult = await deleteOldCompletedRides();
+
   const results = {
-    success: emailResult.success && cleanupResult.success && partnerDeletionResult.success,
+    success: emailResult.success && cleanupResult.success && partnerDeletionResult.success && oldRidesDeletionResult.success,
     emails: emailResult,
     cleanup: cleanupResult,
-    partnerDeletion: partnerDeletionResult
+    partnerDeletion: partnerDeletionResult,
+    oldRidesDeletion: oldRidesDeletionResult
   };
 
   if (results.success) {

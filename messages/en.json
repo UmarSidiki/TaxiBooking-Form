@@ -573,7 +573,11 @@
         "no-description": "No description available",
         "check-back-later": "Check back later for available vehicles",
         "confirm-fleet-change-message": "Are you sure you want to request a different fleet? Your current fleet assignment will be changed to pending status and you won't be able to accept rides until the admin approves your new request.",
-        "already-requested-this-vehicle": "You have already requested this vehicle. Please wait for admin approval."
+        "already-requested-this-vehicle": "You have already requested this vehicle. Please wait for admin approval.",
+        "confirm-delete-fleet-request": "Confirm Delete Fleet Request",
+        "delete": "Delete",
+        "delete-fleet-request": "Delete Fleet Request",
+        "deleting": "Deleting..."
       }
     },
     "Admin": {
@@ -1000,5 +1004,40 @@
     "secured-by-stripe": "Secured by Stripe",
     "pci-dss-compliant": "PCI DSS Compliant",
     "your-payment-information-is-encrypted-and-secure-we-never-store-your-card-details": "Your payment information is encrypted and secure. We never store your card details."
+  },
+  "Review": {
+    "how-was-your-experience": "How was your experience?",
+    "we-love-to-hear-about-your-trip": "We'd love to hear about your trip with us",
+    "trip-details": "Trip Details",
+    "trip-id": "Trip ID:",
+    "from": "From:",
+    "to": "To:",
+    "hourly-booking": "Hourly booking",
+    "date": "Date:",
+    "at": "at",
+    "vehicle": "Vehicle:",
+    "rate-your-experience": "Rate your experience",
+    "poor": "Poor",
+    "fair": "Fair",
+    "good": "Good",
+    "very-good": "Very Good",
+    "excellent": "Excellent",
+    "tell-us-more": "Tell us more about your experience",
+    "share-your-thoughts": "Share your thoughts about the service, driver, vehicle, or overall experience...",
+    "please-select-rating": "Please select a rating",
+    "please-write-review": "Please write a review",
+    "submit-review": "Submit Review",
+    "submitting": "Submitting...",
+    "thank-you": "Thank You!",
+    "review-submitted-successfully": "Your review has been submitted successfully. We appreciate your feedback!",
+    "return-to-home": "Return to Home",
+    "oops": "Oops!",
+    "invalid-booking-link": "Invalid booking link",
+    "loading-booking-details": "Loading booking details...",
+    "failed-to-load-booking": "Failed to load booking details",
+    "failed-to-submit-review": "Failed to submit review. Please try again.",
+    "already-reviewed": "Already Reviewed",
+    "review-already-submitted": "You have already submitted a review for this booking. Thank you for your feedback!",
+    "booking-not-found": "Booking not found"
   }
 }

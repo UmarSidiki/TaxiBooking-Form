@@ -77,7 +77,11 @@
         "partner-assigned-successfully": "Partner erfolgreich zugewiesen",
         "partner-reassigned-successfully": "Partner erfolgreich neu zugewiesen",
         "partner-rejection-reason": "Grund für die Ablehnung des Partners",
-        "requested-at": "Angefordert unter:"
+        "requested-at": "Angefordert unter:",
+        "confirm-delete-fleet-request": "Sind Sie sicher, dass Sie diese abgelehnte Flottenanfrage löschen möchten? \nDiese Aktion kann nicht rückgängig gemacht werden.",
+        "delete": "Löschen",
+        "delete-fleet-request": "Flottenanfrage löschen",
+        "deleting": "Löschen..."
       }
     },
     "Features": {
@@ -1001,5 +1005,40 @@
     "vehicle": "Fahrzeug"
   },
   "not-set": "Nicht festgelegt",
-  "websiteName": "Website-Name"
+  "websiteName": "Website-Name",
+  "Review": {
+    "already-reviewed": "Bereits überprüft",
+    "at": "bei",
+    "booking-not-found": "Buchung nicht gefunden",
+    "date": "Datum:",
+    "excellent": "Exzellent",
+    "failed-to-load-booking": "Buchungsdetails konnten nicht geladen werden",
+    "failed-to-submit-review": "Bewertung konnte nicht eingereicht werden. \nBitte versuchen Sie es erneut.",
+    "fair": "Gerecht",
+    "from": "Aus:",
+    "good": "Gut",
+    "hourly-booking": "Stündliche Buchung",
+    "how-was-your-experience": "Wie war Ihre Erfahrung?",
+    "invalid-booking-link": "Ungültiger Buchungslink",
+    "loading-booking-details": "Buchungsdetails werden geladen...",
+    "oops": "Hoppla!",
+    "please-select-rating": "Bitte wählen Sie eine Bewertung aus",
+    "please-write-review": "Bitte schreiben Sie eine Bewertung",
+    "poor": "Arm",
+    "rate-your-experience": "Bewerten Sie Ihre Erfahrung",
+    "return-to-home": "Zurück nach Hause",
+    "review-already-submitted": "Sie haben bereits eine Bewertung für diese Buchung abgegeben. \nVielen Dank für Ihr Feedback!",
+    "review-submitted-successfully": "Ihre Bewertung wurde erfolgreich übermittelt. \nWir freuen uns über Ihr Feedback!",
+    "share-your-thoughts": "Teilen Sie Ihre Gedanken zum Service, zum Fahrer, zum Fahrzeug oder zum Gesamterlebnis mit ...",
+    "submit-review": "Bewertung abgeben",
+    "submitting": "Einreichen...",
+    "tell-us-more": "Erzählen Sie uns mehr über Ihre Erfahrungen",
+    "thank-you": "Danke schön!",
+    "to": "Zu:",
+    "trip-details": "Reisedetails",
+    "trip-id": "Reise-ID:",
+    "vehicle": "Fahrzeug:",
+    "very-good": "Sehr gut",
+    "we-love-to-hear-about-your-trip": "Wir würden uns freuen, von Ihrer Reise mit uns zu hören"
+  }
 }

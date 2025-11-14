@@ -77,7 +77,11 @@
         "provide-fleet-rejection-reason": "Proporcione un motivo para rechazar esta solicitud de flota",
         "reject-fleet": "Rechazar solicitud de flota",
         "reject-fleet-request": "Rechazar solicitud de asignación de flota",
-        "requested-at": "Solicitado en:"
+        "requested-at": "Solicitado en:",
+        "confirm-delete-fleet-request": "¿Está seguro de que desea eliminar esta solicitud de flota rechazada? \nEsta acción no se puede deshacer.",
+        "delete": "Borrar",
+        "delete-fleet-request": "Eliminar solicitud de flota",
+        "deleting": "Eliminando..."
       }
     },
     "Features": {
@@ -1001,5 +1005,40 @@
     "vehicle": "Vehículo"
   },
   "not-set": "No establecido",
-  "websiteName": "Nombre del sitio web"
+  "websiteName": "Nombre del sitio web",
+  "Review": {
+    "already-reviewed": "Ya revisado",
+    "at": "en",
+    "booking-not-found": "Reserva no encontrada",
+    "date": "Fecha:",
+    "excellent": "Excelente",
+    "failed-to-load-booking": "No se pudieron cargar los detalles de la reserva",
+    "failed-to-submit-review": "No se pudo enviar la revisión. \nPor favor inténtalo de nuevo.",
+    "fair": "Justo",
+    "from": "De:",
+    "good": "Bien",
+    "hourly-booking": "Reserva por horas",
+    "how-was-your-experience": "¿Cómo fue tu experiencia?",
+    "invalid-booking-link": "Enlace de reserva no válido",
+    "loading-booking-details": "Cargando detalles de la reserva...",
+    "oops": "¡Ups!",
+    "please-select-rating": "Por favor seleccione una calificación",
+    "please-write-review": "Por favor escribe una reseña",
+    "poor": "Pobre",
+    "rate-your-experience": "Califica tu experiencia",
+    "return-to-home": "Regreso a casa",
+    "review-already-submitted": "Ya has enviado una reseña para esta reserva. \n¡Gracias por tus comentarios!",
+    "review-submitted-successfully": "Su reseña se ha enviado correctamente. \n¡Apreciamos sus comentarios!",
+    "share-your-thoughts": "Comparta sus opiniones sobre el servicio, el conductor, el vehículo o la experiencia general...",
+    "submit-review": "Enviar reseña",
+    "submitting": "Sumisión...",
+    "tell-us-more": "Cuéntanos más sobre tu experiencia",
+    "thank-you": "¡Gracias!",
+    "to": "A:",
+    "trip-details": "Detalles del viaje",
+    "trip-id": "ID de viaje:",
+    "vehicle": "Vehículo:",
+    "very-good": "Muy bien",
+    "we-love-to-hear-about-your-trip": "Nos encantaría saber sobre tu viaje con nosotros."
+  }
 }

@@ -77,7 +77,11 @@
         "provide-fleet-rejection-reason": "Укажите причину отклонения этого запроса на автопарк.",
         "reject-fleet": "Отклонить запрос на флот",
         "reject-fleet-request": "Отклонить запрос на назначение парка",
-        "requested-at": "Запрошено по адресу:"
+        "requested-at": "Запрошено по адресу:",
+        "confirm-delete-fleet-request": "Вы уверены, что хотите удалить этот отклоненный запрос на автопарк? \nЭто действие невозможно отменить.",
+        "delete": "Удалить",
+        "delete-fleet-request": "Удалить запрос на флот",
+        "deleting": "Удаление..."
       }
     },
     "Features": {
@@ -580,7 +584,7 @@
       "failed-to-save-settings": "Не удалось сохранить настройки.",
       "from-email-address": "Email отправителя",
       "gbp-gbp-british-pound": "GBP (£) - Британский фунт",
-      "httpss-yourwebsite-com-or-leave-empty-for-home-page": "https://vashsite.com или оставьте пустым для главной страницы",
+      "httpss-yourwebsite-com-or-leave-empty-for-home-page": "",
       "ideal-netherlands": "iDEAL (Нидерланды)",
       "initial-latitude": "Начальная широта",
       "initial-location": "Начальное местоположение",
@@ -1001,5 +1005,40 @@
     "vehicle": "Автомобиль"
   },
   "not-set": "Не установлено",
-  "websiteName": "Название сайта"
+  "websiteName": "Название сайта",
+  "Review": {
+    "already-reviewed": "Уже рассмотрено",
+    "at": "в",
+    "booking-not-found": "Бронирование не найдено",
+    "date": "Дата:",
+    "excellent": "Отличный",
+    "failed-to-load-booking": "Не удалось загрузить данные бронирования.",
+    "failed-to-submit-review": "Не удалось отправить отзыв. \nПожалуйста, попробуйте еще раз.",
+    "fair": "Справедливый",
+    "from": "От:",
+    "good": "Хороший",
+    "hourly-booking": "Почасовое бронирование",
+    "how-was-your-experience": "Как прошел ваш опыт?",
+    "invalid-booking-link": "Неверная ссылка на бронирование",
+    "loading-booking-details": "Загрузка деталей бронирования...",
+    "oops": "Упс!",
+    "please-select-rating": "Пожалуйста, выберите рейтинг",
+    "please-write-review": "Пожалуйста, напишите отзыв",
+    "poor": "Бедный",
+    "rate-your-experience": "Оцените свой опыт",
+    "return-to-home": "Вернуться домой",
+    "review-already-submitted": "Вы уже отправили отзыв об этом бронировании. \nСпасибо за ваш отзыв!",
+    "review-submitted-successfully": "Ваш отзыв успешно отправлен. \nМы ценим ваш отзыв!",
+    "share-your-thoughts": "Поделитесь своими мыслями об услуге, водителе, автомобиле или общем впечатлении...",
+    "submit-review": "Отправить отзыв",
+    "submitting": "Отправка...",
+    "tell-us-more": "Расскажите нам больше о своем опыте",
+    "thank-you": "Спасибо!",
+    "to": "К:",
+    "trip-details": "Детали поездки",
+    "trip-id": "Идентификатор поездки:",
+    "vehicle": "Транспортное средство:",
+    "very-good": "Очень хороший",
+    "we-love-to-hear-about-your-trip": "Мы хотели бы услышать о вашей поездке с нами"
+  }
 }

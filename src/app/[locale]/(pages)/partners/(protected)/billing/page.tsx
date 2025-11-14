@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import { AlertCircle, CheckCircle2, Loader2, PiggyBank } from "lucide-react";
 
@@ -54,10 +54,6 @@ export default function PartnerBillingPage() {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
 
-  useEffect(() => {
-    fetchBillingDetails();
-  }, []);
-
   const formattedBalance = useMemo(() => {
     return new Intl.NumberFormat(undefined, {
       style: "currency",
@@ -81,7 +77,7 @@ export default function PartnerBillingPage() {
     });
   }, [lastPayoutAt, t]);
 
-  const fetchBillingDetails = async () => {
+  const fetchBillingDetails = useCallback(async () => {
     try {
       setLoading(true);
       const response = await fetch("/api/partners/billing");
@@ -108,7 +104,11 @@ export default function PartnerBillingPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [t]);
+
+  useEffect(() => {
+    fetchBillingDetails();
+  }, [fetchBillingDetails]);
 
   const handleChange = (field: keyof BillingFormState) =>
     (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {

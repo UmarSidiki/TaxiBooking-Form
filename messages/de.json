@@ -280,9 +280,8 @@
         "completed-rides": "Abgeschlossene Fahrten",
         "date": "Datum",
         "departure": "Abfahrt",
-        "upcoming-rides": "Bevorstehende Fahrten",
         "fleet": "Flotte",
-        "billing": "Billing"
+        "billing": "Abrechnung",
         "my-rides": "Meine Fahrten",
       "Billing": {
         "title": "Billing & Bank Details",

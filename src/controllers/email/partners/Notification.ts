@@ -371,6 +371,8 @@ interface RideNotificationData {
   partnerName: string;
   partnerEmail: string;
   baseUrl?: string;
+  partnerAmount?: number;
+  currencySymbol?: string;
 }
 
 function generateRideNotificationEmailHTML(rideData: RideNotificationData) {
@@ -414,6 +416,15 @@ function generateRideNotificationEmailHTML(rideData: RideNotificationData) {
       <div class="notification-icon">🚗</div>
       <h1>New Ride Available!</h1>
       <p>A new ride assignment is waiting for you</p>
+        ${
+          typeof rideData.partnerAmount === "number"
+            ? `
+          <div class="detail-item">
+            <div class="detail-label">Your Earnings</div>
+            <div class="detail-value">${rideData.currencySymbol ?? "€"}${rideData.partnerAmount.toFixed(2)}</div>
+          </div>`
+            : ""
+        }
     </div>
 
     <div class="section">
@@ -507,7 +518,7 @@ export async function sendRideNotificationEmail(rideData: RideNotificationData) 
       to: rideData.partnerEmail,
       subject: "🚗 New Ride Assignment Available - Action Required",
       html: emailHTML,
-      text: `Dear ${rideData.partnerName}, A new ride (${rideData.tripId}) is available for ${rideData.date} at ${rideData.time}. Please log in to your dashboard to accept this assignment.`,
+      text: `Dear ${rideData.partnerName}, A new ride (${rideData.tripId}) is available for ${rideData.date} at ${rideData.time}. Your estimated payout is ${rideData.currencySymbol ?? "€"}${rideData.partnerAmount?.toFixed(2) ?? "0.00"}. Please log in to your dashboard to accept this assignment.`,
     });
 
     return success;

@@ -27,6 +27,15 @@ export interface IFleetRequest {
   rejectionReason?: string;
 }
 
+export interface IPartnerBillingDetails {
+  accountHolder?: string;
+  bankName?: string;
+  accountNumber?: string;
+  iban?: string;
+  swift?: string;
+  notes?: string;
+}
+
 export interface IPartner {
   _id?: string;
   name: string;
@@ -61,6 +70,9 @@ export interface IPartner {
   totalEarnings?: number; // Total earnings from completed rides
   onlineEarnings?: number; // Earnings from online payments
   cashEarnings?: number; // Earnings from cash payments
+  billingDetails?: IPartnerBillingDetails;
+  payoutBalance?: number;
+  lastPayoutAt?: Date;
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -206,6 +218,45 @@ const PartnerSchema = new Schema<IPartner>(
     cashEarnings: {
       type: Number,
       default: 0,
+    },
+    billingDetails: {
+      accountHolder: {
+        type: String,
+        trim: true,
+        maxlength: 120,
+      },
+      bankName: {
+        type: String,
+        trim: true,
+        maxlength: 120,
+      },
+      accountNumber: {
+        type: String,
+        trim: true,
+        maxlength: 60,
+      },
+      iban: {
+        type: String,
+        trim: true,
+        maxlength: 64,
+      },
+      swift: {
+        type: String,
+        trim: true,
+        maxlength: 60,
+      },
+      notes: {
+        type: String,
+        trim: true,
+        maxlength: 500,
+      },
+    },
+    payoutBalance: {
+      type: Number,
+      default: 0,
+    },
+    lastPayoutAt: {
+      type: Date,
     },
   },
   {

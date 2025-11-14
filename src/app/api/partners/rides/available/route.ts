@@ -43,6 +43,7 @@ export async function GET() {
       availableForPartners: true,
       status: "upcoming",
       assignedPartner: { $exists: false }, // Not yet assigned to any partner
+      partnerReviewStatus: "approved",
       partnerAcceptanceDeadline: { $gt: new Date() }, // Deadline not expired
     })
     .sort({ createdAt: -1 }) // Most recent first

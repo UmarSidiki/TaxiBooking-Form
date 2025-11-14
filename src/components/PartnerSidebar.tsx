@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
-import { LayoutDashboard, Car, User, History, Truck } from "lucide-react";
+import { LayoutDashboard, Car, User, History, Truck, CreditCard } from "lucide-react";
 
 import {
   Sidebar,
@@ -67,10 +67,16 @@ export function PartnerSidebar({ locale }: { locale: string }) {
       icon: History,
       showAlways: false,
     },
-        {
+    {
       title: t("account"),
       href: (locale: string) => `/${locale}/partners/account`,
       icon: User,
+      showAlways: true,
+    },
+    {
+      title: t("billing"),
+      href: (locale: string) => `/${locale}/partners/billing`,
+      icon: CreditCard,
       showAlways: true,
     },
   ];

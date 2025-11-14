@@ -60,6 +60,7 @@ interface AvailableRide {
     seats: string;
   };
   totalAmount: number;
+  partnerPayoutAmount?: number;
   notes: string;
   firstName: string;
   lastName: string;
@@ -339,7 +340,12 @@ export default function PartnerDashboardPage() {
                           <p className="text-sm text-muted-foreground">{ride.phone} • {ride.email}</p>
                         </div>
                         <div className="text-right">
-                          <p className="text-lg font-bold text-green-600">€{ride.totalAmount}</p>
+                          <p className="text-lg font-bold text-green-600">
+                            €{(ride.partnerPayoutAmount ?? ride.totalAmount).toFixed(2)}
+                          </p>
+                          <p className="text-xs text-muted-foreground">
+                            {t("Dashboard.Partners.Dashboard.partner-earnings-label")}
+                          </p>
                         </div>
                       </div>
 

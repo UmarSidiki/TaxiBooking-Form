@@ -8,6 +8,7 @@ import { sendRideAssignmentEmail } from "@/controllers/email/bookings";
 import { sendRideCancellationEmail } from "@/controllers/email/bookings";
 import { Driver } from "@/models/driver";
 import { Partner } from "@/models/partner";
+import { notifyEligiblePartners } from "@/lib/partners/notify-eligible-partners";
 
 // Helper function to process Stripe refund
 async function processStripeRefund(
@@ -168,7 +169,13 @@ export async function PATCH(
       );
     }
 
-    const supportedActions = new Set(["cancel", "complete", "assign", "assignpartner"]);
+    const supportedActions = new Set([
+      "cancel",
+      "complete",
+      "assign",
+      "assignpartner",
+      "approvepartner",
+    ]);
     if (!supportedActions.has(rawAction)) {
       return NextResponse.json(
         { success: false, message: `Unsupported action: ${rawAction}` },
@@ -211,8 +218,12 @@ export async function PATCH(
 
     // Handle different actions
     if (rawAction === "cancel") {
+      console.log("PATCH booking - Cancel action for booking ID:", id);
       updateData.status = 'canceled';
       updateData.canceledAt = new Date();
+    } else if (rawAction === "complete") {
+      console.log("PATCH booking - Complete action for booking ID:", id);
+      updateData.status = 'completed';
 
       // Handle refund if payment was completed
       if (booking.paymentStatus === 'completed') {
@@ -296,6 +307,13 @@ export async function PATCH(
         );
       }
 
+      if (booking.paymentMethod !== "cash" && booking.partnerReviewStatus !== "approved") {
+        return NextResponse.json(
+          { success: false, message: "Approve the booking for partners before assignment" },
+          { status: 400 }
+        );
+      }
+
       updateData.assignedPartner = {
         _id: partner._id.toString(),
         name: partner.name,
@@ -304,9 +322,54 @@ export async function PATCH(
 
       // Reset assignment email sent flag for new assignment
       updateData.assignmentEmailSent = false;
+    } else if (rawAction === "approvepartner") {
+      if (!booking.totalAmount || Number.isNaN(Number(booking.totalAmount))) {
+        return NextResponse.json(
+          { success: false, message: "Booking total amount is missing" },
+          { status: 400 }
+        );
+      }
+
+      const settings = await Setting.findOne();
+      if (!settings?.enablePartners) {
+        return NextResponse.json(
+          { success: false, message: "Partner marketplace is disabled" },
+          { status: 400 }
+        );
+      }
+
+      if (booking.paymentMethod === "cash") {
+        return NextResponse.json(
+          { success: false, message: "Cash bookings cannot be approved for partners" },
+          { status: 400 }
+        );
+      }
+
+      const submittedMargin =
+        body.marginPercentage !== undefined ? Number(body.marginPercentage) : 0;
+
+      if (Number.isNaN(submittedMargin) || submittedMargin < 0 || submittedMargin > 100) {
+        return NextResponse.json(
+          { success: false, message: "Margin percentage must be between 0 and 100" },
+          { status: 400 }
+        );
+      }
+
+      const totalAmount = typeof booking.totalAmount === "number" ? booking.totalAmount : Number(booking.totalAmount);
+      const marginAmount = Number(((totalAmount * submittedMargin) / 100).toFixed(2));
+      const partnerPayout = Number((totalAmount - marginAmount).toFixed(2));
+
+      updateData.partnerMarginPercentage = submittedMargin;
+      updateData.partnerMarginAmount = marginAmount;
+      updateData.partnerPayoutAmount = partnerPayout;
+      updateData.partnerReviewStatus = "approved";
+      updateData.partnerApprovedAt = new Date();
+      updateData.availableForPartners = false; // will be flipped after notifications
+      updateData.partnerNotificationSent = false;
     }
 
     // Update booking
+    console.log("PATCH booking - Updating booking with data:", updateData);
     const updatedBooking = await Booking.findByIdAndUpdate(
       id,
       { $set: updateData },
@@ -314,11 +377,14 @@ export async function PATCH(
     );
 
     if (!updatedBooking) {
+      console.log("PATCH booking - Failed to update booking");
       return NextResponse.json(
         { success: false, message: "Failed to update booking" },
         { status: 500 }
       );
     }
+
+    console.log("PATCH booking - Booking updated successfully. New status:", updatedBooking.status);
 
     // Send cancellation email if applicable - NOW PROPERLY AWAITED
     if (rawAction === "cancel" && updatedBooking.email) {
@@ -443,7 +509,12 @@ export async function PATCH(
           lastName: updatedBooking.lastName,
           email: updatedBooking.email,
           phone: updatedBooking.phone,
-          totalAmount: typeof updatedBooking.totalAmount === "number" ? updatedBooking.totalAmount : 0,
+          totalAmount:
+            typeof updatedBooking.partnerPayoutAmount === "number"
+              ? updatedBooking.partnerPayoutAmount
+              : typeof updatedBooking.totalAmount === "number"
+              ? updatedBooking.totalAmount
+              : 0,
           paymentMethod: updatedBooking.paymentMethod,
           paymentStatus: updatedBooking.paymentStatus,
           flightNumber: updatedBooking.flightNumber,
@@ -510,7 +581,62 @@ export async function PATCH(
       }
     }
 
-    const actionPastTense = rawAction === "cancel" ? "canceled" : "completed";
+    if (rawAction === "approvepartner") {
+      const bookingForNotification = await Booking.findById(updatedBooking._id);
+      const baseUrl =
+        request.headers.get("origin") ||
+        request.headers.get("referer")?.split("/").slice(0, 3).join("/") ||
+        process.env.NEXT_PUBLIC_BASE_URL;
+
+      if (bookingForNotification) {
+        await notifyEligiblePartners(bookingForNotification, baseUrl);
+      }
+    }
+
+    if (
+      rawAction === "complete" &&
+      booking.status !== "completed" &&
+      updatedBooking.assignedPartner?._id
+    ) {
+      const partnerAmount =
+        typeof updatedBooking.partnerPayoutAmount === "number"
+          ? updatedBooking.partnerPayoutAmount
+          : typeof updatedBooking.totalAmount === "number"
+          ? updatedBooking.totalAmount
+          : 0;
+
+      const isCashBooking = updatedBooking.paymentMethod === "cash";
+      const isPaymentComplete =
+        isCashBooking || updatedBooking.paymentStatus === "completed";
+
+      if (partnerAmount > 0 && isPaymentComplete) {
+        const incPayload: Record<string, number> = {
+          totalEarnings: partnerAmount,
+        };
+
+        if (isCashBooking) {
+          incPayload.cashEarnings = partnerAmount;
+        } else {
+          incPayload.onlineEarnings = partnerAmount;
+          incPayload.payoutBalance = partnerAmount;
+        }
+
+        try {
+          await Partner.findByIdAndUpdate(updatedBooking.assignedPartner._id, {
+            $inc: incPayload,
+          });
+        } catch (partnerUpdateError) {
+          console.error("Failed to update partner earnings", partnerUpdateError);
+        }
+      }
+    }
+
+    const actionPastTense =
+      rawAction === "cancel"
+        ? "canceled"
+        : rawAction === "approvepartner"
+        ? "approved for partners"
+        : "completed";
 
     return NextResponse.json({
       success: true,

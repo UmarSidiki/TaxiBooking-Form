@@ -68,6 +68,7 @@ interface Booking {
   };
   selectedVehicle?: string;
   totalAmount: number;
+  partnerPayoutAmount?: number;
   status: string;
   paymentStatus: string;
   paymentMethod?: string;
@@ -225,14 +226,25 @@ export default function PartnerRidesPage() {
                               </div>
                               <div>
                                 <h3 className="font-semibold text-lg">
-                                  {t("trip")}{booking.tripId.slice(0, 8)}
+                                  {t("trip")} #{booking.tripId.slice(0, 8)}
                                 </h3>
                                 <p className="text-sm text-muted-foreground">
                                   {booking.vehicleDetails.name}
                                 </p>
                               </div>
                             </div>
-                            {getStatusBadge(booking)}
+                            <div className="text-right space-y-1">
+                              {getStatusBadge(booking)}
+                              <div>
+                                <p className="text-[11px] uppercase tracking-wide text-muted-foreground">
+                                  {t("your-payout")}
+                                </p>
+                                <p className="text-base font-semibold text-green-600">
+                                  {currencySymbol}
+                                  {(booking.partnerPayoutAmount ?? booking.totalAmount ?? 0).toFixed(2)}
+                                </p>
+                              </div>
+                            </div>
                           </div>
 
                           {/* Date & Time */}

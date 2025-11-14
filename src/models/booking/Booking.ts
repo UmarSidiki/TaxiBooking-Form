@@ -57,6 +57,11 @@ export interface IBooking extends Document {
   eligiblePartnersCount?: number;
   availableForPartners?: boolean; // Track if ride is still available for partner acceptance
   partnerAcceptanceDeadline?: Date; // Optional deadline for partner acceptance
+  partnerReviewStatus?: "pending" | "approved" | "rejected";
+  partnerMarginPercentage?: number;
+  partnerMarginAmount?: number;
+  partnerPayoutAmount?: number;
+  partnerApprovedAt?: Date;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -126,6 +131,14 @@ const BookingSchema: Schema = new Schema({
   eligiblePartnersCount: { type: Number, default: 0 },
   availableForPartners: { type: Boolean, default: false },
   partnerAcceptanceDeadline: { type: Date },
+  partnerReviewStatus: {
+    type: String,
+    enum: ["pending", "approved", "rejected"],
+  },
+  partnerMarginPercentage: { type: Number },
+  partnerMarginAmount: { type: Number },
+  partnerPayoutAmount: { type: Number },
+  partnerApprovedAt: { type: Date },
 }, {
   timestamps: true,
 });

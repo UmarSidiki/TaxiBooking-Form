@@ -7,8 +7,7 @@ import { connectDB } from "@/lib/database";
 import { Vehicle, type IVehicle } from "@/models/vehicle";
 import { Setting } from "@/models/settings";
 import { getCurrencySymbol } from "@/lib/utils";
-import { Partner } from "@/models/partner";
-import { sendRideNotificationEmail } from "@/controllers/email/partners";
+import { notifyEligiblePartners } from "@/lib/partners/notify-eligible-partners";
 
 // Helper function to calculate booking total
 async function calculateBookingTotal(
@@ -264,78 +263,38 @@ export async function POST(request: NextRequest) {
     // Save to database using Mongoose
     const savedBooking = await Booking.create(bookingData);
 
-    // Check if partners feature is enabled and notify eligible partners
     const settings = await Setting.findOne();
+
+    const baseUrl =
+      request.headers.get("origin") ||
+      request.headers.get("referer")?.split("/").slice(0, 3).join("/") ||
+      process.env.NEXT_PUBLIC_BASE_URL;
+
     if (settings?.enablePartners) {
       try {
-        // Find partners with approved fleet matching the booked vehicle type
-        // Check both new (currentFleet) and old (requestedFleet) fields for compatibility
-        const eligiblePartners = await Partner.find({
-          status: "approved",
-          isActive: true,
-          $or: [
-            { 
-              // New system: currentFleet field
-              currentFleet: formData.selectedVehicle,
-            },
-            { 
-              // Old system: fleetStatus + requestedFleet (for backward compatibility)
-              fleetStatus: "approved",
-              requestedFleet: formData.selectedVehicle,
-            }
-          ]
+        const requiresPartnerReview = bookingData.paymentMethod !== "cash";
+
+        await Booking.findByIdAndUpdate(savedBooking._id, {
+          $set: {
+            partnerReviewStatus: requiresPartnerReview ? "pending" : "approved",
+            partnerMarginPercentage: 0,
+            partnerMarginAmount: 0,
+            partnerPayoutAmount: bookingData.totalAmount,
+          },
         });
 
-        if (eligiblePartners.length > 0) {
-          console.log(`📢 Notifying ${eligiblePartners.length} eligible partners for booking ${tripId} with vehicle ${formData.selectedVehicle}`);
-
-          // Get base URL for email links
-          const baseUrl = request.headers.get('origin') ||
-                         request.headers.get('referer')?.split('/').slice(0, 3).join('/') ||
-                         process.env.NEXT_PUBLIC_BASE_URL;
-
-          // Send notification emails to all eligible partners
-          const notificationPromises = eligiblePartners.map(partner =>
-            sendRideNotificationEmail({
-              tripId,
-              pickup: formData.pickup,
-              dropoff: formData.dropoff || '',
-              date: formData.date,
-              time: formData.time,
-              vehicleType: vehicle.name,
-              passengerCount: formData.passengers,
-              partnerName: partner.name,
-              partnerEmail: partner.email,
-              baseUrl,
-            })
-          );
-
-          // Send notifications asynchronously (don't wait for completion)
-          Promise.all(notificationPromises).then(results => {
-            const successCount = results.filter(Boolean).length;
-            console.log(`✅ Sent ride notifications to ${successCount}/${eligiblePartners.length} partners`);
-          }).catch(error => {
-            console.error("❌ Error sending partner notifications:", error);
-          });
-
-          // Store partner notification info in booking for tracking
-          await Booking.findByIdAndUpdate(savedBooking._id, {
-            partnerNotificationSent: true,
-            eligiblePartnersCount: eligiblePartners.length,
-            availableForPartners: true,
-            partnerAcceptanceDeadline: new Date(Date.now() + 30 * 60 * 1000), // 30 minutes from now
-          });
+        if (!requiresPartnerReview) {
+          const bookingForNotification = await Booking.findById(savedBooking._id);
+          if (bookingForNotification) {
+            await notifyEligiblePartners(bookingForNotification, baseUrl);
+          }
         }
       } catch (partnerError) {
-        console.error("❌ Error notifying partners:", partnerError);
-        // Continue with booking process even if partner notification fails
+        console.error("❌ Error preparing partner notifications:", partnerError);
       }
     }
 
     // Get base URL for invoice link in email
-    const baseUrl = request.headers.get('origin') ||
-                    request.headers.get('referer')?.split('/').slice(0, 3).join('/') ||
-                    process.env.NEXT_PUBLIC_BASE_URL;
 
     // Send emails - NOW PROPERLY AWAITED
     const emailData = await createEmailData(formData, vehicle, tripId, totalAmount, baseUrl);

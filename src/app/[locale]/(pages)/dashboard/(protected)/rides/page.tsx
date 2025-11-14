@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
   Dialog,
   DialogContent,
@@ -83,6 +84,7 @@ export default function RidesPage() {
   const [drivers, setDrivers] = useState<IDriver[]>([]);
   const [partners, setPartners] = useState<IPartner[]>([]);
   const [assigningId, setAssigningId] = useState<string | null>(null);
+  const [approvingPartnerId, setApprovingPartnerId] = useState<string | null>(null);
   const [sortBy, setSortBy] = useState("date-asc");
   const [enableDrivers, setEnableDrivers] = useState(false);
   const [enablePartners, setEnablePartners] = useState(false);
@@ -372,6 +374,44 @@ export default function RidesPage() {
     }
   };
 
+  const handleApprovePartnerReview = async (
+    bookingId: string,
+    marginPercentage: number
+  ): Promise<boolean> => {
+    setApprovingPartnerId(bookingId);
+    try {
+      const data = await apiPatch<{
+        success: boolean;
+        message: string;
+        data: IBooking;
+      }>(`/api/bookings/${bookingId}`, {
+        action: "approvepartner",
+        marginPercentage,
+      });
+
+      if (data.success) {
+        setBookings((prev) =>
+          prev.map((b) => (b._id?.toString() === bookingId ? data.data : b))
+        );
+        alert(t("Dashboard.Rides.partner-review-approved"));
+        return true;
+      } else {
+        alert(
+          t("Dashboard.Rides.partner-review-error", {
+            0: data.message,
+          })
+        );
+        return false;
+      }
+    } catch (error) {
+      console.error("Error approving partner review:", error);
+      alert(t("Dashboard.Rides.partner-review-generic-error"));
+      return false;
+    } finally {
+      setApprovingPartnerId(null);
+    }
+  };
+
   const getPaymentStatusBadge = (status: string): React.ReactElement => {
     const badgeClasses =
       "text-white font-semibold flex items-center gap-1.5 px-3 py-1 rounded-full text-xs";
@@ -466,6 +506,44 @@ export default function RidesPage() {
     );
     const [isEditMode, setIsEditMode] = useState(false);
     const [isPartnerEditMode, setIsPartnerEditMode] = useState(false);
+    const [partnerMargin, setPartnerMargin] = useState<number>(
+      booking.partnerMarginPercentage ?? 0
+    );
+    const [isPartnerReviewEditMode, setIsPartnerReviewEditMode] = useState(false);
+
+    const bookingId = booking._id?.toString() || "";
+    const requiresPartnerReview =
+      enablePartners && booking.paymentMethod !== "cash";
+    const partnerReviewStatus = booking.partnerReviewStatus ??
+      (requiresPartnerReview ? "pending" : "approved");
+    const isPartnerReviewPending =
+      requiresPartnerReview && partnerReviewStatus !== "approved";
+    const totalAmountValue =
+      typeof booking.totalAmount === "number" ? booking.totalAmount : 0;
+    const marginPreviewAmountRaw = (totalAmountValue * partnerMargin) / 100;
+    const marginPreviewAmount = Number(
+      Math.min(totalAmountValue, Math.max(0, marginPreviewAmountRaw)).toFixed(2)
+    );
+    const partnerPayoutPreview = Number(
+      Math.max(0, totalAmountValue - marginPreviewAmount).toFixed(2)
+    );
+    const storedPartnerMarginAmount =
+      typeof booking.partnerMarginAmount === "number"
+        ? booking.partnerMarginAmount
+        : marginPreviewAmount;
+    const storedPartnerPayoutAmount =
+      typeof booking.partnerPayoutAmount === "number"
+        ? booking.partnerPayoutAmount
+        : partnerPayoutPreview;
+    const isApprovingThisBooking = approvingPartnerId === bookingId;
+    const approvalButtonLabel = isPartnerReviewPending
+      ? t("Dashboard.Rides.approve-for-partners")
+      : t("Dashboard.Rides.update-partner-approval");
+
+    useEffect(() => {
+      setPartnerMargin(booking.partnerMarginPercentage ?? 0);
+      setIsPartnerReviewEditMode(false);
+    }, [booking.partnerMarginPercentage]);
 
     const getStatusColor = () => {
       if (booking.status === "canceled") return "destructive";
@@ -474,6 +552,14 @@ export default function RidesPage() {
     };
 
     const statusColor = getStatusColor();
+
+    const handlePartnerApprovalClick = async () => {
+      if (!bookingId) return;
+      const success = await handleApprovePartnerReview(bookingId, partnerMargin);
+      if (success) {
+        setIsPartnerReviewEditMode(false);
+      }
+    };
 
     return (
       <Card className="group hover:shadow-lg transition-all duration-300 border border-gray-200 shadow-sm bg-white overflow-hidden">
@@ -761,6 +847,124 @@ export default function RidesPage() {
               </div>
             </div>
 
+            {enablePartners && booking.paymentMethod !== "cash" && (
+              <div className="border-t pt-3">
+                <div className="bg-secondary/10 border border-secondary/20 rounded-lg p-3 space-y-3">
+                  <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
+                    <div>
+                      <span className="text-sm font-medium text-secondary-foreground">
+                        {t("Dashboard.Rides.partner-review-title")}
+                      </span>
+                      <p className="text-xs text-muted-foreground">
+                        {t("Dashboard.Rides.partner-review-description")}
+                      </p>
+                    </div>
+                    <Badge
+                      variant={isPartnerReviewPending ? "destructive" : "secondary"}
+                      className="text-xs"
+                    >
+                      {isPartnerReviewPending
+                        ? t("Dashboard.Rides.partner-review-status-pending")
+                        : t("Dashboard.Rides.partner-review-status-approved")}
+                    </Badge>
+                  </div>
+
+                  {!isPartnerReviewPending && !isPartnerReviewEditMode && (
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                      <div className="text-sm text-muted-foreground flex items-center gap-2">
+                        <DollarSign className="w-4 h-4" />
+                        <span>
+                          {t("Dashboard.Rides.partner-payout-summary", {
+                            0: `${currencySymbol}${storedPartnerPayoutAmount.toFixed(2)}`,
+                            1: `${currencySymbol}${storedPartnerMarginAmount.toFixed(2)}`,
+                          })}
+                        </span>
+                      </div>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setIsPartnerReviewEditMode(true)}
+                        className="text-xs h-8 px-3"
+                      >
+                        <Edit className="w-3 h-3 mr-1" />
+                        {t("Dashboard.Rides.edit-partner-margin")}
+                      </Button>
+                    </div>
+                  )}
+
+                  {(isPartnerReviewPending || isPartnerReviewEditMode) && (
+                    <>
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        <div>
+                          <Label className="text-xs uppercase tracking-wide text-muted-foreground">
+                            {t("Dashboard.Rides.margin-percentage")}
+                          </Label>
+                          <Input
+                            type="number"
+                            min={0}
+                            max={100}
+                            step={0.5}
+                            value={partnerMargin}
+                            onChange={(event) =>
+                              setPartnerMargin(Number(event.target.value))
+                            }
+                          />
+                        </div>
+                        <div>
+                          <Label className="text-xs uppercase tracking-wide text-muted-foreground">
+                            {t("Dashboard.Rides.admin-margin-amount")}
+                          </Label>
+                          <p className="text-sm font-semibold">
+                            {currencySymbol}
+                            {marginPreviewAmount.toFixed(2)}
+                          </p>
+                        </div>
+                        <div>
+                          <Label className="text-xs uppercase tracking-wide text-muted-foreground">
+                            {t("Dashboard.Rides.partner-payout-amount")}
+                          </Label>
+                          <p className="text-sm font-semibold text-green-600">
+                            {currencySymbol}
+                            {partnerPayoutPreview.toFixed(2)}
+                          </p>
+                        </div>
+                      </div>
+
+                      <Button
+                        onClick={handlePartnerApprovalClick}
+                        disabled={
+                          !bookingId ||
+                          partnerMargin < 0 ||
+                          partnerMargin > 100 ||
+                          isApprovingThisBooking
+                        }
+                        className="flex items-center gap-2 bg-primary hover:bg-primary/90"
+                      >
+                        {isApprovingThisBooking ? (
+                          <>
+                            <Loader2 className="w-4 h-4 animate-spin" />
+                            {t("Dashboard.Rides.approving")}
+                          </>
+                        ) : (
+                          <>
+                            <CheckCircle className="w-4 h-4" />
+                            {approvalButtonLabel}
+                          </>
+                        )}
+                      </Button>
+                    </>
+                  )}
+
+                  {isPartnerReviewPending && (
+                    <p className="text-xs text-muted-foreground flex items-center gap-2">
+                      <Info className="w-3 h-3" />
+                      {t("Dashboard.Rides.partner-review-helper-text")}
+                    </p>
+                  )}
+                </div>
+              </div>
+            )}
+
             {/* Driver Assignment Section - Only show for upcoming rides and when driver feature is enabled */}
             {enableDrivers &&
               booking.status !== "canceled" &&
@@ -975,7 +1179,9 @@ export default function RidesPage() {
                                 assigningId === booking._id?.toString() ||
                                 (booking.assignedPartner &&
                                   selectedPartner ===
-                                    booking.assignedPartner._id)
+                                    booking.assignedPartner._id) ||
+                                (booking.paymentMethod !== "cash" &&
+                                  booking.partnerReviewStatus !== "approved")
                               }
                               size="sm"
                               className="flex items-center gap-2 bg-primary hover:bg-primary/90"
@@ -1013,6 +1219,12 @@ export default function RidesPage() {
                               </Button>
                             )}
                           </div>
+                          {booking.paymentMethod !== "cash" &&
+                            booking.partnerReviewStatus !== "approved" && (
+                              <p className="text-xs text-muted-foreground">
+                                {t("Dashboard.Rides.partner-assignment-disabled")}
+                              </p>
+                            )}
                         </div>
                       </div>
                     </div>

@@ -114,7 +114,12 @@ export async function POST(
         lastName: updatedRide.lastName,
         email: updatedRide.email,
         phone: updatedRide.phone,
-        totalAmount: updatedRide.totalAmount || 0,
+        totalAmount:
+          typeof updatedRide.partnerPayoutAmount === "number"
+            ? updatedRide.partnerPayoutAmount
+            : typeof updatedRide.totalAmount === "number"
+            ? updatedRide.totalAmount
+            : 0,
         flightNumber: updatedRide.flightNumber,
       });
     } catch (emailError) {

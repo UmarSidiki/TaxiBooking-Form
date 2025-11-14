@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { connectDB } from "@/lib/database";
-import { Booking } from "@/models/booking";
+import { Booking, type IBooking } from "@/models/booking";
 import { authOptions } from "@/lib/auth/options";
 
 export async function GET() {
@@ -23,36 +23,67 @@ export async function GET() {
     // Get all bookings assigned to this partner
     const allBookings = await Booking.find({
       "assignedPartner._id": partnerId,
-    });
+    }).sort({ createdAt: -1 });
+
+    const parseBookingDate = (booking: IBooking) => {
+      if (!booking.date) {
+        return null;
+      }
+      const withTime = `${booking.date}T${booking.time || "00:00"}`;
+      const parsedWithTime = new Date(withTime);
+      if (!Number.isNaN(parsedWithTime.getTime())) {
+        return parsedWithTime;
+      }
+      const fallback = new Date(booking.date);
+      return Number.isNaN(fallback.getTime()) ? null : fallback;
+    };
+
+    const isPaymentComplete = (booking: IBooking) =>
+      booking.paymentStatus === "completed" || booking.paymentMethod === "cash";
+
+    const isCompletedRide = (booking: IBooking) => {
+      if (booking.status === "completed") {
+        return true;
+      }
+      if (booking.status === "canceled") {
+        return false;
+      }
+      const bookingDate = parseBookingDate(booking);
+      return Boolean(bookingDate && bookingDate < now && isPaymentComplete(booking));
+    };
+
+    const isUpcomingRide = (booking: IBooking) => {
+      if (booking.status === "canceled") {
+        return false;
+      }
+      const bookingDate = parseBookingDate(booking);
+      if (!bookingDate) {
+        return booking.status === "upcoming";
+      }
+      return bookingDate > now;
+    };
+
+    const resolvePartnerAmount = (booking: IBooking) => {
+      const rawValue =
+        typeof booking.partnerPayoutAmount === "number"
+          ? booking.partnerPayoutAmount
+          : booking.totalAmount;
+      const amount = typeof rawValue === "number" ? rawValue : parseFloat(String(rawValue || 0));
+      return Number.isFinite(amount) ? amount : 0;
+    };
 
     // Calculate stats
     const totalRides = allBookings.length;
-    
-    const upcomingRides = allBookings.filter(
-      (booking) =>
-        booking.status !== "canceled" &&
-        new Date(`${booking.date}T${booking.time || '00:00'}`) >= now
-    ).length;
-
-    const completedRides = allBookings.filter(
-      (booking) =>
-        booking.status !== "canceled" &&
-        new Date(`${booking.date}T${booking.time || '00:00'}`) < now
-    ).length;
-
+    const upcomingRides = allBookings.filter(isUpcomingRide).length;
+    const completedRides = allBookings.filter(isCompletedRide).length;
     const canceledRides = allBookings.filter(
       (booking) => booking.status === "canceled"
     ).length;
 
-    // Calculate total earnings (only from completed rides with completed payment)
+    // Calculate total earnings from rides we consider completed
     const totalEarnings = allBookings
-      .filter(
-        (booking) =>
-          booking.status !== "canceled" &&
-          new Date(`${booking.date}T${booking.time || '00:00'}`) < now &&
-          booking.paymentStatus === "completed"
-      )
-      .reduce((sum, booking) => sum + (booking.totalAmount || 0), 0);
+      .filter(isCompletedRide)
+      .reduce((sum, booking) => sum + resolvePartnerAmount(booking), 0);
 
     const stats = {
       totalRides,

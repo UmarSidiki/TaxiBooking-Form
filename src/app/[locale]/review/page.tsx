@@ -42,7 +42,7 @@ function ReviewForm() {
         const data = await response.json();
 
         if (data.success) {
-          setBookingDetails(data.booking);
+          setBookingDetails(data.data);
         } else {
           setError(data.message || "Booking not found");
         }

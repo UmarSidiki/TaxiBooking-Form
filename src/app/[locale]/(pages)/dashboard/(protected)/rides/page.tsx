@@ -53,6 +53,7 @@ import {
   Percent,
   AlertTriangle,
   Edit,
+  Star,
 } from "lucide-react";
 import type { IBooking } from "@/models/booking";
 import type { IDriver } from "@/models/driver";
@@ -85,6 +86,7 @@ export default function RidesPage() {
   const [sortBy, setSortBy] = useState("date-asc");
   const [enableDrivers, setEnableDrivers] = useState(false);
   const [enablePartners, setEnablePartners] = useState(false);
+  const [bookingReviews, setBookingReviews] = useState<Record<string, { rating: number; comment: string; createdAt: Date } | null>>({});
 
   const MapLine = ({ start, end }: { start: string; end: string }) => (
     <span className="flex items-center gap-1 truncate">
@@ -907,7 +909,21 @@ export default function RidesPage() {
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => setDetailBooking(booking)}
+                onClick={async () => {
+                  setDetailBooking(booking);
+                  // Fetch review for this booking if it's completed
+                  if (booking._id && (booking.status === "canceled" || new Date(booking.date) < new Date())) {
+                    try {
+                      const response = await fetch(`/api/reviews?bookingId=${booking._id}`);
+                      const data = await response.json();
+                      if (data.success && data.review) {
+                        setBookingReviews(prev => ({ ...prev, [booking._id!.toString()]: data.review }));
+                      }
+                    } catch (error) {
+                      console.error("Error fetching review:", error);
+                    }
+                  }
+                }}
                 className="flex items-center gap-2 hover:bg-primary/10 hover:text-primary hover:border-primary/30"
               >
                 <Eye className="w-4 h-4" />
@@ -1633,6 +1649,94 @@ export default function RidesPage() {
                   )}
                 </CardContent>
               </Card>
+
+              {/* Assignment Information - Show for completed rides */}
+              {(new Date(detailBooking.date) < new Date() || detailBooking.status === "canceled") && 
+               (detailBooking.assignedDriver || detailBooking.assignedPartner) && (
+                <Card className="border border-border shadow-sm bg-background">
+                  <CardHeader className="pb-3 border-b">
+                    <CardTitle className="text-lg flex items-center gap-2 text-gray-900">
+                      <UserCheck className="w-5 h-5 text-primary" />
+                      Assignment Information
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="pt-4">
+                    <div className="grid gap-4 sm:grid-cols-2">
+                      {detailBooking.assignedDriver && (
+                        <div className="p-4 bg-primary/10 border border-primary/20 rounded-lg">
+                          <div className="flex items-center gap-2 mb-2">
+                            <User className="w-4 h-4 text-primary" />
+                            <span className="text-sm font-medium text-primary">Assigned Driver</span>
+                          </div>
+                          <p className="font-semibold text-gray-900">{detailBooking.assignedDriver.name}</p>
+                          <p className="text-sm text-gray-600">{detailBooking.assignedDriver.email}</p>
+                        </div>
+                      )}
+                      {detailBooking.assignedPartner && (
+                        <div className="p-4 bg-secondary/10 border border-secondary/20 rounded-lg">
+                          <div className="flex items-center gap-2 mb-2">
+                            <Users className="w-4 h-4 text-secondary-foreground" />
+                            <span className="text-sm font-medium text-secondary-foreground">Assigned Partner</span>
+                          </div>
+                          <p className="font-semibold text-gray-900">{detailBooking.assignedPartner.name}</p>
+                          <p className="text-sm text-gray-600">{detailBooking.assignedPartner.email}</p>
+                        </div>
+                      )}
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
+
+              {/* Customer Review - Only show for completed rides */}
+              {detailBooking._id && bookingReviews[detailBooking._id.toString()] && (
+                <Card className="border border-border shadow-sm bg-background">
+                  <CardHeader className="pb-3 border-b">
+                    <CardTitle className="text-lg flex items-center gap-2 text-gray-900">
+                      <Star className="w-5 h-5 text-yellow-500 fill-yellow-500" />
+                      Customer Review
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="pt-4">
+                    <div className="space-y-4">
+                      {/* Star Rating */}
+                      <div className="flex items-center gap-2">
+                        <div className="flex items-center">
+                          {[1, 2, 3, 4, 5].map((star) => (
+                            <Star
+                              key={star}
+                              className={`w-6 h-6 ${
+                                star <= bookingReviews[detailBooking._id!.toString()]!.rating
+                                  ? "fill-yellow-400 text-yellow-400"
+                                  : "text-gray-300"
+                              }`}
+                            />
+                          ))}
+                        </div>
+                        <span className="text-lg font-semibold text-gray-900">
+                          {bookingReviews[detailBooking._id!.toString()]!.rating}/5
+                        </span>
+                      </div>
+
+                      {/* Review Comment */}
+                      <div className="p-4 bg-gray-50 rounded-lg border border-gray-200">
+                        <p className="text-gray-700 italic">
+                          "{bookingReviews[detailBooking._id!.toString()]!.comment}"
+                        </p>
+                      </div>
+
+                      {/* Review Date */}
+                      <div className="text-sm text-gray-500">
+                        Submitted on{" "}
+                        {new Date(bookingReviews[detailBooking._id!.toString()]!.createdAt).toLocaleDateString("en-US", {
+                          year: "numeric",
+                          month: "long",
+                          day: "numeric",
+                        })}
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
             </div>
           )}
         </DialogContent>

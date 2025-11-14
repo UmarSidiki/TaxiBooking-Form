@@ -13,6 +13,7 @@ import {
   Mail,
   Baby,
   Plane,
+  Star,
 } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -51,6 +52,7 @@ export default function PartnerHistoryPage() {
   const t = useTranslations("Dashboard.Partners.Rides");
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [loading, setLoading] = useState(true);
+  const [bookingReviews, setBookingReviews] = useState<Record<string, { rating: number; comment: string; createdAt: Date } | null>>({});
 
   useEffect(() => {
     fetchRides();
@@ -63,6 +65,23 @@ export default function PartnerHistoryPage() {
 
       if (data.success) {
         setBookings(data.data);
+        
+        // Fetch reviews for completed rides
+        const completedBookings = data.data.filter(
+          (b: Booking) => b.status === "canceled" || new Date(b.date) < new Date()
+        );
+        
+        for (const booking of completedBookings) {
+          try {
+            const reviewResponse = await fetch(`/api/reviews?bookingId=${booking._id}`);
+            const reviewData = await reviewResponse.json();
+            if (reviewData.success && reviewData.review) {
+              setBookingReviews(prev => ({ ...prev, [booking._id]: reviewData.review }));
+            }
+          } catch (error) {
+            console.error("Error fetching review for booking:", booking._id, error);
+          }
+        }
       }
     } catch (error) {
       console.error("Error fetching rides:", error);
@@ -334,6 +353,36 @@ export default function PartnerHistoryPage() {
                           </p>
                           <p className="text-sm text-yellow-800 dark:text-yellow-200">
                             {booking.notes}
+                          </p>
+                        </div>
+                      )}
+
+                      {/* Customer Review */}
+                      {bookingReviews[booking._id] && (
+                        <div className="bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-900 rounded-lg p-3">
+                          <div className="flex items-center gap-2 mb-2">
+                            <Star className="w-4 h-4 text-yellow-500 fill-yellow-500" />
+                            <p className="text-xs font-medium text-blue-900 dark:text-blue-100">
+                              Customer Review
+                            </p>
+                          </div>
+                          <div className="flex items-center gap-2 mb-2">
+                            {[1, 2, 3, 4, 5].map((star) => (
+                              <Star
+                                key={star}
+                                className={`w-4 h-4 ${
+                                  star <= bookingReviews[booking._id]!.rating
+                                    ? "fill-yellow-400 text-yellow-400"
+                                    : "text-gray-300"
+                                }`}
+                              />
+                            ))}
+                            <span className="text-sm font-semibold text-gray-900">
+                              {bookingReviews[booking._id]!.rating}/5
+                            </span>
+                          </div>
+                          <p className="text-sm text-blue-800 dark:text-blue-200 italic">
+                            "{bookingReviews[booking._id]!.comment}"
                           </p>
                         </div>
                       )}

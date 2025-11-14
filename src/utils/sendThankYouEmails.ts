@@ -64,6 +64,8 @@ export async function sendThankYouEmails() {
             typeof booking.totalAmount === "number" ? booking.totalAmount : 0,
           paymentMethod: booking.paymentMethod,
           paymentStatus: booking.paymentStatus,
+          bookingId: booking._id.toString(),
+          baseUrl: process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000',
         };
 
         // Send the email

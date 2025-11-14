@@ -30,6 +30,8 @@ interface BookingData {
   paymentMethod?: string;
   paymentStatus?: string;
   flightNumber?: string;
+  bookingId?: string;
+  baseUrl?: string;
 }
 
 // Email validation utility
@@ -39,6 +41,10 @@ function isValidEmail(email: string): boolean {
 }
 
 function generateEmailHTML(bookingData: BookingData) {
+  const reviewUrl = bookingData.bookingId && bookingData.baseUrl 
+    ? `${bookingData.baseUrl}/en/review?bookingId=${bookingData.bookingId}`
+    : null;
+
   return `
 <!DOCTYPE html>
 <html>
@@ -57,11 +63,12 @@ function generateEmailHTML(bookingData: BookingData) {
     .details li { margin-bottom: 8px; }
     .footer { color: #718096; font-size: 12px; margin-top: 30px; border-top: 1px solid #e2e8f0; padding-top: 15px; }
     .highlight { color: #2d3748; font-weight: bold; }
+    .cta-section { background-color: #f0f9ff; padding: 20px; border-radius: 5px; margin-top: 20px; text-align: center; }
     .cta-button {
       display: inline-block;
       background-color: #0369a1;
       color: #ffffff !important;
-      padding: 10px 20px;
+      padding: 12px 30px;
       text-decoration: none;
       border-radius: 5px;
       margin-top: 15px;
@@ -110,6 +117,16 @@ function generateEmailHTML(bookingData: BookingData) {
         </ul>
       </div>
     </div>
+
+    ${reviewUrl ? `
+    <div class="cta-section">
+      <h2 style="color: #0369a1; margin-top: 0;">How was your experience?</h2>
+      <p>We would love to hear about your experience! Your feedback helps us improve our service.</p>
+      <a href="${reviewUrl}" class="cta-button">
+        <span>Leave a Review</span>
+      </a>
+    </div>
+    ` : ''}
 
     <div class="footer">
       <p>This is an automated email. Please do not reply.</p>

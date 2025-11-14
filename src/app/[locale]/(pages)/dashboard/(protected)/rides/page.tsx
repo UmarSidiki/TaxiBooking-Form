@@ -240,11 +240,12 @@ export default function RidesPage() {
   }, [bookings, activeTab, searchQuery, paymentFilter, dateRange, sortBy]);
 
   useEffect(() => {
-    fetchBookings();
+    fetchBookings(true);
     fetchDrivers();
     fetchPartners();
     fetchSettings();
-  }, [fetchBookings, fetchDrivers, fetchPartners, fetchSettings]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     filterBookings();

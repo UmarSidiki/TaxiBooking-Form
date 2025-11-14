@@ -382,7 +382,7 @@ export default function PartnerHistoryPage() {
                             </span>
                           </div>
                           <p className="text-sm text-blue-800 dark:text-blue-200 italic">
-                            "{bookingReviews[booking._id]!.comment}"
+                            &ldquo;{bookingReviews[booking._id]!.comment}&rdquo;
                           </p>
                         </div>
                       )}

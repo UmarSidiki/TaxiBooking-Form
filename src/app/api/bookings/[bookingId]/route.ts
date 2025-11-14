@@ -3,9 +3,9 @@ import { connectDB } from "@/lib/database";
 import { Booking } from "@/models/booking";
 
 interface Params {
-  params: {
+  params: Promise<{
     bookingId: string;
-  };
+  }>;
 }
 
 export async function GET(
@@ -15,7 +15,7 @@ export async function GET(
   try {
     await connectDB();
 
-    const { bookingId } = params;
+    const { bookingId } = await params;
 
     if (!bookingId) {
       return NextResponse.json(

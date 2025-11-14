@@ -33,7 +33,7 @@ const ReviewSchema: Schema = new Schema({
 });
 
 // Create indexes for better performance
-ReviewSchema.index({ bookingId: 1 });
+// Note: bookingId index is already created by unique: true in schema definition
 ReviewSchema.index({ tripId: 1 });
 ReviewSchema.index({ createdAt: -1 });
 ReviewSchema.index({ rating: 1 });

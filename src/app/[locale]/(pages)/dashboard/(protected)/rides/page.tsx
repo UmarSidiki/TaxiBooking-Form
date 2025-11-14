@@ -240,7 +240,7 @@ export default function RidesPage() {
   }, [bookings, activeTab, searchQuery, paymentFilter, dateRange, sortBy]);
 
   useEffect(() => {
-    fetchBookings(true);
+    fetchBookings();
     fetchDrivers();
     fetchPartners();
     fetchSettings();

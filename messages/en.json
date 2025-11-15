@@ -309,9 +309,6 @@
       "HideFilters": "Hide Filters",
       "ShowFilters": "Show Filters",
       "ScheduledFor": "Scheduled For",
-      "JourneyDetails": "Journey Details",
-      "PickupLocation": "Pickup Location",
-      "DropoffLocation": "Dropoff Location",
       "Stops": "Stops",
       "NotSpecified": "Not Specified",
       "CustomerInformation": "Customer Information",
@@ -334,7 +331,6 @@
       "PaymentMethodIsCashNoOnlineRefundWillBeProcessedYouMayNeedToHandleTheRefundManually": "Payment Method Is Cash. No Online Refund Will Be Processed. You May Need To Handle The Refund Manually.",
       "KeepRide": "Keep Ride",
       "Processing": "Processing",
-      "ConfirmCancellation": "Confirm Cancellation",
       "driver-reassigned-successfully": "Driver reassigned successfully",
       "driver-assigned-successfully": "Driver assigned successfully",
       "assignment-failed-data-message": "Assignment failed: {0}",
@@ -385,8 +381,7 @@
       "flight-number2": "Flight Number",
       "departure": "Departure",
       "return": "Return",
-      "Trip": "Trip",
-      "partner-earnings-label": ""
+      "Trip": "Trip"
     },
     "Home": {
       "failed-to-fetch-dashboard-stats": "Failed to fetch dashboard stats",
@@ -529,43 +524,7 @@
         "no-ride-history-yet": "No ride history yet",
         "ride-history": "Ride History",
         "view-details": "View Details",
-        "your-payout": "Your Payout",
-        "Billing": {
-          "account-holder": "",
-          "account-holder-placeholder": "",
-          "account-number": "",
-          "account-number-placeholder": "",
-          "bank-name": "",
-          "bank-name-placeholder": "",
-          "description": "",
-          "error-title": "",
-          "form-description": "",
-          "form-title": "",
-          "iban": "",
-          "iban-placeholder": "",
-          "instructions-1": "",
-          "instructions-2": "",
-          "instructions-3": "",
-          "instructions-description": "",
-          "instructions-title": "",
-          "last-paid": "",
-          "load-error": "",
-          "never": "",
-          "notes": "",
-          "notes-placeholder": "",
-          "payout-summary-description": "",
-          "payout-summary-title": "",
-          "save-button": "",
-          "save-error": "",
-          "save-success": "",
-          "saving": "",
-          "success-title": "",
-          "swift": "",
-          "swift-placeholder": "",
-          "title": ""
-        },
-        "billing": "",
-        "fleet": ""
+        "your-payout": "Your Payout"
       },
       "Sidebar": {
         "partner-portal": "Partner Portal",
@@ -766,23 +725,7 @@
         "deleting": "Deleting...",
         "delete": "Delete",
         "partner-assigned-successfully": "Partner assigned successfully",
-        "partner-reassigned-successfully": "Partner reassigned successfully",
-        "admin-margin-amount": "",
-        "approve-for-partners": "",
-        "edit-partner-margin": "",
-        "margin-percentage": "",
-        "partner-assignment-disabled": "",
-        "partner-payout-amount": "",
-        "partner-payout-summary": "",
-        "partner-review-approved": "",
-        "partner-review-description": "",
-        "partner-review-error": "",
-        "partner-review-generic-error": "",
-        "partner-review-helper-text": "",
-        "partner-review-status-approved": "",
-        "partner-review-status-pending": "",
-        "partner-review-title": "",
-        "update-partner-approval": ""
+        "partner-reassigned-successfully": "Partner reassigned successfully"
       }
     },
     "Features": {
@@ -1003,8 +946,7 @@
       "sofort-giropay-and-more-european-payment-methods": "SOFORT, Giropay, and more European payment methods",
       "available-methods-depend-on-your-multisafepay-account-settings": "Available methods depend on your MultiSafepay account settings.",
       "payment-gateway": "Payment Gateway",
-      "select-your-preferred-payment-gateway": "Select Your Preferred Payment Gateway",
-      "httpss-yourwebsite-com-or-leave-empty-for-home-page": ""
+      "select-your-preferred-payment-gateway": "Select Your Preferred Payment Gateway"
     }
   },
   "Sidebar": {

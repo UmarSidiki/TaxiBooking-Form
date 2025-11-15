@@ -12,6 +12,8 @@ import {
   Search,
   Filter,
   Truck,
+  PiggyBank,
+  CreditCard,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -92,6 +94,16 @@ interface Partner {
   totalEarnings?: number;
   onlineEarnings?: number;
   cashEarnings?: number;
+  payoutBalance?: number;
+  lastPayoutAt?: string;
+  billingDetails?: {
+    accountHolder?: string;
+    bankName?: string;
+    accountNumber?: string;
+    iban?: string;
+    swift?: string;
+    notes?: string;
+  };
 }
 
 export default function AdminPartnersPage() {
@@ -116,6 +128,7 @@ export default function AdminPartnersPage() {
   const [processing, setProcessing] = useState(false);
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState("");
+  const [payoutProcessingId, setPayoutProcessingId] = useState<string | null>(null);
 
   const fetchPartners = useCallback(async () => {
     try {
@@ -159,6 +172,63 @@ export default function AdminPartnersPage() {
 
     setFilteredPartners(filtered);
   }, [partners, statusFilter, searchQuery]);
+
+  const formatCurrency = useCallback((amount?: number) => {
+    return new Intl.NumberFormat(undefined, {
+      style: "currency",
+      currency: "EUR",
+    }).format(amount ?? 0);
+  }, []);
+
+  const formatDate = useCallback((value?: string | null) => {
+    if (!value) {
+      return t("never-paid");
+    }
+    const parsed = new Date(value);
+    if (Number.isNaN(parsed.getTime())) {
+      return t("never-paid");
+    }
+    return parsed.toLocaleDateString(undefined, {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    });
+  }, [t]);
+
+  const updatePartnerCollections = useCallback((updated: Partner) => {
+    setPartners((prev) =>
+      prev.map((partner) => (partner._id === updated._id ? { ...partner, ...updated } : partner))
+    );
+    setFilteredPartners((prev) =>
+      prev.map((partner) => (partner._id === updated._id ? { ...partner, ...updated } : partner))
+    );
+    setSelectedPartner((prev) =>
+      prev && prev._id === updated._id ? { ...prev, ...updated } : prev
+    );
+  }, []);
+
+  const handleMarkPayoutPaid = useCallback(
+    async (partnerId: string) => {
+      try {
+        setPayoutProcessingId(partnerId);
+        const response = await fetch(`/api/admin/partners/${partnerId}/payout`, {
+          method: "PATCH",
+        });
+
+        const data = await response.json();
+        if (!response.ok || !data.success || !data.partner) {
+          throw new Error(data.error || "Failed to update payout");
+        }
+
+        updatePartnerCollections(data.partner);
+      } catch (error) {
+        console.error("Failed to mark payout as paid", error);
+      } finally {
+        setPayoutProcessingId(null);
+      }
+    },
+    [updatePartnerCollections]
+  );
 
   useEffect(() => {
     fetchPartners();
@@ -705,6 +775,79 @@ export default function AdminPartnersPage() {
               {/* Documents */}
               <div>
                 <h3 className="font-semibold mb-3">
+
+              {/* Billing & Payout */}
+              <div className="mt-6">
+                <h3 className="font-semibold mb-3 flex items-center gap-2">
+                  <PiggyBank className="w-5 h-5" />
+                  {t("billing-information")}
+                </h3>
+                <div className="grid gap-4 md:grid-cols-2">
+                  <div className="p-4 border rounded-lg bg-muted/30">
+                    <p className="text-sm text-muted-foreground uppercase tracking-wide">
+                      {t("payout-balance-label")}
+                    </p>
+                    <p className="text-2xl font-semibold mt-1">
+                      {formatCurrency(selectedPartner.payoutBalance)}
+                    </p>
+                    <p className="text-xs text-muted-foreground mt-2">
+                      {t("last-payout-label", { date: formatDate(selectedPartner.lastPayoutAt) })}
+                    </p>
+                    <Button
+                      className="mt-3"
+                      disabled={
+                        (selectedPartner.payoutBalance ?? 0) <= 0 ||
+                        payoutProcessingId === selectedPartner._id
+                      }
+                      onClick={() => handleMarkPayoutPaid(selectedPartner._id)}
+                    >
+                      {payoutProcessingId === selectedPartner._id ? t("marking-payout") : t("mark-payout-paid")}
+                    </Button>
+                  </div>
+                  <div className="p-4 border rounded-lg bg-muted/30">
+                    <p className="text-sm font-medium mb-2 flex items-center gap-2">
+                      <CreditCard className="w-4 h-4" />
+                      {t("bank-details")}
+                    </p>
+                    {(() => {
+                      const details = selectedPartner.billingDetails || {};
+                      const hasDetails = Object.values(details).some(
+                        (value) => typeof value === "string" && value.trim().length > 0
+                      );
+
+                      if (!hasDetails) {
+                        return (
+                          <p className="text-sm text-muted-foreground">
+                            {t("missing-billing-details")}
+                          </p>
+                        );
+                      }
+
+                      const detailEntries: Array<{ label: string; value?: string }> = [
+                        { label: t("account-holder-label"), value: details.accountHolder },
+                        { label: t("bank-name-label"), value: details.bankName },
+                        { label: t("account-number-label"), value: details.accountNumber },
+                        { label: t("iban-label"), value: details.iban },
+                        { label: t("swift-label"), value: details.swift },
+                        { label: t("notes-label"), value: details.notes },
+                      ];
+
+                      return (
+                        <dl className="space-y-2 text-sm">
+                          {detailEntries.map((entry) => (
+                            <div key={entry.label} className="grid grid-cols-3 gap-2">
+                              <dt className="text-muted-foreground">{entry.label}</dt>
+                              <dd className="col-span-2 font-medium break-words whitespace-pre-wrap">
+                                {entry.value && entry.value.trim().length > 0 ? entry.value : "—"}
+                              </dd>
+                            </div>
+                          ))}
+                        </dl>
+                      );
+                    })()}
+                  </div>
+                </div>
+              </div>
                   {t("documents-count", { 0: selectedPartner.documents.length })}
                 </h3>
                 {selectedPartner.documents.length === 0 ? (

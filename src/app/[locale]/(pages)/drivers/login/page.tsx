@@ -320,7 +320,7 @@ export default function DriverSignInPage() {
               <p className="text-sm text-muted-foreground">
                 {t('Drivers.need-assistance')}?{" "}
                 <a
-                  href="#"
+                  href={`mailto:${process.env.NEXT_PUBLIC_SUPPORT_EMAIL}`}
                   className="text-primary hover:underline transition-colors"
                 >
                   {t('Drivers.contact-support')} </a>

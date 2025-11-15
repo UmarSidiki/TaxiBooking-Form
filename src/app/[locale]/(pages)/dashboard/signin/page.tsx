@@ -333,7 +333,7 @@ export default function SignInPage() {
               <p className="text-sm text-muted-foreground">
                 Need assistance?{" "}
                 <a
-                  href="#"
+                  href={`mailto:${process.env.NEXT_PUBLIC_SUPPORT_EMAIL}`}
                   className="text-primary hover:underline transition-colors"
                 >
                   Contact Support

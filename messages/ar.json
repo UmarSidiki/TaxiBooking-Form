@@ -381,7 +381,8 @@
       "flight-number2": "رقم الرحلة",
       "departure": "المغادرة",
       "return": "العودة",
-      "Trip": "رحلة"
+      "Trip": "رحلة",
+      "ConfirmCancellation": "تأكيد الإلغاء"
     },
     "Home": {
       "failed-to-fetch-dashboard-stats": "فشل في جلب إحصائيات لوحة التحكم",

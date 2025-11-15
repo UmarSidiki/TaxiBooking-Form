@@ -344,7 +344,7 @@ export default function PartnerDashboardPage() {
                             €{(ride.partnerPayoutAmount ?? ride.totalAmount).toFixed(2)}
                           </p>
                           <p className="text-xs text-muted-foreground">
-                            {t("Dashboard.Partners.Dashboard.partner-earnings-label")}
+                            {t("partner-earnings-label")}
                           </p>
                         </div>
                       </div>

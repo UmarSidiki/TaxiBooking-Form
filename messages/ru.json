@@ -381,7 +381,8 @@
       "flight-number2": "Номер рейса",
       "departure": "Отправление",
       "return": "Возвращение",
-      "Trip": "Поездка"
+      "Trip": "Поездка",
+      "ConfirmCancellation": "Подтвердить отмену"
     },
     "Home": {
       "failed-to-fetch-dashboard-stats": "Не удалось загрузить статистику",

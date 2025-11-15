@@ -381,7 +381,8 @@
       "flight-number2": "Vluchtnummer",
       "departure": "Vertrek",
       "return": "Retour",
-      "Trip": "Rit"
+      "Trip": "Rit",
+      "ConfirmCancellation": "Bevestig annulering"
     },
     "Home": {
       "failed-to-fetch-dashboard-stats": "Kon dashboardstatistieken niet ophalen",

@@ -381,7 +381,8 @@
       "flight-number2": "Flugnummer",
       "departure": "Abfahrt",
       "return": "Rückkehr",
-      "Trip": "Fahrt"
+      "Trip": "Fahrt",
+      "ConfirmCancellation": "Stornierung bestätigen"
     },
     "Home": {
       "failed-to-fetch-dashboard-stats": "Dashboard-Statistiken konnten nicht abgerufen werden",

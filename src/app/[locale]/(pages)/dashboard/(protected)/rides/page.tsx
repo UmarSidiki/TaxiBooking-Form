@@ -614,7 +614,7 @@ export default function RidesPage() {
             </div>
 
             {/* Trip Details Grid */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               <div className="flex flex-col gap-1">
                 <div className="flex items-center gap-2 text-xs text-gray-500">
                   <CalendarDays className="w-3 h-3" />
@@ -694,7 +694,7 @@ export default function RidesPage() {
 
             {/* Second row for Passengers and Price on roundtrip bookings */}
             {booking.tripType === "roundtrip" && booking.returnDate && (
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 <div className="flex flex-col gap-1">
                   <div className="flex items-center gap-2 text-xs text-gray-500">
                     <Users className="w-3 h-3" />
@@ -861,7 +861,7 @@ export default function RidesPage() {
                     </div>
                     <Badge
                       variant={isPartnerReviewPending ? "destructive" : "secondary"}
-                      className="text-xs"
+                      className="text-xs text-white"
                     >
                       {isPartnerReviewPending
                         ? t("Dashboard.Rides.partner-review-status-pending")
@@ -1329,7 +1329,7 @@ export default function RidesPage() {
         {/* Search and Filters */}
         <Card className="p-4 border border-gray-200 shadow-sm bg-white">
           <div className="flex flex-col space-y-4">
-            <div className="flex items-center justify-between">
+            <div className="flex flex-wrap items-center justify-between gap-3">
               <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
                 <Filter className="w-5 h-5 text-secondary-foreground" />
                 {t("Dashboard.Rides.FilterBookings")}
@@ -1338,7 +1338,7 @@ export default function RidesPage() {
                 variant="ghost"
                 size="sm"
                 onClick={() => setShowFilters(!showFilters)}
-                className="flex items-center gap-2 text-secondary-foreground"
+                className="flex items-center justify-center gap-2 text-secondary-foreground w-full sm:w-auto"
               >
                 <Filter className="w-4 h-4" />
                 {showFilters
@@ -1353,12 +1353,12 @@ export default function RidesPage() {
                 placeholder={t("Dashboard.Rides.SearchPlaceholder")}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10 h-10"
+                className="w-full pl-10 h-10"
               />
             </div>
 
             {showFilters && (
-              <div className="flex flex-col sm:flex-row gap-4 pt-2">
+              <div className="flex flex-col sm:flex-row sm:flex-wrap gap-4 pt-2">
                 <DateRangePicker
                   date={dateRange}
                   onDateChange={setDateRange}
@@ -1417,10 +1417,10 @@ export default function RidesPage() {
 
       {/* Tabs Section */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-1 sm:grid-cols-3 bg-background p-1 rounded-lg border border-border shadow-sm h-auto">
+        <TabsList className="flex w-full flex-col sm:flex-row gap-2 bg-background p-1 rounded-lg border border-border shadow-sm h-auto overflow-x-auto">
           <TabsTrigger
             value="upcoming"
-            className="flex items-center justify-center gap-2 py-3 px-4 rounded-md transition-all data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm"
+            className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-md transition-all data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm"
           >
             <CalendarDays className="w-4 h-4" />
             <span className="font-medium">
@@ -1437,7 +1437,7 @@ export default function RidesPage() {
           </TabsTrigger>
           <TabsTrigger
             value="passed"
-            className="flex items-center justify-center gap-2 py-3 px-4 rounded-md transition-all data-[state=active]:bg-secondary data-[state=active]:text-white data-[state=active]:shadow-sm"
+            className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-md transition-all data-[state=active]:bg-secondary data-[state=active]:text-white data-[state=active]:shadow-sm"
           >
             <CheckCircle className="w-4 h-4" />
             <span className="font-medium">
@@ -1454,7 +1454,7 @@ export default function RidesPage() {
           </TabsTrigger>
           <TabsTrigger
             value="canceled"
-            className="flex items-center justify-center gap-2 py-3 px-4 rounded-md transition-all data-[state=active]:bg-destructive data-[state=active]:text-destructive-foreground data-[state=active]:shadow-sm"
+            className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-md transition-all data-[state=active]:bg-destructive data-[state=active]:text-destructive-foreground data-[state=active]:shadow-sm"
           >
             <Ban className="w-4 h-4" />
             <span className="font-medium">
@@ -1613,7 +1613,7 @@ export default function RidesPage() {
           }
         }}
       >
-        <DialogContent className="sm:max-w-4xl max-h-[90vh] overflow-y-auto">
+        <DialogContent className="w-[95vw] sm:w-full sm:max-w-4xl max-h-[90vh] overflow-y-auto">
           {detailBooking ? (
             <div className="space-y-6">
               <DialogHeader className="pb-4 border-b">
@@ -1767,7 +1767,7 @@ export default function RidesPage() {
                       </p>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-4 pt-4 border-t">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4 border-t">
                       <div className="flex items-center gap-2 text-sm">
                         <CalendarDays className="w-4 h-4 text-secondary-foreground" />
                         <div>
@@ -1794,7 +1794,7 @@ export default function RidesPage() {
 
                     {detailBooking.tripType === "roundtrip" &&
                       detailBooking.returnDate && (
-                        <div className="grid grid-cols-2 gap-4 pt-4 border-t">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4 border-t">
                           <div className="flex items-center gap-2 text-sm">
                             <CalendarDays className="w-4 h-4 text-secondary-foreground" />
                             <div>
@@ -1820,7 +1820,7 @@ export default function RidesPage() {
                         </div>
                       )}
 
-                    <div className="grid grid-cols-2 gap-4 pt-4 border-t">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4 border-t">
                       <div className="flex items-center gap-2 text-sm">
                         <Users className="w-4 h-4 text-secondary-foreground" />
                         <div>
@@ -1953,7 +1953,7 @@ export default function RidesPage() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
                     <div className="text-center p-4 bg-secondary/10 rounded-lg">
                       <DollarSign className="w-6 h-6 text-secondary-foreground mx-auto mb-2" />
                       <p className="text-sm text-gray-500 mb-1">
@@ -2049,7 +2049,7 @@ export default function RidesPage() {
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="pt-4">
-                    <div className="grid gap-4 sm:grid-cols-2">
+                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                       {detailBooking.assignedDriver && (
                         <div className="p-4 bg-primary/10 border border-primary/20 rounded-lg">
                           <div className="flex items-center gap-2 mb-2">
@@ -2160,7 +2160,7 @@ export default function RidesPage() {
 
       {/* Cancel/Refund Dialog */}
       <Dialog open={showCancelDialog} onOpenChange={setShowCancelDialog}>
-        <DialogContent className="sm:max-w-[550px]">
+        <DialogContent className="w-[95vw] sm:w-full sm:max-w-[550px]">
           <DialogHeader>
             <DialogTitle className="text-xl font-bold flex items-center gap-2">
               <div className="p-2 bg-destructive/10 rounded-full">

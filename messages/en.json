@@ -381,7 +381,8 @@
       "flight-number2": "Flight Number",
       "departure": "Departure",
       "return": "Return",
-      "Trip": "Trip"
+      "Trip": "Trip",
+      "ConfirmCancellation": "Confirm Cancellation"
     },
     "Home": {
       "failed-to-fetch-dashboard-stats": "Failed to fetch dashboard stats",

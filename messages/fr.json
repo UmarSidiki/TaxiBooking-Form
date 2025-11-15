@@ -381,7 +381,8 @@
       "flight-number2": "Numéro de vol",
       "departure": "Départ",
       "return": "Retour",
-      "Trip": "Course"
+      "Trip": "Course",
+      "ConfirmCancellation": "Confirmer l'annulation"
     },
     "Home": {
       "failed-to-fetch-dashboard-stats": "Échec de la récupération des statistiques du tableau de bord",

@@ -381,7 +381,8 @@
       "flight-number2": "Número de vuelo",
       "departure": "Salida",
       "return": "Regreso",
-      "Trip": "Viaje"
+      "Trip": "Viaje",
+      "ConfirmCancellation": "Confirmar cancelación"
     },
     "Home": {
       "failed-to-fetch-dashboard-stats": "Error al obtener estadísticas del panel",

@@ -383,7 +383,10 @@
       "departure": "Departure",
       "return": "Return",
       "Trip": "Trip",
-      "ConfirmCancellation": "Confirm Cancellation"
+      "ConfirmCancellation": "Confirm Cancellation",
+      "JourneyDetails": "Journey Details",
+      "PickupLocation": "Pickup Location",
+      "DropoffLocation": "Drop off Location"
     },
     "Home": {
       "failed-to-fetch-dashboard-stats": "Failed to fetch dashboard stats",

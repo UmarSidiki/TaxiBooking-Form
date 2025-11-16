@@ -383,7 +383,10 @@
       "departure": "Vertrek",
       "return": "Retour",
       "Trip": "Rit",
-      "ConfirmCancellation": "Bevestig annulering"
+      "ConfirmCancellation": "Bevestig annulering",
+      "JourneyDetails": "Reisdetails",
+      "PickupLocation": "Ophaallocatie",
+      "DropoffLocation": "Afleverlocatie"
     },
     "Home": {
       "failed-to-fetch-dashboard-stats": "Kon dashboardstatistieken niet ophalen",

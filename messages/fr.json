@@ -383,7 +383,10 @@
       "departure": "Départ",
       "return": "Retour",
       "Trip": "Course",
-      "ConfirmCancellation": "Confirmer l'annulation"
+      "ConfirmCancellation": "Confirmer l'annulation",
+      "JourneyDetails": "Détails du voyage",
+      "PickupLocation": "Lieu de prise en charge",
+      "DropoffLocation": "Lieu de dépôt"
     },
     "Home": {
       "failed-to-fetch-dashboard-stats": "Échec de la récupération des statistiques du tableau de bord",

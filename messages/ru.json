@@ -383,7 +383,10 @@
       "departure": "Отправление",
       "return": "Возвращение",
       "Trip": "Поездка",
-      "ConfirmCancellation": "Подтвердить отмену"
+      "ConfirmCancellation": "Подтвердить отмену",
+      "JourneyDetails": "Детали путешествия",
+      "PickupLocation": "Место получения",
+      "DropoffLocation": "Место высадки"
     },
     "Home": {
       "failed-to-fetch-dashboard-stats": "Не удалось загрузить статистику",

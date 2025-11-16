@@ -383,7 +383,10 @@
       "departure": "Salida",
       "return": "Regreso",
       "Trip": "Viaje",
-      "ConfirmCancellation": "Confirmar cancelación"
+      "ConfirmCancellation": "Confirmar cancelación",
+      "JourneyDetails": "Detalles del viaje",
+      "PickupLocation": "Ubicación de recogida",
+      "DropoffLocation": "Lugar de entrega"
     },
     "Home": {
       "failed-to-fetch-dashboard-stats": "Error al obtener estadísticas del panel",

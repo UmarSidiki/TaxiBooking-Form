@@ -383,7 +383,10 @@
       "departure": "Abfahrt",
       "return": "Rückkehr",
       "Trip": "Fahrt",
-      "ConfirmCancellation": "Stornierung bestätigen"
+      "ConfirmCancellation": "Stornierung bestätigen",
+      "JourneyDetails": "Reisedetails",
+      "PickupLocation": "Abholort",
+      "DropoffLocation": "Abgabeort"
     },
     "Home": {
       "failed-to-fetch-dashboard-stats": "Dashboard-Statistiken konnten nicht abgerufen werden",

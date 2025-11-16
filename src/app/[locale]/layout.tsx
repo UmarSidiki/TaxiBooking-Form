@@ -21,9 +21,46 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const siteName = process.env.NEXT_PUBLIC_WEBSITE_NAME ?? "Booking Form";
+const siteDescription =
+  "Premium booking experiences for riders, partners, and administrators—ready for any brand.";
+const appUrl = process.env.NEXT_PUBLIC_APP_URL;
+const metadataBase = appUrl ? new URL(appUrl) : undefined;
+const logoPath = "/logo.png";
+
 export const metadata: Metadata = {
-  title: process.env.NEXT_PUBLIC_WEBSITE_NAME,
-  description: "Created by UmarSidiki | Linkedin: https://www.linkedin.com/in/umarsidiki/",
+  metadataBase,
+  title: {
+    default: siteName,
+    template: `%s | ${siteName}`,
+  },
+  description: siteDescription,
+  icons: {
+    icon: "/favicon.ico",
+    shortcut: "/favicon.ico",
+    apple: logoPath,
+  },
+  openGraph: {
+    title: siteName,
+    description: siteDescription,
+    url: "/",
+    siteName,
+    images: [
+      {
+        url: logoPath,
+        width: 512,
+        height: 512,
+        alt: `${siteName} logo`,
+      },
+    ],
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: siteName,
+    description: siteDescription,
+    images: [logoPath],
+  },
 };
 
 type Props = {

@@ -207,17 +207,19 @@ export function useStep2() {
     if (formData.stops && formData.stops.length > 0) {
       const stopBasePrice = vehicle.stopPrice || 0;
       const stopPricePerHour = vehicle.stopPricePerHour || 0;
-      
-      formData.stops.forEach(stop => {
-        // Add base stop price
-        totalPrice += stopBasePrice;
-        
-        // Add duration-based price if stop has wait time
-        if (stop.duration && stop.duration > 0) {
-          const hours = stop.duration / 60; // Convert minutes to hours
-          totalPrice += stopPricePerHour * hours;
-        }
-      });
+
+      formData.stops
+        .filter(stop => stop.location.trim()) // Only include stops with valid locations
+        .forEach(stop => {
+          // Add base stop price
+          totalPrice += stopBasePrice;
+
+          // Add duration-based price if stop has wait time
+          if (stop.duration && stop.duration > 0) {
+            const hours = stop.duration / 60; // Convert minutes to hours
+            totalPrice += stopPricePerHour * hours;
+          }
+        });
     }
 
     // Apply discount after all other calculations
@@ -260,17 +262,19 @@ export function useStep2() {
     if (formData.stops && formData.stops.length > 0) {
       const stopBasePrice = vehicle.stopPrice || 0;
       const stopPricePerHour = vehicle.stopPricePerHour || 0;
-      
-      formData.stops.forEach(stop => {
-        // Add base stop price
-        totalPrice += stopBasePrice;
-        
-        // Add duration-based price if stop has wait time
-        if (stop.duration && stop.duration > 0) {
-          const hours = stop.duration / 60; // Convert minutes to hours
-          totalPrice += stopPricePerHour * hours;
-        }
-      });
+
+      formData.stops
+        .filter(stop => stop.location.trim()) // Only include stops with valid locations
+        .forEach(stop => {
+          // Add base stop price
+          totalPrice += stopBasePrice;
+
+          // Add duration-based price if stop has wait time
+          if (stop.duration && stop.duration > 0) {
+            const hours = stop.duration / 60; // Convert minutes to hours
+            totalPrice += stopPricePerHour * hours;
+          }
+        });
     }
 
     return totalPrice;

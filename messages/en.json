@@ -102,7 +102,8 @@
     "baggage-allowance": "Max. {0} suitcases",
     "math-max-formdata-duration-vehicle-minimumhours-or-or-2-hours": "{0} hours",
     "hours": "Hours",
-    "passenger-allowance": "Max. {0} passengers"
+    "passenger-allowance": "Max. {0} passengers",
+    "total": "TOTAL"
   },
   "not-set": "Not Set",
   "Step3": {

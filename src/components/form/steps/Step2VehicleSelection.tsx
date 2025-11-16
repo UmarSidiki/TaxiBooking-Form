@@ -403,7 +403,7 @@ export default function Step2VehicleSelection() {
                   {stopCosts > 0 && (
                     <div className="flex justify-between items-center mb-1 text-sm">
                       <span className="text-gray-600">
-                        Stops ({formData.stops?.length || 0})
+                        {t('Dashboard.Rides.Stops')} ({formData.stops?.filter(stop => stop.location.trim()).length || 0})
                       </span>
                       <span className="font-medium">
                         {currencySymbol}
@@ -413,7 +413,7 @@ export default function Step2VehicleSelection() {
                   )}
 
                   <div className="flex justify-between items-center text-lg font-bold">
-                    <span>TOTAL</span>
+                    <span>{t("Step2.total")}</span>
                     <div className="text-right">
                       <p className="text-gray-900">
                         {currencySymbol}

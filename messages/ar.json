@@ -102,7 +102,8 @@
     "baggage-allowance": "الحد الأقصى {0} حقائب",
     "math-max-formdata-duration-vehicle-minimumhours-or-or-2-hours": "{0} ساعات",
     "hours": "ساعات",
-    "passenger-allowance": "الحد الأقصى {0} ركاب"
+    "passenger-allowance": "الحد الأقصى {0} ركاب",
+    "total": "المجموع"
   },
   "not-set": "غير محدد",
   "Step3": {

@@ -24,7 +24,7 @@ const geistMono = Geist_Mono({
 const siteName = process.env.NEXT_PUBLIC_WEBSITE_NAME ?? "Booking Form";
 const siteDescription =
   "Premium booking experiences for riders, partners, and administrators—ready for any brand.";
-const appUrl = process.env.NEXT_PUBLIC_APP_URL;
+const appUrl = process.env.BASE_URL;
 const metadataBase = appUrl ? new URL(appUrl) : undefined;
 const logoPath = "/logo.png";
 

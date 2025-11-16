@@ -833,7 +833,7 @@ export default function Step3Payment() {
                 {stopsTotalPrice > 0 && (
                   <div className="flex justify-between">
                     <span className="text-gray-600">
-                      Stops ({formData.stops?.length || 0})
+                      {t('Dashboard.Rides.Stops')} ({formData.stops?.filter(stop => stop.location.trim()).length || 0})
                     </span>
                     <span className="font-medium">
                       {currencySymbol}{stopsTotalPrice.toFixed(2)}
@@ -847,7 +847,7 @@ export default function Step3Payment() {
           {/* Total */}
           <div className="border-t pt-3">
             <div className="flex justify-between items-center text-lg font-bold">
-              <span>TOTAL</span>
+              <span>{t("Step2.total")}</span>
               <span className="text-2xl text-primary">
                 {currencySymbol}{totalPrice.toFixed(2)}
               </span>

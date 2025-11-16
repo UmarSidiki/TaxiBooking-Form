@@ -102,7 +102,8 @@
     "baggage-allowance": "Max. {0} koffers",
     "math-max-formdata-duration-vehicle-minimumhours-or-or-2-hours": "{0} uur",
     "hours": "Uur",
-    "passenger-allowance": "Max. {0} passagiers"
+    "passenger-allowance": "Max. {0} passagiers",
+    "total": "TOTAAL"
   },
   "not-set": "Niet Ingesteld",
   "Step3": {

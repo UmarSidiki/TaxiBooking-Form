@@ -177,7 +177,8 @@ export function BookingFormProvider({ children }: { children: ReactNode }) {
           if (Array.isArray(parsedStops)) {
             urlFormData.stops = parsedStops.map((stop, index) => ({
               location: typeof stop === 'string' ? stop : stop.location || '',
-              order: typeof stop === 'object' ? stop.order || index + 1 : index + 1
+              order: typeof stop === 'object' ? stop.order || index + 1 : index + 1,
+              duration: typeof stop === 'object' ? stop.duration || 0 : 0
             }));
           }
         } catch {
@@ -185,7 +186,8 @@ export function BookingFormProvider({ children }: { children: ReactNode }) {
           const stopsArray = stopsParam.split(',').map(s => s.trim()).filter(s => s);
           urlFormData.stops = stopsArray.map((stop, index) => ({
             location: stop,
-            order: index + 1
+            order: index + 1,
+            duration: 0
           }));
         }
       }

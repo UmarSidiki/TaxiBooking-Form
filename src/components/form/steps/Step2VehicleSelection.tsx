@@ -374,17 +374,26 @@ export default function Step2VehicleSelection() {
               const totalPrice = calculatePrice(selectedVehicle);
 
               // Calculate stop costs separately for display
+              const validStops = formData.stops.filter(stop => stop.location.trim());
               let stopCosts = 0;
-              if (formData.stops && formData.stops.length > 0) {
+              const stopBreakdown: Array<{ baseCost: number; durationCost: number; totalCost: number; duration: number }> = [];
+              
+              if (validStops.length > 0) {
                 const stopBasePrice = selectedVehicle.stopPrice || 0;
                 const stopPricePerHour = selectedVehicle.stopPricePerHour || 0;
 
-                formData.stops.forEach((stop) => {
-                  stopCosts += stopBasePrice;
+                validStops.forEach((stop) => {
+                  const baseCost = stopBasePrice;
+                  let durationCost = 0;
+                  
                   if (stop.duration && stop.duration > 0) {
                     const hours = stop.duration / 60;
-                    stopCosts += stopPricePerHour * hours;
+                    durationCost = stopPricePerHour * hours;
                   }
+                  
+                  const totalCost = baseCost + durationCost;
+                  stopCosts += totalCost;
+                  stopBreakdown.push({ baseCost, durationCost, totalCost, duration: stop.duration || 0 });
                 });
               }
 
@@ -401,14 +410,30 @@ export default function Step2VehicleSelection() {
 
                   {/* Stop costs breakdown */}
                   {stopCosts > 0 && (
-                    <div className="flex justify-between items-center mb-1 text-sm">
-                      <span className="text-gray-600">
-                        {t('Dashboard.Rides.Stops')} ({formData.stops?.filter(stop => stop.location.trim()).length || 0})
-                      </span>
-                      <span className="font-medium">
-                        {currencySymbol}
-                        {stopCosts.toFixed(2)}
-                      </span>
+                    <div className="mb-2 space-y-1">
+                      <div className="flex justify-between items-center text-sm font-medium text-gray-700">
+                        <span>
+                          {t('Dashboard.Rides.Stops')} ({validStops.length})
+                        </span>
+                        <span>
+                          {currencySymbol}{stopCosts.toFixed(2)}
+                        </span>
+                      </div>
+                      <div className="ml-2 space-y-0.5 text-xs text-gray-500">
+                        {stopBreakdown.map((stop, index) => (
+                          <div key={index} className="flex justify-between">
+                            <span>
+                              {t('Step1.stop')} {index + 1}
+                              {stop.duration > 0 && (
+                                <span className="ml-1">({stop.duration}m wait)</span>
+                              )}
+                            </span>
+                            <span>
+                              {currencySymbol}{stop.totalCost.toFixed(2)}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
                     </div>
                   )}
 

@@ -389,11 +389,15 @@ export function useStep1() {
         if (formData.returnTime) params.set("returnTime", formData.returnTime);
       }
 
-      // Add stops if they exist
+      // Add stops if they exist (including duration)
       if (formData.stops.length > 0) {
-        const filteredStops = formData.stops.filter((stop) =>
-          stop.location.trim()
-        );
+        const filteredStops = formData.stops
+          .filter((stop) => stop.location.trim())
+          .map((stop) => ({
+            location: stop.location,
+            order: stop.order,
+            duration: stop.duration || 0,
+          }));
         if (filteredStops.length > 0) {
           params.set("stops", JSON.stringify(filteredStops));
         }

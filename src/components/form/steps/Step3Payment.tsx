@@ -830,16 +830,49 @@ export default function Step3Payment() {
                     </span>
                   </div>
                 )}
-                {stopsTotalPrice > 0 && (
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">
-                      {t('Dashboard.Rides.Stops')} ({formData.stops?.filter(stop => stop.location.trim()).length || 0})
-                    </span>
-                    <span className="font-medium">
-                      {currencySymbol}{stopsTotalPrice.toFixed(2)}
-                    </span>
-                  </div>
-                )}
+                {stopsTotalPrice > 0 && (() => {
+                  const validStops = formData.stops?.filter(stop => stop.location.trim()) || [];
+                  const basePrice = selectedVehicle?.stopPrice || 0;
+                  const pricePerHour = selectedVehicle?.stopPricePerHour || 0;
+                  
+                  return (
+                    <div>
+                      <div className="flex justify-between font-medium">
+                        <span className="text-gray-600">
+                          {t('Dashboard.Rides.Stops')} ({validStops.length})
+                        </span>
+                        <span>
+                          {currencySymbol}{stopsTotalPrice.toFixed(2)}
+                        </span>
+                      </div>
+                      <div className="ml-2 mt-1 space-y-0.5 text-xs text-gray-500">
+                        {validStops.map((stop, index) => {
+                          const baseCost = basePrice;
+                          let durationCost = 0;
+                          if (stop.duration && stop.duration > 0) {
+                            const hours = stop.duration / 60;
+                            durationCost = pricePerHour * hours;
+                          }
+                          const totalCost = baseCost + durationCost;
+                          
+                          return (
+                            <div key={index} className="flex justify-between">
+                              <span>
+                                {t('Step1.stop')} {index + 1}
+                                {(stop.duration || 0) > 0 && (
+                                  <span className="ml-1">({stop.duration}m wait)</span>
+                                )}
+                              </span>
+                              <span>
+                                {currencySymbol}{totalCost.toFixed(2)}
+                              </span>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  );
+                })()}
               </div>
             </div>
           )}

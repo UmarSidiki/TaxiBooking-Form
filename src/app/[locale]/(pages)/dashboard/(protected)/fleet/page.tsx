@@ -453,7 +453,7 @@ const VehicleCard = ({
       </CardHeader>
       <CardContent className="space-y-3 sm:space-y-4">
         {vehicle.image && (
-          <div className="relative w-full h-28 sm:h-32 bg-muted rounded-lg overflow-hidden">
+          <div className="relative w-full h-40 sm:h-32 bg-muted rounded-lg overflow-hidden">
             <Image
               src={resolveImageSrc(vehicle.image)}
               alt={vehicle.name}

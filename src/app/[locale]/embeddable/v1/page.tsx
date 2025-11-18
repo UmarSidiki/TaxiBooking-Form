@@ -287,9 +287,12 @@ function BookingFormUI() {
                                   stopInputRefs.current[index] = el;
                                 }
                               }}
-                              placeholder={t("embeddable.stop-index-1-location", {
-                                0: index + 1,
-                              })}
+                              placeholder={t(
+                                "embeddable.stop-index-1-location",
+                                {
+                                  0: index + 1,
+                                }
+                              )}
                               value={stop.location}
                               onChange={(e) =>
                                 handleStopChange(index, e.target.value)
@@ -303,28 +306,33 @@ function BookingFormUI() {
                             </div>
                             <select
                               value={stop.duration || 0}
-                              onChange={(e) => handleStopDurationChange(index, parseInt(e.target.value))}
+                              onChange={(e) =>
+                                handleStopDurationChange(
+                                  index,
+                                  parseInt(e.target.value)
+                                )
+                              }
                               className="w-full rounded-lg border bg-white pl-7 pr-7 py-2 md:py-2.5 text-xs font-medium text-slate-700 border-slate-200 hover:border-slate-300 focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none transition-all duration-200 cursor-pointer appearance-none"
                               style={{
                                 backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%2394a3b8' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`,
-                                backgroundPosition: 'right 0.25rem center',
-                                backgroundRepeat: 'no-repeat',
-                                backgroundSize: '1.25em 1.25em',
+                                backgroundPosition: "right 0.25rem center",
+                                backgroundRepeat: "no-repeat",
+                                backgroundSize: "1.25em 1.25em",
                               }}
                             >
                               <option value={0}>—</option>
-                              <option value={10}>10m</option>
-                              <option value={20}>20m</option>
+                              <option value={15}>15m</option>{" "}
                               <option value={30}>30m</option>
-                              <option value={40}>40m</option>
-                              <option value={50}>50m</option>
+                              <option value={45}>45m</option>{" "}
                               <option value={60}>1h</option>
-                              <option value={70}>1h 10m</option>
-                              <option value={80}>1h 20m</option>
                               <option value={90}>1h 30m</option>
-                              <option value={100}>1h 40m</option>
-                              <option value={110}>1h 50m</option>
                               <option value={120}>2h</option>
+                              <option value={150}>2h 30m</option>
+                              <option value={180}>3h</option>
+                              <option value={210}>3h 30m</option>
+                              <option value={240}>4h</option>
+                              <option value={270}>4h 30m</option>{" "}
+                              <option value={300}>5h</option>
                             </select>
                           </div>
                         </div>

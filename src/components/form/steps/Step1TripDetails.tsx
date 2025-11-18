@@ -94,10 +94,12 @@ export default function Step1TripDetails() {
   const handleRemoveStop = (index: number) => {
     setFormData((prev) => ({
       ...prev,
-      stops: prev.stops.filter((_, i) => i !== index).map((stop, i) => ({
-        ...stop,
-        order: i + 1,
-      })),
+      stops: prev.stops
+        .filter((_, i) => i !== index)
+        .map((stop, i) => ({
+          ...stop,
+          order: i + 1,
+        })),
     }));
   };
 
@@ -274,7 +276,9 @@ export default function Step1TripDetails() {
                         }}
                         placeholder={`Stop ${index + 1} location`}
                         value={stop.location}
-                        onChange={(e) => handleStopChange(index, e.target.value)}
+                        onChange={(e) =>
+                          handleStopChange(index, e.target.value)
+                        }
                         className="pl-10 pr-3 h-9 focus:border-primary-500 focus:ring-primary-500 transition-colors"
                       />
                     </div>
@@ -282,28 +286,33 @@ export default function Step1TripDetails() {
                       <Clock className="absolute left-2.5 top-1/2 transform -translate-y-1/2 h-3.5 w-3.5 text-primary pointer-events-none z-10" />
                       <select
                         value={stop.duration || 0}
-                        onChange={(e) => handleStopDurationChange(index, parseInt(e.target.value))}
+                        onChange={(e) =>
+                          handleStopDurationChange(
+                            index,
+                            parseInt(e.target.value)
+                          )
+                        }
                         className="w-full h-9 pl-8 pr-2 rounded-md border border-input bg-background text-xs font-medium text-gray-700 cursor-pointer hover:border-primary/50 focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none transition-all appearance-none"
                         style={{
                           backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`,
-                          backgroundPosition: 'right 0.25rem center',
-                          backgroundRepeat: 'no-repeat',
-                          backgroundSize: '1.25em 1.25em',
+                          backgroundPosition: "right 0.25rem center",
+                          backgroundRepeat: "no-repeat",
+                          backgroundSize: "1.25em 1.25em",
                         }}
                       >
                         <option value={0}>—</option>
-                        <option value={10}>10m</option>
-                        <option value={20}>20m</option>
+                        <option value={15}>15m</option>{" "}
                         <option value={30}>30m</option>
-                        <option value={40}>40m</option>
-                        <option value={50}>50m</option>
+                        <option value={45}>45m</option>{" "}
                         <option value={60}>1h</option>
-                        <option value={70}>1h 10m</option>
-                        <option value={80}>1h 20m</option>
                         <option value={90}>1h 30m</option>
-                        <option value={100}>1h 40m</option>
-                        <option value={110}>1h 50m</option>
                         <option value={120}>2h</option>
+                        <option value={150}>2h 30m</option>
+                        <option value={180}>3h</option>
+                        <option value={210}>3h 30m</option>
+                        <option value={240}>4h</option>
+                        <option value={270}>4h 30m</option>{" "}
+                        <option value={300}>5h</option>
                       </select>
                     </div>
                   </div>
@@ -364,7 +373,6 @@ export default function Step1TripDetails() {
               )}
             </div>
           )}
-
 
           {/* Duration - Only for hourly bookings */}
           {formData.bookingType === "hourly" && (
@@ -440,7 +448,10 @@ export default function Step1TripDetails() {
             <div>
               <label className="block text-sm font-medium mb-1.5 text-gray-700">
                 <CalendarDays className="inline h-4 w-4 mr-1" />
-                {formData.tripType === "roundtrip" ? t("Step1.DepartureDate") : t("Step1.Date")} *
+                {formData.tripType === "roundtrip"
+                  ? t("Step1.DepartureDate")
+                  : t("Step1.Date")}{" "}
+                *
               </label>
               <Input
                 type="date"
@@ -460,7 +471,10 @@ export default function Step1TripDetails() {
             <div>
               <label className="block text-sm font-medium mb-1.5 text-gray-700">
                 <Clock className="inline h-4 w-4 mr-1" />
-                {formData.tripType === "roundtrip" ? t("Step1.DepartureTime") : t("Step1.Time")} *
+                {formData.tripType === "roundtrip"
+                  ? t("Step1.DepartureTime")
+                  : t("Step1.Time")}{" "}
+                *
               </label>
               <Input
                 type="time"
@@ -498,7 +512,9 @@ export default function Step1TripDetails() {
                   }}
                 />
                 {errors.returnDate && (
-                  <p className="text-red-500 text-xs mt-1">{errors.returnDate}</p>
+                  <p className="text-red-500 text-xs mt-1">
+                    {errors.returnDate}
+                  </p>
                 )}
               </div>
               <div>
@@ -517,7 +533,9 @@ export default function Step1TripDetails() {
                   }}
                 />
                 {errors.returnTime && (
-                  <p className="text-red-500 text-xs mt-1">{errors.returnTime}</p>
+                  <p className="text-red-500 text-xs mt-1">
+                    {errors.returnTime}
+                  </p>
                 )}
               </div>
             </div>

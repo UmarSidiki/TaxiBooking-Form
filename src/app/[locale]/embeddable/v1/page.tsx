@@ -154,6 +154,47 @@ function BookingFormUI() {
     }));
   };
 
+  useEffect(() => {
+    // Function to calculate and send height
+    const sendHeight = () => {
+      if (typeof window === 'undefined') return;
+
+      // We calculate the max height of the document content
+      const height = Math.max(
+        document.body.scrollHeight,
+        document.documentElement.scrollHeight,
+        document.body.offsetHeight,
+        document.documentElement.offsetHeight
+      );
+
+      // Send a specific message type so the parent knows it's us
+      window.parent.postMessage(
+        { type: 'meetswiss-resize', height: height },
+        "*" // Allows communication with any parent domain
+      );
+    };
+
+    // 1. Send on initial load
+    sendHeight();
+
+    // 2. Send whenever the window resizes
+    window.addEventListener('resize', sendHeight);
+
+    // 3. Watch for DOM changes (errors appearing, stops added, etc.)
+    const observer = new MutationObserver(sendHeight);
+    observer.observe(document.body, {
+      attributes: true,
+      childList: true,
+      subtree: true
+    });
+
+    // Cleanup
+    return () => {
+      window.removeEventListener('resize', sendHeight);
+      observer.disconnect();
+    };
+  }, []); 
+
   return (
     <>
       <div

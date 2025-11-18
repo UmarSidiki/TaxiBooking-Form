@@ -221,9 +221,6 @@ export async function PATCH(
       console.log("PATCH booking - Cancel action for booking ID:", id);
       updateData.status = 'canceled';
       updateData.canceledAt = new Date();
-    } else if (rawAction === "complete") {
-      console.log("PATCH booking - Complete action for booking ID:", id);
-      updateData.status = 'completed';
 
       // Handle refund if payment was completed
       if (booking.paymentStatus === 'completed') {
@@ -254,6 +251,7 @@ export async function PATCH(
         }
       }
     } else if (rawAction === "complete") {
+      console.log("PATCH booking - Complete action for booking ID:", id);
       updateData.status = 'completed';
     } else if (rawAction === "assign") {
       const driverId = body.driverId;

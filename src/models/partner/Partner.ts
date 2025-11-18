@@ -80,7 +80,7 @@ export interface IPartner {
 const PartnerDocumentSchema = new Schema<IPartnerDocument>({
   type: {
     type: String,
-    enum: ["license", "insurance", "registration", "id", "other"],
+    enum: ["license", "insurance", "registration", "id", "liability_insurance", "other"],
     required: true,
   },
   fileName: {

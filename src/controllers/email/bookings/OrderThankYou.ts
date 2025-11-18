@@ -41,8 +41,9 @@ function isValidEmail(email: string): boolean {
 }
 
 function generateEmailHTML(bookingData: BookingData) {
-  const reviewUrl = bookingData.bookingId && bookingData.baseUrl 
-    ? `${bookingData.baseUrl}/en/review?bookingId=${bookingData.bookingId}`
+  const baseUrl = bookingData.baseUrl ? bookingData.baseUrl.replace(/\/$/, "") : "";
+  const reviewUrl = bookingData.bookingId && baseUrl 
+    ? `${baseUrl}/en/review?bookingId=${bookingData.bookingId}`
     : null;
 
   return `

@@ -76,7 +76,7 @@ function generateAdminNotificationHTML(partnerData: PartnerRegistrationData) {
     </div>
 
     <div style="text-align: center;">
-      <a href="${partnerData.baseUrl}/dashboard/partners" class="cta-button">
+      <a href="${partnerData.baseUrl?.replace(/\/$/, "")}/dashboard/partners" class="cta-button">
         Review Partner Application
       </a>
     </div>

@@ -358,6 +358,7 @@ export default function PartnerAccountPage() {
                   <SelectContent>
                     <SelectItem value="license">{t("drivers-license")}</SelectItem>
                     <SelectItem value="insurance">{t("insurance")}</SelectItem>
+                    <SelectItem value="liability_insurance">Professional liability insurance (RC pro)</SelectItem>
                     <SelectItem value="registration">
                       {t("vehicle-registration")}
                     </SelectItem>

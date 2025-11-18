@@ -72,7 +72,7 @@ function generateApprovalEmailHTML(partnerData: PartnerData) {
     </div>
 
     <div style="text-align: center;">
-      <a href="${partnerData.baseUrl}/partners/login" class="cta-button">
+      <a href="${partnerData.baseUrl?.replace(/\/$/, "")}/partners/login" class="cta-button">
         Go to Partner Dashboard
       </a>
     </div>
@@ -148,7 +148,7 @@ function generateRejectionEmailHTML(partnerData: PartnerData) {
     </div>
 
     <div style="text-align: center;">
-      <a href="${partnerData.baseUrl}/contact" class="cta-button">
+      <a href="${partnerData.baseUrl?.replace(/\/$/, "")}/contact" class="cta-button">
         Contact Support
       </a>
     </div>
@@ -242,7 +242,7 @@ function generateSuspensionEmailHTML(partnerData: PartnerData) {
     </div>
 
     <div style="text-align: center;">
-      <a href="${partnerData.baseUrl}/contact" class="cta-button">
+      <a href="${partnerData.baseUrl?.replace(/\/$/, "")}/contact" class="cta-button">
         Contact Support
       </a>
     </div>
@@ -476,7 +476,7 @@ function generateRideNotificationEmailHTML(rideData: RideNotificationData) {
     </div>
 
     <div style="text-align: center;">
-      <a href="${rideData.baseUrl}/partners/dashboard" class="cta-button">
+      <a href="${rideData.baseUrl?.replace(/\/$/, "")}/partners/dashboard" class="cta-button">
         View Ride & Accept
       </a>
     </div>

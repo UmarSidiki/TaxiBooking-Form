@@ -97,7 +97,7 @@ function generateFleetRequestEmailHTML(data: FleetRequestData) {
     </div>
 
     <div style="text-align: center;">
-      <a href="${data.baseUrl}/admin/partners" class="cta-button">
+      <a href="${data.baseUrl?.replace(/\/$/, "")}/dashboard/partners" class="cta-button">
         Review Partner Requests
       </a>
     </div>
@@ -175,7 +175,7 @@ function generateFleetApprovalEmailHTML(data: FleetApprovalData) {
     </div>
 
     <div style="text-align: center;">
-      <a href="${data.baseUrl}/partners/dashboard" class="cta-button">
+      <a href="${data.baseUrl?.replace(/\/$/, "")}/partners/dashboard" class="cta-button">
         Go to Dashboard
       </a>
     </div>
@@ -255,7 +255,7 @@ function generateFleetRejectionEmailHTML(data: FleetRejectionData) {
     </div>
 
     <div style="text-align: center;">
-      <a href="${data.baseUrl}/partners/fleet" class="cta-button">
+      <a href="${data.baseUrl?.replace(/\/$/, "")}/partners/fleet" class="cta-button">
         Request Different Vehicle
       </a>
     </div>

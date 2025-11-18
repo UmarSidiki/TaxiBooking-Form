@@ -72,13 +72,52 @@ export async function sendThankYouEmails() {
         const emailSent = await sendOrderThankYouEmail(emailData);
 
         if (emailSent) {
-          // Mark as sent
-          await Booking.findByIdAndUpdate(booking._id, {
-            thankYouEmailSent: true,
-            updatedAt: new Date(),
-          });
-          sentCount++;
-          console.log(`✅ Thank you email sent for booking ${booking.tripId}`);
+          try {
+            // Mark that thank-you email was sent
+            await Booking.findByIdAndUpdate(booking._id, {
+              thankYouEmailSent: true,
+              updatedAt: new Date(),
+            });
+
+            // If the booking is not yet completed, call the same
+            // PATCH /api/bookings/[id] complete logic used by the dashboard
+            if (booking.status !== "completed") {
+              const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
+
+              const response = await fetch(
+                `${baseUrl}/api/bookings/${booking._id.toString()}`,
+                {
+                  method: "PATCH",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify({ action: "complete" }),
+                }
+              );
+
+              if (!response.ok) {
+                const data = await response.json().catch(() => null);
+                console.error(
+                  "Failed to mark booking as completed via API",
+                  response.status,
+                  data
+                );
+                failedCount++;
+                continue;
+              }
+            }
+
+            sentCount++;
+            console.log(
+              `✅ Thank you email sent and booking completed (if needed) via API: ${booking.tripId}`
+            );
+          } catch (completionError) {
+            console.error(
+              `❌ Error completing booking after thank you email for ${booking.tripId}:`,
+              completionError
+            );
+            failedCount++;
+          }
         } else {
           failedCount++;
           console.error(

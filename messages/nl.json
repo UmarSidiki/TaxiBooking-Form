@@ -496,7 +496,8 @@
         "notes": "Notities",
         "ride-accepted-successfully": "Rit succesvol geaccepteerd!",
         "failed-to-accept-ride": "Kon rit niet accepteren",
-        "partner-earnings-label": "Uw uitbetaling"
+        "partner-earnings-label": "Uw uitbetaling",
+        "professional-liability-insurance-rc-pro": "Beroepsaansprakelijkheidsverzekering (RC pro)"
       },
       "Rides": {
         "my-rides": "Mijn Ritten",

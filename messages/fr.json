@@ -496,7 +496,8 @@
         "notes": "Notes",
         "ride-accepted-successfully": "Course acceptée avec succès !",
         "failed-to-accept-ride": "Échec de l'acceptation de la course",
-        "partner-earnings-label": "Votre paiement"
+        "partner-earnings-label": "Votre paiement",
+        "professional-liability-insurance-rc-pro": "Assurance responsabilité professionnelle (RC pro)"
       },
       "Rides": {
         "my-rides": "Mes courses",

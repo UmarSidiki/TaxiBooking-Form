@@ -496,7 +496,8 @@
         "notes": "Примечания",
         "ride-accepted-successfully": "Поездка успешно принята!",
         "failed-to-accept-ride": "Не удалось принять поездку",
-        "partner-earnings-label": "Ваша выплата"
+        "partner-earnings-label": "Ваша выплата",
+        "professional-liability-insurance-rc-pro": "Страхование профессиональной ответственности (RC pro)"
       },
       "Rides": {
         "my-rides": "Мои поездки",

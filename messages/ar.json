@@ -496,7 +496,8 @@
         "notes": "ملاحظات",
         "ride-accepted-successfully": "تم قبول الرحلة بنجاح!",
         "failed-to-accept-ride": "فشل قبول الرحلة",
-        "partner-earnings-label": "مستحقاتك"
+        "partner-earnings-label": "مستحقاتك",
+        "professional-liability-insurance-rc-pro": "تأمين المسؤولية المهنية (RC pro)"
       },
       "Rides": {
         "my-rides": "رحلاتي",

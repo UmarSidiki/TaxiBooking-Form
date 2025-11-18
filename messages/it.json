@@ -496,7 +496,8 @@
         "notes": "Note",
         "ride-accepted-successfully": "Corsa accettata con successo!",
         "failed-to-accept-ride": "Impossibile accettare la corsa",
-        "partner-earnings-label": "Il tuo compenso"
+        "partner-earnings-label": "Il tuo compenso",
+        "professional-liability-insurance-rc-pro": "Assicurazione responsabilità civile professionale (RC pro)"
       },
       "Rides": {
         "my-rides": "Le Mie Corse",

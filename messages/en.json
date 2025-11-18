@@ -452,6 +452,7 @@
         "drivers-license": "Driver's License",
         "insurance": "Insurance",
         "vehicle-registration": "Vehicle Registration",
+        "professional-liability-insurance-rc-pro": "Professional liability insurance (RC pro)",
         "id-card": "ID Card",
         "vtc-card": "VTC card/cantonal authorisation",
         "other": "Other",

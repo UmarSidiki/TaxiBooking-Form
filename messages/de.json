@@ -496,7 +496,8 @@
         "notes": "Anmerkungen",
         "ride-accepted-successfully": "Fahrt erfolgreich angenommen!",
         "failed-to-accept-ride": "Fahrt konnte nicht angenommen werden",
-        "partner-earnings-label": "Ihre Auszahlung"
+        "partner-earnings-label": "Ihre Auszahlung",
+        "professional-liability-insurance-rc-pro": "Berufshaftpflichtversicherung (RC pro)"
       },
       "Rides": {
         "my-rides": "Meine Fahrten",

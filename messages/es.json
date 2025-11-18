@@ -496,7 +496,8 @@
         "notes": "Notas",
         "ride-accepted-successfully": "¡Viaje aceptado exitosamente!",
         "failed-to-accept-ride": "Error al aceptar el viaje",
-        "partner-earnings-label": "Su pago"
+        "partner-earnings-label": "Su pago",
+        "professional-liability-insurance-rc-pro": "Seguro de responsabilidad profesional (RC pro)"
       },
       "Rides": {
         "my-rides": "Mis viajes",

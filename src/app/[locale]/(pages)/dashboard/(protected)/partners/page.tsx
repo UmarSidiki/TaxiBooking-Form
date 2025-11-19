@@ -230,6 +230,31 @@ export default function AdminPartnersPage() {
     [updatePartnerCollections]
   );
 
+  const handleRecalculatePayout = useCallback(
+    async (partnerId: string) => {
+      try {
+        setPayoutProcessingId(partnerId);
+        const response = await fetch(`/api/admin/partners/${partnerId}/recalculate-payout`, {
+          method: "POST",
+        });
+
+        const data = await response.json();
+        if (!response.ok || !data.success || !data.partner) {
+          throw new Error(data.error || "Failed to recalculate payout");
+        }
+
+        updatePartnerCollections(data.partner);
+        alert(`Payout recalculated: Outstanding balance €${data.summary.payoutBalance.toFixed(2)} from ${data.summary.bookingsProcessed} bookings`);
+      } catch (error) {
+        console.error("Failed to recalculate payout", error);
+        alert(`Error: ${error instanceof Error ? error.message : "Failed to recalculate payout"}`);
+      } finally {
+        setPayoutProcessingId(null);
+      }
+    },
+    [updatePartnerCollections]
+  );
+
   useEffect(() => {
     fetchPartners();
   }, [fetchPartners]);
@@ -793,16 +818,26 @@ export default function AdminPartnersPage() {
                     <p className="text-xs text-muted-foreground mt-2">
                       {t("last-payout-label", { date: formatDate(selectedPartner.lastPayoutAt) })}
                     </p>
-                    <Button
-                      className="mt-3"
-                      disabled={
-                        (selectedPartner.payoutBalance ?? 0) <= 0 ||
-                        payoutProcessingId === selectedPartner._id
-                      }
-                      onClick={() => handleMarkPayoutPaid(selectedPartner._id)}
-                    >
-                      {payoutProcessingId === selectedPartner._id ? t("marking-payout") : t("mark-payout-paid")}
-                    </Button>
+                    <div className="flex flex-col gap-2 mt-3">
+                      <Button
+                        className="w-full"
+                        disabled={
+                          (selectedPartner.payoutBalance ?? 0) <= 0 ||
+                          payoutProcessingId === selectedPartner._id
+                        }
+                        onClick={() => handleMarkPayoutPaid(selectedPartner._id)}
+                      >
+                        {payoutProcessingId === selectedPartner._id ? t("marking-payout") : t("mark-payout-paid")}
+                      </Button>
+                      <Button
+                        variant="outline"
+                        className="w-full"
+                        disabled={payoutProcessingId === selectedPartner._id}
+                        onClick={() => handleRecalculatePayout(selectedPartner._id)}
+                      >
+                        {payoutProcessingId === selectedPartner._id ? "Recalculating..." : "Recalculate Payout"}
+                      </Button>
+                    </div>
                   </div>
                   <div className="p-4 border rounded-lg bg-muted/30">
                     <p className="text-sm font-medium mb-2 flex items-center gap-2">

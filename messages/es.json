@@ -731,7 +731,11 @@
         "deleting": "Eliminando...",
         "delete": "Eliminar",
         "partner-assigned-successfully": "Socio asignado exitosamente",
-        "partner-reassigned-successfully": "Socio reasignado exitosamente"
+        "partner-reassigned-successfully": "Socio reasignado exitosamente",
+        "cash-payment": "Pago al contado",
+        "earnings-summary": "Resumen de ganancias",
+        "online-payment": "Pago en línea",
+        "total-earnings": "Ganancias totales"
       }
     },
     "Features": {

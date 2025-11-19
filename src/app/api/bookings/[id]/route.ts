@@ -657,12 +657,10 @@ export async function PATCH(
           hasPartner: !!updatedBooking.assignedPartner?._id,
         });
       }
-    } else {
-      console.log("PATCH booking - Skipping partner earnings update", {
-        isComplete: rawAction === "complete",
-        bookingWasNotCompleted: booking.status !== "completed",
+    } else if (rawAction === "complete") {
+      console.log("PATCH booking - Complete action but partner earnings not updated", {
+        bookingAlreadyCompleted: booking.status === "completed",
         hasPartner: !!updatedBooking.assignedPartner?._id,
-        rawAction,
         bookingStatus: booking.status,
       });
     }

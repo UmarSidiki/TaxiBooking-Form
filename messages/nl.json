@@ -731,7 +731,11 @@
         "deleting": "Verwijderen...",
         "delete": "Verwijderen",
         "partner-assigned-successfully": "Partner succesvol toegewezen",
-        "partner-reassigned-successfully": "Partner succesvol opnieuw toegewezen"
+        "partner-reassigned-successfully": "Partner succesvol opnieuw toegewezen",
+        "cash-payment": "Contante betaling",
+        "earnings-summary": "Inkomstenoverzicht",
+        "online-payment": "Online betaling",
+        "total-earnings": "Totale inkomsten"
       }
     },
     "Features": {

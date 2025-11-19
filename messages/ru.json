@@ -731,7 +731,11 @@
         "deleting": "Удаление...",
         "delete": "Удалить",
         "partner-assigned-successfully": "Партнер успешно назначен",
-        "partner-reassigned-successfully": "Партнер успешно переназначен"
+        "partner-reassigned-successfully": "Партнер успешно переназначен",
+        "cash-payment": "Оплата наличными",
+        "earnings-summary": "Сводка доходов",
+        "online-payment": "Онлайн оплата",
+        "total-earnings": "Общий доход"
       }
     },
     "Features": {

@@ -731,7 +731,11 @@
         "deleting": "Wird gelöscht...",
         "delete": "Löschen",
         "partner-assigned-successfully": "Partner erfolgreich zugewiesen",
-        "partner-reassigned-successfully": "Partner erfolgreich neu zugewiesen"
+        "partner-reassigned-successfully": "Partner erfolgreich neu zugewiesen",
+        "cash-payment": "Barzahlung",
+        "earnings-summary": "Ergebnisübersicht",
+        "online-payment": "Online-Zahlung",
+        "total-earnings": "Gesamtertrag"
       }
     },
     "Features": {

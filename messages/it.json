@@ -731,7 +731,11 @@
         "deleting": "Eliminazione...",
         "delete": "Elimina",
         "partner-assigned-successfully": "Partner assegnato con successo",
-        "partner-reassigned-successfully": "Partner riassegnato con successo"
+        "partner-reassigned-successfully": "Partner riassegnato con successo",
+        "cash-payment": "Pagamento in contanti",
+        "earnings-summary": "Riepilogo dei guadagni",
+        "online-payment": "Pagamento in linea",
+        "total-earnings": "Guadagni totali"
       }
     },
     "Features": {

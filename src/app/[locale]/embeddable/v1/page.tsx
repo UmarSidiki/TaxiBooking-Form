@@ -155,45 +155,43 @@ function BookingFormUI() {
   };
 
   useEffect(() => {
-    // Function to calculate and send height
-    const sendHeight = () => {
-      if (typeof window === 'undefined') return;
+  if (typeof window === "undefined") return;
 
-      // We calculate the max height of the document content
-      const height = Math.max(
-        document.body.scrollHeight,
-        document.documentElement.scrollHeight,
-        document.body.offsetHeight,
-        document.documentElement.offsetHeight
-      );
+  const postHeight = () => {
+    const height = document.body.scrollHeight;
 
-      // Send a specific message type so the parent knows it's us
-      window.parent.postMessage(
-        { type: 'meetswiss-resize', height: height },
-        "*" // Allows communication with any parent domain
-      );
-    };
+    window.parent.postMessage(
+      { type: "meetswiss-resize", height },
+      "*"
+    );
+  };
 
-    // 1. Send on initial load
-    sendHeight();
+  // Observe size changes of the body only
+  const resizeObserver = new ResizeObserver(() => {
+    postHeight();
+  });
+  resizeObserver.observe(document.body);
 
-    // 2. Send whenever the window resizes
-    window.addEventListener('resize', sendHeight);
+  // Observe DOM mutations
+  const mutationObserver = new MutationObserver(() => {
+    postHeight();
+  });
+  mutationObserver.observe(document.body, {
+    childList: true,
+    subtree: true,
+    attributes: true,
+  });
 
-    // 3. Watch for DOM changes (errors appearing, stops added, etc.)
-    const observer = new MutationObserver(sendHeight);
-    observer.observe(document.body, {
-      attributes: true,
-      childList: true,
-      subtree: true
-    });
+  // First render
+  postHeight();
 
-    // Cleanup
-    return () => {
-      window.removeEventListener('resize', sendHeight);
-      observer.disconnect();
-    };
-  }, []); 
+  return () => {
+    resizeObserver.disconnect();
+    mutationObserver.disconnect();
+  };
+}, []);
+
+
 
   return (
     <>

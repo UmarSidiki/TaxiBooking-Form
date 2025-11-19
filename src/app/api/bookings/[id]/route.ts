@@ -596,6 +596,12 @@ export async function PATCH(
       booking.status !== "completed" &&
       updatedBooking.assignedPartner?._id
     ) {
+      console.log("PATCH booking - Partner earnings update triggered", {
+        bookingId: id,
+        partnerId: updatedBooking.assignedPartner._id,
+        bookingStatus: booking.status,
+      });
+
       const partnerAmount =
         typeof updatedBooking.partnerPayoutAmount === "number"
           ? updatedBooking.partnerPayoutAmount
@@ -606,6 +612,13 @@ export async function PATCH(
       const isCashBooking = updatedBooking.paymentMethod === "cash";
       const isPaymentComplete =
         isCashBooking || updatedBooking.paymentStatus === "completed";
+
+      console.log("PATCH booking - Partner earnings details", {
+        partnerAmount,
+        isCashBooking,
+        paymentStatus: updatedBooking.paymentStatus,
+        isPaymentComplete,
+      });
 
       if (partnerAmount > 0 && isPaymentComplete) {
         const incPayload: Record<string, number> = {
@@ -619,14 +632,39 @@ export async function PATCH(
           incPayload.payoutBalance = partnerAmount;
         }
 
+        console.log("PATCH booking - Incrementing partner with payload:", incPayload);
+
         try {
-          await Partner.findByIdAndUpdate(updatedBooking.assignedPartner._id, {
+          const updatedPartner = await Partner.findByIdAndUpdate(updatedBooking.assignedPartner._id, {
             $inc: incPayload,
+          }, { new: true });
+          console.log("PATCH booking - Partner earnings updated successfully", {
+            partnerId: updatedBooking.assignedPartner._id,
+            payoutBalance: updatedPartner?.payoutBalance,
+            onlineEarnings: updatedPartner?.onlineEarnings,
+            cashEarnings: updatedPartner?.cashEarnings,
           });
         } catch (partnerUpdateError) {
-          console.error("Failed to update partner earnings", partnerUpdateError);
+          console.error("PATCH booking - Failed to update partner earnings", {
+            error: partnerUpdateError,
+            partnerId: updatedBooking.assignedPartner._id,
+          });
         }
+      } else {
+        console.log("PATCH booking - Skipping partner update - conditions not met", {
+          partnerAmount,
+          isPaymentComplete,
+          hasPartner: !!updatedBooking.assignedPartner?._id,
+        });
       }
+    } else {
+      console.log("PATCH booking - Skipping partner earnings update", {
+        isComplete: rawAction === "complete",
+        bookingWasNotCompleted: booking.status !== "completed",
+        hasPartner: !!updatedBooking.assignedPartner?._id,
+        rawAction,
+        bookingStatus: booking.status,
+      });
     }
 
     const actionPastTense =

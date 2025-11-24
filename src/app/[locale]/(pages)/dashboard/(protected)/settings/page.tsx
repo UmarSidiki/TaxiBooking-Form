@@ -96,7 +96,7 @@ const SettingsPage = () => {
 
   const handleMapSettingsChange = (
     key: keyof ISetting,
-    value: string | number | string[] | boolean
+    value: ISetting[keyof ISetting]
   ) => {
     setSettings((prev) => ({ ...prev, [key]: value }));
   };

@@ -9,6 +9,13 @@ export interface ISetting {
   mapInitialLat?: number;
   mapInitialLng?: number;
   mapCountryRestrictions?: string[];
+  mapBounds?: {
+    north: number;
+    south: number;
+    east: number;
+    west: number;
+  } | null;
+  mapPolygonPoints?: Array<{ lat: number; lng: number }>;
   stripePublishableKey?: string;
   stripeSecretKey?: string;
   stripeWebhookSecret?: string;
@@ -68,6 +75,19 @@ const SettingSchema = new Schema<ISetting>(
     mapCountryRestrictions: {
       type: [String],
       default: [], // No restrictions by default
+    },
+    mapBounds: {
+      north: { type: Number },
+      south: { type: Number },
+      east: { type: Number },
+      west: { type: Number },
+    },
+    mapPolygonPoints: {
+      type: [{
+        lat: { type: Number },
+        lng: { type: Number },
+      }],
+      default: [],
     },
     stripePublishableKey: {
       type: String,

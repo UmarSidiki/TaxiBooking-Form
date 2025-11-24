@@ -39,20 +39,57 @@ export function useStep1() {
     formDataRef.current = formData;
   }, [formData]);
 
-  // Helper to validate country if restrictions > 5
-  const validatePlaceCountry = useCallback((place: google.maps.places.PlaceResult): boolean => {
-    const countryRestrictions = settings?.mapCountryRestrictions || [];
-    // If 5 or fewer, Google handles it. If more, we validate manually.
-    if (countryRestrictions.length <= 5) return true;
+  // Helper function to check if a point is inside a polygon using ray-casting algorithm
+  const isPointInPolygon = useCallback(
+    (point: { lat: number; lng: number }, polygon: Array<{ lat: number; lng: number }>) => {
+      let inside = false;
+      for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
+        const xi = polygon[i].lng;
+        const yi = polygon[i].lat;
+        const xj = polygon[j].lng;
+        const yj = polygon[j].lat;
 
-    const countryComponent = place.address_components?.find(c => c.types.includes('country'));
-    const countryCode = countryComponent?.short_name?.toUpperCase();
-    
-    if (!countryCode || !countryRestrictions.includes(countryCode)) {
-      return false;
-    }
-    return true;
-  }, [settings?.mapCountryRestrictions]);
+        const intersect =
+          yi > point.lat !== yj > point.lat &&
+          point.lng < ((xj - xi) * (point.lat - yi)) / (yj - yi) + xi;
+        if (intersect) inside = !inside;
+      }
+      return inside;
+    },
+    []
+  );
+
+  // Helper function to validate place against polygon bounds
+  const validatePlaceInBounds = useCallback(
+    (place: google.maps.places.PlaceResult): boolean => {
+      if (!settings?.mapPolygonPoints || settings.mapPolygonPoints.length < 3) {
+        console.log("No polygon defined, allowing all locations");
+        return true; // No restriction if no polygon defined
+      }
+
+      const location = place.geometry?.location;
+      if (!location) {
+        console.log("No location found in place");
+        return false;
+      }
+
+      const point = {
+        lat: location.lat(),
+        lng: location.lng(),
+      };
+
+      const isInside = isPointInPolygon(point, settings.mapPolygonPoints);
+      console.log("Point validation:", {
+        address: place.formatted_address,
+        point,
+        isInside,
+        polygonPoints: settings.mapPolygonPoints.length
+      });
+
+      return isInside;
+    },
+    [settings?.mapPolygonPoints, isPointInPolygon]
+  );
 
   const setupStopAutocomplete = useCallback(
     (index: number) => {
@@ -62,31 +99,46 @@ export function useStep1() {
       const inputRef = stopInputRefs.current[index];
       if (!inputRef) return;
 
-      const countryRestrictions = settings?.mapCountryRestrictions || [];
-      const useComponentRestrictions = countryRestrictions.length > 0 && countryRestrictions.length <= 5;
-
-      const autocompleteOptions = {
-        componentRestrictions: useComponentRestrictions
-          ? { country: countryRestrictions }
-          : undefined,
+      const autocompleteOptions: google.maps.places.AutocompleteOptions = {
+        strictBounds: true,
       };
+
+      // If polygon is defined, use its bounding box for biasing results
+      if (settings?.mapPolygonPoints && settings.mapPolygonPoints.length >= 3) {
+        const bounds = new google.maps.LatLngBounds();
+        settings.mapPolygonPoints.forEach(point => {
+          bounds.extend(new google.maps.LatLng(point.lat, point.lng));
+        });
+        autocompleteOptions.bounds = bounds;
+      } else if (settings?.mapBounds) {
+        // Fallback to rectangular bounds if available
+        const bounds = new google.maps.LatLngBounds(
+          new google.maps.LatLng(settings.mapBounds.south, settings.mapBounds.west),
+          new google.maps.LatLng(settings.mapBounds.north, settings.mapBounds.east)
+        );
+        autocompleteOptions.bounds = bounds;
+      }
 
       const autocomplete = new window.google.maps.places.Autocomplete(
         inputRef,
         autocompleteOptions
       );
+
       autocomplete.addListener("place_changed", () => {
         const place = autocomplete.getPlace();
         
-        if (!validatePlaceCountry(place)) {
-          if (inputRef) inputRef.value = "";
-          setFormData((prev) => ({
+        console.log("Stop autocomplete - settings available:", {
+          hasPolygon: !!settings?.mapPolygonPoints,
+          polygonLength: settings?.mapPolygonPoints?.length
+        });
+        
+        // Validate against polygon bounds if defined
+        if (!validatePlaceInBounds(place)) {
+          inputRef.value = "";
+          setErrors((prev) => ({
             ...prev,
-            stops: prev.stops.map((stop, i) =>
-              i === index ? { ...stop, location: "" } : stop
-            ),
+            stops: t("Step1.location-outside-service-area"),
           }));
-          alert(t("Step1.location-not-allowed"));
           return;
         }
 
@@ -100,7 +152,7 @@ export function useStep1() {
         // Distance calculation will be triggered by the useEffect that monitors stops
       });
     },
-    [settings, setFormData, validatePlaceCountry, t]
+    [setFormData, settings?.mapPolygonPoints, settings?.mapBounds, validatePlaceInBounds, setErrors, t]
   );
 
   const calculateDistance = useCallback(
@@ -292,14 +344,25 @@ export function useStep1() {
           setMapLoaded(true);
         }
 
-        const countryRestrictions = settings?.mapCountryRestrictions || [];
-        const useComponentRestrictions = countryRestrictions.length > 0 && countryRestrictions.length <= 5;
-
-        const autocompleteOptions = {
-          componentRestrictions: useComponentRestrictions
-            ? { country: countryRestrictions }
-            : undefined,
+        const autocompleteOptions: google.maps.places.AutocompleteOptions = {
+          strictBounds: true,
         };
+
+        // If polygon is defined, use its bounding box for biasing results
+        if (settings?.mapPolygonPoints && settings.mapPolygonPoints.length >= 3) {
+          const bounds = new google.maps.LatLngBounds();
+          settings.mapPolygonPoints.forEach(point => {
+            bounds.extend(new google.maps.LatLng(point.lat, point.lng));
+          });
+          autocompleteOptions.bounds = bounds;
+        } else if (settings?.mapBounds) {
+          // Fallback to rectangular bounds if available
+          const bounds = new google.maps.LatLngBounds(
+            new google.maps.LatLng(settings.mapBounds.south, settings.mapBounds.west),
+            new google.maps.LatLng(settings.mapBounds.north, settings.mapBounds.east)
+          );
+          autocompleteOptions.bounds = bounds;
+        }
 
         // Setup Autocomplete for pickup (only once)
         if (
@@ -311,13 +374,22 @@ export function useStep1() {
             pickupInputRef.current,
             autocompleteOptions
           );
+
           autocompletePickup.addListener("place_changed", () => {
             const place = autocompletePickup.getPlace();
             
-            if (!validatePlaceCountry(place)) {
+            console.log("Pickup autocomplete - settings available:", {
+              hasPolygon: !!settings?.mapPolygonPoints,
+              polygonLength: settings?.mapPolygonPoints?.length
+            });
+            
+            // Validate against polygon bounds if defined
+            if (!validatePlaceInBounds(place)) {
               if (pickupInputRef.current) pickupInputRef.current.value = "";
-              setFormData((prev) => ({ ...prev, pickup: "" }));
-              alert(t("Step1.location-not-allowed"));
+              setErrors((prev) => ({
+                ...prev,
+                pickup: t("Step1.location-outside-service-area"),
+              }));
               return;
             }
 
@@ -337,13 +409,17 @@ export function useStep1() {
             dropoffInputRef.current,
             autocompleteOptions
           );
+
           autocompleteDropoff.addListener("place_changed", () => {
             const place = autocompleteDropoff.getPlace();
-
-            if (!validatePlaceCountry(place)) {
+            
+            // Validate against polygon bounds if defined
+            if (!validatePlaceInBounds(place)) {
               if (dropoffInputRef.current) dropoffInputRef.current.value = "";
-              setFormData((prev) => ({ ...prev, dropoff: "" }));
-              alert(t("Step1.location-not-allowed"));
+              setErrors((prev) => ({
+                ...prev,
+                dropoff: t("Step1.location-outside-service-area"),
+              }));
               return;
             }
 

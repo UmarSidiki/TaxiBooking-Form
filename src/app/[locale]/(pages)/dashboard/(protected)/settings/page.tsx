@@ -30,6 +30,12 @@ const SettingsPage = () => {
           data: Partial<ISetting>;
         }>("/api/settings");
         if (data.success) {
+          console.log("Settings Page - Loaded settings from API:", {
+            hasPolygonPoints: !!data.data.mapPolygonPoints,
+            polygonPointsLength: data.data.mapPolygonPoints?.length,
+            polygonPoints: data.data.mapPolygonPoints,
+            mapBounds: data.data.mapBounds
+          });
           const settingsWithDefaults = {
             ...data.data,
             enablePartners: data.data.enablePartners ?? false,
@@ -49,6 +55,12 @@ const SettingsPage = () => {
 
   const handleSubmit = async () => {
     setIsLoading(true);
+    console.log("Settings Page - Saving settings:", {
+      hasPolygonPoints: !!settings.mapPolygonPoints,
+      polygonPointsLength: settings.mapPolygonPoints?.length,
+      polygonPoints: settings.mapPolygonPoints,
+      mapBounds: settings.mapBounds
+    });
     try {
       const data = await apiPost<{ success: boolean; message: string }>(
         "/api/settings",

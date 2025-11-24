@@ -50,7 +50,8 @@
     "price-based-on-distance-traveled": "السعر يعتمد على المسافة المقطوعة",
     "price-based-on-hourly-rate": "السعر يعتمد على الأجرة بالساعة",
     "stop": "توقف",
-    "AddStop": "إضافة توقف"
+    "AddStop": "إضافة توقف",
+    "location-not-allowed": ""
   },
   "Step2": {
     "select-your-vehicle": "اختر مركبتك",
@@ -956,7 +957,8 @@
       "sofort-giropay-and-more-european-payment-methods": "SOFORT و Giropay والمزيد من طرق الدفع الأوروبية",
       "available-methods-depend-on-your-multisafepay-account-settings": "تعتمد الطرق المتاحة على إعدادات حساب MultiSafepay الخاص بك.",
       "payment-gateway": "بوابة الدفع",
-      "select-your-preferred-payment-gateway": "اختر بوابة الدفع المفضلة لديك"
+      "select-your-preferred-payment-gateway": "اختر بوابة الدفع المفضلة لديك",
+      "only-first-five-countries-used": ""
     }
   },
   "Sidebar": {

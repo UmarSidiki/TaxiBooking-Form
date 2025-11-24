@@ -50,7 +50,8 @@
     "price-based-on-distance-traveled": "Prijs op basis van afgelegde afstand",
     "price-based-on-hourly-rate": "Prijs op basis van uurtarief",
     "stop": "Stop",
-    "AddStop": "Stop toevoegen"
+    "AddStop": "Stop toevoegen",
+    "location-not-allowed": "Service niet beschikbaar in dit land"
   },
   "Step2": {
     "select-your-vehicle": "Selecteer Uw Voertuig",
@@ -956,7 +957,8 @@
       "sofort-giropay-and-more-european-payment-methods": "SOFORT, Giropay en meer Europese betaalmethoden",
       "available-methods-depend-on-your-multisafepay-account-settings": "Beschikbare methoden zijn afhankelijk van uw MultiSafepay-accountinstellingen.",
       "payment-gateway": "Betalingsgateway",
-      "select-your-preferred-payment-gateway": "Selecteer Uw Voorkeurs Betalingsgateway"
+      "select-your-preferred-payment-gateway": "Selecteer Uw Voorkeurs Betalingsgateway",
+      "only-first-five-countries-used": "Alleen de eerste vijf landcodes worden gebruikt door Google Places Autocomplete; \naanvullende codes worden genegeerd."
     }
   },
   "Sidebar": {

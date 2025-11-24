@@ -50,7 +50,8 @@
     "price-based-on-distance-traveled": "Цена зависит от пройденного расстояния",
     "price-based-on-hourly-rate": "Цена зависит от почасовой ставки",
     "stop": "Остановка",
-    "AddStop": "Добавить остановку"
+    "AddStop": "Добавить остановку",
+    "location-not-allowed": "Услуга недоступна в этой стране"
   },
   "Step2": {
     "select-your-vehicle": "Выберите ваш автомобиль",
@@ -956,7 +957,8 @@
       "sofort-giropay-and-more-european-payment-methods": "SOFORT, Giropay и другие европейские способы оплаты",
       "available-methods-depend-on-your-multisafepay-account-settings": "Доступные методы зависят от настроек вашего аккаунта MultiSafepay.",
       "payment-gateway": "Платежный шлюз",
-      "select-your-preferred-payment-gateway": "Выберите предпочитаемый платежный шлюз"
+      "select-your-preferred-payment-gateway": "Выберите предпочитаемый платежный шлюз",
+      "only-first-five-countries-used": "При автозаполнении Google Адресов используются только первые 5 кодов стран; \nдополнительные коды будут игнорироваться."
     }
   },
   "Sidebar": {

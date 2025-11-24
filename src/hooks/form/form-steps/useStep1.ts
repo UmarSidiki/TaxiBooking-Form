@@ -39,6 +39,21 @@ export function useStep1() {
     formDataRef.current = formData;
   }, [formData]);
 
+  // Helper to validate country if restrictions > 5
+  const validatePlaceCountry = useCallback((place: google.maps.places.PlaceResult): boolean => {
+    const countryRestrictions = settings?.mapCountryRestrictions || [];
+    // If 5 or fewer, Google handles it. If more, we validate manually.
+    if (countryRestrictions.length <= 5) return true;
+
+    const countryComponent = place.address_components?.find(c => c.types.includes('country'));
+    const countryCode = countryComponent?.short_name?.toUpperCase();
+    
+    if (!countryCode || !countryRestrictions.includes(countryCode)) {
+      return false;
+    }
+    return true;
+  }, [settings?.mapCountryRestrictions]);
+
   const setupStopAutocomplete = useCallback(
     (index: number) => {
       if (!window.google || !window.google.maps || !window.google.maps.places)
@@ -47,9 +62,12 @@ export function useStep1() {
       const inputRef = stopInputRefs.current[index];
       if (!inputRef) return;
 
+      const countryRestrictions = settings?.mapCountryRestrictions || [];
+      const useComponentRestrictions = countryRestrictions.length > 0 && countryRestrictions.length <= 5;
+
       const autocompleteOptions = {
-        componentRestrictions: settings?.mapCountryRestrictions?.length
-          ? { country: settings.mapCountryRestrictions }
+        componentRestrictions: useComponentRestrictions
+          ? { country: countryRestrictions }
           : undefined,
       };
 
@@ -59,6 +77,19 @@ export function useStep1() {
       );
       autocomplete.addListener("place_changed", () => {
         const place = autocomplete.getPlace();
+        
+        if (!validatePlaceCountry(place)) {
+          if (inputRef) inputRef.value = "";
+          setFormData((prev) => ({
+            ...prev,
+            stops: prev.stops.map((stop, i) =>
+              i === index ? { ...stop, location: "" } : stop
+            ),
+          }));
+          alert(t("Step1.location-not-allowed"));
+          return;
+        }
+
         const newLocation = place.formatted_address || place.name || "";
         setFormData((prev) => ({
           ...prev,
@@ -69,7 +100,7 @@ export function useStep1() {
         // Distance calculation will be triggered by the useEffect that monitors stops
       });
     },
-    [settings, setFormData]
+    [settings, setFormData, validatePlaceCountry, t]
   );
 
   const calculateDistance = useCallback(
@@ -261,9 +292,12 @@ export function useStep1() {
           setMapLoaded(true);
         }
 
+        const countryRestrictions = settings?.mapCountryRestrictions || [];
+        const useComponentRestrictions = countryRestrictions.length > 0 && countryRestrictions.length <= 5;
+
         const autocompleteOptions = {
-          componentRestrictions: settings?.mapCountryRestrictions?.length
-            ? { country: settings.mapCountryRestrictions }
+          componentRestrictions: useComponentRestrictions
+            ? { country: countryRestrictions }
             : undefined,
         };
 
@@ -279,6 +313,14 @@ export function useStep1() {
           );
           autocompletePickup.addListener("place_changed", () => {
             const place = autocompletePickup.getPlace();
+            
+            if (!validatePlaceCountry(place)) {
+              if (pickupInputRef.current) pickupInputRef.current.value = "";
+              setFormData((prev) => ({ ...prev, pickup: "" }));
+              alert(t("Step1.location-not-allowed"));
+              return;
+            }
+
             const newPickup = place.formatted_address || place.name || "";
             setFormData((prev) => ({ ...prev, pickup: newPickup }));
             // Distance calculation will be triggered by the useEffect
@@ -297,6 +339,14 @@ export function useStep1() {
           );
           autocompleteDropoff.addListener("place_changed", () => {
             const place = autocompleteDropoff.getPlace();
+
+            if (!validatePlaceCountry(place)) {
+              if (dropoffInputRef.current) dropoffInputRef.current.value = "";
+              setFormData((prev) => ({ ...prev, dropoff: "" }));
+              alert(t("Step1.location-not-allowed"));
+              return;
+            }
+
             const newDropoff = place.formatted_address || place.name || "";
             setFormData((prev) => ({ ...prev, dropoff: newDropoff }));
             // Distance calculation will be triggered by the useEffect

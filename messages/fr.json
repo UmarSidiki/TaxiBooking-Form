@@ -50,7 +50,8 @@
     "price-based-on-distance-traveled": "Prix basé sur la distance parcourue",
     "price-based-on-hourly-rate": "Prix basé sur le tarif horaire",
     "stop": "Arrêt",
-    "AddStop": "Ajouter un arrêt"
+    "AddStop": "Ajouter un arrêt",
+    "location-not-allowed": "Service non disponible dans ce pays"
   },
   "Step2": {
     "select-your-vehicle": "Sélectionnez votre véhicule",
@@ -956,7 +957,8 @@
       "sofort-giropay-and-more-european-payment-methods": "SOFORT, Giropay et autres méthodes de paiement européennes",
       "available-methods-depend-on-your-multisafepay-account-settings": "Les méthodes disponibles dépendent des paramètres de votre compte MultiSafepay.",
       "payment-gateway": "Passerelle de paiement",
-      "select-your-preferred-payment-gateway": "Sélectionnez votre passerelle de paiement préférée"
+      "select-your-preferred-payment-gateway": "Sélectionnez votre passerelle de paiement préférée",
+      "only-first-five-countries-used": "Seuls les 5 premiers codes de pays sont utilisés par Google Places Autocomplete ; \nles codes supplémentaires seront ignorés."
     }
   },
   "Sidebar": {

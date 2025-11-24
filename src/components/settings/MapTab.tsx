@@ -89,14 +89,13 @@ const MapTab: React.FC<MapTabProps> = ({
                 "Dashboard.Settings.ch-fr-de-2-letter-country-codes-comma-separated"
               )}
               value={settings.mapCountryRestrictions?.join(", ") ?? ""}
-              onChange={(e) =>
-                handleMapSettingsChange(
-                  "mapCountryRestrictions",
-                  e.target.value
-                    .split(",")
-                    .map((c) => c.trim().toUpperCase())
-                )
-              }
+              onChange={(e) => {
+                const parsed = e.target.value
+                  .split(",")
+                  .map((c) => c.trim().toUpperCase())
+                  .filter(Boolean);
+                handleMapSettingsChange("mapCountryRestrictions", parsed);
+              }}
             />
             <p className="text-xs text-gray-500 mt-1">
               {t(

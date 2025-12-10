@@ -107,6 +107,7 @@
     "passenger-allowance": "Máx. {0} pasajeros",
     "total": "TOTAL",
     "incl-tax": "(Impuestos incluidos)",
+    "included": "Incluido",
     "subtotal": "Total parcial",
     "tax": "Impuesto ({0}%)"
   },
@@ -190,6 +191,7 @@
     "ideal-bancontact-paypal-and-more": "iDEAL, Bancontact, PayPal y más",
     "subtotal": "Total parcial",
     "tax": "Impuesto ({0}%)",
+    "included": "Incluido",
     "total-incl-tax": "Total (IVA incluido)"
   },
   "booking-failed-data-message": "Reserva fallida: {0}",

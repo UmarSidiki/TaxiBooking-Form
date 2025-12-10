@@ -107,6 +107,7 @@
     "passenger-allowance": "الحد الأقصى {0} ركاب",
     "total": "المجموع",
     "incl-tax": "(شاملة الضريبة)",
+    "included": "مشمول",
     "subtotal": "المجموع الفرعي",
     "tax": "الضريبة ({0}%)"
   },
@@ -190,6 +191,7 @@
     "ideal-bancontact-paypal-and-more": "iDEAL, Bancontact, PayPal والمزيد",
     "subtotal": "المجموع الفرعي",
     "tax": "الضريبة ({0}%)",
+    "included": "مشمول",
     "total-incl-tax": "الإجمالي (شامل الضريبة)"
   },
   "booking-failed-data-message": "فشل الحجز: {0}",

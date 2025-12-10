@@ -302,6 +302,7 @@ export function useStep2() {
     // Tax settings
     enableTax: settings?.enableTax ?? false,
     taxPercentage: settings?.taxPercentage ?? 0,
+    taxIncluded: settings?.taxIncluded ?? false,
 
     // Functions
     calculatePrice,

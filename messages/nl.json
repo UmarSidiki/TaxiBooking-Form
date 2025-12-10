@@ -107,6 +107,7 @@
     "passenger-allowance": "Max. {0} passagiers",
     "total": "TOTAAL",
     "incl-tax": "(Incl. belasting)",
+    "included": "Inbegrepen",
     "subtotal": "Subtotaal",
     "tax": "Belasting ({0}%)"
   },
@@ -190,6 +191,7 @@
     "ideal-bancontact-paypal-and-more": "iDEAL, Bancontact, PayPal & meer",
     "subtotal": "Subtotaal",
     "tax": "Belasting ({0}%)",
+    "included": "Inbegrepen",
     "total-incl-tax": "Totaal (incl. belasting)"
   },
   "booking-failed-data-message": "Boeking mislukt: {0}",

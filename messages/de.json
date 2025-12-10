@@ -108,6 +108,7 @@
     "total": "GESAMT",
     "subtotal": "Zwischensumme",
     "tax": "Steuer ({0}%)",
+    "included": "Inbegriffen",
     "incl-tax": "(Inkl. MwSt.)"
   },
   "not-set": "Nicht festgelegt",
@@ -182,6 +183,7 @@
     "each": "pro Stück",
     "subtotal": "Zwischensumme",
     "tax": "Steuer ({0}%)",
+    "included": "Inbegriffen",
     "total-incl-tax": "Gesamt (Inkl. MwSt.)",
     "confirming": {
       "you-will-be-redirected-to-multisafepay-to-complete-your-payment-securely-multiple-payment-methods-available-including-ideal-bancontact-paypal-and-more": "Sie werden zu MultiSafepay weitergeleitet, um Ihre Zahlung sicher abzuschließen. Mehrere Zahlungsmethoden verfügbar, einschließlich iDEAL, Bancontact, PayPal und mehr.",

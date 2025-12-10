@@ -59,14 +59,18 @@ export default function Step3Payment() {
 
     // Calculated values
     vehiclePrice,
+    discount,
+    discountedVehiclePrice,
     childSeatPrice,
     babySeatPrice,
     stopsTotalPrice,
     subtotalPrice,
     enableTax,
     taxPercentage,
+    taxIncluded,
     taxAmount,
     totalPrice,
+    displaySubtotalAmount,
 
     // Functions
     handleStripePaymentSuccess,
@@ -801,9 +805,22 @@ export default function Step3Payment() {
                 </p>
                 <div className="flex justify-between items-center mt-2">
                   <span className="text-xs text-gray-600">{t('Step3.base-fare')}</span>
-                  <span className="font-semibold">
-                    {currencySymbol}{vehiclePrice.toFixed(2)}
-                  </span>
+                  <div className="text-right">
+                    {discount > 0 ? (
+                      <>
+                        <span className="text-xs text-gray-400 line-through mr-2">
+                          {currencySymbol}{vehiclePrice.toFixed(2)}
+                        </span>
+                        <span className="font-semibold">
+                          {currencySymbol}{discountedVehiclePrice.toFixed(2)}
+                        </span>
+                      </>
+                    ) : (
+                      <span className="font-semibold">
+                        {currencySymbol}{vehiclePrice.toFixed(2)}
+                      </span>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
@@ -888,11 +905,11 @@ export default function Step3Payment() {
                 <div className="flex justify-between items-center text-sm text-gray-600 mb-1">
                   <span>{t("Step3.subtotal")}</span>
                   <span>
-                    {currencySymbol}{subtotalPrice.toFixed(2)}
+                    {currencySymbol}{displaySubtotalAmount.toFixed(2)}
                   </span>
                 </div>
                 <div className="flex justify-between items-center text-sm text-gray-600 mb-2">
-                  <span>{t("Step3.tax", { 0: taxPercentage })}</span>
+                  <span>{t("Step3.tax", { 0: taxPercentage })}{taxIncluded ? ` - ${t("Step3.included")}` : ''}</span>
                   <span>
                     {currencySymbol}{taxAmount.toFixed(2)}
                   </span>

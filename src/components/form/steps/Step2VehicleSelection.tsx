@@ -36,6 +36,7 @@ export default function Step2VehicleSelection() {
     // Tax settings
     enableTax,
     taxPercentage,
+    taxIncluded,
 
     // Functions
     calculatePrice,
@@ -443,32 +444,45 @@ export default function Step2VehicleSelection() {
 
                   {/* Tax and Total */}
                   {enableTax && taxPercentage > 0 ? (
-                    <>
-                      <div className="flex justify-between items-center text-sm text-gray-600 mb-1">
-                        <span>{t("Step2.subtotal")}</span>
-                        <span>
-                          {currencySymbol}
-                          {totalPrice.toFixed(2)}
-                        </span>
-                      </div>
-                      <div className="flex justify-between items-center text-sm text-gray-600 mb-1">
-                        <span>{t("Step2.tax", { 0: taxPercentage })}</span>
-                        <span>
-                          {currencySymbol}
-                          {(totalPrice * (taxPercentage / 100)).toFixed(2)}
-                        </span>
-                      </div>
-                      <div className="flex justify-between items-center text-lg font-bold">
-                        <span>{t("Step2.total")}</span>
-                        <div className="text-right">
-                          <p className="text-gray-900">
-                            {currencySymbol}
-                            {(totalPrice * (1 + taxPercentage / 100)).toFixed(2)}
-                          </p>
-                          <p className="text-xs text-gray-500 font-normal">{t("Step2.incl-tax")}</p>
-                        </div>
-                      </div>
-                    </>
+                    (() => {
+                      // Calculate tax correctly based on taxIncluded setting
+                      const taxAmount = taxIncluded 
+                        ? totalPrice - (totalPrice / (1 + taxPercentage / 100)) // Extract tax from price
+                        : totalPrice * (taxPercentage / 100); // Add tax to price
+                      const displaySubtotal = taxIncluded 
+                        ? totalPrice - taxAmount // Pre-tax amount when tax is included
+                        : totalPrice; // Base price when tax is added
+                      const finalTotal = taxIncluded ? totalPrice : totalPrice + taxAmount;
+                      
+                      return (
+                        <>
+                          <div className="flex justify-between items-center text-sm text-gray-600 mb-1">
+                            <span>{t("Step2.subtotal")}</span>
+                            <span>
+                              {currencySymbol}
+                              {displaySubtotal.toFixed(2)}
+                            </span>
+                          </div>
+                          <div className="flex justify-between items-center text-sm text-gray-600 mb-1">
+                            <span>{t("Step2.tax", { 0: taxPercentage })}{taxIncluded ? ` - ${t("Step2.included")}` : ''}</span>
+                            <span>
+                              {currencySymbol}
+                              {taxAmount.toFixed(2)}
+                            </span>
+                          </div>
+                          <div className="flex justify-between items-center text-lg font-bold">
+                            <span>{t("Step2.total")}</span>
+                            <div className="text-right">
+                              <p className="text-gray-900">
+                                {currencySymbol}
+                                {finalTotal.toFixed(2)}
+                              </p>
+                              <p className="text-xs text-gray-500 font-normal">{t("Step2.incl-tax")}</p>
+                            </div>
+                          </div>
+                        </>
+                      );
+                    })()
                   ) : (
                     <div className="flex justify-between items-center text-lg font-bold">
                       <span>{t("Step2.total")}</span>

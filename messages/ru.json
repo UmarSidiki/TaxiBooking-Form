@@ -107,6 +107,7 @@
     "passenger-allowance": "Макс. {0} пассажира(ов)",
     "total": "ОБЩИЙ",
     "incl-tax": "(включая налоги)",
+    "included": "Включено",
     "subtotal": "Итого",
     "tax": "Налог ({0}%)"
   },
@@ -190,6 +191,7 @@
     "ideal-bancontact-paypal-and-more": "iDEAL, Bancontact, PayPal и др.",
     "subtotal": "Итого",
     "tax": "Налог ({0}%)",
+    "included": "Включено",
     "total-incl-tax": "Итого (включая налоги)"
   },
   "booking-failed-data-message": "Бронирование не удалось: {0}",

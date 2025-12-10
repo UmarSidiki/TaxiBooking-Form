@@ -108,6 +108,7 @@
     "total": "TOTAL",
     "subtotal": "Sous-total",
     "tax": "TVA ({0}%)",
+    "included": "Inclus",
     "incl-tax": "(TVA incluse)"
   },
   "not-set": "Non défini",
@@ -182,6 +183,7 @@
     "each": "l'unité",
     "subtotal": "Sous-total",
     "tax": "TVA ({0}%)",
+    "included": "Inclus",
     "total-incl-tax": "Total (TVA incluse)",
     "confirming": {
       "you-will-be-redirected-to-multisafepay-to-complete-your-payment-securely-multiple-payment-methods-available-including-ideal-bancontact-paypal-and-more": "Vous allez être redirigé vers MultiSafepay pour compléter votre paiement en toute sécurité. Plusieurs méthodes de paiement disponibles, y compris iDEAL, Bancontact, PayPal, et plus.",

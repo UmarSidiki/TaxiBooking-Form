@@ -108,6 +108,7 @@
     "total": "TOTAL",
     "subtotal": "Subtotal",
     "tax": "Tax ({0}%)",
+    "included": "Included",
     "incl-tax": "(Incl. Tax)"
   },
   "not-set": "Not Set",
@@ -182,6 +183,7 @@
     "each": "each",
     "subtotal": "Subtotal",
     "tax": "Tax ({0}%)",
+    "included": "Included",
     "total-incl-tax": "Total (Incl. Tax)",
     "confirming": {
       "you-will-be-redirected-to-multisafepay-to-complete-your-payment-securely-multiple-payment-methods-available-including-ideal-bancontact-paypal-and-more": "You will be redirected to MultiSafepay to complete your payment securely. Multiple payment methods available including iDEAL, Bancontact, PayPal, and more.",

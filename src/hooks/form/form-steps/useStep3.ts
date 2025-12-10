@@ -251,6 +251,9 @@ export function useStep3() {
         : subtotalPrice * (taxPercentage / 100)) // Add tax to price
     : 0;
   const totalPrice = taxIncluded ? subtotalPrice : subtotalPrice + taxAmount;
+  
+  // For display/storage: when tax is included, subtotalAmount should be the pre-tax amount
+  const displaySubtotalAmount = taxIncluded ? (subtotalPrice - taxAmount) : subtotalPrice;
 
   // Create payment intent function
   const createPaymentIntent = useCallback(async () => {
@@ -345,7 +348,7 @@ export function useStep3() {
           paymentMethod: "stripe",
           paymentStatus: "completed",
           totalAmount: totalPrice,
-          subtotalAmount: subtotalPrice,
+          subtotalAmount: displaySubtotalAmount,
           taxAmount: taxAmount,
           taxPercentage: enableTax ? taxPercentage : 0,
           taxIncluded: enableTax ? taxIncluded : false,
@@ -402,7 +405,7 @@ export function useStep3() {
           paymentMethod: "cash",
           paymentStatus: "pending",
           totalAmount: totalPrice,
-          subtotalAmount: subtotalPrice,
+          subtotalAmount: displaySubtotalAmount,
           taxAmount: taxAmount,
           taxPercentage: enableTax ? taxPercentage : 0,
           taxIncluded: enableTax ? taxIncluded : false,
@@ -454,7 +457,7 @@ export function useStep3() {
           paymentMethod: "bank_transfer",
           paymentStatus: "pending",
           totalAmount: totalPrice,
-          subtotalAmount: subtotalPrice,
+          subtotalAmount: displaySubtotalAmount,
           taxAmount: taxAmount,
           taxPercentage: enableTax ? taxPercentage : 0,
           taxIncluded: enableTax ? taxIncluded : false,
@@ -510,13 +513,13 @@ export function useStep3() {
           description: `Booking from ${formData.pickup} to ${formData.dropoff || 'destination'}`,
           bookingData: {
             ...formData,
-            subtotalAmount: subtotalPrice,
+            subtotalAmount: displaySubtotalAmount,
             taxAmount: taxAmount,
             taxPercentage: enableTax ? taxPercentage : 0,
             taxIncluded: enableTax ? taxIncluded : false,
           },
           totalAmount: totalPrice,
-          subtotalAmount: subtotalPrice,
+          subtotalAmount: displaySubtotalAmount,
           taxAmount: taxAmount,
           taxPercentage: enableTax ? taxPercentage : 0,
           taxIncluded: enableTax ? taxIncluded : false,
@@ -579,8 +582,10 @@ export function useStep3() {
     subtotalPrice,
     enableTax,
     taxPercentage,
+    taxIncluded,
     taxAmount,
     totalPrice,
+    displaySubtotalAmount,
 
     // Functions
     handleStripePaymentSuccess,

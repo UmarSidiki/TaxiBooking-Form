@@ -757,7 +757,9 @@
       "enable-tax-on-bookings": "Schakel belastingberekening in voor alle boekingen. \nDe belasting wordt afzonderlijk vermeld in het boekingsoverzicht, e-mails en facturen.",
       "tax-module": "Belastingmodule",
       "tax-percentage": "Belastingtarief",
-      "tax-percentage-description": "Stel het belastingpercentage in dat moet worden toegepast op het subtotaal van alle boekingen."
+      "tax-percentage-description": "Stel het belastingpercentage in dat moet worden toegepast op het subtotaal van alle boekingen.",
+      "tax-included": "Belasting inbegrepen in prijs",
+      "tax-included-description": "Indien ingeschakeld, is de belasting al inbegrepen in de weergegeven prijzen. Het belastingbedrag wordt ter informatie apart weergegeven, maar wordt niet bij het totaal opgeteld."
     },
     "Fleet": {
       "failed-to-fetch-vehicles": "Kon voertuigen niet ophalen",

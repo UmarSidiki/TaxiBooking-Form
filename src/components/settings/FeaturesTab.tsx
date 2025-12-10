@@ -41,6 +41,10 @@ export default function FeaturesTab({ settings, onSettingsChange }: FeaturesTabP
     onSettingsChange("taxPercentage", value);
   };
 
+  const handleTaxIncludedChange = (checked: boolean) => {
+    onSettingsChange("taxIncluded", checked);
+  };
+
   return (
     <div className="space-y-6">
       <Card>
@@ -141,6 +145,23 @@ export default function FeaturesTab({ settings, onSettingsChange }: FeaturesTabP
                 <p className="text-xs text-muted-foreground mt-2">
                   {t("tax-percentage-description")}
                 </p>
+                
+                {/* Tax Included Checkbox */}
+                <div className="flex items-center gap-3 mt-4 pt-4 border-t">
+                  <Switch
+                    id="taxIncluded"
+                    checked={settings.taxIncluded ?? false}
+                    onCheckedChange={handleTaxIncludedChange}
+                  />
+                  <div className="space-y-1">
+                    <Label htmlFor="taxIncluded" className="text-sm font-medium cursor-pointer">
+                      {t("tax-included")}
+                    </Label>
+                    <p className="text-xs text-muted-foreground">
+                      {t("tax-included-description")}
+                    </p>
+                  </div>
+                </div>
               </div>
             )}
           </div>

@@ -242,6 +242,7 @@ function createInvoicePDF(
     subtotalAmount?: number;
     taxAmount?: number;
     taxPercentage?: number;
+    taxIncluded?: boolean;
     paymentStatus: string;
     notes?: string;
   },
@@ -396,7 +397,7 @@ function createInvoicePDF(
           </View>
           {taxAmount > 0 && (
             <View style={styles.totalRow}>
-              <Text style={styles.totalLabel}>Tax ({booking.taxPercentage || 0}%):</Text>
+              <Text style={styles.totalLabel}>Tax ({booking.taxPercentage || 0}%){booking.taxIncluded ? ' - Included' : ''}:</Text>
               <Text style={styles.totalValue}>
                 {currencySymbol}
                 {taxAmount.toFixed(2)}

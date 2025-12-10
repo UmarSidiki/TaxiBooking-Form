@@ -30,6 +30,7 @@ interface BookingData {
   subtotalAmount?: number;
   taxAmount?: number;
   taxPercentage?: number;
+  taxIncluded?: boolean;
   paymentMethod?: string;
   paymentStatus?: string;
   flightNumber?: string;

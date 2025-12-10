@@ -757,6 +757,8 @@
       "enable-tax-on-bookings": "Enable tax calculation on all bookings. Tax will be shown separately in the booking summary, emails, and invoices.",
       "tax-percentage": "Tax Rate",
       "tax-percentage-description": "Set the tax percentage to be applied on the subtotal of all bookings.",
+      "tax-included": "Tax Included in Price",
+      "tax-included-description": "When enabled, the tax is already included in the displayed prices. The tax amount will be shown separately for informational purposes but won't be added to the total.",
       "note-changes-to-module-settings": "Note: Changes to module settings take effect after saving and refreshing the page. Disabling a module hides it from navigation but does not delete existing data."
     },
     "Fleet": {

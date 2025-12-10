@@ -43,6 +43,7 @@ export interface ISetting {
   enableDrivers?: boolean;
   enableTax?: boolean;
   taxPercentage?: number;
+  taxIncluded?: boolean;
   adminEmail?: string;
   createdAt?: Date;
   updatedAt?: Date;
@@ -199,6 +200,10 @@ const SettingSchema = new Schema<ISetting>(
     taxPercentage: {
       type: Number,
       default: 0,
+    },
+    taxIncluded: {
+      type: Boolean,
+      default: false,
     },
     adminEmail: {
       type: String,

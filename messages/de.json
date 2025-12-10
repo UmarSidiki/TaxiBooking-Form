@@ -757,6 +757,8 @@
       "enable-tax-on-bookings": "Steuerberechnung für alle Buchungen aktivieren. Die Steuer wird separat in der Buchungsübersicht, E-Mails und Rechnungen angezeigt.",
       "tax-percentage": "Steuersatz",
       "tax-percentage-description": "Legen Sie den Steuerprozentsatz fest, der auf die Zwischensumme aller Buchungen angewendet wird.",
+      "tax-included": "Steuer im Preis inbegriffen",
+      "tax-included-description": "Wenn aktiviert, ist die Steuer bereits in den angezeigten Preisen enthalten. Der Steuerbetrag wird zur Information separat angezeigt, aber nicht zur Gesamtsumme hinzugefügt.",
       "note-changes-to-module-settings": "Hinweis: Änderungen an den Moduleinstellungen werden nach dem Speichern und Aktualisieren der Seite wirksam. Das Deaktivieren eines Moduls blendet es aus der Navigation aus, löscht jedoch keine vorhandenen Daten."
     },
     "Fleet": {

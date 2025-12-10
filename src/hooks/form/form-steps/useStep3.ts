@@ -241,8 +241,16 @@ export function useStep3() {
   // Tax calculation
   const enableTax = paymentSettings?.enableTax ?? false;
   const taxPercentage = paymentSettings?.taxPercentage ?? 0;
-  const taxAmount = enableTax && taxPercentage > 0 ? subtotalPrice * (taxPercentage / 100) : 0;
-  const totalPrice = subtotalPrice + taxAmount;
+  const taxIncluded = paymentSettings?.taxIncluded ?? false;
+  
+  // If tax is included, calculate the tax portion from the subtotal (tax is already in the price)
+  // If tax is not included, add tax on top of the subtotal
+  const taxAmount = enableTax && taxPercentage > 0 
+    ? (taxIncluded 
+        ? subtotalPrice - (subtotalPrice / (1 + taxPercentage / 100)) // Extract tax from price
+        : subtotalPrice * (taxPercentage / 100)) // Add tax to price
+    : 0;
+  const totalPrice = taxIncluded ? subtotalPrice : subtotalPrice + taxAmount;
 
   // Create payment intent function
   const createPaymentIntent = useCallback(async () => {
@@ -340,6 +348,7 @@ export function useStep3() {
           subtotalAmount: subtotalPrice,
           taxAmount: taxAmount,
           taxPercentage: enableTax ? taxPercentage : 0,
+          taxIncluded: enableTax ? taxIncluded : false,
           stripePaymentIntentId: paymentIntentId,
         }),
       });
@@ -396,6 +405,7 @@ export function useStep3() {
           subtotalAmount: subtotalPrice,
           taxAmount: taxAmount,
           taxPercentage: enableTax ? taxPercentage : 0,
+          taxIncluded: enableTax ? taxIncluded : false,
         }),
       });
 
@@ -447,6 +457,7 @@ export function useStep3() {
           subtotalAmount: subtotalPrice,
           taxAmount: taxAmount,
           taxPercentage: enableTax ? taxPercentage : 0,
+          taxIncluded: enableTax ? taxIncluded : false,
         }),
       });
 
@@ -502,11 +513,13 @@ export function useStep3() {
             subtotalAmount: subtotalPrice,
             taxAmount: taxAmount,
             taxPercentage: enableTax ? taxPercentage : 0,
+            taxIncluded: enableTax ? taxIncluded : false,
           },
           totalAmount: totalPrice,
           subtotalAmount: subtotalPrice,
           taxAmount: taxAmount,
           taxPercentage: enableTax ? taxPercentage : 0,
+          taxIncluded: enableTax ? taxIncluded : false,
           locale: locale,
         }),
       });

@@ -757,6 +757,8 @@
       "enable-tax-on-bookings": "Activer le calcul de la TVA sur toutes les réservations. La TVA sera affichée séparément dans le récapitulatif de réservation, les e-mails et les factures.",
       "tax-percentage": "Taux de TVA",
       "tax-percentage-description": "Définissez le pourcentage de TVA à appliquer sur le sous-total de toutes les réservations.",
+      "tax-included": "TVA incluse dans le prix",
+      "tax-included-description": "Lorsque activé, la TVA est déjà incluse dans les prix affichés. Le montant de la TVA sera affiché séparément à titre informatif mais ne sera pas ajouté au total.",
       "note-changes-to-module-settings": "Remarque : Les modifications apportées aux paramètres des modules prennent effet après l'enregistrement et l'actualisation de la page. La désactivation d'un module le masque de la navigation mais ne supprime pas les données existantes."
     },
     "Fleet": {

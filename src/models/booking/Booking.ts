@@ -116,6 +116,7 @@ const BookingSchema: Schema = new Schema({
   subtotalAmount: { type: Number },
   taxAmount: { type: Number },
   taxPercentage: { type: Number },
+  taxIncluded: { type: Boolean, default: false },
   refundAmount: { type: Number },
   refundPercentage: { type: Number },
   canceledAt: { type: Date },

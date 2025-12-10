@@ -32,6 +32,7 @@ interface BookingData {
   subtotalAmount?: number;
   taxAmount?: number;
   taxPercentage?: number;
+  taxIncluded?: boolean;
   paymentMethod?: string;
   paymentStatus?: string;
   flightNumber?: string;
@@ -118,7 +119,7 @@ function generateOwnerEmailHTML(bookingData: BookingData, currency: string = 'EU
       <div class="payment">
         ${bookingData.taxAmount && bookingData.taxAmount > 0 ? `
         <p><span class="highlight">Subtotal:</span> ${currencySymbol}${(bookingData.subtotalAmount || bookingData.totalAmount).toFixed(2)}</p>
-        <p><span class="highlight">Tax (${bookingData.taxPercentage || 0}%):</span> ${currencySymbol}${bookingData.taxAmount.toFixed(2)}</p>
+        <p><span class="highlight">Tax (${bookingData.taxPercentage || 0}%)${bookingData.taxIncluded ? ' - Included' : ''}:</span> ${currencySymbol}${bookingData.taxAmount.toFixed(2)}</p>
         <p><span class="highlight">Total Amount (Incl. Tax): ${currencySymbol}${bookingData.totalAmount.toFixed(2)}</span></p>
         ` : `
         <p><span class="highlight">Total Amount: ${currencySymbol}${bookingData.totalAmount.toFixed(2)}</span></p>

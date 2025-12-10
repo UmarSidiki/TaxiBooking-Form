@@ -757,7 +757,9 @@
       "enable-tax-on-bookings": "Habilite el cálculo de impuestos en todas las reservas. \nLos impuestos se mostrarán por separado en el resumen de la reserva, los correos electrónicos y las facturas.",
       "tax-module": "Módulo de Impuestos",
       "tax-percentage": "Tasa impositiva",
-      "tax-percentage-description": "Establezca el porcentaje de impuesto que se aplicará sobre el subtotal de todas las reservas."
+      "tax-percentage-description": "Establezca el porcentaje de impuesto que se aplicará sobre el subtotal de todas las reservas.",
+      "tax-included": "Impuesto incluido en el precio",
+      "tax-included-description": "Cuando está habilitado, el impuesto ya está incluido en los precios mostrados. El monto del impuesto se mostrará por separado con fines informativos pero no se agregará al total."
     },
     "Fleet": {
       "failed-to-fetch-vehicles": "Error al obtener vehículos",

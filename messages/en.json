@@ -105,7 +105,10 @@
     "math-max-formdata-duration-vehicle-minimumhours-or-or-2-hours": "{0} hours",
     "hours": "Hours",
     "passenger-allowance": "Max. {0} passengers",
-    "total": "TOTAL"
+    "total": "TOTAL",
+    "subtotal": "Subtotal",
+    "tax": "Tax ({0}%)",
+    "incl-tax": "(Incl. Tax)"
   },
   "not-set": "Not Set",
   "Step3": {
@@ -177,6 +180,9 @@
     "free-cancellation-24h": "Free Cancellation (24h)",
     "24-7-customer-support": "24/7 Customer Support",
     "each": "each",
+    "subtotal": "Subtotal",
+    "tax": "Tax ({0}%)",
+    "total-incl-tax": "Total (Incl. Tax)",
     "confirming": {
       "you-will-be-redirected-to-multisafepay-to-complete-your-payment-securely-multiple-payment-methods-available-including-ideal-bancontact-paypal-and-more": "You will be redirected to MultiSafepay to complete your payment securely. Multiple payment methods available including iDEAL, Bancontact, PayPal, and more.",
       "continue-to-multisafepay": "Continue to MultiSafepay"
@@ -747,6 +753,10 @@
       "enable-partner-registration": "Enable partner registration, document verification, and ride assignments. When disabled, the Partners menu will be hidden from the admin sidebar.",
       "drivers-module-legacy": "Drivers Module (Legacy)",
       "enable-the-legacy-drivers-system": "Enable the legacy drivers system for backward compatibility. When disabled, the Drivers menu will be hidden from the admin sidebar.",
+      "tax-module": "Tax Module",
+      "enable-tax-on-bookings": "Enable tax calculation on all bookings. Tax will be shown separately in the booking summary, emails, and invoices.",
+      "tax-percentage": "Tax Rate",
+      "tax-percentage-description": "Set the tax percentage to be applied on the subtotal of all bookings.",
       "note-changes-to-module-settings": "Note: Changes to module settings take effect after saving and refreshing the page. Disabling a module hides it from navigation but does not delete existing data."
     },
     "Fleet": {

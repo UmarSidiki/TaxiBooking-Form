@@ -105,7 +105,10 @@
     "math-max-formdata-duration-vehicle-minimumhours-or-or-2-hours": "{0} uur",
     "hours": "Uur",
     "passenger-allowance": "Max. {0} passagiers",
-    "total": "TOTAAL"
+    "total": "TOTAAL",
+    "incl-tax": "(Incl. belasting)",
+    "subtotal": "Subtotaal",
+    "tax": "Belasting ({0}%)"
   },
   "not-set": "Niet Ingesteld",
   "Step3": {
@@ -184,7 +187,10 @@
     "flight-number-optional": "Vluchtnummer (Optioneel)",
     "pay-online": "Online Betalen",
     "via-multisafepay": "(via MultiSafepay)",
-    "ideal-bancontact-paypal-and-more": "iDEAL, Bancontact, PayPal & meer"
+    "ideal-bancontact-paypal-and-more": "iDEAL, Bancontact, PayPal & meer",
+    "subtotal": "Subtotaal",
+    "tax": "Belasting ({0}%)",
+    "total-incl-tax": "Totaal (incl. belasting)"
   },
   "booking-failed-data-message": "Boeking mislukt: {0}",
   "embeddable": {
@@ -747,7 +753,11 @@
       "enable-partner-registration": "Partnerregistratie, documentverificatie en rittoewijzingen inschakelen. Indien uitgeschakeld, wordt het Partners-menu verborgen in de admin-zijbalk.",
       "drivers-module-legacy": "Chauffeursmodule (Verouderd)",
       "enable-the-legacy-drivers-system": "Het verouderde chauffeurssysteem inschakelen voor achterwaartse compatibiliteit. Indien uitgeschakeld, wordt het Chauffeurs-menu verborgen in de admin-zijbalk.",
-      "note-changes-to-module-settings": "Opmerking: Wijzigingen in module-instellingen worden van kracht na opslaan en vernieuwen van de pagina. Het uitschakelen van een module verbergt deze uit de navigatie, maar verwijdert geen bestaande gegevens."
+      "note-changes-to-module-settings": "Opmerking: Wijzigingen in module-instellingen worden van kracht na opslaan en vernieuwen van de pagina. Het uitschakelen van een module verbergt deze uit de navigatie, maar verwijdert geen bestaande gegevens.",
+      "enable-tax-on-bookings": "Schakel belastingberekening in voor alle boekingen. \nDe belasting wordt afzonderlijk vermeld in het boekingsoverzicht, e-mails en facturen.",
+      "tax-module": "Belastingmodule",
+      "tax-percentage": "Belastingtarief",
+      "tax-percentage-description": "Stel het belastingpercentage in dat moet worden toegepast op het subtotaal van alle boekingen."
     },
     "Fleet": {
       "failed-to-fetch-vehicles": "Kon voertuigen niet ophalen",

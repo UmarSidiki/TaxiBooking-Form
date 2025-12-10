@@ -299,6 +299,10 @@ export function useStep2() {
     vehicles,
     distanceData,
 
+    // Tax settings
+    enableTax: settings?.enableTax ?? false,
+    taxPercentage: settings?.taxPercentage ?? 0,
+
     // Functions
     calculatePrice,
     calculateOriginalPrice,

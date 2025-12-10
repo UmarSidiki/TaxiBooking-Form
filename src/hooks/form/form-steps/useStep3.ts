@@ -236,7 +236,13 @@ export function useStep3() {
   
   const extrasPrice =
     formData.childSeats * childSeatPrice + formData.babySeats * babySeatPrice + stopsTotalPrice;
-  const totalPrice = discountedVehiclePrice + extrasPrice;
+  const subtotalPrice = discountedVehiclePrice + extrasPrice;
+  
+  // Tax calculation
+  const enableTax = paymentSettings?.enableTax ?? false;
+  const taxPercentage = paymentSettings?.taxPercentage ?? 0;
+  const taxAmount = enableTax && taxPercentage > 0 ? subtotalPrice * (taxPercentage / 100) : 0;
+  const totalPrice = subtotalPrice + taxAmount;
 
   // Create payment intent function
   const createPaymentIntent = useCallback(async () => {
@@ -331,6 +337,9 @@ export function useStep3() {
           paymentMethod: "stripe",
           paymentStatus: "completed",
           totalAmount: totalPrice,
+          subtotalAmount: subtotalPrice,
+          taxAmount: taxAmount,
+          taxPercentage: enableTax ? taxPercentage : 0,
           stripePaymentIntentId: paymentIntentId,
         }),
       });
@@ -384,6 +393,9 @@ export function useStep3() {
           paymentMethod: "cash",
           paymentStatus: "pending",
           totalAmount: totalPrice,
+          subtotalAmount: subtotalPrice,
+          taxAmount: taxAmount,
+          taxPercentage: enableTax ? taxPercentage : 0,
         }),
       });
 
@@ -432,6 +444,9 @@ export function useStep3() {
           paymentMethod: "bank_transfer",
           paymentStatus: "pending",
           totalAmount: totalPrice,
+          subtotalAmount: subtotalPrice,
+          taxAmount: taxAmount,
+          taxPercentage: enableTax ? taxPercentage : 0,
         }),
       });
 
@@ -482,8 +497,16 @@ export function useStep3() {
           customerEmail: formData.email,
           customerName: `${formData.firstName} ${formData.lastName}`,
           description: `Booking from ${formData.pickup} to ${formData.dropoff || 'destination'}`,
-          bookingData: formData,
+          bookingData: {
+            ...formData,
+            subtotalAmount: subtotalPrice,
+            taxAmount: taxAmount,
+            taxPercentage: enableTax ? taxPercentage : 0,
+          },
           totalAmount: totalPrice,
+          subtotalAmount: subtotalPrice,
+          taxAmount: taxAmount,
+          taxPercentage: enableTax ? taxPercentage : 0,
           locale: locale,
         }),
       });
@@ -540,6 +563,10 @@ export function useStep3() {
     stopPricePerHour,
     stopsTotalPrice,
     extrasPrice,
+    subtotalPrice,
+    enableTax,
+    taxPercentage,
+    taxAmount,
     totalPrice,
 
     // Functions

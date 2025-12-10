@@ -105,7 +105,10 @@
     "math-max-formdata-duration-vehicle-minimumhours-or-or-2-hours": "{0} horas",
     "hours": "Horas",
     "passenger-allowance": "Máx. {0} pasajeros",
-    "total": "TOTAL"
+    "total": "TOTAL",
+    "incl-tax": "(Impuestos incluidos)",
+    "subtotal": "Total parcial",
+    "tax": "Impuesto ({0}%)"
   },
   "not-set": "No establecido",
   "Step3": {
@@ -184,7 +187,10 @@
     "flight-number-optional": "Número de vuelo (Opcional)",
     "pay-online": "Pagar en línea",
     "via-multisafepay": "(vía MultiSafepay)",
-    "ideal-bancontact-paypal-and-more": "iDEAL, Bancontact, PayPal y más"
+    "ideal-bancontact-paypal-and-more": "iDEAL, Bancontact, PayPal y más",
+    "subtotal": "Total parcial",
+    "tax": "Impuesto ({0}%)",
+    "total-incl-tax": "Total (IVA incluido)"
   },
   "booking-failed-data-message": "Reserva fallida: {0}",
   "embeddable": {
@@ -747,7 +753,11 @@
       "enable-partner-registration": "Activar el registro de socios, la verificación de documentos y las asignaciones de viajes. Cuando está desactivado, el menú de Socios se ocultará en la barra lateral de administración.",
       "drivers-module-legacy": "Módulo de conductores (Heredado)",
       "enable-the-legacy-drivers-system": "Activar el sistema de conductores heredado para compatibilidad con versiones anteriores. Cuando está desactivado, el menú de Conductores se ocultará en la barra lateral de administración.",
-      "note-changes-to-module-settings": "Nota: Los cambios en la configuración del módulo surten efecto después de guardar y actualizar la página. Desactivar un módulo lo oculta de la navegación pero no elimina los datos existentes."
+      "note-changes-to-module-settings": "Nota: Los cambios en la configuración del módulo surten efecto después de guardar y actualizar la página. Desactivar un módulo lo oculta de la navegación pero no elimina los datos existentes.",
+      "enable-tax-on-bookings": "Habilite el cálculo de impuestos en todas las reservas. \nLos impuestos se mostrarán por separado en el resumen de la reserva, los correos electrónicos y las facturas.",
+      "tax-module": "Módulo de Impuestos",
+      "tax-percentage": "Tasa impositiva",
+      "tax-percentage-description": "Establezca el porcentaje de impuesto que se aplicará sobre el subtotal de todas las reservas."
     },
     "Fleet": {
       "failed-to-fetch-vehicles": "Error al obtener vehículos",

@@ -27,6 +27,9 @@ interface BookingData {
   email: string;
   phone: string;
   totalAmount: number;
+  subtotalAmount?: number;
+  taxAmount?: number;
+  taxPercentage?: number;
   paymentMethod?: string;
   paymentStatus?: string;
   flightNumber?: string;

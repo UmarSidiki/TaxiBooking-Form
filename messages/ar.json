@@ -52,7 +52,7 @@
     "price-based-on-hourly-rate": "السعر يعتمد على الأجرة بالساعة",
     "stop": "توقف",
     "AddStop": "إضافة توقف",
-    "location-not-allowed": ""
+    "location-not-allowed": "الخدمة غير متوفرة في هذا البلد"
   },
   "Step2": {
     "select-your-vehicle": "اختر مركبتك",
@@ -105,7 +105,10 @@
     "math-max-formdata-duration-vehicle-minimumhours-or-or-2-hours": "{0} ساعات",
     "hours": "ساعات",
     "passenger-allowance": "الحد الأقصى {0} ركاب",
-    "total": "المجموع"
+    "total": "المجموع",
+    "incl-tax": "(شاملة الضريبة)",
+    "subtotal": "المجموع الفرعي",
+    "tax": "الضريبة ({0}%)"
   },
   "not-set": "غير محدد",
   "Step3": {
@@ -184,7 +187,10 @@
     "flight-number-optional": "رقم الرحلة (اختياري)",
     "pay-online": "الدفع أونلاين",
     "via-multisafepay": "(عبر MultiSafepay)",
-    "ideal-bancontact-paypal-and-more": "iDEAL, Bancontact, PayPal والمزيد"
+    "ideal-bancontact-paypal-and-more": "iDEAL, Bancontact, PayPal والمزيد",
+    "subtotal": "المجموع الفرعي",
+    "tax": "الضريبة ({0}%)",
+    "total-incl-tax": "الإجمالي (شامل الضريبة)"
   },
   "booking-failed-data-message": "فشل الحجز: {0}",
   "embeddable": {
@@ -747,7 +753,11 @@
       "enable-partner-registration": "تمكين تسجيل الشركاء، التحقق من المستندات، وتعيينات الرحلات. عند التعطيل، سيتم إخفاء قائمة الشركاء من الشريط الجانبي للمسؤول.",
       "drivers-module-legacy": "وحدة السائقين (القديمة)",
       "enable-the-legacy-drivers-system": "تمكين نظام السائقين القديم للتوافق مع الإصدارات السابقة. عند التعطيل، سيتم إخفاء قائمة السائقين من الشريط الجانبي للمسؤول.",
-      "note-changes-to-module-settings": "ملاحظة: التغييرات في إعدادات الوحدة تدخل حيز التنفيذ بعد الحفظ وتحديث الصفحة. تعطيل الوحدة يخفيها من التنقل ولكنه لا يحذف البيانات الموجودة."
+      "note-changes-to-module-settings": "ملاحظة: التغييرات في إعدادات الوحدة تدخل حيز التنفيذ بعد الحفظ وتحديث الصفحة. تعطيل الوحدة يخفيها من التنقل ولكنه لا يحذف البيانات الموجودة.",
+      "enable-tax-on-bookings": "تمكين حساب الضريبة على جميع الحجوزات. \nسيتم عرض الضريبة بشكل منفصل في ملخص الحجز ورسائل البريد الإلكتروني والفواتير.",
+      "tax-module": "وحدة الضرائب",
+      "tax-percentage": "معدل الضريبة",
+      "tax-percentage-description": "قم بتعيين نسبة الضريبة التي سيتم تطبيقها على الإجمالي الفرعي لجميع الحجوزات."
     },
     "Fleet": {
       "failed-to-fetch-vehicles": "فشل في جلب المركبات",
@@ -972,7 +982,7 @@
       "available-methods-depend-on-your-multisafepay-account-settings": "تعتمد الطرق المتاحة على إعدادات حساب MultiSafepay الخاص بك.",
       "payment-gateway": "بوابة الدفع",
       "select-your-preferred-payment-gateway": "اختر بوابة الدفع المفضلة لديك",
-      "only-first-five-countries-used": ""
+      "only-first-five-countries-used": "يتم استخدام رموز البلدان الخمسة الأولى فقط بواسطة الإكمال التلقائي لأماكن Google؛ \nسيتم تجاهل الرموز الإضافية."
     }
   },
   "Sidebar": {

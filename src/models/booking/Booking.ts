@@ -36,6 +36,9 @@ export interface IBooking extends Document {
   multisafepayTransactionId?: string;
   status?: "upcoming" | "completed" | "canceled";
   totalAmount?: number;
+  subtotalAmount?: number;
+  taxAmount?: number;
+  taxPercentage?: number;
   refundAmount?: number;
   refundPercentage?: number;
   canceledAt?: Date;
@@ -110,6 +113,9 @@ const BookingSchema: Schema = new Schema({
     default: "upcoming"
   },
   totalAmount: { type: Number },
+  subtotalAmount: { type: Number },
+  taxAmount: { type: Number },
+  taxPercentage: { type: Number },
   refundAmount: { type: Number },
   refundPercentage: { type: Number },
   canceledAt: { type: Date },
@@ -186,4 +192,8 @@ export interface BookingInput {
   multisafepayOrderId?: string;
   multisafepayTransactionId?: string;
   totalAmount?: number;
+  subtotalAmount?: number;
+  taxAmount?: number;
+  taxPercentage?: number;
 }
+

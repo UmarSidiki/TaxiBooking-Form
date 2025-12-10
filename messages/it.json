@@ -105,7 +105,10 @@
     "math-max-formdata-duration-vehicle-minimumhours-or-or-2-hours": "{0} ore",
     "hours": "Ore",
     "passenger-allowance": "Max. {0} passeggeri",
-    "total": "TOTALE"
+    "total": "TOTALE",
+    "incl-tax": "(IVA inclusa)",
+    "subtotal": "Totale parziale",
+    "tax": "Tasse ({0}%)"
   },
   "not-set": "Non impostato",
   "Step3": {
@@ -184,7 +187,10 @@
     "flight-number-optional": "Numero Volo (Opzionale)",
     "pay-online": "Paga Online",
     "via-multisafepay": "(tramite MultiSafepay)",
-    "ideal-bancontact-paypal-and-more": "iDEAL, Bancontact, PayPal e altri"
+    "ideal-bancontact-paypal-and-more": "iDEAL, Bancontact, PayPal e altri",
+    "subtotal": "Totale parziale",
+    "tax": "Tasse ({0}%)",
+    "total-incl-tax": "Totale (tasse incluse)"
   },
   "booking-failed-data-message": "Prenotazione fallita: {0}",
   "embeddable": {
@@ -747,7 +753,11 @@
       "enable-partner-registration": "Abilita la registrazione dei partner, la verifica dei documenti e l'assegnazione delle corse. Se disabilitato, il menu Partner sarà nascosto nella barra laterale di amministrazione.",
       "drivers-module-legacy": "Modulo Autisti (Legacy)",
       "enable-the-legacy-drivers-system": "Abilita il sistema legacy degli autisti per la retrocompatibilità. Se disabilitato, il menu Autisti sarà nascosto nella barra laterale di amministrazione.",
-      "note-changes-to-module-settings": "Nota: Le modifiche alle impostazioni dei moduli hanno effetto dopo aver salvato e aggiornato la pagina. Disabilitare un modulo lo nasconde dalla navigazione ma non elimina i dati esistenti."
+      "note-changes-to-module-settings": "Nota: Le modifiche alle impostazioni dei moduli hanno effetto dopo aver salvato e aggiornato la pagina. Disabilitare un modulo lo nasconde dalla navigazione ma non elimina i dati esistenti.",
+      "enable-tax-on-bookings": "Abilita il calcolo delle imposte su tutte le prenotazioni. \nLe tasse verranno visualizzate separatamente nel riepilogo della prenotazione, nelle e-mail e nelle fatture.",
+      "tax-module": "Modulo fiscale",
+      "tax-percentage": "Aliquota fiscale",
+      "tax-percentage-description": "Imposta la percentuale d'imposta da applicare sul totale parziale di tutte le prenotazioni."
     },
     "Fleet": {
       "failed-to-fetch-vehicles": "Impossibile recuperare i veicoli",

@@ -239,6 +239,9 @@ function createInvoicePDF(
     childSeats: number;
     babySeats: number;
     totalAmount: number;
+    subtotalAmount?: number;
+    taxAmount?: number;
+    taxPercentage?: number;
     paymentStatus: string;
     notes?: string;
   },
@@ -290,9 +293,11 @@ function createInvoicePDF(
     });
   }
 
-  const subtotal = booking.totalAmount || 0;
-  const amountPaid = booking.paymentStatus === "completed" ? subtotal : 0;
-  const balanceDue = subtotal - amountPaid;
+  const subtotal = booking.subtotalAmount || booking.totalAmount || 0;
+  const taxAmount = booking.taxAmount || 0;
+  const totalWithTax = booking.totalAmount || 0;
+  const amountPaid = booking.paymentStatus === "completed" ? totalWithTax : 0;
+  const balanceDue = totalWithTax - amountPaid;
 
   return (
     <Document>
@@ -387,6 +392,22 @@ function createInvoicePDF(
             <Text style={styles.totalValue}>
               {currencySymbol}
               {subtotal.toFixed(2)}
+            </Text>
+          </View>
+          {taxAmount > 0 && (
+            <View style={styles.totalRow}>
+              <Text style={styles.totalLabel}>Tax ({booking.taxPercentage || 0}%):</Text>
+              <Text style={styles.totalValue}>
+                {currencySymbol}
+                {taxAmount.toFixed(2)}
+              </Text>
+            </View>
+          )}
+          <View style={styles.totalRow}>
+            <Text style={styles.totalLabel}>{taxAmount > 0 ? 'Total (Incl. Tax):' : 'Total:'}</Text>
+            <Text style={styles.totalValue}>
+              {currencySymbol}
+              {totalWithTax.toFixed(2)}
             </Text>
           </View>
           <View style={styles.totalRow}>

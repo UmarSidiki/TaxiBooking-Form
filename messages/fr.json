@@ -105,7 +105,10 @@
     "math-max-formdata-duration-vehicle-minimumhours-or-or-2-hours": "{0} heures",
     "hours": "Heures",
     "passenger-allowance": "Max. {0} passagers",
-    "total": "TOTAL"
+    "total": "TOTAL",
+    "subtotal": "Sous-total",
+    "tax": "TVA ({0}%)",
+    "incl-tax": "(TVA incluse)"
   },
   "not-set": "Non défini",
   "Step3": {
@@ -177,6 +180,9 @@
     "free-cancellation-24h": "Annulation gratuite (24h)",
     "24-7-customer-support": "Assistance client 24/7",
     "each": "l'unité",
+    "subtotal": "Sous-total",
+    "tax": "TVA ({0}%)",
+    "total-incl-tax": "Total (TVA incluse)",
     "confirming": {
       "you-will-be-redirected-to-multisafepay-to-complete-your-payment-securely-multiple-payment-methods-available-including-ideal-bancontact-paypal-and-more": "Vous allez être redirigé vers MultiSafepay pour compléter votre paiement en toute sécurité. Plusieurs méthodes de paiement disponibles, y compris iDEAL, Bancontact, PayPal, et plus.",
       "continue-to-multisafepay": "Continuer vers MultiSafepay"
@@ -747,6 +753,10 @@
       "enable-partner-registration": "Activer l'inscription des partenaires, la vérification des documents et l'assignation des courses. Lorsqu'il est désactivé, le menu Partenaires sera masqué dans la barre latérale d'administration.",
       "drivers-module-legacy": "Module Chauffeurs (Legacy)",
       "enable-the-legacy-drivers-system": "Activer l'ancien système de chauffeurs pour la rétrocompatibilité. Lorsqu'il est désactivé, le menu Chauffeurs sera masqué dans la barre latérale d'administration.",
+      "tax-module": "Module TVA",
+      "enable-tax-on-bookings": "Activer le calcul de la TVA sur toutes les réservations. La TVA sera affichée séparément dans le récapitulatif de réservation, les e-mails et les factures.",
+      "tax-percentage": "Taux de TVA",
+      "tax-percentage-description": "Définissez le pourcentage de TVA à appliquer sur le sous-total de toutes les réservations.",
       "note-changes-to-module-settings": "Remarque : Les modifications apportées aux paramètres des modules prennent effet après l'enregistrement et l'actualisation de la page. La désactivation d'un module le masque de la navigation mais ne supprime pas les données existantes."
     },
     "Fleet": {

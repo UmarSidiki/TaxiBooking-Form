@@ -105,7 +105,10 @@
     "math-max-formdata-duration-vehicle-minimumhours-or-or-2-hours": "{0} Stunden",
     "hours": "Stunden",
     "passenger-allowance": "Max. {0} Fahrgäste",
-    "total": "GESAMT"
+    "total": "GESAMT",
+    "subtotal": "Zwischensumme",
+    "tax": "Steuer ({0}%)",
+    "incl-tax": "(Inkl. MwSt.)"
   },
   "not-set": "Nicht festgelegt",
   "Step3": {
@@ -177,6 +180,9 @@
     "free-cancellation-24h": "Kostenlose Stornierung (24h)",
     "24-7-customer-support": "24/7 Kundensupport",
     "each": "pro Stück",
+    "subtotal": "Zwischensumme",
+    "tax": "Steuer ({0}%)",
+    "total-incl-tax": "Gesamt (Inkl. MwSt.)",
     "confirming": {
       "you-will-be-redirected-to-multisafepay-to-complete-your-payment-securely-multiple-payment-methods-available-including-ideal-bancontact-paypal-and-more": "Sie werden zu MultiSafepay weitergeleitet, um Ihre Zahlung sicher abzuschließen. Mehrere Zahlungsmethoden verfügbar, einschließlich iDEAL, Bancontact, PayPal und mehr.",
       "continue-to-multisafepay": "Weiter zu MultiSafepay"
@@ -747,6 +753,10 @@
       "enable-partner-registration": "Partnerregistrierung, Dokumentenüberprüfung und Fahrtzuweisungen aktivieren. Wenn deaktiviert, wird das Partnermenü in der Admin-Seitenleiste ausgeblendet.",
       "drivers-module-legacy": "Fahrermodul (Legacy)",
       "enable-the-legacy-drivers-system": "Das alte Fahrersystem für Abwärtskompatibilität aktivieren. Wenn deaktiviert, wird das Fahrermenü in der Admin-Seitenleiste ausgeblendet.",
+      "tax-module": "Steuermodul",
+      "enable-tax-on-bookings": "Steuerberechnung für alle Buchungen aktivieren. Die Steuer wird separat in der Buchungsübersicht, E-Mails und Rechnungen angezeigt.",
+      "tax-percentage": "Steuersatz",
+      "tax-percentage-description": "Legen Sie den Steuerprozentsatz fest, der auf die Zwischensumme aller Buchungen angewendet wird.",
       "note-changes-to-module-settings": "Hinweis: Änderungen an den Moduleinstellungen werden nach dem Speichern und Aktualisieren der Seite wirksam. Das Deaktivieren eines Moduls blendet es aus der Navigation aus, löscht jedoch keine vorhandenen Daten."
     },
     "Fleet": {

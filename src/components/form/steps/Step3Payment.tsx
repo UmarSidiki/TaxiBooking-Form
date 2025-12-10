@@ -62,6 +62,10 @@ export default function Step3Payment() {
     childSeatPrice,
     babySeatPrice,
     stopsTotalPrice,
+    subtotalPrice,
+    enableTax,
+    taxPercentage,
+    taxAmount,
     totalPrice,
 
     // Functions
@@ -879,12 +883,35 @@ export default function Step3Payment() {
 
           {/* Total */}
           <div className="border-t pt-3">
-            <div className="flex justify-between items-center text-lg font-bold">
-              <span>{t("Step2.total")}</span>
-              <span className="text-2xl text-primary">
-                {currencySymbol}{totalPrice.toFixed(2)}
-              </span>
-            </div>
+            {enableTax && taxPercentage > 0 ? (
+              <>
+                <div className="flex justify-between items-center text-sm text-gray-600 mb-1">
+                  <span>{t("Step3.subtotal")}</span>
+                  <span>
+                    {currencySymbol}{subtotalPrice.toFixed(2)}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center text-sm text-gray-600 mb-2">
+                  <span>{t("Step3.tax", { 0: taxPercentage })}</span>
+                  <span>
+                    {currencySymbol}{taxAmount.toFixed(2)}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center text-lg font-bold">
+                  <span>{t("Step3.total-incl-tax")}</span>
+                  <span className="text-2xl text-primary">
+                    {currencySymbol}{totalPrice.toFixed(2)}
+                  </span>
+                </div>
+              </>
+            ) : (
+              <div className="flex justify-between items-center text-lg font-bold">
+                <span>{t("Step2.total")}</span>
+                <span className="text-2xl text-primary">
+                  {currencySymbol}{totalPrice.toFixed(2)}
+                </span>
+              </div>
+            )}
           </div>
 
           {/* Benefits */}

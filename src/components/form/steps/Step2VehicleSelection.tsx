@@ -33,6 +33,10 @@ export default function Step2VehicleSelection() {
     vehicles,
     distanceData,
 
+    // Tax settings
+    enableTax,
+    taxPercentage,
+
     // Functions
     calculatePrice,
     calculateOriginalPrice,
@@ -437,15 +441,45 @@ export default function Step2VehicleSelection() {
                     </div>
                   )}
 
-                  <div className="flex justify-between items-center text-lg font-bold">
-                    <span>{t("Step2.total")}</span>
-                    <div className="text-right">
-                      <p className="text-gray-900">
-                        {currencySymbol}
-                        {totalPrice.toFixed(2)}
-                      </p>
+                  {/* Tax and Total */}
+                  {enableTax && taxPercentage > 0 ? (
+                    <>
+                      <div className="flex justify-between items-center text-sm text-gray-600 mb-1">
+                        <span>{t("Step2.subtotal")}</span>
+                        <span>
+                          {currencySymbol}
+                          {totalPrice.toFixed(2)}
+                        </span>
+                      </div>
+                      <div className="flex justify-between items-center text-sm text-gray-600 mb-1">
+                        <span>{t("Step2.tax", { 0: taxPercentage })}</span>
+                        <span>
+                          {currencySymbol}
+                          {(totalPrice * (taxPercentage / 100)).toFixed(2)}
+                        </span>
+                      </div>
+                      <div className="flex justify-between items-center text-lg font-bold">
+                        <span>{t("Step2.total")}</span>
+                        <div className="text-right">
+                          <p className="text-gray-900">
+                            {currencySymbol}
+                            {(totalPrice * (1 + taxPercentage / 100)).toFixed(2)}
+                          </p>
+                          <p className="text-xs text-gray-500 font-normal">{t("Step2.incl-tax")}</p>
+                        </div>
+                      </div>
+                    </>
+                  ) : (
+                    <div className="flex justify-between items-center text-lg font-bold">
+                      <span>{t("Step2.total")}</span>
+                      <div className="text-right">
+                        <p className="text-gray-900">
+                          {currencySymbol}
+                          {totalPrice.toFixed(2)}
+                        </p>
+                      </div>
                     </div>
-                  </div>
+                  )}
                 </div>
               );
             })()}

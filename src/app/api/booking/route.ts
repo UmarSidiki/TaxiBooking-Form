@@ -140,6 +140,9 @@ async function createEmailData(
     email: formData.email,
     phone: formData.phone,
     totalAmount: formData.totalAmount || totalAmount,
+    subtotalAmount: formData.subtotalAmount,
+    taxAmount: formData.taxAmount,
+    taxPercentage: formData.taxPercentage,
     paymentMethod: formData.paymentMethod,
     paymentStatus: formData.paymentStatus,
     baseUrl: baseUrl,
@@ -258,6 +261,9 @@ export async function POST(request: NextRequest) {
       stripePaymentIntentId: formData.stripePaymentIntentId,
       status: 'upcoming',
       totalAmount: formData.totalAmount || totalAmount,
+      subtotalAmount: formData.subtotalAmount,
+      taxAmount: formData.taxAmount,
+      taxPercentage: formData.taxPercentage,
     };
 
     // Save to database using Mongoose

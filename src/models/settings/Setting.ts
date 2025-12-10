@@ -41,6 +41,8 @@ export interface ISetting {
   smtpSenderName?: string;
   enablePartners?: boolean;
   enableDrivers?: boolean;
+  enableTax?: boolean;
+  taxPercentage?: number;
   adminEmail?: string;
   createdAt?: Date;
   updatedAt?: Date;
@@ -189,6 +191,14 @@ const SettingSchema = new Schema<ISetting>(
     enableDrivers: {
       type: Boolean,
       default: false,
+    },
+    enableTax: {
+      type: Boolean,
+      default: false,
+    },
+    taxPercentage: {
+      type: Number,
+      default: 0,
     },
     adminEmail: {
       type: String,

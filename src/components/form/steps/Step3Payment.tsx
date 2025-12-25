@@ -42,6 +42,7 @@ export default function Step3Payment() {
     selectedPaymentMethod,
     setSelectedPaymentMethod,
     clientSecret,
+    stripeOrderId,
     creatingPaymentIntent,
     paymentError,
 
@@ -506,6 +507,33 @@ export default function Step3Payment() {
                           currency={(
                             paymentSettings?.stripeCurrency || "eur"
                           ).toUpperCase()}
+                          orderId={stripeOrderId || undefined}
+                          bookingData={{
+                            pickup: formData.pickup,
+                            dropoff: formData.dropoff,
+                            stops: formData.stops,
+                            tripType: formData.tripType,
+                            bookingType: formData.bookingType,
+                            duration: formData.duration,
+                            date: formData.date,
+                            time: formData.time,
+                            returnDate: formData.returnDate,
+                            returnTime: formData.returnTime,
+                            passengers: formData.passengers,
+                            selectedVehicle: formData.selectedVehicle,
+                            childSeats: formData.childSeats,
+                            babySeats: formData.babySeats,
+                            notes: formData.notes,
+                            flightNumber: formData.flightNumber,
+                            firstName: formData.firstName,
+                            lastName: formData.lastName,
+                            email: formData.email,
+                            phone: formData.phone,
+                            totalAmount: totalPrice,
+                            subtotalAmount: displaySubtotalAmount,
+                            taxAmount: taxAmount,
+                            taxPercentage: enableTax ? taxPercentage : 0,
+                          }}
                           onSuccess={handleStripePaymentSuccess}
                           onError={handleStripePaymentError}
                         />

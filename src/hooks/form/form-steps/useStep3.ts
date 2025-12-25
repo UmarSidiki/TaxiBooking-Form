@@ -42,6 +42,7 @@ export function useStep3() {
   const [paymentSettings, setPaymentSettings] = useState<ISetting | null>(null);
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<string>("");
   const [clientSecret, setClientSecret] = useState<string | null>(null);
+  const [stripeOrderId, setStripeOrderId] = useState<string | null>(null);
   const [creatingPaymentIntent, setCreatingPaymentIntent] = useState(false);
   const [paymentError, setPaymentError] = useState<string | null>(null);
   const [paymentInitialized, setPaymentInitialized] = useState(false);
@@ -311,6 +312,7 @@ export function useStep3() {
       
       if (data.success && data.clientSecret) {
         setClientSecret(data.clientSecret);
+        setStripeOrderId(data.orderId || null);
         setPaymentError(null);
         setPaymentInitialized(true);
       } else {
@@ -583,6 +585,7 @@ export function useStep3() {
     selectedPaymentMethod,
     setSelectedPaymentMethod,
     clientSecret,
+    stripeOrderId,
     creatingPaymentIntent,
     paymentError,
 

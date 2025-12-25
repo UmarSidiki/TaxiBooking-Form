@@ -7,9 +7,38 @@ import { Loader2, Shield, Lock, CreditCard, CheckCircle2, AlertCircle } from 'lu
 import { useTranslations } from 'next-intl';
 import { getCurrencySymbol } from '@/lib/utils';
 
+interface BookingData {
+  pickup: string;
+  dropoff?: string;
+  stops?: Array<{ location: string; order: number; duration?: number }>;
+  tripType: string;
+  bookingType?: string;
+  duration?: number;
+  date: string;
+  time: string;
+  returnDate?: string;
+  returnTime?: string;
+  passengers: number;
+  selectedVehicle: string;
+  childSeats: number;
+  babySeats: number;
+  notes: string;
+  flightNumber?: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  totalAmount: number;
+  subtotalAmount?: number;
+  taxAmount?: number;
+  taxPercentage?: number;
+}
+
 interface StripePaymentFormProps {
   amount: number;
   currency?: string;
+  orderId?: string;
+  bookingData?: BookingData;
   onSuccess: (paymentIntentId: string) => void;
   onError: (error: string) => void;
 }
@@ -17,6 +46,8 @@ interface StripePaymentFormProps {
 export default function StripePaymentForm({ 
   amount, 
   currency = 'EUR',
+  orderId,
+  bookingData,
   onSuccess, 
   onError 
 }: StripePaymentFormProps) {
@@ -40,6 +71,26 @@ export default function StripePaymentForm({
     setMessage({ type: 'info', text: t('Stripe.processing-your-payment') });
 
     try {
+      // Update pending booking with latest data before confirming payment
+      if (orderId && bookingData) {
+        try {
+          const updateResponse = await fetch('/api/update-pending-booking', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ orderId, bookingData }),
+          });
+          
+          if (!updateResponse.ok) {
+            console.warn('Failed to update pending booking, continuing with payment...');
+          } else {
+            console.log('✅ Pending booking updated before payment confirmation');
+          }
+        } catch (updateError) {
+          console.warn('Error updating pending booking:', updateError);
+          // Continue with payment even if update fails
+        }
+      }
+
       const { error, paymentIntent } = await stripe.confirmPayment({
         elements,
         confirmParams: {

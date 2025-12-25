@@ -986,7 +986,10 @@
       "available-methods-depend-on-your-multisafepay-account-settings": "Les méthodes disponibles dépendent des paramètres de votre compte MultiSafepay.",
       "payment-gateway": "Passerelle de paiement",
       "select-your-preferred-payment-gateway": "Sélectionnez votre passerelle de paiement préférée",
-      "only-first-five-countries-used": "Seuls les 5 premiers codes de pays sont utilisés par Google Places Autocomplete ; \nles codes supplémentaires seront ignorés."
+      "only-first-five-countries-used": "Seuls les 5 premiers codes de pays sont utilisés par Google Places Autocomplete ; \nles codes supplémentaires seront ignorés.",
+      "add-this-url-in-stripe-dashboard-webhooks": "Ajoutez cette URL dans Stripe Dashboard → Développeurs → Webhooks. \nSélectionnez l'événement « payment_intent.succeeded ».",
+      "copy": "Copie",
+      "webhook-url": "URL du webhook"
     }
   },
   "Sidebar": {

@@ -265,6 +265,34 @@ export function useStep3() {
     console.log("Creating payment intent with amount:", totalPrice);
 
     try {
+      // Prepare booking data for webhook fallback processing
+      const bookingDataForWebhook = {
+        pickup: formData.pickup,
+        dropoff: formData.dropoff,
+        stops: formData.stops,
+        tripType: formData.tripType,
+        bookingType: formData.bookingType,
+        duration: formData.duration,
+        date: formData.date,
+        time: formData.time,
+        returnDate: formData.returnDate,
+        returnTime: formData.returnTime,
+        passengers: formData.passengers,
+        selectedVehicle: formData.selectedVehicle,
+        childSeats: formData.childSeats,
+        babySeats: formData.babySeats,
+        notes: formData.notes,
+        flightNumber: formData.flightNumber,
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        email: formData.email,
+        phone: formData.phone,
+        totalAmount: totalPrice,
+        subtotalAmount: displaySubtotalAmount,
+        taxAmount: taxAmount,
+        taxPercentage: enableTax ? taxPercentage : 0,
+      };
+
       const response = await fetch("/api/create-payment-intent", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -274,6 +302,7 @@ export function useStep3() {
           customerEmail: formData.email || "customer@example.com", // Fallback email
           customerName: `${formData.firstName || "First"} ${formData.lastName || "Last"}`, // Fallback name
           description: `Booking from ${formData.pickup || "pickup"} to ${formData.dropoff || "dropoff"}`,
+          bookingData: bookingDataForWebhook, // Include booking data for webhook processing
         }),
       });
 
@@ -300,12 +329,12 @@ export function useStep3() {
     stripeConfig.publishableKey,
     creatingPaymentIntent,
     totalPrice,
+    displaySubtotalAmount,
+    taxAmount,
+    enableTax,
+    taxPercentage,
     paymentSettings?.stripeCurrency,
-    formData.email,
-    formData.firstName,
-    formData.lastName,
-    formData.pickup,
-    formData.dropoff,
+    formData,
     t,
   ]);
 

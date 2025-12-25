@@ -186,6 +186,34 @@ const PaymentTab: React.FC<PaymentTabProps> = ({
                 )}{" "}
               </p>
             </div>
+            <div>
+              <label className="block text-sm font-medium mb-2">
+                {t("Dashboard.Settings.webhook-url")}
+              </label>
+              <div className="flex gap-2">
+                <Input
+                  type="text"
+                  readOnly
+                  value={typeof window !== 'undefined' ? `${window.location.origin}/api/stripe-webhook` : '/api/stripe-webhook'}
+                  className="bg-gray-50 text-gray-600"
+                />
+                <button
+                  type="button"
+                  onClick={() => {
+                    const webhookUrl = typeof window !== 'undefined' 
+                      ? `${window.location.origin}/api/stripe-webhook` 
+                      : '/api/stripe-webhook';
+                    navigator.clipboard.writeText(webhookUrl);
+                  }}
+                  className="px-3 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 text-sm whitespace-nowrap"
+                >
+                  {t("Dashboard.Settings.copy")}
+                </button>
+              </div>
+              <p className="text-xs text-gray-500 mt-1">
+                {t("Dashboard.Settings.add-this-url-in-stripe-dashboard-webhooks")}
+              </p>
+            </div>
           </div>
           </div>
         )}

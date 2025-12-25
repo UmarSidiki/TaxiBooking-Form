@@ -9,6 +9,7 @@ export interface IPendingBooking {
     stops?: Array<{
       location: string;
       order: number;
+      duration?: number;
     }>;
     tripType: "oneway" | "roundtrip";
     bookingType?: "destination" | "hourly";
@@ -28,6 +29,9 @@ export interface IPendingBooking {
     email: string;
     phone: string;
     totalAmount: number;
+    subtotalAmount?: number;
+    taxAmount?: number;
+    taxPercentage?: number;
   };
   paymentMethod: string;
   expiresAt: Date;

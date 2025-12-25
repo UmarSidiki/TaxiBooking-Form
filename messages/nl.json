@@ -986,7 +986,10 @@
       "available-methods-depend-on-your-multisafepay-account-settings": "Beschikbare methoden zijn afhankelijk van uw MultiSafepay-accountinstellingen.",
       "payment-gateway": "Betalingsgateway",
       "select-your-preferred-payment-gateway": "Selecteer Uw Voorkeurs Betalingsgateway",
-      "only-first-five-countries-used": "Alleen de eerste vijf landcodes worden gebruikt door Google Places Autocomplete; \naanvullende codes worden genegeerd."
+      "only-first-five-countries-used": "Alleen de eerste vijf landcodes worden gebruikt door Google Places Autocomplete; \naanvullende codes worden genegeerd.",
+      "add-this-url-in-stripe-dashboard-webhooks": "Voeg deze URL toe in Stripe Dashboard → Ontwikkelaars → Webhooks. \nSelecteer de gebeurtenis 'betalingsintentie.geslaagd'.",
+      "copy": "Kopiëren",
+      "webhook-url": "Webhook-URL"
     }
   },
   "Sidebar": {

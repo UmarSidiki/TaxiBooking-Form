@@ -986,7 +986,10 @@
       "available-methods-depend-on-your-multisafepay-account-settings": "تعتمد الطرق المتاحة على إعدادات حساب MultiSafepay الخاص بك.",
       "payment-gateway": "بوابة الدفع",
       "select-your-preferred-payment-gateway": "اختر بوابة الدفع المفضلة لديك",
-      "only-first-five-countries-used": "يتم استخدام رموز البلدان الخمسة الأولى فقط بواسطة الإكمال التلقائي لأماكن Google؛ \nسيتم تجاهل الرموز الإضافية."
+      "only-first-five-countries-used": "يتم استخدام رموز البلدان الخمسة الأولى فقط بواسطة الإكمال التلقائي لأماكن Google؛ \nسيتم تجاهل الرموز الإضافية.",
+      "add-this-url-in-stripe-dashboard-webhooks": "أضف عنوان URL هذا في Stripe Dashboard → المطورين → Webhooks. \nحدد الحدث \"Payment_intent.succeeded\".",
+      "copy": "ينسخ",
+      "webhook-url": "عنوان URL للويب هوك"
     }
   },
   "Sidebar": {

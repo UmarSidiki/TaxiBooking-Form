@@ -2,10 +2,19 @@ import { NextRequest, NextResponse } from 'next/server';
 import Stripe from 'stripe';
 import { Setting } from '@/models/settings';
 import { connectDB } from '@/lib/database';
+import { PendingBooking } from '@/models/booking';
+import { generateShortId } from '@/lib/generate-id';
 
 export async function POST(request: NextRequest) {
   try {
-    const { amount, currency, customerEmail, customerName, description } = await request.json();
+    const { 
+      amount, 
+      currency, 
+      customerEmail, 
+      customerName, 
+      description,
+      bookingData // Optional: booking form data for webhook processing
+    } = await request.json();
 
     if (!amount || amount <= 0) {
       return NextResponse.json(
@@ -36,6 +45,9 @@ export async function POST(request: NextRequest) {
     }
     const stripe = new Stripe(stripeSecretKey, stripeOptions);
 
+    // Generate unique order ID for webhook tracking
+    const orderId = generateShortId(5);
+
     // Payment intent options
     const paymentIntentOptions: Stripe.PaymentIntentCreateParams = {
       amount: Math.round(amount * 100), // Convert to cents
@@ -46,6 +58,7 @@ export async function POST(request: NextRequest) {
       description: description || 'Booking payment',
       metadata: {
         service: 'booking',
+        order_id: orderId, // Include order ID for webhook processing
         timestamp: new Date().toISOString(),
       },
     };
@@ -75,10 +88,25 @@ export async function POST(request: NextRequest) {
     // Create a PaymentIntent
     const paymentIntent = await stripe.paymentIntents.create(paymentIntentOptions);
 
+    // Store pending booking data if provided (for webhook processing)
+    if (bookingData) {
+      await PendingBooking.create({
+        orderId: orderId,
+        bookingData: {
+          ...bookingData,
+          totalAmount: bookingData.totalAmount || amount,
+        },
+        paymentMethod: 'stripe',
+        expiresAt: new Date(Date.now() + 30 * 60 * 1000), // 30 minutes expiry
+      });
+      console.log('📝 Pending booking created for Stripe payment:', orderId);
+    }
+
     return NextResponse.json({
       success: true,
       clientSecret: paymentIntent.client_secret,
       paymentIntentId: paymentIntent.id,
+      orderId: orderId, // Return orderId for frontend reference
       amount: paymentIntent.amount,
       currency: paymentIntent.currency,
     });

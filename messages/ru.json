@@ -986,7 +986,10 @@
       "available-methods-depend-on-your-multisafepay-account-settings": "Доступные методы зависят от настроек вашего аккаунта MultiSafepay.",
       "payment-gateway": "Платежный шлюз",
       "select-your-preferred-payment-gateway": "Выберите предпочитаемый платежный шлюз",
-      "only-first-five-countries-used": "При автозаполнении Google Адресов используются только первые 5 кодов стран; \nдополнительные коды будут игнорироваться."
+      "only-first-five-countries-used": "При автозаполнении Google Адресов используются только первые 5 кодов стран; \nдополнительные коды будут игнорироваться.",
+      "add-this-url-in-stripe-dashboard-webhooks": "Добавьте этот URL-адрес в панель инструментов Stripe → Разработчики → Вебхуки. \nВыберите событие «Payment_intent.succeeded».",
+      "copy": "Копировать",
+      "webhook-url": "URL вебхука"
     }
   },
   "Sidebar": {

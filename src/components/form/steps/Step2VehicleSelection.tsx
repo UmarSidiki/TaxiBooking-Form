@@ -43,6 +43,7 @@ export default function Step2VehicleSelection() {
     calculateOriginalPrice,
     handleVehicleSelect,
     handleBack,
+    calculatingDistance,
   } = useStep2();
 
   const { currencySymbol } = useCurrency();
@@ -149,29 +150,44 @@ export default function Step2VehicleSelection() {
                             </div>
                           </div>
                           <div className="text-right">
-                            {distanceData &&
-                              originalPrice > calculatedPrice && (
-                                <p className="text-xs text-gray-500 line-through">
-                                  {currencySymbol}
-                                  {originalPrice.toFixed(2)}
-                                </p>
-                              )}
-                            <p className="text-xl font-bold text-gray-900">
-                              {currencySymbol}
-                              {calculatedPrice.toFixed(2)}
-                            </p>
-                            <p className="text-xs text-gray-500">
-                              {formData.bookingType === "hourly"
-                                ? `${Math.max(
-                                    formData.duration,
-                                    vehicle.minimumHours || 2
-                                  )} ${t("Step2.hours")}`
-                                : distanceData
-                                ? formData.tripType === "roundtrip"
-                                  ? t("Step2.total-round-trip")
-                                  : t("Step2.total-one-way")
-                                : t("Step2.starting-from")}
-                            </p>
+                            {(formData.bookingType === "destination" && !distanceData) || calculatingDistance ? (
+                                <div className="flex flex-col items-end justify-center min-h-[4rem]">
+                                    {calculatingDistance ? (
+                                        <div className="flex items-center gap-2 text-primary">
+                                            <Loader2 className="h-4 w-4 animate-spin" />
+                                            <span className="text-xs">Calculating...</span>
+                                        </div>
+                                    ) : (
+                                        <span className="text-sm font-medium text-amber-600">Price unavailable</span>
+                                    )}
+                                </div>
+                            ) : (
+                                <>
+                                    {distanceData &&
+                                    originalPrice > calculatedPrice && (
+                                        <p className="text-xs text-gray-500 line-through">
+                                        {currencySymbol}
+                                        {originalPrice.toFixed(2)}
+                                        </p>
+                                    )}
+                                    <p className="text-xl font-bold text-gray-900">
+                                    {currencySymbol}
+                                    {calculatedPrice.toFixed(2)}
+                                    </p>
+                                    <p className="text-xs text-gray-500">
+                                    {formData.bookingType === "hourly"
+                                        ? `${Math.max(
+                                            formData.duration,
+                                            vehicle.minimumHours || 2
+                                        )} ${t("Step2.hours")}`
+                                        : distanceData
+                                        ? formData.tripType === "roundtrip"
+                                        ? t("Step2.total-round-trip")
+                                        : t("Step2.total-one-way")
+                                        : t("Step2.starting-from")}
+                                    </p>
+                                </>
+                            )}
                           </div>
                         </div>
 

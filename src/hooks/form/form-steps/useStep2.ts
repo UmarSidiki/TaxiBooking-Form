@@ -21,6 +21,7 @@ export function useStep2() {
     setCurrentStep,
     setDistanceData,
     setCalculatingDistance,
+    calculatingDistance,
   } = useBookingForm();
 
   // Fetch distance if landing directly on step 2 with pickup/dropoff
@@ -309,5 +310,6 @@ export function useStep2() {
     calculateOriginalPrice,
     handleVehicleSelect,
     handleBack,
+    calculatingDistance,
   };
 }

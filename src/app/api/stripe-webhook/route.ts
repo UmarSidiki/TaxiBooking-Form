@@ -253,11 +253,19 @@ async function handlePaymentIntentSucceeded(
   
   // Send confirmation emails
   try {
-    console.log('📧 Sending confirmation email to:', emailData.email);
-    await sendOrderConfirmationEmail(emailData);
+    console.log('📧 Sending confirmation emails...');
     
-    console.log('📧 Sending notification email to admin');
-    await sendOrderNotificationEmail(emailData);
+    // Send emails in parallel to save time and prevent timeouts
+    await Promise.all([
+        sendOrderConfirmationEmail(emailData).catch(err => 
+            console.error('❌ Failed to send confirmation email:', err)
+        ),
+        sendOrderNotificationEmail(emailData).catch(err => 
+            console.error('❌ Failed to send admin notification email:', err)
+        )
+    ]);
+    
+    console.log('📧 Email sending process initiated');
   } catch (emailError) {
     console.error('❌ Error sending emails:', emailError);
     // Don't fail the webhook if emails fail

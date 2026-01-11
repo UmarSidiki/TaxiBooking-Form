@@ -163,6 +163,8 @@ export function useStep1() {
       isRoundTrip: boolean = false
     ) => {
       if (!origin || !destination) return;
+      // Check for extremely short strings that might be invalid
+      if (origin.length < 3 || destination.length < 3) return;
 
       setCalculatingDistance(true);
       try {
@@ -277,10 +279,13 @@ export function useStep1() {
       const allStopsValid = formData.stops.length === 0 || 
         formData.stops.every(stop => stop.location.trim());
       
-      if (allStopsValid) {
+      const isPickupValid = formData.pickup.trim().length > 2;
+      const isDropoffValid = formData.dropoff.trim().length > 2;
+
+      if (allStopsValid && isPickupValid && isDropoffValid) {
         debouncedCalculateDistance(
-          formData.pickup,
-          formData.dropoff,
+          formData.pickup.trim(),
+          formData.dropoff.trim(),
           formData.stops,
           formData.tripType === "roundtrip"
         );

@@ -371,38 +371,25 @@ export function useStep3() {
   const handleStripePaymentSuccess = async (paymentIntentId: string) => {
     setIsLoading(true);
     try {
-      const response = await fetch("/api/booking", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          ...formData,
-          paymentMethod: "stripe",
-          paymentStatus: "completed",
-          totalAmount: totalPrice,
-          subtotalAmount: displaySubtotalAmount,
-          taxAmount: taxAmount,
-          taxPercentage: enableTax ? taxPercentage : 0,
-          taxIncluded: enableTax ? taxIncluded : false,
-          stripePaymentIntentId: paymentIntentId,
-        }),
-      });
+      // The webhook will handle creating the booking and sending the emails.
+      // We just need to redirect the user to the thank you page.
+      // We use the stripeOrderId (which is the tripId) we received when creating the PaymentIntent.
+      
+      resetForm();
+      
+      // Use the orderId from state, or fallback to a generic message if missing
+      // (though it should be present if we completed payment)
+      const finalTripId = stripeOrderId || "PENDING";
 
-      const data = await response.json();
-
-      if (response.ok) {
-        resetForm();
-        // Redirect to thank you page with booking details
-        router.push(
-          `/${locale}/thank-you?tripId=${data.tripId}&amount=${totalPrice.toFixed(
-            2
-          )}&method=stripe`
-        );
-      } else {
-        alert(t('booking-failed-data-message'));
-      }
+      router.push(
+        `/${locale}/thank-you?tripId=${finalTripId}&amount=${totalPrice.toFixed(
+          2
+        )}&method=stripe`
+      );
     } catch (error) {
-      console.error("Booking error:", error);
-      alert(t('Step3.booking-failed-please-try-again'));
+      console.error("Post-payment error:", error);
+      // Payment succeeded even if redirection fails, so we try to redirect anyway
+      router.push(`/${locale}/thank-you?method=stripe`);
     } finally {
       setIsLoading(false);
     }

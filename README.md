@@ -59,7 +59,7 @@ Dedicated interfaces for your workforce:
 1.  **Clone the repository**
     ```bash
     git clone https://github.com/UmarSidiki/TaxiBooking-Form.git
-    cd booking-form
+    cd TaxiBooking-Form
     ```
 
 2.  **Install dependencies**

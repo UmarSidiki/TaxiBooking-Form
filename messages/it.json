@@ -989,7 +989,8 @@
       "only-first-five-countries-used": "Solo i primi 5 codici Paese vengono utilizzati dal completamento automatico di Google Places; \ni codici aggiuntivi verranno ignorati.",
       "add-this-url-in-stripe-dashboard-webhooks": "Aggiungi questo URL in Stripe Dashboard → Sviluppatori → Webhook. \nSeleziona l'evento \"payment_intent.succeeded\".",
       "copy": "Copia",
-      "webhook-url": "URL del webhook"
+      "webhook-url": "URL del webhook",
+      "add-this-url-in-multisafepay-dashboard": "Aggiungi questo URL nella dashboard di MultiSafepay (URL di notifica)."
     }
   },
   "Sidebar": {

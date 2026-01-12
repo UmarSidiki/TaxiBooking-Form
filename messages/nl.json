@@ -989,7 +989,8 @@
       "only-first-five-countries-used": "Alleen de eerste vijf landcodes worden gebruikt door Google Places Autocomplete; \naanvullende codes worden genegeerd.",
       "add-this-url-in-stripe-dashboard-webhooks": "Voeg deze URL toe in Stripe Dashboard → Ontwikkelaars → Webhooks. \nSelecteer de gebeurtenis 'betalingsintentie.geslaagd'.",
       "copy": "Kopiëren",
-      "webhook-url": "Webhook-URL"
+      "webhook-url": "Webhook-URL",
+      "add-this-url-in-multisafepay-dashboard": "Voeg deze URL toe in uw MultiSafepay Dashboard (Meldings-URL)."
     }
   },
   "Sidebar": {

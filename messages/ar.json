@@ -989,7 +989,8 @@
       "only-first-five-countries-used": "يتم استخدام رموز البلدان الخمسة الأولى فقط بواسطة الإكمال التلقائي لأماكن Google؛ \nسيتم تجاهل الرموز الإضافية.",
       "add-this-url-in-stripe-dashboard-webhooks": "أضف عنوان URL هذا في Stripe Dashboard → المطورين → Webhooks. \nحدد الحدث \"Payment_intent.succeeded\".",
       "copy": "ينسخ",
-      "webhook-url": "عنوان URL للويب هوك"
+      "webhook-url": "عنوان URL للويب هوك",
+      "add-this-url-in-multisafepay-dashboard": "أضف عنوان URL هذا في لوحة معلومات MultiSafepay (عنوان URL للإشعارات)."
     }
   },
   "Sidebar": {

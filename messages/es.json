@@ -989,7 +989,8 @@
       "only-first-five-countries-used": "La función Autocompletar de Google Places solo utiliza los primeros 5 códigos de país; \nSe ignorarán los códigos adicionales.",
       "add-this-url-in-stripe-dashboard-webhooks": "Agregue esta URL en Stripe Dashboard → Desarrolladores → Webhooks. \nSeleccione el evento 'paid_intent.succeeded'.",
       "copy": "Copiar",
-      "webhook-url": "URL de webhook"
+      "webhook-url": "URL de webhook",
+      "add-this-url-in-multisafepay-dashboard": "Agregue esta URL en su Panel de control de MultiSafepay (URL de notificación)."
     }
   },
   "Sidebar": {

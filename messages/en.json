@@ -870,6 +870,7 @@
       "webhook-url": "Webhook URL",
       "copy": "Copy",
       "add-this-url-in-stripe-dashboard-webhooks": "Add this URL in Stripe Dashboard → Developers → Webhooks. Select 'payment_intent.succeeded' event.",
+      "add-this-url-in-multisafepay-dashboard": "Add this URL in your MultiSafepay Dashboard (Notification URL).",
       "secret-key-starts-with-sk_-keep-this-secure": "secret key (starts with sk_) - Keep this secure!",
       "your-stripe-0": "Your Stripe",
       "secret-key": "Secret Key",

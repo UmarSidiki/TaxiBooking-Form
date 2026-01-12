@@ -989,7 +989,8 @@
       "only-first-five-countries-used": "При автозаполнении Google Адресов используются только первые 5 кодов стран; \nдополнительные коды будут игнорироваться.",
       "add-this-url-in-stripe-dashboard-webhooks": "Добавьте этот URL-адрес в панель инструментов Stripe → Разработчики → Вебхуки. \nВыберите событие «Payment_intent.succeeded».",
       "copy": "Копировать",
-      "webhook-url": "URL вебхука"
+      "webhook-url": "URL вебхука",
+      "add-this-url-in-multisafepay-dashboard": "Добавьте этот URL-адрес на свою панель управления MultiSafepay (URL-адрес уведомления)."
     }
   },
   "Sidebar": {

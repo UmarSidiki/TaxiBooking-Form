@@ -926,6 +926,8 @@
       "primary-color": "Primary Color",
       "color-scheme": "Color Scheme",
       "theme-and-appearance": "Theme & Appearance",
+      "regional-settings": "Regional Settings",
+      "timezone": "Timezone",
       "map": "Map",
       "appearance": "Appearance",
       "save-all-settings": "Save All Settings",

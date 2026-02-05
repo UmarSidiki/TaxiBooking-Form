@@ -921,6 +921,8 @@
       "primary-color": "Основной цвет",
       "color-scheme": "Цветовая схема",
       "theme-and-appearance": "Тема и внешний вид",
+      "regional-settings": "Региональные настройки",
+      "timezone": "Часовой пояс",
       "map": "Карта",
       "appearance": "Внешний вид",
       "save-all-settings": "Сохранить все настройки",

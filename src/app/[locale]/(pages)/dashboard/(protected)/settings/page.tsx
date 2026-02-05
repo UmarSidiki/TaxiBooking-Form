@@ -101,6 +101,9 @@ const SettingsPage = () => {
     setSettings((prev) => ({ ...prev, [key]: value }));
   };
 
+  const handleTimezoneChange = (value: string) => {
+    setSettings((prev) => ({ ...prev, timezone: value }));
+  };
 
   if (isFetching) {
     return (
@@ -197,6 +200,7 @@ const SettingsPage = () => {
             settings={settings}
             handleColorChange={handleColorChange}
             handleBorderRadiusChange={handleBorderRadiusChange}
+            handleTimezoneChange={handleTimezoneChange}
           />
         </TabsContent>
         <TabsContent value="booking">

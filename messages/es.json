@@ -921,6 +921,8 @@
       "primary-color": "Color primario",
       "color-scheme": "Esquema de colores",
       "theme-and-appearance": "Tema y apariencia",
+      "regional-settings": "Configuración regional",
+      "timezone": "Zona horaria",
       "map": "Mapa",
       "appearance": "Apariencia",
       "save-all-settings": "Guardar toda la configuración",

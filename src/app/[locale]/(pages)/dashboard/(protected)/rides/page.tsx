@@ -163,19 +163,31 @@ export default function RidesPage() {
   const filterBookings = useCallback(() => {
     let filtered: IBooking[] = [];
 
+    // Helper to get booking datetime
+    const getBookingDateTime = (b: IBooking) => {
+      // Combine date and time assuming ISO format YYYY-MM-DD and HH:mm
+      return new Date(`${b.date}T${b.time}:00`);
+    };
+
     // First filter by tab
     switch (activeTab) {
       case "upcoming":
         filtered = bookings.filter((b) => {
           if (b.status === "canceled") return false;
-          const bookingDate = new Date(b.date);
+          // Filter by completed status if set in DB, OR check date
+          if (b.status === "completed") return false; 
+          
+          const bookingDate = getBookingDateTime(b);
           return bookingDate >= new Date();
         });
         break;
       case "passed":
         filtered = bookings.filter((b) => {
           if (b.status === "canceled") return false;
-          const bookingDate = new Date(b.date);
+          // If explicitly completed in DB, it's passed
+          if (b.status === "completed") return true;
+
+          const bookingDate = getBookingDateTime(b);
           return bookingDate < new Date();
         });
         break;
@@ -206,12 +218,24 @@ export default function RidesPage() {
     // Apply date filter
     if (dateRange?.from || dateRange?.to) {
       filtered = filtered.filter((booking) => {
-        const bookingDate = new Date(booking.date);
+        const bookingDate = new Date(booking.date); // For date range, date-only comparison is fine usually, but let's be consistent
         const fromDate = dateRange.from;
         const toDate = dateRange.to;
 
-        if (fromDate && bookingDate < fromDate) return false;
-        if (toDate && bookingDate > toDate) return false;
+        // Reset times for date-only comparison
+        const checkDate = new Date(bookingDate);
+        checkDate.setHours(0,0,0,0);
+        
+        if (fromDate) {
+             const from = new Date(fromDate);
+             from.setHours(0,0,0,0);
+             if (checkDate < from) return false;
+        }
+        if (toDate) {
+             const to = new Date(toDate);
+             to.setHours(23,59,59,999);
+             if (checkDate > to) return false;
+        }
         return true;
       });
     }
@@ -226,11 +250,11 @@ export default function RidesPage() {
     // Apply sorting
     if (sortBy === "date-asc") {
       filtered.sort(
-        (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+        (a, b) => getBookingDateTime(a).getTime() - getBookingDateTime(b).getTime()
       );
     } else if (sortBy === "date-desc") {
       filtered.sort(
-        (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+        (a, b) => getBookingDateTime(b).getTime() - getBookingDateTime(a).getTime()
       );
     } else if (sortBy === "price-asc") {
       filtered.sort((a, b) => (a.totalAmount || 0) - (b.totalAmount || 0));

@@ -1,7 +1,7 @@
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Square, Circle } from "lucide-react";
+import { Square, Circle, Globe } from "lucide-react";
 import { ISetting } from "@/models/settings";
 import { useTranslations } from "next-intl";
 
@@ -9,14 +9,18 @@ interface AppearanceTabProps {
   settings: Partial<ISetting>;
   handleColorChange: (key: "primaryColor" | "secondaryColor", value: string) => void;
   handleBorderRadiusChange: (value: number) => void;
+  handleTimezoneChange: (value: string) => void;
 }
 
 const AppearanceTab: React.FC<AppearanceTabProps> = ({
   settings,
   handleColorChange,
   handleBorderRadiusChange,
+  handleTimezoneChange,
 }) => {
   const t = useTranslations();
+  const timezones = Intl.supportedValuesOf('timeZone');
+
 
   return (
     <Card>
@@ -24,6 +28,35 @@ const AppearanceTab: React.FC<AppearanceTabProps> = ({
         <CardTitle>{t("Dashboard.Settings.theme-and-appearance")}</CardTitle>
       </CardHeader>
       <CardContent className="space-y-6">
+        {/* Timezone Settings */}
+        <div className="space-y-4">
+          <h3 className="text-lg font-medium">
+            {t("Dashboard.Settings.regional-settings")}
+          </h3>
+          <div>
+            <label className="block text-sm font-medium mb-2">
+              {t("Dashboard.Settings.timezone")}
+            </label>
+            <div className="relative">
+              <Globe className="absolute left-3 top-2.5 h-4 w-4 text-gray-500" />
+              <select
+                value={settings.timezone || "Europe/Zurich"}
+                onChange={(e) => handleTimezoneChange(e.target.value)}
+                className="flex h-10 w-full rounded-md border border-input bg-background pl-10 pr-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                {timezones.map((tz) => (
+                  <option key={tz} value={tz}>
+                    {tz.replace(/_/g, " ")}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <p className="text-xs text-gray-500 mt-1">
+              Select your local timezone for accurate booking times and email notifications.
+            </p>
+          </div>
+        </div>
+
         {/* Color Settings */}
         <div className="space-y-4">
           <h3 className="text-lg font-medium">

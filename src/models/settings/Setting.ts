@@ -45,6 +45,7 @@ export interface ISetting {
   taxPercentage?: number;
   taxIncluded?: boolean;
   adminEmail?: string;
+  timezone?: string;
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -208,6 +209,10 @@ const SettingSchema = new Schema<ISetting>(
     adminEmail: {
       type: String,
       default: "",
+    },
+    timezone: {
+      type: String,
+      default: "Europe/Zurich",
     },
   },
   {

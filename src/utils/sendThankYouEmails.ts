@@ -1,13 +1,27 @@
 import { connectDB } from "@/lib/database";
 import { Booking } from "@/models/booking";
+import { Setting } from "@/models/settings";
 import { sendOrderThankYouEmail } from "@/controllers/email/bookings";
 
 export async function sendThankYouEmails() {
   try {
     await connectDB();
 
-    // Calculate the cutoff time: 3 hours ago
-    const threeHoursAgo = new Date();
+    // Fetch settings to get configured timezone
+    const settings = await Setting.findOne();
+    
+    // Calculate the cutoff time in target timezone
+    // Use stored timezone or fallback to ENV or Zurich
+    const timeZone = settings?.timezone || process.env.NEXT_PUBLIC_APP_TIMEZONE || 'Europe/Zurich';
+    
+    // Get current time in the target timezone
+    // We format it to a string, then parse it back to a "floating" Date object
+    // This floating object represents the time in Zurich, but acts as if it's local/UTC 
+    // for consistent comparison with the booking date strings.
+    const nowInTargetTzStr = new Date().toLocaleString('en-US', { timeZone, hour12: false });
+    const nowInTargetTz = new Date(nowInTargetTzStr);
+    
+    const threeHoursAgo = new Date(nowInTargetTz);
     threeHoursAgo.setHours(threeHoursAgo.getHours() - 3);
 
     // Find completed bookings that:
@@ -20,9 +34,13 @@ export async function sendThankYouEmails() {
       email: { $exists: true, $ne: "" },
     });
 
-    // Filter in JS to check if the booking date/time is more than 3 hours ago
+    // Filter to check if the booking date/time is more than 3 hours ago
     const completedBookings = potentialBookings.filter((booking) => {
+      // Create date object from booking strings (Floating time)
+      // "2023-10-27" + "T" + "18:00" -> 2023-10-27T18:00:00 (Floating)
       const bookingDateTime = new Date(`${booking.date}T${booking.time}:00`);
+      
+      // Compare Floating Booking Time vs Floating Current Time (both in Zurich context)
       return bookingDateTime < threeHoursAgo;
     });
 

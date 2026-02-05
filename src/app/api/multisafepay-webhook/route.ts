@@ -3,53 +3,122 @@ import { connectDB } from '@/lib/database';
 import { Booking, PendingBooking } from '@/models/booking';
 import { Vehicle } from '@/models/vehicle';
 import { Setting } from '@/models/settings';
-import { sendOrderConfirmationEmail } from '@/controllers/email/bookings';
-import { sendOrderNotificationEmail } from '@/controllers/email/bookings';
+import { sendOrderConfirmationEmail, sendOrderNotificationEmail } from '@/controllers/email/bookings';
 import { getCurrencySymbol } from '@/lib/utils';
 
-export async function POST(request: NextRequest) {
-  try {
-    const body = await request.json();
-    
-    // MultiSafepay sends transaction ID and status
-    const { transactionid, order_id, status } = body;
+export async function GET(request: NextRequest) {
+  return handleWebhook(request);
+}
 
-    if (!transactionid || !order_id) {
-      return NextResponse.json(
-        { success: false, message: 'Missing transaction ID or order ID' },
-        { status: 400 }
-      );
+export async function POST(request: NextRequest) {
+  return handleWebhook(request);
+}
+
+async function handleWebhook(request: NextRequest) {
+  try {
+    let transactionid: string | null = null;
+    let order_id: string | null = null;
+
+    // 1. Try to parse from Query Parameters (Standard MultiSafepay GET webhook)
+    const searchParams = request.nextUrl.searchParams;
+    if (searchParams.has('transactionid')) {
+      transactionid = searchParams.get('transactionid');
     }
+
+    // 2. Fallback: Try to parse from Body (if POST)
+    if (!transactionid && request.method === 'POST') {
+      try {
+        const body = await request.json();
+        transactionid = body.transactionid;
+        order_id = body.order_id;
+      } catch (e) {
+        // Ignore JSON parse error, might be empty body
+      }
+    }
+
+    if (!transactionid && !order_id) {
+        console.error('MultiSafepay webhook: No transaction ID found');
+        return NextResponse.json(
+            { success: false, message: 'Missing transaction ID or order ID' },
+            { status: 400 }
+        );
+    }
+    
+    // Use transactionid as the lookup ID (which corresponds to our orderId)
+    const lookupId = transactionid || order_id;
 
     await connectDB();
 
-    console.log('MultiSafepay webhook received:', { order_id, transactionid, status });
+    console.log(`MultiSafepay webhook received for: ${lookupId}`);
+
+    // Fetch Settings to get API Key
+    const settings = await Setting.findOne();
+    const multisafepayApiKey = settings?.multisafepayApiKey;
+    const multisafepayTestMode = settings?.multisafepayTestMode ?? true;
+
+    if (!multisafepayApiKey) {
+        console.error('MultiSafepay API Key not configured');
+        return NextResponse.json(
+            { success: false, message: 'Server misconfiguration' }, 
+            { status: 500 }
+        );
+    }
+
+    // Verify status with MultiSafepay API
+    const apiUrl = multisafepayTestMode
+      ? `https://testapi.multisafepay.com/v1/json/orders/${lookupId}`
+      : `https://api.multisafepay.com/v1/json/orders/${lookupId}`;
+    
+    const mspResponse = await fetch(apiUrl, {
+        method: 'GET',
+        headers: {
+            'api_key': multisafepayApiKey,
+            'Content-Type': 'application/json'
+        }
+    });
+
+    if (!mspResponse.ok) {
+        console.error(`MultiSafepay API check failed: ${mspResponse.status}`);
+        return NextResponse.json({ success: false, message: 'Could not verify order status' }, { status: 502 });
+    }
+
+    const mspData = await mspResponse.json();
+    
+    if (!mspData.success) {
+        console.error('MultiSafepay API returned error:', mspData);
+        return NextResponse.json({ success: false, message: 'MultiSafepay API error' }, { status: 400 });
+    }
+
+    const actualStatus = mspData.data.status;
+    const actualOrderId = mspData.data.order_id;
+
+    console.log(`Order ${lookupId} verified status: ${actualStatus}`);
 
     // Check if payment is completed
-    if (status !== 'completed') {
-      console.log('Payment not completed, status:', status);
+    if (actualStatus !== 'completed') {
+      console.log('Payment not completed, status:', actualStatus);
       return NextResponse.json({ success: true, message: 'Payment not completed yet' });
     }
 
     // Check if booking already exists (avoid duplicate processing)
     const existingBooking = await Booking.findOne({
       $or: [
-        { multisafepayOrderId: order_id },
+        { multisafepayOrderId: actualOrderId },
         { multisafepayTransactionId: transactionid },
-        { tripId: order_id }
+        { tripId: actualOrderId }
       ]
     });
 
     if (existingBooking) {
-      console.log('Booking already exists:', existingBooking.tripId);
+      console.log('Booking already processed:', existingBooking.tripId);
       return NextResponse.json({ success: true, message: 'Booking already processed' });
     }
 
     // Find pending booking
-    const pendingBooking = await PendingBooking.findOne({ orderId: order_id });
+    const pendingBooking = await PendingBooking.findOne({ orderId: actualOrderId });
 
     if (!pendingBooking) {
-      console.error('Pending booking not found for order:', order_id);
+      console.error('Pending booking not found for order:', actualOrderId);
       return NextResponse.json(
         { success: false, message: 'Pending booking not found' },
         { status: 404 }
@@ -68,13 +137,12 @@ export async function POST(request: NextRequest) {
     }
 
     // Get currency
-    const setting = await Setting.findOne();
-    const currency = setting?.stripeCurrency?.toUpperCase() || 'EUR';
+    const currency = settings?.stripeCurrency?.toUpperCase() || 'EUR';
     const currencySymbol = getCurrencySymbol(currency);
 
     // Create actual booking
     const bookingData = {
-      tripId: order_id,
+      tripId: actualOrderId,
       pickup: pendingBooking.bookingData.pickup,
       dropoff: pendingBooking.bookingData.dropoff || '',
       stops: pendingBooking.bookingData.stops || [],
@@ -100,7 +168,7 @@ export async function POST(request: NextRequest) {
       phone: pendingBooking.bookingData.phone,
       paymentMethod: 'multisafepay',
       paymentStatus: 'completed',
-      multisafepayOrderId: order_id,
+      multisafepayOrderId: actualOrderId,
       multisafepayTransactionId: transactionid,
       status: 'upcoming',
       totalAmount: pendingBooking.bookingData.totalAmount,
@@ -109,16 +177,16 @@ export async function POST(request: NextRequest) {
     // Save booking to database
     await Booking.create(bookingData);
 
-    console.log('✅ Booking created successfully:', order_id);
+    console.log('✅ Booking created successfully:', actualOrderId);
 
     // Get base URL for invoice link
-    const baseUrl = request.headers.get('origin') || 
-                    request.headers.get('referer')?.split('/').slice(0, 3).join('/') || 
-                    process.env.NEXT_PUBLIC_BASE_URL;
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 
+                    request.headers.get('origin') || 
+                    'https://yourdomain.com';
 
     // Prepare email data
     const emailData = {
-      tripId: order_id,
+      tripId: actualOrderId,
       pickup: pendingBooking.bookingData.pickup,
       dropoff: pendingBooking.bookingData.dropoff || 'N/A (Hourly booking)',
       stops: pendingBooking.bookingData.stops || [],
@@ -161,9 +229,10 @@ export async function POST(request: NextRequest) {
     }
 
     // Delete pending booking
-    await PendingBooking.deleteOne({ orderId: order_id });
+    await PendingBooking.deleteOne({ orderId: actualOrderId });
 
-    return NextResponse.json({ success: true, message: 'Booking created and emails sent' });
+    return new NextResponse('OK', { status: 200 });
+    
   } catch (e: unknown) {
     console.error('Error processing MultiSafepay webhook:', e);
     const message = e instanceof Error ? e.message : 'Webhook processing failed';

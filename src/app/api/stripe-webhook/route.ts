@@ -166,8 +166,20 @@ async function handlePaymentIntentSucceeded(
     return;
   }
   
-  // Get currency
-  const currency = settings?.stripeCurrency?.toUpperCase() || 'EUR';
+  // Verify Payment Amount Integrity
+  const paidAmountSafe = paymentIntent.amount_received / 100; // Convert cents to main unit
+  const expectedAmount = Number(pendingBooking.bookingData.totalAmount);
+  
+  // Allow for small floating point differences
+  if (Math.abs(paidAmountSafe - expectedAmount) > 0.05) {
+      console.error(`⚠️ Payment Amount Mismatch! Paid: ${paidAmountSafe}, Expected: ${expectedAmount}. Order: ${orderId}`);
+      // Security decision: We record the ACTUAL paid amount to the booking to prevent fraud.
+      // Alternatively you could fail the booking, but it's better to capture the record and flag it.
+      pendingBooking.bookingData.totalAmount = paidAmountSafe;
+  }
+
+  // Get currency from the payment object itself for accuracy
+  const currency = paymentIntent.currency ? paymentIntent.currency.toUpperCase() : (settings?.stripeCurrency?.toUpperCase() || 'EUR');
   const currencySymbol = getCurrencySymbol(currency);
   
   // Create actual booking

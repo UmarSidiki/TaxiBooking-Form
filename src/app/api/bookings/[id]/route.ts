@@ -65,7 +65,7 @@ async function processStripeRefund(
       amount: amountToRefundCents,
       reason: 'requested_by_customer',
       metadata: {
-        booking_id: booking.id,
+        booking_id: booking._id?.toString() ?? '',
         trip_id: booking.tripId,
         refund_percentage: refundPercentage.toString(),
       },

@@ -1054,7 +1054,7 @@ export default function RidesPage() {
                               size="sm"
                               className="flex items-center gap-2 bg-primary hover:bg-primary/90"
                             >
-                              {assigningId === booking._id ? (
+                              {assigningId === booking._id?.toString() ? (
                                 <>
                                   <Loader2 className="w-4 h-4 animate-spin" />
                                   {booking.assignedDriver
@@ -1186,7 +1186,7 @@ export default function RidesPage() {
                               size="sm"
                               className="flex items-center gap-2 bg-primary hover:bg-primary/90"
                             >
-                              {assigningId === booking._id ? (
+                              {assigningId === booking._id?.toString() ? (
                                 <>
                                   <Loader2 className="w-4 h-4 animate-spin" />
                                   {booking.assignedPartner

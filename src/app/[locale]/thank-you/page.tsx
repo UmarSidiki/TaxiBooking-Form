@@ -13,7 +13,7 @@ export default function ThankYouPage() {
   const t = useTranslations();
   const searchParams = useSearchParams();
   const router = useRouter();
-  const [countdown, setCountdown] = useState(5);
+  const [countdown, setCountdown] = useState(60);
   const [redirectUrl, setRedirectUrl] = useState<string>('/');
   const { settings } = useTheme();
   const { currencySymbol } = useCurrency();

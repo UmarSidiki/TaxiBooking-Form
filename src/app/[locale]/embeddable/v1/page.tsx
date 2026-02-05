@@ -196,7 +196,7 @@ function BookingFormUI() {
   return (
     <>
       <div
-        className={`font-sans transition-all duration-700 ease-out ${
+        className={`font-sans transition-all duration-75 ease-out ${
           isMounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5"
         }`}
       >

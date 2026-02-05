@@ -1,12 +1,21 @@
 import { NextResponse } from "next/server";
 import { connectDB } from "@/lib/database";
 import { Booking } from "@/models/booking";
+import { Setting } from "@/models/settings";
 
 export async function GET() {
   try {
     await connectDB();
 
-    // Get current date and last month date
+    // Get Timezone
+    const setting = await Setting.findOne();
+    const timezone = setting?.timezone || "Europe/Zurich";
+
+    // Get current date relative to Timezone
+    const nowInTzStr = new Date().toLocaleString('en-US', { timeZone: timezone, hour12: false });
+    const nowInTz = new Date(nowInTzStr);
+
+    // Get current date and last month date (approximate for stats)
     const now = new Date();
     const lastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
     const currentMonth = new Date(now.getFullYear(), now.getMonth(), 1);
@@ -28,13 +37,21 @@ export async function GET() {
 
     // Calculate stats
     const totalBookings = allBookings.length;
+    
     const completedBookings = allBookings.filter((b) => {
-      return b.status === "completed" || ((b.paymentStatus === "completed" || b.paymentMethod === "cash") && new Date(b.date) < now && b.status !== "canceled");
+      const bookingDateTime = new Date(`${b.date}T${b.time}:00`);
+      const isPassed = bookingDateTime < nowInTz;
+
+      return b.status === "completed" || ((b.paymentStatus === "completed" || b.paymentMethod === "cash") && isPassed && b.status !== "canceled");
     }).length;
+
     const upcomingBookings = allBookings.filter((b) => {
-      const bookingDate = new Date(b.date);
-      return bookingDate > now && b.status !== "canceled";
+      const bookingDateTime = new Date(`${b.date}T${b.time}:00`);
+      const isPassed = bookingDateTime < nowInTz;
+
+      return !isPassed && b.status !== "canceled";
     }).length;
+    
     const canceledBookings = allBookings.filter(
       (b) => b.status === "canceled"
     ).length;

@@ -1,7 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useTranslations } from "next-intl";
+import { apiGet } from "@/utils/api";
+import { ISetting } from "@/models/settings";
 import {
   Calendar,
   Clock,
@@ -53,10 +55,35 @@ export default function PartnerHistoryPage() {
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [loading, setLoading] = useState(true);
   const [bookingReviews, setBookingReviews] = useState<Record<string, { rating: number; comment: string; createdAt: Date } | null>>({});
+  const [timezone, setTimezone] = useState<string>("Europe/Zurich");
+
+  const fetchSettings = useCallback(async () => {
+    try {
+      const data = await apiGet<{ success: boolean; data: ISetting }>("/api/settings");
+      if (data.success && data.data.timezone) {
+        setTimezone(data.data.timezone);
+      }
+    } catch(e) { console.error(e); }
+  }, []);
+
+  useEffect(() => {
+    fetchSettings();
+  }, [fetchSettings]);
+
+  const isBookingPassed = useCallback((dateStr: string, timeStr: string) => {
+    try {
+      const nowInTzStr = new Date().toLocaleString('en-US', { timeZone: timezone, hour12: false });
+      const nowInTz = new Date(nowInTzStr);
+      const bookingDate = new Date(`${dateStr}T${timeStr}:00`);
+      return bookingDate < nowInTz;
+    } catch (e) {
+      return new Date(`${dateStr}T${timeStr}:00`) < new Date();
+    }
+  }, [timezone]);
 
   useEffect(() => {
     fetchRides();
-  }, []);
+  }, [timezone]); // Refetch/Re-Evaluate if timezone changes? Or just fetchRides depends on it? 
 
   const fetchRides = async () => {
     try {
@@ -68,7 +95,7 @@ export default function PartnerHistoryPage() {
         
         // Fetch reviews for completed rides
         const completedBookings = data.data.filter(
-          (b: Booking) => b.status === "canceled" || new Date(b.date) < new Date()
+          (b: Booking) => b.status === "canceled" || isBookingPassed(b.date, b.time)
         );
         
         for (const booking of completedBookings) {
@@ -91,9 +118,8 @@ export default function PartnerHistoryPage() {
   };
 
   const getHistoryBookings = () => {
-    const now = new Date();
     return bookings.filter(
-      (b) => b.status === "canceled" || new Date(b.date) < now
+      (b) => b.status === "canceled" || isBookingPassed(b.date, b.time)
     );
   };
 
@@ -108,10 +134,7 @@ export default function PartnerHistoryPage() {
       );
     }
 
-    const now = new Date();
-    const bookingDate = new Date(booking.date);
-
-    if (bookingDate < now) {
+    if (isBookingPassed(booking.date, booking.time)) {
       return (
         <Badge variant="secondary" className="flex items-center gap-1">
           {t("completed")}

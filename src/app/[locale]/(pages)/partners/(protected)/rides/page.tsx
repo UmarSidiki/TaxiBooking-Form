@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useTranslations } from "next-intl";
 import {
   Calendar,
@@ -40,6 +40,8 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { useCurrency } from "@/contexts/CurrencyContext";
+import { apiGet } from "@/utils/api";
+import { ISetting } from "@/models/settings";
 
 interface Booking {
   _id: string;
@@ -84,10 +86,36 @@ export default function PartnerRidesPage() {
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [loading, setLoading] = useState(true);
   const [detailBooking, setDetailBooking] = useState<Booking | null>(null);
+  const [timezone, setTimezone] = useState<string>("Europe/Zurich");
 
   useEffect(() => {
     fetchRides();
+    fetchSettings();
   }, []);
+
+  const fetchSettings = async () => {
+    try {
+      const data = await apiGet<{ success: boolean; data: ISetting }>(
+        "/api/settings"
+      );
+      if (data.success && data.data.timezone) {
+        setTimezone(data.data.timezone);
+      }
+    } catch (error) {
+      console.error("Error fetching settings:", error);
+    }
+  };
+
+  const isBookingPassed = useCallback((dateStr: string, timeStr: string) => {
+    try {
+      const nowInTzStr = new Date().toLocaleString('en-US', { timeZone: timezone, hour12: false });
+      const nowInTz = new Date(nowInTzStr);
+      const bookingDate = new Date(`${dateStr}T${timeStr}:00`);
+      return bookingDate < nowInTz;
+    } catch (e) {
+      return new Date(`${dateStr}T${timeStr}:00`) < new Date();
+    }
+  }, [timezone]);
 
   const fetchRides = async () => {
     try {
@@ -105,9 +133,8 @@ export default function PartnerRidesPage() {
   };
 
   const getUpcomingBookings = () => {
-    const now = new Date();
     return bookings.filter(
-      (b) => b.status !== "canceled" && new Date(b.date) >= now
+      (b) => b.status !== "canceled" && !isBookingPassed(b.date, b.time)
     );
   };
 
@@ -122,10 +149,7 @@ export default function PartnerRidesPage() {
       );
     }
 
-    const now = new Date();
-    const bookingDate = new Date(booking.date);
-
-    if (bookingDate < now) {
+    if (isBookingPassed(booking.date, booking.time)) {
       return (
         <Badge variant="secondary" className="flex items-center gap-1">
           {t("completed")}
@@ -456,11 +480,11 @@ export default function PartnerRidesPage() {
                 <div className="flex items-center gap-4">
                   <div className={`p-3 rounded-lg ${
                     detailBooking.status === "canceled" ? "bg-destructive/10" : 
-                    new Date(detailBooking.date) < new Date() ? "bg-muted/10" : "bg-primary/10"
+                    isBookingPassed(detailBooking.date, detailBooking.time) ? "bg-muted/10" : "bg-primary/10"
                   }`}>
                     <Car className={`w-6 h-6 ${
                       detailBooking.status === "canceled" ? "text-destructive" : 
-                      new Date(detailBooking.date) < new Date() ? "text-muted-foreground" : "text-primary"
+                      isBookingPassed(detailBooking.date, detailBooking.time) ? "text-muted-foreground" : "text-primary"
                     }`} />
                   </div>
                   <div>

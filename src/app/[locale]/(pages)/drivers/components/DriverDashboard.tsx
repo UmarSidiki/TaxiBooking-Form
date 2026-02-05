@@ -44,6 +44,7 @@ import {
   Receipt,
 } from "lucide-react";
 import type { IBooking } from "@/models/booking";
+import type { ISetting } from "@/models/settings";
 import { apiGet } from "@/utils/api";
 import { DateRangePicker } from "@/components/ui/date-range-picker";
 import { DateRange } from "react-day-picker";
@@ -60,6 +61,7 @@ export default function DriverDashboard() {
   const [searchQuery, setSearchQuery] = useState("");
   const [dateRange, setDateRange] = useState<DateRange | undefined>();
   const [showFilters, setShowFilters] = useState(false);
+  const [timezone, setTimezone] = useState<string>("Europe/Zurich");
 
   const MapLine = ({ start, end }: { start: string; end: string }) => (
     <span className="flex items-center gap-1 truncate">
@@ -89,6 +91,30 @@ export default function DriverDashboard() {
     }
   }, []);
 
+  const fetchSettings = useCallback(async () => {
+    try {
+      const data = await apiGet<{ success: boolean; data: ISetting }>(
+        "/api/settings"
+      );
+      if (data.success && data.data.timezone) {
+        setTimezone(data.data.timezone);
+      }
+    } catch (error) {
+      console.error("Error fetching settings:", error);
+    }
+  }, []);
+
+  const isBookingPassed = useCallback((dateStr: string, timeStr: string) => {
+    try {
+      const nowInTzStr = new Date().toLocaleString('en-US', { timeZone: timezone, hour12: false });
+      const nowInTz = new Date(nowInTzStr);
+      const bookingDate = new Date(`${dateStr}T${timeStr}:00`);
+      return bookingDate < nowInTz;
+    } catch (e) {
+      return new Date(`${dateStr}T${timeStr}:00`) < new Date();
+    }
+  }, [timezone]);
+
   const filterBookings = useCallback(() => {
     let filtered: IBooking[] = [];
 
@@ -97,15 +123,13 @@ export default function DriverDashboard() {
       case "upcoming":
         filtered = bookings.filter((b) => {
           if (b.status === "canceled") return false;
-          const bookingDate = new Date(b.date);
-          return bookingDate >= new Date();
+          return !isBookingPassed(b.date, b.time);
         });
         break;
       case "passed":
         filtered = bookings.filter((b) => {
           if (b.status === "canceled") return false;
-          const bookingDate = new Date(b.date);
-          return bookingDate < new Date();
+          return isBookingPassed(b.date, b.time);
         });
         break;
       case "canceled":
@@ -146,11 +170,12 @@ export default function DriverDashboard() {
     }
 
     setFilteredBookings(filtered);
-  }, [activeTab, bookings, dateRange, searchQuery]);
+  }, [activeTab, bookings, dateRange, searchQuery, isBookingPassed]);
 
   useEffect(() => {
     fetchAssignedRides();
-  }, [fetchAssignedRides]);
+    fetchSettings();
+  }, [fetchAssignedRides, fetchSettings]);
 
   useEffect(() => {
     filterBookings();
@@ -169,10 +194,7 @@ export default function DriverDashboard() {
       );
     }
 
-    const bookingDate = new Date(booking.date);
-    const now = new Date();
-
-    if (bookingDate < now) {
+    if (isBookingPassed(booking.date, booking.time)) {
       return (
         <Badge
           className={`${badgeClasses} bg-muted hover:bg-muted/90 text-muted-foreground`}

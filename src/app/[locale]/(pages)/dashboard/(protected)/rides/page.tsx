@@ -88,6 +88,8 @@ export default function RidesPage() {
   const [sortBy, setSortBy] = useState("date-asc");
   const [enableDrivers, setEnableDrivers] = useState(false);
   const [enablePartners, setEnablePartners] = useState(false);
+  const [timezone, setTimezone] = useState<string>("Europe/Zurich");
+
   const [bookingReviews, setBookingReviews] = useState<
     Record<string, { rating: number; comment: string; createdAt: Date } | null>
   >({});
@@ -154,11 +156,26 @@ export default function RidesPage() {
       if (data.success) {
         setEnableDrivers(data.data.enableDrivers ?? false);
         setEnablePartners(data.data.enablePartners ?? false);
+        if (data.data.timezone) {
+          setTimezone(data.data.timezone);
+        }
       }
     } catch (error) {
       console.error("Error fetching settings:", error);
     }
   }, []);
+
+  // Custom helper to compare nominal time with "Now" in target timezone
+  const isBookingPassed = useCallback((dateStr: string, timeStr: string) => {
+    try {
+      const nowInTzStr = new Date().toLocaleString('en-US', { timeZone: timezone, hour12: false });
+      const nowInTz = new Date(nowInTzStr);
+      const bookingDate = new Date(`${dateStr}T${timeStr}:00`);
+      return bookingDate < nowInTz;
+    } catch (e) {
+      return new Date(`${dateStr}T${timeStr}:00`) < new Date();
+    }
+  }, [timezone]);
 
   const filterBookings = useCallback(() => {
     let filtered: IBooking[] = [];
@@ -177,8 +194,7 @@ export default function RidesPage() {
           // Filter by completed status if set in DB, OR check date
           if (b.status === "completed") return false; 
           
-          const bookingDate = getBookingDateTime(b);
-          return bookingDate >= new Date();
+          return !isBookingPassed(b.date, b.time);
         });
         break;
       case "passed":
@@ -187,8 +203,7 @@ export default function RidesPage() {
           // If explicitly completed in DB, it's passed
           if (b.status === "completed") return true;
 
-          const bookingDate = getBookingDateTime(b);
-          return bookingDate < new Date();
+          return isBookingPassed(b.date, b.time);
         });
         break;
       case "canceled":
@@ -263,7 +278,7 @@ export default function RidesPage() {
     }
 
     setFilteredBookings(filtered);
-  }, [bookings, activeTab, searchQuery, paymentFilter, dateRange, sortBy]);
+  }, [bookings, activeTab, searchQuery, paymentFilter, dateRange, sortBy, isBookingPassed]);
 
   useEffect(() => {
     fetchBookings();
@@ -571,7 +586,7 @@ export default function RidesPage() {
 
     const getStatusColor = () => {
       if (booking.status === "canceled") return "destructive";
-      if (new Date(booking.date) < new Date()) return "muted";
+      if (isBookingPassed(booking.date, booking.time)) return "muted";
       return "primary";
     };
 
@@ -992,7 +1007,7 @@ export default function RidesPage() {
             {/* Driver Assignment Section - Only show for upcoming rides and when driver feature is enabled */}
             {enableDrivers &&
               booking.status !== "canceled" &&
-              new Date(booking.date) >= new Date() && (
+              !isBookingPassed(booking.date, booking.time) && (
                 <div className="border-t pt-3">
                   {booking.assignedDriver && !isEditMode ? (
                     <div className="bg-primary/10 border border-primary/20 rounded-lg p-3">
@@ -1121,7 +1136,7 @@ export default function RidesPage() {
             {/* Partner Assignment Section - Only show for upcoming rides and when partner feature is enabled */}
             {enablePartners &&
               booking.status !== "canceled" &&
-              new Date(booking.date) >= new Date() && (
+              !isBookingPassed(booking.date, booking.time) && (
                 <div className="border-t pt-3">
                   {booking.assignedPartner && !isPartnerEditMode ? (
                     <div className="bg-primary/10 border border-primary/20 rounded-lg p-3">
@@ -1267,7 +1282,7 @@ export default function RidesPage() {
                   if (
                     booking._id &&
                     (booking.status === "canceled" ||
-                      new Date(booking.date) < new Date())
+                      isBookingPassed(booking.date, booking.time))
                   ) {
                     try {
                       const response = await fetch(
@@ -1292,7 +1307,7 @@ export default function RidesPage() {
               </Button>
 
               {booking.status !== "canceled" &&
-                new Date(booking.date) >= new Date() && (
+                !isBookingPassed(booking.date, booking.time) && (
                   <Button
                     onClick={() => handleCancelClick(booking)}
                     variant="destructive"
@@ -1646,7 +1661,7 @@ export default function RidesPage() {
                     className={`p-3 rounded-lg ${
                       detailBooking.status === "canceled"
                         ? "bg-destructive/10"
-                        : new Date(detailBooking.date) < new Date()
+                        : isBookingPassed(detailBooking.date, detailBooking.time)
                         ? "bg-muted/10"
                         : "bg-primary/10"
                     }`}
@@ -1655,7 +1670,7 @@ export default function RidesPage() {
                       className={`w-6 h-6 ${
                         detailBooking.status === "canceled"
                           ? "text-destructive"
-                          : new Date(detailBooking.date) < new Date()
+                          : isBookingPassed(detailBooking.date, detailBooking.time)
                           ? "text-muted-foreground"
                           : "text-primary"
                       }`}
@@ -2061,7 +2076,7 @@ export default function RidesPage() {
               </Card>
 
               {/* Assignment Information - Show for completed rides */}
-              {((new Date(detailBooking.date) < new Date() ||
+              {((isBookingPassed(detailBooking.date, detailBooking.time) ||
                 detailBooking.status === "canceled") &&
               (detailBooking.assignedDriver ||
                 detailBooking.assignedPartner)) ? (

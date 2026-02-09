@@ -553,7 +553,11 @@
         "my-rides": "Mijn Ritten",
         "upcoming-rides": "Aankomende Ritten",
         "preferences": "Voorkeuren",
-        "billing": "Facturering"
+        "billing": "Facturering",
+        "account_settings": "Rekening",
+        "fleet_management": "Vlootbeheer",
+        "operations": "Operaties",
+        "overview": "Overzicht"
       },
       "Billing": {
         "title": "Facturering & Bankgegevens",
@@ -1003,7 +1007,16 @@
     "settings": "Instellingen",
     "management_portal": "Beheerportaal",
     "navigation": "Navigatie",
-    "preferences": "Voorkeuren"
+    "preferences": "Voorkeuren",
+    "business": "Bedrijf",
+    "driver_portal": "Bestuurdersportaal",
+    "fleet_management": "Vlootbeheer",
+    "my_assignments": "Mijn opdrachten",
+    "operations": "Operaties",
+    "overview": "Overzicht",
+    "system": "Systeem",
+    "welcome": "Welkom",
+    "account": "Rekening"
   },
   "ThankYouPage": {
     "no-payment-information-found": "Geen betalingsinformatie gevonden.",

@@ -248,9 +248,24 @@ const FleetPage = () => {
             {t("Dashboard.Fleet.manage-your-vehicle-fleet-and-pricing")}{" "}
           </p>
         </div>
-        <Dialog open={showForm} onOpenChange={setShowForm}>
+        <Dialog open={showForm} onOpenChange={(open) => {
+          if (open) {
+            // Reset form when opening via Add button
+            if (!editingId) {
+              resetForm();
+            }
+          }
+          setShowForm(open);
+        }}>
           <DialogTrigger asChild>
-            <Button className="bg-primary hover:bg-primary/90 text-primary-foreground w-full sm:w-auto">
+            <Button 
+              onClick={() => {
+                // Ensure form is reset when Add button is clicked
+                resetForm();
+                setShowForm(true);
+              }}
+              className="bg-primary hover:bg-primary/90 text-primary-foreground w-full sm:w-auto"
+            >
               <Plus className="h-4 w-4 sm:mr-2" />
               <span className="hidden sm:inline">
                 {t("Dashboard.Fleet.add-vehicle")}

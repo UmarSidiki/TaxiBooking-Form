@@ -3,10 +3,10 @@ import { redirect } from "next/navigation";
 import { getServerSession } from "next-auth";
 import { connectDB } from "@/lib/database";
 import { Setting } from "@/models/settings";
-
-import { authOptions } from "@/lib/auth/options";
-import LogoutButton from "@/components/auth/LogoutButton";
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { DriverSidebar } from "@/components/DriverSidebar";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import { authOptions } from "@/lib/auth/options";
 import { getTranslations } from "next-intl/server";
 
 type DriverLayoutProps = {
@@ -16,69 +16,69 @@ type DriverLayoutProps = {
 
 export default async function DriverProtectedLayout({
   children,
+  params,
 }: DriverLayoutProps) {
   const session = await getServerSession(authOptions);
   const t = await getTranslations();
+  const { locale } = await params;
 
   if (!session?.user) {
-    redirect(`/drivers/login`);
+    redirect(`/${locale}/drivers/login`);
   }
 
   // Check if user is a driver
   if (session.user.role !== "driver") {
     // If admin, redirect to admin dashboard
     if (session.user.role === "admin") {
-      redirect(`/dashboard`);
+      redirect(`/${locale}/dashboard`);
     }
     // Otherwise, redirect to home
-    redirect(`/`);
+    redirect(`/${locale}`);
   }
 
   // Check if drivers module is enabled
   await connectDB();
   const settings = await Setting.findOne();
   if (settings && settings.enableDrivers === false) {
-    redirect(`/`);
+    redirect(`/${locale}`);
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <header className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-4">
-            <div className="flex items-center">
-              <h1 className="text-xl sm:text-2xl font-bold text-gray-900">
-                {t("Drivers.driver-dashboard")}
-              </h1>
-            </div>
-            <div className="flex items-center space-x-2 sm:space-x-4">
-              {/* Mobile: Show only essential items */}
-              <div className="hidden sm:block text-sm text-gray-500">
-                Welcome, {session.user.name}
+    <SidebarProvider>
+      <div className="flex min-h-screen w-full bg-background">
+        <DriverSidebar locale={locale} />
+        <div className="flex flex-1 flex-col">
+          <header className="sticky top-0 z-10 flex h-16 items-center gap-4 border-b bg-background px-6">
+            <SidebarTrigger />
+            <div className="flex flex-1 items-center justify-between">
+              <div>
+                <h1 className="text-lg font-semibold text-foreground">
+                  {t("Drivers.driver-dashboard")}
+                </h1>
+                <p className="text-sm text-muted-foreground">
+                  {t("Sidebar.welcome")}, {session.user.name}
+                </p>
               </div>
-              <div className="hidden md:block text-sm text-gray-500">
-                {new Date().toLocaleDateString("en-US", {
-                  weekday: "long",
-                  year: "numeric",
-                  month: "long",
-                  day: "numeric",
-                })}
+              <div className="flex items-center gap-4">
+                <div className="text-sm text-muted-foreground hidden md:block">
+                  {new Date().toLocaleDateString("en-US", {
+                    weekday: "long",
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                  })}
+                </div>
+                <LanguageSwitcher />
               </div>
-              <LanguageSwitcher />
-              <LogoutButton callbackUrl={`/drivers/login`} />
             </div>
-          </div>
-          {/* Mobile welcome message */}
-          <div className="sm:hidden pb-2">
-            <div className="text-sm text-gray-500">
-              Welcome, {session.user.name}
+          </header>
+          <main className="flex-1 overflow-y-auto p-6">
+            <div className="mx-auto max-w-7xl">
+              {children}
             </div>
-          </div>
+          </main>
         </div>
-      </header>
-      <main className="max-w-7xl mx-auto py-4 sm:py-6 px-4 sm:px-6 lg:px-8">
-        {children}
-      </main>
-    </div>
+      </div>
+    </SidebarProvider>
   );
 }

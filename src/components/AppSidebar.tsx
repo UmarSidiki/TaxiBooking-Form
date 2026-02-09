@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { Calendar, Car, Home, Settings, Users } from "lucide-react";
+import { usePathname } from "next/navigation";
+import { Calendar, Car, Home, Settings, Users, LayoutDashboard, Truck, UsersRound } from "lucide-react";
 import { useState, useEffect } from "react";
 
 import {
@@ -25,6 +26,7 @@ import type { ISetting } from "@/models/settings";
 
 export function AppSidebar({ locale }: { locale: string }) {
   const t = useTranslations();
+  const pathname = usePathname();
   const [settings, setSettings] = useState<Partial<ISetting>>({
     enablePartners: false,
     enableDrivers: false,
@@ -61,24 +63,26 @@ export function AppSidebar({ locale }: { locale: string }) {
     };
   }, []);
 
-  const allItems = [
+  // Operations - Core business functions
+  const operationsItems = [
     {
       title: t("Sidebar.dashboard"),
       href: (locale: string) => `/${locale}/dashboard/home`,
-      icon: Home,
-      enabled: true,
+      icon: LayoutDashboard,
     },
     {
       title: t("Sidebar.rides"),
       href: (locale: string) => `/${locale}/dashboard/rides`,
       icon: Calendar,
-      enabled: true,
     },
+  ];
+
+  // Fleet Management
+  const fleetItems = [
     {
       title: t("Sidebar.fleet"),
       href: (locale: string) => `/${locale}/dashboard/fleet`,
       icon: Car,
-      enabled: true,
     },
     {
       title: "Drivers",
@@ -86,21 +90,26 @@ export function AppSidebar({ locale }: { locale: string }) {
       icon: Users,
       enabled: settings.enableDrivers ?? false,
     },
+  ].filter((item) => item.enabled !== false);
+
+  // Business
+  const businessItems = [
     {
       title: "Partners",
       href: (locale: string) => `/${locale}/dashboard/partners`,
-      icon: Users,
+      icon: UsersRound,
       enabled: settings.enablePartners ?? false,
     },
+  ].filter((item) => item.enabled !== false);
+
+  // System
+  const systemItems = [
     {
       title: t("Sidebar.settings"),
       href: (locale: string) => `/${locale}/dashboard/settings`,
       icon: Settings,
-      enabled: true,
     },
   ];
-
-  const items = allItems.filter((item) => item.enabled);
 
   return (
     <Sidebar className="border-r-2 border-border/50">
@@ -130,24 +139,26 @@ export function AppSidebar({ locale }: { locale: string }) {
         </div>
       </SidebarHeader>
 
-      <SidebarContent className="px-3 py-4">
+      <SidebarContent className="px-3 py-3">
+        {/* Operations Section */}
         <SidebarGroup>
-          <SidebarGroupLabel className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">
-            {t("Sidebar.navigation")}
+          <SidebarGroupLabel className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
+            {t("Sidebar.operations")}
           </SidebarGroupLabel>
           <SidebarGroupContent>
-            <SidebarMenu className="space-y-1">
-              {items.map((item) => (
+            <SidebarMenu className="space-y-0.5">
+              {operationsItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton
                     asChild
-                    className="h-11 px-3 rounded-lg hover:bg-primary/10 hover:text-primary transition-all duration-200 group"
+                    isActive={pathname === item.href(locale)}
+                    className="h-10 px-3 rounded-lg transition-all duration-200 [&:hover_svg]:text-primary [&[data-active=true]_svg]:text-primary"
                   >
                     <Link
                       href={item.href(locale)}
                       className="flex items-center gap-3"
                     >
-                      <item.icon className="h-5 w-5 text-muted-foreground group-hover:text-primary transition-colors" />
+                      <item.icon className="h-5 w-5 text-muted-foreground transition-colors" />
                       <span className="font-medium">{item.title}</span>
                     </Link>
                   </SidebarMenuButton>
@@ -157,16 +168,97 @@ export function AppSidebar({ locale }: { locale: string }) {
           </SidebarGroupContent>
         </SidebarGroup>
 
-        <Separator className="my-6" />
+        <Separator className="my-1" />
 
+        {/* Fleet Management Section */}
         <SidebarGroup>
-          <SidebarGroupLabel className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">
-            {t('Sidebar.preferences')}
+          <SidebarGroupLabel className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
+            {t("Sidebar.fleet_management")}
           </SidebarGroupLabel>
           <SidebarGroupContent>
-            <div className="px-3">
-              <LanguageSwitcher />
-            </div>
+            <SidebarMenu className="space-y-0.5">
+              {fleetItems.map((item) => (
+                <SidebarMenuItem key={item.title}>
+                  <SidebarMenuButton
+                    asChild
+                    isActive={pathname === item.href(locale)}
+                    className="h-10 px-3 rounded-lg transition-all duration-200 [&:hover_svg]:text-primary [&[data-active=true]_svg]:text-primary"
+                  >
+                    <Link
+                      href={item.href(locale)}
+                      className="flex items-center gap-3"
+                    >
+                      <item.icon className="h-5 w-5 text-muted-foreground transition-colors" />
+                      <span className="font-medium">{item.title}</span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        {businessItems.length > 0 && (
+          <>
+            <Separator className="my-1" />
+
+            {/* Business Section */}
+            <SidebarGroup>
+              <SidebarGroupLabel className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
+                {t("Sidebar.business")}
+              </SidebarGroupLabel>
+              <SidebarGroupContent>
+                <SidebarMenu className="space-y-0.5">
+                  {businessItems.map((item) => (
+                    <SidebarMenuItem key={item.title}>
+                      <SidebarMenuButton
+                        asChild
+                        isActive={pathname === item.href(locale)}
+                        className="h-11 px-3 rounded-lg transition-all duration-200 [&:hover_svg]:text-primary [&[data-active=true]_svg]:text-primary"
+                      >
+                        <Link
+                          href={item.href(locale)}
+                          className="flex items-center gap-3"
+                        >
+                          <item.icon className="h-5 w-5 text-muted-foreground transition-colors" />
+                          <span className="font-medium">{item.title}</span>
+                        </Link>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  ))}
+                </SidebarMenu>
+              </SidebarGroupContent>
+            </SidebarGroup>
+          </>
+        )}
+
+        <Separator className="my-1" />
+
+        {/* System Section */}
+        <SidebarGroup>
+          <SidebarGroupLabel className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
+            {t("Sidebar.system")}
+          </SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu className="space-y-0.5">
+              {systemItems.map((item) => (
+                <SidebarMenuItem key={item.title}>
+                  <SidebarMenuButton
+                    asChild
+                    isActive={pathname === item.href(locale)}
+                    className="h-10 px-3 rounded-lg transition-all duration-200 [&:hover_svg]:text-primary [&[data-active=true]_svg]:text-primary"
+                  >
+                    <Link
+                      href={item.href(locale)}
+                      className="flex items-center gap-3"
+                    >
+                      <item.icon className="h-5 w-5 text-muted-foreground transition-colors" />
+                      <span className="font-medium">{item.title}</span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>

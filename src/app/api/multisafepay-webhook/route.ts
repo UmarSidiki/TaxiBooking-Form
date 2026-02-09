@@ -136,6 +136,17 @@ async function handleWebhook(request: NextRequest) {
       );
     }
 
+    // Verify Payment Amount Integrity from MultiSafepay API response
+    const paidAmountSafe = mspData.data.amount ? mspData.data.amount / 100 : 0; // Convert cents to main unit
+    const expectedAmount = Number(pendingBooking.bookingData.totalAmount);
+    
+    // Allow for small floating point differences
+    if (Math.abs(paidAmountSafe - expectedAmount) > 0.05) {
+        console.error(`⚠️ Payment Amount Mismatch! Paid: ${paidAmountSafe}, Expected: ${expectedAmount}. Order: ${actualOrderId}`);
+        // Security decision: We record the ACTUAL paid amount to the booking to prevent fraud.
+        pendingBooking.bookingData.totalAmount = paidAmountSafe;
+    }
+
     // Get currency
     const currency = settings?.stripeCurrency?.toUpperCase() || 'EUR';
     const currencySymbol = getCurrencySymbol(currency);

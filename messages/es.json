@@ -553,7 +553,11 @@
         "my-rides": "Mis viajes",
         "upcoming-rides": "Próximos viajes",
         "preferences": "Preferencias",
-        "billing": "Facturación"
+        "billing": "Facturación",
+        "account_settings": "Cuenta",
+        "fleet_management": "Gestión de flotas",
+        "operations": "Operaciones",
+        "overview": "Descripción general"
       },
       "Billing": {
         "title": "Facturación y Datos Bancarios",
@@ -1003,7 +1007,16 @@
     "settings": "Configuración",
     "management_portal": "Portal de gestión",
     "navigation": "Navegación",
-    "preferences": "Preferencias"
+    "preferences": "Preferencias",
+    "account": "Cuenta",
+    "business": "Negocio",
+    "driver_portal": "Portal del conductor",
+    "fleet_management": "Gestión de flotas",
+    "my_assignments": "Mis tareas",
+    "operations": "Operaciones",
+    "overview": "Descripción general",
+    "system": "Sistema",
+    "welcome": "Bienvenido"
   },
   "ThankYouPage": {
     "no-payment-information-found": "No se encontró información de pago.",

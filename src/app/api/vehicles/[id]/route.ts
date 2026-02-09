@@ -1,8 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth/options";
 import { connectDB } from "@/lib/database";
 import {Vehicle, IVehicle } from "@/models/vehicle";
 
-// GET - Fetch a single vehicle by ID
+// GET - Fetch a single vehicle by ID (Public - needed for booking flow)
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -39,12 +41,30 @@ export async function GET(
   }
 }
 
-// PUT - Update a vehicle
+// PUT - Update a vehicle (Admin only)
 export async function PUT(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    // Authentication check
+    const session = await getServerSession(authOptions);
+    if (!session || !session.user) {
+      return NextResponse.json(
+        { success: false, message: "Unauthorized" },
+        { status: 401 }
+      );
+    }
+
+    // Role-based access control
+    const userRole = session.user.role;
+    if (userRole !== "admin" && userRole !== "superadmin") {
+      return NextResponse.json(
+        { success: false, message: "Forbidden: Admin access required" },
+        { status: 403 }
+      );
+    }
+
     await connectDB();
     const { id } = await params;
     const body: Partial<IVehicle> = await request.json();
@@ -90,12 +110,30 @@ export async function PATCH(
   return PUT(request, { params });
 }
 
-// DELETE - Delete a vehicle
+// DELETE - Delete a vehicle (Admin only)
 export async function DELETE(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    // Authentication check
+    const session = await getServerSession(authOptions);
+    if (!session || !session.user) {
+      return NextResponse.json(
+        { success: false, message: "Unauthorized" },
+        { status: 401 }
+      );
+    }
+
+    // Role-based access control
+    const userRole = session.user.role;
+    if (userRole !== "admin" && userRole !== "superadmin") {
+      return NextResponse.json(
+        { success: false, message: "Forbidden: Admin access required" },
+        { status: 403 }
+      );
+    }
+
     await connectDB();
     const { id } = await params;
 

@@ -4,12 +4,13 @@ import { getServerSession } from "next-auth";
 import { connectDB } from "@/lib/database";
 import { Partner } from "@/models/partner";
 import { authOptions } from "@/lib/auth/options";
+import { sanitizeInput } from "@/lib/validation";
 
 const sanitizeString = (value: unknown, limit = 180) => {
   if (typeof value !== "string") {
     return undefined;
   }
-  const trimmed = value.trim();
+  const trimmed = sanitizeInput(value).trim();
   if (!trimmed) {
     return undefined;
   }
@@ -42,7 +43,6 @@ export async function GET() {
       { status: 200 }
     );
   } catch (error) {
-    console.error("Error fetching partner billing details:", error);
     return NextResponse.json(
       { success: false, error: "Failed to load billing details" },
       { status: 500 }
@@ -112,7 +112,6 @@ export async function PATCH(request: NextRequest) {
       { status: 200 }
     );
   } catch (error) {
-    console.error("Error updating partner billing details:", error);
     return NextResponse.json(
       { success: false, error: "Failed to save billing details" },
       { status: 500 }

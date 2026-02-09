@@ -3,6 +3,7 @@ import { connectDB } from "@/lib/database";
 import { User } from "@/models/user";
 import { PasswordReset } from "@/models/user";
 import { sendPasswordResetOTP } from "@/controllers/email/PasswordResetOTP";
+import { isValidEmail } from "@/lib/validation";
 
 // Generate 6-digit OTP
 function generateOTP(): string {
@@ -16,6 +17,14 @@ export async function POST(request: NextRequest) {
     if (!email) {
       return NextResponse.json(
         { error: "Email is required" },
+        { status: 400 }
+      );
+    }
+
+    // Validate email format
+    if (!isValidEmail(email)) {
+      return NextResponse.json(
+        { error: "Invalid email address format" },
         { status: 400 }
       );
     }
@@ -66,7 +75,6 @@ export async function POST(request: NextRequest) {
       { status: 200 }
     );
   } catch (error) {
-    console.error("Error in request-reset:", error);
     return NextResponse.json(
       { error: "An error occurred. Please try again." },
       { status: 500 }

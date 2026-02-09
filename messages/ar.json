@@ -553,7 +553,11 @@
         "my-rides": "رحلاتي",
         "upcoming-rides": "الرحلات القادمة",
         "preferences": "التفضيلات",
-        "billing": "الفوترة"
+        "billing": "الفوترة",
+        "account_settings": "حساب",
+        "fleet_management": "إدارة الأسطول",
+        "operations": "العمليات",
+        "overview": "ملخص"
       },
       "Billing": {
         "title": "الفوترة والبيانات البنكية",
@@ -1003,7 +1007,16 @@
     "settings": "الإعدادات",
     "management_portal": "بوابة الإدارة",
     "navigation": "التنقل",
-    "preferences": "التفضيلات"
+    "preferences": "التفضيلات",
+    "account": "حساب",
+    "business": "عمل",
+    "driver_portal": "بوابة السائق",
+    "fleet_management": "إدارة الأسطول",
+    "my_assignments": "مهامي",
+    "operations": "العمليات",
+    "overview": "ملخص",
+    "system": "نظام",
+    "welcome": "مرحباً"
   },
   "ThankYouPage": {
     "no-payment-information-found": "لم يتم العثور على معلومات الدفع.",

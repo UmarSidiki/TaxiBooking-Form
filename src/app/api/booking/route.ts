@@ -8,6 +8,7 @@ import { Vehicle, type IVehicle } from "@/models/vehicle";
 import { Setting } from "@/models/settings";
 import { getCurrencySymbol } from "@/lib/utils";
 import { notifyEligiblePartners } from "@/lib/partners/notify-eligible-partners";
+import { isValidEmail, isValidPhone, isValidName, sanitizeInput } from "@/lib/validation";
 
 // Helper function to calculate booking total
 async function calculateBookingTotal(
@@ -61,7 +62,6 @@ async function calculateBookingTotal(
           }
         }
       } catch (error) {
-        console.error("Error calculating distance for pricing:", error);
         // Fallback to base price if distance calculation fails
         totalAmount = vehicle.price;
       }
@@ -98,7 +98,6 @@ async function getCurrencyFromSettings() {
     const setting = await Setting.findOne();
     return setting?.stripeCurrency?.toUpperCase() || 'EUR';
   } catch (error) {
-    console.error('Error fetching currency from settings:', error);
     return 'EUR';
   }
 }
@@ -195,6 +194,37 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Validate email format
+    if (!isValidEmail(formData.email)) {
+      return NextResponse.json(
+        { success: false, message: "Invalid email address format" },
+        { status: 400 }
+      );
+    }
+
+    // Validate phone number
+    if (!isValidPhone(formData.phone)) {
+      return NextResponse.json(
+        { success: false, message: "Invalid phone number format" },
+        { status: 400 }
+      );
+    }
+
+    // Validate names
+    if (!isValidName(formData.firstName)) {
+      return NextResponse.json(
+        { success: false, message: "Invalid first name format" },
+        { status: 400 }
+      );
+    }
+
+    if (!isValidName(formData.lastName)) {
+      return NextResponse.json(
+        { success: false, message: "Invalid last name format" },
+        { status: 400 }
+      );
+    }
+
     if (!formData.selectedVehicle) {
       return NextResponse.json(
         { success: false, message: "Please select a vehicle" },
@@ -230,6 +260,10 @@ export async function POST(request: NextRequest) {
     const currency = await getCurrencyFromSettings();
     const currencySymbol = getCurrencySymbol(currency);
 
+    // Sanitize text inputs
+    const sanitizedNotes = sanitizeInput(formData.notes || '');
+    const sanitizedFlightNumber = formData.flightNumber ? sanitizeInput(formData.flightNumber) : undefined;
+
     // Create booking object
     const bookingData = {
       tripId,
@@ -250,8 +284,8 @@ export async function POST(request: NextRequest) {
       },
       childSeats: formData.childSeats,
       babySeats: formData.babySeats,
-      notes: formData.notes,
-      flightNumber: formData.flightNumber,
+      notes: sanitizedNotes,
+      flightNumber: sanitizedFlightNumber,
       firstName: formData.firstName,
       lastName: formData.lastName,
       email: formData.email,
@@ -296,32 +330,21 @@ export async function POST(request: NextRequest) {
           }
         }
       } catch (partnerError) {
-        console.error("❌ Error preparing partner notifications:", partnerError);
+        // Log error silently, don't expose details to user
       }
     }
 
     // Get base URL for invoice link in email
 
-    // Send emails - NOW PROPERLY AWAITED
+    // Send emails
     const emailData = await createEmailData(formData, vehicle, tripId, totalAmount, baseUrl);
 
     try {
-      console.log("📧 Sending confirmation email to:", emailData.email);
-      const confirmationEmailSent = await sendOrderConfirmationEmail(emailData);
-
-      if (!confirmationEmailSent) {
-        console.error("❌ Failed to send confirmation email to:", emailData.email);
-      }
-
-      console.log("📧 Sending notification email to admin");
-      const notificationEmailSent = await sendOrderNotificationEmail(emailData);
-
-      if (!notificationEmailSent) {
-        console.error("❌ Failed to send notification email to admin");
-      }
+      await sendOrderConfirmationEmail(emailData);
+      await sendOrderNotificationEmail(emailData);
     } catch (emailError) {
-      console.error("❌ Error sending booking emails:", emailError);
-      // Continue with the response even if emails fail
+      // Email failures are logged but don't prevent booking success
+      // Consider implementing a retry queue in production
     }
 
     return NextResponse.json({
@@ -331,7 +354,6 @@ export async function POST(request: NextRequest) {
       totalAmount,
     });
   } catch (error) {
-    console.error("Booking error:", error);
     return NextResponse.json(
       {
         success: false,

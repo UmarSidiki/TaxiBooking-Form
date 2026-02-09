@@ -553,7 +553,11 @@
         "my-rides": "Мои поездки",
         "upcoming-rides": "Предстоящие",
         "preferences": "Настройки",
-        "billing": "Платежи"
+        "billing": "Платежи",
+        "account_settings": "Счет",
+        "fleet_management": "Управление автопарком",
+        "operations": "Операции",
+        "overview": "Обзор"
       },
       "Billing": {
         "title": "Платежи и банковские реквизиты",
@@ -1003,7 +1007,16 @@
     "settings": "Настройки",
     "management_portal": "Портал управления",
     "navigation": "Навигация",
-    "preferences": "Предпочтения"
+    "preferences": "Предпочтения",
+    "account": "Счет",
+    "business": "Бизнес",
+    "driver_portal": "Портал для водителей",
+    "fleet_management": "Управление автопарком",
+    "my_assignments": "Мои задания",
+    "operations": "Операции",
+    "overview": "Обзор",
+    "system": "Система",
+    "welcome": "Добро пожаловать"
   },
   "ThankYouPage": {
     "no-payment-information-found": "Платежная информация не найдена.",

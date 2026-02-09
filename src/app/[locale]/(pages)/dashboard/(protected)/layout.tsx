@@ -4,6 +4,7 @@ import { getServerSession } from "next-auth";
 
 import { authOptions } from "@/lib/auth/options";
 import { AppSidebar } from "@/components/AppSidebar";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 
 type DashboardLayoutProps = {
@@ -35,10 +36,11 @@ export default async function DashboardProtectedLayout({
           <header className="bg-white shadow-sm border-b border-gray-200 z-10">
             <div className="flex items-center justify-between px-4 py-3">
               <SidebarTrigger className="text-gray-500 hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded-md p-2" />
-              <div className="flex items-center space-x-4">
+              <div className="flex items-center gap-4">
                 <div className="text-sm text-gray-500">
                   {new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
                 </div>
+                <LanguageSwitcher />
               </div>
             </div>
           </header>

@@ -553,7 +553,11 @@
         "my-rides": "Mes courses",
         "upcoming-rides": "Courses à venir",
         "preferences": "Préférences",
-        "billing": "Facturation"
+        "billing": "Facturation",
+        "account_settings": "Compte",
+        "operations": "Opérations",
+        "overview": "Aperçu",
+        "fleet_management": "Gestion de flotte"
       },
       "Billing": {
         "title": "Facturation et coordonnées bancaires",
@@ -1003,7 +1007,16 @@
     "settings": "Paramètres",
     "management_portal": "Portail de gestion",
     "navigation": "Navigation",
-    "preferences": "Préférences"
+    "preferences": "Préférences",
+    "account": "Compte",
+    "business": "Entreprise",
+    "driver_portal": "Portail des conducteurs",
+    "fleet_management": "Gestion de flotte",
+    "my_assignments": "Mes missions",
+    "operations": "Opérations",
+    "overview": "Aperçu",
+    "system": "Système",
+    "welcome": "Accueillir"
   },
   "ThankYouPage": {
     "no-payment-information-found": "Aucune information de paiement trouvée.",

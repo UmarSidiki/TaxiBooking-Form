@@ -38,7 +38,6 @@ export async function POST(request: NextRequest) {
     const data = await response.json();
 
     if (data.status !== "OK") {
-      console.error(`Google Maps API Error for distance calculation: ${data.status}`, data.error_message);
       return NextResponse.json(
         { 
           success: false, 
@@ -107,7 +106,6 @@ export async function POST(request: NextRequest) {
       },
     });
   } catch (error) {
-    console.error("Distance calculation error:", error);
     return NextResponse.json(
       {
         success: false,

@@ -3,6 +3,7 @@ import { hash } from "bcryptjs";
 import { connectDB } from "@/lib/database";
 import { Partner } from "@/models/partner";
 import { sendAdminPartnerRegistrationEmail } from "@/controllers/email/admin";
+import { isValidEmail, isValidPhone, sanitizeInput } from "@/lib/validation";
 
 export async function POST(request: NextRequest) {
   try {
@@ -12,6 +13,22 @@ export async function POST(request: NextRequest) {
     if (!name || !email || !password) {
       return NextResponse.json(
         { error: "Name, email, and password are required" },
+        { status: 400 }
+      );
+    }
+
+    // Validate email format
+    if (!isValidEmail(email)) {
+      return NextResponse.json(
+        { error: "Invalid email address format" },
+        { status: 400 }
+      );
+    }
+
+    // Validate phone if provided
+    if (phone && !isValidPhone(phone)) {
+      return NextResponse.json(
+        { error: "Invalid phone number format" },
         { status: 400 }
       );
     }
@@ -38,21 +55,25 @@ export async function POST(request: NextRequest) {
     // Hash password
     const hashedPassword = await hash(password, 10);
 
+    // Sanitize text inputs
+    const sanitizedName = sanitizeInput(name.trim());
+    const sanitizedAddress = address ? sanitizeInput(address.trim()) : undefined;
+    const sanitizedCity = city ? sanitizeInput(city.trim()) : undefined;
+    const sanitizedCountry = country ? sanitizeInput(country.trim()) : undefined;
+
     // Create new partner
     const partner = await Partner.create({
-      name: name.trim(),
+      name: sanitizedName,
       email: email.toLowerCase().trim(),
       password: hashedPassword,
       phone: phone?.trim(),
-      address: address?.trim(),
-      city: city?.trim(),
-      country: country?.trim(),
+      address: sanitizedAddress,
+      city: sanitizedCity,
+      country: sanitizedCountry,
       status: "pending",
       documents: [],
       isActive: true,
     });
-
-    console.log("✅ Partner registered successfully:", partner.email);
 
     // Get base URL from request
     const baseUrl = request.headers.get('origin') || 
@@ -70,7 +91,6 @@ export async function POST(request: NextRequest) {
         baseUrl: baseUrl,
       });
     } catch (emailError) {
-      console.error("Failed to send admin notification email:", emailError);
       // Continue with registration even if email fails
     }
 
@@ -82,7 +102,6 @@ export async function POST(request: NextRequest) {
       { status: 201 }
     );
   } catch (error) {
-    console.error("Error in partner registration:", error);
     return NextResponse.json(
       { error: "An error occurred during registration" },
       { status: 500 }

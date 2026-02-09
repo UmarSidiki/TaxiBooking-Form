@@ -553,7 +553,11 @@
         "my-rides": "Le Mie Corse",
         "upcoming-rides": "Corse in Arrivo",
         "preferences": "Preferenze",
-        "billing": "Fatturazione"
+        "billing": "Fatturazione",
+        "account_settings": "Account",
+        "fleet_management": "Gestione della flotta",
+        "operations": "Operazioni",
+        "overview": "Panoramica"
       },
       "Billing": {
         "title": "Fatturazione e Dati Bancari",
@@ -1003,7 +1007,16 @@
     "settings": "Impostazioni",
     "management_portal": "Portale Gestione",
     "navigation": "Navigazione",
-    "preferences": "Preferenze"
+    "preferences": "Preferenze",
+    "account": "Account",
+    "business": "Attività commerciale",
+    "driver_portal": "Portale conducenti",
+    "fleet_management": "Gestione della flotta",
+    "my_assignments": "I miei compiti",
+    "operations": "Operazioni",
+    "overview": "Panoramica",
+    "system": "Sistema",
+    "welcome": "Benvenuto"
   },
   "ThankYouPage": {
     "no-payment-information-found": "Nessuna informazione di pagamento trovata.",

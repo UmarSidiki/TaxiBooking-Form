@@ -3,8 +3,9 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { LayoutDashboard, Car, User, History, Truck, CreditCard } from "lucide-react";
+import { LayoutDashboard, Car, User, History, Truck, CreditCard, BarChart3, Calendar } from "lucide-react";
 
 import {
   Sidebar,
@@ -24,6 +25,7 @@ import { Separator } from "@/components/ui/separator";
 
 export function PartnerSidebar({ locale }: { locale: string }) {
   const t = useTranslations("Dashboard.Partners.Sidebar");
+  const pathname = usePathname();
   const [isApproved, setIsApproved] = useState<boolean | null>(null);
 
   useEffect(() => {
@@ -42,23 +44,22 @@ export function PartnerSidebar({ locale }: { locale: string }) {
     fetchPartnerStatus();
   }, []);
   
-  const allItems = [
+  // Overview - Dashboard and stats
+  const overviewItems = [
     {
       title: t("dashboard"),
       href: (locale: string) => `/${locale}/partners/dashboard`,
       icon: LayoutDashboard,
       showAlways: false,
     },
+  ];
+
+  // Operations - Rides management
+  const operationsItems = [
     {
       title: t("rides"),
       href: (locale: string) => `/${locale}/partners/rides`,
       icon: Car,
-      showAlways: false,
-    },
-    {
-      title: t("fleet"),
-      href: (locale: string) => `/${locale}/partners/fleet`,
-      icon: Truck,
       showAlways: false,
     },
     {
@@ -67,6 +68,20 @@ export function PartnerSidebar({ locale }: { locale: string }) {
       icon: History,
       showAlways: false,
     },
+  ];
+
+  // Fleet Management
+  const fleetItems = [
+    {
+      title: t("fleet"),
+      href: (locale: string) => `/${locale}/partners/fleet`,
+      icon: Truck,
+      showAlways: false,
+    },
+  ];
+
+  // Account & Business
+  const accountItems = [
     {
       title: t("account"),
       href: (locale: string) => `/${locale}/partners/account`,
@@ -80,13 +95,6 @@ export function PartnerSidebar({ locale }: { locale: string }) {
       showAlways: true,
     },
   ];
-
-  // Filter items based on approval status
-  const items = isApproved === null 
-    ? [] // Loading
-    : isApproved 
-      ? allItems // Show all items if approved
-      : allItems.filter(item => item.showAlways); // Show only account if not approved
 
   return (
     <Sidebar className="border-r-2 border-border/50">
@@ -117,43 +125,126 @@ export function PartnerSidebar({ locale }: { locale: string }) {
         </div>
       </SidebarHeader>
 
-      <SidebarContent className="px-3 py-4">
+      <SidebarContent className="px-3 py-3">
+        {isApproved && (
+          <>
+            {/* Overview Section */}
+            <SidebarGroup>
+              <SidebarGroupLabel className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
+                {t("overview")}
+              </SidebarGroupLabel>
+              <SidebarGroupContent>
+                <SidebarMenu className="space-y-0.5">
+                  {overviewItems.map((item) => (
+                    <SidebarMenuItem key={item.title}>
+                      <SidebarMenuButton
+                        asChild
+                        isActive={pathname === item.href(locale)}
+                        className="h-10 px-3 rounded-lg transition-all duration-200 [&:hover_svg]:text-primary [&[data-active=true]_svg]:text-primary"
+                      >
+                        <Link
+                          href={item.href(locale)}
+                          className="flex items-center gap-3"
+                        >
+                          <item.icon className="h-5 w-5 text-muted-foreground transition-colors" />
+                          <span className="font-medium">{item.title}</span>
+                        </Link>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  ))}
+                </SidebarMenu>
+              </SidebarGroupContent>
+            </SidebarGroup>
+
+            <Separator className="my-1" />
+
+            {/* Operations Section */}
+            <SidebarGroup>
+              <SidebarGroupLabel className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
+                {t("operations")}
+              </SidebarGroupLabel>
+              <SidebarGroupContent>
+                <SidebarMenu className="space-y-0.5">
+                  {operationsItems.map((item) => (
+                    <SidebarMenuItem key={item.title}>
+                      <SidebarMenuButton
+                        asChild
+                        isActive={pathname === item.href(locale)}
+                        className="h-10 px-3 rounded-lg transition-all duration-200 [&:hover_svg]:text-primary [&[data-active=true]_svg]:text-primary"
+                      >
+                        <Link
+                          href={item.href(locale)}
+                          className="flex items-center gap-3"
+                        >
+                          <item.icon className="h-5 w-5 text-muted-foreground transition-colors" />
+                          <span className="font-medium">{item.title}</span>
+                        </Link>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  ))}
+                </SidebarMenu>
+              </SidebarGroupContent>
+            </SidebarGroup>
+
+            <Separator className="my-1" />
+
+            {/* Fleet Section */}
+            <SidebarGroup>
+              <SidebarGroupLabel className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
+                {t("fleet_management")}
+              </SidebarGroupLabel>
+              <SidebarGroupContent>
+                <SidebarMenu className="space-y-0.5">
+                  {fleetItems.map((item) => (
+                    <SidebarMenuItem key={item.title}>
+                      <SidebarMenuButton
+                        asChild
+                        isActive={pathname === item.href(locale)}
+                        className="h-10 px-3 rounded-lg transition-all duration-200 [&:hover_svg]:text-primary [&[data-active=true]_svg]:text-primary"
+                      >
+                        <Link
+                          href={item.href(locale)}
+                          className="flex items-center gap-3"
+                        >
+                          <item.icon className="h-5 w-5 text-muted-foreground transition-colors" />
+                          <span className="font-medium">{item.title}</span>
+                        </Link>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  ))}
+                </SidebarMenu>
+              </SidebarGroupContent>
+            </SidebarGroup>
+
+            <Separator className="my-1" />
+          </>
+        )}
+
+        {/* Account Section - Always visible */}
         <SidebarGroup>
-          <SidebarGroupLabel className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">
-            {t("navigation")}
+          <SidebarGroupLabel className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
+            {t("account_settings")}
           </SidebarGroupLabel>
           <SidebarGroupContent>
-            <SidebarMenu className="space-y-1">
-              {items.map((item) => (
+            <SidebarMenu className="space-y-0.5">
+              {accountItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton
                     asChild
-                    className="h-11 px-3 rounded-lg hover:bg-primary/10 hover:text-primary transition-all duration-200 group"
+                    isActive={pathname === item.href(locale)}
+                    className="h-10 px-3 rounded-lg transition-all duration-200 [&:hover_svg]:text-primary [&[data-active=true]_svg]:text-primary"
                   >
                     <Link
                       href={item.href(locale)}
                       className="flex items-center gap-3"
                     >
-                      <item.icon className="h-5 w-5 text-muted-foreground group-hover:text-primary transition-colors" />
+                      <item.icon className="h-5 w-5 text-muted-foreground transition-colors" />
                       <span className="font-medium">{item.title}</span>
                     </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
             </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-
-        <Separator className="my-6" />
-
-        <SidebarGroup>
-          <SidebarGroupLabel className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">
-            {t("preferences")}
-          </SidebarGroupLabel>
-          <SidebarGroupContent>
-            <div className="px-3">
-              <LanguageSwitcher />
-            </div>
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>

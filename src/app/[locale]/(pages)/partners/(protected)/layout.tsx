@@ -7,6 +7,7 @@ import { Partner } from "@/models/partner";
 
 import { authOptions } from "@/lib/auth/options";
 import { PartnerSidebar } from "@/components/PartnerSidebar";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 
 type PartnerLayoutProps = {
@@ -60,7 +61,7 @@ export default async function PartnerProtectedLayout({
           <header className="bg-white shadow-sm border-b border-gray-200 z-10">
             <div className="flex items-center justify-between px-4 py-3">
               <SidebarTrigger className="text-gray-500 hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded-md p-2" />
-              <div className="flex items-center space-x-4">
+              <div className="flex items-center gap-4">
                 <div className="hidden sm:block text-sm text-gray-500">
                   Welcome, {session.user.name}
                 </div>
@@ -72,6 +73,7 @@ export default async function PartnerProtectedLayout({
                     day: "numeric",
                   })}
                 </div>
+                <LanguageSwitcher />
               </div>
             </div>
           </header>

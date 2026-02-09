@@ -1,8 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth/options";
 import { connectDB } from "@/lib/database";
 import { Vehicle, type IVehicle } from "@/models/vehicle";
 
-// GET - Fetch all vehicles
+// GET - Fetch all vehicles (Public endpoint - customers need to see available vehicles)
 export async function GET(request: NextRequest) {
   try {
     await connectDB();
@@ -30,9 +32,27 @@ export async function GET(request: NextRequest) {
   }
 }
 
-// POST - Create a new vehicle
+// POST - Create a new vehicle (Admin only)
 export async function POST(request: NextRequest) {
   try {
+    // Authentication check
+    const session = await getServerSession(authOptions);
+    if (!session || !session.user) {
+      return NextResponse.json(
+        { success: false, message: "Unauthorized" },
+        { status: 401 }
+      );
+    }
+
+    // Role-based access control
+    const userRole = session.user.role;
+    if (userRole !== "admin" && userRole !== "superadmin") {
+      return NextResponse.json(
+        { success: false, message: "Forbidden: Admin access required" },
+        { status: 403 }
+      );
+    }
+
     await connectDB();
 
     const body: IVehicle = await request.json();

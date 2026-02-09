@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { Calendar, Car, Home, Settings, Users, LayoutDashboard, Truck, UsersRound } from "lucide-react";
+import { Calendar, Car, Home, Settings, Users, LayoutDashboard, Truck, UsersRound, Code } from "lucide-react";
 import { useState, useEffect } from "react";
 
 import {
@@ -104,6 +104,11 @@ export function AppSidebar({ locale }: { locale: string }) {
 
   // System
   const systemItems = [
+    {
+      title: "Embed Forms",
+      href: (locale: string) => `/${locale}/dashboard/apply`,
+      icon: Code,
+    },
     {
       title: t("Sidebar.settings"),
       href: (locale: string) => `/${locale}/dashboard/settings`,

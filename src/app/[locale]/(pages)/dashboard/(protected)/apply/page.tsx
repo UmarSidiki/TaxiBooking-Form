@@ -17,8 +17,13 @@ import {
   Layers, 
   Zap, 
   Smartphone, 
-  ExternalLink 
+  ExternalLink,
+  Loader2,
+  Blocks,
+  Star,
 } from "lucide-react";
+import { apiGet } from "@/utils/api";
+import type { IFormLayout } from "@/models/form-layout";
 
 interface FormVariant {
   id: string;
@@ -27,6 +32,8 @@ interface FormVariant {
   features: string[];
   path: string;
   icon: React.ReactNode;
+  isCustom?: boolean;
+  layoutId?: string;
 }
 
 export default function ApplyPage() {
@@ -34,14 +41,30 @@ export default function ApplyPage() {
   const [selectedVariant, setSelectedVariant] = useState<string>("v1");
   const [showCode, setShowCode] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [customLayouts, setCustomLayouts] = useState<IFormLayout[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     setMounted(true);
+    fetchCustomLayouts();
   }, []);
+
+  const fetchCustomLayouts = async () => {
+    try {
+      const response = await apiGet<{ success: boolean; data: IFormLayout[] }>("/api/form-layouts");
+      if (response.success && response.data) {
+        setCustomLayouts(response.data.filter((layout) => layout.isActive));
+      }
+    } catch (error) {
+      console.error("Failed to fetch custom layouts:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const baseUrl = typeof window !== "undefined" ? window.location.origin : "http://localhost:3000";
 
-  const formVariants: FormVariant[] = [
+  const defaultVariants: FormVariant[] = [
     {
       id: "v1",
       name: "Classic Form",
@@ -67,6 +90,24 @@ export default function ApplyPage() {
       icon: <Smartphone className="w-5 h-5" />,
     },
   ];
+
+  const customVariants: FormVariant[] = customLayouts.map((layout) => ({
+    id: `custom-${layout._id}`,
+    name: layout.name,
+    description: layout.description || "Custom form layout",
+    features: [
+      `${layout.fields.filter((f) => f.enabled).length} fields enabled`,
+      layout.isDefault ? "Default layout" : "Custom layout",
+      "Fully customizable",
+      "Drag & drop builder",
+    ],
+    path: `/embeddable/custom/${layout._id}`,
+    icon: layout.isDefault ? <Star className="w-5 h-5" /> : <Blocks className="w-5 h-5" />,
+    isCustom: true,
+    layoutId: layout._id,
+  }));
+
+  const formVariants = [...defaultVariants, ...customVariants];
 
   const getEmbedScript = (variant: FormVariant) => {
     return `<div id="booking-widget-root"></div>
@@ -217,25 +258,16 @@ export default function ApplyPage() {
             Choose a design and embed it on any website with a single line of code.
           </p>
         </div>
-        <div className="w-full lg:w-auto">
-          <Button 
-            size="lg"
-            onClick={() => copyToClipboard(getEmbedScript(selectedForm), "top-copy")}
-            className="w-full lg:w-auto shadow-lg shadow-primary/20 px-8 py-6 text-md font-bold"
-          >
-            {copiedId === "top-copy" ? <Check className="w-5 h-5 mr-2" /> : <Copy className="w-5 h-5 mr-2" />}
-            Get Embed Code
-          </Button>
-        </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-        {/* Sidebar: Selection & Features */}
+      {/* Main Grid Layout */}
+      <div className="grid lg:grid-cols-12 gap-6 md:gap-8">
+        {/* Sidebar: Variant Selection */}
         <div className="lg:col-span-4 space-y-6 order-2 lg:order-1">
           <section className="space-y-4">
-            <h3 className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Form Variants</h3>
+            <h3 className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Default Variants</h3>
             <div className="grid gap-3">
-              {formVariants.map((variant) => (
+              {defaultVariants.map((variant) => (
                 <button
                   key={variant.id}
                   onClick={() => setSelectedVariant(variant.id)}
@@ -267,6 +299,53 @@ export default function ApplyPage() {
               ))}
             </div>
           </section>
+
+          {loading ? (
+            <div className="flex items-center justify-center p-8">
+              <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />
+            </div>
+          ) : customVariants.length > 0 && (
+            <section className="space-y-4">
+              <h3 className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Custom Layouts</h3>
+              <div className="grid gap-3">
+                {customVariants.map((variant) => (
+                  <button
+                    key={variant.id}
+                    onClick={() => setSelectedVariant(variant.id)}
+                    className={`group relative flex items-start gap-4 p-4 rounded-xl border-2 transition-all duration-300 text-left ${
+                      selectedVariant === variant.id
+                        ? "border-primary bg-primary/5 shadow-md"
+                        : "border-transparent bg-card hover:border-muted hover:bg-muted/50"
+                    }`}
+                  >
+                    <div className={`mt-1 p-2 rounded-lg transition-colors ${
+                      selectedVariant === variant.id ? "bg-primary text-white" : "bg-muted text-muted-foreground"
+                    }`}>
+                      {variant.icon}
+                    </div>
+                    <div className="pr-6">
+                      <h4 className="font-bold text-sm flex items-center gap-2">
+                        {variant.name}
+                        {customLayouts.find((l) => l._id === variant.layoutId)?.isDefault && (
+                          <Badge variant="secondary" className="text-[10px] px-1.5 py-0">DEFAULT</Badge>
+                        )}
+                      </h4>
+                      <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
+                        {variant.description}
+                      </p>
+                    </div>
+                    {selectedVariant === variant.id && (
+                      <div className="absolute right-4 top-4">
+                        <div className="bg-primary rounded-full p-1">
+                          <Check className="w-3 h-3 text-white" />
+                        </div>
+                      </div>
+                    )}
+                  </button>
+                ))}
+              </div>
+            </section>
+          )}
 
           <Card className="bg-muted/30 border-none hidden md:block">
             <CardHeader className="pb-3">

@@ -1,8 +1,9 @@
 "use client";
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { apiFetch } from "@/utils/api";
+import { apiFetch, apiGet } from "@/utils/api";
 import { IVehicle } from '@/models/vehicle';
+import { IFormLayout } from '@/models/form-layout';
 import { useSearchParams } from 'next/navigation';
 
 export interface FormData {
@@ -80,6 +81,7 @@ interface BookingFormContextType {
   isLoading: boolean;
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
   resetForm: () => void;
+  activeLayout: IFormLayout | null;
 }
 
 const BookingFormContext = createContext<BookingFormContextType | undefined>(undefined);
@@ -129,6 +131,22 @@ export function BookingFormProvider({ children }: { children: ReactNode }) {
   const [calculatingDistance, setCalculatingDistance] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isHydrated, setIsHydrated] = useState(false);
+  const [activeLayout, setActiveLayout] = useState<IFormLayout | null>(null);
+
+  // Load active layout on mount
+  useEffect(() => {
+    const fetchLayout = async () => {
+      try {
+        const res = await apiGet<{ success: boolean; data: IFormLayout | null }>("/api/form-layouts/active");
+        if (res.success) {
+          setActiveLayout(res.data);
+        }
+      } catch (err) {
+        console.error("Failed to load active form layout:", err);
+      }
+    };
+    fetchLayout();
+  }, []);
 
   // Check if we're in an iframe (embedded form)
   const isEmbedded = typeof window !== 'undefined' && window.self !== window.top;
@@ -332,7 +350,7 @@ export function BookingFormProvider({ children }: { children: ReactNode }) {
           
           if (elapsed > EXPIRATION_TIME) {
             // Data has expired, reset the form
-            console.log('Booking data expired after 5 minutes. Resetting form.');
+            console.log('Booking data expired after 2 minutes. Resetting form.');
             resetForm();
           }
         }
@@ -341,8 +359,11 @@ export function BookingFormProvider({ children }: { children: ReactNode }) {
       }
     }, 60000); // Check every minute
 
-    return () => clearInterval(intervalId);
-  }, [isHydrated, isEmbedded]);
+    // Cleanup function to prevent memory leaks
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, [isHydrated, isEmbedded]); // Stable dependencies only
 
 
   // Fetch vehicles list on mount to persist selection across steps
@@ -391,6 +412,7 @@ export function BookingFormProvider({ children }: { children: ReactNode }) {
     isLoading,
     setIsLoading,
     resetForm,
+    activeLayout
   };
 
   return (

@@ -99,6 +99,13 @@
   animation: bounce-subtle 1s ease-in-out infinite;
 }
 
+@media (max-width: 640px) {
+  .field-responsive-width {
+    grid-column: span var(--mobile-span, 1) / span var(--mobile-span, 1) !important;
+  }
+}
+
+
 .shimmer-container {
     /* Must be relative so the pseudo-element positions correctly */
     position: relative; 
@@ -145,4 +152,11 @@
         /* Stay off-screen to the right until the loop restarts */
         left: 150%; 
     }
+}
+
+/* Responsive mobile width for form fields */
+@media (max-width: 640px) {
+  .field-responsive-width {
+    grid-column: span var(--mobile-span) / span var(--mobile-span) !important;
+  }
 }

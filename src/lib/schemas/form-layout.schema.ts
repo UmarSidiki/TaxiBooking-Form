@@ -17,7 +17,6 @@ const BOOKING_FIELD_TYPES = [
   "return-time",
   "passengers",
   "duration",
-  "search-button",
 ] as const;
 
 // Field schema
@@ -28,14 +27,18 @@ const FormFieldSchema = z.object({
   placeholder: z.string().max(200).optional(),
   required: z.boolean(),
   enabled: z.boolean(),
-  width: z.enum(['full', 'half', 'third']),
+  width: z.enum(['full', 'half', 'third', 'quarter', 'two-thirds']),
+  widthWhenHourly: z.enum(['full', 'half', 'third', 'quarter', 'two-thirds']).optional(),
+  mobileWidth: z.enum(['full', 'half', 'third', 'quarter', 'two-thirds']).optional(),
+  mobileWidthWhenHourly: z.enum(['full', 'half', 'third', 'quarter', 'two-thirds']).optional(),
   order: z.number().int().min(0).max(100),
   step: z.literal(1),
   visibleWhen: z.object({
     bookingType: z.enum(['destination', 'hourly']).optional(),
     tripType: z.literal('roundtrip').optional(),
   }).optional(),
-});
+  showBorder: z.boolean().optional(),
+}).passthrough();
 
 // Style schema with strict validation
 const FormStyleSchema = z.object({
@@ -58,24 +61,35 @@ const FormStyleSchema = z.object({
   showHeader: z.boolean(),
   headingText: z.string().min(0).max(200),
   subHeadingText: z.string().max(200).optional(),
-  headingAlignment: z.enum(['left', 'center', 'right']),
+  headingAlignment: z.enum(['left', 'center', 'right']).optional(),
+  subHeadingAlignment: z.enum(['left', 'center', 'right']).optional(),
   showFooter: z.boolean(),
   footerText: z.string().min(0).max(500),
+  footerTextAlignment: z.enum(['left', 'center', 'right']).optional(),
   showSteps: z.boolean(),
   showFooterImages: z.boolean(),
-  columns: z.number().int().min(1).max(4),
+  columns: z.number().int().min(1).max(4).optional(),
   
   // Submit Button
   buttonText: z.string().min(1).max(50),
   buttonColor: z.string().regex(/^#[0-9A-Fa-f]{6}$|^rgba?\(\s*\d{1,3}\s*,\s*\d{1,3}\s*,\s*\d{1,3}\s*(?:,\s*[0-9.]+\s*)?\)$/),
   buttonTextColor: z.string().regex(/^#[0-9A-Fa-f]{6}$|^rgba?\(\s*\d{1,3}\s*,\s*\d{1,3}\s*,\s*\d{1,3}\s*(?:,\s*[0-9.]+\s*)?\)$/),
-  buttonWidth: z.enum(['full', 'auto', 'half']),
-  buttonAlignment: z.enum(['left', 'center', 'right']),
+  buttonWidth: z.enum(['full', 'two-thirds', 'half', 'third', 'quarter']),
+  buttonAlignment: z.enum(['left', 'center', 'right']).optional(),
+  buttonPosition: z.number().int().min(0).optional(),
   
   // Components
   inputBackgroundColor: z.string().regex(/^#[0-9A-Fa-f]{6}$|^rgba?\(\s*\d{1,3}\s*,\s*\d{1,3}\s*,\s*\d{1,3}\s*(?:,\s*[0-9.]+\s*)?\)$/),
   inputBorderColor: z.string().regex(/^#[0-9A-Fa-f]{6}$|^rgba?\(\s*\d{1,3}\s*,\s*\d{1,3}\s*,\s*\d{1,3}\s*(?:,\s*[0-9.]+\s*)?\)$/),
   inputTextColor: z.string().regex(/^#[0-9A-Fa-f]{6}$|^rgba?\(\s*\d{1,3}\s*,\s*\d{1,3}\s*,\s*\d{1,3}\s*(?:,\s*[0-9.]+\s*)?\)$/),
+  bookingTypeButtonColor: z.string().regex(/^#[0-9A-Fa-f]{6}$|^rgba?\(\s*\d{1,3}\s*,\s*\d{1,3}\s*,\s*\d{1,3}\s*(?:,\s*[0-9.]+\s*)?\)$/).optional(),
+  bookingTypeButtonTextColor: z.string().regex(/^#[0-9A-Fa-f]{6}$|^rgba?\(\s*\d{1,3}\s*,\s*\d{1,3}\s*,\s*\d{1,3}\s*(?:,\s*[0-9.]+\s*)?\)$/).optional(),
+  
+  // Layout & Polish
+  showLabels: z.boolean().optional(),
+  inputSize: z.enum(['compact', 'default', 'large']).optional(),
+  fieldGap: z.number().optional(),
+  inputBorderRadius: z.string().optional(),
 });
 
 // Form layout schema

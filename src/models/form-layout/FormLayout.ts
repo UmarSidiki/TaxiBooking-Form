@@ -5,7 +5,7 @@ import { Schema, model, models } from "mongoose";
  *
  * Step 1 — Trip Details:
  *   booking-type, pickup, dropoff, stops, trip-type, date, time,
- *   return-date, return-time, passengers, duration, search-button
+ *   return-date, return-time, passengers, duration
  */
 export const BOOKING_FIELD_TYPES = [
   "booking-type",
@@ -19,7 +19,6 @@ export const BOOKING_FIELD_TYPES = [
   "return-time",
   "passengers",
   "duration",
-  "search-button",
 ] as const;
 
 export type BookingFieldType = (typeof BOOKING_FIELD_TYPES)[number];
@@ -31,9 +30,13 @@ export interface IFormField {
   placeholder?: string;
   required: boolean;
   enabled: boolean;
-  width: "full" | "half" | "third";
+  width: "full" | "half" | "third" | "quarter" | "two-thirds";
   /** Override width when booking type is hourly */
-  widthWhenHourly?: "full" | "half" | "third";
+  widthWhenHourly?: "full" | "half" | "third" | "quarter" | "two-thirds";
+  /** Override width for mobile view (screens < 640px) */
+  mobileWidth?: "full" | "half" | "third" | "quarter" | "two-thirds";
+  /** Override width for mobile view when booking type is hourly */
+  mobileWidthWhenHourly?: "full" | "half" | "third" | "quarter" | "two-thirds";
   order: number;
   /** Which step this field belongs to (1 = trip details) */
   step: 1;
@@ -44,6 +47,8 @@ export interface IFormField {
     /** Only show when trip type equals this value */
     tripType?: "roundtrip";
   };
+  /** Show border/container for button-type fields (booking-type, trip-type) */
+  showBorder?: boolean;
 }
 
 export interface IFormStyle {
@@ -67,8 +72,10 @@ export interface IFormStyle {
   headingText: string;
   subHeadingText?: string;
   headingAlignment: "left" | "center" | "right";
+  subHeadingAlignment?: "left" | "center" | "right";
   showFooter: boolean;
   footerText: string;
+  footerTextAlignment?: "left" | "center" | "right";
   showSteps: boolean;
   showFooterImages: boolean;
   columns?: number; // 1, 2, 3, 4 (default 2)
@@ -77,13 +84,18 @@ export interface IFormStyle {
   buttonText: string;
   buttonColor: string;
   buttonTextColor: string;
-  buttonWidth: "full" | "auto" | "half";
+  buttonSize?: "small" | "default" | "large";
+  buttonWidth: "full" | "two-thirds" | "half" | "third" | "quarter";
   buttonAlignment: "left" | "center" | "right";
+  buttonBorderRadius?: string;
+  buttonPosition?: number; // Index position of button among fields (null/undefined = at end)
 
   // Components
   inputBackgroundColor: string;
   inputBorderColor: string;
   inputTextColor: string;
+  bookingTypeButtonColor?: string;
+  bookingTypeButtonTextColor?: string;
 
   // Layout & Polish
   showLabels?: boolean;
@@ -118,9 +130,12 @@ const FormFieldSchema = new Schema<IFormField>(
     enabled: { type: Boolean, default: true },
     width: { type: String, enum: ["full", "half", "third"], default: "full" },
     widthWhenHourly: { type: String, enum: ["full", "half", "third"], default: undefined },
+    mobileWidth: { type: String, enum: ["full", "half", "third"], default: undefined },
+    mobileWidthWhenHourly: { type: String, enum: ["full", "half", "third"], default: undefined },
     order: { type: Number, required: true },
     step: { type: Number, default: 1 },
     visibleWhen: { type: Schema.Types.Mixed, default: undefined },
+    showBorder: { type: Boolean, default: undefined },
   },
   { _id: false }
 );
@@ -156,8 +171,9 @@ const FormStyleSchema = new Schema<IFormStyle>(
     buttonText: { type: String, default: "Search" },
     buttonColor: { type: String, default: "#0f172a" },
     buttonTextColor: { type: String, default: "#ffffff" },
-    buttonWidth: { type: String, enum: ["full", "auto", "half"], default: "full" },
+    buttonWidth: { type: String, enum: ["full", "two-thirds", "half", "third", "quarter"], default: "full" },
     buttonAlignment: { type: String, enum: ["left", "center", "right"], default: "center" },
+    buttonPosition: { type: Number, default: undefined },
     
     // Components
     inputBackgroundColor: { type: String, default: "#ffffff" },

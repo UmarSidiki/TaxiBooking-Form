@@ -1,3 +1,4 @@
+// FormBuilderPage.tsx - Updated with Auto-Mobile Detection
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
@@ -82,6 +83,13 @@ import {
   Calendar,
   Car,
   CheckCircle,
+  Grid3X3,
+  Columns,
+  Move,
+  Layers,
+  Type,
+  Palette,
+  CornerDownRight
 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import type {
@@ -91,9 +99,10 @@ import type {
   IFormStyle,
 } from "@/models/form-layout";
 import { apiGet, apiPost, apiPatch, apiDelete } from "@/utils/api";
+import { useMediaQuery } from "@/hooks/useMediaQuery"; // Import the new hook
+import React from "react";
 
-// ─── Booking Field Registry ─────────────────────────────────────────────────
-// Each entry defines the default configuration for a booking form field.
+// ... (FIELD_REGISTRY and DEFAULT_STYLE remain the same as previous answer) ...
 const FIELD_REGISTRY: Record<
   BookingFieldType,
   {
@@ -216,70 +225,54 @@ const FIELD_REGISTRY: Record<
     width: "half",
     descriptionKey: "field_descriptions.passengers",
   },
-  "search-button": {
-    labelKey: "search_button",
-    icon: CheckCircle,
-    step: 1,
-    required: true,
-    locked: true,
-    width: "full",
-    descriptionKey: "field_descriptions.search_button",
-  },
 };
+
 function createDefaultFields(): IFormField[] {
   return [];
 }
 
 const DEFAULT_STYLE: IFormStyle = {
-  // Container
   backgroundColor: "#ffffff",
   backgroundOpacity: 90,
   glassEffect: true,
   borderRadius: "0.75rem",
   borderColor: "#e2e8f0",
   borderWidth: "0px",
-
-  // Typography
   primaryColor: "#0f172a",
   headingColor: "#1e293b",
   labelColor: "#475569",
   textColor: "#64748b",
-
-  // Header & Footer
   showHeader: true,
   headingText: "Trip Booking",
   subHeadingText: "Book your ride in seconds",
   headingAlignment: "center",
+  subHeadingAlignment: "center",
   showFooter: true,
   footerText: "By submitting my data I agree to be contacted",
+  footerTextAlignment: "center",
   showSteps: true,
   showFooterImages: true,
   columns: 2,
-
-  // Submit Button
   buttonText: "Search",
   buttonColor: "#0f172a",
   buttonTextColor: "#ffffff",
+  buttonSize: "default",
   buttonWidth: "full",
   buttonAlignment: "center",
-
-  // Components
+  buttonBorderRadius: "0.5rem",
   inputBackgroundColor: "#ffffff",
   inputBorderColor: "#e2e8f0",
   inputTextColor: "#1e293b",
-
-  // Layout & Polish
+  bookingTypeButtonColor: "#0f172a",
+  bookingTypeButtonTextColor: "#ffffff",
   showLabels: false,
   inputSize: "default",
   fieldGap: 12,
   inputBorderRadius: "0.5rem",
+  buttonPosition: undefined,
 };
 
-// ─── Step Separator ─────────────────────────────────────────────────────────
-// Removed as part of single-step redesign
-// function StepSeparator({ step }: { step: number }) { ... }
-
-// ─── Sortable Field Card ────────────────────────────────────────────────────
+// ... (SortableField, FieldPreview, GridBackground, SortablePreviewItem remain same) ...
 function SortableField({
   field,
   isSelected,
@@ -321,7 +314,7 @@ function SortableField({
           : !field.enabled
             ? "opacity-50 border-dashed border-border bg-muted/30"
             : isSelected
-              ? "border-primary bg-primary/5 shadow-sm"
+              ? "border-primary bg-primary/5 shadow-sm ring-1 ring-primary/20"
               : "border-border bg-card hover:border-primary/40 hover:shadow-sm"
       }`}
       onClick={onSelect}
@@ -358,14 +351,13 @@ function SortableField({
           <Badge variant="outline" className="text-[9px] px-1 py-0 h-3.5">
             {field.width === "full"
               ? t("full")
-              : field.width === "half"
-                ? "½"
-                : "⅓"}
-            {field.widthWhenHourly && (
-              <span className="ml-0.5 text-amber-600">
-                → {field.widthWhenHourly === "full" ? t("full") : field.widthWhenHourly === "half" ? "½" : "⅓"}
-              </span>
-            )}
+              : field.width === "two-thirds"
+                ? "⅔"
+                : field.width === "half"
+                  ? "½"
+                  : field.width === "third"
+                    ? "⅓"
+                    : "¼"}
           </Badge>
         </div>
       </div>
@@ -399,14 +391,13 @@ function SortableField({
   );
 }
 
-// ─── Field Preview (drag overlay) ───────────────────────────────────────────
 function FieldPreview({ field }: { field: IFormField }) {
   const t = useTranslations("FormBuilder");
   const reg = FIELD_REGISTRY[field.type];
   const Icon = reg?.icon || MapPin;
 
   return (
-    <div className="flex items-center gap-3 rounded-lg border-2 border-primary bg-card p-3 shadow-xl">
+    <div className="flex items-center gap-3 rounded-lg border-2 border-primary bg-card p-3 shadow-xl rotate-2 scale-105">
       <GripVertical className="h-4 w-4 text-muted-foreground" />
       <div className="rounded-md bg-primary/10 p-2">
         <Icon className="h-4 w-4 text-primary" />
@@ -416,19 +407,33 @@ function FieldPreview({ field }: { field: IFormField }) {
   );
 }
 
-// ─── Sortable Preview Item ──────────────────────────────────────────────────
+function GridBackground({ columns, gap }: { columns: number; gap: number }) {
+  return (
+    <div 
+      className="absolute inset-0 pointer-events-none opacity-[0.03] z-0"
+      style={{
+        backgroundImage: `linear-gradient(to right, #000 1px, transparent 1px)`,
+        backgroundSize: `${100 / columns}% 100%`,
+        marginRight: `-${gap}px`
+      }}
+    />
+  );
+}
+
 function SortablePreviewItem({
   id,
   className,
   children,
   style: styleProp,
   onClick,
+  isMobile,
 }: {
   id: string;
   className?: string;
   children: React.ReactNode;
   style?: React.CSSProperties;
   onClick?: (e: React.MouseEvent) => void;
+  isMobile?: boolean;
 }) {
   const {
     attributes,
@@ -451,33 +456,34 @@ function SortablePreviewItem({
     <div
       ref={setNodeRef}
       style={style}
-      className={`group relative ${className || ""}`}
+      className={`group relative ${className || ""} ${isDragging ? 'ring-2 ring-primary' : ''}`}
       onClick={(e) => {
          if(!isDragging && onClick) onClick(e);
       }}
     >
-      {/* Drag Handle - Top Right Overlay */}
+      <div className="absolute -inset-[2px] border-2 border-transparent group-hover:border-primary/30 rounded-lg pointer-events-none transition-colors z-10" />
       <div
         {...attributes}
         {...listeners}
-        className="absolute top-0 right-0 p-1.5 cursor-grab opacity-0 group-hover:opacity-100 bg-background/80 hover:bg-background border border-border shadow-sm rounded-bl-lg rounded-tr-md z-20 transition-all"
+        className="absolute top-2 right-2 p-1.5 cursor-grab opacity-0 group-hover:opacity-100 bg-background/90 hover:bg-primary hover:text-white border shadow-sm rounded-md z-20 transition-all"
         title="Drag to reorder"
       >
-        <GripVertical className="h-4 w-4 text-muted-foreground" />
+        <GripVertical className="h-3.5 w-3.5" />
       </div>
       {children}
     </div>
   );
 }
 
-// ─── Live Form Preview (Embed-style) ────────────────────────────────────────
+// ... (FormPreview, LayoutManager remain largely same, but FormPreview uses previewMode from props) ...
 function FormPreview({
   fields,
   style,
   onSelectField,
+  previewMode,
 }: {
   fields: IFormField[];
-  previewMode?: "desktop" | "mobile";
+  previewMode: "desktop" | "mobile";
   style: IFormStyle;
   onSelectField?: (id: string) => void;
 }) {
@@ -486,14 +492,12 @@ function FormPreview({
   const [previewBookingType, setPreviewBookingType] = useState<"destination" | "hourly">("destination");
   const [previewTripType, setPreviewTripType] = useState<"oneway" | "roundtrip">("oneway");
 
-  // Filter fields by current preview state (simulating live form behavior)
   const visibleFields = enabledFields.filter((field) => {
     if (field.visibleWhen?.bookingType && field.visibleWhen.bookingType !== previewBookingType) return false;
     if (field.visibleWhen?.tripType && field.visibleWhen.tripType !== previewTripType) return false;
     return true;
   });
 
-  // Convert hex to rgba for transparency
   const getRgba = (hex: string, opacity: number) => {
     const r = parseInt(hex.slice(1, 3), 16);
     const g = parseInt(hex.slice(3, 5), 16);
@@ -518,16 +522,17 @@ function FormPreview({
   if (enabledFields.length === 0) {
     return (
       <div
-        className="flex flex-col items-center justify-center py-16 text-center transition-all duration-300"
+        className="flex flex-col items-center justify-center py-16 text-center transition-all duration-300 relative overflow-hidden"
         style={containerStyle}
       >
-        <div className="rounded-full bg-muted p-6 mb-4">
+        <GridBackground columns={style.columns || 2} gap={style.fieldGap || 12} />
+        <div className="rounded-full bg-muted p-6 mb-4 relative z-10">
           <LayoutTemplate className="h-10 w-10 text-muted-foreground" />
         </div>
-        <p className="text-base font-medium text-muted-foreground mb-1">
+        <p className="text-base font-medium text-muted-foreground mb-1 relative z-10">
           {t("ui.no_fields_enabled")}
         </p>
-        <p className="text-sm text-muted-foreground/70">
+        <p className="text-sm text-muted-foreground/70 relative z-10">
           {t("ui.enable_fields_to_see_preview")}
         </p>
       </div>
@@ -553,35 +558,56 @@ function FormPreview({
     const iconStyle: React.CSSProperties = { color: style.primaryColor };
 
     const Wrapper = ({ children }: { children: React.ReactNode }) => {
+      const isMobileView = previewMode === "mobile";
       const cols = style.columns || 2;
-      // Use conditional width when in hourly mode
-      const effectiveWidth = (previewBookingType === "hourly" && field.widthWhenHourly) 
-        ? field.widthWhenHourly 
-        : field.width;
-      const span = effectiveWidth === "full" 
-        ? cols 
-        : effectiveWidth === "half" 
-          ? Math.max(1, Math.ceil(cols / 2)) 
-          : Math.max(1, Math.ceil(cols / 3));
+      
+      let effectiveWidth = field.width;
+      if (!isMobileView && previewBookingType === "hourly" && field.widthWhenHourly) {
+        effectiveWidth = field.widthWhenHourly;
+      }
+      if (isMobileView) {
+        if (previewBookingType === "hourly" && field.mobileWidthWhenHourly) {
+          effectiveWidth = field.mobileWidthWhenHourly;
+        } else if (field.mobileWidth) {
+          effectiveWidth = field.mobileWidth;
+        }
+      }
+
+      // Calculate grid span based on width percentage and column count
+      let span = 1;
+      if (effectiveWidth === "full") {
+        span = cols;
+      } else if (effectiveWidth === "two-thirds") {
+        span = Math.max(1, Math.round((cols * 2) / 3));
+      } else if (effectiveWidth === "half") {
+        span = Math.max(1, Math.ceil(cols / 2));
+      } else if (effectiveWidth === "third") {
+        span = Math.max(1, Math.ceil(cols / 3));
+      } else if (effectiveWidth === "quarter") {
+        span = Math.max(1, Math.ceil(cols / 4));
+      }
 
       return (
         <SortablePreviewItem
           key={field.id}
           id={`preview-${field.id}`}
-          className="cursor-pointer"
+          className="cursor-pointer h-full"
           style={{ gridColumn: `span ${span} / span ${span}` }}
           onClick={(e) => {
              e.stopPropagation();
              onSelectField?.(field.id);
           }}
+          isMobile={isMobileView}
         >
-          {style.showLabels && (
-            <label className="block text-xs font-medium mb-1" style={{ color: style.labelColor }}>
-              {field.label}
-              {field.required && <span className="text-red-500 ml-0.5">*</span>}
-            </label>
-          )}
-          {children}
+          <div className="h-full flex flex-col justify-end">
+            {style.showLabels && (
+              <label className="block text-xs font-medium mb-1" style={{ color: style.labelColor }}>
+                {field.label}
+                {field.required && <span className="text-red-500 ml-0.5">*</span>}
+              </label>
+            )}
+            {children}
+          </div>
         </SortablePreviewItem>
       );
     };
@@ -591,21 +617,21 @@ function FormPreview({
         return (
           <Wrapper>
             <div
-              className="flex rounded-lg border p-1 text-sm font-medium"
+              className={`flex ${field.showBorder !== false ? 'rounded-lg border p-1' : ''} text-sm font-medium`}
               style={{
-                backgroundColor: `${style.inputBorderColor}40`,
-                borderColor: style.inputBorderColor,
+                backgroundColor: field.showBorder !== false ? `${style.inputBorderColor}40` : 'transparent',
+                borderColor: field.showBorder !== false ? style.inputBorderColor : 'transparent',
               }}
             >
               <button
                 type="button"
                 onClick={(e) => { e.stopPropagation(); setPreviewBookingType("destination"); }}
                 className={`flex-1 rounded-md px-3 py-2 transition-all duration-300 flex items-center justify-center gap-1.5 text-sm font-medium ${
-                  previewBookingType === "destination" ? "text-white shadow-sm" : ""
+                  previewBookingType === "destination" ? "shadow-sm" : ""
                 }`}
                 style={
                   previewBookingType === "destination"
-                    ? { background: `linear-gradient(to right, ${style.primaryColor}cc, ${style.primaryColor})` }
+                    ? { background: style.bookingTypeButtonColor || "#0f172a", color: style.bookingTypeButtonTextColor || "#ffffff" }
                     : { color: style.textColor }
                 }
               >
@@ -616,11 +642,11 @@ function FormPreview({
                 type="button"
                 onClick={(e) => { e.stopPropagation(); setPreviewBookingType("hourly"); }}
                 className={`flex-1 rounded-md px-3 py-2 transition-all duration-300 flex items-center justify-center gap-1.5 text-sm font-medium ${
-                  previewBookingType === "hourly" ? "text-white shadow-sm" : ""
+                  previewBookingType === "hourly" ? "shadow-sm" : ""
                 }`}
                 style={
                   previewBookingType === "hourly"
-                    ? { background: `linear-gradient(to right, ${style.primaryColor}cc, ${style.primaryColor})` }
+                    ? { background: style.bookingTypeButtonColor || "#0f172a", color: style.bookingTypeButtonTextColor || "#ffffff" }
                     : { color: style.textColor }
                 }
               >
@@ -635,10 +661,10 @@ function FormPreview({
         return (
           <Wrapper>
             <div
-              className="flex rounded-lg border p-1 text-sm font-medium"
+              className={`flex ${field.showBorder !== false ? 'rounded-lg border p-1' : ''} text-sm font-medium`}
               style={{
-                backgroundColor: `${style.inputBorderColor}60`,
-                borderColor: style.inputBorderColor,
+                backgroundColor: field.showBorder !== false ? `${style.inputBorderColor}60` : 'transparent',
+                borderColor: field.showBorder !== false ? style.inputBorderColor : 'transparent',
               }}
             >
               <button
@@ -649,7 +675,7 @@ function FormPreview({
                 }`}
                 style={
                   previewTripType === "oneway"
-                    ? { backgroundColor: style.inputBackgroundColor, color: style.inputTextColor }
+                    ? { background: style.bookingTypeButtonColor || "#0f172a", color: style.bookingTypeButtonTextColor || "#ffffff" }
                     : { color: style.textColor }
                 }
               >
@@ -664,7 +690,7 @@ function FormPreview({
                 }`}
                 style={
                   previewTripType === "roundtrip"
-                    ? { backgroundColor: style.inputBackgroundColor, color: style.inputTextColor }
+                    ? { background: style.bookingTypeButtonColor || "#0f172a", color: style.bookingTypeButtonTextColor || "#ffffff" }
                     : { color: style.textColor }
                 }
               >
@@ -869,10 +895,9 @@ function FormPreview({
 
   return (
     <SortableContext
-      items={visibleFields.map((f) => `preview-${f.id}`)}
+      items={[...visibleFields.map((f) => `preview-${f.id}`), 'button-search']}
       strategy={rectSortingStrategy}
     >
-      {/* Steps Preview */}
       {style.showSteps && (
         <div className="flex justify-between items-center px-4 py-3 mb-2">
           {[
@@ -918,12 +943,13 @@ function FormPreview({
       )}
 
       <div
-        className="p-4 sm:p-6 transition-all duration-300"
+        className="p-4 sm:p-6 transition-all duration-300 relative overflow-hidden"
         style={containerStyle}
       >
-        {/* Header */}
+        <GridBackground columns={style.columns || 2} gap={style.fieldGap || 12} />
+
         {style.showHeader && style.headingText && (
-          <header className="mb-3 text-center">
+          <header className="mb-3 relative z-10">
             <h2
               className="text-base sm:text-lg font-bold"
               style={{
@@ -933,66 +959,123 @@ function FormPreview({
             >
               {style.headingText}
             </h2>
-            <p className="text-xs mt-0.5" style={{ color: style.textColor }}>
+            <p className="text-xs mt-0.5" style={{ color: style.textColor, textAlign: style.subHeadingAlignment }}>
               {style.subHeadingText || t("ui.default_subheading")}
             </p>
           </header>
         )}
 
-        {/* Fields */}
         <div 
-          className="grid items-end" 
+          className="grid items-end relative z-10" 
           style={{ 
             gridTemplateColumns: `repeat(${style.columns || 2}, minmax(0, 1fr))`,
             gap: `${style.fieldGap ?? 12}px`,
             padding: "2px",
           }}
         >
-          {visibleFields.map((field) => renderField(field))}
+          {visibleFields.map((field, fieldIndex) => (
+            <React.Fragment key={field.id}>
+              {/* Render button at its position if set */}
+              {style.buttonPosition === fieldIndex && (
+                <SortablePreviewItem
+                  id="button-search"
+                  className="cursor-pointer"
+                  style={{
+                    gridColumn: (() => {
+                      const cols = style.columns || 2;
+                      if (style.buttonWidth === 'full') return '1 / -1';
+                      if (style.buttonWidth === 'two-thirds') return `span ${Math.round(cols * 2 / 3)}`;
+                      if (style.buttonWidth === 'half') return `span ${Math.max(1, Math.ceil(cols / 2))}`;
+                      if (style.buttonWidth === 'third') return `span ${Math.max(1, Math.ceil(cols / 3))}`;
+                      if (style.buttonWidth === 'quarter') return `span ${Math.max(1, Math.ceil(cols / 4))}`;
+                      return 'span 1';
+                    })(),
+                    display: 'flex',
+                    alignItems: 'flex-end',
+                    justifyContent: (style.buttonAlignment === 'left' ? 'flex-start' : style.buttonAlignment === 'right' ? 'flex-end' : 'center'),
+                    height: '100%'
+                  }}
+                  onClick={() => onSelectField?.('__button_search')}
+                >
+                   <button
+                      type="button"
+                      className={`font-semibold tracking-wide transition-all duration-200 shadow-md flex items-center justify-center gap-2 w-full ${
+                        style.buttonSize === 'small' ? 'py-1.5 text-xs rounded' :
+                        style.buttonSize === 'large' ? 'py-3.5 text-base rounded-lg' :
+                        'py-2.5 text-sm rounded-lg'
+                      }`}
+                      style={{
+                        backgroundColor: style.buttonColor || style.primaryColor,
+                        color: style.buttonTextColor || '#ffffff',
+                        borderRadius: style.buttonBorderRadius || '0.5rem',
+                      }}
+                   >
+                      <div className="flex items-center justify-center gap-2">
+                         <span>{style.buttonText || t("ui.search")}</span>
+                         <ArrowRight className={style.buttonSize === 'small' ? 'h-3 w-3' : style.buttonSize === 'large' ? 'h-5 w-5' : 'h-4 w-4'} />
+                      </div>
+                   </button>
+                </SortablePreviewItem>
+              )}
+              {renderField(field)}
+            </React.Fragment>
+          ))}
 
-          {/* Submit Button In Grid */}
-          <div
-             style={{
-                gridColumn: style.buttonWidth === 'full' 
-                  ? '1 / -1' 
-                  : style.buttonWidth === 'half' 
-                    ? `span ${Math.max(1, Math.ceil((style.columns || 2)/2))}` 
-                    : 'span 1',
+          {/* Render button at the end if buttonPosition is not set or is beyond field count */}
+          {(style.buttonPosition === undefined || style.buttonPosition >= visibleFields.length) && (
+            <SortablePreviewItem
+              id="button-search"
+              className="cursor-pointer"
+              style={{
+                gridColumn: (() => {
+                  const cols = style.columns || 2;
+                  if (style.buttonWidth === 'full') return '1 / -1';
+                  if (style.buttonWidth === 'two-thirds') return `span ${Math.round(cols * 2 / 3)}`;
+                  if (style.buttonWidth === 'half') return `span ${Math.max(1, Math.ceil(cols / 2))}`;
+                  if (style.buttonWidth === 'third') return `span ${Math.max(1, Math.ceil(cols / 3))}`;
+                  if (style.buttonWidth === 'quarter') return `span ${Math.max(1, Math.ceil(cols / 4))}`;
+                  return 'span 1';
+                })(),
                 display: 'flex',
                 alignItems: 'flex-end',
-                justifyContent: (style.buttonAlignment === 'left' ? 'flex-start' : style.buttonAlignment === 'right' ? 'flex-end' : 'center')
-             }}
-          >
-             <button
-                type="button"
-                className="rounded-lg py-2.5 text-sm font-semibold tracking-wide transition-all duration-200 shadow-md flex items-center justify-center gap-2"
-                style={{
-                  width: '100%',
-                  backgroundColor: style.buttonColor || style.primaryColor,
-                  color: style.buttonTextColor || '#ffffff',
-                }}
-             >
-                <div className="flex items-center justify-center gap-2">
-                   <span>{style.buttonText || t("ui.search")}</span>
-                   <ArrowRight className="h-4 w-4" />
-                </div>
-             </button>
-          </div>
+                justifyContent: (style.buttonAlignment === 'left' ? 'flex-start' : style.buttonAlignment === 'right' ? 'flex-end' : 'center'),
+                height: '100%'
+              }}
+              onClick={() => onSelectField?.('__button_search')}
+            >
+               <button
+                  type="button"
+                  className={`font-semibold tracking-wide transition-all duration-200 shadow-md flex items-center justify-center gap-2 w-full ${
+                    style.buttonSize === 'small' ? 'py-1.5 text-xs rounded' :
+                    style.buttonSize === 'large' ? 'py-3.5 text-base rounded-lg' :
+                    'py-2.5 text-sm rounded-lg'
+                  }`}
+                  style={{
+                    backgroundColor: style.buttonColor || style.primaryColor,
+                    color: style.buttonTextColor || '#ffffff',
+                    borderRadius: style.buttonBorderRadius || '0.5rem',
+                  }}
+               >
+                  <div className="flex items-center justify-center gap-2">
+                     <span>{style.buttonText || t("ui.search")}</span>
+                     <ArrowRight className={style.buttonSize === 'small' ? 'h-3 w-3' : style.buttonSize === 'large' ? 'h-5 w-5' : 'h-4 w-4'} />
+                  </div>
+               </button>
+            </SortablePreviewItem>
+          )}
         </div>
 
-        {/* Footer */}
         {style.showFooter && style.footerText && (
           <div
-            className="mt-4 text-center text-xs opacity-80 px-2"
-            style={{ color: style.textColor }}
+            className="mt-4 text-xs opacity-80 px-2 relative z-10"
+            style={{ color: style.textColor, textAlign: style.footerTextAlignment }}
           >
             {style.footerText}
           </div>
         )}
 
-        {/* Footer Images */}
         {style.showFooterImages && (
-          <div className="flex justify-center gap-2 flex-wrap pt-3 opacity-60">
+          <div className="flex justify-center gap-2 flex-wrap pt-3 opacity-60 relative z-10">
             {["visa", "mastercard", "paypal", "twint", "applepay"].map(
               (img) => (
                 <Image
@@ -1012,26 +1095,7 @@ function FormPreview({
   );
 }
 
-// ─── Layout Manager Dialog ──────────────────────────────────────────────────
-function LayoutManager({
-  layouts,
-  currentId,
-  onSelect,
-  onDuplicate,
-  onDelete,
-  onSetDefault,
-  onCreateNew,
-  isLoading,
-}: {
-  layouts: IFormLayout[];
-  currentId: string | null;
-  onSelect: (layout: IFormLayout) => void;
-  onDuplicate: (id: string) => void;
-  onDelete: (id: string) => void;
-  onSetDefault: (id: string) => void;
-  onCreateNew: () => void;
-  isLoading: boolean;
-}) {
+function LayoutManager({ layouts, currentId, onSelect, onDuplicate, onDelete, onSetDefault, onCreateNew, isLoading }: any) {
   const t = useTranslations("FormBuilder");
   return (
     <div className="space-y-3">
@@ -1054,7 +1118,7 @@ function LayoutManager({
         </div>
       ) : (
         <div className="space-y-2 max-h-80 overflow-y-auto">
-          {layouts.map((layout) => (
+          {layouts.map((layout: any) => (
             <div
               key={layout._id}
               className={`flex items-center gap-3 rounded-lg border p-3 transition-all cursor-pointer ${
@@ -1083,7 +1147,7 @@ function LayoutManager({
                 </div>
                 <p className="text-xs text-muted-foreground mt-0.5">
                   {t("ui.fields_enabled_count", {
-                    enabled: layout.fields.filter((f) => f.enabled).length,
+                    enabled: layout.fields.filter((f: any) => f.enabled).length,
                     total: layout.fields.length
                   })}
                 </p>
@@ -1135,6 +1199,8 @@ function LayoutManager({
 // ─── Main Page ──────────────────────────────────────────────────────────────
 export default function FormBuilderPage() {
   const t = useTranslations("FormBuilder");
+  const isTabletOrMobile = useMediaQuery("(max-width: 1024px)"); // Auto-switch breakpoint
+  
   const [layouts, setLayouts] = useState<IFormLayout[]>([]);
   const [currentLayout, setCurrentLayout] = useState<IFormLayout | null>(null);
   const [fields, setFields] = useState<IFormField[]>(createDefaultFields);
@@ -1143,9 +1209,7 @@ export default function FormBuilderPage() {
   const [layoutDescription, setLayoutDescription] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
-  const [previewMode, setPreviewMode] = useState<"desktop" | "mobile">(
-    "desktop",
-  );
+  const [previewMode, setPreviewMode] = useState<"desktop" | "mobile">("desktop");
   const [activeId, setActiveId] = useState<string | null>(null);
   const [showManager, setShowManager] = useState(false);
   const [editingName, setEditingName] = useState(false);
@@ -1161,6 +1225,15 @@ export default function FormBuilderPage() {
   }));
   const isSavingRef = useRef(false);
 
+  // Auto-switch preview mode based on screen size
+  useEffect(() => {
+    if (isTabletOrMobile) {
+      setPreviewMode("mobile");
+    } else {
+      setPreviewMode("desktop");
+    }
+  }, [isTabletOrMobile]);
+
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
     useSensor(KeyboardSensor, {
@@ -1170,7 +1243,7 @@ export default function FormBuilderPage() {
 
   const selectedField = fields.find((f) => f.id === selectedFieldId) || null;
 
-  // ── Fetch layouts ──
+  // ... (fetchLayouts, draft recovery, auto-save, keyboard shortcuts, undo helpers remain same) ...
   const fetchLayouts = useCallback(async () => {
     try {
       setIsLoading(true);
@@ -1191,11 +1264,8 @@ export default function FormBuilderPage() {
     fetchLayouts();
   }, [fetchLayouts]);
 
-  // ── Draft recovery from localStorage ──
   useEffect(() => {
-    // Only load draft if no layout is selected
     if (currentLayout) return;
-
     const draft = localStorage.getItem("formBuilderDraft");
     if (draft) {
       try {
@@ -1205,22 +1275,11 @@ export default function FormBuilderPage() {
           setLayoutName(parsed.name || "Default Booking Form");
           setLayoutDescription(parsed.description || "");
           if (parsed.style) setFormStyle(parsed.style);
-
-          // If the draft had an ID, try to find and set the current layout
-          if (parsed.currentLayoutId && layouts.length > 0) {
-            const match = layouts.find((l) => l._id === parsed.currentLayoutId);
-            if (match) {
-              setCurrentLayout(match);
-            }
-          }
         }
-      } catch {
-        /* ignore */
-      }
+      } catch { /* ignore */ }
     }
-  }, [currentLayout, layouts.length]);
+  }, [currentLayout]);
 
-  // ── Save draft to localStorage ──
   useEffect(() => {
     if (fields.length > 0 || layoutName || currentLayout?._id) {
       localStorage.setItem(
@@ -1236,24 +1295,27 @@ export default function FormBuilderPage() {
     }
   }, [fields, layoutName, layoutDescription, formStyle, currentLayout?._id]);
 
-  // ── Auto-save ──
   useEffect(() => {
     if (!currentLayout?._id || fields.length === 0) return;
-
     if (autoSaveTimerRef.current) clearTimeout(autoSaveTimerRef.current);
 
     autoSaveTimerRef.current = setTimeout(async () => {
       try {
-        await apiPatch(`/api/form-layouts/${currentLayout._id}`, {
-          fields,
-          style: formStyle,
-          name: layoutName,
-          description: layoutDescription,
-        });
-        setLastSaved(new Date());
-      } catch {
-        /* silent fail */
-      }
+        const data = await apiPatch<{ success: boolean; data: IFormLayout }>(
+          `/api/form-layouts/${currentLayout._id}`, 
+          {
+            fields: fields.map((f, i) => ({ ...f, order: i })),
+            style: formStyle,
+            name: layoutName,
+            description: layoutDescription,
+          }
+        );
+        if (data.success && data.data) {
+          // Update currentLayout with fresh server data to prevent stale state
+          setCurrentLayout(data.data);
+          setLastSaved(new Date());
+        }
+      } catch { /* silent fail */ }
     }, 3000);
 
     return () => {
@@ -1261,7 +1323,6 @@ export default function FormBuilderPage() {
     };
   }, [fields, layoutName, layoutDescription, currentLayout, formStyle]);
 
-  // ── Keyboard shortcuts ──
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       if (e.key === "z" && (e.ctrlKey || e.metaKey) && undoStack.length > 0) {
@@ -1275,16 +1336,12 @@ export default function FormBuilderPage() {
     return () => window.removeEventListener("keydown", handler);
   }, [undoStack]);
 
-  // ── Undo helpers ──
   const pushUndo = () => {
     setUndoStack((prev) => [...prev.slice(-20), [...fields]]);
   };
 
-  // ── Add/Remove Fields ──
   const addField = (type: BookingFieldType) => {
-    if (fields.some((f) => f.type === type)) {
-      return;
-    }
+    if (fields.some((f) => f.type === type)) return;
     const reg = FIELD_REGISTRY[type];
     pushUndo();
     const newField: IFormField = {
@@ -1309,28 +1366,23 @@ export default function FormBuilderPage() {
     if (selectedFieldId === id) setSelectedFieldId(null);
   };
 
-  // ── Toggle field enabled/disabled ──
   const toggleField = (id: string) => {
     const field = fields.find((f) => f.id === id);
     if (!field) return;
-
     const reg = FIELD_REGISTRY[field.type];
     if (reg?.locked) return;
-
     pushUndo();
     setFields((prev) =>
       prev.map((f) => (f.id === id ? { ...f, enabled: !f.enabled } : f)),
     );
   };
 
-  // ── Update field ──
   const updateField = (id: string, updates: Partial<IFormField>) => {
     setFields((prev) =>
       prev.map((f) => (f.id === id ? { ...f, ...updates } : f)),
     );
   };
 
-  // ── DnD handlers ──
   const handleDragStart = (event: DragStartEvent) => {
     setActiveId(event.active.id as string);
     pushUndo();
@@ -1340,15 +1392,29 @@ export default function FormBuilderPage() {
     setActiveId(null);
     const { active, over } = event;
     if (over && active.id !== over.id) {
+      // Handle button dragging
+      if (String(active.id) === 'button-search') {
+        // Button is being dragged over a field
+        if (String(over.id) !== 'button-search') {
+          const overId = String(over.id).replace("preview-", "");
+          const fieldIndex = fields.findIndex((f) => f.id === overId);
+          if (fieldIndex !== -1) {
+            setFormStyle((prev) => ({
+              ...prev,
+              buttonPosition: fieldIndex,
+            }));
+            pushUndo();
+          }
+        }
+        return;
+      }
+      
       setFields((items) => {
         const activeId = String(active.id).replace("preview-", "");
         const overId = String(over.id).replace("preview-", "");
-
         const oldIndex = items.findIndex((i) => i.id === activeId);
         const newIndex = items.findIndex((i) => i.id === overId);
-
         if (oldIndex === -1 || newIndex === -1) return items;
-
         return arrayMove(items, oldIndex, newIndex).map((f, i) => ({
           ...f,
           order: i,
@@ -1357,15 +1423,12 @@ export default function FormBuilderPage() {
     }
   };
 
-  // ── Save layout ──
   const saveLayout = async () => {
     if (isSavingRef.current) return;
-
     if (!layoutName.trim()) {
       alert("Please enter a layout name");
       return;
     }
-
     isSavingRef.current = true;
     setIsSaving(true);
     try {
@@ -1373,54 +1436,101 @@ export default function FormBuilderPage() {
         name: layoutName,
         description: layoutDescription,
         fields: fields.map((f, i) => ({ ...f, order: i })),
-        style: formStyle,
+        style: {
+          ...formStyle,
+          // Ensure all optional fields have default values
+          columns: formStyle.columns ?? 2,
+          headingAlignment: formStyle.headingAlignment ?? "center",
+          subHeadingAlignment: formStyle.subHeadingAlignment ?? "center",
+          buttonAlignment: formStyle.buttonAlignment ?? "center",
+          footerTextAlignment: formStyle.footerTextAlignment ?? "center",
+          showLabels: formStyle.showLabels ?? false,
+          inputSize: formStyle.inputSize ?? "default",
+          fieldGap: formStyle.fieldGap ?? 12,
+          inputBorderRadius: formStyle.inputBorderRadius ?? "0.5rem",
+          buttonPosition: formStyle.buttonPosition, // Include button position if set
+        },
         isActive: true,
         isDefault: currentLayout?.isDefault ?? false,
       };
-
+      
       if (currentLayout?._id) {
-        const data = await apiPatch<{
-          success: boolean;
-          data: IFormLayout;
-          message: string;
-        }>(`/api/form-layouts/${currentLayout._id}`, payload);
-        if (data.success) {
-          setCurrentLayout(data.data);
-          setLastSaved(new Date());
-          await fetchLayouts();
-        }
-      } else {
-        const data = await apiPost<{
-          success: boolean;
-          data: IFormLayout;
-          message: string;
-        }>("/api/form-layouts", payload);
+        const data = await apiPatch<{ success: boolean; data: IFormLayout; message: string }>(
+          `/api/form-layouts/${currentLayout._id}`, payload
+        );
         if (data.success) {
           setCurrentLayout(data.data);
           setLastSaved(new Date());
           localStorage.removeItem("formBuilderDraft");
           await fetchLayouts();
+          alert("Layout saved successfully!");
+        } else {
+          alert("Failed to save layout: " + (data.message || "Unknown error"));
+        }
+      } else {
+        const data = await apiPost<{ success: boolean; data: IFormLayout; message: string }>(
+          "/api/form-layouts", payload
+        );
+        if (data.success) {
+          setCurrentLayout(data.data);
+          setLastSaved(new Date());
+          localStorage.removeItem("formBuilderDraft");
+          await fetchLayouts();
+          alert("Layout created successfully!");
+        } else {
+          alert("Failed to create layout: " + (data.message || "Unknown error"));
         }
       }
     } catch (error) {
       console.error("Error saving layout:", error);
-      alert("Failed to save layout");
+      alert("Failed to save layout: " + (error instanceof Error ? error.message : "Unknown error"));
     } finally {
       isSavingRef.current = false;
       setIsSaving(false);
     }
   };
 
-  // ── Layout manager actions ──
-  const selectLayout = (layout: IFormLayout) => {
-    setCurrentLayout(layout);
-    setFields(layout.fields);
-    setFormStyle(layout.style || DEFAULT_STYLE);
-    setLayoutName(layout.name);
-    setLayoutDescription(layout.description || "");
-    setSelectedFieldId(null);
-    setUndoStack([]);
-    setShowManager(false);
+  const selectLayout = async (layout: IFormLayout) => {
+    try {
+      // Fetch fresh data from server to ensure we have the latest version
+      const data = await apiGet<{ success: boolean; data: IFormLayout }>(
+        `/api/form-layouts/${layout._id}`
+      );
+      if (data.success && data.data) {
+        const freshLayout = data.data;
+        setCurrentLayout(freshLayout);
+        setFields(freshLayout.fields || []);
+        setFormStyle({ ...DEFAULT_STYLE, ...freshLayout.style });
+        setLayoutName(freshLayout.name);
+        setLayoutDescription(freshLayout.description || "");
+        setSelectedFieldId(null);
+        setUndoStack([]);
+        setShowManager(false);
+        localStorage.removeItem("formBuilderDraft");
+      } else {
+        console.warn("Failed to load fresh layout data, using fallback");
+        // Fallback to the provided layout object
+        setCurrentLayout(layout);
+        setFields(layout.fields || []);
+        setFormStyle({ ...DEFAULT_STYLE, ...layout.style });
+        setLayoutName(layout.name);
+        setLayoutDescription(layout.description || "");
+        setSelectedFieldId(null);
+        setUndoStack([]);
+        setShowManager(false);
+      }
+    } catch (error) {
+      console.error("Error loading layout:", error);
+      // Fallback to the provided layout object
+      setCurrentLayout(layout);
+      setFields(layout.fields || []);
+      setFormStyle({ ...DEFAULT_STYLE, ...layout.style });
+      setLayoutName(layout.name);
+      setLayoutDescription(layout.description || "");
+      setSelectedFieldId(null);
+      setUndoStack([]);
+      setShowManager(false);
+    }
   };
 
   const createNew = () => {
@@ -1438,11 +1548,14 @@ export default function FormBuilderPage() {
   const duplicateLayout = async (id: string) => {
     try {
       const data = await apiPost<{ success: boolean; data: IFormLayout }>(
-        `/api/form-layouts/${id}/duplicate`,
-        {},
+        `/api/form-layouts/${id}/duplicate`, {}
       );
       if (data.success) {
         await fetchLayouts();
+        // Automatically load the duplicated layout
+        if (data.data) {
+          await selectLayout(data.data);
+        }
       }
     } catch (error) {
       console.error("Error duplicating layout:", error);
@@ -1452,7 +1565,10 @@ export default function FormBuilderPage() {
   const deleteLayout = async (id: string) => {
     try {
       await apiDelete<{ success: boolean }>(`/api/form-layouts/${id}`);
-      if (currentLayout?._id === id) createNew();
+      if (currentLayout?._id === id) {
+        createNew();
+        localStorage.removeItem("formBuilderDraft");
+      }
       await fetchLayouts();
     } catch (error) {
       console.error("Error deleting layout:", error);
@@ -1461,7 +1577,14 @@ export default function FormBuilderPage() {
 
   const setDefaultLayout = async (id: string) => {
     try {
-      await apiPatch(`/api/form-layouts/${id}`, { isDefault: true });
+      const data = await apiPatch<{ success: boolean; data: IFormLayout }>(
+        `/api/form-layouts/${id}`, 
+        { isDefault: true }
+      );
+      if (data.success && data.data && currentLayout?._id === id) {
+        // Update currentLayout if it's the one being set as default
+        setCurrentLayout(data.data);
+      }
       await fetchLayouts();
     } catch (error) {
       console.error("Error setting default:", error);
@@ -1498,11 +1621,7 @@ export default function FormBuilderPage() {
                     if (e.key === "Escape") setEditingName(false);
                   }}
                 />
-                <Button
-                  size="sm"
-                  variant="ghost"
-                  onClick={() => setEditingName(false)}
-                >
+                <Button size="sm" variant="ghost" onClick={() => setEditingName(false)}>
                   <Check className="h-4 w-4" />
                 </Button>
               </div>
@@ -1517,10 +1636,7 @@ export default function FormBuilderPage() {
             )}
             <div className="flex items-center gap-3 mt-1">
               <p className="text-muted-foreground text-sm">
-                {t("ui.fields_enabled", {
-                  enabled: fields.filter((f) => f.enabled).length,
-                  total: fields.length
-                })}
+                {t("ui.fields_enabled", { enabled: fields.filter((f) => f.enabled).length, total: fields.length })}
               </p>
               {lastSaved && (
                 <span className="text-xs text-muted-foreground">
@@ -1540,9 +1656,7 @@ export default function FormBuilderPage() {
                 <LayoutTemplate className="h-4 w-4 mr-2" />
                 {t("layouts")}
                 {layouts.length > 0 && (
-                  <Badge variant="secondary" className="ml-2 text-xs h-5">
-                    {layouts.length}
-                  </Badge>
+                  <Badge variant="secondary" className="ml-2 text-xs h-5">{layouts.length}</Badge>
                 )}
               </Button>
             </DialogTrigger>
@@ -1562,16 +1676,8 @@ export default function FormBuilderPage() {
               />
             </DialogContent>
           </Dialog>
-          <Button
-            onClick={saveLayout}
-            disabled={isSaving || !layoutName.trim()}
-            size="sm"
-          >
-            {isSaving ? (
-              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-            ) : (
-              <Save className="h-4 w-4 mr-2" />
-            )}
+          <Button onClick={saveLayout} disabled={isSaving || !layoutName.trim()} size="sm">
+            {isSaving ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Save className="h-4 w-4 mr-2" />}
             {t("save_layout")}
           </Button>
         </div>
@@ -1585,19 +1691,18 @@ export default function FormBuilderPage() {
         onDragEnd={handleDragEnd}
       >
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-          {/* ── Canvas (Fields List) ── */}
-          <div className="lg:col-span-4">
-            <Card className="border border-border bg-card overflow-hidden sticky top-6">
-              <CardHeader className="p-0">
+          
+          {/* ── Left Sidebar ── */}
+          <div className="lg:col-span-3">
+            <Card className="border border-border bg-card overflow-hidden sticky top-6 h-[calc(100vh-140px)] flex flex-col">
+              <CardHeader className="p-0 shrink-0">
                 <div className="px-4 pt-4 pb-3 border-b border-border/50 bg-gradient-to-r from-primary/5 to-primary/10">
                   <CardTitle className="text-base">{t("form_elements")}</CardTitle>
-                  <CardDescription className="text-xs mt-0.5">
-                    {t("click_to_add")}
-                  </CardDescription>
+                  <CardDescription className="text-xs mt-0.5">{t("click_to_add")}</CardDescription>
                 </div>
               </CardHeader>
-              <CardContent className="p-3 max-h-[calc(100vh-220px)] overflow-y-auto space-y-5">
-                {/* Available Fields */}
+              
+              <div className="flex-1 overflow-y-auto p-3 space-y-5">
                 <div className="space-y-2">
                   <Label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground px-1">
                     {t("available_fields")}
@@ -1608,10 +1713,7 @@ export default function FormBuilderPage() {
                       .map((type) => {
                         const reg = FIELD_REGISTRY[type];
                         const Icon = reg.icon;
-                        const isImportant = ["pickup", "dropoff", "date", "time"].includes(type) || 
-                                          (type === "duration" && fields.some(f => f.type === "booking-type")) ||
-                                          ((type === "return-date" || type === "return-time") && fields.some(f => f.type === "trip-type"));
-                        
+                        const isImportant = ["pickup", "dropoff", "date", "time"].includes(type);
                         return (
                           <Button
                             key={type}
@@ -1624,20 +1726,15 @@ export default function FormBuilderPage() {
                             }`}
                             onClick={() => addField(type)}
                           >
-                            <div className="relative">
-                              <Icon className={`h-3.5 w-3.5 shrink-0 group-hover:scale-110 transition-transform ${isImportant ? "text-amber-600" : "text-primary"}`} />
-                            </div>
+                            <Icon className={`h-3.5 w-3.5 shrink-0 group-hover:scale-110 transition-transform ${isImportant ? "text-amber-600" : "text-primary"}`} />
                             <span className={`truncate ${isImportant ? "font-semibold text-amber-900" : ""}`}>
                               {t(reg.labelKey)}
-                              {isImportant && <span className="ml-0.5 text-amber-600 font-bold">*</span>}
                             </span>
                           </Button>
                         );
                       })}
                   </div>
-                  {(Object.keys(FIELD_REGISTRY) as BookingFieldType[]).filter(
-                    (type) => !fields.some((f) => f.type === type),
-                  ).length === 0 && (
+                  {(Object.keys(FIELD_REGISTRY) as BookingFieldType[]).filter((type) => !fields.some((f) => f.type === type)).length === 0 && (
                     <div className="text-[10px] text-muted-foreground text-center py-2 px-3 border border-dashed rounded-md bg-muted/20">
                       {t("all_fields_added")}
                     </div>
@@ -1646,26 +1743,17 @@ export default function FormBuilderPage() {
 
                 <Separator />
 
-                {/* Form Structure */}
                 <div className="space-y-2">
-                  <Label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground px-1">
-                    {t("canvas_title")}
+                  <Label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground px-1 flex items-center gap-2">
+                    <Layers className="h-3 w-3" /> {t("canvas_title")}
                   </Label>
                   {fields.length === 0 ? (
                     <div className="text-center py-12 px-4 border-2 border-dashed rounded-lg bg-muted/10">
                       <Plus className="h-6 w-6 text-muted-foreground/30 mx-auto mb-2" />
-                      <p className="text-xs text-muted-foreground font-medium">
-                        {t("empty_form")}
-                      </p>
-                      <p className="text-[10px] text-muted-foreground/70 mt-1">
-                        {t("empty_form_description")}
-                      </p>
+                      <p className="text-xs text-muted-foreground font-medium">{t("empty_form")}</p>
                     </div>
                   ) : (
-                    <SortableContext
-                      items={fields.map((f) => f.id)}
-                      strategy={verticalListSortingStrategy}
-                    >
+                    <SortableContext items={fields.map((f) => f.id)} strategy={verticalListSortingStrategy}>
                       <div className="space-y-1.5">
                         {fields.map((field) => (
                           <SortableField
@@ -1681,49 +1769,52 @@ export default function FormBuilderPage() {
                     </SortableContext>
                   )}
                 </div>
-              </CardContent>
+              </div>
             </Card>
           </div>
 
-          {/* ── Preview Panel ── */}
-          <div className="lg:col-span-5">
-            <Card className="border border-border bg-card overflow-hidden">
-              <CardHeader className="p-0">
+          {/* ── Center: Canvas ── */}
+          <div className="lg:col-span-6">
+            <Card className="border border-border bg-card overflow-hidden h-full flex flex-col">
+              <CardHeader className="p-0 shrink-0">
                 <div className="px-4 pt-4 pb-3 border-b border-border/50 bg-gradient-to-r from-primary/5 to-primary/10 flex items-center justify-between">
                   <div>
-                    <CardTitle className="text-base">{t("preview")}</CardTitle>
+                    <CardTitle className="text-base flex items-center gap-2">
+                      <Grid3X3 className="h-4 w-4 text-primary" /> {t("preview")}
+                      {isTabletOrMobile && (
+                        <Badge variant="secondary" className="text-[10px] ml-2">Auto-Mobile</Badge>
+                      )}
+                    </CardTitle>
                     <CardDescription className="text-xs mt-0.5">
-                      {t("preview_description")}
+                      {previewMode === 'mobile' ? 'Mobile View (Auto)' : `Desktop Grid (${formStyle.columns || 2} Cols)`}
                     </CardDescription>
                   </div>
-                  <div className="flex items-center gap-1 bg-muted rounded-md p-0.5">
+                  <div className="flex items-center gap-1 bg-muted rounded-md p-0.5 border">
                     <button
                       onClick={() => setPreviewMode("desktop")}
-                      className={`p-1.5 rounded transition-all ${
-                        previewMode === "desktop"
-                          ? "bg-card shadow-sm"
-                          : "hover:bg-card/50"
-                      }`}
+                      disabled={isTabletOrMobile} // Disable manual override if auto-active
+                      className={`p-1.5 rounded flex items-center gap-1.5 text-xs font-medium transition-all ${
+                        previewMode === "desktop" ? "bg-card shadow-sm text-primary" : "hover:bg-card/50 text-muted-foreground"
+                      } ${isTabletOrMobile ? 'opacity-50 cursor-not-allowed' : ''}`}
                     >
-                      <Monitor className="h-4 w-4" />
+                      <Monitor className="h-3.5 w-3.5" /> Desktop
                     </button>
                     <button
                       onClick={() => setPreviewMode("mobile")}
-                      className={`p-1.5 rounded transition-all ${
-                        previewMode === "mobile"
-                          ? "bg-card shadow-sm"
-                          : "hover:bg-card/50"
-                      }`}
+                      disabled={isTabletOrMobile}
+                      className={`p-1.5 rounded flex items-center gap-1.5 text-xs font-medium transition-all ${
+                        previewMode === "mobile" ? "bg-card shadow-sm text-primary" : "hover:bg-card/50 text-muted-foreground"
+                      } ${isTabletOrMobile ? 'opacity-50 cursor-not-allowed' : ''}`}
                     >
-                      <Smartphone className="h-4 w-4" />
+                      <Smartphone className="h-3.5 w-3.5" /> Mobile
                     </button>
                   </div>
                 </div>
               </CardHeader>
-              <CardContent className="p-6 bg-[radial-gradient(circle,#e5e7eb_1px,transparent_1px)] bg-[size:16px_16px]">
+              <CardContent className="p-6 bg-slate-50/50 flex-1 overflow-y-auto flex items-center justify-center">
                 <div
-                  className={`mx-auto transition-all ${
-                    previewMode === "mobile" ? "max-w-[320px]" : "max-w-full"
+                  className={`w-full transition-all duration-500 ease-in-out ${
+                    previewMode === "mobile" ? "max-w-[360px] border-x-8 border-y-[16px] border-slate-800 rounded-[2rem] shadow-2xl overflow-hidden bg-white" : "max-w-full"
                   }`}
                 >
                   <FormPreview
@@ -1737,947 +1828,760 @@ export default function FormBuilderPage() {
             </Card>
           </div>
 
-          {/* ── Configuration Panel ── */}
+          {/* ── Right Sidebar: Properties ── */}
           <div className="lg:col-span-3">
-            <Card className="border border-border bg-card overflow-hidden sticky top-6">
-              <Tabs defaultValue="properties" className="w-full">
-                <CardHeader className="p-0">
+            <Card className="border border-border bg-card overflow-hidden sticky top-6 h-[calc(100vh-140px)] flex flex-col">
+              <Tabs defaultValue="properties" className="w-full flex flex-col h-full">
+                <CardHeader className="p-0 shrink-0">
                   <div className="px-4 pt-4 pb-0 border-b border-border/50 bg-gradient-to-r from-primary/5 to-primary/10">
                     <TabsList className="grid w-full grid-cols-2 bg-transparent p-0 pb-3 h-auto">
-                      <TabsTrigger
-                        value="properties"
-                        className="data-[state=active]:bg-background data-[state=active]:shadow-sm rounded-md py-1.5 text-xs text-muted-foreground data-[state=active]:text-foreground"
-                      >
+                      <TabsTrigger value="properties" className="data-[state=active]:bg-background data-[state=active]:shadow-sm rounded-md py-1.5 text-xs text-muted-foreground data-[state=active]:text-foreground">
                         {t("properties")}
                       </TabsTrigger>
-                      <TabsTrigger
-                        value="design"
-                        className="data-[state=active]:bg-background data-[state=active]:shadow-sm rounded-md py-1.5 text-xs text-muted-foreground data-[state=active]:text-foreground"
-                      >
+                      <TabsTrigger value="design" className="data-[state=active]:bg-background data-[state=active]:shadow-sm rounded-md py-1.5 text-xs text-muted-foreground data-[state=active]:text-foreground">
                         {t("design")}
                       </TabsTrigger>
                     </TabsList>
                   </div>
                 </CardHeader>
-                <CardContent className="p-4">
-                  <TabsContent value="properties" className="mt-0">
-                    {selectedField ? (
-                      <div className="space-y-4">
-                        {/* Field type badge */}
-                        <div className="flex items-center gap-2">
-                          {(() => {
-                            const reg = FIELD_REGISTRY[selectedField.type];
-                            const Icon = reg?.icon || MapPin;
-                            return (
-                              <>
-                                <div className="rounded-md bg-primary/10 p-2">
-                                  <Icon className="h-4 w-4 text-primary" />
-                                </div>
-                                <div>
-                                  <p className="text-sm font-medium">
-                                    {t(reg.labelKey)}
-                                  </p>
-                                  <p className="text-[11px] text-muted-foreground">
-                                    {t(reg.descriptionKey)}
-                                  </p>
-                                </div>
-                              </>
-                            );
-                          })()}
-                        </div>
-
-                        <Separator />
-
-                        {/* Label */}
-                        <div className="space-y-1.5">
-                          <Label className="text-xs font-medium">{t("header_text")}</Label>
-                          <Input
-                            value={selectedField.label}
-                            onChange={(e) =>
-                              updateField(selectedField.id, {
-                                label: e.target.value,
-                              })
-                            }
-                            className="h-8 text-sm"
-                          />
-                        </div>
-
-                        {/* Placeholder */}
-                        {!["booking-type", "trip-type", "stops"].includes(
-                          selectedField.type,
-                        ) && (
-                          <div className="space-y-1.5">
-                            <Label className="text-xs font-medium">
-                              {t("placeholder")}
-                            </Label>
-                            <Input
-                              value={selectedField.placeholder || ""}
-                              onChange={(e) =>
-                                updateField(selectedField.id, {
-                                  placeholder: e.target.value,
-                                })
-                              }
-                              className="h-8 text-sm"
-                            />
-                          </div>
-                        )}
-
-                        {/* Width */}
-                        <div className="space-y-1.5">
-                          <Label className="text-xs font-medium">
-                            {selectedField.visibleWhen?.bookingType
-                              ? `${t("width")} (${selectedField.visibleWhen.bookingType} mode)`
-                              : `${t("width")} (default)`}
-                          </Label>
-                            <Select
-                              value={selectedField.width}
-                              onValueChange={(v) =>
-                                updateField(selectedField.id, {
-                                  width: v as IFormField["width"],
-                                })
-                              }
-                            >
-                              <SelectTrigger className="h-8 text-sm">
-                                <SelectValue placeholder={t("width")} />
-                              </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="full">{t("full")}</SelectItem>
-                              <SelectItem value="half">{t("half")}</SelectItem>
-                              <SelectItem value="third">{t("third")}</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </div>
-
-                        {/* Conditional Width: show for fields visible in BOTH modes */}
-                        {!selectedField.visibleWhen?.bookingType && !selectedField.visibleWhen?.tripType && (
-                          <div className="space-y-1.5">
-                            <Label className="text-xs font-medium">{t("width_hourly")}</Label>
-                            <p className="text-[10px] text-muted-foreground -mt-1">
-                              {t("width_hourly_description")}
-                            </p>
-                            <Select
-                              value={selectedField.widthWhenHourly || "inherit"}
-                              onValueChange={(v) =>
-                                updateField(selectedField.id, {
-                                  widthWhenHourly: v === "inherit" ? undefined : (v as IFormField["width"]),
-                                })
-                              }
-                            >
-                              <SelectTrigger className="h-8 text-sm">
-                                <SelectValue placeholder={t("same_as_default")} />
-                              </SelectTrigger>
-                              <SelectContent>
-                                <SelectItem value="inherit">{t("same_as_default")}</SelectItem>
-                                <SelectItem value="full">{t("full")}</SelectItem>
-                                <SelectItem value="half">{t("half")}</SelectItem>
-                                <SelectItem value="third">{t("third")}</SelectItem>
-                              </SelectContent>
-                            </Select>
-                          </div>
-                        )}
-
-                        {/* Required toggle */}
-                        <div className="flex items-center justify-between">
-                          <div>
-                            <Label className="text-xs font-medium">
-                              {t("required")}
-                            </Label>
-                            {FIELD_REGISTRY[selectedField.type]?.locked && (
-                              <p className="text-[10px] text-muted-foreground">
-                                {t("ui.core_field")}
-                              </p>
-                            )}
-                          </div>
-                          <button
-                            onClick={() => {
-                              if (FIELD_REGISTRY[selectedField.type]?.locked)
-                                return;
-                              updateField(selectedField.id, {
-                                required: !selectedField.required,
-                              });
-                            }}
-                            disabled={
-                              FIELD_REGISTRY[selectedField.type]?.locked
-                            }
-                            className={`relative h-5 w-9 rounded-full transition-colors ${
-                              selectedField.required
-                                ? "bg-primary"
-                                : "bg-muted-foreground/30"
-                            } ${
-                              FIELD_REGISTRY[selectedField.type]?.locked
-                                ? "opacity-50 cursor-not-allowed"
-                                : ""
-                            }`}
-                          >
-                            <span
-                              className={`absolute top-0.5 left-0.5 h-4 w-4 rounded-full bg-white shadow transition-transform ${
-                                selectedField.required
-                                  ? "translate-x-4"
-                                  : "translate-x-0"
-                              }`}
-                            />
-                          </button>
-                        </div>
-
-                        {/* Enabled toggle */}
-                        <div className="flex items-center justify-between">
-                          <div>
-                            <Label className="text-xs font-medium">
-                              {t("enabled")}
-                            </Label>
-                            {FIELD_REGISTRY[selectedField.type]?.locked && (
-                              <p className="text-[10px] text-muted-foreground">
-                                {t("ui.cannot_be_disabled")}
-                              </p>
-                            )}
-                          </div>
-                          <button
-                            onClick={() => toggleField(selectedField.id)}
-                            disabled={
-                              FIELD_REGISTRY[selectedField.type]?.locked
-                            }
-                            className={`relative h-5 w-9 rounded-full transition-colors ${
-                              selectedField.enabled
-                                ? "bg-primary"
-                                : "bg-muted-foreground/30"
-                            } ${
-                              FIELD_REGISTRY[selectedField.type]?.locked
-                                ? "opacity-50 cursor-not-allowed"
-                                : ""
-                            }`}
-                          >
-                            <span
-                              className={`absolute top-0.5 left-0.5 h-4 w-4 rounded-full bg-white shadow transition-transform ${
-                                selectedField.enabled
-                                  ? "translate-x-4"
-                                  : "translate-x-0"
-                              }`}
-                            />
-                          </button>
-                        </div>
-
-                        {/* Visibility conditions */}
-                        {selectedField.visibleWhen &&
-                          (selectedField.visibleWhen.bookingType ||
-                            selectedField.visibleWhen.tripType) && (
-                            <>
-                              <Separator />
-                              <div className="space-y-2">
-                                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                                  {t("ui.visibility")}
-                                </p>
-                                {selectedField.visibleWhen.bookingType && (
-                                  <div className="flex items-center gap-2 text-xs text-muted-foreground bg-muted/50 rounded-md px-2.5 py-1.5">
-                                    <Eye className="h-3 w-3" />
-                                    <span>
-                                      {t("ui.visible_when_booking")}{" "}
-                                      <Badge
-                                        variant="outline"
-                                        className="text-[10px] px-1.5 py-0 h-4 ml-0.5"
-                                      >
-                                        {selectedField.visibleWhen.bookingType === "destination" ? t("ui.destination") : t("ui.hourly")}
-                                      </Badge>
-                                    </span>
-                                  </div>
-                                )}
-                                {selectedField.visibleWhen.tripType && (
-                                  <div className="flex items-center gap-2 text-xs text-muted-foreground bg-muted/50 rounded-md px-2.5 py-1.5">
-                                    <Eye className="h-3 w-3" />
-                                    <span>
-                                      {t("ui.visible_when_trip")}
-                                    </span>
-                                  </div>
-                                )}
-                              </div>
-                            </>
-                          )}
-
-                        <Separator />
-
-                        {/* Step info - Removed for single step layout */}
-                      </div>
-                    ) : (
-                      <div className="flex flex-col items-center justify-center py-8 text-center">
-                        <div className="rounded-full bg-muted p-3 mb-3">
-                          <Settings2 className="h-5 w-5 text-muted-foreground" />
-                        </div>
-                        <p className="text-sm text-muted-foreground">
-                          {t("ui.select_field_to_configure")}
-                        </p>
-                        <p className="text-xs text-muted-foreground/70 mt-1">
-                          {t("ui.click_canvas_field")}
-                        </p>
-                        <div className="mt-4 space-y-1 text-xs text-muted-foreground/60">
-                          <p>
-                            <kbd className="px-1.5 py-0.5 bg-muted rounded text-[10px]">
-                              Ctrl+Z
-                            </kbd>{" "}
-                            {t("ui.undo")}
-                          </p>
-                          <p>
-                            <Lock className="inline h-3 w-3 mr-1" />
-                            {t("ui.locked_fields_disclaimer")}
-                          </p>
-                        </div>
-                      </div>
-                    )}
-                  </TabsContent>
-
-                  <TabsContent
-                    value="design"
-                    className="mt-0 space-y-5 h-[calc(100vh-270px)] overflow-y-auto pr-2"
-                  >
-                    {/* Header Section */}
-                    <div className="flex items-center justify-between">
-                      <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                        Progress Steps
-                      </Label>
-                      <Switch
-                        checked={formStyle.showSteps}
-                        onCheckedChange={(c) =>
-                          setFormStyle((s) => ({ ...s, showSteps: c }))
-                        }
-                      />
-                    </div>
-                    <div className="space-y-3">
-                      <div className="flex items-center justify-between">
-                        <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                          {t("show_header")}
-                        </Label>
-                        <Switch
-                          checked={formStyle.showHeader}
-                          onCheckedChange={(c) =>
-                            setFormStyle((s) => ({ ...s, showHeader: c }))
-                          }
-                        />
-                      </div>
-                      {formStyle.showHeader && (
-                        <div className="space-y-2 pl-2 border-l-2 border-muted ml-1">
-                          <div className="space-y-1">
-                            <Label className="text-[10px]">{t("header_text")}</Label>
-                            <Input
-                              value={formStyle.headingText}
-                              onChange={(e) =>
-                                setFormStyle((s) => ({
-                                  ...s,
-                                  headingText: e.target.value,
-                                }))
-                              }
-                              className="h-7 text-xs"
-                            />
-                          </div>
-                          <div className="space-y-1">
-                            <Label className="text-[10px]">{t("sub_header_text")}</Label>
-                            <Input
-                              value={formStyle.subHeadingText}
-                              onChange={(e) =>
-                                setFormStyle((s) => ({
-                                  ...s,
-                                  subHeadingText: e.target.value,
-                                }))
-                              }
-                              className="h-7 text-xs"
-                            />
-                          </div>
-                          <div className="grid grid-cols-2 gap-2">
+                
+                <div className="flex-1 overflow-y-auto">
+                  <CardContent className="p-4">
+                    <TabsContent value="properties" className="mt-0 space-y-5">
+                      {selectedFieldId === '__button_search' ? (
+                        // ─── Button Properties ───
+                        <div className="space-y-5">
+                          <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg border border-border/50">
+                            <div className="rounded-md bg-primary/10 p-2.5">
+                              <ArrowRight className="h-5 w-5 text-primary" />
+                            </div>
                             <div>
-                              <Label className="text-[10px]">{t("ui.alignment")}</Label>
+                              <p className="text-sm font-semibold">{t("button_properties.search_button")}</p>
+                              <p className="text-[11px] text-muted-foreground">{t("button_properties.configure_button")}</p>
+                            </div>
+                          </div>
+
+                          <div className="space-y-3">
+                            <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">{t("button_properties.content")}</Label>
+                            <div className="space-y-1.5">
+                              <Label className="text-xs font-medium">{t("button_properties.button_text")}</Label>
+                              <Input
+                                value={formStyle.buttonText}
+                                onChange={(e) => setFormStyle((s) => ({ ...s, buttonText: e.target.value }))}
+                                className="h-8 text-sm"
+                                placeholder={t("button_properties.button_text")}
+                              />
+                            </div>
+                          </div>
+
+                          <Separator />
+
+                          <div className="space-y-3">
+                            <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">{t("button_properties.layout")}</Label>
+                            <div className="space-y-1.5">
+                              <Label className="text-xs font-medium">{t("button_properties.width")}</Label>
                               <Select
-                                value={formStyle.headingAlignment}
-                                onValueChange={(v) =>
-                                  setFormStyle((s) => ({
-                                    ...s,
-                                    headingAlignment: v as any,
-                                  }))
-                                }
+                                value={formStyle.buttonWidth || "full"}
+                                onValueChange={(v) => setFormStyle((s) => ({ ...s, buttonWidth: v as any }))}
                               >
-                                <SelectTrigger className="h-7 text-xs">
-                                  <SelectValue />
-                                </SelectTrigger>
+                                <SelectTrigger className="h-8 text-sm"><SelectValue /></SelectTrigger>
                                 <SelectContent>
-                                  <SelectItem value="left">{t("ui.left")}</SelectItem>
-                                  <SelectItem value="center">{t("ui.center")}</SelectItem>
-                                  <SelectItem value="right">{t("ui.right")}</SelectItem>
+                                  <SelectItem value="full">{t("button_properties.full_width")}</SelectItem>
+                                  <SelectItem value="two-thirds">{t("button_properties.two_thirds")}</SelectItem>
+                                  <SelectItem value="half">{t("button_properties.half")}</SelectItem>
+                                  <SelectItem value="third">{t("button_properties.third")}</SelectItem>
+                                  <SelectItem value="quarter">{t("button_properties.quarter")}</SelectItem>
                                 </SelectContent>
                               </Select>
                             </div>
-                            <div>
-                              <Label className="text-[10px]">{t("color")}</Label>
+
+                            <div className="space-y-1.5">
+                              <Label className="text-xs font-medium">{t("button_properties.alignment")}</Label>
+                              <div className="flex gap-1">
+                                {(['left', 'center', 'right'] as const).map((align) => (
+                                  <button
+                                    key={align}
+                                    onClick={() => setFormStyle((s) => ({ ...s, buttonAlignment: align }))}
+                                    className={`flex-1 py-1.5 rounded text-xs font-medium transition-all ${
+                                      formStyle.buttonAlignment === align
+                                        ? 'bg-primary text-white'
+                                        : 'bg-muted text-muted-foreground hover:bg-muted/80'
+                                    }`}
+                                    title={t(`button_properties.${align}`)}
+                                  >
+                                    {align === 'left' ? '←' : align === 'center' ? '↔' : '→'}
+                                  </button>
+                                ))}
+                              </div>
+                            </div>
+
+                            <div className="space-y-1.5">
+                              <Label className="text-xs font-medium">{t("button_properties.size")}</Label>
+                              <Select
+                                value={formStyle.buttonSize || "default"}
+                                onValueChange={(v) => setFormStyle((s) => ({ ...s, buttonSize: v as any }))}
+                              >
+                                <SelectTrigger className="h-8 text-sm"><SelectValue /></SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="small">{t("button_properties.small")}</SelectItem>
+                                  <SelectItem value="default">{t("button_properties.default")}</SelectItem>
+                                  <SelectItem value="large">{t("button_properties.large")}</SelectItem>
+                                </SelectContent>
+                              </Select>
+                            </div>
+                          </div>
+
+                          <Separator />
+
+                          <div className="space-y-3">
+                            <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">{t("button_properties.styling")}</Label>
+                            <div className="space-y-1.5">
+                              <Label className="text-xs font-medium">{t("button_properties.background_color")}</Label>
                               <div className="flex items-center gap-2">
                                 <input
                                   type="color"
-                                  value={formStyle.headingColor}
-                                  onChange={(e) =>
-                                    setFormStyle((s) => ({
-                                      ...s,
-                                      headingColor: e.target.value,
-                                    }))
-                                  }
-                                  className="h-7 w-7 rounded cursor-pointer border-0 p-0"
+                                  value={formStyle.buttonColor}
+                                  onChange={(e) => setFormStyle((s) => ({ ...s, buttonColor: e.target.value }))}
+                                  className="h-8 w-8 rounded cursor-pointer border-0 p-0"
                                 />
-                                <span className="text-[10px] font-mono">
-                                  {formStyle.headingColor}
-                                </span>
+                                <Input className="h-8 text-xs font-mono flex-1" value={formStyle.buttonColor} onChange={(e) => setFormStyle((s) => ({ ...s, buttonColor: e.target.value }))} />
                               </div>
                             </div>
+
+                            <div className="space-y-1.5">
+                              <Label className="text-xs font-medium">{t("button_properties.text_color")}</Label>
+                              <div className="flex items-center gap-2">
+                                <input
+                                  type="color"
+                                  value={formStyle.buttonTextColor}
+                                  onChange={(e) => setFormStyle((s) => ({ ...s, buttonTextColor: e.target.value }))}
+                                  className="h-8 w-8 rounded cursor-pointer border-0 p-0"
+                                />
+                                <Input className="h-8 text-xs font-mono flex-1" value={formStyle.buttonTextColor} onChange={(e) => setFormStyle((s) => ({ ...s, buttonTextColor: e.target.value }))} />
+                              </div>
+                            </div>
+
+                            <div className="space-y-1.5">
+                              <Label className="text-xs font-medium">{t("button_properties.border_radius")}</Label>
+                              <Input
+                                value={formStyle.buttonBorderRadius || "0.5rem"}
+                                onChange={(e) => setFormStyle((s) => ({ ...s, buttonBorderRadius: e.target.value }))}
+                                className="h-8 text-xs font-mono"
+                                placeholder="0.5rem"
+                              />
+                            </div>
                           </div>
+                        </div>
+                      ) : selectedField ? (
+                        <div className="space-y-5">
+                          <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg border border-border/50">
+                            {(() => {
+                              const reg = FIELD_REGISTRY[selectedField.type];
+                              const Icon = reg?.icon || MapPin;
+                              return (
+                                <>
+                                  <div className="rounded-md bg-primary/10 p-2.5">
+                                    <Icon className="h-5 w-5 text-primary" />
+                                  </div>
+                                  <div>
+                                    <p className="text-sm font-semibold">{t(reg.labelKey)}</p>
+                                    <p className="text-[11px] text-muted-foreground">{t(reg.descriptionKey)}</p>
+                                  </div>
+                                </>
+                              );
+                            })()}
+                          </div>
+
+                          <div className="space-y-3">
+                            <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Content</Label>
+                            <div className="space-y-1.5">
+                              <Label className="text-xs font-medium">{t("header_text")}</Label>
+                              <Input
+                                value={selectedField.label}
+                                onChange={(e) => updateField(selectedField.id, { label: e.target.value })}
+                                className="h-8 text-sm"
+                              />
+                            </div>
+                            {!["booking-type", "trip-type", "stops"].includes(selectedField.type) && (
+                              <div className="space-y-1.5">
+                                <Label className="text-xs font-medium">{t("placeholder")}</Label>
+                                <Input
+                                  value={selectedField.placeholder || ""}
+                                  onChange={(e) => updateField(selectedField.id, { placeholder: e.target.value })}
+                                  className="h-8 text-sm"
+                                />
+                              </div>
+                            )}
+                          </div>
+
+                          <Separator />
+
+                          <div className="space-y-3">
+                            <div className="flex items-center gap-2">
+                              <Monitor className="h-3.5 w-3.5 text-muted-foreground" />
+                              <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Desktop Layout</Label>
+                            </div>
+                            
+                            <div className="space-y-1.5">
+                              <Label className="text-xs font-medium">Grid Width</Label>
+                              <Select
+                                value={selectedField.width}
+                                onValueChange={(v) => updateField(selectedField.id, { width: v as IFormField["width"] })}
+                              >
+                                <SelectTrigger className="h-8 text-sm"><SelectValue /></SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="full">Full Width (100%)</SelectItem>
+                                  <SelectItem value="two-thirds">Two-Thirds (66%)</SelectItem>
+                                  <SelectItem value="half">Half (50%)</SelectItem>
+                                  <SelectItem value="third">Third (33%)</SelectItem>
+                                  <SelectItem value="quarter">Quarter (25%)</SelectItem>
+                                </SelectContent>
+                              </Select>
+                            </div>
+
+                            {!selectedField.visibleWhen?.bookingType && (
+                              <div className="space-y-1.5">
+                                <Label className="text-xs font-medium flex items-center gap-1.5">
+                                  <Clock className="h-3 w-3" /> Hourly Mode Width
+                                  <span className="text-[9px] text-muted-foreground font-normal ml-auto">Optional</span>
+                                </Label>
+                                <Select
+                                  value={selectedField.widthWhenHourly || "inherit"}
+                                  onValueChange={(v) => updateField(selectedField.id, { widthWhenHourly: v === "inherit" ? undefined : (v as IFormField["width"]) })}
+                                >
+                                  <SelectTrigger className="h-8 text-sm"><SelectValue /></SelectTrigger>
+                                  <SelectContent>
+                                    <SelectItem value="inherit">Same as Default</SelectItem>
+                                    <SelectItem value="full">Full Width</SelectItem>
+                                    <SelectItem value="two-thirds">Two-Thirds</SelectItem>
+                                    <SelectItem value="half">Half</SelectItem>
+                                    <SelectItem value="third">Third</SelectItem>
+                                    <SelectItem value="quarter">Quarter</SelectItem>
+                                  </SelectContent>
+                                </Select>
+                              </div>
+                            )}
+                          </div>
+
+                          <Separator />
+
+                          <div className="space-y-3">
+                            <div className="flex items-center gap-2">
+                              <Smartphone className="h-3.5 w-3.5 text-muted-foreground" />
+                              <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Mobile Layout</Label>
+                            </div>
+                            <div className="space-y-1.5">
+                              <Label className="text-xs font-medium">Mobile Width Override</Label>
+                              <p className="text-[10px] text-muted-foreground">How this field behaves on small screens.</p>
+                              <Select
+                                value={selectedField.mobileWidth || "inherit"}
+                                onValueChange={(v) => updateField(selectedField.id, { mobileWidth: v === "inherit" ? undefined : (v as IFormField["width"]) })}
+                              >
+                                <SelectTrigger className="h-8 text-sm"><SelectValue /></SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="inherit">Same as Desktop</SelectItem>
+                                  <SelectItem value="full">Full Width</SelectItem>
+                                  <SelectItem value="two-thirds">Two-Thirds</SelectItem>
+                                  <SelectItem value="half">Half (Side-by-side)</SelectItem>
+                                  <SelectItem value="third">Third</SelectItem>
+                                  <SelectItem value="quarter">Quarter</SelectItem>
+                                </SelectContent>
+                              </Select>
+                            </div>
+
+                            <div className="space-y-1.5">
+                              <Label className="text-xs font-medium flex items-center gap-1.5">
+                                <Clock className="h-3 w-3" /> Mobile Hourly Mode Width
+                                <span className="text-[9px] text-muted-foreground font-normal ml-auto">Optional</span>
+                              </Label>
+                              <Select
+                                value={selectedField.mobileWidthWhenHourly || "inherit"}
+                                onValueChange={(v) => updateField(selectedField.id, { mobileWidthWhenHourly: v === "inherit" ? undefined : (v as IFormField["width"]) })}
+                              >
+                                <SelectTrigger className="h-8 text-sm"><SelectValue /></SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="inherit">Same as Mobile Default</SelectItem>
+                                  <SelectItem value="full">Full Width</SelectItem>
+                                  <SelectItem value="two-thirds">Two-Thirds</SelectItem>
+                                  <SelectItem value="half">Half (Side-by-side)</SelectItem>
+                                  <SelectItem value="third">Third</SelectItem>
+                                  <SelectItem value="quarter">Quarter</SelectItem>
+                                </SelectContent>
+                              </Select>
+                            </div>
+                          </div>
+
+                          <Separator />
+
+                          <div className="space-y-3">
+                            <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Logic & Validation</Label>
+                            <div className="flex items-center justify-between">
+                              <div>
+                                <Label className="text-xs font-medium">{t("required")}</Label>
+                                {FIELD_REGISTRY[selectedField.type]?.locked && <p className="text-[10px] text-muted-foreground">Core field</p>}
+                              </div>
+                              <Switch 
+                                checked={selectedField.required} 
+                                disabled={FIELD_REGISTRY[selectedField.type]?.locked}
+                                onCheckedChange={(c) => updateField(selectedField.id, { required: c })}
+                              />
+                            </div>
+                            <div className="flex items-center justify-between">
+                              <div>
+                                <Label className="text-xs font-medium">{t("enabled")}</Label>
+                              </div>
+                              <Switch 
+                                checked={selectedField.enabled} 
+                                disabled={FIELD_REGISTRY[selectedField.type]?.locked}
+                                onCheckedChange={() => toggleField(selectedField.id)}
+                              />
+                            </div>
+                          </div>
+
+                          {["booking-type", "trip-type"].includes(selectedField.type) && (
+                            <div className="space-y-3">
+                              <Separator />
+                              <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Styling</Label>
+                              <div className="flex items-center justify-between">
+                                <div>
+                                  <Label className="text-xs font-medium">Remove Border Container</Label>
+                                  <p className="text-[10px] text-muted-foreground">Hide the bordered box around buttons</p>
+                                </div>
+                                <Switch 
+                                  checked={selectedField.showBorder === false}
+                                  onCheckedChange={(isRemovingBorder) => {
+                                    const newValue = isRemovingBorder ? false : true;
+                                    console.log("Toggled showBorder to:", newValue);
+                                    updateField(selectedField.id, { showBorder: newValue });
+                                  }}
+                                />
+                              </div>
+                            </div>
+                          )}
+
+                          {selectedField.visibleWhen && (
+                            <div className="p-3 bg-blue-50/50 border border-blue-100 rounded-md space-y-2">
+                              <p className="text-[10px] font-semibold text-blue-900 uppercase tracking-wider">Conditional Visibility</p>
+                              {selectedField.visibleWhen.bookingType && (
+                                <div className="flex items-center gap-2 text-xs text-blue-800">
+                                  <Eye className="h-3 w-3" />
+                                  <span>Only in <Badge variant="secondary" className="text-[10px] bg-white">{selectedField.visibleWhen.bookingType}</Badge> mode</span>
+                                </div>
+                              )}
+                            </div>
+                          )}
+                        </div>
+                      ) : (
+                        <div className="flex flex-col items-center justify-center py-12 text-center">
+                          <div className="rounded-full bg-muted p-4 mb-3">
+                            <Settings2 className="h-6 w-6 text-muted-foreground" />
+                          </div>
+                          <p className="text-sm text-muted-foreground font-medium">{t("ui.select_field_to_configure")}</p>
+                          <p className="text-xs text-muted-foreground/70 mt-1">Click an element on the canvas</p>
                         </div>
                       )}
-                    </div>
+                    </TabsContent>
 
-                    <Separator />
-
-                    {/* Submit Button Styles */}
-                    <div className="space-y-3">
-                      <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                        {t("search_button")}
-                      </Label>
-
-                       <div className="space-y-1">
-                          <Label className="text-[10px]">{t("button_text")}</Label>
-                          <Input
-                            value={formStyle.buttonText}
-                            onChange={(e) =>
-                              setFormStyle((s) => ({
-                                ...s,
-                                buttonText: e.target.value,
-                              }))
-                            }
-                            className="h-7 text-xs"
-                          />
-                        </div>
-
-                      <div className="grid grid-cols-2 gap-3">
-                        <div className="space-y-1">
-                          <Label className="text-[10px]">{t("button_color")}</Label>
-                          <div className="flex items-center gap-2">
-                            <div className="relative h-7 w-7 rounded border overflow-hidden">
-                              <input
-                                type="color"
-                                className="absolute -top-1 -left-1 w-10 h-10 border-0 p-0 cursor-pointer"
-                                value={formStyle.buttonColor || "#0f172a"}
-                                onChange={(e) =>
-                                  setFormStyle((s) => ({
-                                    ...s,
-                                    buttonColor: e.target.value,
-                                  }))
-                                }
-                              />
-                            </div>
-                            <Input
-                              className="h-7 text-xs font-mono p-1"
-                              value={formStyle.buttonColor || "#0f172a"}
-                              onChange={(e) =>
-                                setFormStyle((s) => ({
-                                  ...s,
-                                  buttonColor: e.target.value,
-                                }))
-                              }
-                            />
+                    <TabsContent value="design" className="mt-0 space-y-6">
+                      {/* VISIBILITY TOGGLES */}
+                      <div className="space-y-3 bg-muted/30 p-4 rounded-lg">
+                        <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Visibility</Label>
+                        <div className="space-y-2">
+                          <div className="flex items-center justify-between">
+                            <Label className="text-xs font-medium">Show Header</Label>
+                            <Switch checked={formStyle.showHeader} onCheckedChange={(c) => setFormStyle((s) => ({ ...s, showHeader: c }))} />
+                          </div>
+                          <div className="flex items-center justify-between">
+                            <Label className="text-xs font-medium">Show Steps</Label>
+                            <Switch checked={formStyle.showSteps} onCheckedChange={(c) => setFormStyle((s) => ({ ...s, showSteps: c }))} />
+                          </div>
+                          <div className="flex items-center justify-between">
+                            <Label className="text-xs font-medium">Show Footer</Label>
+                            <Switch checked={formStyle.showFooter} onCheckedChange={(c) => setFormStyle((s) => ({ ...s, showFooter: c }))} />
                           </div>
                         </div>
-                        <div className="space-y-1">
-                          <Label className="text-[10px]">{t("text_color")}</Label>
-                          <div className="flex items-center gap-2">
-                            <div className="relative h-7 w-7 rounded border overflow-hidden">
-                              <input
-                                type="color"
-                                className="absolute -top-1 -left-1 w-10 h-10 border-0 p-0 cursor-pointer"
-                                value={formStyle.buttonTextColor || "#ffffff"}
-                                onChange={(e) =>
-                                  setFormStyle((s) => ({
-                                    ...s,
-                                    buttonTextColor: e.target.value,
-                                  }))
-                                }
-                              />
+                      </div>
+
+                      <Separator />
+
+                      {/* LAYOUT & GRID */}
+                      <div className="space-y-3">
+                        <div className="flex items-center gap-2">
+                          <Columns className="h-4 w-4 text-primary" />
+                          <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Layout</Label>
+                        </div>
+                        <div className="space-y-3 pl-1">
+                          <div className="space-y-1.5">
+                            <div className="flex justify-between items-center">
+                              <Label className="text-xs font-medium">Desktop Columns</Label>
+                              <span className="text-xs font-mono bg-muted px-1.5 rounded">{formStyle.columns || 2}</span>
                             </div>
-                            <Input
-                              className="h-7 text-xs font-mono p-1"
-                              value={formStyle.buttonTextColor || "#ffffff"}
-                              onChange={(e) =>
-                                setFormStyle((s) => ({
-                                  ...s,
-                                  buttonTextColor: e.target.value,
-                                }))
-                              }
+                            <input
+                              type="range"
+                              min="1"
+                              max="12"
+                              step="1"
+                              value={formStyle.columns || 2}
+                              onChange={(e) => setFormStyle((s) => ({ ...s, columns: parseInt(e.target.value) }))}
+                              className="w-full h-1.5 bg-muted rounded-lg appearance-none cursor-pointer accent-primary"
+                            />
+                            <div className="flex justify-between text-[9px] text-muted-foreground px-1 font-mono">
+                              <span>1</span><span>6</span><span>12</span>
+                            </div>
+                          </div>
+                          
+                          <div className="space-y-1.5">
+                            <div className="flex justify-between items-center">
+                              <Label className="text-xs font-medium">Field Gap</Label>
+                              <span className="text-xs font-mono bg-muted px-1.5 rounded">{formStyle.fieldGap ?? 12}px</span>
+                            </div>
+                            <input
+                              type="range"
+                              min="4"
+                              max="32"
+                              step="2"
+                              value={formStyle.fieldGap ?? 12}
+                              onChange={(e) => setFormStyle((s) => ({ ...s, fieldGap: parseInt(e.target.value) }))}
+                              className="w-full h-1.5 bg-muted rounded-lg appearance-none cursor-pointer accent-primary"
                             />
                           </div>
                         </div>
                       </div>
 
-                      <div className="grid grid-cols-2 gap-3">
-                        <div className="space-y-1">
-                          <Label className="text-[10px]">{t("width")}</Label>
-                          <Select
-                              value={formStyle.buttonWidth || "full"}
-                              onValueChange={(v) =>
-                                setFormStyle((s) => ({
-                                  ...s,
-                                  buttonWidth: v as any,
-                                }))
-                              }
-                            >
-                              <SelectTrigger className="h-7 text-xs">
-                                <SelectValue />
-                              </SelectTrigger>
-                              <SelectContent>
-                                <SelectItem value="full">{t("full")}</SelectItem>
-                                <SelectItem value="auto">{t("auto")}</SelectItem>
-                                <SelectItem value="half">{t("half")}</SelectItem>
-                              </SelectContent>
-                            </Select>
-                        </div>
-                        <div className="space-y-1">
-                          <Label className="text-[10px]">{t("ui.alignment")}</Label>
-                          <Select
-                              value={formStyle.buttonAlignment || "center"}
-                              onValueChange={(v) =>
-                                setFormStyle((s) => ({
-                                  ...s,
-                                  buttonAlignment: v as any,
-                                }))
-                              }
-                            >
-                              <SelectTrigger className="h-7 text-xs">
-                                <SelectValue />
-                              </SelectTrigger>
-                              <SelectContent>
-                                <SelectItem value="left">{t("ui.left")}</SelectItem>
-                                <SelectItem value="center">{t("ui.center")}</SelectItem>
-                                <SelectItem value="right">{t("ui.right")}</SelectItem>
-                              </SelectContent>
-                            </Select>
-                        </div>
-                      </div>
-                    </div>
+                      <Separator />
 
-                    <Separator />
-
-                    {/* Main Styles */}
-                    <div className="space-y-3">
-                      <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                        {t("appearance")}
-                      </Label>
-
-                      <div className="space-y-1">
-                        <div className="flex justify-between items-center">
-                          <Label className="text-[10px]">{t("ui.grid_columns")}</Label>
-                          <span className="text-[10px] bg-muted px-1.5 py-0.5 rounded font-mono">
-                            {formStyle.columns || 2}
-                          </span>
-                        </div>
-                        <input
-                          type="range"
-                          min="1"
-                          max="4"
-                          step="1"
-                          value={formStyle.columns || 2}
-                          onChange={(e) =>
-                            setFormStyle((s) => ({
-                              ...s,
-                              columns: parseInt(e.target.value),
-                            }))
-                          }
-                          className="w-full h-1.5 bg-muted rounded-lg appearance-none cursor-pointer"
-                        />
-                        <div className="flex justify-between text-[8px] text-muted-foreground px-1">
-                          <span>1</span>
-                          <span>2</span>
-                          <span>3</span>
-                          <span>4</span>
-                        </div>
-                      </div>
-
-                      <div className="grid grid-cols-2 gap-3">
-                        <div className="space-y-1">
-                          <Label className="text-[10px]">{t("ui.background")}</Label>
-                          <div className="flex items-center gap-2">
-                            <div className="relative h-7 w-7 rounded border overflow-hidden">
-                              <input
-                                type="color"
-                                className="absolute -top-1 -left-1 w-10 h-10 border-0 p-0 cursor-pointer"
-                                value={formStyle.backgroundColor}
-                                onChange={(e) =>
-                                  setFormStyle((s) => ({
-                                    ...s,
-                                    backgroundColor: e.target.value,
-                                  }))
-                                }
-                              />
+                      {/* BACKGROUND & APPEARANCE */}
+                      <div className="space-y-3">
+                        <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Background & Effects</Label>
+                        <div className="grid grid-cols-2 gap-3">
+                          <div className="space-y-1">
+                            <Label className="text-[10px]">Background Color</Label>
+                            <div className="flex items-center gap-2">
+                              <input type="color" value={formStyle.backgroundColor} onChange={(e) => setFormStyle((s) => ({ ...s, backgroundColor: e.target.value }))} className="h-8 w-8 rounded cursor-pointer border-0 p-0" />
+                              <Input className="h-8 text-xs font-mono" value={formStyle.backgroundColor} onChange={(e) => setFormStyle((s) => ({ ...s, backgroundColor: e.target.value }))} />
                             </div>
-                            <Input
-                              className="h-7 text-xs font-mono p-1"
-                              value={formStyle.backgroundColor}
-                              onChange={(e) =>
-                                setFormStyle((s) => ({
-                                  ...s,
-                                  backgroundColor: e.target.value,
-                                }))
-                              }
-                            />
+                          </div>
+                          <div className="space-y-1">
+                            <Label className="text-[10px]">Primary Color</Label>
+                            <div className="flex items-center gap-2">
+                              <input type="color" value={formStyle.primaryColor} onChange={(e) => setFormStyle((s) => ({ ...s, primaryColor: e.target.value }))} className="h-8 w-8 rounded cursor-pointer border-0 p-0" />
+                              <Input className="h-8 text-xs font-mono" value={formStyle.primaryColor} onChange={(e) => setFormStyle((s) => ({ ...s, primaryColor: e.target.value }))} />
+                            </div>
                           </div>
                         </div>
-                        <div className="space-y-1">
-                          <Label className="text-[10px]">
-                            {t("ui.opacity")}: {formStyle.backgroundOpacity}%
-                          </Label>
+
+                        <div className="space-y-1.5">
+                          <div className="flex justify-between items-center">
+                            <Label className="text-xs font-medium">Transparency</Label>
+                            <span className="text-xs font-mono bg-muted px-1.5 rounded">{formStyle.backgroundOpacity}%</span>
+                          </div>
                           <input
                             type="range"
                             min="0"
                             max="100"
-                            step="1"
+                            step="5"
                             value={formStyle.backgroundOpacity}
-                            onChange={(e) =>
-                              setFormStyle((s) => ({
-                                ...s,
-                                backgroundOpacity: parseInt(e.target.value),
-                              }))
-                            }
-                            className="w-full h-1.5 bg-muted rounded-lg appearance-none cursor-pointer"
+                            onChange={(e) => setFormStyle((s) => ({ ...s, backgroundOpacity: parseInt(e.target.value) }))}
+                            className="w-full h-1.5 bg-muted rounded-lg appearance-none cursor-pointer accent-primary"
+                          />
+                          <div className="flex justify-between text-[9px] text-muted-foreground px-1">
+                            <span>Transparent</span><span>Opaque</span>
+                          </div>
+                        </div>
+
+                        <div className="flex items-center justify-between pt-1">
+                          <Label className="text-xs font-medium">Glass Effect</Label>
+                          <Switch checked={formStyle.glassEffect} onCheckedChange={(c) => setFormStyle((s) => ({ ...s, glassEffect: c }))} />
+                        </div>
+                      </div>
+
+                      <Separator />
+
+                      {/* BORDER RADIUS */}
+                      <div className="space-y-3">
+                        <div className="flex items-center gap-2">
+                          <CornerDownRight className="h-4 w-4 text-primary" />
+                          <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Border Radius</Label>
+                        </div>
+                        <div className="space-y-3 pl-1">
+                          <div className="space-y-1.5">
+                            <div className="flex justify-between items-center">
+                              <Label className="text-xs font-medium">Container Radius</Label>
+                              <span className="text-xs font-mono bg-muted px-1.5 rounded">{formStyle.borderRadius}</span>
+                            </div>
+                            <Input
+                              value={formStyle.borderRadius}
+                              onChange={(e) => setFormStyle((s) => ({ ...s, borderRadius: e.target.value }))}
+                              className="h-8 text-xs font-mono"
+                              placeholder="0.75rem"
+                            />
+                            <p className="text-[10px] text-muted-foreground">Use rem, px, or % units (e.g., 0.75rem, 12px)</p>
+                          </div>
+
+                          <div className="space-y-1.5">
+                            <div className="flex justify-between items-center">
+                              <Label className="text-xs font-medium">Input Radius</Label>
+                              <span className="text-xs font-mono bg-muted px-1.5 rounded">{formStyle.inputBorderRadius || "0.5rem"}</span>
+                            </div>
+                            <Input
+                              value={formStyle.inputBorderRadius || "0.5rem"}
+                              onChange={(e) => setFormStyle((s) => ({ ...s, inputBorderRadius: e.target.value }))}
+                              className="h-8 text-xs font-mono"
+                              placeholder="0.5rem"
+                            />
+                            <p className="text-[10px] text-muted-foreground">Use rem, px, or % units (e.g., 0.5rem, 8px)</p>
+                          </div>
+                        </div>
+                      </div>
+
+                      <Separator />
+
+                      {/* HEADER SECTION */}
+                      <div className="space-y-3">
+                        <div className="flex items-center gap-2">
+                          <Type className="h-4 w-4 text-primary" />
+                          <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Header</Label>
+                        </div>
+
+                        <div className="space-y-1.5">
+                          <Label className="text-xs font-medium">Title</Label>
+                          <Input
+                            value={formStyle.headingText}
+                            onChange={(e) => setFormStyle((s) => ({ ...s, headingText: e.target.value }))}
+                            className="h-8 text-xs"
+                            placeholder="Enter header text"
                           />
                         </div>
-                      </div>
 
-                      <div className="flex items-center justify-between pt-1">
-                        <Label className="text-[10px]">{t("ui.glass_effect")}</Label>
-                        <Switch
-                          checked={formStyle.glassEffect}
-                          onCheckedChange={(c) =>
-                            setFormStyle((s) => ({ ...s, glassEffect: c }))
-                          }
-                        />
-                      </div>
-
-                      <div className="grid grid-cols-2 gap-3 pt-1">
-                        <div className="space-y-1">
-                          <Label className="text-[10px]">{t("primary_color")}</Label>
+                        <div className="space-y-1.5">
+                          <Label className="text-xs font-medium">Title Color</Label>
                           <div className="flex items-center gap-2">
-                            <div className="relative h-7 w-7 rounded border overflow-hidden">
-                              <input
-                                type="color"
-                                className="absolute -top-1 -left-1 w-10 h-10 border-0 p-0 cursor-pointer"
-                                value={formStyle.primaryColor}
-                                onChange={(e) =>
-                                  setFormStyle((s) => ({
-                                    ...s,
-                                    primaryColor: e.target.value,
-                                  }))
-                                }
-                              />
-                            </div>
-                            <Input
-                              className="h-7 text-xs font-mono p-1"
-                              value={formStyle.primaryColor}
-                              onChange={(e) =>
-                                setFormStyle((s) => ({
-                                  ...s,
-                                  primaryColor: e.target.value,
-                                }))
-                              }
+                            <input
+                              type="color"
+                              value={formStyle.headingColor}
+                              onChange={(e) => setFormStyle((s) => ({ ...s, headingColor: e.target.value }))}
+                              className="h-8 w-8 rounded cursor-pointer border-0 p-0"
                             />
+                            <Input className="h-8 text-xs font-mono flex-1" value={formStyle.headingColor} onChange={(e) => setFormStyle((s) => ({ ...s, headingColor: e.target.value }))} />
                           </div>
                         </div>
-                        <div className="space-y-1">
-                          <Label className="text-[10px]">{t("text_color")}</Label>
+
+                        <div className="space-y-1.5">
+                          <Label className="text-xs font-medium">Title Alignment</Label>
+                          <div className="flex gap-1">
+                            {(['left', 'center', 'right'] as const).map((align) => (
+                              <button
+                                key={align}
+                                onClick={() => setFormStyle((s) => ({ ...s, headingAlignment: align }))}
+                                className={`flex-1 py-1.5 rounded text-xs font-medium transition-all ${
+                                  formStyle.headingAlignment === align
+                                    ? 'bg-primary text-white'
+                                    : 'bg-muted text-muted-foreground hover:bg-muted/80'
+                                }`}
+                                title={align.charAt(0).toUpperCase() + align.slice(1)}
+                              >
+                                {align === 'left' ? '←' : align === 'center' ? '↔' : '→'}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+
+                        <div className="space-y-1.5">
+                          <Label className="text-xs font-medium">Subtitle</Label>
+                          <Input
+                            value={formStyle.subHeadingText || ""}
+                            onChange={(e) => setFormStyle((s) => ({ ...s, subHeadingText: e.target.value }))}
+                            className="h-8 text-xs"
+                            placeholder="Enter subtitle text"
+                          />
+                        </div>
+
+                        <div className="space-y-1.5">
+                          <Label className="text-xs font-medium">Subtitle Alignment</Label>
+                          <div className="flex gap-1">
+                            {(['left', 'center', 'right'] as const).map((align) => (
+                              <button
+                                key={align}
+                                onClick={() => setFormStyle((s) => ({ ...s, subHeadingAlignment: align }))}
+                                className={`flex-1 py-1.5 rounded text-xs font-medium transition-all ${
+                                  formStyle.subHeadingAlignment === align
+                                    ? 'bg-primary text-white'
+                                    : 'bg-muted text-muted-foreground hover:bg-muted/80'
+                                }`}
+                                title={align.charAt(0).toUpperCase() + align.slice(1)}
+                              >
+                                {align === 'left' ? '←' : align === 'center' ? '↔' : '→'}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+
+                      <Separator />
+
+                      {/* INPUT & TEXT COLORS */}
+                      <div className="space-y-3">
+                        <div className="flex items-center gap-2">
+                          <Palette className="h-4 w-4 text-primary" />
+                          <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Text & Input Colors</Label>
+                        </div>
+
+                        <div className="space-y-1.5">
+                          <Label className="text-xs font-medium">Body Text Color</Label>
                           <div className="flex items-center gap-2">
-                            <div className="relative h-7 w-7 rounded border overflow-hidden">
-                              <input
-                                type="color"
-                                className="absolute -top-1 -left-1 w-10 h-10 border-0 p-0 cursor-pointer"
-                                value={formStyle.textColor}
-                                onChange={(e) =>
-                                  setFormStyle((s) => ({
-                                    ...s,
-                                    textColor: e.target.value,
-                                  }))
-                                }
-                              />
-                            </div>
-                            <Input
-                              className="h-7 text-xs font-mono p-1"
+                            <input
+                              type="color"
                               value={formStyle.textColor}
-                              onChange={(e) =>
-                                setFormStyle((s) => ({
-                                  ...s,
-                                  textColor: e.target.value,
-                                }))
-                              }
+                              onChange={(e) => setFormStyle((s) => ({ ...s, textColor: e.target.value }))}
+                              className="h-8 w-8 rounded cursor-pointer border-0 p-0"
                             />
+                            <Input className="h-8 text-xs font-mono flex-1" value={formStyle.textColor} onChange={(e) => setFormStyle((s) => ({ ...s, textColor: e.target.value }))} />
                           </div>
                         </div>
-                      </div>
-                    </div>
 
-                    <Separator />
-
-                    {/* Borders */}
-                    <div className="space-y-3">
-                      <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                        {t("container_border")}
-                      </Label>
-                      <div className="grid grid-cols-2 gap-3">
-                        <div className="space-y-1">
-                          <Label className="text-[10px]">{t("radius")}</Label>
-                          <Select
-                            value={formStyle.borderRadius}
-                            onValueChange={(v) =>
-                              setFormStyle((s) => ({ ...s, borderRadius: v }))
-                            }
-                          >
-                            <SelectTrigger className="h-7 text-xs">
-                              <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="0rem">0px</SelectItem>
-                              <SelectItem value="0.25rem">4px</SelectItem>
-                              <SelectItem value="0.5rem">8px</SelectItem>
-                              <SelectItem value="0.75rem">12px</SelectItem>
-                              <SelectItem value="1rem">16px</SelectItem>
-                              <SelectItem value="1.5rem">24px</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </div>
-                        <div className="space-y-1">
-                          <Label className="text-[10px]">{t("width")}</Label>
-                          <Select
-                            value={formStyle.borderWidth}
-                            onValueChange={(v) =>
-                              setFormStyle((s) => ({ ...s, borderWidth: v }))
-                            }
-                          >
-                            <SelectTrigger className="h-7 text-xs">
-                              <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="0px">{t("none")}</SelectItem>
-                              <SelectItem value="1px">{t("thin")}</SelectItem>
-                              <SelectItem value="2px">{t("medium")}</SelectItem>
-                              <SelectItem value="4px">{t("thick")}</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </div>
-                        <div className="col-span-2 space-y-1">
-                          <Label className="text-[10px]">{t("border_color")}</Label>
-                          <div className="flex items-center gap-2 text-xs">
-                            <input
-                              type="color"
-                              value={formStyle.borderColor}
-                              onChange={(e) =>
-                                setFormStyle((s) => ({
-                                  ...s,
-                                  borderColor: e.target.value,
-                                }))
-                              }
-                              className="h-6 w-12 rounded cursor-pointer"
-                            />
-                            <span className="font-mono">
-                              {formStyle.borderColor}
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    <Separator />
-
-                    {/* Inputs */}
-                    <div className="space-y-3">
-                      <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                        {t("input_fields")}
-                      </Label>
-
-                      <div className="flex items-center justify-between">
-                        <Label className="text-[10px]">{t("show_labels")}</Label>
-                        <Switch
-                          checked={formStyle.showLabels ?? false}
-                          onCheckedChange={(c) =>
-                            setFormStyle((s) => ({ ...s, showLabels: c }))
-                          }
-                        />
-                      </div>
-
-                      <div className="space-y-1">
-                        <Label className="text-[10px]">{t("input_size")}</Label>
-                        <Select
-                          value={formStyle.inputSize || "default"}
-                          onValueChange={(v) =>
-                            setFormStyle((s) => ({
-                              ...s,
-                              inputSize: v as "compact" | "default" | "large",
-                            }))
-                          }
-                        >
-                          <SelectTrigger className="h-7 text-xs">
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="compact">{t("compact")}</SelectItem>
-                            <SelectItem value="default">{t("default")}</SelectItem>
-                            <SelectItem value="large">{t("large")}</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-
-                      <div className="space-y-1">
-                        <div className="flex justify-between items-center">
-                          <Label className="text-[10px]">{t("field_gap")}</Label>
-                          <span className="text-[10px] bg-muted px-1.5 py-0.5 rounded font-mono">
-                            {formStyle.fieldGap ?? 12}px
-                          </span>
-                        </div>
-                        <input
-                          type="range"
-                          min="4"
-                          max="32"
-                          step="2"
-                          value={formStyle.fieldGap ?? 12}
-                          onChange={(e) =>
-                            setFormStyle((s) => ({
-                              ...s,
-                              fieldGap: parseInt(e.target.value),
-                            }))
-                          }
-                          className="w-full h-1.5 bg-muted rounded-lg appearance-none cursor-pointer"
-                        />
-                      </div>
-
-                      <div className="space-y-1">
-                        <Label className="text-[10px]">{t("input_border_radius")}</Label>
-                        <Select
-                          value={formStyle.inputBorderRadius || "0.5rem"}
-                          onValueChange={(v) =>
-                            setFormStyle((s) => ({ ...s, inputBorderRadius: v }))
-                          }
-                        >
-                          <SelectTrigger className="h-7 text-xs">
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="0rem">Square (0px)</SelectItem>
-                            <SelectItem value="0.25rem">Slight (4px)</SelectItem>
-                            <SelectItem value="0.375rem">Small (6px)</SelectItem>
-                            <SelectItem value="0.5rem">Medium (8px)</SelectItem>
-                            <SelectItem value="0.75rem">Large (12px)</SelectItem>
-                            <SelectItem value="9999px">Pill</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-
-                      <div className="space-y-2 pt-1">
-                        <div className="grid grid-cols-2 gap-2 items-center">
-                          <Label className="text-[10px]">Background</Label>
-                          <div className="flex justify-end">
-                            <input
-                              type="color"
-                              value={formStyle.inputBackgroundColor}
-                              onChange={(e) =>
-                                setFormStyle((s) => ({
-                                  ...s,
-                                  inputBackgroundColor: e.target.value,
-                                }))
-                              }
-                              className="h-6 w-8 rounded cursor-pointer"
-                            />
-                          </div>
-                        </div>
-                        <div className="grid grid-cols-2 gap-2 items-center">
-                          <Label className="text-[10px]">Text Color</Label>
-                          <div className="flex justify-end">
-                            <input
-                              type="color"
-                              value={formStyle.inputTextColor}
-                              onChange={(e) =>
-                                setFormStyle((s) => ({
-                                  ...s,
-                                  inputTextColor: e.target.value,
-                                }))
-                              }
-                              className="h-6 w-8 rounded cursor-pointer"
-                            />
-                          </div>
-                        </div>
-                        <div className="grid grid-cols-2 gap-2 items-center">
-                          <Label className="text-[10px]">Border Color</Label>
-                          <div className="flex justify-end">
-                            <input
-                              type="color"
-                              value={formStyle.inputBorderColor}
-                              onChange={(e) =>
-                                setFormStyle((s) => ({
-                                  ...s,
-                                  inputBorderColor: e.target.value,
-                                }))
-                              }
-                              className="h-6 w-8 rounded cursor-pointer"
-                            />
-                          </div>
-                        </div>
-                        <div className="grid grid-cols-2 gap-2 items-center">
-                          <Label className="text-[10px]">{t("label_color")}</Label>
-                          <div className="flex justify-end">
+                        <div className="space-y-1.5">
+                          <Label className="text-xs font-medium">Label Color</Label>
+                          <div className="flex items-center gap-2">
                             <input
                               type="color"
                               value={formStyle.labelColor}
-                              onChange={(e) =>
-                                setFormStyle((s) => ({
-                                  ...s,
-                                  labelColor: e.target.value,
-                                }))
-                              }
-                              className="h-6 w-8 rounded cursor-pointer"
+                              onChange={(e) => setFormStyle((s) => ({ ...s, labelColor: e.target.value }))}
+                              className="h-8 w-8 rounded cursor-pointer border-0 p-0"
                             />
+                            <Input className="h-8 text-xs font-mono flex-1" value={formStyle.labelColor} onChange={(e) => setFormStyle((s) => ({ ...s, labelColor: e.target.value }))} />
+                          </div>
+                        </div>
+
+                        <div className="space-y-1.5">
+                          <Label className="text-xs font-medium">Input Text Color</Label>
+                          <div className="flex items-center gap-2">
+                            <input
+                              type="color"
+                              value={formStyle.inputTextColor}
+                              onChange={(e) => setFormStyle((s) => ({ ...s, inputTextColor: e.target.value }))}
+                              className="h-8 w-8 rounded cursor-pointer border-0 p-0"
+                            />
+                            <Input className="h-8 text-xs font-mono flex-1" value={formStyle.inputTextColor} onChange={(e) => setFormStyle((s) => ({ ...s, inputTextColor: e.target.value }))} />
+                          </div>
+                        </div>
+
+                        <div className="space-y-1.5">
+                          <Label className="text-xs font-medium">Input Background Color</Label>
+                          <div className="flex items-center gap-2">
+                            <input
+                              type="color"
+                              value={formStyle.inputBackgroundColor}
+                              onChange={(e) => setFormStyle((s) => ({ ...s, inputBackgroundColor: e.target.value }))}
+                              className="h-8 w-8 rounded cursor-pointer border-0 p-0"
+                            />
+                            <Input className="h-8 text-xs font-mono flex-1" value={formStyle.inputBackgroundColor} onChange={(e) => setFormStyle((s) => ({ ...s, inputBackgroundColor: e.target.value }))} />
+                          </div>
+                        </div>
+
+                        <div className="space-y-1.5">
+                          <Label className="text-xs font-medium">Input Border Color</Label>
+                          <div className="flex items-center gap-2">
+                            <input
+                              type="color"
+                              value={formStyle.inputBorderColor}
+                              onChange={(e) => setFormStyle((s) => ({ ...s, inputBorderColor: e.target.value }))}
+                              className="h-8 w-8 rounded cursor-pointer border-0 p-0"
+                            />
+                            <Input className="h-8 text-xs font-mono flex-1" value={formStyle.inputBorderColor} onChange={(e) => setFormStyle((s) => ({ ...s, inputBorderColor: e.target.value }))} />
                           </div>
                         </div>
                       </div>
-                    </div>
 
-                    <Separator />
+                      <Separator />
 
-                    {/* Footer */}
-                    <div className="space-y-3">
-                      <div className="flex items-center justify-between">
-                        <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                          {t("footer")}
-                        </Label>
-                        <Switch
-                          checked={formStyle.showFooter}
-                          onCheckedChange={(c) =>
-                            setFormStyle((s) => ({ ...s, showFooter: c }))
-                          }
-                        />
+                      {/* BUTTON STYLING */}
+                      <div className="space-y-3">
+                        <div className="flex items-center gap-2">
+                          <Settings2 className="h-4 w-4 text-primary" />
+                          <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Buttons</Label>
+                        </div>
+
+                        <div className="space-y-2 bg-muted/20 p-3 rounded border border-muted">
+                          <Label className="text-xs font-medium text-muted-foreground">{t("button_properties.search_button")}</Label>
+                          <p className="text-[10px] text-muted-foreground">{t("button_properties.click_to_configure")}</p>
+                        </div>
+
+                        <div className="space-y-2 bg-muted/20 p-3 rounded border border-muted">
+                          <Label className="text-xs font-medium text-muted-foreground">Booking Type Button</Label>
+                          <div className="space-y-1.5">
+                            <Label className="text-[10px]">Background Color</Label>
+                            <div className="flex items-center gap-2">
+                              <input
+                                type="color"
+                                value={formStyle.bookingTypeButtonColor || "#0f172a"}
+                                onChange={(e) => setFormStyle((s) => ({ ...s, bookingTypeButtonColor: e.target.value }))}
+                                className="h-7 w-7 rounded cursor-pointer border-0 p-0"
+                              />
+                              <Input className="h-7 text-xs font-mono flex-1" value={formStyle.bookingTypeButtonColor || "#0f172a"} onChange={(e) => setFormStyle((s) => ({ ...s, bookingTypeButtonColor: e.target.value }))} />
+                            </div>
+                          </div>
+                          <div className="space-y-1.5">
+                            <Label className="text-[10px]">Text Color</Label>
+                            <div className="flex items-center gap-2">
+                              <input
+                                type="color"
+                                value={formStyle.bookingTypeButtonTextColor || "#ffffff"}
+                                onChange={(e) => setFormStyle((s) => ({ ...s, bookingTypeButtonTextColor: e.target.value }))}
+                                className="h-7 w-7 rounded cursor-pointer border-0 p-0"
+                              />
+                              <Input className="h-7 text-xs font-mono flex-1" value={formStyle.bookingTypeButtonTextColor || "#ffffff"} onChange={(e) => setFormStyle((s) => ({ ...s, bookingTypeButtonTextColor: e.target.value }))} />
+                            </div>
+                          </div>
+                        </div>
                       </div>
-                      {formStyle.showFooter && (
-                        <div className="pl-2 border-l-2 border-muted ml-1 pt-1">
-                          <Label className="text-[10px] mb-1.5 block">
-                            {t("footer_text")}
-                          </Label>
+
+                      <Separator />
+
+                      {/* FOOTER SECTION */}
+                      <div className="space-y-3">
+                        <div className="flex items-center gap-2">
+                          <Type className="h-4 w-4 text-primary" />
+                          <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Footer</Label>
+                        </div>
+
+                        <div className="space-y-1.5">
+                          <Label className="text-xs font-medium">Footer Text</Label>
                           <Input
                             value={formStyle.footerText}
-                            onChange={(e) =>
-                              setFormStyle((s) => ({
-                                ...s,
-                                footerText: e.target.value,
-                              }))
-                            }
-                            className="h-7 text-xs"
+                            onChange={(e) => setFormStyle((s) => ({ ...s, footerText: e.target.value }))}
+                            className="h-8 text-xs"
+                            placeholder="Enter footer text"
                           />
                         </div>
-                      )}
-                      <div className="flex items-center justify-between">
-                        <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                          {t("footer_images")}
-                        </Label>
-                        <Switch
-                          checked={formStyle.showFooterImages}
-                          onCheckedChange={(c) =>
-                            setFormStyle((s) => ({ ...s, showFooterImages: c }))
-                          }
-                        />
+
+                        <div className="space-y-1.5">
+                          <Label className="text-xs font-medium">Text Alignment</Label>
+                          <div className="flex gap-1">
+                            {(['left', 'center', 'right'] as const).map((align) => (
+                              <button
+                                key={align}
+                                onClick={() => setFormStyle((s) => ({ ...s, footerTextAlignment: align }))}
+                                className={`flex-1 py-1.5 rounded text-xs font-medium transition-all ${
+                                  formStyle.footerTextAlignment === align
+                                    ? 'bg-primary text-white'
+                                    : 'bg-muted text-muted-foreground hover:bg-muted/80'
+                                }`}
+                                title={align.charAt(0).toUpperCase() + align.slice(1)}
+                              >
+                                {align === 'left' ? '←' : align === 'center' ? '↔' : '→'}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+
+                        <div className="flex items-center justify-between">
+                          <Label className="text-xs font-medium">Show Footer Images</Label>
+                          <Switch checked={formStyle.showFooterImages} onCheckedChange={(c) => setFormStyle((s) => ({ ...s, showFooterImages: c }))} />
+                        </div>
                       </div>
-                    </div>
-                  </TabsContent>
-                </CardContent>
+                    </TabsContent>
+                  </CardContent>
+                </div>
               </Tabs>
             </Card>
           </div>

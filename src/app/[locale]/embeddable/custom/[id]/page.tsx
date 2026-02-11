@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import "@/style/EmbeddableLayout.css";
 import Image from "next/image";
@@ -51,15 +51,18 @@ const DEFAULT_STYLE: IFormStyle = {
   inputBackgroundColor: "#ffffff",
   inputBorderColor: "#e2e8f0",
   inputTextColor: "#1e293b",
+  bookingTypeButtonColor: "#0f172a",
+  bookingTypeButtonTextColor: "#ffffff",
   buttonText: "",
   buttonColor: "",
   buttonTextColor: "",
-  buttonWidth: "auto",
+  buttonWidth: "full",
   buttonAlignment: "center",
   showLabels: false,
   inputSize: "default",
   fieldGap: 12,
   inputBorderRadius: "0.5rem",
+  buttonPosition: undefined,
 };
 
 // ─── Dynamic Booking Form ──────────────────────────────────────────────────
@@ -216,48 +219,93 @@ function DynamicBookingForm({ layout }: { layout: IFormLayout }) {
   };
 
   // ─── Field Renderers ──────────────────────────────────────────────────────
-  const renderBookingType = (field: IFormField) => (
+  const renderBookingType = (field: IFormField) => {
+    const hasBorder = field.showBorder !== false;
+    console.log("Booking Type field:", field.id, "showBorder:", field.showBorder, "hasBorder:", hasBorder);
+    return (
     <div key={field.id}>
-      <div
-        className="flex rounded-lg border p-1 text-xs sm:text-sm font-medium mb-3"
-        style={{
-          backgroundColor: `${style.inputBorderColor}40`,
-          borderColor: style.inputBorderColor,
-        }}
-      >
-        {(["destination", "hourly"] as const).map((type) => (
-          <button
-            key={type}
-            type="button"
-            onClick={() => handleBookingTypeChange(type)}
-            className={`flex-1 rounded-md px-2 py-1.5 sm:px-3 sm:py-2 transition-all duration-300 flex items-center justify-center gap-1.5 ${
-              formData.bookingType === type
-                ? "text-white shadow-sm font-medium"
-                : "hover:bg-slate-100"
-            }`}
-            style={
-              formData.bookingType === type
-                ? {
-                    background: `linear-gradient(to right, ${iconColor}cc, ${iconColor})`,
-                  }
-                : { color: style.textColor }
-            }
-          >
-            {type === "destination" ? (
-              <MapPin className="h-3 w-3 sm:h-3.5 sm:w-3.5 md:h-4 md:w-4" />
-            ) : (
-              <Clock className="h-3 w-3 sm:h-3.5 sm:w-3.5 md:h-4 md:w-4" />
-            )}
-            <span>
-              {type === "destination"
-                ? t("destination")
-                : t("hourly")}
-            </span>
-          </button>
-        ))}
-      </div>
+      {hasBorder ? (
+        <div
+          className="flex rounded-lg border p-1 text-xs sm:text-sm font-medium mb-3"
+          style={{
+            backgroundColor: `${style.inputBorderColor}40`,
+            borderColor: style.inputBorderColor,
+          }}
+        >
+          {(["destination", "hourly"] as const).map((type) => (
+            <button
+              key={type}
+              type="button"
+              onClick={() => handleBookingTypeChange(type)}
+              className={`flex-1 rounded-md px-2 py-1.5 sm:px-3 sm:py-2 transition-all duration-300 flex items-center justify-center gap-1.5 ${
+                formData.bookingType === type
+                  ? "shadow-sm font-medium"
+                  : "hover:bg-slate-100"
+              }`}
+              style={
+                formData.bookingType === type
+                  ? {
+                      background: style.bookingTypeButtonColor || iconColor,
+                      color: style.bookingTypeButtonTextColor || "#ffffff",
+                    }
+                  : { color: style.textColor }
+              }
+            >
+              {type === "destination" ? (
+                <MapPin className="h-3 w-3 sm:h-3.5 sm:w-3.5 md:h-4 md:w-4" />
+              ) : (
+                <Clock className="h-3 w-3 sm:h-3.5 sm:w-3.5 md:h-4 md:w-4" />
+              )}
+              <span>
+                {type === "destination"
+                  ? t("destination")
+                  : t("hourly")}
+              </span>
+            </button>
+          ))}
+        </div>
+      ) : (
+        <div className="flex gap-2 mb-3">
+          {(["destination", "hourly"] as const).map((type) => (
+            <button
+              key={type}
+              type="button"
+              onClick={() => handleBookingTypeChange(type)}
+              className={`flex-1 rounded-md px-2 py-1.5 sm:px-3 sm:py-2 transition-all duration-300 flex items-center justify-center gap-1.5 font-medium ${
+                formData.bookingType === type
+                  ? "shadow-md"
+                  : "hover:opacity-75"
+              }`}
+              style={
+                formData.bookingType === type
+                  ? {
+                      background: style.bookingTypeButtonColor || iconColor,
+                      color: style.bookingTypeButtonTextColor || "#ffffff",
+                    }
+                  : { 
+                      background: "transparent",
+                      color: style.textColor,
+                      border: "none"
+                    }
+              }
+            >
+              {type === "destination" ? (
+                <MapPin className="h-3 w-3 sm:h-3.5 sm:w-3.5 md:h-4 md:w-4" />
+              ) : (
+                <Clock className="h-3 w-3 sm:h-3.5 sm:w-3.5 md:h-4 md:w-4" />
+              )}
+              <span>
+                {type === "destination"
+                  ? t("destination")
+                  : t("hourly")}
+              </span>
+            </button>
+          ))}
+        </div>
+      )}
     </div>
-  );
+    );
+  };
 
   const renderPickup = (field: IFormField) => (
     <div key={field.id}>
@@ -436,58 +484,115 @@ function DynamicBookingForm({ layout }: { layout: IFormLayout }) {
     </div>
   );
 
-  const renderTripType = (field: IFormField) => (
+  const renderTripType = (field: IFormField) => {
+    const hasBorder = field.showBorder !== false;
+    console.log("Trip Type field:", field.id, "showBorder:", field.showBorder, "hasBorder:", hasBorder);
+    return (
     <div key={field.id}>
-      <div
-        className="flex rounded-lg border p-1 text-xs sm:text-sm font-medium"
-        style={{
-          backgroundColor: `${style.inputBorderColor}60`,
-          borderColor: style.inputBorderColor,
-        }}
-      >
-        <button
-          type="button"
-          onClick={() => handleTripTypeChange("oneway")}
-          className={`flex-1 rounded-md px-2 py-1.5 sm:px-3 sm:py-2 transition-all duration-300 flex items-center justify-center gap-1.5 ${
-            formData.tripType === "oneway"
-              ? "shadow-sm font-medium"
-              : "hover:bg-slate-100"
-          }`}
-          style={
-            formData.tripType === "oneway"
-              ? {
-                  backgroundColor: style.inputBackgroundColor,
-                  color: style.inputTextColor,
-                }
-              : { color: style.textColor }
-          }
+      {hasBorder ? (
+        <div
+          className="flex rounded-lg border p-1 text-xs sm:text-sm font-medium"
+          style={{
+            backgroundColor: `${style.inputBorderColor}60`,
+            borderColor: style.inputBorderColor,
+          }}
         >
-          <ArrowRight className="h-3 w-3 sm:h-3.5 sm:w-3.5 md:h-4 md:w-4" />
-          <span>{t("one-way")}</span>
-        </button>
-        <button
-          type="button"
-          onClick={() => handleTripTypeChange("roundtrip")}
-          className={`flex-1 rounded-md px-2 py-1.5 sm:px-3 sm:py-2 transition-all duration-300 flex items-center justify-center gap-1.5 ${
-            formData.tripType === "roundtrip"
-              ? "shadow-sm font-medium"
-              : "hover:bg-slate-100"
-          }`}
-          style={
-            formData.tripType === "roundtrip"
-              ? {
-                  backgroundColor: style.inputBackgroundColor,
-                  color: style.inputTextColor,
-                }
-              : { color: style.textColor }
-          }
-        >
-          <RefreshCw className="h-3 w-3 sm:h-3.5 sm:w-3.5 md:h-4 md:w-4" />
-          <span>{t("round-trip")}</span>
-        </button>
-      </div>
+          <button
+            type="button"
+            onClick={() => handleTripTypeChange("oneway")}
+            className={`flex-1 rounded-md px-2 py-1.5 sm:px-3 sm:py-2 transition-all duration-300 flex items-center justify-center gap-1.5 ${
+              formData.tripType === "oneway"
+                ? "shadow-sm font-medium"
+                : "hover:bg-slate-100"
+            }`}
+            style={
+              formData.tripType === "oneway"
+                ? {
+                    background: style.bookingTypeButtonColor || iconColor,
+                    color: style.bookingTypeButtonTextColor || "#ffffff",
+                  }
+                : { color: style.textColor }
+            }
+          >
+            <ArrowRight className="h-3 w-3 sm:h-3.5 sm:w-3.5 md:h-4 md:w-4" />
+            <span>{t("one-way")}</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => handleTripTypeChange("roundtrip")}
+            className={`flex-1 rounded-md px-2 py-1.5 sm:px-3 sm:py-2 transition-all duration-300 flex items-center justify-center gap-1.5 ${
+              formData.tripType === "roundtrip"
+                ? "shadow-sm font-medium"
+                : "hover:bg-slate-100"
+            }`}
+            style={
+              formData.tripType === "roundtrip"
+                ? {
+                    background: style.bookingTypeButtonColor || iconColor,
+                    color: style.bookingTypeButtonTextColor || "#ffffff",
+                  }
+                : { color: style.textColor }
+            }
+          >
+            <RefreshCw className="h-3 w-3 sm:h-3.5 sm:w-3.5 md:h-4 md:w-4" />
+            <span>{t("round-trip")}</span>
+          </button>
+        </div>
+      ) : (
+        <div className="flex gap-2">
+          <button
+            type="button"
+            onClick={() => handleTripTypeChange("oneway")}
+            className={`flex-1 rounded-md px-2 py-1.5 sm:px-3 sm:py-2 transition-all duration-300 flex items-center justify-center gap-1.5 font-medium ${
+              formData.tripType === "oneway"
+                ? "shadow-md"
+                : "hover:opacity-75"
+            }`}
+            style={
+              formData.tripType === "oneway"
+                ? {
+                    background: style.bookingTypeButtonColor || iconColor,
+                    color: style.bookingTypeButtonTextColor || "#ffffff",
+                  }
+                : { 
+                    background: "transparent",
+                    color: style.textColor,
+                    border: "none"
+                  }
+            }
+          >
+            <ArrowRight className="h-3 w-3 sm:h-3.5 sm:w-3.5 md:h-4 md:w-4" />
+            <span>{t("one-way")}</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => handleTripTypeChange("roundtrip")}
+            className={`flex-1 rounded-md px-2 py-1.5 sm:px-3 sm:py-2 transition-all duration-300 flex items-center justify-center gap-1.5 font-medium ${
+              formData.tripType === "roundtrip"
+                ? "shadow-md"
+                : "hover:opacity-75"
+            }`}
+            style={
+              formData.tripType === "roundtrip"
+                ? {
+                    background: style.bookingTypeButtonColor || iconColor,
+                    color: style.bookingTypeButtonTextColor || "#ffffff",
+                  }
+                : { 
+                    background: "transparent",
+                    color: style.textColor,
+                    border: "none"
+                  }
+            }
+          >
+            <RefreshCw className="h-3 w-3 sm:h-3.5 sm:w-3.5 md:h-4 md:w-4" />
+            <span>{t("round-trip")}</span>
+          </button>
+        </div>
+      )}
     </div>
-  );
+    );
+  };
 
   const renderDateField = (field: IFormField) => {
     const isReturn = field.type === "return-date";
@@ -647,16 +752,44 @@ function DynamicBookingForm({ layout }: { layout: IFormLayout }) {
     const effectiveWidth = (formData.bookingType === "hourly" && field.widthWhenHourly)
       ? field.widthWhenHourly
       : field.width;
-    const span = effectiveWidth === "full" 
-      ? cols 
-      : effectiveWidth === "half" 
-        ? Math.max(1, Math.ceil(cols / 2)) 
-        : Math.max(1, Math.ceil(cols / 3));
+    
+    // Calculate desktop span
+    let span = 1;
+    if (effectiveWidth === "full") {
+      span = cols;
+    } else if (effectiveWidth === "two-thirds") {
+      span = Math.max(1, Math.round((cols * 2) / 3));
+    } else if (effectiveWidth === "half") {
+      span = Math.max(1, Math.ceil(cols / 2));
+    } else if (effectiveWidth === "third") {
+      span = Math.max(1, Math.ceil(cols / 3));
+    } else if (effectiveWidth === "quarter") {
+      span = Math.max(1, Math.ceil(cols / 4));
+    }
+
+    // Calculate mobile span (for screens < 640px)
+    const mobileEffectiveWidth = field.mobileWidth || effectiveWidth;
+    let mobileSpan = 1;
+    if (mobileEffectiveWidth === "full") {
+      mobileSpan = cols;
+    } else if (mobileEffectiveWidth === "two-thirds") {
+      mobileSpan = Math.max(1, Math.round((cols * 2) / 3));
+    } else if (mobileEffectiveWidth === "half") {
+      mobileSpan = Math.max(1, Math.ceil(cols / 2));
+    } else if (mobileEffectiveWidth === "third") {
+      mobileSpan = Math.max(1, Math.ceil(cols / 3));
+    } else if (mobileEffectiveWidth === "quarter") {
+      mobileSpan = Math.max(1, Math.ceil(cols / 4));
+    }
 
     return (
       <div
         key={field.id}
-        style={{ gridColumn: `span ${span} / span ${span}` }}
+        className="field-responsive-width"
+        style={{ 
+          gridColumn: `span ${span} / span ${span}`,
+          ['--mobile-span' as any]: mobileSpan 
+        }}
       >
         {fieldContent}
       </div>
@@ -670,11 +803,15 @@ function DynamicBookingForm({ layout }: { layout: IFormLayout }) {
 
   const renderSubmitButton = () => {
     const cols = style.columns || 2;
-    const width = style.buttonWidth || "auto";
-    let span = width === "full" ? cols : 1;
-    if (width === "half") {
-      span = Math.max(1, Math.floor(cols / 2));
-    }
+    const width = style.buttonWidth || "full";
+    
+    let span = 1;
+    if (width === "full") span = cols;
+    else if (width === "two-thirds") span = Math.round(cols * 2 / 3);
+    else if (width === "half") span = Math.max(1, Math.ceil(cols / 2));
+    else if (width === "third") span = Math.max(1, Math.ceil(cols / 3));
+    else if (width === "quarter") span = Math.max(1, Math.ceil(cols / 4));
+    
     const isFullWidthRow = width === "full";
     
     const alignment = style.buttonAlignment || "center";
@@ -683,20 +820,26 @@ function DynamicBookingForm({ layout }: { layout: IFormLayout }) {
     return (
       <div
         key="submit-btn"
+        className="field-responsive-width"
         style={{
           gridColumn: isFullWidthRow ? "1 / -1" : `span ${span} / span ${span}`,
           display: "flex",
           justifyContent: isFullWidthRow ? justify : undefined,
           alignItems: "flex-end",
+          ['--mobile-span' as any]: cols // Force full width on mobile for button
         }}
       >
         <Button
           type="submit"
-          className="rounded-lg py-2 sm:py-2.5 text-xs sm:text-sm font-semibold tracking-wide transition-all duration-200 shadow-md hover:shadow-lg disabled:opacity-70 disabled:cursor-not-allowed"
+          className={`font-semibold tracking-wide transition-all duration-200 shadow-md hover:shadow-lg disabled:opacity-70 disabled:cursor-not-allowed w-full ${
+            style.buttonSize === 'small' ? 'py-1.5 text-xs rounded' :
+            style.buttonSize === 'large' ? 'py-3.5 text-base sm:py-4 sm:text-lg rounded-lg' :
+            'py-2 sm:py-2.5 text-xs sm:text-sm rounded-lg'
+          }`}
           style={{
-            width: "100%", // Valid fix for "its just small" - fill the grid slot
             backgroundColor: style.buttonColor || style.primaryColor,
             color: style.buttonTextColor || "#ffffff",
+            borderRadius: style.buttonBorderRadius || '0.5rem',
           }}
           disabled={isLoading || calculatingDistance}
         >
@@ -714,7 +857,7 @@ function DynamicBookingForm({ layout }: { layout: IFormLayout }) {
           ) : (
             <div className="flex items-center justify-center gap-2">
               <span>{style.buttonText || t("search")}</span>
-              <ArrowRight className="h-3 w-3 sm:h-3.5 sm:w-3.5 md:h-4 md:w-4" />
+              <ArrowRight className={style.buttonSize === 'small' ? 'h-2.5 w-2.5' : style.buttonSize === 'large' ? 'h-5 w-5 sm:h-5 sm:w-5' : 'h-3 w-3 sm:h-3.5 sm:w-3.5 md:h-4 md:w-4'} />
             </div>
           )}
         </Button>
@@ -818,8 +961,15 @@ function DynamicBookingForm({ layout }: { layout: IFormLayout }) {
                   gap: `${style.fieldGap ?? 12}px`,
                 }}
               >
-                {renderFields()}
-                {renderSubmitButton()}
+                {fields.map((field, fieldIndex) => (
+                  <React.Fragment key={field.id}>
+                    {/* Render button at its position if set */}
+                    {style.buttonPosition === fieldIndex && renderSubmitButton()}
+                    {renderField(field)}
+                  </React.Fragment>
+                ))}
+                {/* Render button at the end if buttonPosition is not set or is beyond field count */}
+                {(style.buttonPosition === undefined || style.buttonPosition >= fields.length) && renderSubmitButton()}
               </div>
             )}
           </div>

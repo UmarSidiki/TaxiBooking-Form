@@ -39,7 +39,6 @@ const FIELD_ICONS: Record<BookingFieldType, React.ElementType> = {
   'return-time': Clock,
   'passengers': Users,
   'duration': Timer,
-  'search-button': CheckCircle,
 };
 
 const MemoizedFormField = memo<MemoizedFormFieldProps>(({ field, style, onSelectField }) => {
@@ -270,19 +269,6 @@ const MemoizedFormField = memo<MemoizedFormFieldProps>(({ field, style, onSelect
               readOnly
               aria-label="Number of passengers"
             />
-          </div>
-        );
-
-      case "search-button":
-        return (
-          <div
-            className="w-full py-3 px-4 rounded-lg text-center font-bold text-sm shadow-sm transition-all duration-200"
-            style={{
-              backgroundColor: style.buttonColor,
-              color: style.buttonTextColor,
-            }}
-          >
-            {style.buttonText || "Search"}
           </div>
         );
 

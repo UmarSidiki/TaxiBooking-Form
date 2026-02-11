@@ -561,8 +561,8 @@ function FormPreview({
       const span = effectiveWidth === "full" 
         ? cols 
         : effectiveWidth === "half" 
-          ? Math.max(1, Math.floor(cols / 2)) 
-          : 1;
+          ? Math.max(1, Math.ceil(cols / 2)) 
+          : Math.max(1, Math.ceil(cols / 3));
 
       return (
         <SortablePreviewItem
@@ -956,7 +956,7 @@ function FormPreview({
                 gridColumn: style.buttonWidth === 'full' 
                   ? '1 / -1' 
                   : style.buttonWidth === 'half' 
-                    ? `span ${Math.max(1, Math.floor((style.columns || 2)/2))}` 
+                    ? `span ${Math.max(1, Math.ceil((style.columns || 2)/2))}` 
                     : 'span 1',
                 display: 'flex',
                 alignItems: 'flex-end',
@@ -1829,17 +1829,17 @@ export default function FormBuilderPage() {
                               ? `${t("width")} (${selectedField.visibleWhen.bookingType} mode)`
                               : `${t("width")} (default)`}
                           </Label>
-                          <Select
-                            value={selectedField.width}
-                            onValueChange={(v) =>
-                              updateField(selectedField.id, {
-                                width: v as IFormField["width"],
-                              })
-                            }
-                          >
-                            <SelectTrigger className="h-8 text-sm">
-                              <SelectValue />
-                            </SelectTrigger>
+                            <Select
+                              value={selectedField.width}
+                              onValueChange={(v) =>
+                                updateField(selectedField.id, {
+                                  width: v as IFormField["width"],
+                                })
+                              }
+                            >
+                              <SelectTrigger className="h-8 text-sm">
+                                <SelectValue placeholder={t("width")} />
+                              </SelectTrigger>
                             <SelectContent>
                               <SelectItem value="full">{t("full")}</SelectItem>
                               <SelectItem value="half">{t("half")}</SelectItem>
@@ -1853,7 +1853,7 @@ export default function FormBuilderPage() {
                           <div className="space-y-1.5">
                             <Label className="text-xs font-medium">{t("width_hourly")}</Label>
                             <p className="text-[10px] text-muted-foreground -mt-1">
-                              Override width when booking type is hourly
+                              {t("width_hourly_description")}
                             </p>
                             <Select
                               value={selectedField.widthWhenHourly || "inherit"}
@@ -1864,10 +1864,10 @@ export default function FormBuilderPage() {
                               }
                             >
                               <SelectTrigger className="h-8 text-sm">
-                                <SelectValue />
+                                <SelectValue placeholder={t("same_as_default")} />
                               </SelectTrigger>
                               <SelectContent>
-                                <SelectItem value="inherit">Same as default</SelectItem>
+                                <SelectItem value="inherit">{t("same_as_default")}</SelectItem>
                                 <SelectItem value="full">{t("full")}</SelectItem>
                                 <SelectItem value="half">{t("half")}</SelectItem>
                                 <SelectItem value="third">{t("third")}</SelectItem>

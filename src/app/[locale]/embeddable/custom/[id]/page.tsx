@@ -650,8 +650,8 @@ function DynamicBookingForm({ layout }: { layout: IFormLayout }) {
     const span = effectiveWidth === "full" 
       ? cols 
       : effectiveWidth === "half" 
-        ? Math.max(1, Math.floor(cols / 2)) 
-        : 1;
+        ? Math.max(1, Math.ceil(cols / 2)) 
+        : Math.max(1, Math.ceil(cols / 3));
 
     return (
       <div

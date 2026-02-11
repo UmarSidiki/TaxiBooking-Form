@@ -35,6 +35,7 @@ interface BookingData {
   paymentMethod?: string;
   paymentStatus?: string;
   flightNumber?: string;
+  baseUrl?: string;
 }
 
 // Email validation utility
@@ -45,7 +46,7 @@ function isValidEmail(email: string): boolean {
 
 function generateEmailHTML(bookingData: BookingData, currency: string = 'EUR') {
   const currencySymbol = getCurrencySymbol(currency);
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL
+  const baseUrl = bookingData.baseUrl || process.env.NEXT_PUBLIC_BASE_URL
 
   return `
 <!DOCTYPE html>

@@ -170,11 +170,19 @@ export function DriverSidebar({ locale }: { locale: string }) {
       </SidebarContent>
 
       <SidebarFooter className="border-t border-border/50 bg-muted/30 p-4">
-        <div className="flex items-center justify-between">
-          <div className="text-xs text-muted-foreground">
-            © 2025 {process.env.NEXT_PUBLIC_WEBSITE_NAME}
+        <div className="space-y-4">
+          <div className="flex flex-col gap-2">
+            <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider px-2">
+              {t("Sidebar.welcome")}
+            </p>
+            <LanguageSwitcher />
           </div>
-          <LogoutButton callbackUrl={`/${locale}/drivers/login`} />
+          <div className="flex items-center justify-between">
+            <div className="text-xs text-muted-foreground">
+              © 2025 {process.env.NEXT_PUBLIC_WEBSITE_NAME}
+            </div>
+            <LogoutButton callbackUrl={`/${locale}/drivers/login`} />
+          </div>
         </div>
       </SidebarFooter>
     </Sidebar>

@@ -55,12 +55,16 @@ const DEFAULT_STYLE: IFormStyle = {
   buttonColor: "",
   buttonTextColor: "",
   buttonWidth: "auto",
-  buttonAlignment: "center"
+  buttonAlignment: "center",
+  showLabels: false,
+  inputSize: "default",
+  fieldGap: 12,
+  inputBorderRadius: "0.5rem",
 };
 
 // ─── Dynamic Booking Form ──────────────────────────────────────────────────
 function DynamicBookingForm({ layout }: { layout: IFormLayout }) {
-  const t = useTranslations();
+  const t = useTranslations("embeddable");
   const { setFormData } = useBookingForm();
   const {
     mapLoaded,
@@ -177,8 +181,12 @@ function DynamicBookingForm({ layout }: { layout: IFormLayout }) {
       : "0 1px 3px 0 rgba(0,0,0,0.1)",
   };
 
+  const inputPadding = style.inputSize === "compact" ? "py-1 sm:py-1.5" : style.inputSize === "large" ? "py-3 sm:py-3.5" : "py-2 sm:py-2.5";
+  const inputText = style.inputSize === "compact" ? "text-[11px] sm:text-xs" : style.inputSize === "large" ? "text-sm sm:text-base" : "text-xs sm:text-sm";
+  const inputBorderRadius = style.inputBorderRadius || "0.5rem";
+
   const inputBaseClass =
-    "rounded-lg border bg-white pl-7 sm:pl-9 md:pl-10 pr-2 sm:pr-3 py-2 sm:py-2.5 text-xs sm:text-sm transition-all duration-200";
+    `border bg-white pl-7 sm:pl-9 md:pl-10 pr-2 sm:pr-3 ${inputPadding} ${inputText} transition-all duration-200`;
 
   const getInputClass = (fieldName: string) =>
     `${inputBaseClass} ${
@@ -191,9 +199,21 @@ function DynamicBookingForm({ layout }: { layout: IFormLayout }) {
     backgroundColor: style.inputBackgroundColor,
     borderColor: style.inputBorderColor,
     color: style.inputTextColor,
+    borderRadius: inputBorderRadius,
   };
 
   const iconColor = style.primaryColor;
+
+  // Label helper
+  const FieldLabel = ({ field }: { field: IFormField }) => {
+    if (!style.showLabels) return null;
+    return (
+      <label className="block text-[10px] sm:text-xs font-medium mb-0.5 sm:mb-1" style={{ color: style.labelColor }}>
+        {field.label}
+        {field.required && <span className="text-red-500 ml-0.5">*</span>}
+      </label>
+    );
+  };
 
   // ─── Field Renderers ──────────────────────────────────────────────────────
   const renderBookingType = (field: IFormField) => (
@@ -230,8 +250,8 @@ function DynamicBookingForm({ layout }: { layout: IFormLayout }) {
             )}
             <span>
               {type === "destination"
-                ? t("embeddable.destination")
-                : t("embeddable.hourly")}
+                ? t("destination")
+                : t("hourly")}
             </span>
           </button>
         ))}
@@ -240,22 +260,25 @@ function DynamicBookingForm({ layout }: { layout: IFormLayout }) {
   );
 
   const renderPickup = (field: IFormField) => (
-    <div key={field.id} className="relative">
-      <div
-        className="absolute left-2 sm:left-3 top-1/2 -translate-y-1/2"
-        style={{ color: iconColor }}
-      >
-        <MapPin className="h-3 w-3 sm:h-3.5 sm:w-3.5 md:h-4 md:w-4" />
+    <div key={field.id}>
+      <FieldLabel field={field} />
+      <div className="relative">
+        <div
+          className="absolute left-2 sm:left-3 top-1/2 -translate-y-1/2"
+          style={{ color: iconColor }}
+        >
+          <MapPin className="h-3 w-3 sm:h-3.5 sm:w-3.5 md:h-4 md:w-4" />
+        </div>
+        <Input
+          ref={pickupInputRef}
+          placeholder={field.placeholder || t("pickup-location")}
+          value={formData.pickup}
+          onChange={(e) => handleInputChange("pickup", e.target.value)}
+          onBlur={() => handleInputBlur("pickup")}
+          className={`w-full ${getInputClass("pickup")}`}
+          style={inputStyle}
+        />
       </div>
-      <Input
-        ref={pickupInputRef}
-        placeholder={field.placeholder || t("embeddable.pickup-location")}
-        value={formData.pickup}
-        onChange={(e) => handleInputChange("pickup", e.target.value)}
-        onBlur={() => handleInputBlur("pickup")}
-        className={`w-full ${getInputClass("pickup")}`}
-        style={inputStyle}
-      />
       {errors.pickup && (
         <div className="flex items-center gap-1 mt-1 text-xs text-red-500">
           <AlertCircle className="h-3 w-3" />
@@ -283,7 +306,7 @@ function DynamicBookingForm({ layout }: { layout: IFormLayout }) {
                     stopInputRefs.current[index] = el;
                   }
                 }}
-                placeholder={t("embeddable.stop-index-1-location", {
+                placeholder={t("stop-index-1-location", {
                   0: index + 1,
                 })}
                 value={stop.location}
@@ -351,6 +374,7 @@ function DynamicBookingForm({ layout }: { layout: IFormLayout }) {
 
   const renderDropoff = (field: IFormField) => (
     <div key={field.id}>
+      <FieldLabel field={field} />
       {enabledFieldTypes.has("stops") && (
         <div className="flex justify-end mb-1.5 w-full">
           <button
@@ -359,7 +383,7 @@ function DynamicBookingForm({ layout }: { layout: IFormLayout }) {
             className="text-xs underline hover:opacity-80"
             style={{ color: iconColor }}
           >
-            {t("embeddable.add-a-stop")}
+            {t("add-a-stop")}
           </button>
         </div>
       )}
@@ -372,7 +396,7 @@ function DynamicBookingForm({ layout }: { layout: IFormLayout }) {
         </div>
         <Input
           ref={dropoffInputRef}
-          placeholder={field.placeholder || t("embeddable.destination")}
+          placeholder={field.placeholder || t("destination")}
           value={formData.dropoff}
           onChange={(e) => handleInputChange("dropoff", e.target.value)}
           onBlur={() => handleInputBlur("dropoff")}
@@ -390,22 +414,25 @@ function DynamicBookingForm({ layout }: { layout: IFormLayout }) {
   );
 
   const renderDuration = (field: IFormField) => (
-    <div key={field.id} className="relative">
-      <div
-        className="absolute left-2 sm:left-3 top-1/2 -translate-y-1/2"
-        style={{ color: iconColor }}
-      >
-        <Timer className="h-3 w-3 sm:h-3.5 sm:w-3.5 md:h-4 md:w-4" />
+    <div key={field.id}>
+      <FieldLabel field={field} />
+      <div className="relative">
+        <div
+          className="absolute left-2 sm:left-3 top-1/2 -translate-y-1/2"
+          style={{ color: iconColor }}
+        >
+          <Timer className="h-3 w-3 sm:h-3.5 sm:w-3.5 md:h-4 md:w-4" />
+        </div>
+        <Input
+          type="number"
+          placeholder={field.placeholder || t("duration-hours")}
+          min={1}
+          value={formData.duration}
+          onChange={(e) => handleInputChange("duration", Number(e.target.value))}
+          className={`w-full ${inputBaseClass}`}
+          style={inputStyle}
+        />
       </div>
-      <Input
-        type="number"
-        placeholder={field.placeholder || t("embeddable.duration-hours")}
-        min={1}
-        value={formData.duration}
-        onChange={(e) => handleInputChange("duration", Number(e.target.value))}
-        className={`w-full ${inputBaseClass}`}
-        style={inputStyle}
-      />
     </div>
   );
 
@@ -436,7 +463,7 @@ function DynamicBookingForm({ layout }: { layout: IFormLayout }) {
           }
         >
           <ArrowRight className="h-3 w-3 sm:h-3.5 sm:w-3.5 md:h-4 md:w-4" />
-          <span>{t("embeddable.one-way")}</span>
+          <span>{t("one-way")}</span>
         </button>
         <button
           type="button"
@@ -456,7 +483,7 @@ function DynamicBookingForm({ layout }: { layout: IFormLayout }) {
           }
         >
           <RefreshCw className="h-3 w-3 sm:h-3.5 sm:w-3.5 md:h-4 md:w-4" />
-          <span>{t("embeddable.round-trip")}</span>
+          <span>{t("round-trip")}</span>
         </button>
       </div>
     </div>
@@ -469,21 +496,24 @@ function DynamicBookingForm({ layout }: { layout: IFormLayout }) {
     const error = errors[fieldKey as keyof typeof errors];
 
     return (
-      <div key={field.id} className="relative">
-        <div
-          className="absolute left-2 sm:left-3 top-1/2 -translate-y-1/2"
-          style={{ color: iconColor }}
-        >
-          <Calendar className="h-3 w-3 sm:h-3.5 sm:w-3.5 md:h-4 md:w-4" />
+      <div key={field.id}>
+        <FieldLabel field={field} />
+        <div className="relative">
+          <div
+            className="absolute left-2 sm:left-3 top-1/2 -translate-y-1/2"
+            style={{ color: iconColor }}
+          >
+            <Calendar className="h-3 w-3 sm:h-3.5 sm:w-3.5 md:h-4 md:w-4" />
+          </div>
+          <Input
+            type="date"
+            value={value}
+            min={minDate}
+            onChange={(e) => handleInputChange(fieldKey, e.target.value)}
+            className={`w-full ${getInputClass(fieldKey)}`}
+            style={inputStyle}
+          />
         </div>
-        <Input
-          type="date"
-          value={value}
-          min={minDate}
-          onChange={(e) => handleInputChange(fieldKey, e.target.value)}
-          className={`w-full ${getInputClass(fieldKey)}`}
-          style={inputStyle}
-        />
         {error && (
           <div className="flex items-center gap-1 mt-1 text-xs text-red-500">
             <AlertCircle className="h-3 w-3" />
@@ -501,20 +531,23 @@ function DynamicBookingForm({ layout }: { layout: IFormLayout }) {
     const error = errors[fieldKey as keyof typeof errors];
 
     return (
-      <div key={field.id} className="relative">
-        <div
-          className="absolute left-2 sm:left-3 top-1/2 -translate-y-1/2"
-          style={{ color: iconColor }}
-        >
-          <Clock className="h-3 w-3 sm:h-3.5 sm:w-3.5 md:h-4 md:w-4" />
+      <div key={field.id}>
+        <FieldLabel field={field} />
+        <div className="relative">
+          <div
+            className="absolute left-2 sm:left-3 top-1/2 -translate-y-1/2"
+            style={{ color: iconColor }}
+          >
+            <Clock className="h-3 w-3 sm:h-3.5 sm:w-3.5 md:h-4 md:w-4" />
+          </div>
+          <Input
+            type="time"
+            value={value}
+            onChange={(e) => handleInputChange(fieldKey, e.target.value)}
+            className={`w-full ${getInputClass(fieldKey)}`}
+            style={inputStyle}
+          />
         </div>
-        <Input
-          type="time"
-          value={value}
-          onChange={(e) => handleInputChange(fieldKey, e.target.value)}
-          className={`w-full ${getInputClass(fieldKey)}`}
-          style={inputStyle}
-        />
         {error && (
           <div className="flex items-center gap-1 mt-1 text-xs text-red-500">
             <AlertCircle className="h-3 w-3" />
@@ -526,16 +559,18 @@ function DynamicBookingForm({ layout }: { layout: IFormLayout }) {
   };
 
   const renderPassengers = (field: IFormField) => (
-    <div key={field.id} className="relative">
-      <div
-        className="absolute left-2 sm:left-3 top-1/2 -translate-y-1/2"
-        style={{ color: iconColor }}
-      >
-        <Users className="h-3 w-3 sm:h-3.5 sm:w-3.5 md:h-4 md:w-4" />
-      </div>
-      <Input
+    <div key={field.id}>
+      <FieldLabel field={field} />
+      <div className="relative">
+        <div
+          className="absolute left-2 sm:left-3 top-1/2 -translate-y-1/2"
+          style={{ color: iconColor }}
+        >
+          <Users className="h-3 w-3 sm:h-3.5 sm:w-3.5 md:h-4 md:w-4" />
+        </div>
+        <Input
         type="number"
-        placeholder={field.placeholder || t("embeddable.passengers")}
+        placeholder={field.placeholder || t("passengers")}
         value={formData.passengers}
         max="15"
         onChange={(e) => {
@@ -564,6 +599,7 @@ function DynamicBookingForm({ layout }: { layout: IFormLayout }) {
           <span className="truncate">{errors.passengers}</span>
         </div>
       )}
+      </div>
     </div>
   );
 
@@ -607,9 +643,13 @@ function DynamicBookingForm({ layout }: { layout: IFormLayout }) {
     if (!fieldContent) return null;
 
     const cols = style.columns || 2;
-    const span = field.width === "full" 
+    // Use conditional width when in hourly mode
+    const effectiveWidth = (formData.bookingType === "hourly" && field.widthWhenHourly)
+      ? field.widthWhenHourly
+      : field.width;
+    const span = effectiveWidth === "full" 
       ? cols 
-      : field.width === "half" 
+      : effectiveWidth === "half" 
         ? Math.max(1, Math.floor(cols / 2)) 
         : 1;
 
@@ -669,11 +709,11 @@ function DynamicBookingForm({ layout }: { layout: IFormLayout }) {
                   borderTopColor: "transparent",
                 }}
               />
-              <span>{style.buttonText || t("embeddable.search")}</span>
+              <span>{style.buttonText || t("search")}</span>
             </div>
           ) : (
             <div className="flex items-center justify-center gap-2">
-              <span>{style.buttonText || t("embeddable.search")}</span>
+              <span>{style.buttonText || t("search")}</span>
               <ArrowRight className="h-3 w-3 sm:h-3.5 sm:w-3.5 md:h-4 md:w-4" />
             </div>
           )}
@@ -692,9 +732,9 @@ function DynamicBookingForm({ layout }: { layout: IFormLayout }) {
       {style.showSteps && (
         <div className="flex justify-between items-center px-4 py-3 mb-2">
           {[
-            { icon: MapPin, label: t("embeddable.trip") },
-            { icon: Car, label: t("embeddable.vehicle") },
-            { icon: CheckCircle, label: t("embeddable.payment") },
+            { icon: MapPin, label: t("trip") },
+            { icon: Car, label: t("vehicle") },
+            { icon: CheckCircle, label: t("payment") },
           ].map(({ icon: Icon, label }, index) => (
             <div key={index} className="flex flex-1 flex-col items-center relative">
               {index < 2 && (
@@ -758,7 +798,7 @@ function DynamicBookingForm({ layout }: { layout: IFormLayout }) {
               className="text-xs sm:text-sm mt-1"
               style={{ color: style.textColor }}
             >
-              {style.subHeadingText || t("embeddable.book-your-ride-in-seconds")}
+              {style.subHeadingText || t("book-your-ride-in-seconds")}
             </p>
           </header>
         )}
@@ -768,12 +808,15 @@ function DynamicBookingForm({ layout }: { layout: IFormLayout }) {
             {fields.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-10 opacity-60">
                 <AlertCircle className="h-8 w-8 mb-2" />
-                <p className="text-xs">This form has no fields enabled.</p>
+                <p className="text-xs">{t("no-fields")}</p>
               </div>
             ) : (
               <div 
-                className="grid gap-2 sm:gap-3 items-end"
-                style={{ gridTemplateColumns: `repeat(${style.columns || 2}, minmax(0, 1fr))` }}
+                className="grid items-end"
+                style={{ 
+                  gridTemplateColumns: `repeat(${style.columns || 2}, minmax(0, 1fr))`,
+                  gap: `${style.fieldGap ?? 12}px`,
+                }}
               >
                 {renderFields()}
                 {renderSubmitButton()}
@@ -818,6 +861,7 @@ function DynamicBookingForm({ layout }: { layout: IFormLayout }) {
 
 // ─── Page Component ─────────────────────────────────────────────────────────
 function CustomEmbeddableContent() {
+  const t = useTranslations("embeddable");
   const params = useParams();
   const id = params?.id as string;
   const [layout, setLayout] = useState<IFormLayout | null>(null);
@@ -834,13 +878,13 @@ function CustomEmbeddableContent() {
           if (data.data.isActive) {
             setLayout(data.data);
           } else {
-            setError("This form is currently inactive");
+            setError(t("form-inactive"));
           }
         } else {
-          setError("Layout not found");
+          setError(t("layout-not-found"));
         }
       } catch (err) {
-        setError("Failed to load form layout");
+        setError(t("failed-to-load"));
         console.error("Error fetching layout:", err);
       } finally {
         setLoading(false);
@@ -848,7 +892,7 @@ function CustomEmbeddableContent() {
     };
 
     if (id) fetchLayout();
-  }, [id]);
+  }, [id, t]);
 
   // Iframe resize observer
   useEffect(() => {
@@ -876,7 +920,7 @@ function CustomEmbeddableContent() {
       <div className="flex items-center justify-center p-8">
         <div className="text-center space-y-3">
           <div className="w-10 h-10 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto" />
-          <p className="text-sm text-muted-foreground">Loading form...</p>
+          <p className="text-sm text-muted-foreground">{t("loading")}</p>
         </div>
       </div>
     );
@@ -891,11 +935,10 @@ function CustomEmbeddableContent() {
           </div>
           <div className="space-y-2">
             <p className="text-lg font-semibold text-foreground">
-              Form Unavailable
+              {t("form-unavailable")}
             </p>
             <p className="text-sm text-muted-foreground">
-              {error ||
-                "The requested form could not be loaded or is currently inactive."}
+              {error || t("unavailable-description")}
             </p>
           </div>
         </div>

@@ -5,7 +5,7 @@ import { Schema, model, models } from "mongoose";
  *
  * Step 1 — Trip Details:
  *   booking-type, pickup, dropoff, stops, trip-type, date, time,
- *   return-date, return-time, passengers, duration
+ *   return-date, return-time, passengers, duration, search-button
  */
 export const BOOKING_FIELD_TYPES = [
   "booking-type",
@@ -19,6 +19,7 @@ export const BOOKING_FIELD_TYPES = [
   "return-time",
   "passengers",
   "duration",
+  "search-button",
 ] as const;
 
 export type BookingFieldType = (typeof BOOKING_FIELD_TYPES)[number];
@@ -31,6 +32,8 @@ export interface IFormField {
   required: boolean;
   enabled: boolean;
   width: "full" | "half" | "third";
+  /** Override width when booking type is hourly */
+  widthWhenHourly?: "full" | "half" | "third";
   order: number;
   /** Which step this field belongs to (1 = trip details) */
   step: 1;
@@ -81,6 +84,12 @@ export interface IFormStyle {
   inputBackgroundColor: string;
   inputBorderColor: string;
   inputTextColor: string;
+
+  // Layout & Polish
+  showLabels?: boolean;
+  inputSize?: "compact" | "default" | "large";
+  fieldGap?: number; // px gap between fields
+  inputBorderRadius?: string;
 }
 
 export interface IFormLayout {
@@ -108,6 +117,7 @@ const FormFieldSchema = new Schema<IFormField>(
     required: { type: Boolean, default: false },
     enabled: { type: Boolean, default: true },
     width: { type: String, enum: ["full", "half", "third"], default: "full" },
+    widthWhenHourly: { type: String, enum: ["full", "half", "third"], default: undefined },
     order: { type: Number, required: true },
     step: { type: Number, default: 1 },
     visibleWhen: { type: Schema.Types.Mixed, default: undefined },
@@ -153,6 +163,12 @@ const FormStyleSchema = new Schema<IFormStyle>(
     inputBackgroundColor: { type: String, default: "#ffffff" },
     inputBorderColor: { type: String, default: "#e5e7eb" },
     inputTextColor: { type: String, default: "#000000" },
+
+    // Layout & Polish
+    showLabels: { type: Boolean, default: false },
+    inputSize: { type: String, enum: ["compact", "default", "large"], default: "default" },
+    fieldGap: { type: Number, default: 12, min: 4, max: 32 },
+    inputBorderRadius: { type: String, default: "0.5rem" },
   },
   { _id: false }
 );

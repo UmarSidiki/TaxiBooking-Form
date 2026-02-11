@@ -85,7 +85,7 @@ export function AppSidebar({ locale }: { locale: string }) {
       icon: Car,
     },
     {
-      title: "Drivers",
+      title: t("Sidebar.drivers"),
       href: (locale: string) => `/${locale}/dashboard/drivers`,
       icon: Users,
       enabled: settings.enableDrivers ?? false,
@@ -95,7 +95,7 @@ export function AppSidebar({ locale }: { locale: string }) {
   // Business
   const businessItems = [
     {
-      title: "Partners",
+      title: t("Sidebar.partners"),
       href: (locale: string) => `/${locale}/dashboard/partners`,
       icon: UsersRound,
       enabled: settings.enablePartners ?? false,
@@ -105,12 +105,12 @@ export function AppSidebar({ locale }: { locale: string }) {
   // System
   const systemItems = [
     {
-      title: "Form Builder",
+      title: t("Sidebar.form_builder"),
       href: (locale: string) => `/${locale}/dashboard/form-builder`,
       icon: Blocks,
     },
     {
-      title: "Embed Forms",
+      title: t("Sidebar.embed_forms"),
       href: (locale: string) => `/${locale}/dashboard/apply`,
       icon: Code,
     },

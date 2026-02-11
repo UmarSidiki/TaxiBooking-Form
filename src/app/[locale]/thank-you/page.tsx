@@ -87,7 +87,7 @@ export default function ThankYouPage() {
                 </div>
                 {amount && (
                   <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-                    <span className="text-sm font-medium text-gray-600">Amount:</span>
+                    <span className="text-sm font-medium text-gray-600">{t('ThankYou.amount')}</span>
                     <span className="text-lg font-bold text-green-600">{currencySymbol}{amount}</span>
                   </div>
                 )}
@@ -122,11 +122,11 @@ export default function ThankYouPage() {
               <div>
                 <h3 className="font-semibold text-gray-900 mb-1 text-sm sm:text-base">{t('ThankYou.need-help')}</h3>
                 <p className="text-xs sm:text-sm text-gray-600">
-                  {t('ThankYou.contact-our-24-7-support-team-at')}t{' '}
+                  {t('ThankYou.contact-our-24-7-support-team-at')}{' '}
                   <a href={"tel:" + process.env.NEXT_PUBLIC_PHONE_NUMBER} className="text-primary font-medium hover:underline break-all">
                     {process.env.NEXT_PUBLIC_PHONE_NUMBER}
                   </a>
-                  {' '}or{' '}
+                  {' '}{t('ThankYou.or')}{' '}
                   <a href={"mailto:" + process.env.NEXT_PUBLIC_SUPPORT_EMAIL} className="text-primary font-medium hover:underline break-all">
                     {process.env.NEXT_PUBLIC_SUPPORT_EMAIL}
                   </a>

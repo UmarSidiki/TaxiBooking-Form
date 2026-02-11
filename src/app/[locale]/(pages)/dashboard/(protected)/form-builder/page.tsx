@@ -83,6 +83,7 @@ import {
   Car,
   CheckCircle,
 } from "lucide-react";
+import { useTranslations } from "next-intl";
 import type {
   IFormLayout,
   IFormField,
@@ -96,128 +97,135 @@ import { apiGet, apiPost, apiPatch, apiDelete } from "@/utils/api";
 const FIELD_REGISTRY: Record<
   BookingFieldType,
   {
-    label: string;
+    labelKey: string;
     icon: React.ElementType;
     step: 1;
     required: boolean;
     locked: boolean;
     width: IFormField["width"];
-    placeholder?: string;
+    placeholderKey?: string;
+    descriptionKey: string;
     visibleWhen?: IFormField["visibleWhen"];
-    description: string;
   }
 > = {
   "booking-type": {
-    label: "Booking Type",
+    labelKey: "booking_type",
     icon: ToggleLeft,
     step: 1,
     required: true,
     locked: true,
     width: "full",
-    description: "Destination-based or hourly booking toggle",
+    descriptionKey: "field_descriptions.booking_type",
   },
   pickup: {
-    label: "Pickup Location",
+    labelKey: "pickup",
     icon: MapPin,
     step: 1,
     required: true,
     locked: true,
     width: "full",
-    placeholder: "Enter pickup address",
-    description: "Google Places autocomplete for pickup address",
+    placeholderKey: "placeholders.pickup",
+    descriptionKey: "field_descriptions.pickup",
   },
   stops: {
-    label: "Stops",
+    labelKey: "stops",
     icon: Route,
     step: 1,
     required: false,
     locked: false,
     width: "full",
-    description: "Dynamic stop addresses with duration (destination only)",
+    descriptionKey: "field_descriptions.stops",
     visibleWhen: { bookingType: "destination" },
   },
   dropoff: {
-    label: "Dropoff Location",
+    labelKey: "dropoff",
     icon: Flag,
     step: 1,
     required: true,
     locked: true,
     width: "full",
-    placeholder: "Enter dropoff address",
-    description: "Google Places autocomplete for dropoff address",
+    placeholderKey: "placeholders.dropoff",
+    descriptionKey: "field_descriptions.dropoff",
     visibleWhen: { bookingType: "destination" },
   },
   duration: {
-    label: "Duration (hours)",
+    labelKey: "duration",
     icon: Timer,
     step: 1,
     required: true,
     locked: true,
     width: "full",
-    placeholder: "2",
-    description: "Number of hours for hourly booking",
+    placeholderKey: "placeholders.duration",
+    descriptionKey: "field_descriptions.duration",
     visibleWhen: { bookingType: "hourly" },
   },
   "trip-type": {
-    label: "Trip Type",
+    labelKey: "trip_type",
     icon: ArrowLeftRight,
     step: 1,
     required: true,
     locked: true,
     width: "full",
-    description: "One-way or round-trip toggle (destination only)",
+    descriptionKey: "field_descriptions.trip_type",
     visibleWhen: { bookingType: "destination" },
   },
   date: {
-    label: "Date",
+    labelKey: "date",
     icon: CalendarDays,
     step: 1,
     required: true,
     locked: true,
     width: "half",
-    description: "Trip departure date",
+    descriptionKey: "field_descriptions.date",
   },
   time: {
-    label: "Time",
+    labelKey: "time",
     icon: Clock,
     step: 1,
     required: true,
     locked: true,
     width: "half",
-    description: "Trip departure time",
+    descriptionKey: "field_descriptions.time",
   },
   "return-date": {
-    label: "Return Date",
+    labelKey: "return_date",
     icon: CalendarDays,
     step: 1,
     required: true,
     locked: true,
     width: "half",
-    description: "Return trip date (round-trip only)",
+    descriptionKey: "field_descriptions.return_date",
     visibleWhen: { tripType: "roundtrip" },
   },
   "return-time": {
-    label: "Return Time",
+    labelKey: "return_time",
     icon: Clock,
     step: 1,
     required: true,
     locked: true,
     width: "half",
-    description: "Return trip time (round-trip only)",
+    descriptionKey: "field_descriptions.return_time",
     visibleWhen: { tripType: "roundtrip" },
   },
   passengers: {
-    label: "Passengers",
+    labelKey: "passengers",
     icon: Users,
+    step: 1,
+    required: true,
+    locked: false,
+    width: "half",
+    descriptionKey: "field_descriptions.passengers",
+  },
+  "search-button": {
+    labelKey: "search_button",
+    icon: CheckCircle,
     step: 1,
     required: true,
     locked: true,
     width: "full",
-    description: "Number of passengers (1–15)",
+    descriptionKey: "field_descriptions.search_button",
   },
 };
-
-// ─── Default layout with all fields ─────────────────────────────────────────
 function createDefaultFields(): IFormField[] {
   return [];
 }
@@ -259,6 +267,12 @@ const DEFAULT_STYLE: IFormStyle = {
   inputBackgroundColor: "#ffffff",
   inputBorderColor: "#e2e8f0",
   inputTextColor: "#1e293b",
+
+  // Layout & Polish
+  showLabels: false,
+  inputSize: "default",
+  fieldGap: 12,
+  inputBorderRadius: "0.5rem",
 };
 
 // ─── Step Separator ─────────────────────────────────────────────────────────
@@ -279,6 +293,7 @@ function SortableField({
   onToggle: () => void;
   onRemove: () => void;
 }) {
+  const t = useTranslations("FormBuilder");
   const {
     attributes,
     listeners,
@@ -324,7 +339,7 @@ function SortableField({
       </div>
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-1.5">
-          <p className="text-xs font-medium truncate">{field.label}</p>
+          <p className="text-xs font-medium truncate">{field.label || (reg ? t(reg.labelKey) : "")}</p>
           {reg?.locked && (
             <Lock className="h-2.5 w-2.5 text-muted-foreground/50" />
           )}
@@ -337,15 +352,20 @@ function SortableField({
           )}
           {field.visibleWhen?.tripType && (
             <Badge variant="outline" className="text-[9px] px-1 py-0 h-3.5">
-              round-trip
+              {t("ui.round_trip")}
             </Badge>
           )}
           <Badge variant="outline" className="text-[9px] px-1 py-0 h-3.5">
             {field.width === "full"
-              ? "Full"
+              ? t("full")
               : field.width === "half"
                 ? "½"
                 : "⅓"}
+            {field.widthWhenHourly && (
+              <span className="ml-0.5 text-amber-600">
+                → {field.widthWhenHourly === "full" ? t("full") : field.widthWhenHourly === "half" ? "½" : "⅓"}
+              </span>
+            )}
           </Badge>
         </div>
       </div>
@@ -356,7 +376,7 @@ function SortableField({
             onToggle();
           }}
           className="flex-shrink-0 p-1 rounded hover:bg-muted transition-colors text-muted-foreground hover:text-primary"
-          title={field.enabled ? "Hide in preview" : "Show in preview"}
+          title={field.enabled ? t("ui.hide_in_preview") : t("ui.show_in_preview")}
         >
           {field.enabled ? (
             <Eye className="h-3.5 w-3.5" />
@@ -370,7 +390,7 @@ function SortableField({
             onRemove();
           }}
           className="flex-shrink-0 p-1 rounded hover:bg-destructive/10 text-muted-foreground hover:text-destructive opacity-0 group-hover:opacity-100 transition-all"
-          title="Remove from form"
+          title={t("ui.remove_from_form")}
         >
           <Trash2 className="h-3.5 w-3.5" />
         </button>
@@ -381,6 +401,7 @@ function SortableField({
 
 // ─── Field Preview (drag overlay) ───────────────────────────────────────────
 function FieldPreview({ field }: { field: IFormField }) {
+  const t = useTranslations("FormBuilder");
   const reg = FIELD_REGISTRY[field.type];
   const Icon = reg?.icon || MapPin;
 
@@ -390,7 +411,7 @@ function FieldPreview({ field }: { field: IFormField }) {
       <div className="rounded-md bg-primary/10 p-2">
         <Icon className="h-4 w-4 text-primary" />
       </div>
-      <p className="text-sm font-medium">{field.label}</p>
+      <p className="text-sm font-medium">{field.label || (reg ? t(reg.labelKey) : "")}</p>
     </div>
   );
 }
@@ -460,7 +481,17 @@ function FormPreview({
   style: IFormStyle;
   onSelectField?: (id: string) => void;
 }) {
+  const t = useTranslations("FormBuilder");
   const enabledFields = fields.filter((f) => f.enabled);
+  const [previewBookingType, setPreviewBookingType] = useState<"destination" | "hourly">("destination");
+  const [previewTripType, setPreviewTripType] = useState<"oneway" | "roundtrip">("oneway");
+
+  // Filter fields by current preview state (simulating live form behavior)
+  const visibleFields = enabledFields.filter((field) => {
+    if (field.visibleWhen?.bookingType && field.visibleWhen.bookingType !== previewBookingType) return false;
+    if (field.visibleWhen?.tripType && field.visibleWhen.tripType !== previewTripType) return false;
+    return true;
+  });
 
   // Convert hex to rgba for transparency
   const getRgba = (hex: string, opacity: number) => {
@@ -494,17 +525,19 @@ function FormPreview({
           <LayoutTemplate className="h-10 w-10 text-muted-foreground" />
         </div>
         <p className="text-base font-medium text-muted-foreground mb-1">
-          No fields enabled
+          {t("ui.no_fields_enabled")}
         </p>
         <p className="text-sm text-muted-foreground/70">
-          Enable fields to see a preview
+          {t("ui.enable_fields_to_see_preview")}
         </p>
       </div>
     );
   }
 
+  const inputPadding = style.inputSize === "compact" ? "py-1.5" : style.inputSize === "large" ? "py-3.5" : "py-2.5";
+  const inputText = style.inputSize === "compact" ? "text-xs" : style.inputSize === "large" ? "text-base" : "text-sm";
   const inputBaseClass =
-    "w-full rounded-lg border pl-9 pr-3 py-2.5 text-sm transition-all duration-200 focus:outline-none focus:ring-2";
+    `w-full border pl-9 pr-3 ${inputPadding} ${inputText} transition-all duration-200 focus:outline-none focus:ring-2`;
 
   const renderField = (field: IFormField) => {
     const reg = FIELD_REGISTRY[field.type];
@@ -514,15 +547,20 @@ function FormPreview({
       backgroundColor: style.inputBackgroundColor,
       borderColor: style.inputBorderColor,
       color: style.inputTextColor,
+      borderRadius: style.inputBorderRadius || "0.5rem",
     };
 
     const iconStyle: React.CSSProperties = { color: style.primaryColor };
 
     const Wrapper = ({ children }: { children: React.ReactNode }) => {
       const cols = style.columns || 2;
-      const span = field.width === "full" 
+      // Use conditional width when in hourly mode
+      const effectiveWidth = (previewBookingType === "hourly" && field.widthWhenHourly) 
+        ? field.widthWhenHourly 
+        : field.width;
+      const span = effectiveWidth === "full" 
         ? cols 
-        : field.width === "half" 
+        : effectiveWidth === "half" 
           ? Math.max(1, Math.floor(cols / 2)) 
           : 1;
 
@@ -530,13 +568,19 @@ function FormPreview({
         <SortablePreviewItem
           key={field.id}
           id={`preview-${field.id}`}
-          className="cursor-pointer p-1"
+          className="cursor-pointer"
           style={{ gridColumn: `span ${span} / span ${span}` }}
           onClick={(e) => {
              e.stopPropagation();
              onSelectField?.(field.id);
           }}
         >
+          {style.showLabels && (
+            <label className="block text-xs font-medium mb-1" style={{ color: style.labelColor }}>
+              {field.label}
+              {field.required && <span className="text-red-500 ml-0.5">*</span>}
+            </label>
+          )}
           {children}
         </SortablePreviewItem>
       );
@@ -555,21 +599,33 @@ function FormPreview({
             >
               <button
                 type="button"
-                className="flex-1 rounded-md px-3 py-2 transition-all duration-300 flex items-center justify-center gap-1.5 text-white shadow-sm text-sm font-medium"
-                style={{
-                  background: `linear-gradient(to right, ${style.primaryColor}cc, ${style.primaryColor})`,
-                }}
+                onClick={(e) => { e.stopPropagation(); setPreviewBookingType("destination"); }}
+                className={`flex-1 rounded-md px-3 py-2 transition-all duration-300 flex items-center justify-center gap-1.5 text-sm font-medium ${
+                  previewBookingType === "destination" ? "text-white shadow-sm" : ""
+                }`}
+                style={
+                  previewBookingType === "destination"
+                    ? { background: `linear-gradient(to right, ${style.primaryColor}cc, ${style.primaryColor})` }
+                    : { color: style.textColor }
+                }
               >
                 <MapPin className="h-3.5 w-3.5" />
-                Destination
+                {t("ui.destination")}
               </button>
               <button
                 type="button"
-                className="flex-1 rounded-md px-3 py-2 transition-all duration-300 flex items-center justify-center gap-1.5 text-sm"
-                style={{ color: style.textColor }}
+                onClick={(e) => { e.stopPropagation(); setPreviewBookingType("hourly"); }}
+                className={`flex-1 rounded-md px-3 py-2 transition-all duration-300 flex items-center justify-center gap-1.5 text-sm font-medium ${
+                  previewBookingType === "hourly" ? "text-white shadow-sm" : ""
+                }`}
+                style={
+                  previewBookingType === "hourly"
+                    ? { background: `linear-gradient(to right, ${style.primaryColor}cc, ${style.primaryColor})` }
+                    : { color: style.textColor }
+                }
               >
                 <Clock className="h-3.5 w-3.5" />
-                Hourly
+                {t("ui.hourly")}
               </button>
             </div>
           </Wrapper>
@@ -587,22 +643,33 @@ function FormPreview({
             >
               <button
                 type="button"
-                className="flex-1 rounded-md px-3 py-2 transition-all duration-300 flex items-center justify-center gap-1.5 shadow-sm text-sm font-medium"
-                style={{
-                  backgroundColor: style.inputBackgroundColor,
-                  color: style.inputTextColor,
-                }}
+                onClick={(e) => { e.stopPropagation(); setPreviewTripType("oneway"); }}
+                className={`flex-1 rounded-md px-3 py-2 transition-all duration-300 flex items-center justify-center gap-1.5 text-sm font-medium ${
+                  previewTripType === "oneway" ? "shadow-sm" : ""
+                }`}
+                style={
+                  previewTripType === "oneway"
+                    ? { backgroundColor: style.inputBackgroundColor, color: style.inputTextColor }
+                    : { color: style.textColor }
+                }
               >
                 <ArrowRight className="h-3.5 w-3.5" />
-                One Way
+                {t("ui.one_way")}
               </button>
               <button
                 type="button"
-                className="flex-1 rounded-md px-3 py-2 transition-all duration-300 flex items-center justify-center gap-1.5 text-sm"
-                style={{ color: style.textColor }}
+                onClick={(e) => { e.stopPropagation(); setPreviewTripType("roundtrip"); }}
+                className={`flex-1 rounded-md px-3 py-2 transition-all duration-300 flex items-center justify-center gap-1.5 text-sm font-medium ${
+                  previewTripType === "roundtrip" ? "shadow-sm" : ""
+                }`}
+                style={
+                  previewTripType === "roundtrip"
+                    ? { backgroundColor: style.inputBackgroundColor, color: style.inputTextColor }
+                    : { color: style.textColor }
+                }
               >
                 <RefreshCw className="h-3.5 w-3.5" />
-                Round Trip
+                {t("ui.round_trip")}
               </button>
             </div>
           </Wrapper>
@@ -622,7 +689,7 @@ function FormPreview({
                   </div>
                   <input
                     type="text"
-                    placeholder="Stop 1 location"
+                    placeholder={t("placeholders.stop")}
                     className={inputBaseClass}
                     style={inputStyle}
                     readOnly
@@ -656,7 +723,7 @@ function FormPreview({
                   className="text-xs underline hover:opacity-80"
                   style={{ color: style.primaryColor }}
                 >
-                  + Add a stop
+                  + {t("ui.add_a_stop")}
                 </button>
               </div>
             </div>
@@ -697,7 +764,7 @@ function FormPreview({
               </div>
               <input
                 type="number"
-                placeholder="Duration (hours)"
+                placeholder={t("placeholders.duration")}
                 min={1}
                 defaultValue={2}
                 className={inputBaseClass}
@@ -762,7 +829,7 @@ function FormPreview({
               </div>
               <input
                 type="number"
-                placeholder="Passengers"
+                placeholder={t("placeholders.passengers")}
                 min={1}
                 max={15}
                 defaultValue={1}
@@ -786,7 +853,10 @@ function FormPreview({
               </div>
               <input
                 type="text"
-                placeholder={field.placeholder || field.label}
+                placeholder={
+                  field.placeholder || 
+                  (reg?.placeholderKey ? t(reg.placeholderKey) : (reg ? t(reg.labelKey) : field.label))
+                }
                 className={inputBaseClass}
                 style={inputStyle}
                 readOnly
@@ -797,22 +867,18 @@ function FormPreview({
     }
   };
 
-  // Separate fields for the embed-style vertical layout
-  // Grid fields: date+time pairs shown side-by-side
-  const gridPairs = new Set(["date", "time", "return-date", "return-time"]);
-
   return (
     <SortableContext
-      items={enabledFields.map((f) => `preview-${f.id}`)}
+      items={visibleFields.map((f) => `preview-${f.id}`)}
       strategy={rectSortingStrategy}
     >
       {/* Steps Preview */}
       {style.showSteps && (
         <div className="flex justify-between items-center px-4 py-3 mb-2">
           {[
-            { Icon: MapPin, label: "Trip" },
-            { Icon: Car, label: "Vehicle" },
-            { Icon: CheckCircle, label: "Payment" },
+            { Icon: MapPin, label: t("ui.steps.trip") },
+            { Icon: Car, label: t("ui.steps.vehicle") },
+            { Icon: CheckCircle, label: t("ui.steps.payment") },
           ].map(({ Icon, label }, index) => (
             <div
               key={index}
@@ -868,17 +934,21 @@ function FormPreview({
               {style.headingText}
             </h2>
             <p className="text-xs mt-0.5" style={{ color: style.textColor }}>
-              {style.subHeadingText || "Book your ride in seconds"}
+              {style.subHeadingText || t("ui.default_subheading")}
             </p>
           </header>
         )}
 
         {/* Fields */}
         <div 
-          className="grid gap-4 items-end" 
-          style={{ gridTemplateColumns: `repeat(${style.columns || 2}, minmax(0, 1fr))` }}
+          className="grid items-end" 
+          style={{ 
+            gridTemplateColumns: `repeat(${style.columns || 2}, minmax(0, 1fr))`,
+            gap: `${style.fieldGap ?? 12}px`,
+            padding: "2px",
+          }}
         >
-          {enabledFields.map((field) => renderField(field))}
+          {visibleFields.map((field) => renderField(field))}
 
           {/* Submit Button In Grid */}
           <div
@@ -903,7 +973,7 @@ function FormPreview({
                 }}
              >
                 <div className="flex items-center justify-center gap-2">
-                   <span>{style.buttonText || "Search"}</span>
+                   <span>{style.buttonText || t("ui.search")}</span>
                    <ArrowRight className="h-4 w-4" />
                 </div>
              </button>
@@ -962,14 +1032,15 @@ function LayoutManager({
   onCreateNew: () => void;
   isLoading: boolean;
 }) {
+  const t = useTranslations("FormBuilder");
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between">
         <p className="text-sm text-muted-foreground">
-          {layouts.length} layout(s)
+          {t("ui.layouts_count", { count: layouts.length })}
         </p>
         <Button size="sm" onClick={onCreateNew}>
-          <Plus className="h-4 w-4 mr-1" /> New
+          <Plus className="h-4 w-4 mr-1" /> {t("ui.new")}
         </Button>
       </div>
       {layouts.length === 0 ? (
@@ -978,7 +1049,7 @@ function LayoutManager({
             <LayoutTemplate className="h-6 w-6 text-muted-foreground" />
           </div>
           <p className="text-sm text-muted-foreground">
-            No layouts created yet
+            {t("ui.no_layouts_created")}
           </p>
         </div>
       ) : (
@@ -998,7 +1069,7 @@ function LayoutManager({
                   <p className="text-sm font-medium truncate">{layout.name}</p>
                   {layout.isDefault && (
                     <Badge className="text-[10px] px-1.5 py-0 h-4">
-                      Default
+                      {t("ui.default")}
                     </Badge>
                   )}
                   {!layout.isActive && (
@@ -1006,13 +1077,15 @@ function LayoutManager({
                       variant="outline"
                       className="text-[10px] px-1.5 py-0 h-4 text-muted-foreground"
                     >
-                      Inactive
+                      {t("ui.inactive")}
                     </Badge>
                   )}
                 </div>
                 <p className="text-xs text-muted-foreground mt-0.5">
-                  {layout.fields.filter((f) => f.enabled).length} /{" "}
-                  {layout.fields.length} field(s) enabled
+                  {t("ui.fields_enabled_count", {
+                    enabled: layout.fields.filter((f) => f.enabled).length,
+                    total: layout.fields.length
+                  })}
                 </p>
               </div>
               <div className="flex items-center gap-1">
@@ -1023,7 +1096,7 @@ function LayoutManager({
                       onSetDefault(layout._id!);
                     }}
                     className="p-1.5 rounded hover:bg-muted"
-                    title="Set as default"
+                    title={t("ui.set_as_default")}
                   >
                     <Star className="h-3.5 w-3.5 text-muted-foreground" />
                   </button>
@@ -1034,7 +1107,7 @@ function LayoutManager({
                     onDuplicate(layout._id!);
                   }}
                   className="p-1.5 rounded hover:bg-muted"
-                  title="Duplicate"
+                  title={t("ui.duplicate")}
                   disabled={isLoading}
                 >
                   <Copy className="h-3.5 w-3.5 text-muted-foreground" />
@@ -1042,10 +1115,10 @@ function LayoutManager({
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
-                    if (confirm("Delete this layout?")) onDelete(layout._id!);
+                    if (confirm(t("ui.confirm_delete_layout"))) onDelete(layout._id!);
                   }}
                   className="p-1.5 rounded hover:bg-destructive/10"
-                  title="Delete"
+                  title={t("ui.delete")}
                   disabled={isLoading}
                 >
                   <Trash2 className="h-3.5 w-3.5 text-destructive" />
@@ -1061,6 +1134,7 @@ function LayoutManager({
 
 // ─── Main Page ──────────────────────────────────────────────────────────────
 export default function FormBuilderPage() {
+  const t = useTranslations("FormBuilder");
   const [layouts, setLayouts] = useState<IFormLayout[]>([]);
   const [currentLayout, setCurrentLayout] = useState<IFormLayout | null>(null);
   const [fields, setFields] = useState<IFormField[]>(createDefaultFields);
@@ -1078,7 +1152,13 @@ export default function FormBuilderPage() {
   const [undoStack, setUndoStack] = useState<IFormField[][]>([]);
   const autoSaveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
-  const [formStyle, setFormStyle] = useState<IFormStyle>(DEFAULT_STYLE);
+  const [formStyle, setFormStyle] = useState<IFormStyle>(() => ({
+    ...DEFAULT_STYLE,
+    headingText: t("ui.default_heading"),
+    subHeadingText: t("ui.default_subheading"),
+    footerText: t("ui.default_footer"),
+    buttonText: t("ui.search"),
+  }));
   const isSavingRef = useRef(false);
 
   const sensors = useSensors(
@@ -1210,8 +1290,8 @@ export default function FormBuilderPage() {
     const newField: IFormField = {
       id: `field_${type}_${Date.now()}`,
       type,
-      label: reg.label,
-      placeholder: reg.placeholder || "",
+      label: t(reg.labelKey),
+      placeholder: reg.placeholderKey ? t(reg.placeholderKey) : "",
       required: reg.required,
       enabled: true,
       width: reg.width,
@@ -1410,7 +1490,7 @@ export default function FormBuilderPage() {
                 <Input
                   value={layoutName}
                   onChange={(e) => setLayoutName(e.target.value)}
-                  placeholder="Layout name"
+                  placeholder={t("ui.layout_name_placeholder")}
                   className="text-2xl font-bold h-auto py-1 px-2 w-64"
                   autoFocus
                   onKeyDown={(e) => {
@@ -1431,18 +1511,20 @@ export default function FormBuilderPage() {
                 className="text-2xl sm:text-3xl font-bold text-foreground cursor-pointer hover:text-primary/80 transition-colors flex items-center gap-2 group"
                 onClick={() => setEditingName(true)}
               >
-                {layoutName || "Untitled Layout"}
+                {layoutName || t("ui.untitled_layout")}
                 <Pencil className="h-4 w-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
               </h1>
             )}
             <div className="flex items-center gap-3 mt-1">
               <p className="text-muted-foreground text-sm">
-                {fields.filter((f) => f.enabled).length} / {fields.length}{" "}
-                fields enabled
+                {t("ui.fields_enabled", {
+                  enabled: fields.filter((f) => f.enabled).length,
+                  total: fields.length
+                })}
               </p>
               {lastSaved && (
                 <span className="text-xs text-muted-foreground">
-                  Saved {lastSaved.toLocaleTimeString()}
+                  {t("ui.saved_at", { time: lastSaved.toLocaleTimeString() })}
                 </span>
               )}
             </div>
@@ -1450,13 +1532,13 @@ export default function FormBuilderPage() {
         </div>
         <div className="flex items-center gap-2">
           <Button variant="outline" size="sm" onClick={resetToDefaults}>
-            Reset
+            {t("reset")}
           </Button>
           <Dialog open={showManager} onOpenChange={setShowManager}>
             <DialogTrigger asChild>
               <Button variant="outline" size="sm">
                 <LayoutTemplate className="h-4 w-4 mr-2" />
-                Layouts
+                {t("layouts")}
                 {layouts.length > 0 && (
                   <Badge variant="secondary" className="ml-2 text-xs h-5">
                     {layouts.length}
@@ -1466,7 +1548,7 @@ export default function FormBuilderPage() {
             </DialogTrigger>
             <DialogContent className="max-w-md">
               <DialogHeader>
-                <DialogTitle>Layout Manager</DialogTitle>
+                <DialogTitle>{t("layout_manager")}</DialogTitle>
               </DialogHeader>
               <LayoutManager
                 layouts={layouts}
@@ -1490,7 +1572,7 @@ export default function FormBuilderPage() {
             ) : (
               <Save className="h-4 w-4 mr-2" />
             )}
-            Save
+            {t("save_layout")}
           </Button>
         </div>
       </div>
@@ -1508,9 +1590,9 @@ export default function FormBuilderPage() {
             <Card className="border border-border bg-card overflow-hidden sticky top-6">
               <CardHeader className="p-0">
                 <div className="px-4 pt-4 pb-3 border-b border-border/50 bg-gradient-to-r from-primary/5 to-primary/10">
-                  <CardTitle className="text-base">Form Elements</CardTitle>
+                  <CardTitle className="text-base">{t("form_elements")}</CardTitle>
                   <CardDescription className="text-xs mt-0.5">
-                    Click to add • Drag to reorder
+                    {t("click_to_add")}
                   </CardDescription>
                 </div>
               </CardHeader>
@@ -1518,7 +1600,7 @@ export default function FormBuilderPage() {
                 {/* Available Fields */}
                 <div className="space-y-2">
                   <Label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground px-1">
-                    Available Fields
+                    {t("available_fields")}
                   </Label>
                   <div className="grid grid-cols-2 gap-1.5">
                     {(Object.keys(FIELD_REGISTRY) as BookingFieldType[])
@@ -1546,7 +1628,7 @@ export default function FormBuilderPage() {
                               <Icon className={`h-3.5 w-3.5 shrink-0 group-hover:scale-110 transition-transform ${isImportant ? "text-amber-600" : "text-primary"}`} />
                             </div>
                             <span className={`truncate ${isImportant ? "font-semibold text-amber-900" : ""}`}>
-                              {reg.label}
+                              {t(reg.labelKey)}
                               {isImportant && <span className="ml-0.5 text-amber-600 font-bold">*</span>}
                             </span>
                           </Button>
@@ -1557,7 +1639,7 @@ export default function FormBuilderPage() {
                     (type) => !fields.some((f) => f.type === type),
                   ).length === 0 && (
                     <div className="text-[10px] text-muted-foreground text-center py-2 px-3 border border-dashed rounded-md bg-muted/20">
-                      All available elements added
+                      {t("all_fields_added")}
                     </div>
                   )}
                 </div>
@@ -1567,16 +1649,16 @@ export default function FormBuilderPage() {
                 {/* Form Structure */}
                 <div className="space-y-2">
                   <Label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground px-1">
-                    Active Form Layout
+                    {t("canvas_title")}
                   </Label>
                   {fields.length === 0 ? (
                     <div className="text-center py-12 px-4 border-2 border-dashed rounded-lg bg-muted/10">
                       <Plus className="h-6 w-6 text-muted-foreground/30 mx-auto mb-2" />
                       <p className="text-xs text-muted-foreground font-medium">
-                        Your form is empty
+                        {t("empty_form")}
                       </p>
                       <p className="text-[10px] text-muted-foreground/70 mt-1">
-                        Select elements above to start building your custom form
+                        {t("empty_form_description")}
                       </p>
                     </div>
                   ) : (
@@ -1609,9 +1691,9 @@ export default function FormBuilderPage() {
               <CardHeader className="p-0">
                 <div className="px-4 pt-4 pb-3 border-b border-border/50 bg-gradient-to-r from-primary/5 to-primary/10 flex items-center justify-between">
                   <div>
-                    <CardTitle className="text-base">Preview</CardTitle>
+                    <CardTitle className="text-base">{t("preview")}</CardTitle>
                     <CardDescription className="text-xs mt-0.5">
-                      Live booking form preview
+                      {t("preview_description")}
                     </CardDescription>
                   </div>
                   <div className="flex items-center gap-1 bg-muted rounded-md p-0.5">
@@ -1666,13 +1748,13 @@ export default function FormBuilderPage() {
                         value="properties"
                         className="data-[state=active]:bg-background data-[state=active]:shadow-sm rounded-md py-1.5 text-xs text-muted-foreground data-[state=active]:text-foreground"
                       >
-                        Field Properties
+                        {t("properties")}
                       </TabsTrigger>
                       <TabsTrigger
                         value="design"
                         className="data-[state=active]:bg-background data-[state=active]:shadow-sm rounded-md py-1.5 text-xs text-muted-foreground data-[state=active]:text-foreground"
                       >
-                        Form Design
+                        {t("design")}
                       </TabsTrigger>
                     </TabsList>
                   </div>
@@ -1693,10 +1775,10 @@ export default function FormBuilderPage() {
                                 </div>
                                 <div>
                                   <p className="text-sm font-medium">
-                                    {selectedField.type}
+                                    {t(reg.labelKey)}
                                   </p>
                                   <p className="text-[11px] text-muted-foreground">
-                                    {reg?.description}
+                                    {t(reg.descriptionKey)}
                                   </p>
                                 </div>
                               </>
@@ -1708,7 +1790,7 @@ export default function FormBuilderPage() {
 
                         {/* Label */}
                         <div className="space-y-1.5">
-                          <Label className="text-xs font-medium">Label</Label>
+                          <Label className="text-xs font-medium">{t("header_text")}</Label>
                           <Input
                             value={selectedField.label}
                             onChange={(e) =>
@@ -1726,7 +1808,7 @@ export default function FormBuilderPage() {
                         ) && (
                           <div className="space-y-1.5">
                             <Label className="text-xs font-medium">
-                              Placeholder
+                              {t("placeholder")}
                             </Label>
                             <Input
                               value={selectedField.placeholder || ""}
@@ -1742,7 +1824,11 @@ export default function FormBuilderPage() {
 
                         {/* Width */}
                         <div className="space-y-1.5">
-                          <Label className="text-xs font-medium">Width</Label>
+                          <Label className="text-xs font-medium">
+                            {selectedField.visibleWhen?.bookingType
+                              ? `${t("width")} (${selectedField.visibleWhen.bookingType} mode)`
+                              : `${t("width")} (default)`}
+                          </Label>
                           <Select
                             value={selectedField.width}
                             onValueChange={(v) =>
@@ -1755,22 +1841,50 @@ export default function FormBuilderPage() {
                               <SelectValue />
                             </SelectTrigger>
                             <SelectContent>
-                              <SelectItem value="full">Full Width</SelectItem>
-                              <SelectItem value="half">Half Width</SelectItem>
-                              <SelectItem value="third">Third Width</SelectItem>
+                              <SelectItem value="full">{t("full")}</SelectItem>
+                              <SelectItem value="half">{t("half")}</SelectItem>
+                              <SelectItem value="third">{t("third")}</SelectItem>
                             </SelectContent>
                           </Select>
                         </div>
+
+                        {/* Conditional Width: show for fields visible in BOTH modes */}
+                        {!selectedField.visibleWhen?.bookingType && !selectedField.visibleWhen?.tripType && (
+                          <div className="space-y-1.5">
+                            <Label className="text-xs font-medium">{t("width_hourly")}</Label>
+                            <p className="text-[10px] text-muted-foreground -mt-1">
+                              Override width when booking type is hourly
+                            </p>
+                            <Select
+                              value={selectedField.widthWhenHourly || "inherit"}
+                              onValueChange={(v) =>
+                                updateField(selectedField.id, {
+                                  widthWhenHourly: v === "inherit" ? undefined : (v as IFormField["width"]),
+                                })
+                              }
+                            >
+                              <SelectTrigger className="h-8 text-sm">
+                                <SelectValue />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="inherit">Same as default</SelectItem>
+                                <SelectItem value="full">{t("full")}</SelectItem>
+                                <SelectItem value="half">{t("half")}</SelectItem>
+                                <SelectItem value="third">{t("third")}</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
+                        )}
 
                         {/* Required toggle */}
                         <div className="flex items-center justify-between">
                           <div>
                             <Label className="text-xs font-medium">
-                              Required
+                              {t("required")}
                             </Label>
                             {FIELD_REGISTRY[selectedField.type]?.locked && (
                               <p className="text-[10px] text-muted-foreground">
-                                Core field — always required
+                                {t("ui.core_field")}
                               </p>
                             )}
                           </div>
@@ -1809,11 +1923,11 @@ export default function FormBuilderPage() {
                         <div className="flex items-center justify-between">
                           <div>
                             <Label className="text-xs font-medium">
-                              Enabled
+                              {t("enabled")}
                             </Label>
                             {FIELD_REGISTRY[selectedField.type]?.locked && (
                               <p className="text-[10px] text-muted-foreground">
-                                Cannot be disabled
+                                {t("ui.cannot_be_disabled")}
                               </p>
                             )}
                           </div>
@@ -1850,18 +1964,18 @@ export default function FormBuilderPage() {
                               <Separator />
                               <div className="space-y-2">
                                 <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                                  Visibility
+                                  {t("ui.visibility")}
                                 </p>
                                 {selectedField.visibleWhen.bookingType && (
                                   <div className="flex items-center gap-2 text-xs text-muted-foreground bg-muted/50 rounded-md px-2.5 py-1.5">
                                     <Eye className="h-3 w-3" />
                                     <span>
-                                      Only visible when booking type ={" "}
+                                      {t("ui.visible_when_booking")}{" "}
                                       <Badge
                                         variant="outline"
                                         className="text-[10px] px-1.5 py-0 h-4 ml-0.5"
                                       >
-                                        {selectedField.visibleWhen.bookingType}
+                                        {selectedField.visibleWhen.bookingType === "destination" ? t("ui.destination") : t("ui.hourly")}
                                       </Badge>
                                     </span>
                                   </div>
@@ -1870,13 +1984,7 @@ export default function FormBuilderPage() {
                                   <div className="flex items-center gap-2 text-xs text-muted-foreground bg-muted/50 rounded-md px-2.5 py-1.5">
                                     <Eye className="h-3 w-3" />
                                     <span>
-                                      Only visible when trip type ={" "}
-                                      <Badge
-                                        variant="outline"
-                                        className="text-[10px] px-1.5 py-0 h-4 ml-0.5"
-                                      >
-                                        round-trip
-                                      </Badge>
+                                      {t("ui.visible_when_trip")}
                                     </span>
                                   </div>
                                 )}
@@ -1894,21 +2002,21 @@ export default function FormBuilderPage() {
                           <Settings2 className="h-5 w-5 text-muted-foreground" />
                         </div>
                         <p className="text-sm text-muted-foreground">
-                          Select a field to configure
+                          {t("ui.select_field_to_configure")}
                         </p>
                         <p className="text-xs text-muted-foreground/70 mt-1">
-                          Click on any field in the canvas
+                          {t("ui.click_canvas_field")}
                         </p>
                         <div className="mt-4 space-y-1 text-xs text-muted-foreground/60">
                           <p>
                             <kbd className="px-1.5 py-0.5 bg-muted rounded text-[10px]">
                               Ctrl+Z
                             </kbd>{" "}
-                            Undo
+                            {t("ui.undo")}
                           </p>
                           <p>
                             <Lock className="inline h-3 w-3 mr-1" />
-                            Locked fields cannot be disabled
+                            {t("ui.locked_fields_disclaimer")}
                           </p>
                         </div>
                       </div>
@@ -1934,7 +2042,7 @@ export default function FormBuilderPage() {
                     <div className="space-y-3">
                       <div className="flex items-center justify-between">
                         <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                          Header
+                          {t("show_header")}
                         </Label>
                         <Switch
                           checked={formStyle.showHeader}
@@ -1946,7 +2054,7 @@ export default function FormBuilderPage() {
                       {formStyle.showHeader && (
                         <div className="space-y-2 pl-2 border-l-2 border-muted ml-1">
                           <div className="space-y-1">
-                            <Label className="text-[10px]">Title</Label>
+                            <Label className="text-[10px]">{t("header_text")}</Label>
                             <Input
                               value={formStyle.headingText}
                               onChange={(e) =>
@@ -1959,7 +2067,7 @@ export default function FormBuilderPage() {
                             />
                           </div>
                           <div className="space-y-1">
-                            <Label className="text-[10px]">Sub-heading</Label>
+                            <Label className="text-[10px]">{t("sub_header_text")}</Label>
                             <Input
                               value={formStyle.subHeadingText}
                               onChange={(e) =>
@@ -1973,7 +2081,7 @@ export default function FormBuilderPage() {
                           </div>
                           <div className="grid grid-cols-2 gap-2">
                             <div>
-                              <Label className="text-[10px]">Alignment</Label>
+                              <Label className="text-[10px]">{t("ui.alignment")}</Label>
                               <Select
                                 value={formStyle.headingAlignment}
                                 onValueChange={(v) =>
@@ -1987,14 +2095,14 @@ export default function FormBuilderPage() {
                                   <SelectValue />
                                 </SelectTrigger>
                                 <SelectContent>
-                                  <SelectItem value="left">Left</SelectItem>
-                                  <SelectItem value="center">Center</SelectItem>
-                                  <SelectItem value="right">Right</SelectItem>
+                                  <SelectItem value="left">{t("ui.left")}</SelectItem>
+                                  <SelectItem value="center">{t("ui.center")}</SelectItem>
+                                  <SelectItem value="right">{t("ui.right")}</SelectItem>
                                 </SelectContent>
                               </Select>
                             </div>
                             <div>
-                              <Label className="text-[10px]">Color</Label>
+                              <Label className="text-[10px]">{t("color")}</Label>
                               <div className="flex items-center gap-2">
                                 <input
                                   type="color"
@@ -2022,11 +2130,11 @@ export default function FormBuilderPage() {
                     {/* Submit Button Styles */}
                     <div className="space-y-3">
                       <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                        Search Button
+                        {t("search_button")}
                       </Label>
 
                        <div className="space-y-1">
-                          <Label className="text-[10px]">Button Text</Label>
+                          <Label className="text-[10px]">{t("button_text")}</Label>
                           <Input
                             value={formStyle.buttonText}
                             onChange={(e) =>
@@ -2041,7 +2149,7 @@ export default function FormBuilderPage() {
 
                       <div className="grid grid-cols-2 gap-3">
                         <div className="space-y-1">
-                          <Label className="text-[10px]">Button Color</Label>
+                          <Label className="text-[10px]">{t("button_color")}</Label>
                           <div className="flex items-center gap-2">
                             <div className="relative h-7 w-7 rounded border overflow-hidden">
                               <input
@@ -2069,7 +2177,7 @@ export default function FormBuilderPage() {
                           </div>
                         </div>
                         <div className="space-y-1">
-                          <Label className="text-[10px]">Text Color</Label>
+                          <Label className="text-[10px]">{t("text_color")}</Label>
                           <div className="flex items-center gap-2">
                             <div className="relative h-7 w-7 rounded border overflow-hidden">
                               <input
@@ -2100,7 +2208,7 @@ export default function FormBuilderPage() {
 
                       <div className="grid grid-cols-2 gap-3">
                         <div className="space-y-1">
-                          <Label className="text-[10px]">Width</Label>
+                          <Label className="text-[10px]">{t("width")}</Label>
                           <Select
                               value={formStyle.buttonWidth || "full"}
                               onValueChange={(v) =>
@@ -2114,14 +2222,14 @@ export default function FormBuilderPage() {
                                 <SelectValue />
                               </SelectTrigger>
                               <SelectContent>
-                                <SelectItem value="full">Full Width</SelectItem>
-                                <SelectItem value="auto">Auto</SelectItem>
-                                <SelectItem value="half">Half</SelectItem>
+                                <SelectItem value="full">{t("full")}</SelectItem>
+                                <SelectItem value="auto">{t("auto")}</SelectItem>
+                                <SelectItem value="half">{t("half")}</SelectItem>
                               </SelectContent>
                             </Select>
                         </div>
                         <div className="space-y-1">
-                          <Label className="text-[10px]">Alignment</Label>
+                          <Label className="text-[10px]">{t("ui.alignment")}</Label>
                           <Select
                               value={formStyle.buttonAlignment || "center"}
                               onValueChange={(v) =>
@@ -2135,9 +2243,9 @@ export default function FormBuilderPage() {
                                 <SelectValue />
                               </SelectTrigger>
                               <SelectContent>
-                                <SelectItem value="left">Left</SelectItem>
-                                <SelectItem value="center">Center</SelectItem>
-                                <SelectItem value="right">Right</SelectItem>
+                                <SelectItem value="left">{t("ui.left")}</SelectItem>
+                                <SelectItem value="center">{t("ui.center")}</SelectItem>
+                                <SelectItem value="right">{t("ui.right")}</SelectItem>
                               </SelectContent>
                             </Select>
                         </div>
@@ -2149,12 +2257,12 @@ export default function FormBuilderPage() {
                     {/* Main Styles */}
                     <div className="space-y-3">
                       <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                        Appearance
+                        {t("appearance")}
                       </Label>
 
                       <div className="space-y-1">
                         <div className="flex justify-between items-center">
-                          <Label className="text-[10px]">Grid Columns</Label>
+                          <Label className="text-[10px]">{t("ui.grid_columns")}</Label>
                           <span className="text-[10px] bg-muted px-1.5 py-0.5 rounded font-mono">
                             {formStyle.columns || 2}
                           </span>
@@ -2183,7 +2291,7 @@ export default function FormBuilderPage() {
 
                       <div className="grid grid-cols-2 gap-3">
                         <div className="space-y-1">
-                          <Label className="text-[10px]">Background</Label>
+                          <Label className="text-[10px]">{t("ui.background")}</Label>
                           <div className="flex items-center gap-2">
                             <div className="relative h-7 w-7 rounded border overflow-hidden">
                               <input
@@ -2212,7 +2320,7 @@ export default function FormBuilderPage() {
                         </div>
                         <div className="space-y-1">
                           <Label className="text-[10px]">
-                            Opacity: {formStyle.backgroundOpacity}%
+                            {t("ui.opacity")}: {formStyle.backgroundOpacity}%
                           </Label>
                           <input
                             type="range"
@@ -2232,7 +2340,7 @@ export default function FormBuilderPage() {
                       </div>
 
                       <div className="flex items-center justify-between pt-1">
-                        <Label className="text-[10px]">Glass Effect</Label>
+                        <Label className="text-[10px]">{t("ui.glass_effect")}</Label>
                         <Switch
                           checked={formStyle.glassEffect}
                           onCheckedChange={(c) =>
@@ -2243,7 +2351,7 @@ export default function FormBuilderPage() {
 
                       <div className="grid grid-cols-2 gap-3 pt-1">
                         <div className="space-y-1">
-                          <Label className="text-[10px]">Primary Color</Label>
+                          <Label className="text-[10px]">{t("primary_color")}</Label>
                           <div className="flex items-center gap-2">
                             <div className="relative h-7 w-7 rounded border overflow-hidden">
                               <input
@@ -2271,7 +2379,7 @@ export default function FormBuilderPage() {
                           </div>
                         </div>
                         <div className="space-y-1">
-                          <Label className="text-[10px]">Text Color</Label>
+                          <Label className="text-[10px]">{t("text_color")}</Label>
                           <div className="flex items-center gap-2">
                             <div className="relative h-7 w-7 rounded border overflow-hidden">
                               <input
@@ -2306,11 +2414,11 @@ export default function FormBuilderPage() {
                     {/* Borders */}
                     <div className="space-y-3">
                       <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                        Container Border
+                        {t("container_border")}
                       </Label>
                       <div className="grid grid-cols-2 gap-3">
                         <div className="space-y-1">
-                          <Label className="text-[10px]">Radius</Label>
+                          <Label className="text-[10px]">{t("radius")}</Label>
                           <Select
                             value={formStyle.borderRadius}
                             onValueChange={(v) =>
@@ -2331,7 +2439,7 @@ export default function FormBuilderPage() {
                           </Select>
                         </div>
                         <div className="space-y-1">
-                          <Label className="text-[10px]">Width</Label>
+                          <Label className="text-[10px]">{t("width")}</Label>
                           <Select
                             value={formStyle.borderWidth}
                             onValueChange={(v) =>
@@ -2342,15 +2450,15 @@ export default function FormBuilderPage() {
                               <SelectValue />
                             </SelectTrigger>
                             <SelectContent>
-                              <SelectItem value="0px">None</SelectItem>
-                              <SelectItem value="1px">Thin</SelectItem>
-                              <SelectItem value="2px">Medium</SelectItem>
-                              <SelectItem value="4px">Thick</SelectItem>
+                              <SelectItem value="0px">{t("none")}</SelectItem>
+                              <SelectItem value="1px">{t("thin")}</SelectItem>
+                              <SelectItem value="2px">{t("medium")}</SelectItem>
+                              <SelectItem value="4px">{t("thick")}</SelectItem>
                             </SelectContent>
                           </Select>
                         </div>
                         <div className="col-span-2 space-y-1">
-                          <Label className="text-[10px]">Border Color</Label>
+                          <Label className="text-[10px]">{t("border_color")}</Label>
                           <div className="flex items-center gap-2 text-xs">
                             <input
                               type="color"
@@ -2376,9 +2484,87 @@ export default function FormBuilderPage() {
                     {/* Inputs */}
                     <div className="space-y-3">
                       <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                        Input Fields
+                        {t("input_fields")}
                       </Label>
-                      <div className="space-y-2">
+
+                      <div className="flex items-center justify-between">
+                        <Label className="text-[10px]">{t("show_labels")}</Label>
+                        <Switch
+                          checked={formStyle.showLabels ?? false}
+                          onCheckedChange={(c) =>
+                            setFormStyle((s) => ({ ...s, showLabels: c }))
+                          }
+                        />
+                      </div>
+
+                      <div className="space-y-1">
+                        <Label className="text-[10px]">{t("input_size")}</Label>
+                        <Select
+                          value={formStyle.inputSize || "default"}
+                          onValueChange={(v) =>
+                            setFormStyle((s) => ({
+                              ...s,
+                              inputSize: v as "compact" | "default" | "large",
+                            }))
+                          }
+                        >
+                          <SelectTrigger className="h-7 text-xs">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="compact">{t("compact")}</SelectItem>
+                            <SelectItem value="default">{t("default")}</SelectItem>
+                            <SelectItem value="large">{t("large")}</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      <div className="space-y-1">
+                        <div className="flex justify-between items-center">
+                          <Label className="text-[10px]">{t("field_gap")}</Label>
+                          <span className="text-[10px] bg-muted px-1.5 py-0.5 rounded font-mono">
+                            {formStyle.fieldGap ?? 12}px
+                          </span>
+                        </div>
+                        <input
+                          type="range"
+                          min="4"
+                          max="32"
+                          step="2"
+                          value={formStyle.fieldGap ?? 12}
+                          onChange={(e) =>
+                            setFormStyle((s) => ({
+                              ...s,
+                              fieldGap: parseInt(e.target.value),
+                            }))
+                          }
+                          className="w-full h-1.5 bg-muted rounded-lg appearance-none cursor-pointer"
+                        />
+                      </div>
+
+                      <div className="space-y-1">
+                        <Label className="text-[10px]">{t("input_border_radius")}</Label>
+                        <Select
+                          value={formStyle.inputBorderRadius || "0.5rem"}
+                          onValueChange={(v) =>
+                            setFormStyle((s) => ({ ...s, inputBorderRadius: v }))
+                          }
+                        >
+                          <SelectTrigger className="h-7 text-xs">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="0rem">Square (0px)</SelectItem>
+                            <SelectItem value="0.25rem">Slight (4px)</SelectItem>
+                            <SelectItem value="0.375rem">Small (6px)</SelectItem>
+                            <SelectItem value="0.5rem">Medium (8px)</SelectItem>
+                            <SelectItem value="0.75rem">Large (12px)</SelectItem>
+                            <SelectItem value="9999px">Pill</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      <div className="space-y-2 pt-1">
                         <div className="grid grid-cols-2 gap-2 items-center">
                           <Label className="text-[10px]">Background</Label>
                           <div className="flex justify-end">
@@ -2428,7 +2614,7 @@ export default function FormBuilderPage() {
                           </div>
                         </div>
                         <div className="grid grid-cols-2 gap-2 items-center">
-                          <Label className="text-[10px]">Label Color</Label>
+                          <Label className="text-[10px]">{t("label_color")}</Label>
                           <div className="flex justify-end">
                             <input
                               type="color"
@@ -2452,7 +2638,7 @@ export default function FormBuilderPage() {
                     <div className="space-y-3">
                       <div className="flex items-center justify-between">
                         <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                          Footer
+                          {t("footer")}
                         </Label>
                         <Switch
                           checked={formStyle.showFooter}
@@ -2464,7 +2650,7 @@ export default function FormBuilderPage() {
                       {formStyle.showFooter && (
                         <div className="pl-2 border-l-2 border-muted ml-1 pt-1">
                           <Label className="text-[10px] mb-1.5 block">
-                            Footer Text
+                            {t("footer_text")}
                           </Label>
                           <Input
                             value={formStyle.footerText}
@@ -2480,7 +2666,7 @@ export default function FormBuilderPage() {
                       )}
                       <div className="flex items-center justify-between">
                         <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                          Footer Images
+                          {t("footer_images")}
                         </Label>
                         <Switch
                           checked={formStyle.showFooterImages}

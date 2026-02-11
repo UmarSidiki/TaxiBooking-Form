@@ -17,6 +17,7 @@ import {
   ToggleLeft,
   Calendar,
   X,
+  CheckCircle,
 } from 'lucide-react';
 import type { IFormField, IFormStyle, BookingFieldType } from '@/models/form-layout';
 
@@ -38,6 +39,7 @@ const FIELD_ICONS: Record<BookingFieldType, React.ElementType> = {
   'return-time': Clock,
   'passengers': Users,
   'duration': Timer,
+  'search-button': CheckCircle,
 };
 
 const MemoizedFormField = memo<MemoizedFormFieldProps>(({ field, style, onSelectField }) => {
@@ -134,7 +136,7 @@ const MemoizedFormField = memo<MemoizedFormFieldProps>(({ field, style, onSelect
             <div className="flex items-center gap-2">
               <div className="flex-[3] relative">
                 <div
-                  className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none"
+                  className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none z-10"
                   style={iconStyle}
                 >
                   <MapPin className="h-4 w-4" aria-hidden="true" />
@@ -150,7 +152,7 @@ const MemoizedFormField = memo<MemoizedFormFieldProps>(({ field, style, onSelect
               </div>
               <div className="flex-1 relative min-w-[80px]">
                 <div
-                  className="absolute left-2 top-1/2 -translate-y-1/2 pointer-events-none"
+                  className="absolute left-2 top-1/2 -translate-y-1/2 pointer-events-none z-10"
                   style={iconStyle}
                 >
                   <Clock className="h-3.5 w-3.5" aria-hidden="true" />
@@ -213,7 +215,7 @@ const MemoizedFormField = memo<MemoizedFormFieldProps>(({ field, style, onSelect
         return (
           <div className="relative">
             <div
-              className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none"
+              className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none z-10"
               style={iconStyle}
             >
               <Calendar className="h-4 w-4" aria-hidden="true" />
@@ -233,7 +235,7 @@ const MemoizedFormField = memo<MemoizedFormFieldProps>(({ field, style, onSelect
         return (
           <div className="relative">
             <div
-              className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none"
+              className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none z-10"
               style={iconStyle}
             >
               <Clock className="h-4 w-4" aria-hidden="true" />
@@ -252,7 +254,7 @@ const MemoizedFormField = memo<MemoizedFormFieldProps>(({ field, style, onSelect
         return (
           <div className="relative">
             <div
-              className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none"
+              className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none z-10"
               style={iconStyle}
             >
               <Users className="h-4 w-4" aria-hidden="true" />
@@ -268,6 +270,19 @@ const MemoizedFormField = memo<MemoizedFormFieldProps>(({ field, style, onSelect
               readOnly
               aria-label="Number of passengers"
             />
+          </div>
+        );
+
+      case "search-button":
+        return (
+          <div
+            className="w-full py-3 px-4 rounded-lg text-center font-bold text-sm shadow-sm transition-all duration-200"
+            style={{
+              backgroundColor: style.buttonColor,
+              color: style.buttonTextColor,
+            }}
+          >
+            {style.buttonText || "Search"}
           </div>
         );
 
@@ -295,7 +310,7 @@ const MemoizedFormField = memo<MemoizedFormFieldProps>(({ field, style, onSelect
 
   return (
     <div
-      className="cursor-pointer p-1"
+      className="cursor-pointer p-1 transition-shadow hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-lg"
       style={{ gridColumn: `span ${span} / span ${span}` }}
       onClick={(e) => {
         e.stopPropagation();
@@ -310,18 +325,29 @@ const MemoizedFormField = memo<MemoizedFormFieldProps>(({ field, style, onSelect
         }
       }}
       aria-label={`Edit ${field.label} field`}
+      aria-pressed={false}
     >
       {renderFieldContent()}
     </div>
   );
 }, (prevProps, nextProps) => {
-  // Custom comparison function for memo
+  // Custom comparison function for memo - deep comparison on style
+  const styleEqual = 
+    prevProps.style.primaryColor === nextProps.style.primaryColor &&
+    prevProps.style.inputBackgroundColor === nextProps.style.inputBackgroundColor &&
+    prevProps.style.inputBorderColor === nextProps.style.inputBorderColor &&
+    prevProps.style.inputTextColor === nextProps.style.inputTextColor &&
+    prevProps.style.textColor === nextProps.style.textColor &&
+    prevProps.style.columns === nextProps.style.columns;
+
   return (
     prevProps.field.id === nextProps.field.id &&
     prevProps.field.label === nextProps.field.label &&
     prevProps.field.enabled === nextProps.field.enabled &&
     prevProps.field.width === nextProps.field.width &&
-    prevProps.style === nextProps.style
+    prevProps.field.type === nextProps.field.type &&
+    prevProps.field.placeholder === nextProps.field.placeholder &&
+    styleEqual
   );
 });
 

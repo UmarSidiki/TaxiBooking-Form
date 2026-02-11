@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useMemo } from "react";
 import {
   ArrowLeft,
   Loader2,
@@ -50,12 +50,14 @@ export default function Step2VehicleSelection() {
 
   const t = useTranslations();
 
-  // Sort vehicles by calculated price (lowest first) with proper handling for different booking types
-  const sortedVehicles = [...vehicles].sort((a, b) => {
-    const priceA = calculatePrice(a);
-    const priceB = calculatePrice(b);
-    return priceA - priceB;
-  });
+  // Sort vehicles by calculated price (lowest first) - memoized for performance
+  const sortedVehicles = useMemo(() => {
+    return [...vehicles].sort((a, b) => {
+      const priceA = calculatePrice(a);
+      const priceB = calculatePrice(b);
+      return priceA - priceB;
+    });
+  }, [vehicles, calculatePrice]);
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">

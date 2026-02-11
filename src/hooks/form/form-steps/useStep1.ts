@@ -94,10 +94,10 @@ export function useStep1() {
   const setupStopAutocomplete = useCallback(
     (index: number) => {
       if (!window.google || !window.google.maps || !window.google.maps.places)
-        return;
+        return null;
 
       const inputRef = stopInputRefs.current[index];
-      if (!inputRef) return;
+      if (!inputRef) return null;
 
       const autocompleteOptions: google.maps.places.AutocompleteOptions = {
         strictBounds: true,
@@ -124,7 +124,7 @@ export function useStep1() {
         autocompleteOptions
       );
 
-      autocomplete.addListener("place_changed", () => {
+      const listener = autocomplete.addListener("place_changed", () => {
         const place = autocomplete.getPlace();
         
         console.log("Stop autocomplete - settings available:", {
@@ -151,6 +151,13 @@ export function useStep1() {
         }));
         // Distance calculation will be triggered by the useEffect that monitors stops
       });
+
+      // Return cleanup function
+      return () => {
+        if (listener) {
+          google.maps.event.removeListener(listener);
+        }
+      };
     },
     [setFormData, settings?.mapPolygonPoints, settings?.mapBounds, validatePlaceInBounds, setErrors, t]
   );
@@ -261,7 +268,9 @@ export function useStep1() {
 
     const lastIndex = formData.stops.length - 1;
     if (stopInputRefs.current[lastIndex]) {
-      setupStopAutocomplete(lastIndex);
+      const cleanup = setupStopAutocomplete(lastIndex);
+      // Return cleanup function
+      return cleanup || undefined;
     }
   }, [formData.stops.length, setupStopAutocomplete]);
 

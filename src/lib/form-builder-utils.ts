@@ -2,7 +2,7 @@
  * Utility hooks and functions for form builder
  */
 
-import { useRef, useCallback, useEffect } from 'react';
+import { useRef, useCallback, useEffect, useState } from 'react';
 
 /**
  * Custom hook for debouncing values
@@ -182,8 +182,6 @@ export function sanitizeCSSValue(value: string, type: 'color' | 'size' | 'text')
 
   return '';
 }
-
-import { useState } from 'react';
 
 /**
  * Custom hook for managing form errors with retry capability

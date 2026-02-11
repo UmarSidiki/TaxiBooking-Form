@@ -17,6 +17,7 @@ const BOOKING_FIELD_TYPES = [
   "return-time",
   "passengers",
   "duration",
+  "search-button",
 ] as const;
 
 // Field schema

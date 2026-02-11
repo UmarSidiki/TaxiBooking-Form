@@ -98,7 +98,7 @@ export default function Step3Payment() {
         setSelectedPaymentMethod("bank_transfer");
       }
     }
-  }, [paymentSettings, selectedPaymentMethod, setSelectedPaymentMethod, stripeConfig.enabled]);
+  }, [paymentSettings, selectedPaymentMethod, setSelectedPaymentMethod, stripeConfig]);
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -118,9 +118,11 @@ export default function Step3Payment() {
                   type="number"
                   min="0"
                   max="5"
-                  className="w-20"
+                  className={`w-20 ${(errors as any).childSeats ? "border-red-500" : ""}`}
                   value={formData.childSeats === 0 ? "" : formData.childSeats}
                   placeholder="0"
+                  aria-invalid={!!(errors as any).childSeats}
+                  aria-describedby={(errors as any).childSeats ? "child-seats-error" : undefined}
                   onChange={(e) => {
                     const value = e.target.value;
                     if (value === "") {
@@ -138,6 +140,11 @@ export default function Step3Payment() {
                     }
                   }}
                 />
+                {(errors as any).childSeats && (
+                  <p id="child-seats-error" className="text-red-500 text-xs mt-1">
+                    {(errors as any).childSeats}
+                  </p>
+                )}
               </div>
             </div>
             <div className="flex items-center justify-between">
@@ -150,9 +157,11 @@ export default function Step3Payment() {
                   type="number"
                   min="0"
                   max="5"
-                  className="w-20"
+                  className={`w-20 ${(errors as any).babySeats ? "border-red-500" : ""}`}
                   value={formData.babySeats === 0 ? "" : formData.babySeats}
                   placeholder="0"
+                  aria-invalid={!!(errors as any).babySeats}
+                  aria-describedby={(errors as any).babySeats ? "baby-seats-error" : undefined}
                   onChange={(e) => {
                     const value = e.target.value;
                     if (value === "") {
@@ -170,6 +179,11 @@ export default function Step3Payment() {
                     }
                   }}
                 />
+                {(errors as any).babySeats && (
+                  <p id="baby-seats-error" className="text-red-500 text-xs mt-1">
+                    {(errors as any).babySeats}
+                  </p>
+                )}
               </div>
             </div>
             <div>
@@ -209,6 +223,8 @@ export default function Step3Payment() {
                   placeholder={t('Step3.john')}
                   className={errors.firstName ? "border-red-500" : ""}
                   value={formData.firstName}
+                  aria-invalid={!!errors.firstName}
+                  aria-describedby={errors.firstName ? "first-name-error" : undefined}
                   onChange={(e) => {
                     setFormData((prev) => ({
                       ...prev,
@@ -217,7 +233,7 @@ export default function Step3Payment() {
                   }}
                 />
                 {errors.firstName && (
-                  <p className="text-red-500 text-xs mt-1">
+                  <p id="first-name-error" className="text-red-500 text-xs mt-1">
                     {errors.firstName}
                   </p>
                 )}
@@ -229,6 +245,8 @@ export default function Step3Payment() {
                   placeholder={t('Step3.doe')}
                   className={errors.lastName ? "border-red-500" : ""}
                   value={formData.lastName}
+                  aria-invalid={!!errors.lastName}
+                  aria-describedby={errors.lastName ? "last-name-error" : undefined}
                   onChange={(e) => {
                     setFormData((prev) => ({
                       ...prev,
@@ -237,7 +255,7 @@ export default function Step3Payment() {
                   }}
                 />
                 {errors.lastName && (
-                  <p className="text-red-500 text-xs mt-1">{errors.lastName}</p>
+                  <p id="last-name-error" className="text-red-500 text-xs mt-1">{errors.lastName}</p>
                 )}
               </div>
             </div>
@@ -249,12 +267,14 @@ export default function Step3Payment() {
                 placeholder="john.doe@example.com"
                 className={errors.email ? "border-red-500" : ""}
                 value={formData.email}
+                aria-invalid={!!errors.email}
+                aria-describedby={errors.email ? "email-error" : undefined}
                 onChange={(e) => {
                   setFormData((prev) => ({ ...prev, email: e.target.value }));
                 }}
               />
               {errors.email && (
-                <p className="text-red-500 text-xs mt-1">{errors.email}</p>
+                <p id="email-error" className="text-red-500 text-xs mt-1">{errors.email}</p>
               )}
             </div>
             <div>
@@ -264,12 +284,14 @@ export default function Step3Payment() {
                 placeholder="+41 76 123 4567"
                 className={errors.phone ? "border-red-500" : ""}
                 value={formData.phone}
+                aria-invalid={!!errors.phone}
+                aria-describedby={errors.phone ? "phone-error" : undefined}
                 onChange={(e) => {
                   setFormData((prev) => ({ ...prev, phone: e.target.value }));
                 }}
               />
               {errors.phone && (
-                <p className="text-red-500 text-xs mt-1">{errors.phone}</p>
+                <p id="phone-error" className="text-red-500 text-xs mt-1">{errors.phone}</p>
               )}
             </div>
           </div>

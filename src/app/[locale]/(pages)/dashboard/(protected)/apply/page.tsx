@@ -24,6 +24,7 @@ import {
 } from "lucide-react";
 import { apiGet } from "@/utils/api";
 import type { IFormLayout } from "@/models/form-layout";
+import { useTranslations } from "next-intl";
 
 interface FormVariant {
   id: string;
@@ -37,6 +38,7 @@ interface FormVariant {
 }
 
 export default function ApplyPage() {
+  const t = useTranslations("WidgetConfigurator");
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [selectedVariant, setSelectedVariant] = useState<string>("v1");
   const [showCode, setShowCode] = useState(false);
@@ -67,25 +69,40 @@ export default function ApplyPage() {
   const defaultVariants: FormVariant[] = [
     {
       id: "v1",
-      name: "Classic Form",
-      description: "Full-featured booking with step indicators",
-      features: ["Progress steps indicator", "One-way and round-trip", "Multiple stops support", "Interactive map"],
+      name: t("variants.v1_name"),
+      description: t("variants.v1_desc"),
+      features: [
+        t("variants.v1_feature1"),
+        t("variants.v1_feature2"),
+        t("variants.v1_feature3"),
+        t("variants.v1_feature4"),
+      ],
       path: "/embeddable/v1",
       icon: <Layers className="w-5 h-5" />,
     },
     {
       id: "v2",
-      name: "Compact Form",
-      description: "Streamlined design for essential booking",
-      features: ["Simplified layout", "Space-efficient", "Essential fields only", "Fast loading"],
+      name: t("variants.v2_name"),
+      description: t("variants.v2_desc"),
+      features: [
+        t("variants.v2_feature1"),
+        t("variants.v2_feature2"),
+        t("variants.v2_feature3"),
+        t("variants.v2_feature4"),
+      ],
       path: "/embeddable/v2",
       icon: <Zap className="w-5 h-5" />,
     },
     {
       id: "v3",
-      name: "Minimal Form",
-      description: "Ultra-compact for sidebars and mobile",
-      features: ["Minimalist design", "Mobile-optimized", "Quick flow", "Perfect for tight spaces"],
+      name: t("variants.v3_name"),
+      description: t("variants.v3_desc"),
+      features: [
+        t("variants.v3_feature1"),
+        t("variants.v3_feature2"),
+        t("variants.v3_feature3"),
+        t("variants.v3_feature4"),
+      ],
       path: "/embeddable/v3",
       icon: <Smartphone className="w-5 h-5" />,
     },
@@ -94,12 +111,12 @@ export default function ApplyPage() {
   const customVariants: FormVariant[] = customLayouts.map((layout) => ({
     id: `custom-${layout._id}`,
     name: layout.name,
-    description: layout.description || "Custom form layout",
+    description: layout.description || t("custom_variants.custom_form_layout"),
     features: [
-      `${layout.fields.filter((f) => f.enabled).length} fields enabled`,
-      layout.isDefault ? "Default layout" : "Custom layout",
-      "Fully customizable",
-      "Drag & drop builder",
+      t("custom_variants.fields_enabled", { 0: layout.fields.filter((f) => f.enabled).length }),
+      layout.isDefault ? t("custom_variants.default_layout") : t("custom_variants.custom_layout"),
+      t("custom_variants.fully_customizable"),
+      t("custom_variants.drag_drop_builder"),
     ],
     path: `/embeddable/custom/${layout._id}`,
     icon: layout.isDefault ? <Star className="w-5 h-5" /> : <Blocks className="w-5 h-5" />,
@@ -249,13 +266,13 @@ export default function ApplyPage() {
       <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 border-b pb-8">
         <div className="space-y-2">
           <Badge variant="outline" className="text-primary border-primary/20 bg-primary/5 px-3 py-1">
-            Stable
+            {t("stable_badge")}
           </Badge>
           <h1 className="text-3xl md:text-5xl font-black tracking-tight">
-            Widget <span className="text-primary">Configurator</span>
+            {t("title")} <span className="text-primary">{t("configurator")}</span>
           </h1>
           <p className="text-muted-foreground text-base md:text-lg max-w-2xl">
-            Choose a design and embed it on any website with a single line of code.
+            {t("description")}
           </p>
         </div>
       </div>
@@ -265,7 +282,7 @@ export default function ApplyPage() {
         {/* Sidebar: Variant Selection */}
         <div className="lg:col-span-4 space-y-6 order-2 lg:order-1">
           <section className="space-y-4">
-            <h3 className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Default Variants</h3>
+            <h3 className="text-xs font-bold uppercase tracking-widest text-muted-foreground">{t("default_variants")}</h3>
             <div className="grid gap-3">
               {defaultVariants.map((variant) => (
                 <button
@@ -306,7 +323,7 @@ export default function ApplyPage() {
             </div>
           ) : customVariants.length > 0 && (
             <section className="space-y-4">
-              <h3 className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Custom Layouts</h3>
+              <h3 className="text-xs font-bold uppercase tracking-widest text-muted-foreground">{t("custom_layouts")}</h3>
               <div className="grid gap-3">
                 {customVariants.map((variant) => (
                   <button
@@ -327,7 +344,7 @@ export default function ApplyPage() {
                       <h4 className="font-bold text-sm flex items-center gap-2">
                         {variant.name}
                         {customLayouts.find((l) => l._id === variant.layoutId)?.isDefault && (
-                          <Badge variant="secondary" className="text-[10px] px-1.5 py-0">DEFAULT</Badge>
+                          <Badge variant="secondary" className="text-[10px] px-1.5 py-0">{t("default")}</Badge>
                         )}
                       </h4>
                       <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
@@ -350,7 +367,7 @@ export default function ApplyPage() {
           <Card className="bg-muted/30 border-none hidden md:block">
             <CardHeader className="pb-3">
               <CardTitle className="text-sm font-bold flex items-center gap-2">
-                <ExternalLink className="w-4 h-4 text-primary" /> Key Features
+                <ExternalLink className="w-4 h-4 text-primary" /> {t("key_features")}
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
@@ -370,9 +387,9 @@ export default function ApplyPage() {
           >
             <div className="flex items-center gap-2">
               <Code className="w-4 h-4" />
-              <span className="font-semibold">Developer Settings</span>
+              <span className="font-semibold">{t("dev_settings")}</span>
             </div>
-            <Badge variant="default" className="font-mono">{showCode ? "Hide" : "Show"}</Badge>
+            <Badge variant="default" className="font-mono">{showCode ? t("hide") : t("show")}</Badge>
           </Button>
         </div>
 
@@ -387,7 +404,7 @@ export default function ApplyPage() {
                 <div className="w-2.5 h-2.5 rounded-full bg-emerald-400/40" />
               </div>
               <div className="text-[10px] font-mono text-muted-foreground bg-background px-3 py-1 rounded-full border shadow-sm">
-                PREVIEW: {selectedForm.id.toUpperCase()}
+                {t("preview")} {selectedForm.id.toUpperCase()}
               </div>
               <div className="w-8 md:w-12" />
             </div>
@@ -415,7 +432,7 @@ export default function ApplyPage() {
                   onClick={() => copyToClipboard(getEmbedScript(selectedForm), "code-block")}
                 >
                   {copiedId === "code-block" ? <Check className="w-3 h-3 mr-2" /> : <Copy className="w-3 h-3 mr-2" />}
-                  Copy
+                  {copiedId === "code-block" ? t("copied") : t("copy")}
                 </Button>
               </div>
               <CardContent className="p-0">

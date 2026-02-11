@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { memo, useEffect } from "react";
 import {
   ArrowLeft,
   Loader2,
@@ -34,7 +34,7 @@ const StripePaymentForm = dynamic(
   { ssr: false }
 );
 
-export default function Step3Payment() {
+function Step3Payment() {
   const {
     // State
     stripeConfig,
@@ -1035,3 +1035,5 @@ export default function Step3Payment() {
     </div>
   );
 }
+
+export default memo(Step3Payment);

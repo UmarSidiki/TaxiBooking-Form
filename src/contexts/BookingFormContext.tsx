@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect, ReactNode, useMemo, useCallback } from 'react';
 import { apiFetch, apiGet } from "@/utils/api";
 import { IVehicle } from '@/models/vehicle';
 import { IFormLayout } from '@/models/form-layout';
@@ -368,20 +368,25 @@ export function BookingFormProvider({ children }: { children: ReactNode }) {
 
   // Fetch vehicles list on mount to persist selection across steps
   useEffect(() => {
-    const fetchVehicles = async () => {
-      try {
-        const data = await apiFetch<{ success: boolean; data: IVehicle[] }>('/api/vehicles?isActive=true');
-        if (data.success) {
-          setVehicles(data.data);
+    // Defer vehicle fetch slightly to prioritize initial render
+    const timeoutId = setTimeout(() => {
+      const fetchVehicles = async () => {
+        try {
+          const data = await apiFetch<{ success: boolean; data: IVehicle[] }>('/api/vehicles?isActive=true');
+          if (data.success) {
+            setVehicles(data.data);
+          }
+        } catch (error) {
+          console.error('Error fetching vehicles:', error);
         }
-      } catch (error) {
-        console.error('Error fetching vehicles:', error);
-      }
-    };
-    fetchVehicles();
+      };
+      fetchVehicles();
+    }, 100);
+
+    return () => clearTimeout(timeoutId);
   }, []);
 
-  const resetForm = () => {
+  const resetForm = useCallback(() => {
     setFormData(defaultFormData);
     setErrors({});
     setCurrentStep(1);
@@ -394,9 +399,9 @@ export function BookingFormProvider({ children }: { children: ReactNode }) {
     } catch (error) {
       console.error('Error clearing sessionStorage:', error);
     }
-  };
+  }, []);
 
-  const value = {
+  const value = useMemo(() => ({
     currentStep,
     setCurrentStep,
     formData,
@@ -413,7 +418,17 @@ export function BookingFormProvider({ children }: { children: ReactNode }) {
     setIsLoading,
     resetForm,
     activeLayout
-  };
+  }), [
+    currentStep,
+    formData,
+    errors,
+    vehicles,
+    distanceData,
+    calculatingDistance,
+    isLoading,
+    resetForm,
+    activeLayout
+  ]);
 
   return (
     <BookingFormContext.Provider value={value}>

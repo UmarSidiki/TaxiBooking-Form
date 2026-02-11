@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { memo } from "react";
 import { useLocale } from "next-intl";
 import { usePathname, useRouter } from "next/navigation";
 import { useTransition } from "react";
@@ -15,7 +16,7 @@ import {
 
 import { Globe } from "lucide-react";
 
-export function LanguageSwitcher() {
+function LanguageSwitcherComponent() {
   const [isPending, startTransition] = useTransition();
 
   const locale = useLocale();
@@ -84,3 +85,5 @@ export function LanguageSwitcher() {
     </DropdownMenu>
   );
 }
+
+export const LanguageSwitcher = memo(LanguageSwitcherComponent);

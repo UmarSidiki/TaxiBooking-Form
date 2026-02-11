@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useMemo } from "react";
+import React, { memo, useMemo } from "react";
 import {
   ArrowLeft,
   Loader2,
@@ -22,7 +22,7 @@ import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { useCurrency } from "@/contexts/CurrencyContext";
 
-export default function Step2VehicleSelection() {
+function Step2VehicleSelection() {
   const {
     // State
     mapLoaded,
@@ -620,3 +620,5 @@ export default function Step2VehicleSelection() {
     </div>
   );
 }
+
+export default memo(Step2VehicleSelection);

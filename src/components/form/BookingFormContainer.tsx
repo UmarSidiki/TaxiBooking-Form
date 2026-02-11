@@ -1,13 +1,23 @@
 "use client";
 
-import React from "react";
-import Step1TripDetails from "./steps/Step1TripDetails";
-import Step2VehicleSelection from "./steps/Step2VehicleSelection";
-import Step3Payment from "./steps/Step3Payment";
+import React, { lazy, Suspense } from "react";
+import { Loader2 } from "lucide-react";
 // import { useTranslations } from "next-intl";
 import { LanguageSwitcher } from "../LanguageSwitcher";
 import { useBookingFormContainer } from "@/hooks/form/form-container/useBookingFormContainer";
 import Image from "next/image";
+
+// Lazy load steps to reduce initial bundle size
+const Step1TripDetails = lazy(() => import("./steps/Step1TripDetails"));
+const Step2VehicleSelection = lazy(() => import("./steps/Step2VehicleSelection"));
+const Step3Payment = lazy(() => import("./steps/Step3Payment"));
+
+// Loading fallback component
+const StepLoader = () => (
+  <div className="flex items-center justify-center min-h-[400px]">
+    <Loader2 className="h-8 w-8 animate-spin text-primary" />
+  </div>
+);
 
 export default function BookingFormContainer() {
   const { initialized, currentStep } = useBookingFormContainer();
@@ -36,6 +46,7 @@ export default function BookingFormContainer() {
                 className="h-8 w-8 rounded-lg"
                 width={32}
                 height={32}
+                priority
               />
               <span className="text-xl font-semibold text-gray-800">{process.env.NEXT_PUBLIC_WEBSITE_NAME}</span>
             </div>
@@ -180,9 +191,11 @@ export default function BookingFormContainer() {
       <main className="max-w-7xl max-sm:max-w-full mx-auto pb-8 pt-6">
         <div className="bg-transparent overflow-hidden">
           <div className="p-4 sm:p-6 lg:p-8">
-            {currentStep === 1 && <Step1TripDetails />}
-            {currentStep === 2 && <Step2VehicleSelection />}
-            {currentStep === 3 && <Step3Payment />}
+            <Suspense fallback={<StepLoader />}>
+              {currentStep === 1 && <Step1TripDetails />}
+              {currentStep === 2 && <Step2VehicleSelection />}
+              {currentStep === 3 && <Step3Payment />}
+            </Suspense>
           </div>
         </div>
       </main>

@@ -67,12 +67,17 @@ export function useStep2() {
     setCalculatingDistance,
   ]);
 
-  // Initialize Google Maps ONCE
+  // Initialize Google Maps ONCE - deferred
   useEffect(() => {
-    const initGoogleMaps = async () => {
+    // Only initialize if map container is present
+    if (!mapRef.current) return;
+    
+    // Defer map loading for performance
+    const timeoutId = setTimeout(async () => {
       const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
       if (!apiKey) {
         console.warn("Google Maps API key not configured");
+        setMapLoaded(true); // Still mark as loaded to remove loader
         return;
       }
 
@@ -150,14 +155,10 @@ export function useStep2() {
       } catch (error) {
         console.error("Error loading Google Maps:", error);
       }
-    };
+    }, 300); // 300ms delay to prioritize initial render
 
-    // Only initialize once when settings are available
-    if (settings && !googleMapRef.current) {
-      initGoogleMaps();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [settings]); // Only run when settings change, not on every formData change
+    return () => clearTimeout(timeoutId);
+  }, [settings, formData.pickup, formData.dropoff, formData.stops]); // Only run when settings change, not on every formData change
 
   useEffect(() => {
     const fetchVehicles = async () => {

@@ -14,11 +14,15 @@ import type { ThemeSettings } from "@/lib/theme-settings";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
+  display: "swap",
+  preload: true,
 });
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+  display: "swap",
+  preload: true,
 });
 
 const siteName = process.env.NEXT_PUBLIC_WEBSITE_NAME ?? "Booking Form";
@@ -87,6 +91,12 @@ export default async function RootLayout({ children, params }: Props) {
 
   return (
     <html lang={locale}>
+      <head>
+        {/* Preconnect to external services for faster loading */}
+        <link rel="preconnect" href="https://maps.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+      </head>
       <body
         style={cssVariables}
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}

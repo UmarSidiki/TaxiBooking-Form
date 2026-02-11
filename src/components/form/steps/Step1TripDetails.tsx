@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { memo } from "react";
 import {
   MapPin,
   Flag,
@@ -18,7 +18,7 @@ import Image from "next/image";
 import { useStep1 } from "@/hooks/form/form-steps/useStep1";
 import { useTranslations } from "next-intl";
 
-export default function Step1TripDetails() {
+function Step1TripDetails() {
   // Get today's date in YYYY-MM-DD format
   const today = new Date().toISOString().split("T")[0];
 
@@ -631,3 +631,5 @@ export default function Step1TripDetails() {
     </div>
   );
 }
+
+export default memo(Step1TripDetails);

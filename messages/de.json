@@ -232,7 +232,9 @@
     "loading": "Formular lädt...",
     "form-unavailable": "Formular nicht verfügbar",
     "no-fields": "Dieses Formular hat keine aktivierten Felder.",
-    "unavailable-description": "Das angeforderte Formular konnte nicht geladen werden oder ist derzeit inaktiv."
+    "unavailable-description": "Das angeforderte Formular konnte nicht geladen werden oder ist derzeit inaktiv.",
+    "disabled-message": "Das einbettbare Buchungsformularmodul ist derzeit deaktiviert.",
+    "disabled-title": "Modul deaktiviert"
   },
   "Dashboard": {
     "Rides": {
@@ -772,7 +774,11 @@
       "tax-percentage-description": "Legen Sie den Steuersatz fest, der auf die Zwischensumme aller Buchungen angewendet wird.",
       "tax-included": "Steuer im Preis inbegriffen",
       "tax-included-description": "Wenn aktiviert, ist die Steuer bereits in den angezeigten Preisen enthalten. Der Steuerbetrag wird zu Informationszwecken separat ausgewiesen, aber nicht zur Gesamtsumme addiert.",
-      "note-changes-to-module-settings": "Hinweis: Änderungen an Moduleinstellungen werden nach dem Speichern und Aktualisieren der Seite wirksam. Das Deaktivieren eines Moduls blendet es aus der Navigation aus, löscht jedoch keine vorhandenen Daten."
+      "note-changes-to-module-settings": "Hinweis: Änderungen an Moduleinstellungen werden nach dem Speichern und Aktualisieren der Seite wirksam. Das Deaktivieren eines Moduls blendet es aus der Navigation aus, löscht jedoch keine vorhandenen Daten.",
+      "embeddable-form-module": "Einbettbares Buchungsformular",
+      "enable-embeddable-booking-form": "Aktivieren Sie das einbettbare Buchungsformular, das auf externen Websites integriert werden kann. \nWenn diese Option deaktiviert ist, können Benutzer nicht auf diese Hilfsseite zugreifen.",
+      "enable-form-builder": "Aktivieren Sie das Formularerstellungstool, um die Felder und das Layout des Buchungsformulars anzupassen. \nWenn diese Option deaktiviert ist, ist die Formularerstellungsseite nicht zugänglich.",
+      "form-builder-module": "Formularersteller"
     },
     "Fleet": {
       "failed-to-fetch-vehicles": "Fahrzeuge konnten nicht abgerufen werden",
@@ -1278,7 +1284,9 @@
       "two_thirds": "Zwei Drittel (66 %)",
       "width": "Breite",
       "half": "Die Hälfte (50 %)"
-    }
+    },
+    "disabled-message": "Das Formularerstellungsmodul ist derzeit vom Administrator deaktiviert.",
+    "disabled-title": "Modul deaktiviert"
   },
   "ThankYouPage": {
     "no-payment-information-found": "Keine Zahlungsinformationen gefunden.",

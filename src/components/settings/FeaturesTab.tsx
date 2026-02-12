@@ -3,7 +3,7 @@ import { useTranslations } from "next-intl";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 import { Input } from "@/components/ui/input";
-import { Users, Car, Receipt } from "lucide-react";
+import { Users, Car, Receipt, Code, Wrench } from "lucide-react";
 import type { ISetting } from "@/models/settings";
 
 // Simple Label component inline
@@ -43,6 +43,14 @@ export default function FeaturesTab({ settings, onSettingsChange }: FeaturesTabP
 
   const handleTaxIncludedChange = (checked: boolean) => {
     onSettingsChange("taxIncluded", checked);
+  };
+
+  const handleEmbeddableFormChange = (checked: boolean) => {
+    onSettingsChange("enableEmbeddableForm", checked);
+  };
+
+  const handleFormBuilderChange = (checked: boolean) => {
+    onSettingsChange("enableFormBuilder", checked);
   };
 
   return (
@@ -164,6 +172,48 @@ export default function FeaturesTab({ settings, onSettingsChange }: FeaturesTabP
                 </div>
               </div>
             )}
+          </div>
+
+          {/* Embeddable Form Module */}
+          <div className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors">
+            <div className="space-y-1 flex-1">
+              <div className="flex items-center gap-2">
+                <Code className="w-4 h-4 text-primary" />
+                <Label htmlFor="enableEmbeddableForm" className="text-base font-semibold cursor-pointer">
+                  {t("embeddable-form-module")}
+                </Label>
+              </div>
+              <p className="text-sm text-muted-foreground">
+                {t("enable-embeddable-booking-form")}
+              </p>
+
+            </div>
+            <Switch
+              id="enableEmbeddableForm"
+              checked={settings.enableEmbeddableForm ?? true}
+              onCheckedChange={handleEmbeddableFormChange}
+            />
+          </div>
+
+          {/* Form Builder Module */}
+          <div className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors">
+            <div className="space-y-1 flex-1">
+              <div className="flex items-center gap-2">
+                <Wrench className="w-4 h-4 text-primary" />
+                <Label htmlFor="enableFormBuilder" className="text-base font-semibold cursor-pointer">
+                  {t("form-builder-module")}
+                </Label>
+              </div>
+              <p className="text-sm text-muted-foreground">
+                {t("enable-form-builder")}
+              </p>
+
+            </div>
+            <Switch
+              id="enableFormBuilder"
+              checked={settings.enableFormBuilder ?? true}
+              onCheckedChange={handleFormBuilderChange}
+            />
           </div>
 
           {/* Info Box */}

@@ -26,64 +26,52 @@ function generateAdminNotificationHTML(partnerData: PartnerRegistrationData) {
   <meta charset="UTF-8">
   <title>New Partner Registration</title>
   <style>
-    body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-    .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-    .header { background-color: #dbeafe; padding: 20px; border-radius: 5px; margin-bottom: 20px; text-align: center; border: 2px solid #3b82f6; }
-    .header h1 { margin: 0; color: #1e40af; }
-    .notification-icon { font-size: 48px; margin-bottom: 10px; }
+    body { font-family: Arial, sans-serif; font-size: 14px; color: #333; line-height: 1.5; }
+    .container { max-width: 600px; margin: 0 auto; }
+    .header { background-color: #f5f5f5; padding: 15px; border-left: 4px solid #0369a1; margin-bottom: 20px; }
+    .header h1 { margin: 0 0 5px 0; font-size: 18px; color: #0369a1; }
     .section { margin-bottom: 20px; }
-    .details { background-color: #f7fafc; padding: 15px; border-radius: 5px; }
-    .details ul { margin: 0; padding-left: 20px; }
-    .details li { margin-bottom: 8px; }
-    .footer { color: #718096; font-size: 12px; margin-top: 30px; border-top: 1px solid #e2e8f0; padding-top: 15px; }
-    .cta-button { 
-      display: inline-block; 
-      background-color: #1e40af; 
-      color: #ffffff !important; 
-      padding: 12px 30px; 
-      text-decoration: none; 
-      border-radius: 5px; 
-      margin-top: 15px;
-      font-weight: bold;
-      text-align: center;
-    }
-    .highlight { color: #2d3748; font-weight: bold; }
+    .section h2 { font-size: 15px; color: #0369a1; margin: 15px 0 8px 0; border-bottom: 1px solid #e0e0e0; padding-bottom: 5px; }
+    table { width: 100%; border-collapse: collapse; }
+    tr { border-bottom: 1px solid #f0f0f0; }
+    td { padding: 6px 0; font-size: 13px; }
+    td:first-child { width: 40%; color: #666; }
+    .details { background-color: #f9f9f9; padding: 10px; border-radius: 3px; }
+    .footer { font-size: 12px; color: #999; margin-top: 25px; border-top: 1px solid #ddd; padding-top: 15px; }
+    a { color: #0369a1; text-decoration: none; }
   </style>
 </head>
 <body>
   <div class="container">
     <div class="header">
-      <div class="notification-icon">🔔</div>
       <h1>New Partner Registration</h1>
-      <p>A new partner has registered and is awaiting approval</p>
+      <p>A new partner awaits approval</p>
     </div>
 
     <div class="section">
       <h2>Partner Details</h2>
       <div class="details">
-        <ul>
-          <li><span class="highlight">Name:</span> ${partnerData.name}</li>
-          <li><span class="highlight">Email:</span> ${partnerData.email}</li>
-          ${partnerData.phone ? `<li><span class="highlight">Phone:</span> ${partnerData.phone}</li>` : ''}
-          ${partnerData.city ? `<li><span class="highlight">City:</span> ${partnerData.city}</li>` : ''}
-          ${partnerData.country ? `<li><span class="highlight">Country:</span> ${partnerData.country}</li>` : ''}
-        </ul>
+        <table>
+          <tr><td><strong>Name:</strong></td><td>${partnerData.name}</td></tr>
+          <tr><td><strong>Email:</strong></td><td><a href="mailto:${partnerData.email}">${partnerData.email}</a></td></tr>
+          ${partnerData.phone ? `<tr><td><strong>Phone:</strong></td><td>${partnerData.phone}</td></tr>` : ''}
+          ${partnerData.city ? `<tr><td><strong>City:</strong></td><td>${partnerData.city}</td></tr>` : ''}
+          ${partnerData.country ? `<tr><td><strong>Country:</strong></td><td>${partnerData.country}</td></tr>` : ''}
+        </table>
       </div>
     </div>
 
     <div class="section">
-      <p>Please review the partner's application and documents in the admin dashboard.</p>
+      <p>Review the partner application in the admin dashboard.</p>
     </div>
 
-    <div style="text-align: center;">
-      <a href="${partnerData.baseUrl?.replace(/\/$/, "")}/dashboard/partners" class="cta-button">
-        Review Partner Application
-      </a>
+    <div class="section">
+      <p>Review application: <a href="${partnerData.baseUrl?.replace(/\/$/, "")}/dashboard/partners">Go to Partners</a></p>
     </div>
 
     <div class="footer">
-      <p>This is an automated notification from your booking system.</p>
-      <p>© ${new Date().getFullYear()} Booking Service. All rights reserved.</p>
+      <p>This is an automated notification.</p>
+      <p>&copy; ${new Date().getFullYear()} Booking Service. All rights reserved.</p>
     </div>
   </div>
 </body>

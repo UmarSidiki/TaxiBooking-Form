@@ -232,7 +232,9 @@
     "loading": "Cargando formulario...",
     "form-unavailable": "Formulario No Disponible",
     "no-fields": "Este formulario no tiene campos habilitados.",
-    "unavailable-description": "El formulario solicitado no pudo cargarse o está inactivo actualmente."
+    "unavailable-description": "El formulario solicitado no pudo cargarse o está inactivo actualmente.",
+    "disabled-message": "El módulo de formulario de reserva integrable está actualmente deshabilitado.",
+    "disabled-title": "Módulo deshabilitado"
   },
   "Dashboard": {
     "Rides": {
@@ -772,7 +774,11 @@
       "tax-percentage-description": "Establezca el porcentaje de impuestos a aplicar sobre el subtotal de todas las reservas.",
       "tax-included": "Impuestos Incluidos en el Precio",
       "tax-included-description": "Cuando está habilitado, el impuesto ya está incluido en los precios mostrados. El monto del impuesto se mostrará por separado con fines informativos pero no se sumará al total.",
-      "note-changes-to-module-settings": "Nota: Los cambios en la configuración de módulos surten efecto tras guardar y actualizar la página. Deshabilitar un módulo lo oculta de la navegación pero no elimina los datos existentes."
+      "note-changes-to-module-settings": "Nota: Los cambios en la configuración de módulos surten efecto tras guardar y actualizar la página. Deshabilitar un módulo lo oculta de la navegación pero no elimina los datos existentes.",
+      "embeddable-form-module": "Formulario de reserva integrable",
+      "enable-embeddable-booking-form": "Habilite el formulario de reserva integrable que se puede integrar en sitios web externos. \nCuando está deshabilitada, los usuarios no pueden acceder a esta página de ayuda.",
+      "enable-form-builder": "Habilite la herramienta de creación de formularios para personalizar los campos y el diseño del formulario de reserva. \nCuando esté deshabilitada, la página del creador de formularios será inaccesible.",
+      "form-builder-module": "Creador de formularios"
     },
     "Fleet": {
       "failed-to-fetch-vehicles": "Error al obtener vehículos",
@@ -1278,7 +1284,9 @@
       "third": "Tercero (33%)",
       "two_thirds": "Dos tercios (66%)",
       "width": "Ancho"
-    }
+    },
+    "disabled-message": "El módulo de creación de formularios está actualmente deshabilitado por el administrador.",
+    "disabled-title": "Módulo deshabilitado"
   },
   "ThankYouPage": {
     "no-payment-information-found": "No se encontró información de pago.",

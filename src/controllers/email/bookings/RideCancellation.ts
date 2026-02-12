@@ -51,25 +51,21 @@ function generateEmailHTML(cancellationData: RideCancellationData, currency: str
   <meta charset="UTF-8">
   <title>Ride Assignment Cancelled - Reservation #${cancellationData.tripId}</title>
   <style>
-    body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-    .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-    .header { background-color: #fef2f2; padding: 20px; border-radius: 5px; margin-bottom: 20px; text-align: center; }
-    .header h1 { margin: 0; color: #dc2626; }
+    body { font-family: Arial, sans-serif; font-size: 14px; color: #333; line-height: 1.5; }
+    .container { max-width: 600px; margin: 0 auto; }
+    .header { background-color: #f5f5f5; padding: 15px; border-left: 4px solid #dc2626; margin-bottom: 20px; }
+    .header h1 { margin: 0 0 5px 0; font-size: 18px; color: #dc2626; }
     .section { margin-bottom: 20px; }
-    .section h2 { color: #4a5568; border-bottom: 2px solid #e2e8f0; padding-bottom: 5px; }
-    .details { background-color: #f7fafc; padding: 15px; border-radius: 5px; }
-    .details ul { margin: 0; padding-left: 20px; }
-    .details li { margin-bottom: 8px; }
-    .payment { background-color: #edf2f7; padding: 15px; border-radius: 5px; }
-    .footer { color: #718096; font-size: 12px; margin-top: 30px; border-top: 1px solid #e2e8f0; padding-top: 15px; }
-    .highlight { color: #2d3748; font-weight: bold; }
-    .cancellation-notice {
-      background-color: #fef2f2;
-      border: 1px solid #dc2626;
-      border-radius: 5px;
-      padding: 15px;
-      margin-bottom: 20px;
-    }
+    .section h2 { font-size: 15px; color: #dc2626; margin: 15px 0 8px 0; border-bottom: 1px solid #e0e0e0; padding-bottom: 5px; }
+    .cancellation-notice { background-color: #f9f9f9; padding: 10px; border-radius: 3px; border-left: 3px solid #dc2626; margin-bottom: 15px; }
+    .cancellation-notice h3 { margin: 0 0 8px 0; font-size: 14px; color: #dc2626; }
+    .cancellation-notice p { margin: 3px 0; font-size: 13px; }
+    table { width: 100%; border-collapse: collapse; }
+    tr { border-bottom: 1px solid #f0f0f0; }
+    td { padding: 6px 0; font-size: 13px; }
+    td:first-child { width: 40%; color: #666; }
+    .footer { font-size: 12px; color: #999; margin-top: 25px; border-top: 1px solid #ddd; padding-top: 15px; }
+    a { color: #dc2626; text-decoration: none; }
   </style>
 </head>
 <body>

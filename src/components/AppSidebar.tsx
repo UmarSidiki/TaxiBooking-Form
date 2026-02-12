@@ -108,18 +108,20 @@ export function AppSidebar({ locale }: { locale: string }) {
       title: t("Sidebar.form_builder"),
       href: (locale: string) => `/${locale}/dashboard/form-builder`,
       icon: Blocks,
+      enabled: settings.enableFormBuilder !== false,
     },
     {
       title: t("Sidebar.embed_forms"),
       href: (locale: string) => `/${locale}/dashboard/apply`,
       icon: Code,
+      enabled: settings.enableEmbeddableForm !== false,
     },
     {
       title: t("Sidebar.settings"),
       href: (locale: string) => `/${locale}/dashboard/settings`,
       icon: Settings,
     },
-  ];
+  ].filter((item) => item.enabled !== false);
 
   return (
     <Sidebar className="border-r-2 border-border/50">

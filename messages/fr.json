@@ -232,7 +232,9 @@
     "loading": "Chargement du formulaire...",
     "form-unavailable": "Formulaire indisponible",
     "no-fields": "Ce formulaire n'a aucun champ activé.",
-    "unavailable-description": "Le formulaire demandé n'a pas pu être chargé ou est inactif."
+    "unavailable-description": "Le formulaire demandé n'a pas pu être chargé ou est inactif.",
+    "disabled-message": "Le module de formulaire de réservation intégrable est actuellement désactivé.",
+    "disabled-title": "Module désactivé"
   },
   "Dashboard": {
     "Rides": {
@@ -772,7 +774,11 @@
       "tax-percentage-description": "Définir le pourcentage de taxe appliqué sur le sous-total.",
       "tax-included": "Taxes incluses dans le prix",
       "tax-included-description": "Si activé, la taxe est déjà incluse dans les prix affichés.",
-      "note-changes-to-module-settings": "Note : Les changements prennent effet après enregistrement et rafraîchissement."
+      "note-changes-to-module-settings": "Note : Les changements prennent effet après enregistrement et rafraîchissement.",
+      "embeddable-form-module": "Formulaire de réservation intégrable",
+      "enable-embeddable-booking-form": "Activez le formulaire de réservation intégrable qui peut être intégré sur des sites Web externes. \nLorsqu'il est désactivé, les utilisateurs ne peuvent pas accéder à cette page d'aide.",
+      "enable-form-builder": "Activez l'outil de création de formulaires pour personnaliser les champs et la mise en page du formulaire de réservation. \nLorsqu'elle est désactivée, la page de création de formulaire sera inaccessible.",
+      "form-builder-module": "Générateur de formulaires"
     },
     "Fleet": {
       "failed-to-fetch-vehicles": "Échec de la récupération des véhicules",
@@ -1278,7 +1284,9 @@
       "two_thirds": "Deux tiers (66 %)",
       "width": "Largeur",
       "small": "Petit"
-    }
+    },
+    "disabled-message": "Le module de création de formulaires est actuellement désactivé par l'administrateur.",
+    "disabled-title": "Module désactivé"
   },
   "ThankYouPage": {
     "no-payment-information-found": "Aucune information de paiement trouvée.",

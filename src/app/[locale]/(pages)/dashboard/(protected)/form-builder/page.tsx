@@ -100,6 +100,7 @@ import type {
 } from "@/models/form-layout";
 import { apiGet, apiPost, apiPatch, apiDelete } from "@/utils/api";
 import { useMediaQuery } from "@/hooks/useMediaQuery"; // Import the new hook
+import FormBuilderGuard from "@/components/form-builder/FormBuilderGuard";
 import React from "react";
 
 // ... (FIELD_REGISTRY and DEFAULT_STYLE remain the same as previous answer) ...
@@ -1197,7 +1198,7 @@ function LayoutManager({ layouts, currentId, onSelect, onDuplicate, onDelete, on
 }
 
 // ─── Main Page ──────────────────────────────────────────────────────────────
-export default function FormBuilderPage() {
+function FormBuilderPage() {
   const t = useTranslations("FormBuilder");
   const isTabletOrMobile = useMediaQuery("(max-width: 1024px)"); // Auto-switch breakpoint
   
@@ -2593,3 +2594,11 @@ export default function FormBuilderPage() {
     </div>
   );
 }
+
+const WrappedFormBuilderPage = () => (
+  <FormBuilderGuard>
+    <FormBuilderPage />
+  </FormBuilderGuard>
+);
+
+export default WrappedFormBuilderPage;

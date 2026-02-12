@@ -42,69 +42,53 @@ function generateFleetRequestEmailHTML(data: FleetRequestData) {
   <meta charset="UTF-8">
   <title>New Fleet Assignment Request</title>
   <style>
-    body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-    .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-    .header { background-color: #f0f9ff; padding: 20px; border-radius: 5px; margin-bottom: 20px; text-align: center; border: 2px solid #0ea5e9; }
-    .header h1 { margin: 0; color: #0369a1; }
-    .notification-icon { font-size: 48px; margin-bottom: 10px; }
+    body { font-family: Arial, sans-serif; font-size: 14px; color: #333; line-height: 1.5; }
+    .container { max-width: 600px; margin: 0 auto; }
+    .header { background-color: #f5f5f5; padding: 15px; border-left: 4px solid #0369a1; margin-bottom: 20px; }
+    .header h1 { margin: 0 0 5px 0; font-size: 18px; color: #0369a1; }
     .section { margin-bottom: 20px; }
-    .details { background-color: #f8fafc; padding: 15px; border-radius: 5px; border-left: 4px solid #0ea5e9; }
-    .footer { color: #718096; font-size: 12px; margin-top: 30px; border-top: 1px solid #e2e8f0; padding-top: 15px; }
-    .cta-button {
-      display: inline-block;
-      background-color: #0369a1;
-      color: #ffffff !important;
-      padding: 12px 30px;
-      text-decoration: none;
-      border-radius: 5px;
-      margin-top: 15px;
-      font-weight: bold;
-      text-align: center;
-    }
-    .highlight { color: #2d3748; font-weight: bold; }
+    .section h2 { font-size: 15px; color: #0369a1; margin: 15px 0 8px 0; border-bottom: 1px solid #e0e0e0; padding-bottom: 5px; }
+    table { width: 100%; border-collapse: collapse; }
+    tr { border-bottom: 1px solid #f0f0f0; }
+    td { padding: 6px 0; font-size: 13px; }
+    td:first-child { width: 40%; color: #666; }
+    .details { background-color: #f9f9f9; padding: 10px; border-radius: 3px; }
+    .footer { font-size: 12px; color: #999; margin-top: 25px; border-top: 1px solid #ddd; padding-top: 15px; }
+    a { color: #0369a1; text-decoration: none; }
   </style>
 </head>
 <body>
   <div class="container">
     <div class="header">
-      <div class="notification-icon">🚗</div>
-      <h1>New Fleet Assignment Request</h1>
+      <h1>Fleet Assignment Request</h1>
       <p>A partner has requested fleet assignment</p>
     </div>
 
     <div class="section">
-      <p>A partner has submitted a fleet assignment request that requires your approval.</p>
-    </div>
-
-    <div class="section">
+      <h2>Request Details</h2>
       <div class="details">
-        <h3>Request Details:</h3>
-        <p><strong>Partner:</strong> ${data.partnerName} (${data.partnerEmail})</p>
-        <p><strong>Requested Vehicle:</strong> ${data.vehicleName}</p>
-        <p><strong>Category:</strong> ${data.vehicleCategory}</p>
-        <p><strong>Requested At:</strong> ${new Date().toLocaleString()}</p>
+        <table>
+          <tr><td><strong>Partner:</strong></td><td>${data.partnerName}</td></tr>
+          <tr><td><strong>Email:</strong></td><td><a href="mailto:${data.partnerEmail}">${data.partnerEmail}</a></td></tr>
+          <tr><td><strong>Vehicle:</strong></td><td>${data.vehicleName}</td></tr>
+          <tr><td><strong>Category:</strong></td><td>${data.vehicleCategory}</td></tr>
+          <tr><td><strong>Requested:</strong></td><td>${new Date().toLocaleString()}</td></tr>
+        </table>
       </div>
     </div>
 
     <div class="section">
-      <h3>Next Steps:</h3>
-      <ul>
-        <li>Review the partner's profile and documents</li>
-        <li>Verify vehicle availability</li>
-        <li>Approve or reject the fleet assignment request</li>
-        <li>The partner will be notified via email</li>
-      </ul>
+      <p><strong>Next Steps:</strong></p>
+      <p>• Review partner profile and documents<br>• Verify vehicle availability<br>• Approve or reject the request<br>• Partner will be notified via email</p>
     </div>
 
-    <div style="text-align: center;">
-      <a href="${data.baseUrl?.replace(/\/$/, "")}/dashboard/partners" class="cta-button">
-        Review Partner Requests
-      </a>
+    <div class="section">
+      <p>Review this request: <a href="${data.baseUrl?.replace(/\/$/, "")}/dashboard/partners">Go to Partner Requests</a></p>
     </div>
 
     <div class="footer">
-      <p>This is an automated notification from your booking system.</p>
-      <p>Please review fleet assignment requests promptly to maintain service quality.</p>
+      <p>This is an automated notification. Please review promptly.</p>
+      <p>&copy; ${new Date().getFullYear()} Booking Service. All rights reserved.</p>
     </div>
   </div>
 </body>
@@ -120,69 +104,56 @@ function generateFleetApprovalEmailHTML(data: FleetApprovalData) {
   <meta charset="UTF-8">
   <title>Fleet Assignment Approved</title>
   <style>
-    body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-    .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-    .header { background-color: #f0fdf4; padding: 20px; border-radius: 5px; margin-bottom: 20px; text-align: center; border: 2px solid #22c55e; }
-    .header h1 { margin: 0; color: #15803d; }
-    .success-icon { font-size: 48px; margin-bottom: 10px; }
+    body { font-family: Arial, sans-serif; font-size: 14px; color: #333; line-height: 1.5; }
+    .container { max-width: 600px; margin: 0 auto; }
+    .header { background-color: #f5f5f5; padding: 15px; border-left: 4px solid #16a34a; margin-bottom: 20px; }
+    .header h1 { margin: 0 0 5px 0; font-size: 18px; color: #16a34a; }
     .section { margin-bottom: 20px; }
-    .details { background-color: #f7fafc; padding: 15px; border-radius: 5px; }
-    .footer { color: #718096; font-size: 12px; margin-top: 30px; border-top: 1px solid #e2e8f0; padding-top: 15px; }
-    .cta-button {
-      display: inline-block;
-      background-color: #15803d;
-      color: #ffffff !important;
-      padding: 12px 30px;
-      text-decoration: none;
-      border-radius: 5px;
-      margin-top: 15px;
-      font-weight: bold;
-      text-align: center;
-    }
+    .section h2 { font-size: 15px; color: #16a34a; margin: 15px 0 8px 0; border-bottom: 1px solid #e0e0e0; padding-bottom: 5px; }
+    table { width: 100%; border-collapse: collapse; }
+    tr { border-bottom: 1px solid #f0f0f0; }
+    td { padding: 6px 0; font-size: 13px; }
+    td:first-child { width: 40%; color: #666; }
+    .details { background-color: #f9f9f9; padding: 10px; border-radius: 3px; }
+    .footer { font-size: 12px; color: #999; margin-top: 25px; border-top: 1px solid #ddd; padding-top: 15px; }
+    a { color: #16a34a; text-decoration: none; }
   </style>
 </head>
 <body>
   <div class="container">
     <div class="header">
-      <div class="success-icon">✅</div>
-      <h1>Fleet Assignment Approved!</h1>
-      <p>Your fleet assignment request has been approved</p>
+      <h1>Fleet Assignment Approved</h1>
+      <p>Your request has been approved</p>
     </div>
 
     <div class="section">
       <p>Dear ${data.partnerName},</p>
-      <p>Great news! Your fleet assignment request has been <strong>approved</strong>.</p>
-      <p>You can now start accepting ride assignments with your assigned vehicle.</p>
+      <p>Your fleet assignment request has been <strong>approved</strong>. You can now start accepting ride assignments.</p>
     </div>
 
     <div class="section">
+      <h2>Assigned Vehicle</h2>
       <div class="details">
-        <h3>Assigned Vehicle:</h3>
-        <p><strong>Vehicle:</strong> ${data.vehicleName}</p>
-        <p><strong>Category:</strong> ${data.vehicleCategory}</p>
-        <p><strong>Approved At:</strong> ${new Date().toLocaleString()}</p>
+        <table>
+          <tr><td><strong>Vehicle:</strong></td><td>${data.vehicleName}</td></tr>
+          <tr><td><strong>Category:</strong></td><td>${data.vehicleCategory}</td></tr>
+          <tr><td><strong>Approved:</strong></td><td>${new Date().toLocaleString()}</td></tr>
+        </table>
       </div>
     </div>
 
     <div class="section">
-      <h3>What happens next:</h3>
-      <ul>
-        <li>You can now accept ride assignments</li>
-        <li>Check your partner dashboard for available rides</li>
-        <li>Vehicle details are available in your fleet section</li>
-        <li>Contact support if you need any assistance</li>
-      </ul>
+      <p><strong>Next Steps:</strong></p>
+      <p>• Check your partner dashboard<br>• Review vehicle details<br>• Start accepting ride assignments<br>• Contact support if needed</p>
     </div>
 
-    <div style="text-align: center;">
-      <a href="${data.baseUrl?.replace(/\/$/, "")}/partners/dashboard" class="cta-button">
-        Go to Dashboard
-      </a>
+    <div class="section">
+      <p>Go to: <a href="${data.baseUrl?.replace(/\/$/, "")}/partners/dashboard">Partner Dashboard</a></p>
     </div>
 
     <div class="footer">
       <p>Thank you for being part of our partner network!</p>
-      <p>If you have any questions, please don't hesitate to contact our support team.</p>
+      <p>&copy; ${new Date().getFullYear()} Booking Service. All rights reserved.</p>
     </div>
   </div>
 </body>
@@ -198,70 +169,55 @@ function generateFleetRejectionEmailHTML(data: FleetRejectionData) {
   <meta charset="UTF-8">
   <title>Fleet Assignment Request Update</title>
   <style>
-    body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-    .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-    .header { background-color: #fef2f2; padding: 20px; border-radius: 5px; margin-bottom: 20px; text-align: center; border: 2px solid #ef4444; }
-    .header h1 { margin: 0; color: #dc2626; }
-    .warning-icon { font-size: 48px; margin-bottom: 10px; }
+    body { font-family: Arial, sans-serif; font-size: 14px; color: #333; line-height: 1.5; }
+    .container { max-width: 600px; margin: 0 auto; }
+    .header { background-color: #f5f5f5; padding: 15px; border-left: 4px solid #dc2626; margin-bottom: 20px; }
+    .header h1 { margin: 0 0 5px 0; font-size: 18px; color: #dc2626; }
     .section { margin-bottom: 20px; }
-    .details { background-color: #fff7ed; padding: 15px; border-radius: 5px; border-left: 4px solid #f59e0b; }
-    .footer { color: #718096; font-size: 12px; margin-top: 30px; border-top: 1px solid #e2e8f0; padding-top: 15px; }
-    .cta-button {
-      display: inline-block;
-      background-color: #0369a1;
-      color: #ffffff !important;
-      padding: 12px 30px;
-      text-decoration: none;
-      border-radius: 5px;
-      margin-top: 15px;
-      font-weight: bold;
-      text-align: center;
-    }
+    .section h2 { font-size: 15px; color: #dc2626; margin: 15px 0 8px 0; border-bottom: 1px solid #e0e0e0; padding-bottom: 5px; }
+    table { width: 100%; border-collapse: collapse; }
+    tr { border-bottom: 1px solid #f0f0f0; }
+    td { padding: 6px 0; font-size: 13px; }
+    td:first-child { width: 40%; color: #666; }
+    .details { background-color: #f9f9f9; padding: 10px; border-radius: 3px; border-left: 3px solid #f59e0b; }
+    .footer { font-size: 12px; color: #999; margin-top: 25px; border-top: 1px solid #ddd; padding-top: 15px; }
+    a { color: #0369a1; text-decoration: none; }
   </style>
 </head>
 <body>
   <div class="container">
     <div class="header">
-      <div class="warning-icon">⚠️</div>
       <h1>Fleet Assignment Request Update</h1>
       <p>Regarding your fleet assignment request</p>
     </div>
 
     <div class="section">
       <p>Dear ${data.partnerName},</p>
-      <p>Thank you for your interest in fleet assignment. After careful review, we regret to inform you that we are unable to approve your fleet assignment request at this time.</p>
+      <p>Thank you for your interest. We are unable to approve your fleet assignment request at this time.</p>
     </div>
 
     ${data.rejectionReason ? `
     <div class="section">
+      <h2>Reason</h2>
       <div class="details">
-        <h3>Reason:</h3>
         <p>${data.rejectionReason}</p>
       </div>
     </div>
     ` : ''}
 
     <div class="section">
-      <p>You can submit a new request for a different vehicle or contact our support team for more information.</p>
+      <p>You can submit a new request or contact support for more information.</p>
+      <p><strong>Options:</strong></p>
+      <p>• Request a different vehicle<br>• Contact support<br>• Reapply later</p>
     </div>
 
     <div class="section">
-      <h3>What you can do:</h3>
-      <ul>
-        <li>Request a different vehicle from the available fleet</li>
-        <li>Contact support for clarification</li>
-        <li>Reapply after addressing any concerns</li>
-      </ul>
-    </div>
-
-    <div style="text-align: center;">
-      <a href="${data.baseUrl?.replace(/\/$/, "")}/partners/fleet" class="cta-button">
-        Request Different Vehicle
-      </a>
+      <p>Request a vehicle: <a href="${data.baseUrl?.replace(/\/$/, "")}/partners/fleet">Submit New Request</a></p>
     </div>
 
     <div class="footer">
-      <p>We appreciate your partnership and look forward to working with you.</p>
+      <p>We appreciate your interest in our partnership program.</p>
+      <p>&copy; ${new Date().getFullYear()} Booking Service. All rights reserved.</p>
     </div>
   </div>
 </body>

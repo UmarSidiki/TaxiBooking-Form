@@ -218,6 +218,8 @@
     "book-your-ride-in-seconds": "Book your ride in seconds",
     "date-cannot-be-in-the-past": "Date cannot be in the past",
     "stop-index-1-location": "Stop {0}",
+    "disabled-title": "Module Disabled",
+    "disabled-message": "The embeddable booking form module is currently disabled.",
     "add-a-stop": "Add a Stop",
     "round": "Round",
     "date": "Date",
@@ -766,6 +768,10 @@
       "enable-partner-registration": "Enable partner registration, document verification, and ride assignments. When disabled, the Partners menu will be hidden from the admin sidebar.",
       "drivers-module-legacy": "Drivers Module (Legacy)",
       "enable-the-legacy-drivers-system": "Enable the legacy drivers system for backward compatibility. When disabled, the Drivers menu will be hidden from the admin sidebar.",
+      "embeddable-form-module": "Embeddable Booking Form",
+      "enable-embeddable-booking-form": "Enable the embeddable booking form that can be integrated on external websites. When disabled, users cannot access this helper page.",
+      "form-builder-module": "Form Builder",
+      "enable-form-builder": "Enable the form builder tool to customize booking form fields and layout. When disabled, the form builder page will be inaccessible.",
       "tax-module": "Tax Module",
       "enable-tax-on-bookings": "Enable tax calculation on all bookings. Tax will be shown separately in the booking summary, emails, and invoices.",
       "tax-percentage": "Tax Rate",
@@ -1278,7 +1284,9 @@
       "label_color": "Label Color",
       "footer": "Footer",
       "footer_images": "Footer Images"
-    }
+    },
+    "disabled-title": "Module Disabled",
+    "disabled-message": "The form builder module is currently disabled by the administrator."
   },
   "ThankYouPage": {
     "no-payment-information-found": "No payment information found.",

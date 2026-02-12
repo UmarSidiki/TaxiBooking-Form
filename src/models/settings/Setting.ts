@@ -41,6 +41,8 @@ export interface ISetting {
   smtpSenderName?: string;
   enablePartners?: boolean;
   enableDrivers?: boolean;
+  enableEmbeddableForm?: boolean;
+  enableFormBuilder?: boolean;
   enableTax?: boolean;
   taxPercentage?: number;
   taxIncluded?: boolean;
@@ -193,6 +195,14 @@ const SettingSchema = new Schema<ISetting>(
     enableDrivers: {
       type: Boolean,
       default: false,
+    },
+    enableEmbeddableForm: {
+      type: Boolean,
+      default: true,
+    },
+    enableFormBuilder: {
+      type: Boolean,
+      default: true,
     },
     enableTax: {
       type: Boolean,

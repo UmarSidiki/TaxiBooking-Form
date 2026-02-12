@@ -57,85 +57,60 @@ function generateEmailHTML(bookingData: BookingData) {
   <meta charset="UTF-8">
   <title>Thank You - Reservation #${bookingData.tripId}</title>
   <style>
-    body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-    .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-    .header { background-color: #f0f9ff; padding: 20px; border-radius: 5px; margin-bottom: 20px; text-align: center; }
-    .header h1 { margin: 0; color: #0369a1; }
+    body { font-family: Arial, sans-serif; font-size: 14px; color: #333; line-height: 1.5; }
+    .container { max-width: 600px; margin: 0 auto; }
+    .header { background-color: #f5f5f5; padding: 15px; border-left: 4px solid #0369a1; margin-bottom: 20px; }
+    .header h1 { margin: 0 0 5px 0; font-size: 18px; color: #0369a1; }
     .section { margin-bottom: 20px; }
-    .section h2 { color: #4a5568; border-bottom: 2px solid #e2e8f0; padding-bottom: 5px; }
-    .details { background-color: #f7fafc; padding: 15px; border-radius: 5px; }
-    .details ul { margin: 0; padding-left: 20px; }
-    .details li { margin-bottom: 8px; }
-    .footer { color: #718096; font-size: 12px; margin-top: 30px; border-top: 1px solid #e2e8f0; padding-top: 15px; }
-    .highlight { color: #2d3748; font-weight: bold; }
-    .cta-section { background-color: #f0f9ff; padding: 20px; border-radius: 5px; margin-top: 20px; text-align: center; }
-    .cta-button {
-      display: inline-block;
-      background-color: #0369a1;
-      color: #ffffff !important;
-      padding: 12px 30px;
-      text-decoration: none;
-      border-radius: 5px;
-      margin-top: 15px;
-      font-weight: bold;
-      text-align: center;
-    }
-    .cta-button span {
-      color: #ffffff !important;
-    }
+    .section h2 { font-size: 15px; color: #0369a1; margin: 15px 0 8px 0; border-bottom: 1px solid #e0e0e0; padding-bottom: 5px; }
+    table { width: 100%; border-collapse: collapse; }
+    tr { border-bottom: 1px solid #f0f0f0; }
+    td { padding: 8px 0; }
+    td:first-child { width: 40%; color: #666; }
+    .review-section { background-color: #f9f9f9; padding: 15px; border-radius: 3px; text-align: center; }
+    .footer { font-size: 12px; color: #999; margin-top: 25px; border-top: 1px solid #ddd; padding-top: 15px; }
+    a { color: #0369a1; text-decoration: none; }
   </style>
 </head>
 <body>
   <div class="container">
     <div class="header">
-      <h1>Thank You for Choosing Us!</h1>
+      <h1>Thank You for Your Trip!</h1>
       <p>Dear ${bookingData.firstName} ${bookingData.lastName},</p>
-      <p>We hope you had a great experience with our service!</p>
+      <p>We appreciate choosing our service for your recent journey.</p>
     </div>
 
     <div class="section">
-      <h2>Your Recent Trip</h2>
-      <div class="details">
-        <ul>
-          <li><span class="highlight">Reservation ID:</span> #${
-            bookingData.tripId
-          }</li>
-          <li><span class="highlight">From:</span> ${bookingData.pickup}</li>
-          ${bookingData.stops && bookingData.stops.length > 0 ? bookingData.stops.map((stop, index) =>
-            `<li><span class="highlight">Stop ${index + 1}:</span> ${stop.location}</li>`
-          ).join('') : ''}
-          <li><span class="highlight">To:</span> ${bookingData.dropoff}</li>
-          <li><span class="highlight">Departure Date:</span> ${bookingData.date}</li>
-          <li><span class="highlight">Departure Time:</span> ${bookingData.time}</li>
-          ${bookingData.tripType === 'roundtrip' && bookingData.returnDate ? 
-            `<li><span class="highlight">Return Date:</span> ${bookingData.returnDate}</li>` : ''}
-          ${bookingData.tripType === 'roundtrip' && bookingData.returnTime ? 
-            `<li><span class="highlight">Return Time:</span> ${bookingData.returnTime}</li>` : ''}
-          ${
-            bookingData.flightNumber
-              ? `<li><span class="highlight">Flight Number:</span> ${bookingData.flightNumber}</li>`
-              : ""
-          }
-          <li><span class="highlight">Vehicle:</span> ${
-            bookingData.vehicleDetails.name
-          }</li>
-        </ul>
-      </div>
+      <h2>Your Trip Summary</h2>
+      <table>
+        <tr><td><strong>Reservation ID:</strong></td><td>#${bookingData.tripId}</td></tr>
+        <tr><td><strong>From:</strong></td><td>${bookingData.pickup}</td></tr>
+        ${bookingData.stops && bookingData.stops.length > 0 ? bookingData.stops.map((stop, index) =>
+          `<tr><td><strong>Stop ${index + 1}:</strong></td><td>${stop.location}</td></tr>`
+        ).join('') : ''}
+        <tr><td><strong>To:</strong></td><td>${bookingData.dropoff}</td></tr>
+        <tr><td><strong>Date:</strong></td><td>${bookingData.date} at ${bookingData.time}</td></tr>
+        ${bookingData.tripType === 'roundtrip' && bookingData.returnDate ? 
+          `<tr><td><strong>Return:</strong></td><td>${bookingData.returnDate} at ${bookingData.returnTime}</td></tr>` : ''}
+        ${bookingData.flightNumber ? `<tr><td><strong>Flight:</strong></td><td>${bookingData.flightNumber}</td></tr>` : ''}
+        <tr><td><strong>Vehicle:</strong></td><td>${bookingData.vehicleDetails.name}</td></tr>
+      </table>
     </div>
 
     ${reviewUrl ? `
-    <div class="cta-section">
-      <h2 style="color: #0369a1; margin-top: 0;">How was your experience?</h2>
-      <p>We would love to hear about your experience! Your feedback helps us improve our service.</p>
-      <a href="${reviewUrl}" class="cta-button">
-        <span>Leave a Review</span>
-      </a>
+    <div class="review-section">
+      <h2 style="color: #0369a1; margin-top: 0; font-size: 15px;">Share Your Experience</h2>
+      <p>Your feedback helps us improve. <a href="${reviewUrl}">Leave a Review</a></p>
     </div>
     ` : ''}
 
+    <div class="section">
+      <p><strong>Thank you for choosing us!</strong> We hope to serve you again soon.</p>
+    </div>
+
     <div class="footer">
       <p>This is an automated email. Please do not reply.</p>
-      <p>© ${new Date().getFullYear()} Booking Service. All rights reserved.</p>
+      <p>&copy; ${new Date().getFullYear()} Booking Service. All rights reserved.</p>
     </div>
   </div>
 </body>

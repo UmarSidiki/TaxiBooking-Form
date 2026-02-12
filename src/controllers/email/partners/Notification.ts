@@ -23,34 +23,22 @@ function generateApprovalEmailHTML(partnerData: PartnerData) {
   <meta charset="UTF-8">
   <title>Partner Application Approved</title>
   <style>
-    body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-    .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-    .header { background-color: #f0fdf4; padding: 20px; border-radius: 5px; margin-bottom: 20px; text-align: center; border: 2px solid #86efac; }
-    .header h1 { margin: 0; color: #15803d; }
-    .success-icon { font-size: 48px; margin-bottom: 10px; }
+    body { font-family: Arial, sans-serif; font-size: 14px; color: #333; line-height: 1.5; }
+    .container { max-width: 600px; margin: 0 auto; }
+    .header { background-color: #f5f5f5; padding: 15px; border-left: 4px solid #16a34a; margin-bottom: 20px; }
+    .header h1 { margin: 0 0 5px 0; font-size: 18px; color: #16a34a; }
     .section { margin-bottom: 20px; }
-    .details { background-color: #f7fafc; padding: 15px; border-radius: 5px; }
-    .footer { color: #718096; font-size: 12px; margin-top: 30px; border-top: 1px solid #e2e8f0; padding-top: 15px; }
-    .cta-button { 
-      display: inline-block; 
-      background-color: #15803d; 
-      color: #ffffff !important; 
-      padding: 12px 30px; 
-      text-decoration: none; 
-      border-radius: 5px; 
-      margin-top: 15px;
-      font-weight: bold;
-      text-align: center;
-    }
-    .highlight { color: #2d3748; font-weight: bold; }
+    .section h2 { font-size: 15px; color: #16a34a; margin: 15px 0 8px 0; border-bottom: 1px solid #e0e0e0; padding-bottom: 5px; }
+    .details { background-color: #f9f9f9; padding: 10px; border-radius: 3px; }
+    .footer { font-size: 12px; color: #999; margin-top: 25px; border-top: 1px solid #ddd; padding-top: 15px; }
+    a { color: #16a34a; text-decoration: none; }
   </style>
 </head>
 <body>
   <div class="container">
     <div class="header">
-      <div class="success-icon">✅</div>
       <h1>Congratulations!</h1>
-      <p>Your Partner Application Has Been Approved</p>
+      <p>Your partner application has been approved</p>
     </div>
 
     <div class="section">
@@ -60,26 +48,22 @@ function generateApprovalEmailHTML(partnerData: PartnerData) {
     </div>
 
     <div class="section">
+      <h2>Next Steps</h2>
       <div class="details">
-        <h3>Next Steps:</h3>
-        <ol>
-          <li>Log in to your partner dashboard</li>
-          <li>Review your profile information</li>
-          <li>Check for assigned rides</li>
-          <li>Start accepting bookings</li>
-        </ol>
+        <p>• Log in to your partner dashboard<br>
+        • Review your profile information<br>
+        • Check for assigned rides<br>
+        • Start accepting bookings</p>
       </div>
     </div>
 
-    <div style="text-align: center;">
-      <a href="${partnerData.baseUrl?.replace(/\/$/, "")}/partners/login" class="cta-button">
-        Go to Partner Dashboard
-      </a>
+    <div class="section">
+      <p>Go to dashboard: <a href="${partnerData.baseUrl?.replace(/\/$/, "")}/partners/login">Partner Dashboard</a></p>
     </div>
 
     <div class="footer">
-      <p>If you have any questions, please don't hesitate to contact our support team.</p>
       <p>Thank you for partnering with us!</p>
+      <p>&copy; ${new Date().getFullYear()} Booking Service. All rights reserved.</p>
     </div>
   </div>
 </body>
@@ -95,47 +79,35 @@ function generateRejectionEmailHTML(partnerData: PartnerData) {
   <meta charset="UTF-8">
   <title>Partner Application Status</title>
   <style>
-    body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-    .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-    .header { background-color: #fef2f2; padding: 20px; border-radius: 5px; margin-bottom: 20px; text-align: center; border: 2px solid #fca5a5; }
-    .header h1 { margin: 0; color: #991b1b; }
-    .warning-icon { font-size: 48px; margin-bottom: 10px; }
+    body { font-family: Arial, sans-serif; font-size: 14px; color: #333; line-height: 1.5; }
+    .container { max-width: 600px; margin: 0 auto; }
+    .header { background-color: #f5f5f5; padding: 15px; border-left: 4px solid #dc2626; margin-bottom: 20px; }
+    .header h1 { margin: 0 0 5px 0; font-size: 18px; color: #dc2626; }
     .section { margin-bottom: 20px; }
-    .details { background-color: #fff7ed; padding: 15px; border-radius: 5px; border-left: 4px solid #f59e0b; }
-    .footer { color: #718096; font-size: 12px; margin-top: 30px; border-top: 1px solid #e2e8f0; padding-top: 15px; }
-    .cta-button { 
-      display: inline-block; 
-      background-color: #0369a1; 
-      color: #ffffff !important; 
-      padding: 12px 30px; 
-      text-decoration: none; 
-      border-radius: 5px; 
-      margin-top: 15px;
-      font-weight: bold;
-      text-align: center;
-    }
-    .highlight { color: #2d3748; font-weight: bold; }
+    .section h2 { font-size: 15px; color: #dc2626; margin: 15px 0 8px 0; border-bottom: 1px solid #e0e0e0; padding-bottom: 5px; }
+    .details { background-color: #f9f9f9; padding: 10px; border-radius: 3px; border-left: 3px solid #f59e0b; }
+    .footer { font-size: 12px; color: #999; margin-top: 25px; border-top: 1px solid #ddd; padding-top: 15px; }
+    a { color: #0369a1; text-decoration: none; }
   </style>
 </head>
 <body>
   <div class="container">
     <div class="header">
-      <div class="warning-icon">⚠️</div>
-      <h1>Application Update</h1>
-      <p>Regarding Your Partner Application</p>
+      <h1>Application Status Update</h1>
+      <p>Regarding your partner application</p>
     </div>
 
     <div class="section">
       <p>Dear ${partnerData.name},</p>
-      <p>Thank you for your interest in becoming a partner with us. After careful review of your application, we regret to inform you that we are unable to approve your application at this time.</p>
+      <p>Thank you for your interest. After review of your application, we are unable to approve it at this time.</p>
     </div>
 
     ${
       partnerData.rejectionReason
         ? `
     <div class="section">
+      <h2>Reason</h2>
       <div class="details">
-        <h3>Reason:</h3>
         <p>${partnerData.rejectionReason}</p>
       </div>
     </div>
@@ -144,17 +116,16 @@ function generateRejectionEmailHTML(partnerData: PartnerData) {
     }
 
     <div class="section">
-      <p>If you believe this decision was made in error or if you would like to reapply after addressing the concerns, please contact our support team.</p>
+      <p>You may reapply after addressing any concerns or contact support for more information.</p>
     </div>
 
-    <div style="text-align: center;">
-      <a href="${partnerData.baseUrl?.replace(/\/$/, "")}/contact" class="cta-button">
-        Contact Support
-      </a>
+    <div class="section">
+      <p>Contact us: <a href="${partnerData.baseUrl?.replace(/\/$/, "")}/contact">Support</a></p>
     </div>
 
     <div class="footer">
-      <p>We appreciate your interest and wish you the best in your future endeavors.</p>
+      <p>We appreciate your interest in our partnership program.</p>
+      <p>&copy; ${new Date().getFullYear()} Booking Service. All rights reserved.</p>
     </div>
   </div>
 </body>
@@ -168,56 +139,37 @@ function generateSuspensionEmailHTML(partnerData: PartnerData) {
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>Partner Account Suspended</title>
+  <title>Account Suspension Notice</title>
   <style>
-    body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-    .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-    .header { background-color: #fef3c7; padding: 20px; border-radius: 5px; margin-bottom: 20px; text-align: center; border: 2px solid #fbbf24; }
-    .header h1 { margin: 0; color: #92400e; }
-    .warning-icon { font-size: 48px; margin-bottom: 10px; }
+    body { font-family: Arial, sans-serif; font-size: 14px; color: #333; line-height: 1.5; }
+    .container { max-width: 600px; margin: 0 auto; }
+    .header { background-color: #fef3c7; padding: 15px; border-left: 4px solid #f59e0b; margin-bottom: 20px; }
+    .header h1 { margin: 0 0 5px 0; font-size: 18px; color: #92400e; }
     .section { margin-bottom: 20px; }
-    .details { background-color: #fef2f2; padding: 15px; border-radius: 5px; border-left: 4px solid #ef4444; }
-    .footer { color: #718096; font-size: 12px; margin-top: 30px; border-top: 1px solid #e2e8f0; padding-top: 15px; }
-    .cta-button { 
-      display: inline-block; 
-      background-color: #0369a1; 
-      color: #ffffff !important; 
-      padding: 12px 30px; 
-      text-decoration: none; 
-      border-radius: 5px; 
-      margin-top: 15px;
-      font-weight: bold;
-      text-align: center;
-    }
-    .highlight { color: #2d3748; font-weight: bold; }
-    .warning-box { 
-      background-color: #fee2e2; 
-      border: 2px solid #ef4444; 
-      padding: 15px; 
-      border-radius: 5px; 
-      margin: 20px 0;
-    }
+    .section h2 { font-size: 15px; color: #92400e; margin: 15px 0 8px 0; border-bottom: 1px solid #e0e0e0; padding-bottom: 5px; }
+    .warning { background-color: #fffbeb; padding: 12px; border-left: 3px solid #f59e0b; color: #78350f; }
+    .footer { font-size: 12px; color: #999; margin-top: 25px; border-top: 1px solid #ddd; padding-top: 15px; }
+    a { color: #0369a1; text-decoration: none; }
   </style>
 </head>
 <body>
   <div class="container">
     <div class="header">
-      <div class="warning-icon">🚫</div>
-      <h1>Account Suspended</h1>
-      <p>Important Notice About Your Partner Account</p>
+      <h1>Account Suspension Notice</h1>
+      <p>Important: Your partner account has been suspended</p>
     </div>
 
     <div class="section">
       <p>Dear ${partnerData.name},</p>
-      <p>We regret to inform you that your partner account has been <strong>suspended</strong>.</p>
+      <p>We are writing to inform you that your partner account has been suspended effective immediately.</p>
     </div>
 
     ${
       partnerData.rejectionReason
         ? `
     <div class="section">
-      <div class="details">
-        <h3>Reason for Suspension:</h3>
+      <h2>Reason for Suspension</h2>
+      <div class="warning">
         <p>${partnerData.rejectionReason}</p>
       </div>
     </div>
@@ -225,30 +177,22 @@ function generateSuspensionEmailHTML(partnerData: PartnerData) {
         : ""
     }
 
-    <div class="warning-box">
-      <h3 style="margin-top: 0; color: #991b1b;">⚠️ Important: Data Deletion Notice</h3>
-      <p><strong>Your account data will be permanently deleted after 30 days from the suspension date.</strong></p>
-      <p>If you wish to appeal this decision or have any questions, please contact our support team immediately.</p>
+    <div class="section">
+      <h2>What This Means</h2>
+      <p>Your account access has been temporarily suspended. You will not be able to manage bookings or access your dashboard during this period.</p>
     </div>
 
     <div class="section">
-      <h3>What This Means:</h3>
-      <ul>
-        <li>You can no longer access your partner dashboard</li>
-        <li>You will not receive new ride assignments</li>
-        <li>Your account data will be deleted in 30 days</li>
-        <li>You can appeal this decision by contacting support</li>
-      </ul>
+      <p>If you have questions or wish to appeal this decision, please contact our support team immediately.</p>
     </div>
 
-    <div style="text-align: center;">
-      <a href="${partnerData.baseUrl?.replace(/\/$/, "")}/contact" class="cta-button">
-        Contact Support
-      </a>
+    <div class="section">
+      <p>Contact support: <a href="${partnerData.baseUrl?.replace(/\/$/, "")}/contact">Support Center</a></p>
     </div>
 
     <div class="footer">
-      <p>If you believe this suspension was made in error, please reach out to our support team as soon as possible.</p>
+      <p>This is an automated message. Please do not reply to this email.</p>
+      <p>&copy; ${new Date().getFullYear()} Booking Service. All rights reserved.</p>
     </div>
   </div>
 </body>

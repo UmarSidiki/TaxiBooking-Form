@@ -232,7 +232,9 @@
     "loading": "Formulier laden...",
     "form-unavailable": "Formulier Niet Beschikbaar",
     "no-fields": "Dit formulier heeft geen ingeschakelde velden.",
-    "unavailable-description": "Het aangevraagde formulier kon niet worden geladen of is momenteel inactief."
+    "unavailable-description": "Het aangevraagde formulier kon niet worden geladen of is momenteel inactief.",
+    "disabled-message": "De insluitbare boekingsformuliermodule is momenteel uitgeschakeld.",
+    "disabled-title": "Module uitgeschakeld"
   },
   "Dashboard": {
     "Rides": {
@@ -772,7 +774,11 @@
       "tax-percentage-description": "Stel het belastingpercentage in dat wordt toegepast op het subtotaal van alle boekingen.",
       "tax-included": "Belasting inbegrepen in prijs",
       "tax-included-description": "Indien ingeschakeld, is de belasting al inbegrepen in de weergegeven prijzen. Het belastingbedrag wordt apart getoond ter informatie maar wordt niet opgeteld bij het totaal.",
-      "note-changes-to-module-settings": "Let op: Wijzigingen aan module-instellingen worden van kracht na opslaan en vernieuwen van de pagina. Een module uitschakelen verbergt deze uit de navigatie maar verwijdert geen bestaande gegevens."
+      "note-changes-to-module-settings": "Let op: Wijzigingen aan module-instellingen worden van kracht na opslaan en vernieuwen van de pagina. Een module uitschakelen verbergt deze uit de navigatie maar verwijdert geen bestaande gegevens.",
+      "embeddable-form-module": "Insluitbaar boekingsformulier",
+      "enable-embeddable-booking-form": "Schakel het insluitbare boekingsformulier in dat op externe websites kan worden geïntegreerd. \nIndien uitgeschakeld, hebben gebruikers geen toegang tot deze helppagina.",
+      "enable-form-builder": "Schakel de tool voor het maken van formulieren in om de velden en lay-out van boekingsformulieren aan te passen. \nIndien uitgeschakeld, is de pagina voor het maken van formulieren niet toegankelijk.",
+      "form-builder-module": "Formulierbouwer"
     },
     "Fleet": {
       "failed-to-fetch-vehicles": "Ophalen voertuigen mislukt",
@@ -1278,7 +1284,9 @@
       "third": "Derde (33%)",
       "two_thirds": "Tweederde (66%)",
       "width": "Breedte"
-    }
+    },
+    "disabled-message": "De formulierbouwermodule is momenteel uitgeschakeld door de beheerder.",
+    "disabled-title": "Module uitgeschakeld"
   },
   "ThankYouPage": {
     "no-payment-information-found": "Geen betaalinformatie gevonden.",

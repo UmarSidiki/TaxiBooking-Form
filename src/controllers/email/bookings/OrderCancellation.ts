@@ -58,92 +58,67 @@ function generateEmailHTML(bookingData: BookingData, currency: string = 'EUR') {
   <meta charset="UTF-8">
   <title>Booking Cancellation</title>
   <style>
-    body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-    .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-    .header { background-color: #fef2f2; padding: 20px; border-radius: 5px; margin-bottom: 20px; text-align: center; }
-    .header h1 { margin: 0; color: #dc2626; }
+    body { font-family: Arial, sans-serif; font-size: 14px; color: #333; line-height: 1.5; }
+    .container { max-width: 600px; margin: 0 auto; }
+    .header { background-color: #f5f5f5; padding: 15px; border-left: 4px solid #dc2626; margin-bottom: 20px; }
+    .header h1 { margin: 0 0 5px 0; font-size: 18px; color: #dc2626; }
     .section { margin-bottom: 20px; }
-    .section h2 { color: #4a5568; border-bottom: 2px solid #e2e8f0; padding-bottom: 5px; }
-    .details { background-color: #f7fafc; padding: 15px; border-radius: 5px; }
-    .details ul { margin: 0; padding-left: 20px; }
-    .details li { margin-bottom: 8px; }
-    .payment { background-color: #edf2f7; padding: 15px; border-radius: 5px; }
-    .refund { background-color: #f0fdf4; padding: 15px; border-radius: 5px; border-left: 4px solid #16a34a; }
-    .footer { color: #718096; font-size: 12px; margin-top: 30px; border-top: 1px solid #e2e8f0; padding-top: 15px; }
-    .highlight { color: #2d3748; font-weight: bold; }
-    .cta-button { display: inline-block; background-color: #dc2626; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; margin-top: 15px; }
+    .section h2 { font-size: 15px; color: #dc2626; margin: 15px 0 8px 0; border-bottom: 1px solid #e0e0e0; padding-bottom: 5px; }
+    table { width: 100%; border-collapse: collapse; }
+    tr { border-bottom: 1px solid #f0f0f0; }
+    td { padding: 8px 0; }
+    td:first-child { width: 40%; color: #666; }
+    .refund-section { background-color: #f9f9f9; padding: 10px; border-radius: 3px; border-left: 3px solid #16a34a; }
+    .footer { font-size: 12px; color: #999; margin-top: 25px; border-top: 1px solid #ddd; padding-top: 15px; }
+    a { color: #dc2626; text-decoration: none; }
   </style>
 </head>
 <body>
   <div class="container">
     <div class="header">
-      <h1>❌ Booking Cancelled</h1>
+      <h1>Booking Cancelled</h1>
       <p>Dear ${bookingData.firstName} ${bookingData.lastName},</p>
       <p>Your booking has been cancelled as of ${canceledAt}.</p>
     </div>
 
     <div class="section">
       <h2>Journey Details</h2>
-      <div class="details">
-        <ul>
-          <li><span class="highlight">Reservation ID:</span> #${
-            bookingData.tripId
-          }</li>
-          <li><span class="highlight">Pickup:</span> ${bookingData.pickup}</li>
-          ${bookingData.stops && bookingData.stops.length > 0 ? bookingData.stops.map((stop, index) =>
-            `<li><span class="highlight">Stop ${index + 1}:</span> ${stop.location}</li>`
-          ).join('') : ''}
-          <li><span class="highlight">Dropoff:</span> ${
-            bookingData.dropoff
-          }</li>
-          <li><span class="highlight">Departure Date:</span> ${bookingData.date}</li>
-          <li><span class="highlight">Departure Time:</span> ${bookingData.time}</li>
-          ${bookingData.tripType === 'roundtrip' && bookingData.returnDate ? 
-            `<li><span class="highlight">Return Date:</span> ${bookingData.returnDate}</li>` : ''}
-          ${bookingData.tripType === 'roundtrip' && bookingData.returnTime ? 
-            `<li><span class="highlight">Return Time:</span> ${bookingData.returnTime}</li>` : ''}
-          ${
-            bookingData.flightNumber
-              ? `<li><span class="highlight">Flight Number:</span> ${bookingData.flightNumber}</li>`
-              : ""
-          }
-          <li><span class="highlight">Vehicle:</span> ${
-            bookingData.vehicleDetails?.name || bookingData.selectedVehicle
-          }</li>
-        </ul>
+      <table>
+        <tr><td><strong>Reservation ID:</strong></td><td>#${bookingData.tripId}</td></tr>
+        <tr><td><strong>From:</strong></td><td>${bookingData.pickup}</td></tr>
+        ${bookingData.stops && bookingData.stops.length > 0 ? bookingData.stops.map((stop, index) =>
+          `<tr><td><strong>Stop ${index + 1}:</strong></td><td>${stop.location}</td></tr>`
+        ).join('') : ''}
+        <tr><td><strong>To:</strong></td><td>${bookingData.dropoff}</td></tr>
+        <tr><td><strong>Departure:</strong></td><td>${bookingData.date} at ${bookingData.time}</td></tr>
+        ${bookingData.tripType === 'roundtrip' && bookingData.returnDate ? 
+          `<tr><td><strong>Return:</strong></td><td>${bookingData.returnDate} at ${bookingData.returnTime}</td></tr>` : ''}
+        <tr><td><strong>Type:</strong></td><td>${bookingData.tripType}</td></tr>
+        ${bookingData.flightNumber ? `<tr><td><strong>Flight:</strong></td><td>${bookingData.flightNumber}</td></tr>` : ''}
+        <tr><td><strong>Vehicle:</strong></td><td>${bookingData.vehicleDetails?.name || bookingData.selectedVehicle}</td></tr>
+      </table>
+    </div>
+
+    <div class="section">
+      <h2>Refund Details</h2>
+      <div class="refund-section">
+        <table>
+          <tr><td>Total Paid:</td><td>${currencySymbol}${bookingData.totalAmount.toFixed(2)}</td></tr>
+          <tr><td>Refund Amount:</td><td>${currencySymbol}${refundAmount.toFixed(2)}</td></tr>
+          ${refundPercentage !== null ? `<tr><td>Refund Percentage:</td><td>${refundPercentage}%</td></tr>` : ''}
+        </table>
+        <p style="font-size: 12px; margin-top: 10px; color: #666;">The refund will be processed back to your original payment method. It may take 5-10 business days to appear.</p>
       </div>
     </div>
 
     <div class="section">
-      <h2>Payment & Refund</h2>
-      <div class="payment">
-        <ul>
-          <li><span class="highlight">Total Paid:</span> ${currencySymbol}${bookingData.totalAmount.toFixed(
-    2
-  )}</li>
-          <li><span class="highlight">Refund Amount:</span> ${currencySymbol}${refundAmount.toFixed(
-    2
-  )}</li>
-          ${
-            refundPercentage !== null
-              ? `<li><span class="highlight">Refund Percentage:</span> ${refundPercentage}%</li>`
-              : ""
-          }
-        </ul>
-      </div>
-      <div class="refund">
-        <p>The refund will be processed back to your original payment method. Depending on your bank, it may take 5-10 business days to appear on your statement.</p>
-      </div>
-    </div>
-
-    <div class="section">
-      <p>If you have any questions, please contact our support team.</p>
-      <a href="mailto:${process.env.NEXT_PUBLIC_SUPPORT_EMAIL}" class="cta-button">Contact Support</a>
+      <p><strong>Need Help?</strong></p>
+      <p>Contact us: <a href="mailto:${process.env.NEXT_PUBLIC_SUPPORT_EMAIL}">${process.env.NEXT_PUBLIC_SUPPORT_EMAIL}</a></p>
     </div>
 
     <div class="footer">
-      <p>This is an automated message.</p>
-      <p>© ${new Date().getFullYear()} Booking Service. All rights reserved.</p>
+      <p>This is an automated message. Please do not reply.</p>
+      <p>&copy; ${new Date().getFullYear()} Booking Service. All rights reserved.</p>
     </div>
   </div>
 </body>

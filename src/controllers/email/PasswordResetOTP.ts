@@ -21,20 +21,21 @@ function generateEmailHTML(otpData: OTPData) {
   <meta charset="UTF-8">
   <title>Password Reset - OTP Verification</title>
   <style>
-    body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-    .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-    .header { background-color: #fef3c7; padding: 20px; border-radius: 5px; margin-bottom: 20px; text-align: center; }
-    .header h1 { margin: 0; color: #92400e; }
-    .otp-box { background-color: #f0f9ff; padding: 20px; border-radius: 5px; text-align: center; margin: 20px 0; }
+    body { font-family: Arial, sans-serif; font-size: 14px; color: #333; line-height: 1.5; }
+    .container { max-width: 600px; margin: 0 auto; }
+    .header { background-color: #f0f9ff; padding: 15px; border-left: 4px solid #0369a1; margin-bottom: 20px; }
+    .header h1 { margin: 0 0 5px 0; font-size: 18px; color: #0369a1; }
+    .otp-box { background-color: #f0f9ff; padding: 15px; margin: 20px 0; text-align: center; border-left: 3px solid #0369a1; }
     .otp-code { font-size: 32px; font-weight: bold; color: #0369a1; letter-spacing: 8px; margin: 10px 0; }
-    .warning { background-color: #fee2e2; padding: 15px; border-radius: 5px; margin: 20px 0; border-left: 4px solid #dc2626; }
-    .footer { color: #718096; font-size: 12px; margin-top: 30px; border-top: 1px solid #e2e8f0; padding-top: 15px; }
+    .warning { background-color: #fee2e2; padding: 12px; border-left: 3px solid #dc2626; margin: 20px 0; color: #991b1b; }
+    .footer { font-size: 12px; color: #999; margin-top: 25px; border-top: 1px solid #ddd; padding-top: 15px; }
+    a { color: #0369a1; text-decoration: none; }
   </style>
 </head>
 <body>
   <div class="container">
     <div class="header">
-      <h1>🔐 Password Reset Request</h1>
+      <h1>Password Reset Request</h1>
     </div>
 
     <p>Hello${otpData.name ? ` ${otpData.name}` : ''},</p>
@@ -42,25 +43,24 @@ function generateEmailHTML(otpData: OTPData) {
     <p>We received a request to reset your password. Use the following One-Time Password (OTP) to complete the process:</p>
 
     <div class="otp-box">
-      <p style="margin: 0; color: #64748b; font-size: 14px;">Your OTP Code</p>
+      <p style="margin: 0 0 8px 0; color: #64748b; font-size: 12px;">Your OTP Code (expires in 10 minutes)</p>
       <div class="otp-code">${otpData.otp}</div>
-      <p style="margin: 0; color: #64748b; font-size: 12px;">This code will expire in 10 minutes</p>
     </div>
 
     <div class="warning">
-      <p style="margin: 0;"><strong>⚠️ Security Notice:</strong></p>
-      <ul style="margin: 10px 0 0 0; padding-left: 20px;">
+      <p style="margin: 0 0 8px 0;"><strong>Security Notice:</strong></p>
+      <ul style="margin: 0; padding-left: 20px;">
         <li>Never share this OTP with anyone</li>
         <li>Our team will never ask for your OTP</li>
         <li>If you didn't request this, please ignore this email</li>
       </ul>
     </div>
 
-    <p>If you didn't request a password reset, you can safely ignore this email. Your password will remain unchanged.</p>
+    <p>If you didn't request a password reset, your password will remain unchanged.</p>
 
     <div class="footer">
-      <p>This is an automated email. Please do not reply.</p>
-      <p>© ${new Date().getFullYear()} Admin Portal. All rights reserved.</p>
+      <p>This is an automated message. Please do not reply to this email.</p>
+      <p>&copy; ${new Date().getFullYear()} Booking Service. All rights reserved.</p>
     </div>
   </div>
 </body>

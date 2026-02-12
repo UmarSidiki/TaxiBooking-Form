@@ -232,7 +232,9 @@
     "loading": "Caricamento modulo...",
     "form-unavailable": "Modulo Non Disponibile",
     "no-fields": "Questo modulo non ha campi abilitati.",
-    "unavailable-description": "Il modulo richiesto non può essere caricato o è attualmente inattivo."
+    "unavailable-description": "Il modulo richiesto non può essere caricato o è attualmente inattivo.",
+    "disabled-message": "Il modulo di prenotazione incorporabile è attualmente disabilitato.",
+    "disabled-title": "Modulo disabilitato"
   },
   "Dashboard": {
     "Rides": {
@@ -772,7 +774,11 @@
       "tax-percentage-description": "Imposta la percentuale di tassa da applicare al subtotale di tutte le prenotazioni.",
       "tax-included": "Tasse Incluse nel Prezzo",
       "tax-included-description": "Se abilitato, le tasse sono già incluse nei prezzi mostrati. L'importo delle tasse verrà mostrato separatamente a scopo informativo ma non aggiunto al totale.",
-      "note-changes-to-module-settings": "Nota: Le modifiche alle impostazioni dei moduli hanno effetto dopo aver salvato e aggiornato la pagina. Disabilitare un modulo lo nasconde dalla navigazione ma non cancella i dati esistenti."
+      "note-changes-to-module-settings": "Nota: Le modifiche alle impostazioni dei moduli hanno effetto dopo aver salvato e aggiornato la pagina. Disabilitare un modulo lo nasconde dalla navigazione ma non cancella i dati esistenti.",
+      "embeddable-form-module": "Modulo di prenotazione incorporabile",
+      "enable-embeddable-booking-form": "Abilita il modulo di prenotazione incorporabile che può essere integrato su siti Web esterni. \nSe disabilitato, gli utenti non possono accedere a questa pagina di supporto.",
+      "enable-form-builder": "Abilita lo strumento di creazione moduli per personalizzare i campi e il layout del modulo di prenotazione. \nSe disabilitata, la pagina del generatore di moduli sarà inaccessibile.",
+      "form-builder-module": "Generatore di moduli"
     },
     "Fleet": {
       "failed-to-fetch-vehicles": "Impossibile recuperare veicoli",
@@ -1278,7 +1284,9 @@
       "two_thirds": "Due terzi (66%)",
       "width": "Larghezza",
       "half": "Metà (50%)"
-    }
+    },
+    "disabled-message": "Il modulo di creazione moduli è attualmente disabilitato dall'amministratore.",
+    "disabled-title": "Modulo disabilitato"
   },
   "ThankYouPage": {
     "no-payment-information-found": "Nessuna informazione di pagamento trovata.",

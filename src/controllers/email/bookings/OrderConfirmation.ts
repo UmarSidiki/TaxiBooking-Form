@@ -55,164 +55,78 @@ function generateEmailHTML(bookingData: BookingData, currency: string = 'EUR') {
   <meta charset="UTF-8">
   <title>Booking Confirmation - Reservation #${bookingData.tripId}</title>
   <style>
-    body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-    .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-    .header { background-color: #f0f9ff; padding: 20px; border-radius: 5px; margin-bottom: 20px; text-align: center; }
-    .header h1 { margin: 0; color: #0369a1; }
-    .section { margin-bottom: 20px; }
-    .section h2 { color: #4a5568; border-bottom: 2px solid #e2e8f0; padding-bottom: 5px; }
-    .details { background-color: #f7fafc; padding: 15px; border-radius: 5px; }
-    .details ul { margin: 0; padding-left: 20px; }
-    .details li { margin-bottom: 8px; }
-    .payment { background-color: #edf2f7; padding: 15px; border-radius: 5px; }
-    .footer { color: #718096; font-size: 12px; margin-top: 30px; border-top: 1px solid #e2e8f0; padding-top: 15px; }
-    .highlight { color: #2d3748; font-weight: bold; }
-    .cta-button { 
-      display: inline-block; 
-      background-color: #0369a1; 
-      color: #ffffff !important; 
-      padding: 10px 20px; 
-      text-decoration: none; 
-      border-radius: 5px; 
-      margin-top: 15px;
-      margin-right: 10px;
-      font-weight: bold;
-      text-align: center;
-    }
-    .cta-button.secondary {
-      background-color: #059669;
-    }
-    .cta-button span {
-      color: #ffffff !important;
-    }
-    .button-container {
-      text-align: center;
-      margin: 20px 0;
-    }
+    body { font-family: Arial, sans-serif; font-size: 14px; color: #333; }
+    .container { max-width: 600px; margin: 0 auto; }
+    .section { margin-bottom: 15px; }
+    .section h2 { font-size: 16px; margin: 10px 0 5px 0; }
+    table { width: 100%; border-collapse: collapse; }
+    td { padding: 5px 0; }
   </style>
 </head>
 <body>
   <div class="container">
-    <div class="header">
-      <h1>Booking Confirmed</h1>
-      <p>Dear ${bookingData.firstName} ${bookingData.lastName},</p>
-      <p>Thank you for choosing our service! Your Reservation has been confirmed.</p>
-    </div>
+    <p>Dear ${bookingData.firstName} ${bookingData.lastName},</p>
+    <p>Your booking confirmation is below.</p>
 
     <div class="section">
-      <h2>Journey Details</h2>
-      <div class="details">
-        <ul>
-          <li><span class="highlight">Reservation ID:</span> #${
-            bookingData.tripId
-          }</li>
-          <li><span class="highlight">From:</span> ${bookingData.pickup}</li>
-          ${bookingData.stops && bookingData.stops.length > 0 ? bookingData.stops.map((stop, index) => {
-            const durationText = stop.duration && stop.duration > 0 
-              ? ` (Wait time: ${stop.duration >= 60 ? `${Math.floor(stop.duration / 60)}h${stop.duration % 60 > 0 ? ` ${stop.duration % 60}m` : ''}` : `${stop.duration}m`})`
-              : '';
-            return `<li><span class="highlight">Stop ${index + 1}:</span> ${stop.location}${durationText}</li>`;
-          }).join('') : ''}
-          <li><span class="highlight">To:</span> ${bookingData.dropoff}</li>
-          <li><span class="highlight">Departure Date:</span> ${bookingData.date}</li>
-          <li><span class="highlight">Departure Time:</span> ${bookingData.time}</li>
-          ${bookingData.tripType === 'roundtrip' && bookingData.returnDate ? 
-            `<li><span class="highlight">Return Date:</span> ${bookingData.returnDate}</li>` : ''}
-          ${bookingData.tripType === 'roundtrip' && bookingData.returnTime ? 
-            `<li><span class="highlight">Return Time:</span> ${bookingData.returnTime}</li>` : ''}
-          <li><span class="highlight">Reservation Type:</span> ${
-            bookingData.tripType
-          }</li>
-          ${
-            bookingData.flightNumber
-              ? `<li><span class="highlight">Flight Number:</span> ${bookingData.flightNumber}</li>`
-              : ""
-          }
-        </ul>
-      </div>
+      <h2>Reservation Details</h2>
+      <table>
+        <tr><td><strong>Reservation ID:</strong></td><td>#${bookingData.tripId}</td></tr>
+        <tr><td><strong>From:</strong></td><td>${bookingData.pickup}</td></tr>
+        ${bookingData.stops && bookingData.stops.length > 0 ? bookingData.stops.map((stop, index) => {
+          const durationText = stop.duration && stop.duration > 0 
+            ? ` (Wait: ${stop.duration >= 60 ? `${Math.floor(stop.duration / 60)}h${stop.duration % 60 > 0 ? ` ${stop.duration % 60}m` : ''}` : `${stop.duration}m`})`
+            : '';
+          return `<tr><td><strong>Stop ${index + 1}:</strong></td><td>${stop.location}${durationText}</td></tr>`;
+        }).join('') : ''}
+        <tr><td><strong>To:</strong></td><td>${bookingData.dropoff}</td></tr>
+        <tr><td><strong>Departure:</strong></td><td>${bookingData.date} at ${bookingData.time}</td></tr>
+        ${bookingData.tripType === 'roundtrip' && bookingData.returnDate ? 
+          `<tr><td><strong>Return:</strong></td><td>${bookingData.returnDate} at ${bookingData.returnTime}</td></tr>` : ''}
+        <tr><td><strong>Type:</strong></td><td>${bookingData.tripType}</td></tr>
+        ${bookingData.flightNumber ? `<tr><td><strong>Flight:</strong></td><td>${bookingData.flightNumber}</td></tr>` : ''}
+      </table>
     </div>
 
     <div class="section">
       <h2>Vehicle & Passengers</h2>
-      <div class="details">
-        <ul>
-          <li><span class="highlight">Vehicle:</span> ${
-            bookingData.vehicleDetails.name
-          }</li>
-          <li><span class="highlight">Max Seats:</span> ${
-            bookingData.vehicleDetails.seats
-          }</li>
-          <li><span class="highlight">Passengers:</span> ${
-            bookingData.passengers
-          }</li>
-          ${
-            bookingData.childSeats > 0
-              ? `<li><span class="highlight">Child Seats:</span> ${bookingData.childSeats}</li>`
-              : ""
-          }
-          ${
-            bookingData.babySeats > 0
-              ? `<li><span class="highlight">Baby Seats:</span> ${bookingData.babySeats}</li>`
-              : ""
-          }
-        </ul>
-      </div>
+      <table>
+        <tr><td><strong>Vehicle:</strong></td><td>${bookingData.vehicleDetails.name}</td></tr>
+        <tr><td><strong>Seats:</strong></td><td>${bookingData.vehicleDetails.seats}</td></tr>
+        <tr><td><strong>Passengers:</strong></td><td>${bookingData.passengers}</td></tr>
+        ${bookingData.childSeats > 0 ? `<tr><td><strong>Child Seats:</strong></td><td>${bookingData.childSeats}</td></tr>` : ''}
+        ${bookingData.babySeats > 0 ? `<tr><td><strong>Baby Seats:</strong></td><td>${bookingData.babySeats}</td></tr>` : ''}
+      </table>
     </div>
 
-    ${
-      bookingData.notes
-        ? `
+    ${bookingData.notes ? `
     <div class="section">
       <h2>Special Requests</h2>
-      <div class="details">
-        <p>${bookingData.notes}</p>
-      </div>
+      <p>${bookingData.notes}</p>
     </div>
-    `
-        : ""
-    }
+    ` : ''}
 
     <div class="section">
-      <h2>Payment Summary</h2>
-      <div class="payment">
+      <h2>Payment</h2>
+      <table>
         ${bookingData.taxAmount && bookingData.taxAmount > 0 ? `
-        <p><span class="highlight">Subtotal:</span> ${currencySymbol}${(bookingData.subtotalAmount || bookingData.totalAmount).toFixed(2)}</p>
-        <p><span class="highlight">Tax (${bookingData.taxPercentage || 0}%)${bookingData.taxIncluded ? ' - Included' : ''}:</span> ${currencySymbol}${bookingData.taxAmount.toFixed(2)}</p>
-        <p><span class="highlight">Total Amount (Incl. Tax): ${currencySymbol}${bookingData.totalAmount.toFixed(2)}</span></p>
+        <tr><td><strong>Subtotal:</strong></td><td>${currencySymbol}${(bookingData.subtotalAmount || bookingData.totalAmount).toFixed(2)}</td></tr>
+        <tr><td><strong>Tax (${bookingData.taxPercentage || 0}%)${bookingData.taxIncluded ? ' - Included' : ''}:</strong></td><td>${currencySymbol}${bookingData.taxAmount.toFixed(2)}</td></tr>
+        <tr><td><strong>Total:</strong></td><td>${currencySymbol}${bookingData.totalAmount.toFixed(2)}</td></tr>
         ` : `
-        <p><span class="highlight">Total Amount: ${currencySymbol}${bookingData.totalAmount.toFixed(2)}</span></p>
+        <tr><td><strong>Total:</strong></td><td>${currencySymbol}${bookingData.totalAmount.toFixed(2)}</td></tr>
         `}
-        ${
-          bookingData.paymentMethod
-            ? `
-        <p><span class="highlight">Payment Method:</span> ${bookingData.paymentMethod.replace(
-          "_",
-          " "
-        )}</p>
-        <p><span class="highlight">Payment Status:</span> ${
-          bookingData.paymentStatus || "Pending"
-        }</p>
-        `
-            : ""
-        }
-      </div>
+        ${bookingData.paymentMethod ? `<tr><td><strong>Payment Method:</strong></td><td>${bookingData.paymentMethod.replace("_", " ")}</td></tr>` : ''}
+        ${bookingData.paymentStatus ? `<tr><td><strong>Payment Status:</strong></td><td>${bookingData.paymentStatus}</td></tr>` : ''}
+      </table>
     </div>
 
     <div class="section">
-      <p>If you have any questions, please contact us.</p>
-      <div class="button-container">
-        <a href="${baseUrl}/api/invoice/${bookingData.tripId}" class="cta-button secondary">
-          <span>📄 Download Invoice PDF</span>
-        </a>
-        <a href="mailto:${process.env.NEXT_PUBLIC_SUPPORT_EMAIL}" class="cta-button">
-          <span>Contact Support</span>
-        </a>
-      </div>
-    </div>
-
-    <div class="footer">
-      <p>This is an automated email. Please do not reply.</p>
-      <p>© ${new Date().getFullYear()} Booking Service. All rights reserved.</p>
+      <p>For questions, contact: ${process.env.NEXT_PUBLIC_SUPPORT_EMAIL}</p>
+      <p>Download Invoice: ${baseUrl}/api/invoice/${bookingData.tripId}</p>
+      <p style="font-size: 12px; color: #666; margin-top: 30px; border-top: 1px solid #ddd; padding-top: 10px;">
+        This is an automated email. Please do not reply.
+      </p>
     </div>
   </div>
 </body>

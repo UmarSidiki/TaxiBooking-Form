@@ -34,6 +34,8 @@ export function useStep1() {
   const formDataRef = useRef(formData);
   const { settings } = useTheme();
   const distanceCalculationTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const pickupAutocompleteListenerRef = useRef<google.maps.MapsEventListener | null>(null);
+  const dropoffAutocompleteListenerRef = useRef<google.maps.MapsEventListener | null>(null);
 
   useEffect(() => {
     formDataRef.current = formData;
@@ -305,7 +307,6 @@ export function useStep1() {
     formData.dropoff,
     formData.bookingType,
     formData.tripType,
-    formData.stops,
     stopsKey, // Use memoized key instead of inline calculation
     debouncedCalculateDistance,
   ]);
@@ -319,12 +320,9 @@ export function useStep1() {
     };
   }, []);
 
-  // Initialize Google Maps ONCE - deferred until needed
+  // Initialize Google Maps and Autocomplete - deferred until needed
   useEffect(() => {
-    // Only initialize if map container is present and visible
-    if (!mapRef.current) return;
-    
-    // Defer map loading for performance
+    // Defer loading for performance
     const timeoutId = setTimeout(async () => {
       const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
       if (!apiKey) {
@@ -344,7 +342,7 @@ export function useStep1() {
           importLibrary("places"),
         ]);
 
-        // Initialize map
+        // Initialize map (only if map container is present)
         if (mapRef.current && !googleMapRef.current) {
           const initialCenter =
             settings && settings.mapInitialLat && settings.mapInitialLng
@@ -394,7 +392,7 @@ export function useStep1() {
             autocompleteOptions
           );
 
-          autocompletePickup.addListener("place_changed", () => {
+          pickupAutocompleteListenerRef.current = autocompletePickup.addListener("place_changed", () => {
             const place = autocompletePickup.getPlace();
             
             console.log("Pickup autocomplete - settings available:", {
@@ -429,7 +427,7 @@ export function useStep1() {
             autocompleteOptions
           );
 
-          autocompleteDropoff.addListener("place_changed", () => {
+          dropoffAutocompleteListenerRef.current = autocompleteDropoff.addListener("place_changed", () => {
             const place = autocompleteDropoff.getPlace();
             
             // Validate against polygon bounds if defined
@@ -449,7 +447,9 @@ export function useStep1() {
         }
 
         // If we have pickup and dropoff from context, show the route (only on initial load)
+        // Only try to calculate distance if we have a map to display it on
         if (
+          mapRef.current &&
           formData.pickup &&
           formData.dropoff &&
           !directionsRendererRef.current
@@ -466,8 +466,19 @@ export function useStep1() {
       }
     }, 300); // 300ms delay to prioritize initial render
 
-    return () => clearTimeout(timeoutId);
-  }, [settings]); // Only run when settings change, not on every formData change
+    return () => {
+      clearTimeout(timeoutId);
+      // Cleanup autocomplete listeners to prevent memory leaks
+      if (pickupAutocompleteListenerRef.current) {
+        google.maps.event.removeListener(pickupAutocompleteListenerRef.current);
+        pickupAutocompleteListenerRef.current = null;
+      }
+      if (dropoffAutocompleteListenerRef.current) {
+        google.maps.event.removeListener(dropoffAutocompleteListenerRef.current);
+        dropoffAutocompleteListenerRef.current = null;
+      }
+    };
+  }, []); // Run only once on mount
 
   const validateStep = (): boolean => {
     const newErrors: typeof errors = {};

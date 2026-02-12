@@ -769,7 +769,7 @@
       "drivers-module-legacy": "Drivers Module (Legacy)",
       "enable-the-legacy-drivers-system": "Enable the legacy drivers system for backward compatibility. When disabled, the Drivers menu will be hidden from the admin sidebar.",
       "embeddable-form-module": "Embeddable Booking Form",
-      "enable-embeddable-booking-form": "Enable the embeddable booking form that can be integrated on external websites. When disabled, users cannot access this helper page.",
+      "enable-embeddable-booking-form": "Controls visibility of the embed forms helper page in the sidebar. The actual embedded forms (v1, v2, v3) remain accessible. When disabled, the Embed Forms menu will be hidden.",
       "form-builder-module": "Form Builder",
       "enable-form-builder": "Enable the form builder tool to customize booking form fields and layout. When disabled, the form builder page will be inaccessible.",
       "tax-module": "Tax Module",
@@ -1478,5 +1478,8 @@
       "drag_drop_builder": "Drag & drop builder",
       "custom_form_layout": "Custom form layout"
     }
+  },
+  "common": {
+    "go-home": "Go Home"
   }
 }

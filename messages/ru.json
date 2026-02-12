@@ -1478,5 +1478,8 @@
       "drag_drop_builder": "Drag & drop конструктор",
       "custom_form_layout": "Пользовательский макет формы"
     }
+  },
+  "common": {
+    "go-home": "Иди домой"
   }
 }

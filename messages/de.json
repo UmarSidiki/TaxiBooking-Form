@@ -1478,5 +1478,8 @@
       "drag_drop_builder": "Drag & Drop Builder",
       "custom_form_layout": "Benutzerdefiniertes Formular-Layout"
     }
+  },
+  "common": {
+    "go-home": "Nach Hause gehen"
   }
 }

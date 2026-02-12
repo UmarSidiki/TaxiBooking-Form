@@ -1478,5 +1478,8 @@
       "drag_drop_builder": "Costruttore Drag & Drop",
       "custom_form_layout": "Layout modulo personalizzato"
     }
+  },
+  "common": {
+    "go-home": "Vai a casa"
   }
 }

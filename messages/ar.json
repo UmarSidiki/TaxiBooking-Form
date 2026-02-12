@@ -1478,5 +1478,8 @@
       "drag_drop_builder": "منشئ بالسحب والإفلات",
       "custom_form_layout": "تخطيط نموذج مخصص"
     }
+  },
+  "common": {
+    "go-home": "العودة إلى المنزل"
   }
 }

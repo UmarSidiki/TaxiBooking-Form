@@ -1478,5 +1478,8 @@
       "drag_drop_builder": "Constructeur glisser-déposer",
       "custom_form_layout": "Formulaire personnalisé"
     }
+  },
+  "common": {
+    "go-home": "Rentrer à la maison"
   }
 }

@@ -1478,5 +1478,8 @@
       "drag_drop_builder": "Constructor arrastrar y soltar",
       "custom_form_layout": "Diseño de formulario personalizado"
     }
+  },
+  "common": {
+    "go-home": "Ir a casa"
   }
 }

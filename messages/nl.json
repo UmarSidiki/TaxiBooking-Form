@@ -1478,5 +1478,8 @@
       "drag_drop_builder": "Sleep & zet neer bouwer",
       "custom_form_layout": "Aangepaste formulier lay-out"
     }
+  },
+  "common": {
+    "go-home": "Ga naar huis"
   }
 }

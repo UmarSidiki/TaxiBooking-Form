@@ -30,6 +30,8 @@ export function AppSidebar({ locale }: { locale: string }) {
   const [settings, setSettings] = useState<Partial<ISetting>>({
     enablePartners: false,
     enableDrivers: false,
+    enableFormBuilder: false,
+    enableEmbeddableForm: false,
   });
 
   useEffect(() => {

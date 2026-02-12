@@ -40,8 +40,8 @@ const SettingsPage = () => {
             ...data.data,
             enablePartners: data.data.enablePartners ?? false,
             enableDrivers: data.data.enableDrivers ?? false,
-            enableEmbeddableForm: data.data.enableEmbeddableForm ?? true,
-            enableFormBuilder: data.data.enableFormBuilder ?? true,
+            enableEmbeddableForm: data.data.enableEmbeddableForm ?? false,
+            enableFormBuilder: data.data.enableFormBuilder ?? false,
           };
           setSettings(settingsWithDefaults);
         }

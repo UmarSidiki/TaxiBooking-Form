@@ -198,11 +198,11 @@ const SettingSchema = new Schema<ISetting>(
     },
     enableEmbeddableForm: {
       type: Boolean,
-      default: true,
+      default: false,
     },
     enableFormBuilder: {
       type: Boolean,
-      default: true,
+      default: false,
     },
     enableTax: {
       type: Boolean,

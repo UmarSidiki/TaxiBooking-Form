@@ -1009,7 +1009,11 @@
       "sofort-giropay-and-more-european-payment-methods": "SOFORT, Giropay und weitere europäische Zahlungsmethoden",
       "available-methods-depend-on-your-multisafepay-account-settings": "Verfügbare Methoden hängen von Ihren MultiSafepay-Kontoeinstellungen ab.",
       "payment-gateway": "Zahlungs-Gateway",
-      "select-your-preferred-payment-gateway": "Wählen Sie Ihr bevorzugtes Zahlungs-Gateway"
+      "select-your-preferred-payment-gateway": "Wählen Sie Ihr bevorzugtes Zahlungs-Gateway",
+      "redirect-immediately-after-booking": "Direkt nach der Buchung zur benutzerdefinierten URL weiterleiten (Dankeseite überspringen)",
+      "redirect-immediately-after-booking-help": "Wenn diese Option aktiviert und eine Weiterleitungs-URL festgelegt ist, werden Kunden nach der Buchung direkt zur benutzerdefinierten URL weitergeleitet.",
+      "thank-you-stay-time": "Verweildauer der Dankesseite (Sekunden)",
+      "thank-you-stay-time-help": "Wie viele Sekunden lang die Dankeseite angezeigt wird, bevor Kunden weitergeleitet werden. \nAuf 0 setzen, um sofort umzuleiten."
     }
   },
   "Sidebar": {

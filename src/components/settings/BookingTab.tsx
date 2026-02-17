@@ -1,6 +1,7 @@
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { Switch } from "@/components/ui/switch";
 import { ISetting } from "@/models/settings";
 import { useTranslations } from "next-intl";
 
@@ -53,6 +54,45 @@ const BookingTab: React.FC<BookingTabProps> = ({
                 "Dashboard.Settings.leave-empty-to-redirect-to-the-home-page"
               )}{" "}
             </p>
+
+            <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium mb-2">
+                  {t("Dashboard.Settings.thank-you-stay-time")}
+                </label>
+                <Input
+                  type="number"
+                  min={0}
+                  className="w-32"
+                  value={settings.thankYouStaySeconds ?? 5}
+                  onChange={(e) =>
+                    handleMapSettingsChange("thankYouStaySeconds", Number(e.target.value || 0))
+                  }
+                />
+                <p className="text-xs text-gray-500 mt-2">
+                  {t("Dashboard.Settings.thank-you-stay-time-help")}
+                </p>
+              </div>
+
+              <div className="flex items-start gap-4">
+                <Switch
+                  id="redirectImmediatelyAfterBooking"
+                  checked={settings.redirectImmediatelyAfterBooking ?? false}
+                  onCheckedChange={(val: boolean) =>
+                    handleMapSettingsChange("redirectImmediatelyAfterBooking", val)
+                  }
+                />
+                <div>
+                  <label className="block text-sm font-medium">
+                    {t("Dashboard.Settings.redirect-immediately-after-booking")}
+                  </label>
+                  <p className="text-xs text-gray-500 mt-1">
+                    {t("Dashboard.Settings.redirect-immediately-after-booking-help")}
+                  </p>
+                </div>
+              </div>
+            </div>
+
             <div className="mt-3 p-3 bg-blue-50 rounded-lg border border-blue-200">
               <p className="text-xs text-blue-800">
                 <strong>{t("Dashboard.Settings.tip")}</strong>{" "}

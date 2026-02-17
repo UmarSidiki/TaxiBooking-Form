@@ -13,7 +13,7 @@ export default function ThankYouPage() {
   const t = useTranslations();
   const searchParams = useSearchParams();
   const router = useRouter();
-  const [countdown, setCountdown] = useState(60);
+  const [countdown, setCountdown] = useState(5);
   const [redirectUrl, setRedirectUrl] = useState<string>('/');
   const { settings } = useTheme();
   const { currencySymbol } = useCurrency();
@@ -26,7 +26,16 @@ export default function ThankYouPage() {
     if (settings?.redirectUrl) {
       setRedirectUrl(settings.redirectUrl);
     }
-  }, [settings]);
+
+    // Update countdown from settings (fallback to 5s)
+    const delay = settings?.thankYouStaySeconds ?? 5;
+    setCountdown(delay);
+
+    // If admin enabled immediate redirect and we have a custom URL, go straight there
+    if (settings?.redirectUrl && settings?.redirectImmediatelyAfterBooking) {
+      router.push(settings.redirectUrl);
+    }
+  }, [settings, router]);
 
   useEffect(() => {
     try {
@@ -38,20 +47,18 @@ export default function ThankYouPage() {
   }, [router, redirectUrl]);
 
   useEffect(() => {
-    // Countdown timer
+    if (countdown <= 0) {
+      // Immediate redirect
+      router.push(redirectUrl);
+      return;
+    }
+
     const timer = setInterval(() => {
-      setCountdown((prev) => {
-        if (prev <= 1) {
-          clearInterval(timer);
-          router.push(redirectUrl);
-          return 0;
-        }
-        return prev - 1;
-      });
+      setCountdown((prev) => (prev <= 1 ? 0 : prev - 1));
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [router, redirectUrl]);
+  }, [router, redirectUrl, countdown]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-blue-50 flex items-center justify-center p-4">

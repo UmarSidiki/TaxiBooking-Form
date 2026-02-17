@@ -1009,7 +1009,11 @@
       "sofort-giropay-and-more-european-payment-methods": "SOFORT, Giropay и другие европейские способы оплаты",
       "available-methods-depend-on-your-multisafepay-account-settings": "Доступные методы зависят от настроек вашего аккаунта MultiSafepay.",
       "payment-gateway": "Платежный шлюз",
-      "select-your-preferred-payment-gateway": "Выберите предпочитаемый платежный шлюз"
+      "select-your-preferred-payment-gateway": "Выберите предпочитаемый платежный шлюз",
+      "redirect-immediately-after-booking": "Перенаправление на пользовательский URL сразу после бронирования (пропустить страницу благодарности)",
+      "redirect-immediately-after-booking-help": "Если эта функция включена и установлен URL-адрес перенаправления, клиенты будут перенаправляться непосредственно на пользовательский URL-адрес после бронирования.",
+      "thank-you-stay-time": "Время пребывания страницы благодарности (в секундах)",
+      "thank-you-stay-time-help": "Сколько секунд отображается страница благодарности перед перенаправлением клиентов. \nУстановите значение 0, чтобы перенаправить немедленно."
     }
   },
   "Sidebar": {

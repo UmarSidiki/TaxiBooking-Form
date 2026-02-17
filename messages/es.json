@@ -1009,7 +1009,11 @@
       "sofort-giropay-and-more-european-payment-methods": "SOFORT, Giropay y más métodos de pago europeos",
       "available-methods-depend-on-your-multisafepay-account-settings": "Los métodos disponibles dependen de la configuración de su cuenta MultiSafepay.",
       "payment-gateway": "Pasarela de Pago",
-      "select-your-preferred-payment-gateway": "Seleccione Su Pasarela de Pago Preferida"
+      "select-your-preferred-payment-gateway": "Seleccione Su Pasarela de Pago Preferida",
+      "redirect-immediately-after-booking": "Redirigir a una URL personalizada inmediatamente después de realizar la reserva (omitir la página de agradecimiento)",
+      "redirect-immediately-after-booking-help": "Si está habilitado y se establece una URL de redireccionamiento, los clientes serán enviados directamente a la URL personalizada después de realizar la reserva.",
+      "thank-you-stay-time": "Tiempo de permanencia en la página de agradecimiento (segundos)",
+      "thank-you-stay-time-help": "Cuántos segundos se muestra la página de agradecimiento antes de redirigir a los clientes. \nEstablezca en 0 para redirigir inmediatamente."
     }
   },
   "Sidebar": {

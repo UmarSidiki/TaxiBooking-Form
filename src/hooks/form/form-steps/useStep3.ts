@@ -375,21 +375,25 @@ export function useStep3() {
       // We just need to redirect the user to the thank you page.
       // We use the stripeOrderId (which is the tripId) we received when creating the PaymentIntent.
       
-      resetForm();
-      
       // Use the orderId from state, or fallback to a generic message if missing
       // (though it should be present if we completed payment)
       const finalTripId = stripeOrderId || "PENDING";
+      const customRedirect = settings?.redirectUrl;
+      const immediate = settings?.redirectImmediatelyAfterBooking;
+      const target = customRedirect && immediate
+        ? customRedirect
+        : `/${locale}/thank-you?tripId=${finalTripId}&amount=${totalPrice.toFixed(2)}&method=stripe`;
 
-      router.push(
-        `/${locale}/thank-you?tripId=${finalTripId}&amount=${totalPrice.toFixed(
-          2
-        )}&method=stripe`
-      );
+      await router.push(target);
+      resetForm();
     } catch (error) {
       console.error("Post-payment error:", error);
-      // Payment succeeded even if redirection fails, so we try to redirect anyway
-      router.push(`/${locale}/thank-you?method=stripe`);
+      // Payment succeeded even if redirection fails — attempt redirect and then reset form
+      const customRedirect = settings?.redirectUrl;
+      const immediate = settings?.redirectImmediatelyAfterBooking;
+      const fallback = customRedirect && immediate ? customRedirect : `/${locale}/thank-you?method=stripe`;
+      await router.push(fallback);
+      resetForm();
     } finally {
       setIsLoading(false);
     }
@@ -435,13 +439,14 @@ export function useStep3() {
       const data = await response.json();
 
       if (response.ok) {
+        // Redirect to thank you page with booking details (or custom URL immediately)
+        const customRedirect = settings?.redirectUrl;
+        const immediate = settings?.redirectImmediatelyAfterBooking;
+        const target = customRedirect && immediate
+          ? customRedirect
+          : `/${locale}/thank-you?tripId=${data.tripId}&amount=${totalPrice.toFixed(2)}&method=cash`;
+        await router.push(target);
         resetForm();
-        // Redirect to thank you page with booking details
-        router.push(
-          `/${locale}/thank-you?tripId=${data.tripId}&amount=${totalPrice.toFixed(
-            2
-          )}&method=cash`
-        );
       } else {
         alert(`Booking failed: ${data.message}`);
       }
@@ -489,13 +494,13 @@ export function useStep3() {
       const data = await response.json();
 
       if (response.ok) {
+        const customRedirect = settings?.redirectUrl;
+        const immediate = settings?.redirectImmediatelyAfterBooking;
+        const target = customRedirect && immediate
+          ? customRedirect
+          : `/${locale}/thank-you?tripId=${data.tripId}&amount=${totalPrice.toFixed(2)}&method=bank_transfer`;
+        await router.push(target);
         resetForm();
-        // Redirect to thank you page with booking details
-        router.push(
-          `/${locale}/thank-you?tripId=${data.tripId}&amount=${totalPrice.toFixed(
-            2
-          )}&method=bank_transfer`
-        );
       } else {
         alert(`Booking failed: ${data.message}`);
       }

@@ -6,6 +6,8 @@ export interface ISetting {
   secondaryColor: string;
   borderRadius: number;
   redirectUrl?: string;
+  thankYouStaySeconds?: number;
+  redirectImmediatelyAfterBooking?: boolean;
   mapInitialLat?: number;
   mapInitialLng?: number;
   mapCountryRestrictions?: string[];
@@ -69,6 +71,14 @@ const SettingSchema = new Schema<ISetting>(
     redirectUrl: {
       type: String,
       default: "", // Redirect URL after successful booking
+    },
+    thankYouStaySeconds: {
+      type: Number,
+      default: 5, // Seconds to stay on Thank You page before redirect
+    },
+    redirectImmediatelyAfterBooking: {
+      type: Boolean,
+      default: false, // If true and redirectUrl set, go straight to redirectUrl after booking
     },
     mapInitialLat: {
       type: Number,

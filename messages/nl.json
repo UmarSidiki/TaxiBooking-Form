@@ -1009,7 +1009,11 @@
       "sofort-giropay-and-more-european-payment-methods": "SOFORT, Giropay en meer Europese betaalmethoden",
       "available-methods-depend-on-your-multisafepay-account-settings": "Beschikbare methoden zijn afhankelijk van uw MultiSafepay accountinstellingen.",
       "payment-gateway": "Betaalgateway",
-      "select-your-preferred-payment-gateway": "Selecteer Uw Voorkeurs Betaalgateway"
+      "select-your-preferred-payment-gateway": "Selecteer Uw Voorkeurs Betaalgateway",
+      "redirect-immediately-after-booking": "Omleiding naar aangepaste URL onmiddellijk na het boeken (sla de bedankpagina over)",
+      "redirect-immediately-after-booking-help": "Indien ingeschakeld en een omleidings-URL is ingesteld, worden klanten na het boeken rechtstreeks naar de aangepaste URL gestuurd.",
+      "thank-you-stay-time": "Verblijftijd bedankpagina (seconden)",
+      "thank-you-stay-time-help": "Hoeveel seconden wordt de bedankpagina weergegeven voordat klanten worden omgeleid. \nStel in op 0 om onmiddellijk om te leiden."
     }
   },
   "Sidebar": {

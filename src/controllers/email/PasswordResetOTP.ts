@@ -13,7 +13,7 @@ function isValidEmail(email: string): boolean {
   return emailRegex.test(email);
 }
 
-function generateEmailHTML(otpData: OTPData) {
+function generateEmailHTML(otpData: OTPData, primaryColor: string = '#EAB308') {
   return `
 <!DOCTYPE html>
 <html>
@@ -23,13 +23,13 @@ function generateEmailHTML(otpData: OTPData) {
   <style>
     body { font-family: Arial, sans-serif; font-size: 14px; color: #333; line-height: 1.5; }
     .container { max-width: 600px; margin: 0 auto; }
-    .header { background-color: #f0f9ff; padding: 15px; border-left: 4px solid #0369a1; margin-bottom: 20px; }
-    .header h1 { margin: 0 0 5px 0; font-size: 18px; color: #0369a1; }
-    .otp-box { background-color: #f0f9ff; padding: 15px; margin: 20px 0; text-align: center; border-left: 3px solid #0369a1; }
-    .otp-code { font-size: 32px; font-weight: bold; color: #0369a1; letter-spacing: 8px; margin: 10px 0; }
-    .warning { background-color: #fee2e2; padding: 12px; border-left: 3px solid #dc2626; margin: 20px 0; color: #991b1b; }
+    .header { background-color: #f0f9ff; padding: 15px; border-left: 4px solid ${primaryColor}; margin-bottom: 20px; }
+    .header h1 { margin: 0 0 5px 0; font-size: 18px; color: ${primaryColor}; }
+    .otp-box { background-color: #f0f9ff; padding: 15px; margin: 20px 0; text-align: center; border-left: 3px solid ${primaryColor}; }
+    .otp-code { font-size: 32px; font-weight: bold; color: ${primaryColor}; letter-spacing: 8px; margin: 10px 0; }
+    .warning { background-color: #fee2e2; padding: 12px; border-left: 3px solid ${primaryColor}; margin: 20px 0; color: #991b1b; }
     .footer { font-size: 12px; color: #999; margin-top: 25px; border-top: 1px solid #ddd; padding-top: 15px; }
-    a { color: #0369a1; text-decoration: none; }
+    a { color: ${primaryColor}; text-decoration: none; }
   </style>
 </head>
 <body>
@@ -81,8 +81,9 @@ export async function sendPasswordResetOTP(otpData: OTPData) {
     const settings = await Setting.findOne();
     const fromAddress = settings?.smtpFrom || settings?.smtpUser;
     const fromField = settings?.smtpSenderName ? `${settings.smtpSenderName} <${fromAddress}>` : fromAddress;
+    const primaryColor = settings?.primaryColor || '#EAB308';
 
-    const htmlContent = generateEmailHTML(otpData);
+    const htmlContent = generateEmailHTML(otpData, primaryColor);
 
     const success = await sendEmail({
       from: fromField,

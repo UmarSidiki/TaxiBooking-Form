@@ -44,7 +44,7 @@ function isValidEmail(email: string): boolean {
   return emailRegex.test(email);
 }
 
-function generateEmailHTML(bookingData: BookingData, currency: string = "EUR") {
+function generateEmailHTML(bookingData: BookingData, currency: string = "EUR", primaryColor: string = '#EAB308') {
   const currencySymbol = getCurrencySymbol(currency);
   const baseUrl = bookingData.baseUrl || process.env.NEXT_PUBLIC_BASE_URL;
 
@@ -57,18 +57,18 @@ function generateEmailHTML(bookingData: BookingData, currency: string = "EUR") {
   <style>
     body { font-family: Arial, sans-serif; font-size: 14px; color: #333; line-height: 1.5; }
     .container { max-width: 600px; margin: 0 auto; }
-    .header { background-color: #f5f5f5; padding: 15px; border-left: 4px solid #0369a1; margin-bottom: 20px; }
-    .header h1 { margin: 0 0 5px 0; font-size: 18px; color: #0369a1; }
+    .header { background-color: #f5f5f5; padding: 15px; border-left: 4px solid ${primaryColor}; margin-bottom: 20px; }
+    .header h1 { margin: 0 0 5px 0; font-size: 18px; color: ${primaryColor}; }
     .section { margin-bottom: 20px; }
-    .section h2 { font-size: 15px; color: #0369a1; margin: 15px 0 8px 0; border-bottom: 1px solid #e0e0e0; padding-bottom: 5px; }
+    .section h2 { font-size: 15px; color: ${primaryColor}; margin: 15px 0 8px 0; border-bottom: 1px solid #e0e0e0; padding-bottom: 5px; }
     table { width: 100%; border-collapse: collapse; }
     tr { border-bottom: 1px solid #f0f0f0; }
     td { padding: 8px 0; }
     td:first-child { width: 40%; color: #666; }
     .payment-section { background-color: #f9f9f9; padding: 10px; border-radius: 3px; }
-    .total-row { font-size: 15px; font-weight: bold; color: #0369a1; }
+    .total-row { font-size: 15px; font-weight: bold; color: ${primaryColor}; }
     .footer { font-size: 12px; color: #999; margin-top: 25px; border-top: 1px solid #ddd; padding-top: 15px; }
-    a { color: #0369a1; text-decoration: none; }
+    a { color: ${primaryColor}; text-decoration: none; }
   </style>
 </head>
 <body>
@@ -188,8 +188,9 @@ export async function sendOrderConfirmationEmail(bookingData: BookingData) {
       : fromAddress;
     const currency = settings?.stripeCurrency || "EUR";
     const currencySymbol = getCurrencySymbol(currency);
+    const primaryColor = settings?.primaryColor || '#EAB308';
 
-    const htmlContent = generateEmailHTML(bookingData, currency);
+    const htmlContent = generateEmailHTML(bookingData, currency, primaryColor);
 
     const success = await sendEmail({
       from: fromField,

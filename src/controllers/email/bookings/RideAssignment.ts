@@ -46,7 +46,7 @@ function isValidEmail(email: string): boolean {
   return emailRegex.test(email);
 }
 
-function generateEmailHTML(assignmentData: RideAssignmentData, currency: string = 'EUR') {
+function generateEmailHTML(assignmentData: RideAssignmentData, currency: string = 'EUR', primaryColor: string = '#EAB308') {
   const currencySymbol = getCurrencySymbol(currency);
 
   return `
@@ -58,19 +58,19 @@ function generateEmailHTML(assignmentData: RideAssignmentData, currency: string 
   <style>
     body { font-family: Arial, sans-serif; font-size: 14px; color: #333; line-height: 1.5; }
     .container { max-width: 600px; margin: 0 auto; }
-    .header { background-color: #f5f5f5; padding: 15px; border-left: 4px solid #0369a1; margin-bottom: 20px; }
-    .header h1 { margin: 0 0 5px 0; font-size: 18px; color: #0369a1; }
+    .header { background-color: #f5f5f5; padding: 15px; border-left: 4px solid ${primaryColor}; margin-bottom: 20px; }
+    .header h1 { margin: 0 0 5px 0; font-size: 18px; color: ${primaryColor}; }
     .section { margin-bottom: 20px; }
-    .section h2 { font-size: 15px; color: #0369a1; margin: 15px 0 8px 0; border-bottom: 1px solid #e0e0e0; padding-bottom: 5px; }
-    .assignment-notice { background-color: #f9f9f9; padding: 10px; border-radius: 3px; border-left: 3px solid #f59e0b; margin-bottom: 15px; }
-    .assignment-notice h3 { margin: 0 0 8px 0; font-size: 14px; color: #0369a1; }
+    .section h2 { font-size: 15px; color: ${primaryColor}; margin: 15px 0 8px 0; border-bottom: 1px solid #e0e0e0; padding-bottom: 5px; }
+    .assignment-notice { background-color: #f9f9f9; padding: 10px; border-radius: 3px; border-left: 3px solid ${primaryColor}; margin-bottom: 15px; }
+    .assignment-notice h3 { margin: 0 0 8px 0; font-size: 14px; color: ${primaryColor}; }
     .assignment-notice p { margin: 3px 0; font-size: 13px; }
     table { width: 100%; border-collapse: collapse; }
     tr { border-bottom: 1px solid #f0f0f0; }
     td { padding: 6px 0; font-size: 13px; }
     td:first-child { width: 40%; color: #666; }
     .footer { font-size: 12px; color: #999; margin-top: 25px; border-top: 1px solid #ddd; padding-top: 15px; }
-    a { color: #0369a1; text-decoration: none; }
+    a { color: ${primaryColor}; text-decoration: none; }
   </style>
 </head>
 <body>
@@ -82,10 +82,10 @@ function generateEmailHTML(assignmentData: RideAssignmentData, currency: string 
     </div>
 
     <div class="assignment-notice">
-      <h3 style="margin: 0 0 10px 0; color: #92400e;">Ride Assignment Details</h3>
-      <p style="margin: 0; color: #92400e;"><strong>Reservation ID:</strong> #${assignmentData.tripId}</p>
-      <p style="margin: 0; color: #92400e;"><strong>Passenger:</strong> ${assignmentData.passengerName || `${assignmentData.firstName} ${assignmentData.lastName}`}</p>
-      <p style="margin: 0; color: #92400e;"><strong>Contact:</strong> ${assignmentData.passengerPhone || assignmentData.phone}</p>
+      <h3 style="margin: 0 0 10px 0; color: ${primaryColor};">Ride Assignment Details</h3>
+      <p style="margin: 0; color: ${primaryColor};"><strong>Reservation ID:</strong> #${assignmentData.tripId}</p>
+      <p style="margin: 0; color: ${primaryColor};"><strong>Passenger:</strong> ${assignmentData.passengerName || `${assignmentData.firstName} ${assignmentData.lastName}`}</p>
+      <p style="margin: 0; color: ${primaryColor};"><strong>Contact:</strong> ${assignmentData.passengerPhone || assignmentData.phone}</p>
     </div>
 
     <div class="section">
@@ -198,8 +198,9 @@ export async function sendRideAssignmentEmail(assignmentData: RideAssignmentData
     const fromField = settings?.smtpSenderName ? `${settings.smtpSenderName} <${fromAddress}>` : fromAddress;
     const currency = settings?.stripeCurrency || 'EUR';
     const currencySymbol = getCurrencySymbol(currency);
+    const primaryColor = settings?.primaryColor || '#EAB308';
 
-    const htmlContent = generateEmailHTML(assignmentData, currency);
+    const htmlContent = generateEmailHTML(assignmentData, currency, primaryColor);
 
     const success = await sendEmail({
       from: fromField,

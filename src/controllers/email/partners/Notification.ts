@@ -15,7 +15,7 @@ function isValidEmail(email: string): boolean {
   return emailRegex.test(email);
 }
 
-function generateApprovalEmailHTML(partnerData: PartnerData) {
+function generateApprovalEmailHTML(partnerData: PartnerData, primaryColor: string = '#EAB308') {
   return `
 <!DOCTYPE html>
 <html>
@@ -25,13 +25,13 @@ function generateApprovalEmailHTML(partnerData: PartnerData) {
   <style>
     body { font-family: Arial, sans-serif; font-size: 14px; color: #333; line-height: 1.5; }
     .container { max-width: 600px; margin: 0 auto; }
-    .header { background-color: #f5f5f5; padding: 15px; border-left: 4px solid #16a34a; margin-bottom: 20px; }
-    .header h1 { margin: 0 0 5px 0; font-size: 18px; color: #16a34a; }
+    .header { background-color: #f5f5f5; padding: 15px; border-left: 4px solid ${primaryColor}; margin-bottom: 20px; }
+    .header h1 { margin: 0 0 5px 0; font-size: 18px; color: ${primaryColor}; }
     .section { margin-bottom: 20px; }
-    .section h2 { font-size: 15px; color: #16a34a; margin: 15px 0 8px 0; border-bottom: 1px solid #e0e0e0; padding-bottom: 5px; }
+    .section h2 { font-size: 15px; color: ${primaryColor}; margin: 15px 0 8px 0; border-bottom: 1px solid #e0e0e0; padding-bottom: 5px; }
     .details { background-color: #f9f9f9; padding: 10px; border-radius: 3px; }
     .footer { font-size: 12px; color: #999; margin-top: 25px; border-top: 1px solid #ddd; padding-top: 15px; }
-    a { color: #16a34a; text-decoration: none; }
+    a { color: ${primaryColor}; text-decoration: none; }
   </style>
 </head>
 <body>
@@ -71,7 +71,7 @@ function generateApprovalEmailHTML(partnerData: PartnerData) {
   `;
 }
 
-function generateRejectionEmailHTML(partnerData: PartnerData) {
+function generateRejectionEmailHTML(partnerData: PartnerData, primaryColor: string = '#EAB308', warningColor: string = '#f59e0b') {
   return `
 <!DOCTYPE html>
 <html>
@@ -81,13 +81,13 @@ function generateRejectionEmailHTML(partnerData: PartnerData) {
   <style>
     body { font-family: Arial, sans-serif; font-size: 14px; color: #333; line-height: 1.5; }
     .container { max-width: 600px; margin: 0 auto; }
-    .header { background-color: #f5f5f5; padding: 15px; border-left: 4px solid #dc2626; margin-bottom: 20px; }
-    .header h1 { margin: 0 0 5px 0; font-size: 18px; color: #dc2626; }
+    .header { background-color: #f5f5f5; padding: 15px; border-left: 4px solid ${warningColor}; margin-bottom: 20px; }
+    .header h1 { margin: 0 0 5px 0; font-size: 18px; color: ${warningColor}; }
     .section { margin-bottom: 20px; }
-    .section h2 { font-size: 15px; color: #dc2626; margin: 15px 0 8px 0; border-bottom: 1px solid #e0e0e0; padding-bottom: 5px; }
-    .details { background-color: #f9f9f9; padding: 10px; border-radius: 3px; border-left: 3px solid #f59e0b; }
+    .section h2 { font-size: 15px; color: ${warningColor}; margin: 15px 0 8px 0; border-bottom: 1px solid #e0e0e0; padding-bottom: 5px; }
+    .details { background-color: #f9f9f9; padding: 10px; border-radius: 3px; border-left: 3px solid ${warningColor}; }
     .footer { font-size: 12px; color: #999; margin-top: 25px; border-top: 1px solid #ddd; padding-top: 15px; }
-    a { color: #0369a1; text-decoration: none; }
+    a { color: ${primaryColor}; text-decoration: none; }
   </style>
 </head>
 <body>
@@ -133,7 +133,7 @@ function generateRejectionEmailHTML(partnerData: PartnerData) {
   `;
 }
 
-function generateSuspensionEmailHTML(partnerData: PartnerData) {
+function generateSuspensionEmailHTML(partnerData: PartnerData, primaryColor: string = '#EAB308', warningColor: string = '#f59e0b') {
   return `
 <!DOCTYPE html>
 <html>
@@ -143,13 +143,13 @@ function generateSuspensionEmailHTML(partnerData: PartnerData) {
   <style>
     body { font-family: Arial, sans-serif; font-size: 14px; color: #333; line-height: 1.5; }
     .container { max-width: 600px; margin: 0 auto; }
-    .header { background-color: #fef3c7; padding: 15px; border-left: 4px solid #f59e0b; margin-bottom: 20px; }
+    .header { background-color: #fef3c7; padding: 15px; border-left: 4px solid ${warningColor}; margin-bottom: 20px; }
     .header h1 { margin: 0 0 5px 0; font-size: 18px; color: #92400e; }
     .section { margin-bottom: 20px; }
     .section h2 { font-size: 15px; color: #92400e; margin: 15px 0 8px 0; border-bottom: 1px solid #e0e0e0; padding-bottom: 5px; }
-    .warning { background-color: #fffbeb; padding: 12px; border-left: 3px solid #f59e0b; color: #78350f; }
+    .warning { background-color: #fffbeb; padding: 12px; border-left: 3px solid ${warningColor}; color: #78350f; }
     .footer { font-size: 12px; color: #999; margin-top: 25px; border-top: 1px solid #ddd; padding-top: 15px; }
-    a { color: #0369a1; text-decoration: none; }
+    a { color: ${primaryColor}; text-decoration: none; }
   </style>
 </head>
 <body>
@@ -222,8 +222,9 @@ export async function sendPartnerApprovalEmail(partnerData: PartnerData) {
 
     const fromAddress = settings?.smtpFrom || settings?.smtpUser;
     const fromField = settings?.smtpSenderName ? `${settings.smtpSenderName} <${fromAddress}>` : fromAddress;
+    const primaryColor = settings?.primaryColor || '#EAB308';
     
-    const emailHTML = generateApprovalEmailHTML(partnerData);
+    const emailHTML = generateApprovalEmailHTML(partnerData, primaryColor);
 
     const success = await sendEmail({
       from: fromField,
@@ -254,8 +255,9 @@ export async function sendPartnerRejectionEmail(partnerData: PartnerData) {
 
     const fromAddress = settings?.smtpFrom || settings?.smtpUser || "noreply@booking.com";
     const fromField = settings?.smtpSenderName ? `${settings.smtpSenderName} <${fromAddress}>` : fromAddress;
+    const primaryColor = settings?.primaryColor || '#EAB308';
     
-    const emailHTML = generateRejectionEmailHTML(partnerData);
+    const emailHTML = generateRejectionEmailHTML(partnerData, primaryColor);
 
     const success = await sendEmail({
       from: fromField,
@@ -286,8 +288,9 @@ export async function sendPartnerSuspensionEmail(partnerData: PartnerData) {
 
     const fromAddress = settings?.smtpFrom || settings?.smtpUser || "noreply@booking.com";
     const fromField = settings?.smtpSenderName ? `${settings.smtpSenderName} <${fromAddress}>` : fromAddress;
+    const primaryColor = settings?.primaryColor || '#EAB308';
 
-    const emailHTML = generateSuspensionEmailHTML(partnerData);
+    const emailHTML = generateSuspensionEmailHTML(partnerData, primaryColor);
 
     const success = await sendEmail({
       from: fromField,
@@ -319,7 +322,7 @@ interface RideNotificationData {
   currencySymbol?: string;
 }
 
-function generateRideNotificationEmailHTML(rideData: RideNotificationData) {
+function generateRideNotificationEmailHTML(rideData: RideNotificationData, primaryColor: string = '#EAB308') {
   return `
 <!DOCTYPE html>
 <html>
@@ -329,12 +332,12 @@ function generateRideNotificationEmailHTML(rideData: RideNotificationData) {
   <style>
     body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
     .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-    .header { background-color: #e0f2fe; padding: 20px; border-radius: 5px; margin-bottom: 20px; text-align: center; border: 2px solid #0ea5e9; }
-    .header h1 { margin: 0; color: #0369a1; }
+    .header { background-color: #f9f9f9; padding: 20px; border-radius: 5px; margin-bottom: 20px; text-align: center; border: 2px solid ${primaryColor}; }
+    .header h1 { margin: 0; color: ${primaryColor}; }
     .notification-icon { font-size: 48px; margin-bottom: 10px; }
     .section { margin-bottom: 20px; }
-    .ride-details { background-color: #f0f9ff; padding: 15px; border-radius: 5px; border-left: 4px solid #0ea5e9; }
-    .ride-details h3 { color: #0369a1; margin-top: 0; }
+    .ride-details { background-color: #f9f9f9; padding: 15px; border-radius: 5px; border-left: 4px solid ${primaryColor}; }
+    .ride-details h3 { color: ${primaryColor}; margin-top: 0; }
     .details-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 15px 0; }
     .detail-item { background-color: white; padding: 8px; border-radius: 3px; }
     .detail-label { font-weight: bold; color: #64748b; font-size: 0.9em; }
@@ -342,7 +345,7 @@ function generateRideNotificationEmailHTML(rideData: RideNotificationData) {
     .footer { color: #718096; font-size: 12px; margin-top: 30px; border-top: 1px solid #e2e8f0; padding-top: 15px; }
     .cta-button {
       display: inline-block;
-      background-color: #0369a1;
+      background-color: ${primaryColor};
       color: #ffffff !important;
       padding: 12px 30px;
       text-decoration: none;
@@ -454,8 +457,9 @@ export async function sendRideNotificationEmail(rideData: RideNotificationData) 
 
     const fromAddress = settings?.smtpFrom || settings?.smtpUser;
     const fromField = settings?.smtpSenderName ? `${settings.smtpSenderName} <${fromAddress}>` : fromAddress;
+    const primaryColor = settings?.primaryColor || '#EAB308';
 
-    const emailHTML = generateRideNotificationEmailHTML(rideData);
+    const emailHTML = generateRideNotificationEmailHTML(rideData, primaryColor);
 
     const success = await sendEmail({
       from: fromField,

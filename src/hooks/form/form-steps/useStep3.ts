@@ -280,8 +280,8 @@ export function useStep3() {
         returnTime: formData.returnTime,
         passengers: formData.passengers,
         selectedVehicle: formData.selectedVehicle,
-        childSeats: formData.childSeats,
-        babySeats: formData.babySeats,
+        childSeats: Number(formData.childSeats) || 0,
+        babySeats: Number(formData.babySeats) || 0,
         notes: formData.notes,
         flightNumber: formData.flightNumber,
         firstName: formData.firstName,
@@ -420,6 +420,8 @@ export function useStep3() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           ...formData,
+          childSeats: Number(formData.childSeats) || 0,
+          babySeats: Number(formData.babySeats) || 0,
           paymentMethod: "cash",
           paymentStatus: "pending",
           totalAmount: totalPrice,
@@ -472,6 +474,8 @@ export function useStep3() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           ...formData,
+          childSeats: Number(formData.childSeats) || 0,
+          babySeats: Number(formData.babySeats) || 0,
           paymentMethod: "bank_transfer",
           paymentStatus: "pending",
           totalAmount: totalPrice,
@@ -531,6 +535,8 @@ export function useStep3() {
           description: `Booking from ${formData.pickup} to ${formData.dropoff || 'destination'}`,
           bookingData: {
             ...formData,
+            childSeats: Number(formData.childSeats) || 0,
+            babySeats: Number(formData.babySeats) || 0,
             subtotalAmount: displaySubtotalAmount,
             taxAmount: taxAmount,
             taxPercentage: enableTax ? taxPercentage : 0,

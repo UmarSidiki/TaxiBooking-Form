@@ -305,9 +305,12 @@ export async function PATCH(
         );
       }
 
+      // For non-cash bookings, check if partner review is approved
+      // If not, this is likely a combined approval + assignment action from the frontend
       if (booking.paymentMethod !== "cash" && booking.partnerReviewStatus !== "approved") {
+        console.log("Partner review not approved for booking:", id);
         return NextResponse.json(
-          { success: false, message: "Approve the booking for partners before assignment" },
+          { success: false, message: "Booking must be approved for partners before assignment. Please approve first or try again." },
           { status: 400 }
         );
       }

@@ -36,9 +36,10 @@ interface BookingData {
   paymentMethod?: string;
   paymentStatus?: string;
   flightNumber?: string;
+  baseUrl?: string;
 }
 
-function generateOwnerEmailHTML(bookingData: BookingData, currency: string = 'EUR') {
+function generateOwnerEmailHTML(bookingData: BookingData, currency: string = 'EUR', primaryColor: string = '#EAB308', baseUrl?: string, enableDrivers?: boolean, enablePartners?: boolean, bookingId?: string) {
   const currencySymbol = getCurrencySymbol(currency);
 
   return `
@@ -50,17 +51,21 @@ function generateOwnerEmailHTML(bookingData: BookingData, currency: string = 'EU
   <style>
     body { font-family: Arial, sans-serif; font-size: 14px; color: #333; line-height: 1.5; }
     .container { max-width: 600px; margin: 0 auto; }
-    .header { background-color: #f5f5f5; padding: 15px; border-left: 4px solid #0369a1; margin-bottom: 20px; }
-    .header h1 { margin: 0 0 5px 0; font-size: 18px; color: #0369a1; }
+    .header { background-color: #f5f5f5; padding: 15px; border-left: 4px solid ${primaryColor}; margin-bottom: 20px; }
+    .header h1 { margin: 0 0 5px 0; font-size: 18px; color: ${primaryColor}; }
     .section { margin-bottom: 20px; }
-    .section h2 { font-size: 15px; color: #0369a1; margin: 15px 0 8px 0; border-bottom: 1px solid #e0e0e0; padding-bottom: 5px; }
+    .section h2 { font-size: 15px; color: ${primaryColor}; margin: 15px 0 8px 0; border-bottom: 1px solid #e0e0e0; padding-bottom: 5px; }
     table { width: 100%; border-collapse: collapse; }
     tr { border-bottom: 1px solid #f0f0f0; }
     td { padding: 8px 0; }
     td:first-child { width: 40%; color: #666; }
     .payment-section { background-color: #f9f9f9; padding: 10px; border-radius: 3px; }
     .footer { font-size: 12px; color: #999; margin-top: 25px; border-top: 1px solid #ddd; padding-top: 15px; }
-    a { color: #0369a1; text-decoration: none; }
+    .action-buttons { margin: 20px 0; text-align: center; }
+    .btn { display: inline-block; padding: 12px 24px; margin: 0 5px; text-decoration: none; border-radius: 5px; font-weight: bold; color: white; }
+    .btn-driver { background-color: ${primaryColor}; }
+    .btn-partner { background-color: #3b82f6; }
+    a { color: ${primaryColor}; text-decoration: none; }
   </style>
 </head>
 <body>
@@ -128,6 +133,14 @@ function generateOwnerEmailHTML(bookingData: BookingData, currency: string = 'EU
       <p>Please review and confirm this booking details with the customer.</p>
     </div>
 
+    ${(enableDrivers || enablePartners) && baseUrl && bookingId ? `
+    <div class="action-buttons">
+      <p style="margin-bottom: 15px; font-weight: bold;">Assign this booking:</p>
+      ${enableDrivers ? `<a href="${baseUrl}/dashboard/rides" class="btn btn-driver">Assign to Driver</a>` : ''}
+      ${enablePartners ? `<a href="${baseUrl}/dashboard/rides" class="btn btn-partner">Assign to Partner</a>` : ''}
+    </div>
+    ` : ''}
+
     <div class="footer">
       <p>This is an automated notification. Please do not reply.</p>
       <p>&copy; ${new Date().getFullYear()} Booking Service. All rights reserved.</p>
@@ -165,8 +178,12 @@ export async function sendOrderNotificationEmail(bookingData: BookingData) {
     const fromField = settings?.smtpSenderName ? `${settings.smtpSenderName} <${fromAddress}>` : fromAddress;
     const currency = settings?.stripeCurrency || 'EUR';
     const currencySymbol = getCurrencySymbol(currency);
+    const primaryColor = settings?.primaryColor || '#EAB308';
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || bookingData.baseUrl;
+    const enableDrivers = settings?.enableDrivers || false;
+    const enablePartners = settings?.enablePartners || false;
 
-    const htmlContent = generateOwnerEmailHTML(bookingData, currency);
+    const htmlContent = generateOwnerEmailHTML(bookingData, currency, primaryColor, baseUrl, enableDrivers, enablePartners);
 
     const success = await sendEmail({
       from: fromField,

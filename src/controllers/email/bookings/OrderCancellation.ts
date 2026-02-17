@@ -43,7 +43,7 @@ function isValidEmail(email: string): boolean {
   return emailRegex.test(email);
 }
 
-function generateEmailHTML(bookingData: BookingData, currency: string = 'EUR') {
+function generateEmailHTML(bookingData: BookingData, currency: string = 'EUR', primaryColor: string = '#EAB308') {
   const currencySymbol = getCurrencySymbol(currency);
   const refundAmount = bookingData.refundAmount ?? 0;
   const refundPercentage = bookingData.refundPercentage ?? null;
@@ -60,17 +60,17 @@ function generateEmailHTML(bookingData: BookingData, currency: string = 'EUR') {
   <style>
     body { font-family: Arial, sans-serif; font-size: 14px; color: #333; line-height: 1.5; }
     .container { max-width: 600px; margin: 0 auto; }
-    .header { background-color: #f5f5f5; padding: 15px; border-left: 4px solid #dc2626; margin-bottom: 20px; }
-    .header h1 { margin: 0 0 5px 0; font-size: 18px; color: #dc2626; }
+    .header { background-color: #f5f5f5; padding: 15px; border-left: 4px solid ${primaryColor}; margin-bottom: 20px; }
+    .header h1 { margin: 0 0 5px 0; font-size: 18px; color: ${primaryColor}; }
     .section { margin-bottom: 20px; }
-    .section h2 { font-size: 15px; color: #dc2626; margin: 15px 0 8px 0; border-bottom: 1px solid #e0e0e0; padding-bottom: 5px; }
+    .section h2 { font-size: 15px; color: ${primaryColor}; margin: 15px 0 8px 0; border-bottom: 1px solid #e0e0e0; padding-bottom: 5px; }
     table { width: 100%; border-collapse: collapse; }
     tr { border-bottom: 1px solid #f0f0f0; }
     td { padding: 8px 0; }
     td:first-child { width: 40%; color: #666; }
-    .refund-section { background-color: #f9f9f9; padding: 10px; border-radius: 3px; border-left: 3px solid #16a34a; }
+    .refund-section { background-color: #f9f9f9; padding: 10px; border-radius: 3px; border-left: 3px solid ${primaryColor}; }
     .footer { font-size: 12px; color: #999; margin-top: 25px; border-top: 1px solid #ddd; padding-top: 15px; }
-    a { color: #dc2626; text-decoration: none; }
+    a { color: ${primaryColor}; text-decoration: none; }
   </style>
 </head>
 <body>
@@ -143,8 +143,9 @@ export async function sendOrderCancellationEmail(bookingData: BookingData) {
     const fromField = settings?.smtpSenderName ? `${settings.smtpSenderName} <${fromAddress}>` : fromAddress;
     const currency = settings?.stripeCurrency || 'EUR';
     const currencySymbol = getCurrencySymbol(currency);
+    const primaryColor = settings?.primaryColor || '#EAB308';
 
-    const htmlContent = generateEmailHTML(bookingData, currency);
+    const htmlContent = generateEmailHTML(bookingData, currency, primaryColor);
 
     const refundAmountText = (bookingData.refundAmount ?? 0).toFixed(2);
     const refundPercentText = bookingData.refundPercentage
@@ -218,6 +219,7 @@ async function sendCancellationNotificationToAdmin(bookingData: BookingData) {
     const fromFieldAdmin = settings?.smtpSenderName ? `${settings.smtpSenderName} <${fromAddressAdmin}>` : fromAddressAdmin;
     const currency = settings?.stripeCurrency || 'EUR';
     const currencySymbol = getCurrencySymbol(currency);
+    const primaryColor = settings?.primaryColor || '#EAB308';
 
     const refundAmountText = (bookingData.refundAmount ?? 0).toFixed(2);
     const refundPercentText = bookingData.refundPercentage
@@ -231,12 +233,12 @@ async function sendCancellationNotificationToAdmin(bookingData: BookingData) {
       html: `
         <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
           <div style="background-color: #fef2f2; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
-            <h1 style="margin: 0; color: #dc2626;">⚠️ Booking Cancellation Alert</h1>
+            <h1 style="margin: 0; color: ${primaryColor};">⚠️ Booking Cancellation Alert</h1>
             <p style="font-size: 16px; color: #333;">A booking has been cancelled by the customer.</p>
           </div>
 
-          <div style="background: #fee; border-left: 4px solid #dc2626; padding: 15px; margin: 20px 0;">
-            <h2 style="margin-top: 0; color: #dc2626;">Cancellation Details</h2>
+          <div style="background: #fee; border-left: 4px solid ${primaryColor}; padding: 15px; margin: 20px 0;">
+            <h2 style="margin-top: 0; color: ${primaryColor};">Cancellation Details</h2>
             <table style="width: 100%; border-collapse: collapse;">
               <tr>
                 <td style="padding: 8px 0; font-weight: bold;">Reservation ID:</td>
@@ -292,13 +294,13 @@ async function sendCancellationNotificationToAdmin(bookingData: BookingData) {
               </tr>
               <tr>
                 <td style="padding: 8px 0; font-weight: bold;">Total Amount:</td>
-                <td style="padding: 8px 0; font-size: 18px; color: #dc2626;">${currencySymbol}${bookingData.totalAmount.toFixed(
+                <td style="padding: 8px 0; font-size: 18px; color: ${primaryColor};">${currencySymbol}${bookingData.totalAmount.toFixed(
                   2
                 )}</td>
               </tr>
               <tr>
                 <td style="padding: 8px 0; font-weight: bold;">Refund Amount:</td>
-                <td style="padding: 8px 0; font-size: 18px; color: #16a34a;">${currencySymbol}${refundAmountText}</td>
+                <td style="padding: 8px 0; font-size: 18px; color: ${primaryColor};">${currencySymbol}${refundAmountText}</td>
               </tr>
               <tr>
                 <td style="padding: 8px 0; font-weight: bold;">Refund Percentage:</td>

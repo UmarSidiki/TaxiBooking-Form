@@ -232,6 +232,28 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Validate childSeats and babySeats are valid numbers
+    const childSeats = typeof formData.childSeats === 'number' ? formData.childSeats : parseInt(String(formData.childSeats || 0), 10);
+    const babySeats = typeof formData.babySeats === 'number' ? formData.babySeats : parseInt(String(formData.babySeats || 0), 10);
+
+    if (isNaN(childSeats) || childSeats < 0 || childSeats > 10) {
+      return NextResponse.json(
+        { success: false, message: "Invalid number of child seats" },
+        { status: 400 }
+      );
+    }
+
+    if (isNaN(babySeats) || babySeats < 0 || babySeats > 10) {
+      return NextResponse.json(
+        { success: false, message: "Invalid number of baby seats" },
+        { status: 400 }
+      );
+    }
+
+    // Normalize formData to use validated numbers
+    formData.childSeats = childSeats;
+    formData.babySeats = babySeats;
+
     // Fetch vehicle details from database
     await connectDB();
     const vehicle = await Vehicle.findById(formData.selectedVehicle);

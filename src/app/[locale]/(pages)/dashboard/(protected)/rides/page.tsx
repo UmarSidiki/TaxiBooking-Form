@@ -429,12 +429,14 @@ export default function RidesPage() {
       });
 
       if (data.success) {
+        // Update local state immediately
         setBookings((prev) =>
           prev.map((b) => (b._id?.toString() === bookingId ? data.data : b))
         );
         alert(t("Dashboard.Rides.partner-review-approved"));
         return true;
       } else {
+        console.error("Partner approval failed:", data.message);
         alert(
           t("Dashboard.Rides.partner-review-error", {
             0: data.message,
@@ -549,6 +551,12 @@ export default function RidesPage() {
       booking.partnerMarginPercentage ?? 0
     );
     const [isPartnerReviewEditMode, setIsPartnerReviewEditMode] = useState(false);
+    
+    // Modal states
+    const [showPartnerApprovalModal, setShowPartnerApprovalModal] = useState(false);
+    const [showAssignDriverModal, setShowAssignDriverModal] = useState(false);
+    const [showAssignPartnerModal, setShowAssignPartnerModal] = useState(false);
+    const [assignPartnerMargin, setAssignPartnerMargin] = useState<number>(20);
 
     const bookingId = booking._id?.toString() || "";
     const requiresPartnerReview =
@@ -867,407 +875,161 @@ export default function RidesPage() {
             </div>
 
             {/* Customer Information */}
-            <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 text-sm">
+            <div className="flex flex-col gap-2 text-sm">
               <div className="flex items-center gap-2">
-                <User className="w-4 h-4 text-secondary-foreground" />
-                <span className="text-gray-700">
+                <User className="w-4 h-4 text-secondary-foreground flex-shrink-0" />
+                <span className="text-gray-700 truncate">
                   {booking.firstName} {booking.lastName}
                 </span>
               </div>
               <div className="flex items-center gap-2">
-                <Mail className="w-4 h-4 text-secondary-foreground" />
-                <span className="text-gray-700 truncate max-w-32">
+                <Mail className="w-4 h-4 text-secondary-foreground flex-shrink-0" />
+                <span className="text-gray-700 truncate">
                   {booking.email}
                 </span>
               </div>
               <div className="flex items-center gap-2">
-                <PhoneCall className="w-4 h-4 text-secondary-foreground" />
+                <PhoneCall className="w-4 h-4 text-secondary-foreground flex-shrink-0" />
                 <span className="text-gray-700">{booking.phone}</span>
               </div>
             </div>
 
+            {/* Partner Marketplace Approval Button */}
             {enablePartners && booking.paymentMethod !== "cash" && (
               <div className="border-t pt-3">
-                <div className="bg-secondary/10 border border-secondary/20 rounded-lg p-3 space-y-3">
-                  <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
-                    <div>
-                      <span className="text-sm font-medium text-secondary-foreground">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 bg-secondary/10 border border-secondary/20 rounded-lg p-3">
+                  <div className="flex items-start gap-3 min-w-0 flex-1">
+                    <CheckCircle className="w-5 h-5 text-secondary-foreground flex-shrink-0 mt-0.5" />
+                    <div className="min-w-0 flex-1">
+                      <span className="text-sm font-medium text-secondary-foreground block">
                         {t("Dashboard.Rides.partner-review-title")}
                       </span>
-                      <p className="text-xs text-muted-foreground">
-                        {t("Dashboard.Rides.partner-review-description")}
-                      </p>
-                    </div>
-                    <Badge
-                      variant={isPartnerReviewPending ? "destructive" : "secondary"}
-                      className="text-xs text-white"
-                    >
-                      {isPartnerReviewPending
-                        ? t("Dashboard.Rides.partner-review-status-pending")
-                        : t("Dashboard.Rides.partner-review-status-approved")}
-                    </Badge>
-                  </div>
-
-                  {!isPartnerReviewPending && !isPartnerReviewEditMode && (
-                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-                      <div className="text-sm text-muted-foreground flex items-center gap-2">
-                        <DollarSign className="w-4 h-4" />
-                        <span>
-                          {t("Dashboard.Rides.partner-payout-summary", {
-                            0: `${currencySymbol}${storedPartnerPayoutAmount.toFixed(2)}`,
-                            1: `${currencySymbol}${storedPartnerMarginAmount.toFixed(2)}`,
-                          })}
-                        </span>
-                      </div>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => setIsPartnerReviewEditMode(true)}
-                        className="text-xs h-8 px-3"
-                      >
-                        <Edit className="w-3 h-3 mr-1" />
-                        {t("Dashboard.Rides.edit-partner-margin")}
-                      </Button>
-                    </div>
-                  )}
-
-                  {(isPartnerReviewPending || isPartnerReviewEditMode) && (
-                    <>
-                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                        <div>
-                          <Label className="text-xs uppercase tracking-wide text-muted-foreground">
-                            {t("Dashboard.Rides.margin-percentage")}
-                          </Label>
-                          <Input
-                            type="number"
-                            min={0}
-                            max={100}
-                            step={0.5}
-                            value={partnerMargin}
-                            onChange={(event) =>
-                              setPartnerMargin(Number(event.target.value))
-                            }
-                          />
-                        </div>
-                        <div>
-                          <Label className="text-xs uppercase tracking-wide text-muted-foreground">
-                            {t("Dashboard.Rides.admin-margin-amount")}
-                          </Label>
-                          <p className="text-sm font-semibold">
-                            {currencySymbol}
-                            {marginPreviewAmount.toFixed(2)}
-                          </p>
-                        </div>
-                        <div>
-                          <Label className="text-xs uppercase tracking-wide text-muted-foreground">
-                            {t("Dashboard.Rides.partner-payout-amount")}
-                          </Label>
-                          <p className="text-sm font-semibold text-green-600">
-                            {currencySymbol}
-                            {partnerPayoutPreview.toFixed(2)}
-                          </p>
-                        </div>
-                      </div>
-
-                      <Button
-                        onClick={handlePartnerApprovalClick}
-                        disabled={
-                          !bookingId ||
-                          partnerMargin < 0 ||
-                          partnerMargin > 100 ||
-                          isApprovingThisBooking
-                        }
-                        className="flex items-center gap-2 bg-primary hover:bg-primary/90"
-                      >
-                        {isApprovingThisBooking ? (
-                          <>
-                            <Loader2 className="w-4 h-4 animate-spin" />
-                            {t("Dashboard.Rides.approving")}
-                          </>
-                        ) : (
-                          <>
-                            <CheckCircle className="w-4 h-4" />
-                            {approvalButtonLabel}
-                          </>
+                      <div className="flex flex-wrap items-center gap-2 mt-1">
+                        <Badge
+                          variant={isPartnerReviewPending ? "destructive" : "secondary"}
+                          className="text-xs text-white"
+                        >
+                          {isPartnerReviewPending
+                            ? t("Dashboard.Rides.partner-review-status-pending")
+                            : t("Dashboard.Rides.partner-review-status-approved")}
+                        </Badge>
+                        {!isPartnerReviewPending && (
+                          <span className="text-xs text-muted-foreground">
+                            Margin: {booking.partnerMarginPercentage || 0}%
+                          </span>
                         )}
-                      </Button>
-                    </>
-                  )}
-
-                  {isPartnerReviewPending && (
-                    <p className="text-xs text-muted-foreground flex items-center gap-2">
-                      <Info className="w-3 h-3" />
-                      {t("Dashboard.Rides.partner-review-helper-text")}
-                    </p>
-                  )}
+                      </div>
+                    </div>
+                  </div>
+                  <Button
+                    size="sm"
+                    variant={isPartnerReviewPending ? "default" : "outline"}
+                    onClick={() => {
+                      setPartnerMargin(booking.partnerMarginPercentage ?? 0);
+                      setShowPartnerApprovalModal(true);
+                    }}
+                    className="flex items-center justify-center gap-2 w-full sm:w-auto whitespace-nowrap"
+                  >
+                    {isPartnerReviewPending ? (
+                      <>
+                        <CheckCircle className="w-4 h-4" />
+                        <span className="hidden sm:inline">{t("Dashboard.Rides.approve-for-partners")}</span>
+                        <span className="sm:hidden">Approve</span>
+                      </>
+                    ) : (
+                      <>
+                        <Edit className="w-4 h-4" />
+                        <span className="hidden sm:inline">{t("Dashboard.Rides.edit-partner-margin")}</span>
+                        <span className="sm:hidden">Edit</span>
+                      </>
+                    )}
+                  </Button>
                 </div>
               </div>
             )}
 
-            {/* Driver Assignment Section - Only show for upcoming rides and when driver feature is enabled */}
+            {/* Driver Assignment Button */}
             {enableDrivers &&
               booking.status !== "canceled" &&
               !isBookingPassed(booking.date, booking.time) && (
                 <div className="border-t pt-3">
-                  {booking.assignedDriver && !isEditMode ? (
-                    <div className="bg-primary/10 border border-primary/20 rounded-lg p-3">
-                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                        <div className="flex items-center gap-2">
-                          <UserCheck className="w-4 h-4 text-primary" />
-                          <div>
-                            <span className="text-primary font-medium text-sm">
-                              {t("Dashboard.Rides.assigned-driver")}{" "}
-                            </span>
-                            <p className="text-primary font-medium">
-                              {booking.assignedDriver.name}
-                            </p>
-                            <p className="text-primary/70 text-xs">
-                              {booking.assignedDriver.email}
-                            </p>
-                          </div>
-                        </div>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => setIsEditMode(true)}
-                          className="text-xs h-8 px-3 border-primary/30 text-primary hover:bg-primary/10"
-                        >
-                          <Edit className="w-3 h-3 mr-1" />
-                          {t("Dashboard.Rides.reassign")}{" "}
-                        </Button>
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 bg-secondary/10 border border-secondary/20 rounded-lg p-3">
+                    <div className="flex items-start gap-3 min-w-0 flex-1">
+                      <UserCheck className="w-5 h-5 text-secondary-foreground flex-shrink-0 mt-0.5" />
+                      <div className="min-w-0 flex-1">
+                        <span className="text-sm font-medium text-secondary-foreground block">
+                          {t("Dashboard.Rides.assign-driver")}
+                        </span>
+                        {booking.assignedDriver && (
+                          <p className="text-xs text-muted-foreground mt-1 truncate">
+                            {booking.assignedDriver.name}
+                          </p>
+                        )}
                       </div>
                     </div>
-                  ) : (
-                    <div className="bg-secondary/10 border border-secondary/20 rounded-lg p-3">
-                      <div className="flex flex-col gap-3">
-                        <div className="flex items-center gap-2">
-                          <UserCheck className="w-4 h-4 text-secondary-foreground" />
-                          <span className="text-secondary-foreground font-medium text-sm">
-                            {booking.assignedDriver
-                              ? t("Dashboard.Rides.reassign-driver")
-                              : t("Dashboard.Rides.assign-driver")}
-                          </span>
-                        </div>
-
-                        <div className="flex flex-col sm:flex-row gap-2">
-                          <Select
-                            value={selectedDriver}
-                            onValueChange={setSelectedDriver}
-                          >
-                            <SelectTrigger className="w-full">
-                              <User className="w-4 h-4 mr-2" />
-                              <SelectValue
-                                placeholder={
-                                  booking.assignedDriver
-                                    ? t("Dashboard.Rides.change-driver")
-                                    : t("Dashboard.Rides.select-driver")
-                                }
-                              />
-                            </SelectTrigger>
-                            <SelectContent>
-                              {drivers.map((driver) => (
-                                <SelectItem
-                                  key={driver._id?.toString()}
-                                  value={driver._id?.toString() || ""}
-                                >
-                                  {driver.name} ({driver.email})
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-
-                          <div className="flex gap-2">
-                            <Button
-                              onClick={() =>
-                                handleAssignDriver(
-                                  booking._id?.toString() || "",
-                                  selectedDriver
-                                )
-                              }
-                              disabled={
-                                !selectedDriver ||
-                                assigningId === booking._id?.toString() ||
-                                (booking.assignedDriver &&
-                                  selectedDriver === booking.assignedDriver._id)
-                              }
-                              size="sm"
-                              className="flex items-center gap-2 bg-primary hover:bg-primary/90"
-                            >
-                              {assigningId === booking._id?.toString() ? (
-                                <>
-                                  <Loader2 className="w-4 h-4 animate-spin" />
-                                  {booking.assignedDriver
-                                    ? "Reassigning..."
-                                    : "Assigning..."}
-                                </>
-                              ) : (
-                                <>
-                                  <UserCheck className="w-4 h-4" />
-                                  {booking.assignedDriver
-                                    ? t("Dashboard.Rides.reassign")
-                                    : t("Dashboard.Rides.assign")}
-                                </>
-                              )}
-                            </Button>
-
-                            {isEditMode && (
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => {
-                                  setIsEditMode(false);
-                                  setSelectedDriver(
-                                    booking.assignedDriver?._id || ""
-                                  );
-                                }}
-                                className="flex items-center gap-2"
-                              >
-                                {t("Dashboard.Rides.cancel")}{" "}
-                              </Button>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  )}
+                    <Button
+                      size="sm"
+                      variant={booking.assignedDriver ? "outline" : "default"}
+                      onClick={() => setShowAssignDriverModal(true)}
+                      className="flex items-center justify-center gap-2 w-full sm:w-auto whitespace-nowrap"
+                    >
+                      {booking.assignedDriver ? (
+                        <>
+                          <Edit className="w-4 h-4" />
+                          {t("Dashboard.Rides.reassign")}
+                        </>
+                      ) : (
+                        <>
+                          <UserCheck className="w-4 h-4" />
+                          {t("Dashboard.Rides.assign")}
+                        </>
+                      )}
+                    </Button>
+                  </div>
                 </div>
               )}
 
-            {/* Partner Assignment Section - Only show for upcoming rides and when partner feature is enabled */}
+            {/* Partner Assignment Button */}
             {enablePartners &&
               booking.status !== "canceled" &&
               !isBookingPassed(booking.date, booking.time) && (
                 <div className="border-t pt-3">
-                  {booking.assignedPartner && !isPartnerEditMode ? (
-                    <div className="bg-primary/10 border border-primary/20 rounded-lg p-3">
-                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                        <div className="flex items-center gap-2">
-                          <Users className="w-4 h-4 text-primary" />
-                          <div>
-                            <span className="text-primary font-medium text-sm">
-                              {t("Dashboard.Rides.assigned-partner")}{" "}
-                            </span>
-                            <p className="text-primary font-medium">
-                              {booking.assignedPartner.name}
-                            </p>
-                            <p className="text-primary/70 text-xs">
-                              {booking.assignedPartner.email}
-                            </p>
-                          </div>
-                        </div>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => setIsPartnerEditMode(true)}
-                          className="text-xs h-8 px-3 border-primary/30 text-primary hover:bg-primary/10"
-                        >
-                          <Edit className="w-3 h-3 mr-1" />
-                          {t("Dashboard.Rides.reassign")}{" "}
-                        </Button>
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 bg-secondary/10 border border-secondary/20 rounded-lg p-3">
+                    <div className="flex items-start gap-3 min-w-0 flex-1">
+                      <Users className="w-5 h-5 text-secondary-foreground flex-shrink-0 mt-0.5" />
+                      <div className="min-w-0 flex-1">
+                        <span className="text-sm font-medium text-secondary-foreground block">
+                          {t("Dashboard.Rides.assign-partner")}
+                        </span>
+                        {booking.assignedPartner && (
+                          <p className="text-xs text-muted-foreground mt-1 truncate">
+                            {booking.assignedPartner.name}
+                          </p>
+                        )}
                       </div>
                     </div>
-                  ) : (
-                    <div className="bg-secondary/10 border border-secondary/20 rounded-lg p-3">
-                      <div className="flex flex-col gap-3">
-                        <div className="flex items-center gap-2">
-                          <Users className="w-4 h-4 text-secondary-foreground" />
-                          <span className="text-secondary-foreground font-medium text-sm">
-                            {booking.assignedPartner
-                              ? t("Dashboard.Rides.reassign-partner")
-                              : t("Dashboard.Rides.assign-partner")}
-                          </span>
-                        </div>
-
-                        <div className="flex flex-col sm:flex-row gap-2">
-                          <Select
-                            value={selectedPartner}
-                            onValueChange={setSelectedPartner}
-                          >
-                            <SelectTrigger className="w-full">
-                              <Users className="w-4 h-4 mr-2" />
-                              <SelectValue
-                                placeholder={
-                                  booking.assignedPartner
-                                    ? t("Dashboard.Rides.change-partner")
-                                    : t("Dashboard.Rides.select-partner")
-                                }
-                              />
-                            </SelectTrigger>
-                            <SelectContent>
-                              {partners.map((partner) => (
-                                <SelectItem
-                                  key={partner._id?.toString()}
-                                  value={partner._id?.toString() || ""}
-                                >
-                                  {partner.name} ({partner.email})
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-
-                          <div className="flex gap-2">
-                            <Button
-                              onClick={() =>
-                                handleAssignPartner(
-                                  booking._id?.toString() || "",
-                                  selectedPartner
-                                )
-                              }
-                              disabled={
-                                !selectedPartner ||
-                                assigningId === booking._id?.toString() ||
-                                (booking.assignedPartner &&
-                                  selectedPartner ===
-                                    booking.assignedPartner._id) ||
-                                (booking.paymentMethod !== "cash" &&
-                                  booking.partnerReviewStatus !== "approved")
-                              }
-                              size="sm"
-                              className="flex items-center gap-2 bg-primary hover:bg-primary/90"
-                            >
-                              {assigningId === booking._id?.toString() ? (
-                                <>
-                                  <Loader2 className="w-4 h-4 animate-spin" />
-                                  {booking.assignedPartner
-                                    ? "Reassigning..."
-                                    : "Assigning..."}
-                                </>
-                              ) : (
-                                <>
-                                  <Users className="w-4 h-4" />
-                                  {booking.assignedPartner
-                                    ? t("Dashboard.Rides.reassign")
-                                    : t("Dashboard.Rides.assign")}
-                                </>
-                              )}
-                            </Button>
-
-                            {isPartnerEditMode && (
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => {
-                                  setIsPartnerEditMode(false);
-                                  setSelectedPartner(
-                                    booking.assignedPartner?._id || ""
-                                  );
-                                }}
-                                className="flex items-center gap-2"
-                              >
-                                {t("Dashboard.Rides.cancel")}{" "}
-                              </Button>
-                            )}
-                          </div>
-                          {booking.paymentMethod !== "cash" &&
-                            booking.partnerReviewStatus !== "approved" && (
-                              <p className="text-xs text-muted-foreground">
-                                {t("Dashboard.Rides.partner-assignment-disabled")}
-                              </p>
-                            )}
-                        </div>
-                      </div>
-                    </div>
-                  )}
+                    <Button
+                      size="sm"
+                      variant={booking.assignedPartner ? "outline" : "default"}
+                      onClick={() => {
+                        setAssignPartnerMargin(booking.partnerMarginPercentage || 20);
+                        setShowAssignPartnerModal(true);
+                      }}
+                      className="flex items-center justify-center gap-2 w-full sm:w-auto whitespace-nowrap"
+                    >
+                      {booking.assignedPartner ? (
+                        <>
+                          <Edit className="w-4 h-4" />
+                          {t("Dashboard.Rides.reassign")}
+                        </>
+                      ) : (
+                        <>
+                          <Users className="w-4 h-4" />
+                          {t("Dashboard.Rides.assign")}
+                        </>
+                      )}
+                    </Button>
+                  </div>
                 </div>
               )}
 
@@ -1331,6 +1093,373 @@ export default function RidesPage() {
             </div>
           </div>
         </CardContent>
+
+        {/* Partner Approval Modal */}
+        <Dialog open={showPartnerApprovalModal} onOpenChange={setShowPartnerApprovalModal}>
+          <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2 text-base sm:text-lg">
+                <CheckCircle className="w-5 h-5 text-primary flex-shrink-0" />
+                <span className="line-clamp-2">{t("Dashboard.Rides.partner-review-title")}</span>
+              </DialogTitle>
+              <DialogDescription className="text-sm ">
+                {t("Dashboard.Rides.partner-review-description")}
+              </DialogDescription>
+            </DialogHeader>
+            
+            <div className="space-y-4 py-4">
+              <div className="bg-muted/50 rounded-lg p-3 sm:p-4 space-y-2">
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-muted-foreground">Trip ID</span>
+                  <span className="font-medium">#{booking.tripId}</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-muted-foreground">Total Amount</span>
+                  <span className="font-semibold text-base sm:text-lg">{currencySymbol}{totalAmountValue.toFixed(2)}</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-muted-foreground">Current Status</span>
+                  <Badge variant={isPartnerReviewPending ? "destructive" : "secondary"} className="text-xs text-white">
+                    {isPartnerReviewPending ? "Pending Approval" : "Approved"}
+                  </Badge>
+                </div>
+              </div>
+
+              <div className="space-y-3">
+                <div>
+                  <Label className="text-sm font-medium">
+                    {t("Dashboard.Rides.margin-percentage")}
+                  </Label>
+                  <div className="flex items-center gap-2 mt-2">
+                    <Input
+                      type="number"
+                      min={0}
+                      max={100}
+                      step={0.5}
+                      value={partnerMargin}
+                      onChange={(event) => setPartnerMargin(Number(event.target.value))}
+                      className="flex-1"
+                    />
+                    <span className="text-sm text-muted-foreground">%</span>
+                  </div>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Set the margin percentage to keep from the total booking amount
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 pt-2">
+                  <div className="bg-primary/5 rounded-lg p-3 border border-primary/20">
+                    <Label className="text-xs uppercase tracking-wide text-muted-foreground">
+                      {t("Dashboard.Rides.admin-margin-amount")}
+                    </Label>
+                    <p className="text-lg sm:text-xl font-bold text-primary mt-1">
+                      {currencySymbol}{marginPreviewAmount.toFixed(2)}
+                    </p>
+                  </div>
+                  <div className="bg-green-50 rounded-lg p-3 border border-green-200">
+                    <Label className="text-xs uppercase tracking-wide text-muted-foreground">
+                      {t("Dashboard.Rides.partner-payout-amount")}
+                    </Label>
+                    <p className="text-lg sm:text-xl font-bold text-green-600 mt-1">
+                      {currencySymbol}{partnerPayoutPreview.toFixed(2)}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <DialogFooter className="flex-col sm:flex-row gap-2">
+              <Button
+                variant="outline"
+                onClick={() => setShowPartnerApprovalModal(false)}
+                className="w-full sm:w-auto"
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={async () => {
+                  const success = await handleApprovePartnerReview(bookingId, partnerMargin);
+                  if (success) {
+                    setShowPartnerApprovalModal(false);
+                  }
+                }}
+                disabled={partnerMargin < 0 || partnerMargin > 100 || isApprovingThisBooking}
+                className="bg-primary hover:bg-primary/90 w-full sm:w-auto"
+              >
+                {isApprovingThisBooking ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                    {t("Dashboard.Rides.approving")}
+                  </>
+                ) : (
+                  <>
+                    <CheckCircle className="w-4 h-4 mr-2" />
+                    {approvalButtonLabel}
+                  </>
+                )}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
+        {/* Assign Driver Modal */}
+        <Dialog open={showAssignDriverModal} onOpenChange={setShowAssignDriverModal}>
+          <DialogContent className="sm:max-w-[500px] max-h-[90vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2 text-base sm:text-lg">
+                <UserCheck className="w-5 h-5 text-primary flex-shrink-0" />
+                <span className="line-clamp-2">{booking.assignedDriver ? t("Dashboard.Rides.reassign-driver") : t("Dashboard.Rides.assign-driver")}</span>
+              </DialogTitle>
+              <DialogDescription className="text-sm">
+                {booking.assignedDriver 
+                  ? "Change the driver assigned to this booking"
+                  : "Select a driver to assign to this booking"}
+              </DialogDescription>
+            </DialogHeader>
+            
+            <div className="space-y-4 py-4">
+              <div className="bg-muted/50 rounded-lg p-3 sm:p-4 space-y-2">
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-muted-foreground">Trip ID</span>
+                  <span className="font-medium">#{booking.tripId}</span>
+                </div>
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-muted-foreground">Date & Time</span>
+                  <span className="font-medium">{booking.date} at {booking.time}</span>
+                </div>
+                {booking.assignedDriver && (
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-0 pt-2 border-t">
+                    <span className="text-sm text-muted-foreground">Current Driver</span>
+                    <div className="text-left sm:text-right">
+                      <p className="font-medium text-sm">{booking.assignedDriver.name}</p>
+                      <p className="text-xs text-muted-foreground truncate">{booking.assignedDriver.email}</p>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              <div>
+                <Label className="text-sm font-medium mb-2 block">
+                  {booking.assignedDriver ? "Select New Driver" : "Select Driver"}
+                </Label>
+                <Select value={selectedDriver} onValueChange={setSelectedDriver}>
+                  <SelectTrigger className="w-full">
+                    <User className="w-4 h-4 mr-2 flex-shrink-0" />
+                    <SelectValue placeholder="Choose a driver..." />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {drivers.map((driver) => (
+                      <SelectItem
+                        key={driver._id?.toString()}
+                        value={driver._id?.toString() || ""}
+                      >
+                        <div className="flex flex-col">
+                          <span className="text-sm">{driver.name}</span>
+                          <span className="text-xs text-muted-foreground">{driver.email}</span>
+                        </div>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            <DialogFooter className="flex-col sm:flex-row gap-2">
+              <Button
+                variant="outline"
+                onClick={() => setShowAssignDriverModal(false)}
+                className="w-full sm:w-auto"
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={async () => {
+                  await handleAssignDriver(booking._id?.toString() || "", selectedDriver);
+                  setShowAssignDriverModal(false);
+                }}
+                disabled={
+                  !selectedDriver ||
+                  assigningId === booking._id?.toString() ||
+                  (booking.assignedDriver && selectedDriver === booking.assignedDriver._id)
+                }
+                className="bg-primary hover:bg-primary/90 w-full sm:w-auto"
+              >
+                {assigningId === booking._id?.toString() ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                    {booking.assignedDriver ? "Reassigning..." : "Assigning..."}
+                  </>
+                ) : (
+                  <>
+                    <UserCheck className="w-4 h-4 mr-2" />
+                    {booking.assignedDriver ? t("Dashboard.Rides.reassign") : t("Dashboard.Rides.assign")}
+                  </>
+                )}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
+        {/* Assign Partner Modal */}
+        <Dialog open={showAssignPartnerModal} onOpenChange={setShowAssignPartnerModal}>
+          <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2 text-base sm:text-lg">
+                <Users className="w-5 h-5 text-primary flex-shrink-0" />
+                <span className="line-clamp-2">{booking.assignedPartner ? t("Dashboard.Rides.reassign-partner") : t("Dashboard.Rides.assign-partner")}</span>
+              </DialogTitle>
+              <DialogDescription className="text-sm">
+                {booking.assignedPartner 
+                  ? "Change the partner assigned to this booking and adjust the margin"
+                  : "This will approve the ride for partner marketplace and assign it to the selected partner"}
+              </DialogDescription>
+            </DialogHeader>
+            
+            <div className="space-y-4 py-4">
+              <div className="bg-muted/50 rounded-lg p-3 sm:p-4 space-y-2">
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-muted-foreground">Trip ID</span>
+                  <span className="font-medium">#{booking.tripId}</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-muted-foreground">Total Amount</span>
+                  <span className="font-semibold text-base sm:text-lg">{currencySymbol}{totalAmountValue.toFixed(2)}</span>
+                </div>
+                {booking.assignedPartner && (
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-0 pt-2 border-t">
+                    <span className="text-sm text-muted-foreground">Current Partner</span>
+                    <div className="text-left sm:text-right">
+                      <p className="font-medium text-sm">{booking.assignedPartner.name}</p>
+                      <p className="text-xs text-muted-foreground truncate">{booking.assignedPartner.email}</p>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              <div>
+                <Label className="text-sm font-medium mb-2 block">
+                  {booking.assignedPartner ? "Select New Partner" : "Select Partner"}
+                </Label>
+                <Select value={selectedPartner} onValueChange={setSelectedPartner}>
+                  <SelectTrigger className="w-full">
+                    <Users className="w-4 h-4 mr-2 flex-shrink-0" />
+                    <SelectValue placeholder="Choose a partner..." />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {partners.map((partner) => (
+                      <SelectItem
+                        key={partner._id?.toString()}
+                        value={partner._id?.toString() || ""}
+                      >
+                        <div className="flex flex-col">
+                          <span className="text-sm">{partner.name}</span>
+                          <span className="text-xs text-muted-foreground">{partner.email}</span>
+                        </div>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-3 pt-2">
+                <div>
+                  <Label className="text-sm font-medium">
+                    Partner Margin Percentage {!booking.assignedPartner && "(Can be changed until partner accepts)"}
+                  </Label>
+                  <div className="flex items-center gap-2 mt-2">
+                    <Input
+                      type="number"
+                      min={0}
+                      max={100}
+                      step={0.5}
+                      value={assignPartnerMargin}
+                      onChange={(event) => setAssignPartnerMargin(Number(event.target.value))}
+                      className="flex-1"
+                      disabled={booking.assignedPartner !== null && booking.assignedPartner !== undefined}
+                    />
+                    <span className="text-sm text-muted-foreground">%</span>
+                  </div>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    {booking.assignedPartner 
+                      ? "Margin is locked after initial assignment" 
+                      : "The ride will be approved for partners with this margin before assignment"}
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                  <div className="bg-primary/5 rounded-lg p-3 border border-primary/20">
+                    <Label className="text-xs uppercase tracking-wide text-muted-foreground">
+                      Admin Margin
+                    </Label>
+                    <p className="text-lg sm:text-xl font-bold text-primary mt-1">
+                      {currencySymbol}{((totalAmountValue * assignPartnerMargin) / 100).toFixed(2)}
+                    </p>
+                  </div>
+                  <div className="bg-green-50 rounded-lg p-3 border border-green-200">
+                    <Label className="text-xs uppercase tracking-wide text-muted-foreground">
+                      Partner Payout
+                    </Label>
+                    <p className="text-lg sm:text-xl font-bold text-green-600 mt-1">
+                      {currencySymbol}{(totalAmountValue - (totalAmountValue * assignPartnerMargin) / 100).toFixed(2)}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <DialogFooter className="flex-col sm:flex-row gap-2">
+              <Button
+                variant="outline"
+                onClick={() => setShowAssignPartnerModal(false)}
+                className="w-full sm:w-auto"
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={async () => {
+                  try {
+                    // First approve for partners marketplace if not already assigned
+                    if (!booking.assignedPartner && booking.paymentMethod !== "cash") {
+                      const approved = await handleApprovePartnerReview(bookingId, assignPartnerMargin);
+                      if (!approved) {
+                        return; // Don't proceed if approval failed
+                      }
+                      // Wait a bit to ensure the booking is updated in the database
+                      await new Promise(resolve => setTimeout(resolve, 500));
+                    }
+                    // Then assign the partner
+                    await handleAssignPartner(booking._id?.toString() || "", selectedPartner);
+                    setShowAssignPartnerModal(false);
+                  } catch (error) {
+                    console.error("Error in partner assignment:", error);
+                    alert("Failed to complete the assignment. Please try again.");
+                  }
+                }}
+                disabled={
+                  !selectedPartner ||
+                  assigningId === booking._id?.toString() ||
+                  approvingPartnerId === bookingId ||
+                  (booking.assignedPartner && selectedPartner === booking.assignedPartner._id) ||
+                  assignPartnerMargin < 0 ||
+                  assignPartnerMargin > 100
+                }
+                className="bg-primary hover:bg-primary/90 w-full sm:w-auto"
+              >
+                {(assigningId === booking._id?.toString() || approvingPartnerId === bookingId) ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                    {approvingPartnerId === bookingId ? "Approving..." : (booking.assignedPartner ? "Reassigning..." : "Assigning...")}
+                  </>
+                ) : (
+                  <>
+                    <Users className="w-4 h-4 mr-2" />
+                    {booking.assignedPartner ? t("Dashboard.Rides.reassign") : "Approve & Assign"}
+                  </>
+                )}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </Card>
     );
   };

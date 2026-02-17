@@ -41,7 +41,7 @@ function isValidEmail(email: string): boolean {
   return emailRegex.test(email);
 }
 
-function generateEmailHTML(cancellationData: RideCancellationData, currency: string = 'EUR') {
+function generateEmailHTML(cancellationData: RideCancellationData, currency: string = 'EUR', primaryColor: string = '#EAB308') {
   const currencySymbol = getCurrencySymbol(currency);
 
   return `
@@ -53,19 +53,19 @@ function generateEmailHTML(cancellationData: RideCancellationData, currency: str
   <style>
     body { font-family: Arial, sans-serif; font-size: 14px; color: #333; line-height: 1.5; }
     .container { max-width: 600px; margin: 0 auto; }
-    .header { background-color: #f5f5f5; padding: 15px; border-left: 4px solid #dc2626; margin-bottom: 20px; }
-    .header h1 { margin: 0 0 5px 0; font-size: 18px; color: #dc2626; }
+    .header { background-color: #f5f5f5; padding: 15px; border-left: 4px solid ${primaryColor}; margin-bottom: 20px; }
+    .header h1 { margin: 0 0 5px 0; font-size: 18px; color: ${primaryColor}; }
     .section { margin-bottom: 20px; }
-    .section h2 { font-size: 15px; color: #dc2626; margin: 15px 0 8px 0; border-bottom: 1px solid #e0e0e0; padding-bottom: 5px; }
-    .cancellation-notice { background-color: #f9f9f9; padding: 10px; border-radius: 3px; border-left: 3px solid #dc2626; margin-bottom: 15px; }
-    .cancellation-notice h3 { margin: 0 0 8px 0; font-size: 14px; color: #dc2626; }
+    .section h2 { font-size: 15px; color: ${primaryColor}; margin: 15px 0 8px 0; border-bottom: 1px solid #e0e0e0; padding-bottom: 5px; }
+    .cancellation-notice { background-color: #f9f9f9; padding: 10px; border-radius: 3px; border-left: 3px solid ${primaryColor}; margin-bottom: 15px; }
+    .cancellation-notice h3 { margin: 0 0 8px 0; font-size: 14px; color: ${primaryColor}; }
     .cancellation-notice p { margin: 3px 0; font-size: 13px; }
     table { width: 100%; border-collapse: collapse; }
     tr { border-bottom: 1px solid #f0f0f0; }
     td { padding: 6px 0; font-size: 13px; }
     td:first-child { width: 40%; color: #666; }
     .footer { font-size: 12px; color: #999; margin-top: 25px; border-top: 1px solid #ddd; padding-top: 15px; }
-    a { color: #dc2626; text-decoration: none; }
+    a { color: ${primaryColor}; text-decoration: none; }
   </style>
 </head>
 <body>
@@ -77,10 +77,10 @@ function generateEmailHTML(cancellationData: RideCancellationData, currency: str
     </div>
 
     <div class="cancellation-notice">
-      <h3 style="margin: 0 0 10px 0; color: #dc2626;">Assignment Cancellation Details</h3>
-      <p style="margin: 0; color: #dc2626;"><strong>Reservation ID:</strong> #${cancellationData.tripId}</p>
-      <p style="margin: 0; color: #dc2626;"><strong>Customer:</strong> ${cancellationData.firstName} ${cancellationData.lastName}</p>
-      <p style="margin: 0; color: #dc2626;"><strong>Contact:</strong> ${cancellationData.email} | ${cancellationData.phone}</p>
+      <h3 style="margin: 0 0 10px 0; color: ${primaryColor};">Assignment Cancellation Details</h3>
+      <p style="margin: 0; color: ${primaryColor};"><strong>Reservation ID:</strong> #${cancellationData.tripId}</p>
+      <p style="margin: 0; color: ${primaryColor};"><strong>Customer:</strong> ${cancellationData.firstName} ${cancellationData.lastName}</p>
+      <p style="margin: 0; color: ${primaryColor};"><strong>Contact:</strong> ${cancellationData.email} | ${cancellationData.phone}</p>
     </div>
 
     <div class="section">
@@ -189,8 +189,9 @@ export async function sendRideCancellationEmail(cancellationData: RideCancellati
     const fromField = settings?.smtpSenderName ? `${settings.smtpSenderName} <${fromAddress}>` : fromAddress;
     const currency = settings?.stripeCurrency || 'EUR';
     const currencySymbol = getCurrencySymbol(currency);
+    const primaryColor = settings?.primaryColor || '#EAB308';
 
-    const htmlContent = generateEmailHTML(cancellationData, currency);
+    const htmlContent = generateEmailHTML(cancellationData, currency, primaryColor);
 
     const success = await sendEmail({
       from: fromField,

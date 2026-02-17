@@ -54,14 +54,19 @@ export function AppSidebar({ locale }: { locale: string }) {
     
     fetchSettings();
 
-    const handleSettingsUpdate = () => {
-      fetchSettings();
+    const handleSettingsUpdate = (e: Event) => {
+      const custom = e as CustomEvent<Partial<ISetting> | undefined>;
+      if (custom && custom.detail) {
+        setSettings(custom.detail);
+      } else {
+        fetchSettings();
+      }
     };
 
-    window.addEventListener('settingsUpdated', handleSettingsUpdate);
+    window.addEventListener('settingsUpdated', handleSettingsUpdate as EventListener);
 
     return () => {
-      window.removeEventListener('settingsUpdated', handleSettingsUpdate);
+      window.removeEventListener('settingsUpdated', handleSettingsUpdate as EventListener);
     };
   }, []);
 

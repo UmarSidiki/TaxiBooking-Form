@@ -43,6 +43,21 @@ export function CurrencyProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     fetchCurrency();
+
+    const handleSettingsUpdated = (e: Event) => {
+      const custom = e as CustomEvent<Partial<{ stripeCurrency?: string }> | undefined>;
+      if (custom && custom.detail && custom.detail.stripeCurrency) {
+        setCurrency(custom.detail.stripeCurrency.toUpperCase());
+        setLoading(false);
+      } else {
+        // Fallback to re-fetching the settings from server
+        setLoading(true);
+        fetchCurrency();
+      }
+    };
+
+    window.addEventListener('settingsUpdated', handleSettingsUpdated as EventListener);
+    return () => window.removeEventListener('settingsUpdated', handleSettingsUpdated as EventListener);
   }, []);
 
   const currencySymbol = (() => {

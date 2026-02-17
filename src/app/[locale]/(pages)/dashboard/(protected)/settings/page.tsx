@@ -64,16 +64,19 @@ const SettingsPage = () => {
       mapBounds: settings.mapBounds
     });
     try {
-      const data = await apiPost<{ success: boolean; message: string }>(
-        "/api/settings",
-        settings
-      );
+      const data = await apiPost<{
+        success: boolean;
+        message: string;
+        data?: Partial<ISetting>;
+      }>("/api/settings", settings);
+
       if (data.success) {
-        window.dispatchEvent(new Event('settingsUpdated'));
+        // Update local state from server response (if provided) so UI reflects saved values
+        if (data.data) setSettings(data.data);
+
+        // Notify other parts of the app with the new settings so listeners can update locally
+        window.dispatchEvent(new CustomEvent('settingsUpdated', { detail: data.data }));
         alert(t("Dashboard.Settings.settings-saved-successfully"));
-        setTimeout(() => {
-          window.location.reload();
-        }, 500);
       } else {
         alert(`Error: ${data.message}`);
       }

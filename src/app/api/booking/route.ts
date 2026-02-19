@@ -108,13 +108,15 @@ async function createEmailData(
   vehicle: IVehicle,
   tripId: string,
   totalAmount: number,
-  baseUrl?: string
+  baseUrl?: string,
+  bookingId?: string
 ) {
   const currency = await getCurrencyFromSettings();
   const currencySymbol = getCurrencySymbol(currency);
 
   return {
     tripId,
+    bookingId,
     pickup: formData.pickup,
     dropoff: formData.dropoff || 'N/A (Hourly booking)',
     stops: formData.stops || [],
@@ -359,7 +361,7 @@ export async function POST(request: NextRequest) {
     // Get base URL for invoice link in email
 
     // Send emails
-    const emailData = await createEmailData(formData, vehicle, tripId, totalAmount, baseUrl);
+    const emailData = await createEmailData(formData, vehicle, tripId, totalAmount, baseUrl, savedBooking._id.toString());
 
     try {
       await sendOrderConfirmationEmail(emailData);

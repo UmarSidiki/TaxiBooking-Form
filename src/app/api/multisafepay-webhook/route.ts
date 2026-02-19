@@ -186,7 +186,7 @@ async function handleWebhook(request: NextRequest) {
     };
 
     // Save booking to database
-    await Booking.create(bookingData);
+    const newBooking = await Booking.create(bookingData);
 
     console.log('✅ Booking created successfully:', actualOrderId);
 
@@ -198,6 +198,7 @@ async function handleWebhook(request: NextRequest) {
     // Prepare email data
     const emailData = {
       tripId: actualOrderId,
+      bookingId: newBooking._id.toString(),
       pickup: pendingBooking.bookingData.pickup,
       dropoff: pendingBooking.bookingData.dropoff || 'N/A (Hourly booking)',
       stops: pendingBooking.bookingData.stops || [],

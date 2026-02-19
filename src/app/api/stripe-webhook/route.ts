@@ -231,6 +231,7 @@ async function handlePaymentIntentSucceeded(
   // Prepare email data
   const emailData = {
     tripId: orderId,
+    bookingId: newBooking._id.toString(),
     pickup: pendingBooking.bookingData.pickup,
     dropoff: pendingBooking.bookingData.dropoff || 'N/A (Hourly booking)',
     stops: pendingBooking.bookingData.stops || [],

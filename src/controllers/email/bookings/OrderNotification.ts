@@ -6,6 +6,7 @@ import { getCurrencySymbol } from '@/lib/utils';
 
 interface BookingData {
   tripId: string;
+  bookingId?: string;
   pickup: string;
   dropoff: string;
   stops: Array<{ location: string; order: number; duration?: number }>;
@@ -135,9 +136,8 @@ function generateOwnerEmailHTML(bookingData: BookingData, currency: string = 'EU
 
     ${(enableDrivers || enablePartners) && baseUrl && bookingId ? `
     <div class="action-buttons">
-      <p style="margin-bottom: 15px; font-weight: bold;">Assign this booking:</p>
-      ${enableDrivers ? `<a href="${baseUrl}/dashboard/rides" class="btn btn-driver">Assign to Driver</a>` : ''}
-      ${enablePartners ? `<a href="${baseUrl}/dashboard/rides" class="btn btn-partner">Assign to Partner</a>` : ''}
+      <p style="margin-bottom: 15px; font-weight: bold;">Manage this booking:</p>
+      <a href="${baseUrl}/dashboard/rides?bookingId=${bookingId}" class="btn btn-driver">View & Manage Booking</a>
     </div>
     ` : ''}
 

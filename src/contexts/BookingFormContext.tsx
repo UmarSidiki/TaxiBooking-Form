@@ -89,12 +89,12 @@ const BookingFormContext = createContext<BookingFormContextType | undefined>(und
 const STORAGE_KEY = 'booking_form_data';
 const STEP_KEY = 'booking_form_step';
 const DISTANCE_KEY = 'booking_form_distance';
-const TIMESTAMP_KEY = 'booking_form_timestamp';
 
-// Use localStorage to persist across refreshes
-const storage = typeof window !== 'undefined' ? localStorage : null;
-// Expiration time for saved form data (2 minutes in milliseconds)
-const EXPIRATION_TIME = 2 * 60 * 1000;
+// Use sessionStorage so data lives for the duration of the tab
+const storage = typeof window !== 'undefined' ? sessionStorage : null;
+
+// We no longer expire entries; data remains until the page/tab is closed.
+
 
 const defaultFormData: FormData = {
   bookingType: "destination",
@@ -270,27 +270,18 @@ export function BookingFormProvider({ children }: { children: ReactNode }) {
     try {
       const savedData = storage?.getItem(STORAGE_KEY);
       const savedDistance = storage?.getItem(DISTANCE_KEY);
-      const savedTimestamp = storage?.getItem(TIMESTAMP_KEY);
       const savedStep = storage?.getItem(STEP_KEY);
 
-      if (savedTimestamp && Date.now() - parseInt(savedTimestamp) <= EXPIRATION_TIME) {
-        // Only load from localStorage if there are no deep link params
-        if (!hasDeepLinkParams) {
-          if (savedData) setFormData(JSON.parse(savedData));
-          if (savedDistance) setDistanceData(JSON.parse(savedDistance));
-          if (savedStep) {
-            setCurrentStep(parseInt(savedStep, 10) as 1 | 2 | 3);
-          }
+      // Load any data previously stored in sessionStorage (no expiration)
+      if (!hasDeepLinkParams) {
+        if (savedData) setFormData(JSON.parse(savedData));
+        if (savedDistance) setDistanceData(JSON.parse(savedDistance));
+        if (savedStep) {
+          setCurrentStep(parseInt(savedStep, 10) as 1 | 2 | 3);
         }
-      } else {
-        // Clear expired data
-        storage?.removeItem(STORAGE_KEY);
-        storage?.removeItem(DISTANCE_KEY);
-        storage?.removeItem(TIMESTAMP_KEY);
-        storage?.removeItem(STEP_KEY);
       }
     } catch (error) {
-      console.error('Error loading form data from localStorage:', error);
+      console.error('Error loading form data from sessionStorage:', error);
     }
     setIsHydrated(true);
   }, [isEmbedded, hasDeepLinkParams, searchParams]);
@@ -300,8 +291,6 @@ export function BookingFormProvider({ children }: { children: ReactNode }) {
     if (isHydrated && !isEmbedded) {
       try {
         storage?.setItem(STORAGE_KEY, JSON.stringify(formData));
-        // Update timestamp whenever data is saved
-        storage?.setItem(TIMESTAMP_KEY, Date.now().toString());
       } catch (error) {
         console.error('Error saving form data to sessionStorage:', error);
       }
@@ -335,35 +324,6 @@ export function BookingFormProvider({ children }: { children: ReactNode }) {
     }
   }, [distanceData, isHydrated, isEmbedded]);
 
-  // Periodic check for expiration (every minute) - only for non-embedded forms
-  useEffect(() => {
-    if (!isHydrated || isEmbedded) return;
-
-    const intervalId = setInterval(() => {
-      try {
-        const savedTimestamp = storage?.getItem(TIMESTAMP_KEY);
-        
-        if (savedTimestamp) {
-          const timestamp = parseInt(savedTimestamp);
-          const now = Date.now();
-          const elapsed = now - timestamp;
-          
-          if (elapsed > EXPIRATION_TIME) {
-            // Data has expired, reset the form
-            console.log('Booking data expired after 2 minutes. Resetting form.');
-            resetForm();
-          }
-        }
-      } catch (error) {
-        console.error('Error checking expiration:', error);
-      }
-    }, 60000); // Check every minute
-
-    // Cleanup function to prevent memory leaks
-    return () => {
-      clearInterval(intervalId);
-    };
-  }, [isHydrated, isEmbedded]); // Stable dependencies only
 
 
   // Fetch vehicles list on mount to persist selection across steps
@@ -395,7 +355,6 @@ export function BookingFormProvider({ children }: { children: ReactNode }) {
       storage?.removeItem(STORAGE_KEY);
       storage?.removeItem(STEP_KEY);
       storage?.removeItem(DISTANCE_KEY);
-      storage?.removeItem(TIMESTAMP_KEY);
     } catch (error) {
       console.error('Error clearing sessionStorage:', error);
     }

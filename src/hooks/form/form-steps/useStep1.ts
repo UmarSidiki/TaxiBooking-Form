@@ -570,14 +570,14 @@ export function useStep1() {
       // Persist step change before navigating away so the main form opens on step 2
       setCurrentStep(2);
 
-      // Only persist to localStorage if not in iframe (since main form will handle it)
+      // Only persist to sessionStorage if not in iframe (since main form will handle it)
       const isEmbedded =
         typeof window !== "undefined" && window.self !== window.top;
       if (!isEmbedded) {
         try {
-          localStorage.setItem("booking_form_step", "2");
+          sessionStorage.setItem("booking_form_step", "2");
         } catch (error) {
-          console.debug("Unable to persist step to localStorage", error);
+          console.debug("Unable to persist step to sessionStorage", error);
         }
       }
 

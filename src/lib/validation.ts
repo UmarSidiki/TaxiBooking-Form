@@ -2,7 +2,7 @@
  * Validation utilities for user inputs with enhanced security
  */
 
-import DOMPurify from 'isomorphic-dompurify';
+import DOMPurify from 'dompurify';
 
 /**
  * Validates email format using RFC 5322 compliant regex

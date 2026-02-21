@@ -2,7 +2,7 @@
  * Validation utilities for user inputs with enhanced security
  */
 
-import DOMPurify from 'dompurify';
+import sanitizeHtml from 'sanitize-html';
 
 /**
  * Validates email format using RFC 5322 compliant regex
@@ -37,7 +37,7 @@ export function isValidPhone(phone: string): boolean {
 }
 
 /**
- * Sanitizes string input to prevent XSS using DOMPurify
+ * Sanitizes string input to prevent XSS
  * @param input - String to sanitize
  * @returns Sanitized string
  */
@@ -46,11 +46,11 @@ export function sanitizeInput(input: string): string {
     return '';
   }
   
-  // Use DOMPurify for robust XSS protection
-  const clean = DOMPurify.sanitize(input, {
-    ALLOWED_TAGS: [], // Strip all HTML tags
-    ALLOWED_ATTR: [], // Strip all attributes
-    KEEP_CONTENT: true, // Keep text content
+  // Use sanitize-html for robust XSS protection
+  const clean = sanitizeHtml(input, {
+    allowedTags: [], // Strip all HTML tags
+    allowedAttributes: {}, // Strip all attributes
+    textFilter: (text) => text, // Keep text content
   });
   
   return clean.trim();

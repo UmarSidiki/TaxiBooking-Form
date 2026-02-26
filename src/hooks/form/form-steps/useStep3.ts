@@ -46,6 +46,7 @@ export function useStep3() {
   const [creatingPaymentIntent, setCreatingPaymentIntent] = useState(false);
   const [paymentError, setPaymentError] = useState<string | null>(null);
   const [paymentInitialized, setPaymentInitialized] = useState(false);
+  const isSubmittingRef = useRef(false); // Synchronous guard against double-clicks
 
   // Initialize Google Maps ONCE
   useEffect(() => {
@@ -404,6 +405,9 @@ export function useStep3() {
   };
 
   const handleCashBooking = async () => {
+    // Prevent double-click submissions
+    if (isSubmittingRef.current) return;
+
     // Validate required fields
     const newErrors: typeof errors = {};
     if (!formData.firstName.trim())
@@ -417,6 +421,7 @@ export function useStep3() {
       return;
     }
 
+    isSubmittingRef.current = true;
     setIsLoading(true);
     try {
       const response = await fetch("/api/booking", {
@@ -454,11 +459,15 @@ export function useStep3() {
       console.error("Booking error:", error);
       alert("Booking failed. Please try again.");
     } finally {
+      isSubmittingRef.current = false;
       setIsLoading(false);
     }
   };
 
   const handleBankTransferBooking = async () => {
+    // Prevent double-click submissions
+    if (isSubmittingRef.current) return;
+
     // Validate required fields
     const newErrors: typeof errors = {};
     if (!formData.firstName.trim())
@@ -472,6 +481,7 @@ export function useStep3() {
       return;
     }
 
+    isSubmittingRef.current = true;
     setIsLoading(true);
     try {
       const response = await fetch("/api/booking", {
@@ -508,11 +518,15 @@ export function useStep3() {
       console.error("Booking error:", error);
       alert("Booking failed. Please try again.");
     } finally {
+      isSubmittingRef.current = false;
       setIsLoading(false);
     }
   };
 
   const handleMultisafepayBooking = async () => {
+    // Prevent double-click submissions
+    if (isSubmittingRef.current) return;
+
     // Validate required fields
     const newErrors: typeof errors = {};
     if (!formData.firstName.trim())
@@ -526,6 +540,7 @@ export function useStep3() {
       return;
     }
 
+    isSubmittingRef.current = true;
     setIsLoading(true);
     try {
       // Create MultiSafepay order directly without creating booking
@@ -563,11 +578,13 @@ export function useStep3() {
         window.location.href = paymentData.paymentUrl;
       } else {
         alert(`Payment initialization failed: ${paymentData.message}`);
+        isSubmittingRef.current = false;
         setIsLoading(false);
       }
     } catch (error) {
       console.error("MultiSafepay booking error:", error);
       alert("Booking failed. Please try again.");
+      isSubmittingRef.current = false;
       setIsLoading(false);
     }
   };

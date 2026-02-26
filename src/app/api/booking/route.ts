@@ -274,6 +274,24 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Prevent duplicate bookings (same details within 2 minutes)
+    const twoMinutesAgo = new Date(Date.now() - 2 * 60 * 1000);
+    const existingBooking = await Booking.findOne({
+      email: formData.email,
+      phone: formData.phone,
+      pickup: formData.pickup,
+      date: formData.date,
+      time: formData.time,
+      createdAt: { $gte: twoMinutesAgo },
+    });
+
+    if (existingBooking) {
+      return NextResponse.json(
+        { success: true, message: "Booking already confirmed", tripId: existingBooking.tripId, totalAmount: existingBooking.totalAmount },
+        { status: 200 }
+      );
+    }
+
     // Calculate total amount
     const totalAmount = await calculateBookingTotal(formData, vehicle, request.nextUrl.origin);
 

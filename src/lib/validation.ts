@@ -29,11 +29,18 @@ export function isValidPhone(phone: string): boolean {
     return false;
   }
   
+  // Strip invisible Unicode characters (zero-width spaces, non-breaking spaces,
+  // LTR/RTL marks, etc.) that can sneak in from copy-paste
+  const cleaned = phone
+    .replace(/[\u200B-\u200F\u2028-\u202F\u2060\uFEFF]/g, '') // Remove zero-width and invisible chars
+    .replace(/\u00A0/g, ' ') // Normalize non-breaking spaces to regular spaces
+    .trim();
+  
   // Allow digits, spaces, +, -, (, ) - minimum 7 digits
   const phoneRegex = /^[\d\s\-\+\(\)]{7,}$/;
-  const digitCount = phone.replace(/\D/g, '').length;
+  const digitCount = cleaned.replace(/\D/g, '').length;
   
-  return phoneRegex.test(phone) && digitCount >= 7;
+  return phoneRegex.test(cleaned) && digitCount >= 7;
 }
 
 /**

@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "devt": "next dev --turbopack",
-    "build": "next build",
+    "build": "node scripts/sync-build-settings.mjs && next build",
     "buildt": "next build --turbopack",
     "start": "next start",
     "lint": "eslint"

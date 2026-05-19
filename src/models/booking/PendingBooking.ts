@@ -50,7 +50,7 @@ const PendingBookingSchema = new Schema<IPendingBooking>(
     expiresAt: {
       type: Date,
       required: true,
-      index: { expires: '5m' }, // TTL index - MongoDB will auto-delete expired documents
+      index: { expires: 0 }, // Delete when expiresAt is reached (30 min checkout window)
     },
   },
   {

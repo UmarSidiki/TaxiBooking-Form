@@ -382,8 +382,16 @@ export async function POST(request: NextRequest) {
     const emailData = await createEmailData(formData, vehicle, tripId, totalAmount, baseUrl, savedBooking._id.toString());
 
     try {
-      await sendOrderConfirmationEmail(emailData);
-      await sendOrderNotificationEmail(emailData);
+      const confirmationSent = await sendOrderConfirmationEmail(emailData);
+      const adminSent = await sendOrderNotificationEmail(emailData);
+      if (confirmationSent || adminSent) {
+        await Booking.findByIdAndUpdate(savedBooking._id, {
+          $set: {
+            ...(confirmationSent ? { confirmationEmailSent: true } : {}),
+            ...(adminSent ? { adminNotificationSent: true } : {}),
+          },
+        });
+      }
     } catch (emailError) {
       // Email failures are logged but don't prevent booking success
       // Consider implementing a retry queue in production

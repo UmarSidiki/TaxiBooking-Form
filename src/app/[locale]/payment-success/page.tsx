@@ -1,11 +1,12 @@
 "use client";
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { CheckCircle2, XCircle, Loader2, AlertCircle } from 'lucide-react';
 import { apiGet } from '@/utils/api';
+import { completePaymentWithRetry } from '@/utils/complete-payment';
 import { useTranslations } from 'next-intl';
 
 export default function PaymentSuccessPage() {
@@ -15,9 +16,9 @@ export default function PaymentSuccessPage() {
   const [status, setStatus] = useState<'loading' | 'success' | 'failed' | 'processing'>('loading');
   const [message, setMessage] = useState('');
   const [redirectUrl, setRedirectUrl] = useState<string>('/');
+  const completionStarted = useRef(false);
 
   useEffect(() => {
-    // Fetch redirect URL from settings
     const fetchRedirectUrl = async () => {
       try {
         const data = await apiGet<{ success: boolean; data: { redirectUrl?: string } }>('/api/settings');
@@ -32,56 +33,74 @@ export default function PaymentSuccessPage() {
   }, []);
 
   useEffect(() => {
-    // Check for Stripe payment
+    if (completionStarted.current) return;
+
     const paymentIntentId = searchParams.get('payment_intent');
     const redirectStatus = searchParams.get('redirect_status');
-    
-    // Check for MultiSafepay payment
     const transactionId = searchParams.get('transactionid');
-    
-    if (!paymentIntentId && !transactionId) {
+    const mspOrderId =
+      searchParams.get('order_id') ||
+      searchParams.get('orderid') ||
+      (typeof window !== 'undefined' ? sessionStorage.getItem('msp_order_id') : null);
+
+    if (!paymentIntentId && !transactionId && !mspOrderId) {
       setStatus('failed');
       setMessage(t('ThankYouPage.no-payment-information-found'));
       return;
     }
 
-    // Handle MultiSafepay redirect
-    if (transactionId) {
-      // Update booking status via webhook should have already happened
-      // But we show success to the user
-      setStatus('success');
-      setMessage(t('ThankYouPage.payment-successful-your-booking-has-been-confirmed'));
-      
-      // Redirect after 3 seconds
-      setTimeout(() => {
-        router.push(redirectUrl);
-      }, 3000);
+    if (paymentIntentId && redirectStatus === 'failed') {
+      setStatus('failed');
+      setMessage(t('ThankYouPage.payment-failed-please-try-again-or-contact-support-if-the-problem-persists'));
       return;
     }
 
-    // Handle Stripe redirect statuses
-    if (redirectStatus === 'succeeded') {
-      setStatus('success');
-      setMessage(t('ThankYouPage.payment-successful-your-booking-has-been-confirmed'));
-      
-      // Redirect after 3 seconds
-      setTimeout(() => {
-        router.push(redirectUrl);
-      }, 3000);
-    } else if (redirectStatus === 'processing') {
-      setStatus('processing');
-      setMessage(t('ThankYouPage.your-payment-is-being-processed-you-will-receive-a-confirmation-email-shortly'));
-      
-      setTimeout(() => {
-        router.push(redirectUrl);
-      }, 5000);
-    } else if (redirectStatus === 'failed') {
+    completionStarted.current = true;
+
+    const runCompletion = async () => {
+      const payload = transactionId || mspOrderId
+        ? {
+            provider: 'multisafepay' as const,
+            transactionId: transactionId || undefined,
+            orderId: mspOrderId || undefined,
+          }
+        : {
+            provider: 'stripe' as const,
+            paymentIntentId: paymentIntentId!,
+          };
+
+      const result = await completePaymentWithRetry(payload);
+
+      if (typeof window !== 'undefined') {
+        sessionStorage.removeItem('msp_order_id');
+      }
+
+      if (result.success) {
+        setStatus('success');
+        setMessage(t('ThankYouPage.payment-successful-your-booking-has-been-confirmed'));
+        setTimeout(() => router.push(redirectUrl), 3000);
+        return;
+      }
+
+      if (
+        paymentIntentId &&
+        (redirectStatus === 'succeeded' || redirectStatus === 'processing')
+      ) {
+        setStatus(redirectStatus === 'processing' ? 'processing' : 'success');
+        setMessage(
+          redirectStatus === 'processing'
+            ? t('ThankYouPage.your-payment-is-being-processed-you-will-receive-a-confirmation-email-shortly')
+            : t('ThankYouPage.payment-successful-your-booking-has-been-confirmed')
+        );
+        setTimeout(() => router.push(redirectUrl), redirectStatus === 'processing' ? 5000 : 3000);
+        return;
+      }
+
       setStatus('failed');
-      setMessage(t('ThankYouPage.payment-failed-please-try-again-or-contact-support-if-the-problem-persists'));
-    } else {
-      setStatus('failed');
-      setMessage(t('ThankYouPage.payment-status-unknown-please-contact-support-with-your-payment-id') + paymentIntentId);
-    }
+      setMessage(result.message || t('ThankYouPage.payment-status-unknown-please-contact-support-with-your-payment-id'));
+    };
+
+    runCompletion();
   }, [searchParams, router, redirectUrl, t]);
 
   const handleReturnHome = () => {
@@ -113,15 +132,18 @@ export default function PaymentSuccessPage() {
               <p className="text-gray-600 mb-6">{message}</p>
               <div className="space-y-2">
                 <p className="text-sm text-gray-500">
-                  {t('ThankYouPage.you-will-receive-a-confirmation-email-shortly')} </p>
+                  {t('ThankYouPage.you-will-receive-a-confirmation-email-shortly')}
+                </p>
                 <p className="text-sm text-gray-500">
-                  {t('ThankYouPage.redirecting-to-home-page-in-3-seconds')} </p>
+                  {t('ThankYouPage.redirecting-to-home-page-in-3-seconds')}
+                </p>
               </div>
-              <Button 
+              <Button
                 onClick={handleReturnHome}
                 className="mt-6 w-full bg-green-600 hover:bg-green-700"
               >
-                {t('ThankYouPage.return-to-home')} </Button>
+                {t('ThankYouPage.return-to-home')}
+              </Button>
             </>
           )}
 
@@ -132,17 +154,12 @@ export default function PaymentSuccessPage() {
               </div>
               <h1 className="text-2xl font-bold text-gray-900 mb-2">{t('ThankYouPage.payment-processing')}</h1>
               <p className="text-gray-600 mb-6">{message}</p>
-              <div className="space-y-2">
-                <p className="text-sm text-gray-500">
-                  {t('ThankYouPage.this-may-take-a-few-minutes-we-and-apos-ll-send-you-an-email-once-completed')} </p>
-                <p className="text-sm text-gray-500">
-                  {t('ThankYouPage.redirecting-to-home-page-in-5-seconds')} </p>
-              </div>
-              <Button 
+              <Button
                 onClick={handleReturnHome}
                 className="mt-6 w-full bg-blue-600 hover:bg-blue-700"
               >
-                {t('ThankYouPage.return-to-home')} </Button>
+                {t('ThankYouPage.return-to-home')}
+              </Button>
             </>
           )}
 
@@ -154,28 +171,12 @@ export default function PaymentSuccessPage() {
               <h1 className="text-2xl font-bold text-gray-900 mb-2">{t('ThankYouPage.payment-failed')}</h1>
               <p className="text-gray-600 mb-6">{message}</p>
               <div className="space-y-2">
-                <Button 
-                  onClick={handleRetry}
-                  className="w-full bg-primary hover:bg-primary/90"
-                >
-                  {t('ThankYouPage.try-again')} </Button>
-                <Button 
-                  onClick={handleReturnHome}
-                  variant="outline"
-                  className="w-full"
-                >
-                  {t('ThankYouPage.return-to-home')} </Button>
-              </div>
-              <div className="mt-6 p-4 bg-gray-100 rounded-lg">
-                <p className="text-xs text-gray-600">
-                  <strong>{t('ThankYouPage.common-issues')}</strong>
-                </p>
-                <ul className="text-xs text-gray-600 mt-2 space-y-1 text-left">
-                  <li>{t('ThankYouPage.insufficient-funds')}</li>
-                  <li>{t('ThankYouPage.card-expired-or-blocked')}</li>
-                  <li>{t('ThankYouPage.incorrect-card-details')}</li>
-                  <li>{t('ThankYouPage.payment-declined-by-bank')}</li>
-                </ul>
+                <Button onClick={handleRetry} className="w-full bg-primary hover:bg-primary/90">
+                  {t('ThankYouPage.try-again')}
+                </Button>
+                <Button onClick={handleReturnHome} variant="outline" className="w-full">
+                  {t('ThankYouPage.return-to-home')}
+                </Button>
               </div>
             </>
           )}

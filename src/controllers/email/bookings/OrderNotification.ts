@@ -1,46 +1,20 @@
 import { sendEmail } from '@/lib/email';
+import { resolveAdminNotificationEmails } from '@/lib/email/resolve-admin-emails';
 import { connectDB } from '@/lib/database';
+import { getBakedSettings } from '@/lib/settings/baked-settings';
 import { Setting } from '@/models/settings';
-import { User, type IUser } from '@/models/user';
 import { getCurrencySymbol } from '@/lib/utils';
+import type { BookingEmailData } from '@/lib/payments/booking-email-data';
 
-interface BookingData {
-  tripId: string;
-  bookingId?: string;
-  pickup: string;
-  dropoff: string;
-  stops: Array<{ location: string; order: number; duration?: number }>;
-  tripType: string;
-  date: string;
-  time: string;
-  returnDate?: string;
-  returnTime?: string;
-  passengers: number;
-  selectedVehicle: string;
-  vehicleDetails: {
-    name: string;
-    price: string;
-    seats: string;
-  };
-  childSeats: number;
-  babySeats: number;
-  notes: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-  phone: string;
-  totalAmount: number;
-  subtotalAmount?: number;
-  taxAmount?: number;
-  taxPercentage?: number;
-  taxIncluded?: boolean;
-  paymentMethod?: string;
-  paymentStatus?: string;
-  flightNumber?: string;
-  baseUrl?: string;
-}
-
-function generateOwnerEmailHTML(bookingData: BookingData, currency: string = 'EUR', primaryColor: string = '#EAB308', baseUrl?: string, enableDrivers?: boolean, enablePartners?: boolean, bookingId?: string) {
+function generateOwnerEmailHTML(
+  bookingData: BookingEmailData,
+  currency: string = 'EUR',
+  primaryColor: string = '#EAB308',
+  baseUrl?: string,
+  enableDrivers?: boolean,
+  enablePartners?: boolean,
+  bookingId?: string
+) {
   const currencySymbol = getCurrencySymbol(currency);
 
   return `
@@ -65,7 +39,6 @@ function generateOwnerEmailHTML(bookingData: BookingData, currency: string = 'EU
     .action-buttons { margin: 20px 0; text-align: center; }
     .btn { display: inline-block; padding: 12px 24px; margin: 0 5px; text-decoration: none; border-radius: 5px; font-weight: bold; color: white; }
     .btn-driver { background-color: ${primaryColor}; }
-    .btn-partner { background-color: #3b82f6; }
     a { color: ${primaryColor}; text-decoration: none; }
   </style>
 </head>
@@ -95,7 +68,7 @@ function generateOwnerEmailHTML(bookingData: BookingData, currency: string = 'EU
         ).join('') : ''}
         <tr><td><strong>To:</strong></td><td>${bookingData.dropoff}</td></tr>
         <tr><td><strong>Departure:</strong></td><td>${bookingData.date} at ${bookingData.time}</td></tr>
-        ${bookingData.tripType === 'roundtrip' && bookingData.returnDate ? 
+        ${bookingData.tripType === 'roundtrip' && bookingData.returnDate ?
           `<tr><td><strong>Return:</strong></td><td>${bookingData.returnDate} at ${bookingData.returnTime}</td></tr>` : ''}
         <tr><td><strong>Type:</strong></td><td>${bookingData.tripType}</td></tr>
         ${bookingData.flightNumber ? `<tr><td><strong>Flight:</strong></td><td>${bookingData.flightNumber}</td></tr>` : ''}
@@ -130,10 +103,6 @@ function generateOwnerEmailHTML(bookingData: BookingData, currency: string = 'EU
       </div>
     </div>
 
-    <div class="section">
-      <p>Please review and confirm this booking details with the customer.</p>
-    </div>
-
     ${(enableDrivers || enablePartners) && baseUrl && bookingId ? `
     <div class="action-buttons">
       <p style="margin-bottom: 15px; font-weight: bold;">Manage this booking:</p>
@@ -151,60 +120,71 @@ function generateOwnerEmailHTML(bookingData: BookingData, currency: string = 'EU
   `;
 }
 
-export async function sendOrderNotificationEmail(bookingData: BookingData) {
+export async function sendOrderNotificationEmail(bookingData: BookingEmailData) {
   try {
-    // Get owner email from database (use Mongoose User model)
     await connectDB();
-    const ownerUser = (await User.findOne({ role: { $in: ["owner", "admin", "superadmin"] } }).lean()) as IUser | null;
-    const ownerEmail = ownerUser?.email;
 
-    // Validate owner email
-    const isEmailValid = (email?: string) =>
-      typeof email === "string" && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    const adminEmails = await resolveAdminNotificationEmails();
 
-    if (!ownerEmail || !isEmailValid(ownerEmail)) {
-      console.log(
-        "⚠️ No valid owner/admin user found in database. Owner notification skipped."
+    if (adminEmails.length === 0) {
+      console.error(
+        '⚠️ No admin notification recipients configured. Set admin users, settings.adminEmail, or ADMIN_EMAIL.'
       );
-      return true;
+      return false;
     }
 
-    console.log("📧 Sending owner notification to:", ownerEmail);
-
-    // Get SMTP settings for from address
-    await connectDB();
     const settings = await Setting.findOne();
-    const fromAddress = settings?.smtpFrom || settings?.smtpUser || "noreply@booking.com";
-    const fromField = settings?.smtpSenderName ? `${settings.smtpSenderName} <${fromAddress}>` : fromAddress;
-    const currency = settings?.stripeCurrency || 'EUR';
+    const baked = getBakedSettings();
+    const fromAddress = settings?.smtpFrom || settings?.smtpUser || 'noreply@booking.com';
+    const fromField = settings?.smtpSenderName
+      ? `${settings.smtpSenderName} <${fromAddress}>`
+      : fromAddress;
+    const currency = settings?.stripeCurrency || baked.stripeCurrency || 'EUR';
     const currencySymbol = getCurrencySymbol(currency);
-    const primaryColor = settings?.primaryColor || '#EAB308';
+    const primaryColor = settings?.primaryColor || baked.primaryColor || '#EAB308';
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || bookingData.baseUrl;
     const enableDrivers = settings?.enableDrivers || false;
     const enablePartners = settings?.enablePartners || false;
 
-    const htmlContent = generateOwnerEmailHTML(bookingData, currency, primaryColor, baseUrl, enableDrivers, enablePartners);
+    const htmlContent = generateOwnerEmailHTML(
+      bookingData,
+      currency,
+      primaryColor,
+      baseUrl,
+      enableDrivers,
+      enablePartners,
+      bookingData.bookingId
+    );
 
-    const success = await sendEmail({
-      from: fromField,
-      to: ownerEmail,
-      subject: `New Booking Alert - Reservation #${bookingData.tripId}`,
-      html: htmlContent,
-      text: `New Booking Received!\n\nReservation ID: ${bookingData.tripId}\nCustomer: ${bookingData.firstName} ${bookingData.lastName}\nEmail: ${bookingData.email}\nPhone: ${bookingData.phone}\nFrom: ${bookingData.pickup}${bookingData.stops && bookingData.stops.length > 0 ? '\nStops: ' + bookingData.stops.map((stop, index) => {
-        const durationText = stop.duration && stop.duration > 0 ? ` (Wait: ${stop.duration >= 60 ? `${Math.floor(stop.duration / 60)}h${stop.duration % 60 > 0 ? ` ${stop.duration % 60}m` : ''}` : `${stop.duration}m`})` : '';
-        return `Stop ${index + 1}: ${stop.location}${durationText}`;
-      }).join(', ') : ''}\nTo: ${bookingData.dropoff}\nDeparture Date: ${bookingData.date} at ${bookingData.time}${bookingData.tripType === 'roundtrip' && bookingData.returnDate ? `\nReturn Date: ${bookingData.returnDate} at ${bookingData.returnTime}` : ''}${bookingData.flightNumber ? `\nFlight Number: ${bookingData.flightNumber}` : ''}\nVehicle: ${bookingData.vehicleDetails.name}\nTotal Amount: ${currencySymbol}${bookingData.totalAmount}\n\nPlease review and confirm this booking.`,
-    });
+    const textBody = `New Booking Received!\n\nReservation ID: ${bookingData.tripId}\nCustomer: ${bookingData.firstName} ${bookingData.lastName}\nEmail: ${bookingData.email}\nPhone: ${bookingData.phone}\nFrom: ${bookingData.pickup}${bookingData.stops && bookingData.stops.length > 0 ? '\nStops: ' + bookingData.stops.map((stop, index) => {
+      const durationText = stop.duration && stop.duration > 0 ? ` (Wait: ${stop.duration >= 60 ? `${Math.floor(stop.duration / 60)}h${stop.duration % 60 > 0 ? ` ${stop.duration % 60}m` : ''}` : `${stop.duration}m`})` : '';
+      return `Stop ${index + 1}: ${stop.location}${durationText}`;
+    }).join(', ') : ''}\nTo: ${bookingData.dropoff}\nDeparture Date: ${bookingData.date} at ${bookingData.time}${bookingData.tripType === 'roundtrip' && bookingData.returnDate ? `\nReturn Date: ${bookingData.returnDate} at ${bookingData.returnTime}` : ''}${bookingData.flightNumber ? `\nFlight Number: ${bookingData.flightNumber}` : ''}\nVehicle: ${bookingData.vehicleDetails.name}\nTotal Amount: ${currencySymbol}${bookingData.totalAmount}\n\nPlease review and confirm this booking.`;
 
-    if (!success) {
-      console.error("❌ Failed to send notification email to owner:", ownerEmail);
-      return false;
+    let anySuccess = false;
+
+    for (const adminEmail of adminEmails) {
+      console.log('📧 Sending owner notification to:', adminEmail);
+
+      const success = await sendEmail({
+        from: fromField,
+        to: adminEmail,
+        subject: `New Booking Alert - Reservation #${bookingData.tripId}`,
+        html: htmlContent,
+        text: textBody,
+      });
+
+      if (success) {
+        anySuccess = true;
+        console.log('✅ Notification email sent to:', adminEmail);
+      } else {
+        console.error('❌ Failed to send notification email to:', adminEmail);
+      }
     }
 
-    console.log("✅ Notification email sent to owner:", ownerEmail);
-    return true;
+    return anySuccess;
   } catch (error) {
-    console.error("❌ Error sending notification email:", error);
+    console.error('❌ Error sending notification email:', error);
     return false;
   }
 }

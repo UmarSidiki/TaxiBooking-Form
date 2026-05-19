@@ -4,6 +4,9 @@ import { Setting } from '@/models/settings';
 import { connectDB } from '@/lib/database';
 import { PendingBooking } from '@/models/booking';
 import { generateShortId } from '@/lib/generate-id';
+import { getStripeClient } from '@/lib/payments/stripe-client';
+
+export const dynamic = 'force-dynamic';
 
 export async function POST(request: NextRequest) {
   try {
@@ -26,24 +29,16 @@ export async function POST(request: NextRequest) {
     // Connect to database and get Stripe configuration from settings
     await connectDB();
     const settings = await Setting.findOne();
-    const stripeSecretKey = settings?.stripeSecretKey || process.env.STRIPE_SECRET_KEY;
     const stripeCurrency = currency || settings?.stripeCurrency || 'eur';
     const statementDescriptor = settings?.stripeStatementDescriptor || 'BOOKING';
+    const stripe = await getStripeClient();
 
-    if (!stripeSecretKey) {
+    if (!stripe) {
       return NextResponse.json(
         { success: false, message: 'Stripe is not configured. Please add your Stripe API keys in settings.' },
         { status: 500 }
       );
     }
-
-    // Initialize Stripe client, optionally using API version if specified
-    const stripeOptions: Stripe.StripeConfig = {};
-    const stripeApiVersion = process.env.STRIPE_API_VERSION;
-    if (stripeApiVersion) {
-      stripeOptions.apiVersion = stripeApiVersion as Stripe.LatestApiVersion;
-    }
-    const stripe = new Stripe(stripeSecretKey, stripeOptions);
 
     // Generate unique order ID for webhook tracking
     const orderId = generateShortId(5);
@@ -90,15 +85,20 @@ export async function POST(request: NextRequest) {
 
     // Store pending booking data if provided (for webhook processing)
     if (bookingData) {
-      await PendingBooking.create({
-        orderId: orderId,
-        bookingData: {
-          ...bookingData,
-          totalAmount: bookingData.totalAmount || amount,
+      await PendingBooking.findOneAndUpdate(
+        { orderId },
+        {
+          $set: {
+            bookingData: {
+              ...bookingData,
+              totalAmount: bookingData.totalAmount || amount,
+            },
+            paymentMethod: 'stripe',
+            expiresAt: new Date(Date.now() + 30 * 60 * 1000),
+          },
         },
-        paymentMethod: 'stripe',
-        expiresAt: new Date(Date.now() + 30 * 60 * 1000), // 30 minutes expiry
-      });
+        { upsert: true, new: true }
+      );
       console.log('📝 Pending booking created for Stripe payment:', orderId);
     }
 

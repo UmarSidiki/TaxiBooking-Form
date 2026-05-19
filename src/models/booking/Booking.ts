@@ -43,6 +43,8 @@ export interface IBooking extends Document {
   refundPercentage?: number;
   canceledAt?: Date;
   thankYouEmailSent?: boolean;
+  confirmationEmailSent?: boolean;
+  adminNotificationSent?: boolean;
   reviewSubmitted?: boolean;
   assignedDriver?: {
     _id: string;
@@ -121,6 +123,8 @@ const BookingSchema: Schema = new Schema({
   refundPercentage: { type: Number },
   canceledAt: { type: Date },
   thankYouEmailSent: { type: Boolean, default: false },
+  confirmationEmailSent: { type: Boolean, default: false },
+  adminNotificationSent: { type: Boolean, default: false },
   reviewSubmitted: { type: Boolean, default: false },
   assignedDriver: {
     _id: { type: Schema.Types.ObjectId, ref: "Driver" },

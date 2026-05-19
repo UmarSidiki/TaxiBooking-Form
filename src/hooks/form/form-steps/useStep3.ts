@@ -372,12 +372,14 @@ export function useStep3() {
   const handleStripePaymentSuccess = async (paymentIntentId: string) => {
     setIsLoading(true);
     try {
-      // The webhook will handle creating the booking and sending the emails.
-      // We just need to redirect the user to the thank you page.
-      // We use the stripeOrderId (which is the tripId) we received when creating the PaymentIntent.
-      
-      // Use the orderId from state, or fallback to a generic message if missing
-      // (though it should be present if we completed payment)
+      // Finalize booking + emails (fallback if webhook is delayed on cold start)
+      const { completePaymentWithRetry } = await import('@/utils/complete-payment');
+      await completePaymentWithRetry({
+        provider: 'stripe',
+        paymentIntentId,
+        orderId: stripeOrderId || undefined,
+      });
+
       const finalTripId = stripeOrderId || "PENDING";
       const customRedirect = settings?.redirectUrl;
       const immediate = settings?.redirectImmediatelyAfterBooking;
@@ -574,7 +576,10 @@ export function useStep3() {
       const paymentData = await paymentResponse.json();
 
       if (paymentData.success && paymentData.paymentUrl) {
-        // Redirect to MultiSafepay payment page
+        const merchantOrderId = paymentData.merchantOrderId || paymentData.orderId;
+        if (merchantOrderId && typeof window !== 'undefined') {
+          sessionStorage.setItem('msp_order_id', merchantOrderId);
+        }
         window.location.href = paymentData.paymentUrl;
       } else {
         alert(`Payment initialization failed: ${paymentData.message}`);

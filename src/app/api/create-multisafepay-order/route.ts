@@ -3,10 +3,23 @@ import { Setting } from '@/models/settings';
 import { connectDB } from '@/lib/database';
 import { PendingBooking } from '@/models/booking';
 import { generateShortId } from '@/lib/generate-id';
+import { resolvePublicBaseUrl } from '@/lib/payments/resolve-base-url';
+
+export const dynamic = 'force-dynamic';
 
 export async function POST(request: NextRequest) {
   try {
-    const { amount, currency, customerEmail, customerName, description, orderId, locale, bookingData, totalAmount } = await request.json();
+    const {
+      amount,
+      currency,
+      customerEmail,
+      customerName,
+      description,
+      orderId,
+      locale,
+      bookingData,
+      totalAmount,
+    } = await request.json();
 
     if (!amount || amount <= 0) {
       return NextResponse.json(
@@ -15,7 +28,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Connect to database and get MultiSafepay configuration from settings
     await connectDB();
     const settings = await Setting.findOne();
     const multisafepayApiKey = settings?.multisafepayApiKey;
@@ -28,40 +40,52 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // MultiSafepay API endpoint (test or live)
+    const baseUrl = resolvePublicBaseUrl(request);
+    if (!baseUrl) {
+      return NextResponse.json(
+        {
+          success: false,
+          message:
+            'Public site URL is not configured. Set NEXT_PUBLIC_BASE_URL in Vercel (e.g. https://your-domain.com).',
+        },
+        { status: 500 }
+      );
+    }
+
     const apiUrl = multisafepayTestMode
       ? 'https://testapi.multisafepay.com/v1/json/orders'
       : 'https://api.multisafepay.com/v1/json/orders';
 
-    // Get base URL
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || request.headers.get('origin') || '';
     const userLocale = locale || 'en';
-    
-    // Generate unique order ID (short format: 5 characters)
     const generatedOrderId = orderId || generateShortId(5);
-    
-    // Store pending booking data (will be converted to actual booking on successful payment)
+    const orderCurrency = (currency || settings?.stripeCurrency || 'EUR').toUpperCase();
+
     if (bookingData) {
-      await PendingBooking.create({
-        orderId: generatedOrderId,
-        bookingData: {
-          ...bookingData,
-          totalAmount: totalAmount || amount,
+      await PendingBooking.findOneAndUpdate(
+        { orderId: generatedOrderId },
+        {
+          $set: {
+            bookingData: {
+              ...bookingData,
+              totalAmount: totalAmount || amount,
+            },
+            paymentMethod: 'multisafepay',
+            expiresAt: new Date(Date.now() + 30 * 60 * 1000),
+          },
         },
-        paymentMethod: 'multisafepay',
-        expiresAt: new Date(Date.now() + 30 * 60 * 1000), // 30 minutes expiry
-      });
+        { upsert: true, new: true }
+      );
     }
-    
-    // Create order payload
+
     const orderPayload = {
       type: 'redirect',
       order_id: generatedOrderId,
-      currency: (currency || 'EUR').toUpperCase(),
-      amount: Math.round(amount * 100), // Amount in cents
+      currency: orderCurrency,
+      amount: Math.round(amount * 100),
       description: description || 'Booking payment',
       payment_options: {
         notification_url: `${baseUrl}/api/multisafepay-webhook`,
+        notification_method: 'GET',
         redirect_url: `${baseUrl}/${userLocale}/payment-success`,
         cancel_url: `${baseUrl}/${userLocale}/payment-cancelled`,
       },
@@ -72,44 +96,40 @@ export async function POST(request: NextRequest) {
       },
     };
 
-    // Make request to MultiSafepay API
     const response = await fetch(apiUrl, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'api_key': multisafepayApiKey,
+        api_key: multisafepayApiKey,
       },
       body: JSON.stringify(orderPayload),
     });
 
     const data = await response.json();
 
-    if (!response.ok) {
+    if (!response.ok || !data.success) {
       console.error('MultiSafepay API error:', data);
       return NextResponse.json(
-        { 
-          success: false, 
+        {
+          success: false,
           message: data.error_info || 'Failed to create MultiSafepay order',
-          details: data 
+          details: data,
         },
-        { status: response.status }
+        { status: response.status || 400 }
       );
     }
 
-    // Return payment URL and order details
     return NextResponse.json({
       success: true,
       paymentUrl: data.data.payment_url,
-      orderId: data.data.order_id,
+      orderId: data.data.order_id || generatedOrderId,
+      merchantOrderId: generatedOrderId,
       amount: data.data.amount,
       currency: data.data.currency,
     });
   } catch (e: unknown) {
     console.error('Error creating MultiSafepay order:', e);
     const message = e instanceof Error ? e.message : 'Failed to create MultiSafepay order';
-    return NextResponse.json(
-      { success: false, message },
-      { status: 500 }
-    );
+    return NextResponse.json({ success: false, message }, { status: 500 });
   }
 }

@@ -24,38 +24,47 @@ export function useStep2() {
     calculatingDistance,
   } = useBookingForm();
 
-  // Fetch distance if landing directly on step 2 with pickup/dropoff
+  // Fetch distance only if step 1 did not already (e.g. user landed on step 2 directly)
+  const step2DistanceFetchedRef = useRef(false);
   useEffect(() => {
     if (
-      formData.bookingType === "destination" &&
-      formData.pickup &&
-      formData.dropoff &&
-      !distanceData
+      step2DistanceFetchedRef.current ||
+      distanceData ||
+      formData.bookingType !== "destination" ||
+      !formData.pickup ||
+      !formData.dropoff
     ) {
-      const fetchDistance = async () => {
-        setCalculatingDistance(true);
-        try {
-          const stopLocations = formData.stops.map(stop => stop.location).filter(location => location.trim());
-          const res = await fetch("/api/distance", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              origin: formData.pickup,
-              destination: formData.dropoff,
-              stops: stopLocations,
-              isRoundTrip: formData.tripType === "roundtrip",
-            }),
-          });
-          const data = await res.json();
-          if (data.success) setDistanceData(data.data);
-        } catch (err) {
-          console.error("Error fetching distance in Step2:", err);
-        } finally {
-          setCalculatingDistance(false);
-        }
-      };
-      fetchDistance();
+      return;
     }
+
+    step2DistanceFetchedRef.current = true;
+
+    const fetchDistance = async () => {
+      setCalculatingDistance(true);
+      try {
+        const stopLocations = formData.stops
+          .map((stop) => stop.location)
+          .filter((location) => location.trim());
+        const res = await fetch("/api/distance", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            origin: formData.pickup,
+            destination: formData.dropoff,
+            stops: stopLocations,
+            isRoundTrip: formData.tripType === "roundtrip",
+          }),
+        });
+        const data = await res.json();
+        if (data.success) setDistanceData(data.data);
+      } catch (err) {
+        console.error("Error fetching distance in Step2:", err);
+        step2DistanceFetchedRef.current = false;
+      } finally {
+        setCalculatingDistance(false);
+      }
+    };
+    fetchDistance();
   }, [
     formData.bookingType,
     formData.pickup,

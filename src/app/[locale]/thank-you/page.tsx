@@ -8,8 +8,6 @@ import { Button } from '@/components/ui/button';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useTranslations } from 'next-intl';
 import { useCurrency } from '@/contexts/CurrencyContext';
-import { completePaymentWithRetry } from '@/utils/complete-payment';
-
 export default function ThankYouPage() {
   const t = useTranslations();
   const searchParams = useSearchParams();
@@ -35,36 +33,6 @@ export default function ThankYouPage() {
       router.push(settings.redirectUrl);
     }
   }, [settings, router]);
-
-  // Fallback: finalize Stripe/MSP bookings if webhook was slow (Vercel cold start)
-  useEffect(() => {
-    if (paymentMethod === 'stripe' && tripId && tripId !== 'PENDING') {
-      const paymentIntentId =
-        typeof window !== 'undefined'
-          ? new URLSearchParams(window.location.search).get('payment_intent')
-          : null;
-
-      if (paymentIntentId) {
-        completePaymentWithRetry({
-          provider: 'stripe',
-          paymentIntentId,
-          orderId: tripId,
-        }).catch((err) => console.error('Thank-you payment completion:', err));
-      }
-    }
-
-    if (paymentMethod === 'multisafepay' && typeof window !== 'undefined') {
-      const mspOrderId = sessionStorage.getItem('msp_order_id') || tripId;
-      if (mspOrderId) {
-        completePaymentWithRetry({
-          provider: 'multisafepay',
-          orderId: mspOrderId,
-        })
-          .catch((err) => console.error('Thank-you payment completion:', err))
-          .finally(() => sessionStorage.removeItem('msp_order_id'));
-      }
-    }
-  }, [paymentMethod, tripId]);
 
   useEffect(() => {
     try {

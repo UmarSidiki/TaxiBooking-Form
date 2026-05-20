@@ -255,6 +255,54 @@ async function createBookingFromPending(
 }
 
 /**
+ * Skip Stripe/MSP API + heavy work when booking is already fully finalized.
+ */
+async function tryFastPathFinalized(
+  input: FinalizePaidBookingInput
+): Promise<FinalizePaidBookingResult | null> {
+  const orConditions: Record<string, string>[] = [];
+
+  if (input.paymentIntentId) {
+    orConditions.push({ stripePaymentIntentId: input.paymentIntentId });
+  }
+  if (input.orderId) {
+    orConditions.push({ tripId: input.orderId }, { multisafepayOrderId: input.orderId });
+  }
+  if (input.transactionId) {
+    orConditions.push({ multisafepayTransactionId: input.transactionId });
+  }
+
+  if (orConditions.length === 0) {
+    return null;
+  }
+
+  const existing = await Booking.findOne({
+    $or: orConditions,
+    paymentStatus: 'completed',
+  });
+
+  if (
+    !existing ||
+    !existing.confirmationEmailSent ||
+    !existing.adminNotificationSent
+  ) {
+    return null;
+  }
+
+  if (existing.tripId) {
+    await PendingBooking.deleteOne({ orderId: existing.tripId });
+  }
+
+  return {
+    success: true,
+    tripId: existing.tripId,
+    bookingId: existing._id.toString(),
+    alreadyExisted: true,
+    emails: { confirmationSent: true, adminSent: true },
+  };
+}
+
+/**
  * Idempotently creates a paid booking and sends emails.
  * Safe to call from webhooks and the payment success page (fallback).
  */
@@ -262,6 +310,11 @@ export async function finalizePaidBooking(
   input: FinalizePaidBookingInput
 ): Promise<FinalizePaidBookingResult> {
   await connectDB();
+
+  const fastPath = await tryFastPathFinalized(input);
+  if (fastPath) {
+    return fastPath;
+  }
 
   let orderId: string | undefined = input.orderId;
   let paidAmount = 0;

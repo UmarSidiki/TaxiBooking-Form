@@ -5,32 +5,20 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { CheckCircle2, XCircle, Loader2, AlertCircle } from 'lucide-react';
-import { apiGet } from '@/utils/api';
-import { completePaymentWithRetry } from '@/utils/complete-payment';
+import { ensurePaymentFinalized } from '@/utils/complete-payment';
+import { useTheme } from '@/contexts/ThemeContext';
 import { useTranslations } from 'next-intl';
 
 export default function PaymentSuccessPage() {
   const t = useTranslations();
   const searchParams = useSearchParams();
   const router = useRouter();
+  const { settings } = useTheme();
   const [status, setStatus] = useState<'loading' | 'success' | 'failed' | 'processing'>('loading');
   const [message, setMessage] = useState('');
-  const [redirectUrl, setRedirectUrl] = useState<string>('/');
   const completionStarted = useRef(false);
 
-  useEffect(() => {
-    const fetchRedirectUrl = async () => {
-      try {
-        const data = await apiGet<{ success: boolean; data: { redirectUrl?: string } }>('/api/settings');
-        if (data.success && data.data.redirectUrl) {
-          setRedirectUrl(data.data.redirectUrl);
-        }
-      } catch (error) {
-        console.error('Error fetching redirect URL:', error);
-      }
-    };
-    fetchRedirectUrl();
-  }, []);
+  const redirectUrl = settings?.redirectUrl || '/';
 
   useEffect(() => {
     if (completionStarted.current) return;
@@ -69,7 +57,7 @@ export default function PaymentSuccessPage() {
             paymentIntentId: paymentIntentId!,
           };
 
-      const result = await completePaymentWithRetry(payload);
+      const result = await ensurePaymentFinalized(payload);
 
       if (typeof window !== 'undefined') {
         sessionStorage.removeItem('msp_order_id');

@@ -140,35 +140,28 @@ export function useStep3() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [settings]); // Only run when settings change, not on every formData change
 
-  // Fetch payment configuration
+  // Payment config from ThemeProvider (avoids duplicate /api/settings call)
   useEffect(() => {
-    const fetchPaymentConfig = async () => {
-      try {
-        const response = await fetch("/api/settings");
-        const data = await response.json();
-        if (data.success) {
-          setPaymentSettings(data.data);
-          if (data.data.stripePublishableKey) {
-            setStripeConfig({
-              enabled: true,
-              publishableKey: data.data.stripePublishableKey,
-            });
-          }
-          // Set default payment method
-          if (data.data.acceptedPaymentMethods?.length > 0) {
-            // Prefer card if available, otherwise use the first available method
-            const defaultMethod = data.data.acceptedPaymentMethods.includes("card")
-              ? "card"
-              : data.data.acceptedPaymentMethods[0];
-            setSelectedPaymentMethod(defaultMethod);
-          }
-        }
-      } catch (error) {
-        console.error("Error fetching payment config:", error);
-      }
-    };
-    fetchPaymentConfig();
-  }, []);
+    if (!settings) return;
+
+    setPaymentSettings(settings as ISetting);
+
+    if (settings.stripePublishableKey) {
+      setStripeConfig({
+        enabled: true,
+        publishableKey: settings.stripePublishableKey,
+      });
+    }
+
+    if (settings.acceptedPaymentMethods && settings.acceptedPaymentMethods.length > 0) {
+      setSelectedPaymentMethod((current) => {
+        if (current) return current;
+        return settings.acceptedPaymentMethods!.includes("card")
+          ? "card"
+          : settings.acceptedPaymentMethods![0];
+      });
+    }
+  }, [settings]);
 
   const selectedVehicle = vehicles.find(
     (v) => v._id === formData.selectedVehicle
@@ -372,9 +365,9 @@ export function useStep3() {
   const handleStripePaymentSuccess = async (paymentIntentId: string) => {
     setIsLoading(true);
     try {
-      // Finalize booking + emails (fallback if webhook is delayed on cold start)
-      const { completePaymentWithRetry } = await import('@/utils/complete-payment');
-      await completePaymentWithRetry({
+      // Single fallback finalize (webhook is primary; skips if already done)
+      const { ensurePaymentFinalized } = await import('@/utils/complete-payment');
+      await ensurePaymentFinalized({
         provider: 'stripe',
         paymentIntentId,
         orderId: stripeOrderId || undefined,

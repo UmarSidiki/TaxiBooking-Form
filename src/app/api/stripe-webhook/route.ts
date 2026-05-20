@@ -93,11 +93,13 @@ export async function POST(request: NextRequest) {
 
         if (!result.success) {
           console.error('Stripe finalize failed:', result.message);
-          // 500 triggers Stripe retries (important after cold starts)
-          return NextResponse.json(
-            { success: false, message: result.message, retryable: result.retryable },
-            { status: result.retryable ? 500 : 400 }
-          );
+          // Only retry webhook when pending booking may appear later (cold start)
+          if (result.retryable) {
+            return NextResponse.json(
+              { success: false, message: result.message, retryable: true },
+              { status: 500 }
+            );
+          }
         }
 
         console.log('✅ Stripe booking finalized:', result.tripId);

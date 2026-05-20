@@ -257,7 +257,7 @@ export function useStep1() {
       // Set new timer
       distanceCalculationTimerRef.current = setTimeout(() => {
         calculateDistance(origin, destination, stops, isRoundTrip);
-      }, 500); // 500ms debounce
+      }, 1000); // 1s debounce — fewer /api/distance calls while typing
     },
     [calculateDistance]
   );

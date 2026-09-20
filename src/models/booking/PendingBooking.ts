@@ -34,6 +34,8 @@ export interface IPendingBooking {
     taxPercentage?: number;
   };
   paymentMethod: string;
+  paymentIntentId?: string;
+  expectedAmount?: number;
   expiresAt: Date;
   createdAt: Date;
   updatedAt: Date;
@@ -47,6 +49,8 @@ const PendingBookingSchema = new Schema<IPendingBooking>(
       required: true,
     },
     paymentMethod: { type: String, required: true },
+    paymentIntentId: { type: String, index: true },
+    expectedAmount: { type: Number },
     expiresAt: {
       type: Date,
       required: true,

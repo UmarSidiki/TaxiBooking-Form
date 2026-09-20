@@ -1,12 +1,14 @@
 "use client";
 
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useBookingForm } from "@/contexts/BookingFormContext";
 import { useRouter } from "next/navigation";
 import { useTranslations, useLocale } from "next-intl";
-import { importLibrary, setOptions } from "@googlemaps/js-api-loader";
 import { useTheme } from "@/contexts/ThemeContext";
 import { ISetting } from "@/models/settings";
+import { useStep3Map } from "@/hooks/form/form-steps/useStep3Map";
+import { useStep3Payments } from "@/hooks/form/form-steps/useStep3Payments";
+import { useStep3Pricing } from "@/hooks/form/form-steps/useStep3Pricing";
 
 export function useStep3() {
   const t = useTranslations();
@@ -48,97 +50,14 @@ export function useStep3() {
   const [paymentInitialized, setPaymentInitialized] = useState(false);
   const isSubmittingRef = useRef(false); // Synchronous guard against double-clicks
 
-  // Initialize Google Maps ONCE
-  useEffect(() => {
-    const initGoogleMaps = async () => {
-      const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
-      if (!apiKey) {
-        console.warn("Google Maps API key not configured");
-        return;
-      }
-
-      try {
-        setOptions({
-          key: apiKey,
-          v: "weekly",
-        });
-
-        const [maps, routes] = await Promise.all([
-          importLibrary("maps"),
-          importLibrary("routes"),
-        ]);
-
-        // Initialize map
-        if (mapRef.current && !googleMapRef.current) {
-          const initialCenter =
-            settings && settings.mapInitialLat && settings.mapInitialLng
-              ? { lat: settings.mapInitialLat, lng: settings.mapInitialLng }
-              : { lat: 46.2044, lng: 6.1432 }; // Default to Geneva
-
-          googleMapRef.current = new maps.Map(mapRef.current, {
-            center: initialCenter,
-            zoom: 8,
-            disableDefaultUI: true,
-            zoomControl: false,
-            mapTypeControl: false,
-            streetViewControl: false,
-            fullscreenControl: false,
-          });
-          setMapLoaded(true);
-
-          // If we have pickup and dropoff, show the route (only on initial load)
-          if (formData.pickup && formData.dropoff) {
-            const directionsService = new routes.DirectionsService();
-
-            const waypoints = formData.stops
-              .filter(stop => stop.location.trim())
-              .map(stop => ({
-                location: stop.location,
-                stopover: true,
-              }));
-
-            directionsService.route(
-              {
-                origin: formData.pickup,
-                destination: formData.dropoff,
-                waypoints: waypoints,
-                travelMode: google.maps.TravelMode.DRIVING,
-              },
-              (
-                result: google.maps.DirectionsResult | null,
-                status: google.maps.DirectionsStatus
-              ) => {
-                if (status === "OK" && result && googleMapRef.current) {
-                  if (!directionsRendererRef.current) {
-                    directionsRendererRef.current =
-                      new routes.DirectionsRenderer({
-                        map: googleMapRef.current,
-                        suppressMarkers: false,
-                        polylineOptions: {
-                          strokeColor: "var(--primary-color)",
-                          strokeWeight: 4,
-                        },
-                      });
-                  }
-                  if (directionsRendererRef.current) {
-                    directionsRendererRef.current.setDirections(result);
-                  }
-                }
-              }
-            );
-          }
-        }
-      } catch (error) {
-        console.error("Error loading Google Maps:", error);
-      }
-    };
-
-    // Only initialize once when settings are available
-    if (settings && !googleMapRef.current) {
-      initGoogleMaps();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [settings]); // Only run when settings change, not on every formData change
+  useStep3Map({
+    mapRef,
+    googleMapRef,
+    directionsRendererRef,
+    settings,
+    formData,
+    setMapLoaded,
+  });
 
   // Payment config from ThemeProvider (avoids duplicate /api/settings call)
   useEffect(() => {
@@ -167,425 +86,43 @@ export function useStep3() {
     (v) => v._id === formData.selectedVehicle
   );
 
-  const calculateVehiclePrice = useCallback(() => {
-    if (!selectedVehicle) return 0;
-
-    // Hourly booking calculation
-    if (formData.bookingType === "hourly") {
-      const pricePerHour = selectedVehicle.pricePerHour || 30;
-      const minimumHours = selectedVehicle.minimumHours || 2;
-      const hours = Math.max(formData.duration, minimumHours);
-      return pricePerHour * hours;
-    }
-    // Destination-based booking calculation
-    else {
-      if (!distanceData) {
-        return selectedVehicle.price;
-      }
-      const distancePrice =
-        selectedVehicle.pricePerKm * distanceData.distance.km;
-      let oneWayPrice = selectedVehicle.price + distancePrice;
-      oneWayPrice = Math.max(oneWayPrice, selectedVehicle.minimumFare);
-
-      let totalPrice = oneWayPrice;
-      if (formData.tripType === "roundtrip") {
-        const returnPercentage =
-          selectedVehicle.returnPricePercentage === undefined
-            ? 100
-            : selectedVehicle.returnPricePercentage;
-        totalPrice = oneWayPrice + oneWayPrice * (returnPercentage / 100);
-      }
-      return totalPrice;
-    }
-  }, [selectedVehicle, formData.bookingType, formData.duration, formData.tripType, distanceData]);
-
-  const vehiclePrice = calculateVehiclePrice();
-
-  // Apply discount
-  const discount = selectedVehicle?.discount || 0;
-  const discountedVehiclePrice =
-    discount > 0 ? vehiclePrice * (1 - discount / 100) : vehiclePrice;
-
-  const childSeatPrice = selectedVehicle?.childSeatPrice || 0;
-  const babySeatPrice = selectedVehicle?.babySeatPrice || 0;
-  
-  // Calculate stop costs
-  const stopBasePrice = selectedVehicle?.stopPrice || 0;
-  const stopPricePerHour = selectedVehicle?.stopPricePerHour || 0;
-  let stopsTotalPrice = 0;
-
-  if (formData.stops && formData.stops.length > 0) {
-    formData.stops
-      .filter(stop => stop.location.trim()) // Only include stops with valid locations
-      .forEach(stop => {
-        // Add base stop price
-        stopsTotalPrice += stopBasePrice;
-
-        // Add duration-based price if stop has wait time
-        if (stop.duration && stop.duration > 0) {
-          const hours = stop.duration / 60; // Convert minutes to hours
-          stopsTotalPrice += stopPricePerHour * hours;
-        }
-      });
-  }
-  
-  const extrasPrice =
-    formData.childSeats * childSeatPrice + formData.babySeats * babySeatPrice + stopsTotalPrice;
-  const subtotalPrice = discountedVehiclePrice + extrasPrice;
-  
-  // Tax calculation
-  const enableTax = paymentSettings?.enableTax ?? false;
-  const taxPercentage = paymentSettings?.taxPercentage ?? 0;
-  const taxIncluded = paymentSettings?.taxIncluded ?? false;
-  
-  // If tax is included, calculate the tax portion from the subtotal (tax is already in the price)
-  // If tax is not included, add tax on top of the subtotal
-  const taxAmount = enableTax && taxPercentage > 0 
-    ? (taxIncluded 
-        ? subtotalPrice - (subtotalPrice / (1 + taxPercentage / 100)) // Extract tax from price
-        : subtotalPrice * (taxPercentage / 100)) // Add tax to price
-    : 0;
-  const totalPrice = taxIncluded ? subtotalPrice : subtotalPrice + taxAmount;
-  
-  // For display/storage: when tax is included, subtotalAmount should be the pre-tax amount
-  const displaySubtotalAmount = taxIncluded ? (subtotalPrice - taxAmount) : subtotalPrice;
-
-  // Create payment intent function
-  const createPaymentIntent = useCallback(async () => {
-    if (!stripeConfig.publishableKey || creatingPaymentIntent) return;
-    
-    setCreatingPaymentIntent(true);
-    setPaymentError(null);
-
-    console.log("Creating payment intent with amount:", totalPrice);
-
-    try {
-      // Prepare booking data for webhook fallback processing
-      const bookingDataForWebhook = {
-        pickup: formData.pickup,
-        dropoff: formData.dropoff,
-        stops: formData.stops,
-        tripType: formData.tripType,
-        bookingType: formData.bookingType,
-        duration: formData.duration,
-        date: formData.date,
-        time: formData.time,
-        returnDate: formData.returnDate,
-        returnTime: formData.returnTime,
-        passengers: formData.passengers,
-        selectedVehicle: formData.selectedVehicle,
-        childSeats: Number(formData.childSeats) || 0,
-        babySeats: Number(formData.babySeats) || 0,
-        notes: formData.notes,
-        flightNumber: formData.flightNumber,
-        firstName: formData.firstName,
-        lastName: formData.lastName,
-        email: formData.email,
-        phone: formData.phone,
-        totalAmount: totalPrice,
-        subtotalAmount: displaySubtotalAmount,
-        taxAmount: taxAmount,
-        taxPercentage: enableTax ? taxPercentage : 0,
-      };
-
-      const response = await fetch("/api/create-payment-intent", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          amount: totalPrice,
-          currency: paymentSettings?.stripeCurrency || "eur",
-          customerEmail: formData.email || "customer@example.com", // Fallback email
-          customerName: `${formData.firstName || "First"} ${formData.lastName || "Last"}`, // Fallback name
-          description: `Booking from ${formData.pickup || "pickup"} to ${formData.dropoff || "dropoff"}`,
-          bookingData: bookingDataForWebhook, // Include booking data for webhook processing
-        }),
-      });
-
-      const data = await response.json();
-      console.log("Payment intent response:", data);
-      
-      if (data.success && data.clientSecret) {
-        setClientSecret(data.clientSecret);
-        setStripeOrderId(data.orderId || null);
-        setPaymentError(null);
-        setPaymentInitialized(true);
-      } else {
-        const errorMsg = data.message || t('Step3.failed-to-initialize-payment');
-        console.error("Payment intent init failed:", errorMsg);
-        setPaymentError(errorMsg);
-      }
-    } catch (err) {
-      console.error("Error initializing payment intent:", err);
-      const errorMessage = err instanceof Error ? err.message : t('Step3.network-error-occurred');
-      setPaymentError(errorMessage);
-    } finally {
-      setCreatingPaymentIntent(false);
-    }
-  }, [
-    stripeConfig.publishableKey,
-    creatingPaymentIntent,
-    totalPrice,
-    displaySubtotalAmount,
-    taxAmount,
-    enableTax,
-    taxPercentage,
-    paymentSettings?.stripeCurrency,
+  const pricing = useStep3Pricing({
+    selectedVehicle,
     formData,
+    distanceData,
+    paymentSettings,
+  });
+
+  const payments = useStep3Payments({
+    formData,
+    setErrors,
     t,
-  ]);
-
-  // Auto-initiate Stripe payment intent when 'card' is selected
-  useEffect(() => {
-    if (
-      selectedPaymentMethod === "card" &&
-      stripeConfig.enabled &&
-      !clientSecret &&
-      !creatingPaymentIntent &&
-      !paymentInitialized
-    ) {
-      createPaymentIntent();
-    }
-  }, [
+    locale,
+    settings,
+    router,
+    resetForm,
+    setIsLoading,
+    stripeConfig,
+    paymentSettings,
     selectedPaymentMethod,
-    stripeConfig.enabled,
     clientSecret,
+    setClientSecret,
+    stripeOrderId,
+    setStripeOrderId,
     creatingPaymentIntent,
+    setCreatingPaymentIntent,
+    paymentError,
+    setPaymentError,
     paymentInitialized,
-    createPaymentIntent
-  ]);
-
-  // Reset payment initialization when payment method changes
-  useEffect(() => {
-    if (selectedPaymentMethod !== "card") {
-      setPaymentInitialized(false);
-      setClientSecret(null);
-    }
-  }, [selectedPaymentMethod]);
-
-  const handleStripePaymentSuccess = async (paymentIntentId: string) => {
-    setIsLoading(true);
-    try {
-      // Single fallback finalize (webhook is primary; skips if already done)
-      const { ensurePaymentFinalized } = await import('@/utils/complete-payment');
-      await ensurePaymentFinalized({
-        provider: 'stripe',
-        paymentIntentId,
-        orderId: stripeOrderId || undefined,
-      });
-
-      const finalTripId = stripeOrderId || "PENDING";
-      const customRedirect = settings?.redirectUrl;
-      const immediate = settings?.redirectImmediatelyAfterBooking;
-      const target = customRedirect && immediate
-        ? customRedirect
-        : `/${locale}/thank-you?tripId=${finalTripId}&amount=${totalPrice.toFixed(2)}&method=stripe`;
-
-      await router.push(target);
-      resetForm();
-    } catch (error) {
-      console.error("Post-payment error:", error);
-      // Payment succeeded even if redirection fails — attempt redirect and then reset form
-      const customRedirect = settings?.redirectUrl;
-      const immediate = settings?.redirectImmediatelyAfterBooking;
-      const fallback = customRedirect && immediate ? customRedirect : `/${locale}/thank-you?method=stripe`;
-      await router.push(fallback);
-      resetForm();
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleStripePaymentError = () => {
-    setPaymentError(t('Step3.payment-failed-error'));
-  };
-
-  const handleCashBooking = async () => {
-    // Prevent double-click submissions
-    if (isSubmittingRef.current) return;
-
-    // Validate required fields
-    const newErrors: typeof errors = {};
-    if (!formData.firstName.trim())
-      newErrors.firstName = t('Step3.first-name-is-required');
-    if (!formData.lastName.trim()) newErrors.lastName = t('Step3.last-name-is-required');
-    if (!formData.email.trim()) newErrors.email = t('Step3.email-is-required');
-    if (!formData.phone.trim()) newErrors.phone = t('Step3.phone-is-required');
-
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors);
-      return;
-    }
-
-    isSubmittingRef.current = true;
-    setIsLoading(true);
-    try {
-      const response = await fetch("/api/booking", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          ...formData,
-          childSeats: Number(formData.childSeats) || 0,
-          babySeats: Number(formData.babySeats) || 0,
-          paymentMethod: "cash",
-          paymentStatus: "pending",
-          totalAmount: totalPrice,
-          subtotalAmount: displaySubtotalAmount,
-          taxAmount: taxAmount,
-          taxPercentage: enableTax ? taxPercentage : 0,
-          taxIncluded: enableTax ? taxIncluded : false,
-        }),
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        // Redirect to thank you page with booking details (or custom URL immediately)
-        const customRedirect = settings?.redirectUrl;
-        const immediate = settings?.redirectImmediatelyAfterBooking;
-        const target = customRedirect && immediate
-          ? customRedirect
-          : `/${locale}/thank-you?tripId=${data.tripId}&amount=${totalPrice.toFixed(2)}&method=cash`;
-        await router.push(target);
-        resetForm();
-      } else {
-        alert(`Booking failed: ${data.message}`);
-      }
-    } catch (error) {
-      console.error("Booking error:", error);
-      alert("Booking failed. Please try again.");
-    } finally {
-      isSubmittingRef.current = false;
-      setIsLoading(false);
-    }
-  };
-
-  const handleBankTransferBooking = async () => {
-    // Prevent double-click submissions
-    if (isSubmittingRef.current) return;
-
-    // Validate required fields
-    const newErrors: typeof errors = {};
-    if (!formData.firstName.trim())
-      newErrors.firstName = t('Step3.first-name-is-required');
-    if (!formData.lastName.trim()) newErrors.lastName = t('Step3.last-name-is-required');
-    if (!formData.email.trim()) newErrors.email = t('Step3.email-is-required');
-    if (!formData.phone.trim()) newErrors.phone = t('Step3.phone-is-required');
-
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors);
-      return;
-    }
-
-    isSubmittingRef.current = true;
-    setIsLoading(true);
-    try {
-      const response = await fetch("/api/booking", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          ...formData,
-          childSeats: Number(formData.childSeats) || 0,
-          babySeats: Number(formData.babySeats) || 0,
-          paymentMethod: "bank_transfer",
-          paymentStatus: "pending",
-          totalAmount: totalPrice,
-          subtotalAmount: displaySubtotalAmount,
-          taxAmount: taxAmount,
-          taxPercentage: enableTax ? taxPercentage : 0,
-          taxIncluded: enableTax ? taxIncluded : false,
-        }),
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        const customRedirect = settings?.redirectUrl;
-        const immediate = settings?.redirectImmediatelyAfterBooking;
-        const target = customRedirect && immediate
-          ? customRedirect
-          : `/${locale}/thank-you?tripId=${data.tripId}&amount=${totalPrice.toFixed(2)}&method=bank_transfer`;
-        await router.push(target);
-        resetForm();
-      } else {
-        alert(`Booking failed: ${data.message}`);
-      }
-    } catch (error) {
-      console.error("Booking error:", error);
-      alert("Booking failed. Please try again.");
-    } finally {
-      isSubmittingRef.current = false;
-      setIsLoading(false);
-    }
-  };
-
-  const handleMultisafepayBooking = async () => {
-    // Prevent double-click submissions
-    if (isSubmittingRef.current) return;
-
-    // Validate required fields
-    const newErrors: typeof errors = {};
-    if (!formData.firstName.trim())
-      newErrors.firstName = t('Step3.first-name-is-required');
-    if (!formData.lastName.trim()) newErrors.lastName = t('Step3.last-name-is-required');
-    if (!formData.email.trim()) newErrors.email = t('Step3.email-is-required');
-    if (!formData.phone.trim()) newErrors.phone = t('Step3.phone-is-required');
-
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors);
-      return;
-    }
-
-    isSubmittingRef.current = true;
-    setIsLoading(true);
-    try {
-      // Create MultiSafepay order directly without creating booking
-      const paymentResponse = await fetch("/api/create-multisafepay-order", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          amount: totalPrice,
-          currency: paymentSettings?.stripeCurrency || "eur",
-          customerEmail: formData.email,
-          customerName: `${formData.firstName} ${formData.lastName}`,
-          description: `Booking from ${formData.pickup} to ${formData.dropoff || 'destination'}`,
-          bookingData: {
-            ...formData,
-            childSeats: Number(formData.childSeats) || 0,
-            babySeats: Number(formData.babySeats) || 0,
-            subtotalAmount: displaySubtotalAmount,
-            taxAmount: taxAmount,
-            taxPercentage: enableTax ? taxPercentage : 0,
-            taxIncluded: enableTax ? taxIncluded : false,
-          },
-          totalAmount: totalPrice,
-          subtotalAmount: displaySubtotalAmount,
-          taxAmount: taxAmount,
-          taxPercentage: enableTax ? taxPercentage : 0,
-          taxIncluded: enableTax ? taxIncluded : false,
-          locale: locale,
-        }),
-      });
-
-      const paymentData = await paymentResponse.json();
-
-      if (paymentData.success && paymentData.paymentUrl) {
-        const merchantOrderId = paymentData.merchantOrderId || paymentData.orderId;
-        if (merchantOrderId && typeof window !== 'undefined') {
-          sessionStorage.setItem('msp_order_id', merchantOrderId);
-        }
-        window.location.href = paymentData.paymentUrl;
-      } else {
-        alert(`Payment initialization failed: ${paymentData.message}`);
-        isSubmittingRef.current = false;
-        setIsLoading(false);
-      }
-    } catch (error) {
-      console.error("MultiSafepay booking error:", error);
-      alert("Booking failed. Please try again.");
-      isSubmittingRef.current = false;
-      setIsLoading(false);
-    }
-  };
+    setPaymentInitialized,
+    isSubmittingRef,
+    totalPrice: pricing.totalPrice,
+    displaySubtotalAmount: pricing.displaySubtotalAmount,
+    taxAmount: pricing.taxAmount,
+    enableTax: pricing.enableTax,
+    taxPercentage: pricing.taxPercentage,
+    taxIncluded: pricing.taxIncluded,
+  });
 
   const handleBack = () => {
     setCurrentStep(2);
@@ -601,6 +138,7 @@ export function useStep3() {
     stripeOrderId,
     creatingPaymentIntent,
     paymentError,
+    retryStripePayment: payments.retryStripePayment,
 
     // Map state
     mapLoaded,
@@ -615,29 +153,14 @@ export function useStep3() {
     isLoading,
 
     // Calculated values
-    vehiclePrice,
-    discount,
-    discountedVehiclePrice,
-    childSeatPrice,
-    babySeatPrice,
-    stopBasePrice,
-    stopPricePerHour,
-    stopsTotalPrice,
-    extrasPrice,
-    subtotalPrice,
-    enableTax,
-    taxPercentage,
-    taxIncluded,
-    taxAmount,
-    totalPrice,
-    displaySubtotalAmount,
+    ...pricing,
 
     // Functions
-    handleStripePaymentSuccess,
-    handleStripePaymentError,
-    handleCashBooking,
-    handleBankTransferBooking,
-    handleMultisafepayBooking,
+    handleStripePaymentSuccess: payments.handleStripePaymentSuccess,
+    handleStripePaymentError: payments.handleStripePaymentError,
+    handleCashBooking: payments.handleCashBooking,
+    handleBankTransferBooking: payments.handleBankTransferBooking,
+    handleMultisafepayBooking: payments.handleMultisafepayBooking,
     handleBack,
   };
 }

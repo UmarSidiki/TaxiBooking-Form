@@ -1,0 +1,35 @@
+---
+description: Design tokens and UI craft. Never hardcode visual values — change globals.css.
+alwaysApply: true
+---
+
+# Design (always apply)
+
+Visual source of truth: `src/style/globals.css`. Change brand, color, type, space, or radius **there**. Dark mode is `.dark` in the same file. See `DESIGN.md`.
+
+## Never hardcode
+
+```
+# BAD
+<div className="bg-[#1a1a1a] rounded-[14px]" />
+style={{ color: "#2563eb", padding: 16 }}
+
+# GOOD
+<div className="bg-background rounded-lg text-foreground p-4 border-border" />
+```
+
+Form-builder styles stored on a layout document are operator-configured CSS — keep that path. Do not copy those hex values into dashboard chrome.
+
+## Product UI
+
+- Admin, driver, partner: **operate** — scanability and contrast beat decoration.
+- Public wizard and embeddable forms: **convert** — clear steps, visible total, trustworthy pay box.
+
+## Craft floor
+
+- Visible `:focus-visible` ring. Never `outline-none` without a replacement.
+- Honor `prefers-reduced-motion`. Animate `opacity`/`transform` only. No `transition: all`.
+- Hit targets ≥ 44px on mobile.
+- Empty, loading (`…`), and error states are real UI.
+- `ar` is RTL. Prefer logical CSS (`start`/`end`) over `left`/`right`.
+- Copy: active voice. Errors say how to fix. Update all eight locale files together.

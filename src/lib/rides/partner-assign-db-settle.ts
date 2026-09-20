@@ -1,0 +1,1 @@
+export const PARTNER_ASSIGN_DB_SETTLE_MS = 500;

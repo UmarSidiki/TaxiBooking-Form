@@ -1,0 +1,31 @@
+export const STOP_WAIT_OPTIONS_10_MIN = [
+  { value: 0, label: "—" },
+  { value: 10, label: "10m" },
+  { value: 20, label: "20m" },
+  { value: 30, label: "30m" },
+  { value: 40, label: "40m" },
+  { value: 50, label: "50m" },
+  { value: 60, label: "1h" },
+  { value: 70, label: "1h 10m" },
+  { value: 80, label: "1h 20m" },
+  { value: 90, label: "1h 30m" },
+  { value: 100, label: "1h 40m" },
+  { value: 110, label: "1h 50m" },
+  { value: 120, label: "2h" },
+] as const;
+
+export const STOP_WAIT_OPTIONS_15_MIN = [
+  { value: 0, label: "—" },
+  { value: 15, label: "15m" },
+  { value: 30, label: "30m" },
+  { value: 45, label: "45m" },
+  { value: 60, label: "1h" },
+  { value: 90, label: "1h 30m" },
+  { value: 120, label: "2h" },
+  { value: 150, label: "2h 30m" },
+  { value: 180, label: "3h" },
+  { value: 210, label: "3h 30m" },
+  { value: 240, label: "4h" },
+  { value: 270, label: "4h 30m" },
+  { value: 300, label: "5h" },
+] as const;

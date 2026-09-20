@@ -73,7 +73,7 @@ export async function POST(request: NextRequest) {
             expiresAt: new Date(Date.now() + 30 * 60 * 1000),
           },
         },
-        { upsert: true, new: true }
+        { upsert: true, returnDocument: 'after' }
       );
     }
 

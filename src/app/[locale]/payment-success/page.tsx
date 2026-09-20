@@ -7,10 +7,11 @@ import { Button } from '@/components/ui/button';
 import { CheckCircle2, XCircle, Loader2, AlertCircle } from 'lucide-react';
 import { ensurePaymentFinalized } from '@/utils/complete-payment';
 import { useTheme } from '@/contexts/ThemeContext';
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 
 export default function PaymentSuccessPage() {
   const t = useTranslations();
+  const locale = useLocale();
   const searchParams = useSearchParams();
   const router = useRouter();
   const { settings } = useTheme();
@@ -18,13 +19,22 @@ export default function PaymentSuccessPage() {
   const [message, setMessage] = useState('');
   const completionStarted = useRef(false);
 
-  const redirectUrl = settings?.redirectUrl || '/';
+  const goToThankYou = (tripId?: string, method = 'stripe') => {
+    const customRedirect = settings?.redirectUrl;
+    const immediate = settings?.redirectImmediatelyAfterBooking;
+    const target =
+      customRedirect && immediate
+        ? customRedirect
+        : `/${locale}/thank-you?tripId=${tripId || ''}&method=${method}`;
+    router.push(target);
+  };
 
   useEffect(() => {
     if (completionStarted.current) return;
 
     const paymentIntentId = searchParams.get('payment_intent');
     const redirectStatus = searchParams.get('redirect_status');
+    const orderId = searchParams.get('orderId');
     const transactionId = searchParams.get('transactionid');
     const mspOrderId =
       searchParams.get('order_id') ||
@@ -55,6 +65,7 @@ export default function PaymentSuccessPage() {
         : {
             provider: 'stripe' as const,
             paymentIntentId: paymentIntentId!,
+            orderId: orderId || undefined,
           };
 
       const result = await ensurePaymentFinalized(payload);
@@ -66,7 +77,10 @@ export default function PaymentSuccessPage() {
       if (result.success) {
         setStatus('success');
         setMessage(t('ThankYouPage.payment-successful-your-booking-has-been-confirmed'));
-        setTimeout(() => router.push(redirectUrl), 3000);
+        setTimeout(
+          () => goToThankYou(result.tripId || orderId || mspOrderId || undefined, payload.provider),
+          1500
+        );
         return;
       }
 
@@ -80,7 +94,10 @@ export default function PaymentSuccessPage() {
             ? t('ThankYouPage.your-payment-is-being-processed-you-will-receive-a-confirmation-email-shortly')
             : t('ThankYouPage.payment-successful-your-booking-has-been-confirmed')
         );
-        setTimeout(() => router.push(redirectUrl), redirectStatus === 'processing' ? 5000 : 3000);
+        setTimeout(
+          () => goToThankYou(orderId || undefined, 'stripe'),
+          redirectStatus === 'processing' ? 4000 : 1500
+        );
         return;
       }
 
@@ -89,10 +106,10 @@ export default function PaymentSuccessPage() {
     };
 
     runCompletion();
-  }, [searchParams, router, redirectUrl, t]);
+  }, [searchParams, router, settings, locale, t]);
 
   const handleReturnHome = () => {
-    router.push(redirectUrl);
+    goToThankYou(searchParams.get('orderId') || undefined);
   };
 
   const handleRetry = () => {

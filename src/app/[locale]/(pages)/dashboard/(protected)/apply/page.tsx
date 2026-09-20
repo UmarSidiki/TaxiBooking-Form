@@ -165,6 +165,8 @@ export default function ApplyPage() {
   iframe.setAttribute("loading", "lazy");
   iframe.setAttribute("title", "Interactive Booking Widget");
   iframe.setAttribute("scrolling", "no");
+  iframe.setAttribute("allow", "payment *");
+  iframe.setAttribute("allowpaymentrequest", "true");
   iframe.style.scrollbarWidth = "none";
   iframe.style.msOverflowStyle = "none";
 
@@ -416,6 +418,7 @@ export default function ApplyPage() {
                   src={`${selectedForm.path}`}
                   className="w-full h-[650px] md:h-[600px]"
                   title="Widget Preview"
+                  allow="payment *"
                 />
               </div>
             </div>

@@ -1,0 +1,16 @@
+---
+description: Accessibility, forms, and content handling for UI
+globs: "**/*.tsx"
+alwaysApply: false
+---
+
+# Accessibility & UI quality
+
+- Icon-only controls need `aria-label`. Every input has a visible label. Decorative images: empty alt.
+- Semantic HTML (`button`, `a`, `main`, `nav`) before ARIA. Headings in order.
+- Don't rely on color alone (pair with text/icon). Status chips need a word, not only a hue.
+- User text can be short or huge: `truncate` / `min-w-0` on flex children.
+- Loading copy ends with `…`. Don't leave a spinner with no text on dashboard tables.
+- Destructive actions need confirm (cancel ride, delete vehicle, reject partner). Never one-tap irreversible.
+- Locale-aware money and dates (`Intl`). `ar` is RTL.
+- Hit targets ≥ 44px on the booking wizard and mobile portals.

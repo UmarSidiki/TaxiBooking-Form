@@ -76,7 +76,7 @@ export async function PATCH(
       delete body.password;
     }
 
-    const driver = await Driver.findByIdAndUpdate(id, body, { new: true });
+    const driver = await Driver.findByIdAndUpdate(id, body, { returnDocument: 'after' });
 
     if (!driver) {
       return NextResponse.json(

@@ -4,6 +4,12 @@ import { useEffect, useRef, useState } from "react";
 import { useBookingForm } from "@/contexts/BookingFormContext";
 import { importLibrary, setOptions } from "@googlemaps/js-api-loader";
 import { useTheme } from "@/contexts/ThemeContext";
+import { buildStopCostBreakdown } from "@/lib/form/build-stop-cost-breakdown";
+import {
+  DEFAULT_VEHICLE_MINIMUM_HOURS,
+  DEFAULT_VEHICLE_PRICE_PER_HOUR,
+  DEFAULT_VEHICLE_RETURN_PRICE_PERCENTAGE,
+} from "@/lib/fleet/vehicle-form-defaults";
 
 export function useStep2() {
   const [mapLoaded, setMapLoaded] = useState(false);
@@ -190,8 +196,8 @@ export function useStep2() {
 
     // Hourly booking calculation
     if (formData.bookingType === "hourly") {
-      const pricePerHour = vehicle.pricePerHour || 30;
-      const minimumHours = vehicle.minimumHours || 2;
+      const pricePerHour = vehicle.pricePerHour || DEFAULT_VEHICLE_PRICE_PER_HOUR;
+      const minimumHours = vehicle.minimumHours || DEFAULT_VEHICLE_MINIMUM_HOURS;
       const hours = Math.max(formData.duration, minimumHours);
       totalPrice = pricePerHour * hours;
     }
@@ -208,30 +214,18 @@ export function useStep2() {
       if (formData.tripType === "roundtrip") {
         const returnPercentage =
           vehicle.returnPricePercentage === undefined
-            ? 100
+            ? DEFAULT_VEHICLE_RETURN_PRICE_PERCENTAGE
             : vehicle.returnPricePercentage;
         totalPrice = oneWayPrice + oneWayPrice * (returnPercentage / 100);
       }
     }
 
     // Add stop costs
-    if (formData.stops && formData.stops.length > 0) {
-      const stopBasePrice = vehicle.stopPrice || 0;
-      const stopPricePerHour = vehicle.stopPricePerHour || 0;
-
-      formData.stops
-        .filter(stop => stop.location.trim()) // Only include stops with valid locations
-        .forEach(stop => {
-          // Add base stop price
-          totalPrice += stopBasePrice;
-
-          // Add duration-based price if stop has wait time
-          if (stop.duration && stop.duration > 0) {
-            const hours = stop.duration / 60; // Convert minutes to hours
-            totalPrice += stopPricePerHour * hours;
-          }
-        });
-    }
+    totalPrice += buildStopCostBreakdown(
+      formData.stops,
+      vehicle.stopPrice || 0,
+      vehicle.stopPricePerHour || 0
+    ).stopCosts;
 
     // Apply discount after all other calculations
     const discount = vehicle.discount === undefined ? 0 : vehicle.discount;
@@ -247,8 +241,8 @@ export function useStep2() {
     
     // Hourly booking - show price without discount
     if (formData.bookingType === "hourly") {
-      const pricePerHour = vehicle.pricePerHour || 30;
-      const minimumHours = vehicle.minimumHours || 2;
+      const pricePerHour = vehicle.pricePerHour || DEFAULT_VEHICLE_PRICE_PER_HOUR;
+      const minimumHours = vehicle.minimumHours || DEFAULT_VEHICLE_MINIMUM_HOURS;
       const hours = Math.max(formData.duration, minimumHours);
       totalPrice = pricePerHour * hours;
     } else {
@@ -270,23 +264,11 @@ export function useStep2() {
     }
 
     // Add stop costs (same as in calculatePrice)
-    if (formData.stops && formData.stops.length > 0) {
-      const stopBasePrice = vehicle.stopPrice || 0;
-      const stopPricePerHour = vehicle.stopPricePerHour || 0;
-
-      formData.stops
-        .filter(stop => stop.location.trim()) // Only include stops with valid locations
-        .forEach(stop => {
-          // Add base stop price
-          totalPrice += stopBasePrice;
-
-          // Add duration-based price if stop has wait time
-          if (stop.duration && stop.duration > 0) {
-            const hours = stop.duration / 60; // Convert minutes to hours
-            totalPrice += stopPricePerHour * hours;
-          }
-        });
-    }
+    totalPrice += buildStopCostBreakdown(
+      formData.stops,
+      vehicle.stopPrice || 0,
+      vehicle.stopPricePerHour || 0
+    ).stopCosts;
 
     return totalPrice;
   };

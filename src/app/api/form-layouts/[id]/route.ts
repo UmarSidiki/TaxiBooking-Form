@@ -69,7 +69,7 @@ export async function PATCH(
     }
 
     const layout = await FormLayout.findByIdAndUpdate(id, validatedData, {
-      new: true,
+      returnDocument: 'after',
       runValidators: true
     });
 

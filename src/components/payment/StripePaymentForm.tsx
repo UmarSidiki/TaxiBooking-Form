@@ -1,11 +1,16 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import {
   PaymentElement,
+  ExpressCheckoutElement,
   useStripe,
   useElements,
 } from "@stripe/react-stripe-js";
+import type {
+  StripeExpressCheckoutElementConfirmEvent,
+  StripeExpressCheckoutElementReadyEvent,
+} from "@stripe/stripe-js";
 import { Button } from "@/components/ui/button";
 import {
   Loader2,
@@ -65,6 +70,8 @@ export default function StripePaymentForm({
   const stripe = useStripe();
   const elements = useElements();
   const [isProcessing, setIsProcessing] = useState(false);
+  const isProcessingRef = useRef(false);
+  const [walletsAvailable, setWalletsAvailable] = useState(false);
   const [message, setMessage] = useState<{
     type: "success" | "error" | "info";
     text: string;
@@ -72,9 +79,18 @@ export default function StripePaymentForm({
 
   const t = useTranslations();
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const getReturnUrl = () => {
+    const locale = window.location.pathname.split("/").filter(Boolean)[0] || "en";
+    const url = new URL(`/${locale}/payment-success`, window.location.origin);
+    if (orderId) {
+      url.searchParams.set("orderId", orderId);
+    }
+    return url.toString();
+  };
 
+  const confirmPayment = async (
+    walletEvent?: StripeExpressCheckoutElementConfirmEvent,
+  ) => {
     if (!stripe || !elements) {
       setMessage({
         type: "error",
@@ -83,41 +99,58 @@ export default function StripePaymentForm({
       return;
     }
 
+    if (isProcessingRef.current) {
+      return;
+    }
+
+    if (
+      !bookingData?.firstName?.trim() ||
+      !bookingData?.lastName?.trim() ||
+      !bookingData?.email?.trim() ||
+      !bookingData?.phone?.trim()
+    ) {
+      const message = t("Stripe.complete-contact-details-before-paying");
+      walletEvent?.paymentFailed({ reason: "fail" });
+      setMessage({ type: "error", text: message });
+      onError(message);
+      return;
+    }
+    isProcessingRef.current = true;
     setIsProcessing(true);
     setMessage({ type: "info", text: t("Stripe.processing-your-payment") });
 
-    try {
-      // Update pending booking with latest data before confirming payment
-      if (orderId && bookingData) {
-        try {
-          const updateResponse = await fetch("/api/update-pending-booking", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ orderId, bookingData }),
-          });
+    const failWallet = (message: string) => {
+      walletEvent?.paymentFailed({ reason: "fail" });
+      setMessage({ type: "error", text: message });
+      onError(message);
+    };
 
-          if (!updateResponse.ok) {
-            console.warn(
-              "Failed to update pending booking, continuing with payment...",
-            );
-          } else {
-            console.log(
-              "✅ Pending booking updated before payment confirmation",
-            );
-          }
-        } catch (updateError) {
-          console.warn("Error updating pending booking:", updateError);
-          // Continue with payment even if update fails
+    try {
+      if (orderId && bookingData) {
+        const updateResponse = await fetch("/api/update-pending-booking", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ orderId, bookingData }),
+        });
+
+        if (updateResponse.status === 404) {
+          failWallet(t("Stripe.payment-session-expired"));
+          return;
         }
+      }
+
+      const { error: submitError } = await elements.submit();
+      if (submitError) {
+        failWallet(submitError.message || t("Stripe.payment-failed"));
+        return;
       }
 
       const { error, paymentIntent } = await stripe.confirmPayment({
         elements,
         confirmParams: {
-          // Use current page as return URL to handle payment without redirect
-          return_url: window.location.href,
+          return_url: getReturnUrl(),
         },
-        redirect: "if_required", // Only redirect if absolutely necessary (e.g., 3D Secure)
+        redirect: "if_required",
       });
 
       if (error) {
@@ -126,11 +159,7 @@ export default function StripePaymentForm({
             ? error.message
             : t("Stripe.an-unexpected-error-occurred-please-try-again");
 
-        setMessage({
-          type: "error",
-          text: errorMessage || t("Stripe.payment-failed"),
-        });
-        onError(errorMessage || t("Stripe.payment-failed"));
+        failWallet(errorMessage || t("Stripe.payment-failed"));
       } else if (paymentIntent && paymentIntent.status === "succeeded") {
         setMessage({
           type: "success",
@@ -144,7 +173,6 @@ export default function StripePaymentForm({
             "Stripe.payment-is-processing-you-will-receive-a-confirmation-shortly",
           ),
         });
-        // Still call success callback for processing status
         setTimeout(() => onSuccess(paymentIntent.id), 1500);
       } else if (paymentIntent && paymentIntent.status === "requires_action") {
         setMessage({
@@ -154,24 +182,26 @@ export default function StripePaymentForm({
           ),
         });
       } else {
-        setMessage({
-          type: "error",
-          text: t("Stripe.payment-status-unclear-please-contact-support"),
-        });
-        onError(
-          t("Stripe.payment-status") + (paymentIntent?.status || "unknown"),
-        );
+        failWallet(t("Stripe.payment-status-unclear-please-contact-support"));
       }
     } catch (err) {
       console.error("Payment error:", err);
-      setMessage({
-        type: "error",
-        text: t("Stripe.an-unexpected-error-occurred-please-try-again"),
-      });
-      onError(t("Stripe.payment-processing-failed"));
+      failWallet(t("Stripe.an-unexpected-error-occurred-please-try-again"));
     } finally {
+      isProcessingRef.current = false;
       setIsProcessing(false);
     }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    await confirmPayment();
+  };
+
+  const handleExpressReady = ({
+    availablePaymentMethods,
+  }: StripeExpressCheckoutElementReadyEvent) => {
+    setWalletsAvailable(!!availablePaymentMethods);
   };
 
   return (
@@ -201,6 +231,35 @@ export default function StripePaymentForm({
         </div>
       </div>
 
+      <div className={walletsAvailable ? "block" : "hidden"}>
+        <ExpressCheckoutElement
+          onConfirm={confirmPayment}
+          onReady={handleExpressReady}
+          options={{
+            emailRequired: true,
+            buttonType: {
+              applePay: "book",
+              googlePay: "book",
+            },
+            paymentMethods: {
+              applePay: "always",
+              googlePay: "always",
+              link: "auto",
+            },
+          }}
+        />
+        <div className="relative my-4">
+          <div className="absolute inset-0 flex items-center">
+            <div className="w-full border-t border-gray-200" />
+          </div>
+          <div className="relative flex justify-center text-xs uppercase">
+            <span className="bg-white px-2 text-gray-500">
+              {t("Stripe.or-pay-with-card")}
+            </span>
+          </div>
+        </div>
+      </div>
+
       {/* Payment Element */}
       <div className="bg-white p-4 rounded-lg border">
         <div className="flex items-center gap-2 mb-4">
@@ -210,6 +269,19 @@ export default function StripePaymentForm({
           </h3>
         </div>
         <PaymentElement
+          onLoadError={(event) => {
+            const blockedByClient =
+              typeof event.error?.message === "string" &&
+              /blocked|network|failed to fetch/i.test(event.error.message);
+
+            const errorMessage = blockedByClient
+              ? t("Stripe.payment-form-blocked-by-extension")
+              : event.error?.message ||
+                t("Stripe.payment-form-failed-to-load");
+
+            setMessage({ type: "error", text: errorMessage });
+            onError(errorMessage);
+          }}
           options={{
             layout: {
               type: "accordion",
@@ -218,8 +290,18 @@ export default function StripePaymentForm({
               spacedAccordionItems: true,
             },
             wallets: {
-              applePay: "auto",
-              googlePay: "auto",
+              applePay: "never",
+              googlePay: "never",
+              link: "auto",
+            },
+            defaultValues: {
+              billingDetails: {
+                name: bookingData
+                  ? `${bookingData.firstName} ${bookingData.lastName}`.trim()
+                  : undefined,
+                email: bookingData?.email,
+                phone: bookingData?.phone,
+              },
             },
           }}
         />

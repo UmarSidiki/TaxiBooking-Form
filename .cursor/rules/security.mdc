@@ -1,0 +1,17 @@
+---
+description: Auth, secrets, IDOR, and safe payment defaults
+globs: "src/**/*.{ts,tsx}"
+alwaysApply: false
+---
+
+# Security
+
+- Secrets only in `.env.local` / host env, or encrypted/settings in Mongo for operator-configured keys. Commit `.env.example` with placeholders. Never log tokens, passwords, OTP codes, or Stripe secret keys.
+- Authorize **after** authenticate. `getServerSession(authOptions)` then `role` is `admin` | `superadmin` | `driver` | `partner`.
+- IDOR: load a booking/partner/driver by id **and** check the caller owns it (or is admin). Don't trust client-sent `userId`.
+- Uploads: type + size limits. Do not store unbounded base64 on hot paths if you can avoid it.
+- Payments: never take price solely from the client — recompute with `calculateBookingPrice`. Mark paid only after Stripe/MultiSafepay says so (`finalize-paid-booking.ts`).
+- Webhooks: verify signatures / provider authenticity before mutating bookings.
+- OTP / password reset: rate-limit. Compare hashes with bcrypt. Do not build a custom crypto stack.
+- CORS/images: `next.config.ts` currently allows any remote image host — do not widen that further. Prefer an allowlist when touching it.
+- Sanitize user text (`sanitize-html` / Zod) before storing or putting in emails.

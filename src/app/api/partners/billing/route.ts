@@ -92,7 +92,7 @@ export async function PATCH(request: NextRequest) {
         },
       },
       {
-        new: true,
+        returnDocument: 'after',
         runValidators: true,
         select: "-password",
       }

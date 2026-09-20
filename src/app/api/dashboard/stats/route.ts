@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { connectDB } from "@/lib/database";
 import { Booking } from "@/models/booking";
 import { Setting } from "@/models/settings";
+import { DASHBOARD_PREVIEW_LIMIT } from "@/lib/dashboard/dashboard-preview-limit";
+import { DEFAULT_BOOKING_TIMEZONE } from "@/lib/rides/ride-constants";
 
 export async function GET() {
   try {
@@ -9,7 +11,7 @@ export async function GET() {
 
     // Get Timezone
     const setting = await Setting.findOne();
-    const timezone = setting?.timezone || "Europe/Zurich";
+    const timezone = setting?.timezone || DEFAULT_BOOKING_TIMEZONE;
 
     // Get current date relative to Timezone
     const nowInTzStr = new Date().toLocaleString('en-US', { timeZone: timezone, hour12: false });
@@ -96,7 +98,7 @@ export async function GET() {
         : 0;
 
     // Fetch recent bookings (last 5)
-    const recentBookings = allBookings.slice(0, 5).map((booking) => ({
+    const recentBookings = allBookings.slice(0, DASHBOARD_PREVIEW_LIMIT).map((booking) => ({
       id: booking._id.toString(),
       customer: `${booking.firstName} ${booking.lastName}`,
       date: new Date(booking.date).toLocaleDateString(),
@@ -113,7 +115,7 @@ export async function GET() {
     const totalDestinations = Object.values(destinationCounts).reduce((a, b) => a + b, 0);
     const topDestinations = Object.entries(destinationCounts)
       .sort(([, a], [, b]) => b - a)
-      .slice(0, 5)
+      .slice(0, DASHBOARD_PREVIEW_LIMIT)
       .map(([name, count]) => ({
         name,
         count,

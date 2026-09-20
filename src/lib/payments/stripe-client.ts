@@ -2,6 +2,12 @@ import Stripe from 'stripe';
 import { connectDB } from '@/lib/database';
 import { Setting } from '@/models/settings';
 
+const DEFAULT_API_VERSION = '2026-07-29.dahlia' as Stripe.LatestApiVersion;
+
+export function getStripeApiVersion(): Stripe.LatestApiVersion {
+  return (process.env.STRIPE_API_VERSION as Stripe.LatestApiVersion) || DEFAULT_API_VERSION;
+}
+
 export async function getStripeClient(): Promise<Stripe | null> {
   await connectDB();
   const settings = await Setting.findOne();
@@ -11,13 +17,9 @@ export async function getStripeClient(): Promise<Stripe | null> {
     return null;
   }
 
-  const stripeOptions: Stripe.StripeConfig = {};
-  const stripeApiVersion = process.env.STRIPE_API_VERSION;
-  if (stripeApiVersion) {
-    stripeOptions.apiVersion = stripeApiVersion as Stripe.LatestApiVersion;
-  }
-
-  return new Stripe(stripeSecretKey, stripeOptions);
+  return new Stripe(stripeSecretKey, {
+    apiVersion: getStripeApiVersion(),
+  });
 }
 
 export function getPaidAmountFromPaymentIntent(paymentIntent: Stripe.PaymentIntent): number {

@@ -16,6 +16,12 @@ import {
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { TextPlugin } from "gsap/TextPlugin";
+import {
+  playLoginIntroAnimation,
+  pulseLoginCardThen,
+  pulseLoginForm,
+  resetLoginFormPosition,
+} from "@/lib/login/login-gsap";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -51,78 +57,15 @@ export default function SignInPage() {
   const particlesRef = useRef<HTMLDivElement[]>([]);
 
   useEffect(() => {
-    // Initial animations
-    const tl = gsap.timeline();
-
-    // Animate particles
-    particlesRef.current.forEach((particle, index) => {
-      if (particle) {
-        gsap.to(particle, {
-          y: -20,
-          x: Math.random() * 20 - 10,
-          opacity: 0,
-          duration: 2 + Math.random() * 2,
-          repeat: -1,
-          delay: index * 0.2,
-          ease: "power1.out",
-        });
-      }
+    return playLoginIntroAnimation({
+      particlesRef,
+      iconRef,
+      titleRef,
+      subtitleRef,
+      cardRef,
+      formRef,
+      animateFormChildren: true,
     });
-
-    // Animate icon
-    if (iconRef.current) {
-      tl.fromTo(
-        iconRef.current,
-        { scale: 0, rotation: -180 },
-        { scale: 1, rotation: 0, duration: 1, ease: "back.out(1.7)" }
-      );
-    }
-
-    // Animate title
-    if (titleRef.current) {
-      tl.fromTo(
-        titleRef.current,
-        { y: 30, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.8, ease: "power2.out" },
-        "-=0.5"
-      );
-    }
-
-    // Animate subtitle
-    if (subtitleRef.current) {
-      tl.fromTo(
-        subtitleRef.current,
-        { y: 20, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.6, ease: "power2.out" },
-        "-=0.3"
-      );
-    }
-
-    // Animate card
-    if (cardRef.current) {
-      tl.fromTo(
-        cardRef.current,
-        { y: 50, opacity: 0, scale: 0.95 },
-        { y: 0, opacity: 1, scale: 1, duration: 0.8, ease: "power2.out" },
-        "-=0.2"
-      );
-    }
-
-    // Animate form elements
-    if (formRef.current) {
-      const formElements = Array.from(formRef.current.children);
-      tl.fromTo(
-        formElements,
-        { y: 20, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.5, stagger: 0.1, ease: "power2.out" },
-        "-=0.3"
-      );
-    }
-
-    // Cleanup
-    return () => {
-      gsap.killTweensOf("*");
-    };
   }, []);
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
@@ -131,13 +74,7 @@ export default function SignInPage() {
     setLoading(true);
 
     // Form submission animation
-    gsap.to(formRef.current, {
-      scale: 0.98,
-      duration: 0.2,
-      yoyo: true,
-      repeat: 1,
-      ease: "power2.inOut",
-    });
+    pulseLoginForm(formRef.current);
 
     const result = await signIn("credentials", {
       email,
@@ -157,26 +94,15 @@ export default function SignInPage() {
 
       // Shake animation for error
       if (formRef.current) {
-        gsap.fromTo(
-          formRef.current,
-          { x: 0 },
-          { x: 0, duration: 0.6, ease: "power2.out" }
-        );
+        resetLoginFormPosition(formRef.current);
       }
       return;
     }
 
     // Success animation
-    gsap.to(cardRef.current, {
-      scale: 1.05,
-      duration: 0.3,
-      yoyo: true,
-      repeat: 1,
-      ease: "power2.inOut",
-      onComplete: () => {
+    pulseLoginCardThen(cardRef.current, () => {
         router.push(result?.url ?? `/dashboard`);
-      },
-    });
+      });
   };
 
   return (

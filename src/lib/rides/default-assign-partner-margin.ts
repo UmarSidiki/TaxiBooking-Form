@@ -1,0 +1,1 @@
+export const DEFAULT_ASSIGN_PARTNER_MARGIN = 20;

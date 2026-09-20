@@ -1,0 +1,18 @@
+---
+description: Mongoose + MongoDB schema and query patterns
+globs: "{src/models,src/lib/database}/**/*.{ts,tsx}"
+alwaysApply: false
+---
+
+# Database
+
+- One domain folder per model: `src/models/<domain>/`. Export the model from `index.ts`. Guard against recompile: `models.X || model(...)`.
+- Connect only through `connectDB()` in `src/lib/database/mongoose.ts`. Native driver (NextAuth adapter) uses `src/lib/database/mongodb.ts` — don't mix the two randomly.
+- Queries that encode business rules live in `src/lib/<domain>/*.repo.ts`, not inside route handlers.
+- Pick fields with `.select()`. Don't `find()` entire booking collections unbounded.
+- Indexes: unique `tripId`, emails; add indexes for filters you actually query (`status`, `assignedDriver`, dates).
+- Money on documents is **major units** (Number, 2 decimal places). Stripe's API uses integer cents — convert at the Stripe boundary.
+- Timestamps: schema `{ timestamps: true }`. Store instants as `Date`.
+- Soft-delete only when history is required (bookings). Otherwise hard delete (or existing cron cleanup).
+- Passwords: `select: false`. Never return them in APIs.
+- Next.js serverless: reuse the global cached connection. Do not raise `maxPoolSize` without a measured reason.

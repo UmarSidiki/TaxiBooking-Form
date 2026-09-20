@@ -1,0 +1,18 @@
+---
+description: Next.js Route Handlers + Mongoose service/repo conventions
+globs: "{src/app/api,src/lib,src/controllers,src/models}/**/*.{ts,tsx}"
+alwaysApply: false
+---
+
+# Backend (API + lib)
+
+- Route handlers return `NextResponse.json(data, { status })`. No HTML from `/api/*` except the invoice PDF route.
+- Validate with Zod from `src/lib/schemas` **before** the service. Never treat `await req.json()` as typed.
+- `route.ts` = HTTP + status codes. `*.service.ts` = rules. `*.repo.ts` = Mongoose. Never put pricing, webhooks, or mail inline in a new route.
+- Auth: `getServerSession(authOptions)` then check `session.user.role`. Do not roll a second auth stack.
+- Connect with `await connectDB()` from `@/lib/database` at the start of work that needs Mongo. Reuse the cached connection — do not call `mongoose.connect` elsewhere.
+- Failures: JSON `{ error: string }` or a small error code object. No stack traces to clients. Log server-side.
+- List endpoints: paginate or `.limit()`. Never unbounded `Booking.find()`.
+- Independent I/O: `Promise.all`. Don't await in a loop.
+- Payments: verify with Stripe/MultiSafepay APIs, then `finalize-paid-booking`. Never mark paid from client-sent amounts.
+- New Mongoose models: one folder `src/models/<domain>/` with schema file + `index.ts` re-exporting the model only.

@@ -71,7 +71,7 @@ export async function POST(
         assignmentEmailSent: false, // Reset to send assignment email
       },
       {
-        new: true,
+        returnDocument: 'after',
         runValidators: true,
       }
     );

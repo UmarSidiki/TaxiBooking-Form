@@ -1,0 +1,1 @@
+export const DISTANCE_DEBOUNCE_MS = 1000;

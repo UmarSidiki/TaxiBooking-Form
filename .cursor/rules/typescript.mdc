@@ -1,0 +1,27 @@
+---
+description: TypeScript strictness, naming, and error handling
+globs: "**/*.{ts,tsx}"
+alwaysApply: false
+---
+
+# TypeScript
+
+- Strict. No `any`. Unknown input is `unknown`, then parse with Zod (`src/lib/schemas`). Infer with `z.infer<typeof schema>` — do not duplicate unions.
+- Prefer `type` for unions/props; `interface` only when you must extend (Mongoose `Document` types are fine).
+- Named exports. Files are kebab-case (`create-booking.service.ts`). React components PascalCase in kebab files (`step1-trip-details.tsx` → `export function Step1TripDetails`).
+- No default exports except Next.js `page.tsx` / `layout.tsx` / `route.ts` and Mongoose model files that already default-export.
+- Functions do one job. Name with a verb: `calculateBookingPrice`, `finalizePaidBooking`.
+- Don't swallow errors.
+
+```ts
+// BAD
+} catch (e) {}
+
+// GOOD
+} catch (error) {
+  throw new Error("Failed to create booking", { cause: error });
+}
+```
+
+- Dates/money: `Intl` with the active locale. Don't concatenate currency by hand.
+- Avoid barrel files that re-export entire modules. Re-export only a folder's public surface (`models/booking/index.ts`).

@@ -1,0 +1,50 @@
+---
+description: Non-negotiable architecture — small files, Next.js App Router, no stack drift.
+alwaysApply: true
+---
+
+# Architecture (always apply)
+
+This is a **taxi booking Next.js app** (public wizard + admin + driver + partner). Follow this file on every change. Do not invent a different stack, dump logic into one file, or wander into unrelated refactors.
+
+## Stack (do not change unless asked)
+
+- Next.js App Router + React 19 + TypeScript + Tailwind v4 + shadcn/ui
+- MongoDB + Mongoose (`connectDB()` from `@/lib/database`)
+- NextAuth v4 (`src/lib/auth/options.ts`) — no parallel JWT/auth library
+- Zod 4 · next-intl · Stripe + MultiSafepay · Google Maps · Nodemailer
+
+Do not introduce Hono, Drizzle, Better Auth, Expo, or a `backend/` folder.
+
+## File size (hard rule)
+
+- One concern per file. Target **under 150 lines**. Split before **200**.
+- Never grow a god file (routes + validation + DB + UI in one place).
+- New feature = new small files in the right folder. If you edit a file already over 200 lines, extract the touched concern.
+
+```
+# BAD
+src/app/api/booking/route.ts
+
+# GOOD
+src/app/api/booking/route.ts                    # HTTP only
+src/lib/bookings/create-booking.service.ts      # business rules
+src/lib/bookings/booking.repo.ts                # mongoose queries
+src/lib/schemas/booking.schema.ts               # zod
+```
+
+## Layout (keep this shape)
+
+```
+src/app/[locale]/     # pages — thin
+src/app/api/          # route handlers — HTTP + status
+src/components/       # UI; ui/ is shadcn only
+src/lib/<domain>/     # *.service.ts + *.repo.ts
+src/lib/schemas/      # Zod
+src/models/<domain>/  # Mongoose
+messages/             # i18n dictionaries
+```
+
+- Pages compose. Hooks (`src/hooks/`) own client logic. Route handlers do not price, send mail, or talk to Stripe directly — call `src/lib/payments/` or a domain service.
+- shadcn primitives stay in `src/components/ui/`. Do not edit them to add business UI.
+- Match existing names and imports. Stay on the requested task.

@@ -1,10 +1,16 @@
 "use client";
 
-import { useState, useEffect, useCallback, useRef, useMemo } from "react";
+import { useState, useCallback, useRef } from "react";
 import { useBookingForm } from "@/contexts/BookingFormContext";
-import { importLibrary, setOptions } from "@googlemaps/js-api-loader";
 import { useTheme } from "@/contexts/ThemeContext";
 import { useTranslations } from "next-intl";
+import { isPlaceInServiceArea } from "@/lib/maps/is-place-in-service-area";
+import { useStep1Distance } from "@/hooks/form/form-steps/useStep1Distance";
+import { useStep1GoogleMaps } from "@/hooks/form/form-steps/useStep1GoogleMaps";
+import { useStep1StopAutocomplete } from "@/hooks/form/form-steps/useStep1StopAutocomplete";
+import { getStep1Errors } from "@/lib/form/get-step1-errors";
+import { createStep1EmbedUrl } from "@/lib/form/create-step1-embed-url";
+import { navigateEmbedToStep2 } from "@/lib/form/navigate-embed-to-step2";
 
 export function useStep1() {
   const [mapLoaded, setMapLoaded] = useState(false);
@@ -31,538 +37,57 @@ export function useStep1() {
   const pickupInputRef = useRef<HTMLInputElement>(null);
   const dropoffInputRef = useRef<HTMLInputElement>(null);
   const stopInputRefs = useRef<(HTMLInputElement | null)[]>([]);
-  const formDataRef = useRef(formData);
   const { settings } = useTheme();
-  const distanceCalculationTimerRef = useRef<NodeJS.Timeout | null>(null);
   const pickupAutocompleteListenerRef = useRef<google.maps.MapsEventListener | null>(null);
   const dropoffAutocompleteListenerRef = useRef<google.maps.MapsEventListener | null>(null);
 
-  useEffect(() => {
-    formDataRef.current = formData;
-  }, [formData]);
-
-  // Helper function to check if a point is inside a polygon using ray-casting algorithm
-  const isPointInPolygon = useCallback(
-    (point: { lat: number; lng: number }, polygon: Array<{ lat: number; lng: number }>) => {
-      let inside = false;
-      for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
-        const xi = polygon[i].lng;
-        const yi = polygon[i].lat;
-        const xj = polygon[j].lng;
-        const yj = polygon[j].lat;
-
-        const intersect =
-          yi > point.lat !== yj > point.lat &&
-          point.lng < ((xj - xi) * (point.lat - yi)) / (yj - yi) + xi;
-        if (intersect) inside = !inside;
-      }
-      return inside;
-    },
-    []
-  );
-
-  // Helper function to validate place against polygon bounds
   const validatePlaceInBounds = useCallback(
     (place: google.maps.places.PlaceResult): boolean => {
-      if (!settings?.mapPolygonPoints || settings.mapPolygonPoints.length < 3) {
-        console.log("No polygon defined, allowing all locations");
-        return true; // No restriction if no polygon defined
-      }
-
-      const location = place.geometry?.location;
-      if (!location) {
-        console.log("No location found in place");
-        return false;
-      }
-
-      const point = {
-        lat: location.lat(),
-        lng: location.lng(),
-      };
-
-      const isInside = isPointInPolygon(point, settings.mapPolygonPoints);
-      console.log("Point validation:", {
-        address: place.formatted_address,
-        point,
-        isInside,
-        polygonPoints: settings.mapPolygonPoints.length
-      });
-
-      return isInside;
+      return isPlaceInServiceArea(place, settings?.mapPolygonPoints);
     },
-    [settings?.mapPolygonPoints, isPointInPolygon]
+    [settings?.mapPolygonPoints]
   );
 
-  const setupStopAutocomplete = useCallback(
-    (index: number) => {
-      if (!window.google || !window.google.maps || !window.google.maps.places)
-        return null;
+  useStep1StopAutocomplete({
+    formData,
+    settings,
+    stopInputRefs,
+    validatePlaceInBounds,
+    setErrors,
+    setFormData,
+    t,
+  });
 
-      const inputRef = stopInputRefs.current[index];
-      if (!inputRef) return null;
+  const { calculateDistance, handleInputBlur } = useStep1Distance({
+    formData,
+    googleMapRef,
+    directionsRendererRef,
+    setDistanceData,
+    setCalculatingDistance,
+  });
 
-      const autocompleteOptions: google.maps.places.AutocompleteOptions = {
-        strictBounds: true,
-      };
-
-      // If polygon is defined, use its bounding box for biasing results
-      if (settings?.mapPolygonPoints && settings.mapPolygonPoints.length >= 3) {
-        const bounds = new google.maps.LatLngBounds();
-        settings.mapPolygonPoints.forEach(point => {
-          bounds.extend(new google.maps.LatLng(point.lat, point.lng));
-        });
-        autocompleteOptions.bounds = bounds;
-      } else if (settings?.mapBounds) {
-        // Fallback to rectangular bounds if available
-        const bounds = new google.maps.LatLngBounds(
-          new google.maps.LatLng(settings.mapBounds.south, settings.mapBounds.west),
-          new google.maps.LatLng(settings.mapBounds.north, settings.mapBounds.east)
-        );
-        autocompleteOptions.bounds = bounds;
-      }
-
-      const autocomplete = new window.google.maps.places.Autocomplete(
-        inputRef,
-        autocompleteOptions
-      );
-
-      const listener = autocomplete.addListener("place_changed", () => {
-        const place = autocomplete.getPlace();
-        
-        console.log("Stop autocomplete - settings available:", {
-          hasPolygon: !!settings?.mapPolygonPoints,
-          polygonLength: settings?.mapPolygonPoints?.length
-        });
-        
-        // Validate against polygon bounds if defined
-        if (!validatePlaceInBounds(place)) {
-          inputRef.value = "";
-          setErrors((prev) => ({
-            ...prev,
-            stops: t("Step1.location-outside-service-area"),
-          }));
-          return;
-        }
-
-        const newLocation = place.formatted_address || place.name || "";
-        setFormData((prev) => ({
-          ...prev,
-          stops: prev.stops.map((stop, i) =>
-            i === index ? { ...stop, location: newLocation } : stop
-          ),
-        }));
-        // Distance calculation will be triggered by the useEffect that monitors stops
-      });
-
-      // Return cleanup function
-      return () => {
-        if (listener) {
-          google.maps.event.removeListener(listener);
-        }
-      };
-    },
-    [setFormData, settings?.mapPolygonPoints, settings?.mapBounds, validatePlaceInBounds, setErrors, t]
-  );
-
-  const calculateDistance = useCallback(
-    async (
-      origin: string,
-      destination: string,
-      stops: Array<{ location: string; order: number }> = [],
-      isRoundTrip: boolean = false
-    ) => {
-      if (!origin || !destination) return;
-      // Check for extremely short strings that might be invalid
-      if (origin.length < 3 || destination.length < 3) return;
-
-      setCalculatingDistance(true);
-      try {
-        const stopLocations = stops
-          .map((stop) => stop.location)
-          .filter((location) => location.trim());
-        const response = await fetch("/api/distance", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            origin,
-            destination,
-            stops: stopLocations,
-            isRoundTrip,
-          }),
-        });
-
-        const data = await response.json();
-        if (data.success) {
-          setDistanceData(data.data);
-
-          // Update map route
-          if (googleMapRef.current && window.google) {
-            const directionsService = new google.maps.DirectionsService();
-
-            const waypoints = stopLocations.map((location) => ({
-              location: location,
-              stopover: true,
-            }));
-
-            directionsService.route(
-              {
-                origin: origin,
-                destination: destination,
-                waypoints: waypoints,
-                travelMode: google.maps.TravelMode.DRIVING,
-              },
-              (result, status) => {
-                if (status === "OK" && result) {
-                  if (!directionsRendererRef.current) {
-                    directionsRendererRef.current =
-                      new google.maps.DirectionsRenderer({
-                        map: googleMapRef.current,
-                        suppressMarkers: false,
-                        polylineOptions: {
-                          strokeColor: "var(--primary-color)",
-                          strokeWeight: 4,
-                        },
-                      });
-                  }
-                  directionsRendererRef.current.setDirections(result);
-                }
-              }
-            );
-          }
-        }
-      } catch (error) {
-        console.error("Error calculating distance:", error);
-      } finally {
-        setCalculatingDistance(false);
-      }
-    },
-    [setCalculatingDistance, setDistanceData]
-  );
-
-  // Debounced distance calculation to prevent excessive API calls
-  const debouncedCalculateDistance = useCallback(
-    (
-      origin: string,
-      destination: string,
-      stops: Array<{ location: string; order: number }> = [],
-      isRoundTrip: boolean = false
-    ) => {
-      // Clear existing timer
-      if (distanceCalculationTimerRef.current) {
-        clearTimeout(distanceCalculationTimerRef.current);
-      }
-
-      // Set new timer
-      distanceCalculationTimerRef.current = setTimeout(() => {
-        calculateDistance(origin, destination, stops, isRoundTrip);
-      }, 1000); // 1s debounce — fewer /api/distance calls while typing
-    },
-    [calculateDistance]
-  );
-
-  // Effect to setup autocomplete for stops when they change
-  useEffect(() => {
-    if (formData.stops.length === 0) {
-      return;
-    }
-
-    const lastIndex = formData.stops.length - 1;
-    if (stopInputRefs.current[lastIndex]) {
-      const cleanup = setupStopAutocomplete(lastIndex);
-      // Return cleanup function
-      return cleanup || undefined;
-    }
-  }, [formData.stops.length, setupStopAutocomplete]);
-
-  // Effect to recalculate distance when stops change
-  // Using useMemo to prevent unnecessary recalculations
-  const stopsKey = useMemo(
-    () => formData.stops.map(s => s.location).join('|'),
-    [formData.stops]
-  );
-
-  useEffect(() => {
-    // Only recalculate if we have pickup and dropoff
-    if (formData.pickup && formData.dropoff && formData.bookingType === "destination") {
-      // Only recalculate if all stops have locations (or no stops)
-      const allStopsValid = formData.stops.length === 0 || 
-        formData.stops.every(stop => stop.location.trim());
-      
-      const isPickupValid = formData.pickup.trim().length > 2;
-      const isDropoffValid = formData.dropoff.trim().length > 2;
-
-      if (allStopsValid && isPickupValid && isDropoffValid) {
-        debouncedCalculateDistance(
-          formData.pickup.trim(),
-          formData.dropoff.trim(),
-          formData.stops,
-          formData.tripType === "roundtrip"
-        );
-      }
-    }
-  }, [
-    formData.pickup,
-    formData.dropoff,
-    formData.bookingType,
-    formData.tripType,
-    stopsKey, // Use memoized key instead of inline calculation
-    debouncedCalculateDistance,
-  ]);
-
-  // Cleanup timer on unmount
-  useEffect(() => {
-    return () => {
-      if (distanceCalculationTimerRef.current) {
-        clearTimeout(distanceCalculationTimerRef.current);
-      }
-    };
-  }, []);
-
-  // Initialize Google Maps and Autocomplete - deferred until needed
-  useEffect(() => {
-    // Defer loading for performance
-    const timeoutId = setTimeout(async () => {
-      const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
-      if (!apiKey) {
-        console.warn("Google Maps API key not configured");
-        setMapLoaded(true); // Still mark as loaded to remove loader
-        return;
-      }
-
-      try {
-        setOptions({
-          key: apiKey,
-          v: "weekly",
-        });
-
-        const [maps, places] = await Promise.all([
-          importLibrary("maps"),
-          importLibrary("places"),
-        ]);
-
-        // Initialize map (only if map container is present)
-        if (mapRef.current && !googleMapRef.current) {
-          const initialCenter =
-            settings && settings.mapInitialLat && settings.mapInitialLng
-              ? { lat: settings.mapInitialLat, lng: settings.mapInitialLng }
-              : { lat: 46.2044, lng: 6.1432 }; // Default to Geneva
-
-          googleMapRef.current = new maps.Map(mapRef.current, {
-            center: initialCenter,
-            zoom: 8,
-            disableDefaultUI: false,
-            zoomControl: true,
-            mapTypeControl: false,
-            streetViewControl: false,
-            fullscreenControl: true,
-          });
-          setMapLoaded(true);
-        }
-
-        const autocompleteOptions: google.maps.places.AutocompleteOptions = {
-          strictBounds: true,
-        };
-
-        // If polygon is defined, use its bounding box for biasing results
-        if (settings?.mapPolygonPoints && settings.mapPolygonPoints.length >= 3) {
-          const bounds = new google.maps.LatLngBounds();
-          settings.mapPolygonPoints.forEach(point => {
-            bounds.extend(new google.maps.LatLng(point.lat, point.lng));
-          });
-          autocompleteOptions.bounds = bounds;
-        } else if (settings?.mapBounds) {
-          // Fallback to rectangular bounds if available
-          const bounds = new google.maps.LatLngBounds(
-            new google.maps.LatLng(settings.mapBounds.south, settings.mapBounds.west),
-            new google.maps.LatLng(settings.mapBounds.north, settings.mapBounds.east)
-          );
-          autocompleteOptions.bounds = bounds;
-        }
-
-        // Setup Autocomplete for pickup (only once)
-        if (
-          pickupInputRef.current &&
-          !pickupInputRef.current.dataset.autocompleteInitialized
-        ) {
-          pickupInputRef.current.dataset.autocompleteInitialized = "true";
-          const autocompletePickup = new places.Autocomplete(
-            pickupInputRef.current,
-            autocompleteOptions
-          );
-
-          pickupAutocompleteListenerRef.current = autocompletePickup.addListener("place_changed", () => {
-            const place = autocompletePickup.getPlace();
-            
-            console.log("Pickup autocomplete - settings available:", {
-              hasPolygon: !!settings?.mapPolygonPoints,
-              polygonLength: settings?.mapPolygonPoints?.length
-            });
-            
-            // Validate against polygon bounds if defined
-            if (!validatePlaceInBounds(place)) {
-              if (pickupInputRef.current) pickupInputRef.current.value = "";
-              setErrors((prev) => ({
-                ...prev,
-                pickup: t("Step1.location-outside-service-area"),
-              }));
-              return;
-            }
-
-            const newPickup = place.formatted_address || place.name || "";
-            setFormData((prev) => ({ ...prev, pickup: newPickup }));
-            // Distance calculation will be triggered by the useEffect
-          });
-        }
-
-        // Setup Autocomplete for dropoff (only once)
-        if (
-          dropoffInputRef.current &&
-          !dropoffInputRef.current.dataset.autocompleteInitialized
-        ) {
-          dropoffInputRef.current.dataset.autocompleteInitialized = "true";
-          const autocompleteDropoff = new places.Autocomplete(
-            dropoffInputRef.current,
-            autocompleteOptions
-          );
-
-          dropoffAutocompleteListenerRef.current = autocompleteDropoff.addListener("place_changed", () => {
-            const place = autocompleteDropoff.getPlace();
-            
-            // Validate against polygon bounds if defined
-            if (!validatePlaceInBounds(place)) {
-              if (dropoffInputRef.current) dropoffInputRef.current.value = "";
-              setErrors((prev) => ({
-                ...prev,
-                dropoff: t("Step1.location-outside-service-area"),
-              }));
-              return;
-            }
-
-            const newDropoff = place.formatted_address || place.name || "";
-            setFormData((prev) => ({ ...prev, dropoff: newDropoff }));
-            // Distance calculation will be triggered by the useEffect
-          });
-        }
-
-        // If we have pickup and dropoff from context, show the route (only on initial load)
-        // Only try to calculate distance if we have a map to display it on
-        if (
-          mapRef.current &&
-          formData.pickup &&
-          formData.dropoff &&
-          !directionsRendererRef.current
-        ) {
-          calculateDistance(
-            formData.pickup,
-            formData.dropoff,
-            formData.stops,
-            formData.tripType === "roundtrip"
-          );
-        }
-      } catch (error) {
-        console.error("Error loading Google Maps:", error);
-      }
-    }, 300); // 300ms delay to prioritize initial render
-
-    return () => {
-      clearTimeout(timeoutId);
-      // Cleanup autocomplete listeners to prevent memory leaks
-      if (pickupAutocompleteListenerRef.current) {
-        google.maps.event.removeListener(pickupAutocompleteListenerRef.current);
-        pickupAutocompleteListenerRef.current = null;
-      }
-      if (dropoffAutocompleteListenerRef.current) {
-        google.maps.event.removeListener(dropoffAutocompleteListenerRef.current);
-        dropoffAutocompleteListenerRef.current = null;
-      }
-    };
-  }, []); // Run only once on mount
+  useStep1GoogleMaps({
+    mapRef,
+    googleMapRef,
+    directionsRendererRef,
+    pickupInputRef,
+    dropoffInputRef,
+    pickupAutocompleteListenerRef,
+    dropoffAutocompleteListenerRef,
+    settings,
+    formData,
+    validatePlaceInBounds,
+    setErrors,
+    setFormData,
+    setMapLoaded,
+    calculateDistance,
+    t,
+  });
 
   const validateStep = (): boolean => {
-    const newErrors: typeof errors = {};
-
-    if (!formData.pickup.trim()) {
-      newErrors.pickup = t("Step1.pickup-location-is-required");
-    }
-
-    // Dropoff is only required for destination-based bookings
-    if (formData.bookingType === "destination" && !formData.dropoff.trim()) {
-      newErrors.dropoff = t("Step1.dropoff-location-is-required");
-    }
-
-    if (!formData.date) {
-      newErrors.date = t("Step1.date-is-required");
-    }
-    if (!formData.time) {
-      newErrors.time = t("Step1.time-is-required");
-    }
-
-    // Validate return date/time for roundtrip bookings
-    if (formData.tripType === "roundtrip") {
-      if (!formData.returnDate) {
-        newErrors.returnDate = t("Step1.return-date-is-required");
-      } else if (formData.date && formData.returnDate < formData.date) {
-        newErrors.returnDate = t("Step1.return-date-must-be-after-departure");
-      }
-      if (!formData.returnTime) {
-        newErrors.returnTime = t("Step1.return-time-is-required");
-      }
-    }
-
+    const newErrors = getStep1Errors(formData, t);
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
-  };
-
-  const createTargetUrl = () => {
-    const locale = window.location.pathname.split("/")[1]; // Extract locale from URL path
-    const params = new URLSearchParams({
-      step: "2",
-      bookingType: formData.bookingType,
-      pickup: formData.pickup.trim(),
-      date: formData.date,
-      time: formData.time,
-      passengers: String(formData.passengers),
-      source: "embed_v1",
-    });
-
-    // Add dropoff and tripType only for destination bookings
-    if (formData.bookingType === "destination") {
-      params.set("dropoff", formData.dropoff.trim());
-      params.set(
-        "tripType",
-        formData.tripType === "roundtrip" ? "return" : "oneway"
-      );
-
-      // Add return date/time for roundtrip
-      if (formData.tripType === "roundtrip") {
-        if (formData.returnDate) params.set("returnDate", formData.returnDate);
-        if (formData.returnTime) params.set("returnTime", formData.returnTime);
-      }
-
-      // Add stops if they exist (including duration)
-      if (formData.stops.length > 0) {
-        const filteredStops = formData.stops
-          .filter((stop) => stop.location.trim())
-          .map((stop) => ({
-            location: stop.location,
-            order: stop.order,
-            duration: stop.duration || 0,
-          }));
-        if (filteredStops.length > 0) {
-          params.set("stops", JSON.stringify(filteredStops));
-        }
-      }
-    }
-
-    // Add duration only for hourly bookings
-    if (formData.bookingType === "hourly") {
-      params.set("duration", String(formData.duration));
-    }
-
-    // Return the URL with locale path and parameters
-    return `/${locale}?${params.toString()}`;
   };
 
   const redirectToStep2 = () => {
@@ -581,34 +106,9 @@ export function useStep1() {
         }
       }
 
-      const targetUrl = createTargetUrl();
+      const targetUrl = createStep1EmbedUrl(formData);
       const fullUrl = `${window.location.origin}${targetUrl}`;
-
-      // Always try to break out of iframe by navigating the top window
-      try {
-        if (window.top && window.top !== window) {
-          // We're in an iframe, try to navigate parent
-          window.top.location.href = fullUrl;
-        } else {
-          // We're not in an iframe, navigate normally
-          window.location.href = fullUrl;
-        }
-      } catch (error) {
-        // Cross-origin restrictions prevent accessing window.top.location
-        // Force navigation with a fallback approach
-        console.debug(
-          "Cross-origin restriction, using alternative navigation",
-          error
-        );
-
-        // Try using window.open with _top target as fallback
-        try {
-          window.open(fullUrl, "_top");
-        } catch {
-          // Last resort: regular navigation
-          window.location.href = fullUrl;
-        }
-      }
+      navigateEmbedToStep2(fullUrl);
     }
   };
 
@@ -635,22 +135,6 @@ export function useStep1() {
     // Clear error for this field
     if (errors[field as keyof typeof errors]) {
       setErrors((prev) => ({ ...prev, [field]: undefined }));
-    }
-  };
-
-  const handleInputBlur = (field: string) => {
-    // Trigger distance calculation when both pickup and dropoff are filled
-    if (
-      (field === "pickup" || field === "dropoff") &&
-      formData.pickup &&
-      formData.dropoff
-    ) {
-      debouncedCalculateDistance(
-        formData.pickup,
-        formData.dropoff,
-        formData.stops,
-        formData.tripType === "roundtrip"
-      );
     }
   };
 

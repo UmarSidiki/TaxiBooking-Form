@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useTranslations } from "next-intl";
 import { apiGet } from "@/utils/api";
+import { isBookingPassed as isBookingPassedAt } from "@/lib/rides/is-booking-passed";
 import { ISetting } from "@/models/settings";
 import {
   Calendar,
@@ -70,16 +71,11 @@ export default function PartnerHistoryPage() {
     fetchSettings();
   }, [fetchSettings]);
 
-  const isBookingPassed = useCallback((dateStr: string, timeStr: string) => {
-    try {
-      const nowInTzStr = new Date().toLocaleString('en-US', { timeZone: timezone, hour12: false });
-      const nowInTz = new Date(nowInTzStr);
-      const bookingDate = new Date(`${dateStr}T${timeStr}:00`);
-      return bookingDate < nowInTz;
-    } catch (e) {
-      return new Date(`${dateStr}T${timeStr}:00`) < new Date();
-    }
-  }, [timezone]);
+  const isBookingPassed = useCallback(
+    (dateStr: string, timeStr: string) =>
+      isBookingPassedAt(dateStr, timeStr, timezone),
+    [timezone]
+  );
 
   useEffect(() => {
     fetchRides();

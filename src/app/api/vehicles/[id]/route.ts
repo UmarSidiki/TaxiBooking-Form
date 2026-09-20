@@ -72,7 +72,7 @@ export async function PUT(
     const vehicle = await Vehicle.findByIdAndUpdate(
       id,
       { ...body, updatedAt: new Date() },
-      { new: true, runValidators: true }
+      { returnDocument: 'after', runValidators: true }
     );
 
     if (!vehicle) {

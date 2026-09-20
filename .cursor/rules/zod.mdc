@@ -1,0 +1,34 @@
+---
+description: Zod is the source of truth for API I/O and forms.
+alwaysApply: true
+---
+
+# Zod (always apply)
+
+Runtime types live in `src/lib/schemas/`. TypeScript types are `z.infer<typeof schema>`. Do not declare a parallel union, interface, or DTO next to a schema.
+
+Mongoose `IBooking` / `IVehicle` types describe **documents**. They are not a substitute for parsing HTTP input.
+
+## Parse at the boundary
+
+```ts
+// BAD
+const body = (await req.json()) as BookingInput;
+
+// GOOD
+const parsed = bookingInputSchema.safeParse(await req.json());
+if (!parsed.success) {
+  return NextResponse.json({ error: "invalid_body" }, { status: 400 });
+}
+```
+
+- Route handlers and webhooks: `schema.safeParse` (or a small `parseWith` helper).
+- Forms: parse with the shared schema before calling the API.
+- Query params, env, and uploads go through Zod too.
+
+## Do not
+
+- Duplicate the same payload type in a component and a Zod file
+- Use `z.any()` / `z.unknown()` without a follow-up parse
+- Hand-write API response types when a schema exists
+- Return raw Zod `error.message` English to the UI — map to next-intl keys

@@ -106,9 +106,9 @@ const BookingSchema: Schema = new Schema({
     enum: ["pending", "completed", "failed", "refunded"],
     default: "pending"
   },
-  stripePaymentIntentId: { type: String },
-  multisafepayOrderId: { type: String },
-  multisafepayTransactionId: { type: String },
+  stripePaymentIntentId: { type: String, unique: true, sparse: true },
+  multisafepayOrderId: { type: String, unique: true, sparse: true },
+  multisafepayTransactionId: { type: String, unique: true, sparse: true },
   status: {
     type: String,
     enum: ["upcoming", "completed", "canceled"],

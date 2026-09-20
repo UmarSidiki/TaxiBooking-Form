@@ -1,1 +1,0 @@
-export { sendAdminPartnerRegistrationEmail } from './PartnerNotification';

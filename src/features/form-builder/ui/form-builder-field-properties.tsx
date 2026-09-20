@@ -1,19 +1,19 @@
 "use client";
 
-import { FIELD_REGISTRY } from "@/components/form-builder/field-registry";
-import { Badge } from "@/components/ui/badge";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Separator } from "@/components/ui/separator";
-import { Switch } from "@/components/ui/switch";
+import { FIELD_REGISTRY } from "@/features/form-builder/ui/field-registry";
+import { Badge } from "@/shared/ui/badge";
+import { Input } from "@/shared/ui/input";
+import { Label } from "@/shared/ui/label";
+import { Separator } from "@/shared/ui/separator";
+import { Switch } from "@/shared/ui/switch";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import type { IFormField } from "@/models/form-layout";
+} from "@/shared/ui/select";
+import type { IFormField } from "@/features/form-builder/model";
 import { Clock, Eye, MapPin, Monitor, Smartphone } from "lucide-react";
 import type { useTranslations } from "next-intl";
 

@@ -1,6 +1,6 @@
 "use client";
 
-import type { IBooking } from "@/models/booking";
+import type { IBooking } from "@/features/booking/model";
 import { CalendarDays, Clock, DollarSign, Users } from "lucide-react";
 import type { useTranslations } from "next-intl";
 

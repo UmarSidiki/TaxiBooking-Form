@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { useTranslations } from "next-intl";
-import type { Partner, PartnerDocument, Vehicle } from "@/components/admin-partners/admin-partner.types";
+import type { Partner, PartnerDocument, Vehicle } from "@/features/partners/ui/admin-partner.types";
 
 export function useAdminPartners() {
   const t = useTranslations("Dashboard.Admin.Partners");

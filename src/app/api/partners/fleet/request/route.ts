@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
-import { connectDB } from "@/lib/database";
-import Partner, { type IFleetRequest } from "@/models/partner/Partner";
-import Vehicle from "@/models/vehicle/Vehicle";
-import { authOptions } from "@/lib/auth/options";
-import { sendFleetRequestNotificationEmail } from "@/controllers/email/admin/FleetNotification";
-import { getBaseUrl } from "@/lib/get-base-url";
+import { connectDB } from "@/shared/db";
+import Partner, { type IFleetRequest } from "@/features/partners/model/Partner";
+import Vehicle from "@/features/fleet/model/Vehicle";
+import { authOptions } from "@/features/auth";
+import { sendFleetRequestNotificationEmail } from "@/features/partners/email/fleet-notification";
+import { getBaseUrl } from "@/shared/lib/get-base-url";
 
 export async function POST(request: NextRequest) {
   try {

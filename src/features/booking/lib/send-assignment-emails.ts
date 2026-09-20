@@ -1,12 +1,12 @@
-import { sendRideAssignmentEmail } from '@/controllers/email/bookings';
-import type { IBooking } from '@/models/booking';
-import { markAssignmentEmailSent } from '@/lib/bookings/booking.repo';
+import { sendRideAssignmentEmail } from '@/features/rides/email/ride-assignment';
+import type { IBooking } from '@/features/booking/model';
+import { markAssignmentEmailSent } from '@/features/booking/lib/booking.repo';
 import {
   bookingTotalOrZero,
   buildRideDispatchEmailPayload,
   partnerPayoutOrTotal,
-} from '@/lib/bookings/build-ride-dispatch-email';
-import type { BookingPatchAction } from '@/lib/schemas/booking-patch.schema';
+} from '@/features/booking/lib/build-ride-dispatch-email';
+import type { BookingPatchAction } from '@/features/booking/schema/booking-patch.schema';
 
 export async function sendAssignmentEmails(input: {
   action: BookingPatchAction;

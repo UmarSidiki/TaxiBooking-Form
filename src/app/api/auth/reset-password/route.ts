@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { hash } from "bcryptjs";
-import { connectDB } from "@/lib/database";
-import { User } from "@/models/user";
-import { PasswordReset } from "@/models/user";
+import { connectDB } from "@/shared/db";
+import { User } from "@/features/auth/model";
+import { PasswordReset } from "@/features/auth/model";
 
 export async function POST(request: NextRequest) {
   try {

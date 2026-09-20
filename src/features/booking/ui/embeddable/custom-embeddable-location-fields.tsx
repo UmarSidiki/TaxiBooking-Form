@@ -12,11 +12,11 @@ import {
   X,
   Timer,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import type { IFormField } from "@/models/form-layout";
-import type { CustomEmbeddableFieldCtx } from "@/components/embeddable/custom-embeddable-field-context";
-import { STOP_WAIT_OPTIONS_10_MIN } from "@/lib/form/stop-wait-duration-options";
+import { Button } from "@/shared/ui/button";
+import { Input } from "@/shared/ui/input";
+import type { IFormField } from "@/features/form-builder/model";
+import type { CustomEmbeddableFieldCtx } from "@/features/booking/ui/embeddable/custom-embeddable-field-context";
+import { STOP_WAIT_OPTIONS_10_MIN } from "@/features/booking/lib/stop-wait-duration-options";
 
 type Ctx = CustomEmbeddableFieldCtx;
 

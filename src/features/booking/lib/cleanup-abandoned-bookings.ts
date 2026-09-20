@@ -1,5 +1,5 @@
-import { connectDB } from "@/lib/database";
-import { Booking } from "@/models/booking";
+import { connectDB } from "@/shared/db";
+import { Booking } from "@/features/booking/model";
 
 /**
  * Cleanup abandoned MultiSafepay bookings

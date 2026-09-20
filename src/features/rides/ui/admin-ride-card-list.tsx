@@ -1,7 +1,7 @@
 "use client";
 
-import { AdminRideCard } from "@/components/rides/admin-ride-card";
-import type { useAdminRides } from "@/hooks/rides/useAdminRides";
+import { AdminRideCard } from "@/features/rides/ui/admin-ride-card";
+import type { useAdminRides } from "@/features/rides/hooks/useAdminRides";
 
 type Rides = ReturnType<typeof useAdminRides>;
 

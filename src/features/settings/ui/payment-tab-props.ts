@@ -1,6 +1,6 @@
 "use client";
 
-import type { ISetting } from "@/models/settings";
+import type { ISetting } from "@/features/settings/model";
 import type { useTranslations } from "next-intl";
 import type { Dispatch, SetStateAction } from "react";
 

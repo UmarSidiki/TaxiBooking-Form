@@ -1,8 +1,8 @@
-import { Booking, type IBooking } from "@/models/booking";
-import { Partner } from "@/models/partner";
-import { sendRideNotificationEmail } from "@/controllers/email/partners";
-import { getCurrencySymbol } from "@/lib/utils";
-import { Setting } from "@/models/settings";
+import { Booking, type IBooking } from "@/features/booking/model";
+import { Partner } from "@/features/partners/model";
+import { sendRideNotificationEmail } from "@/features/partners/email/notification";
+import { getCurrencySymbol } from "@/shared/lib/utils";
+import { Setting } from "@/features/settings/model";
 
 interface NotifyEligiblePartnersResult {
   eligibleCount: number;

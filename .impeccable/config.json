@@ -9,10 +9,10 @@
         "files": [
           "src/app/[locale]/(pages)/dashboard/(protected)/form-builder/page.tsx",
           "src/app/[locale]/(pages)/dashboard/(protected)/rides/page.tsx",
-          "src/app/[locale]/(pages)/drivers/components/DriverDashboard.tsx",
+          "src/features/drivers/ui/driver-dashboard.tsx",
           "src/app/[locale]/(pages)/partners/(protected)/history/page.tsx",
           "src/app/[locale]/(pages)/partners/(protected)/rides/page.tsx",
-          "src/components/rides/**"
+          "src/features/rides/ui/**"
         ],
         "createdAt": "2026-09-20T02:15:00.409Z",
         "reason": "User required no UI-output change; existing left-border warning callouts on ride/admin dashboards must stay"
@@ -21,7 +21,7 @@
         "rule": "gray-on-color",
         "value": "*",
         "files": [
-          "src/components/form/steps/step2-trip-route.tsx"
+          "src/features/booking/ui/steps/step2-trip-route.tsx"
         ],
         "createdAt": "2026-09-20T03:20:52.857Z",
         "reason": "User required no UI-output change; existing stop-number badge uses gray text on blue"
@@ -32,9 +32,9 @@
         "files": [
           "src/app/[locale]/embeddable/v2/page.tsx",
           "src/app/[locale]/embeddable/v3/page.tsx",
-          "src/components/embeddable/v1/embeddable-v1-form.tsx",
-          "src/components/embeddable/v2/**",
-          "src/components/embeddable/v3/**"
+          "src/features/booking/ui/embeddable/v1/embeddable-v1-form.tsx",
+          "src/features/booking/ui/embeddable/v2/**",
+          "src/features/booking/ui/embeddable/v3/**"
         ],
         "createdAt": "2026-09-20T03:34:00.912Z",
         "reason": "User required no UI-output change; existing embeddable stop-remove and field styles must stay"
@@ -44,7 +44,7 @@
         "value": "*",
         "files": [
           "src/app/[locale]/embeddable/v3/page.tsx",
-          "src/components/embeddable/v3/**"
+          "src/features/booking/ui/embeddable/v3/**"
         ],
         "createdAt": "2026-09-20T03:35:13.186Z",
         "reason": "User required no UI-output change; existing v3 rounded bordered card must stay"
@@ -53,7 +53,7 @@
         "rule": "gray-on-color",
         "value": "*",
         "files": [
-          "src/components/embeddable/v1/**"
+          "src/features/booking/ui/embeddable/v1/**"
         ],
         "createdAt": "2026-09-20T03:36:15.402Z",
         "reason": "User required no UI-output change; existing embeddable v1 field styles must stay"
@@ -62,7 +62,7 @@
         "rule": "border-accent-on-rounded",
         "value": "*",
         "files": [
-          "src/components/embeddable/v3/embeddable-v3-form.tsx"
+          "src/features/booking/ui/embeddable/v3/embeddable-v3-form.tsx"
         ],
         "createdAt": "2026-09-20T03:44:43.255Z",
         "reason": "User required no UI-output change; existing v3 rounded bordered card must stay"
@@ -71,7 +71,12 @@
         "rule": "gray-on-color",
         "value": "*",
         "files": [
-          "src/components/partner-fleet/**"
+          "src/features/partners/ui/partner-fleet-assigned.tsx",
+          "src/features/partners/ui/partner-fleet-available.tsx",
+          "src/features/partners/ui/partner-fleet-pending.tsx",
+          "src/features/partners/ui/partner-fleet-status.tsx",
+          "src/features/partners/ui/partner-fleet-vehicle-card.tsx",
+          "src/features/partners/ui/partner-fleet.types.ts"
         ],
         "createdAt": "2026-09-20T03:49:15.878Z",
         "reason": "User required no UI-output change; existing partner fleet status badges must stay"
@@ -80,12 +85,12 @@
         "rule": "gray-on-color",
         "value": "*",
         "files": [
-          "src/components/form/steps/step3-bank-panel.tsx",
-          "src/components/form/steps/step3-cash-panel.tsx",
-          "src/components/form/steps/step3-multisafepay-panel.tsx",
-          "src/components/form/steps/step3-payment-method-options.tsx",
-          "src/components/form/steps/step3-payment-methods.tsx",
-          "src/components/form/steps/step3-stripe-panel.tsx"
+          "src/features/booking/ui/steps/step3-bank-panel.tsx",
+          "src/features/booking/ui/steps/step3-cash-panel.tsx",
+          "src/features/booking/ui/steps/step3-multisafepay-panel.tsx",
+          "src/features/booking/ui/steps/step3-payment-method-options.tsx",
+          "src/features/booking/ui/steps/step3-payment-methods.tsx",
+          "src/features/booking/ui/steps/step3-stripe-panel.tsx"
         ],
         "createdAt": "2026-09-20T03:50:51.082Z",
         "reason": "User required no UI-output change; existing Step3 payment method selection styles must stay"
@@ -94,7 +99,12 @@
         "rule": "gray-on-color",
         "value": "*",
         "files": [
-          "src/components/partner-account/**"
+          "src/features/partners/ui/partner-account-banners.tsx",
+          "src/features/partners/ui/partner-account-documents.tsx",
+          "src/features/partners/ui/partner-account-profile.tsx",
+          "src/features/partners/ui/partner-account-status-badge.tsx",
+          "src/features/partners/ui/partner-account-upload.tsx",
+          "src/features/partners/ui/partner-account.types.ts"
         ],
         "createdAt": "2026-09-20T03:53:36.682Z",
         "reason": "User required no UI-output change; existing partner account status badges must stay"

@@ -1,10 +1,10 @@
 "use client";
 
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import type { IBooking } from "@/models/booking";
-import type { AdminRideReview } from "@/hooks/rides/useAdminRides";
-import { DEFAULT_ASSIGN_PARTNER_MARGIN } from "@/lib/rides/default-assign-partner-margin";
+import { Badge } from "@/shared/ui/badge";
+import { Button } from "@/shared/ui/button";
+import type { IBooking } from "@/features/booking/model";
+import type { AdminRideReview } from "@/features/rides/hooks/useAdminRides";
+import { DEFAULT_ASSIGN_PARTNER_MARGIN } from "@/features/rides/lib/default-assign-partner-margin";
 import {
   Ban,
   CheckCircle,

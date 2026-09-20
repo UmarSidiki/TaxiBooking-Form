@@ -17,12 +17,12 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from "@/components/ui/sidebar";
-import { LanguageSwitcher } from "@/components/LanguageSwitcher";
-import LogoutButton from "@/components/auth/LogoutButton";
-import { Separator } from "@/components/ui/separator";
+} from "@/shared/ui/sidebar";
+import { LanguageSwitcher } from "@/shared/chrome/language-switcher";
+import LogoutButton from "@/features/auth/ui/logout-button";
+import { Separator } from "@/shared/ui/separator";
 import { useTranslations } from "next-intl";
-import type { ISetting } from "@/models/settings";
+import type { ISetting } from "@/features/settings/model";
 
 export function AppSidebar({ locale }: { locale: string }) {
   const t = useTranslations();

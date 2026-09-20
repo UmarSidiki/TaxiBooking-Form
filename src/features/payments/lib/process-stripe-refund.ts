@@ -1,5 +1,5 @@
 import Stripe from 'stripe';
-import type { IBooking } from '@/models/booking';
+import type { IBooking } from '@/features/booking/model';
 
 export async function processStripeRefund(
   booking: IBooking,

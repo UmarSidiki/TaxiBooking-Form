@@ -1,7 +1,7 @@
-import type { IBooking } from '@/models/booking';
-import { Setting } from '@/models/settings';
-import { processStripeRefund } from '@/lib/payments/process-stripe-refund';
-import type { BookingPatchApplyResult } from '@/lib/bookings/booking-patch-result';
+import type { IBooking } from '@/features/booking/model';
+import { Setting } from '@/features/settings/model';
+import { processStripeRefund } from '@/features/payments/lib/process-stripe-refund';
+import type { BookingPatchApplyResult } from '@/features/booking/lib/booking-patch-result';
 
 export async function applyCancelBooking(
   booking: IBooking,

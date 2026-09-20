@@ -1,10 +1,10 @@
 "use client";
 
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { cn } from "@/lib/utils";
-import type { IVehicle } from "@/models/vehicle";
+import { Badge } from "@/shared/ui/badge";
+import { Button } from "@/shared/ui/button";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/shared/ui/card";
+import { cn } from "@/shared/lib/utils";
+import type { IVehicle } from "@/features/fleet/model";
 import { CheckCircle, Clock, Package, Users, X } from "lucide-react";
 import { useTranslations } from "next-intl";
 import Image from "next/image";

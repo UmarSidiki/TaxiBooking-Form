@@ -2,10 +2,10 @@ import type { ReactNode } from "react";
 import { redirect } from "next/navigation";
 import { getServerSession } from "next-auth";
 
-import { authOptions } from "@/lib/auth/options";
-import { AppSidebar } from "@/components/AppSidebar";
-import { LanguageSwitcher } from "@/components/LanguageSwitcher";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { authOptions } from "@/features/auth";
+import { AppSidebar } from "@/features/dashboard/ui/app-sidebar";
+import { LanguageSwitcher } from "@/shared/chrome/language-switcher";
+import { SidebarProvider, SidebarTrigger } from "@/shared/ui/sidebar";
 
 type DashboardLayoutProps = {
   children: ReactNode;

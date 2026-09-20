@@ -3,10 +3,10 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import { SortableContext, rectSortingStrategy } from "@dnd-kit/sortable";
-import { GridBackground } from "@/components/form-builder/grid-background";
-import { SortablePreviewItem } from "@/components/form-builder/sortable-preview-item";
-import { FormPreviewField } from "@/components/form-builder/form-preview-field";
-import type { IFormField, IFormStyle } from "@/models/form-layout";
+import { GridBackground } from "@/features/form-builder/ui/grid-background";
+import { SortablePreviewItem } from "@/features/form-builder/ui/sortable-preview-item";
+import { FormPreviewField } from "@/features/form-builder/ui/form-preview-field";
+import type { IFormField, IFormStyle } from "@/features/form-builder/model";
 import {
   ArrowLeftRight,
   ArrowRight,

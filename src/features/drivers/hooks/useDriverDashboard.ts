@@ -2,14 +2,14 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { useTranslations } from "next-intl";
-import type { IBooking } from "@/models/booking";
-import type { ISetting } from "@/models/settings";
-import { apiGet } from "@/utils/api";
+import type { IBooking } from "@/features/booking/model";
+import type { ISetting } from "@/features/settings/model";
+import { apiGet } from "@/shared/http/api";
 import { DateRange } from "react-day-picker";
-import { useCurrency } from "@/contexts/CurrencyContext";
-import { isBookingPassed as isBookingPassedAt } from "@/lib/rides/is-booking-passed";
-import { filterDriverBookings } from "@/lib/rides/filter-driver-bookings";
-import { DEFAULT_BOOKING_TIMEZONE } from "@/lib/rides/ride-constants";
+import { useCurrency } from "@/shared/context/currency-context";
+import { isBookingPassed as isBookingPassedAt } from "@/features/rides/lib/is-booking-passed";
+import { filterDriverBookings } from "@/features/rides/lib/filter-driver-bookings";
+import { DEFAULT_BOOKING_TIMEZONE } from "@/features/rides/lib/ride-constants";
 
 export function useDriverDashboard() {
   const t = useTranslations();

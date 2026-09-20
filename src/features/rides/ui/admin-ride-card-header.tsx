@@ -1,8 +1,8 @@
 "use client";
 
-import { RidePaymentStatusBadge } from "@/components/rides/ride-payment-status-badge";
-import { RideStatusBadge } from "@/components/rides/ride-status-badge";
-import type { IBooking } from "@/models/booking";
+import { RidePaymentStatusBadge } from "@/features/rides/ui/ride-payment-status-badge";
+import { RideStatusBadge } from "@/features/rides/ui/ride-status-badge";
+import type { IBooking } from "@/features/booking/model";
 import { Car } from "lucide-react";
 import type { useTranslations } from "next-intl";
 

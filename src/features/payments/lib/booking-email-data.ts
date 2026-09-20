@@ -1,7 +1,7 @@
-import { getCurrencySymbol } from '@/lib/utils';
-import type { IBooking } from '@/models/booking/Booking';
-import type { IPendingBooking } from '@/models/booking/PendingBooking';
-import type { IVehicle } from '@/models/vehicle/Vehicle';
+import { getCurrencySymbol } from '@/shared/lib/utils';
+import type { IBooking } from '@/features/booking/model/Booking';
+import type { IPendingBooking } from '@/features/booking/model/PendingBooking';
+import type { IVehicle } from '@/features/fleet/model/Vehicle';
 
 export interface BookingEmailData {
   tripId: string;

@@ -1,15 +1,15 @@
 "use client";
 
-import { FleetVehicleForm } from "@/components/fleet/fleet-vehicle-form";
-import { Button } from "@/components/ui/button";
+import { FleetVehicleForm } from "@/features/fleet/ui/fleet-vehicle-form";
+import { Button } from "@/shared/ui/button";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
-import type { useAdminFleet } from "@/hooks/fleet/useAdminFleet";
+} from "@/shared/ui/dialog";
+import type { useAdminFleet } from "@/features/fleet/hooks/useAdminFleet";
 import { Plus } from "lucide-react";
 
 type AdminFleetState = ReturnType<typeof useAdminFleet>;

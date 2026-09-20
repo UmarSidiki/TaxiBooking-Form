@@ -11,7 +11,7 @@ import {
 import {
   Card,
   CardContent,
-} from "@/components/ui/card";
+} from "@/shared/ui/card";
 
 interface PartnerDocument {
   type: string;

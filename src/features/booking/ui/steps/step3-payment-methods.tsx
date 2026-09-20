@@ -1,13 +1,13 @@
 "use client";
 
-import { Card } from "@/components/ui/card";
+import { Card } from "@/shared/ui/card";
 import { CreditCard } from "lucide-react";
-import { Step3PaymentMethodOptions } from "@/components/form/steps/step3-payment-method-options";
-import { Step3StripePanel } from "@/components/form/steps/step3-stripe-panel";
-import { Step3CashPanel } from "@/components/form/steps/step3-cash-panel";
-import { Step3BankPanel } from "@/components/form/steps/step3-bank-panel";
-import { Step3MultisafepayPanel } from "@/components/form/steps/step3-multisafepay-panel";
-import type { Step3PaymentMethodsProps } from "@/components/form/steps/step3-payment-methods.types";
+import { Step3PaymentMethodOptions } from "@/features/booking/ui/steps/step3-payment-method-options";
+import { Step3StripePanel } from "@/features/booking/ui/steps/step3-stripe-panel";
+import { Step3CashPanel } from "@/features/booking/ui/steps/step3-cash-panel";
+import { Step3BankPanel } from "@/features/booking/ui/steps/step3-bank-panel";
+import { Step3MultisafepayPanel } from "@/features/booking/ui/steps/step3-multisafepay-panel";
+import type { Step3PaymentMethodsProps } from "@/features/booking/ui/steps/step3-payment-methods.types";
 
 export function Step3PaymentMethods(props: Step3PaymentMethodsProps) {
   const {

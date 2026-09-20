@@ -2,11 +2,11 @@ import {
   DEFAULT_VEHICLE_MINIMUM_HOURS,
   DEFAULT_VEHICLE_PRICE_PER_HOUR,
   DEFAULT_VEHICLE_RETURN_PRICE_PERCENTAGE,
-} from "@/lib/fleet/vehicle-form-defaults";
-import { buildStopCostBreakdown } from "@/lib/form/build-stop-cost-breakdown";
-import type { DistanceData, FormData } from "@/contexts/BookingFormContext";
-import type { ISetting } from "@/models/settings";
-import type { IVehicle } from "@/models/vehicle";
+} from "@/features/fleet/lib/vehicle-form-defaults";
+import { buildStopCostBreakdown } from "@/features/booking/lib/build-stop-cost-breakdown";
+import type { DistanceData, FormData } from "@/features/booking/context/booking-form-context";
+import type { ISetting } from "@/features/settings/model";
+import type { IVehicle } from "@/features/fleet/model";
 import { useCallback } from "react";
 
 export function useStep3Pricing({

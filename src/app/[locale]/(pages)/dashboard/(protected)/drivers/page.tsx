@@ -1,18 +1,18 @@
 "use client";
 
 import React, { useState, useEffect, useCallback } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import { Button } from "@/shared/ui/button";
+import { Input } from "@/shared/ui/input";
+import { Card, CardContent, CardHeader, CardTitle } from "@/shared/ui/card";
+import { Badge } from "@/shared/ui/badge";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
-import { Separator } from "@/components/ui/separator";
+} from "@/shared/ui/dialog";
+import { Separator } from "@/shared/ui/separator";
 import {
   Plus,
   Edit,
@@ -23,8 +23,8 @@ import {
   CheckCircle,
   XCircle,
 } from "lucide-react";
-import type { IDriver } from "@/models/driver";
-import { apiGet, apiPost, apiPatch, apiDelete } from "@/utils/api";
+import type { IDriver } from "@/features/drivers/model";
+import { apiGet, apiPost, apiPatch, apiDelete } from "@/shared/http/api";
 import { useTranslations } from "next-intl";
 
 interface DriverForm extends Omit<IDriver, "_id" | "createdAt" | "updatedAt"> {

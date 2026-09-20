@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createCashBooking } from '@/lib/bookings/create-cash-booking.service';
-import { resolveBookingRequestBaseUrl } from '@/lib/bookings/resolve-booking-request-base-url';
-import { parseCashBookingInput } from '@/lib/schemas/cash-booking.schema';
+import { createCashBooking } from '@/features/booking/lib/create-cash-booking.service';
+import { resolveBookingRequestBaseUrl } from '@/features/booking/lib/resolve-booking-request-base-url';
+import { parseCashBookingInput } from '@/features/booking/schema/cash-booking.schema';
 
 export async function POST(request: NextRequest) {
   try {

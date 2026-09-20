@@ -1,10 +1,10 @@
 "use client";
 
-import { resolvePostBookingRedirect } from "@/lib/payments/resolve-post-booking-redirect";
-import { DEFAULT_STRIPE_CURRENCY } from "@/lib/payments/stripe-currency";
-import { validateStep3Contact } from "@/lib/payments/validate-step3-contact";
-import type { FormData, FormErrors } from "@/contexts/BookingFormContext";
-import type { ISetting } from "@/models/settings";
+import { resolvePostBookingRedirect } from "@/features/payments/lib/resolve-post-booking-redirect";
+import { DEFAULT_STRIPE_CURRENCY } from "@/features/payments/lib/stripe-currency";
+import { validateStep3Contact } from "@/features/payments/lib/validate-step3-contact";
+import type { FormData, FormErrors } from "@/features/booking/context/booking-form-context";
+import type { ISetting } from "@/features/settings/model";
 import type { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 import type { useTranslations } from "next-intl";
 import { useCallback, useEffect, type Dispatch, type MutableRefObject, type SetStateAction } from "react";
@@ -185,7 +185,7 @@ export function useStep3Payments({
     setIsLoading(true);
     try {
       // Single fallback finalize (webhook is primary; skips if already done)
-      const { ensurePaymentFinalized } = await import('@/utils/complete-payment');
+      const { ensurePaymentFinalized } = await import('@/features/payments/lib/complete-payment');
       await ensurePaymentFinalized({
         provider: 'stripe',
         paymentIntentId,

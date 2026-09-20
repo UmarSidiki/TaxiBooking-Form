@@ -1,6 +1,6 @@
-import type { IBooking } from "@/models/booking";
-import type { IDriver } from "@/models/driver";
-import type { IPartner } from "@/models/partner";
+import type { IBooking } from "@/features/booking/model";
+import type { IDriver } from "@/features/drivers/model";
+import type { IPartner } from "@/features/partners/model";
 import type { useTranslations } from "next-intl";
 import type { Dispatch, SetStateAction } from "react";
 

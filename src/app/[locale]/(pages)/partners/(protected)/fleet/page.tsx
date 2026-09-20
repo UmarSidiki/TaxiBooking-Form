@@ -1,15 +1,15 @@
 "use client";
 
-import { PartnerFleetAssigned } from "@/components/partner-fleet/partner-fleet-assigned";
-import { PartnerFleetAvailable } from "@/components/partner-fleet/partner-fleet-available";
-import { PartnerFleetPending } from "@/components/partner-fleet/partner-fleet-pending";
+import { PartnerFleetAssigned } from "@/features/partners/ui/partner-fleet-assigned";
+import { PartnerFleetAvailable } from "@/features/partners/ui/partner-fleet-available";
+import { PartnerFleetPending } from "@/features/partners/ui/partner-fleet-pending";
 import {
   getPartnerFleetStatusInfo,
   PartnerFleetStatusAlert,
-} from "@/components/partner-fleet/partner-fleet-status";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Button } from "@/components/ui/button";
-import { usePartnerFleet } from "@/hooks/fleet/usePartnerFleet";
+} from "@/features/partners/ui/partner-fleet-status";
+import { Alert, AlertDescription, AlertTitle } from "@/shared/ui/alert";
+import { Button } from "@/shared/ui/button";
+import { usePartnerFleet } from "@/features/fleet/hooks/usePartnerFleet";
 import { AlertCircle } from "lucide-react";
 
 export default function PartnerFleetPage() {

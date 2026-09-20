@@ -1,7 +1,7 @@
-import { getCurrencySymbol } from '@/lib/utils';
-import { getSettingsCurrency } from '@/lib/bookings/get-settings-currency';
-import type { BookingInput } from '@/models/booking';
-import type { IVehicle } from '@/models/vehicle';
+import { getCurrencySymbol } from '@/shared/lib/utils';
+import { getSettingsCurrency } from '@/features/booking/lib/get-settings-currency';
+import type { BookingInput } from '@/features/booking/model';
+import type { IVehicle } from '@/features/fleet/model';
 
 export async function createCashBookingEmailData(
   formData: BookingInput,

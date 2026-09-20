@@ -1,9 +1,9 @@
 "use client";
 
 import React, { createContext, useContext, useState, useEffect, ReactNode, useMemo, useCallback } from 'react';
-import { apiFetch, apiGet } from "@/utils/api";
-import { IVehicle } from '@/models/vehicle';
-import { IFormLayout } from '@/models/form-layout';
+import { apiFetch, apiGet } from "@/shared/http/api";
+import { IVehicle } from '@/features/fleet/model';
+import { IFormLayout } from '@/features/form-builder/model';
 import { useSearchParams } from 'next/navigation';
 
 export interface FormData {

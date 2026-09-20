@@ -1,7 +1,7 @@
-import { sendEmail } from "@/lib/email";
-import { connectDB } from "@/lib/database";
-import { Setting } from "@/models/settings";
-import { User } from "@/models/user";
+import { sendEmail } from "@/features/settings/lib/email";
+import { connectDB } from "@/shared/db";
+import { Setting } from "@/features/settings/model";
+import { User } from "@/features/auth/model";
 
 interface FleetRequestData {
   partnerName: string;

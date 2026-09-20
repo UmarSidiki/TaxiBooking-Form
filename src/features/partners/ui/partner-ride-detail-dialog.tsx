@@ -3,17 +3,17 @@
 import {
   PartnerRidePaymentBadge,
   PartnerRideStatusBadge,
-} from "@/components/partner-rides/partner-ride-badges";
-import type { usePartnerRides } from "@/hooks/rides/usePartnerRides";
-import { formatStopWaitDuration } from "@/lib/rides/format-stop-wait-duration";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+} from "@/features/partners/ui/partner-ride-badges";
+import type { usePartnerRides } from "@/features/rides/hooks/usePartnerRides";
+import { formatStopWaitDuration } from "@/features/rides/lib/format-stop-wait-duration";
+import { Card, CardContent, CardHeader, CardTitle } from "@/shared/ui/card";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
+} from "@/shared/ui/dialog";
 import {
   Baby,
   Ban,

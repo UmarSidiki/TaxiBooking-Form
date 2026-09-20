@@ -1,11 +1,11 @@
 "use client";
 
-import type { PartnerRideBooking } from "@/components/partner-rides/partner-ride.types";
-import { DEFAULT_BOOKING_TIMEZONE } from "@/lib/rides/ride-constants";
-import { isBookingPassed as isBookingPassedAt } from "@/lib/rides/is-booking-passed";
-import type { ISetting } from "@/models/settings";
-import { apiGet } from "@/utils/api";
-import { useCurrency } from "@/contexts/CurrencyContext";
+import type { PartnerRideBooking } from "@/features/partners/ui/partner-ride.types";
+import { DEFAULT_BOOKING_TIMEZONE } from "@/features/rides/lib/ride-constants";
+import { isBookingPassed as isBookingPassedAt } from "@/features/rides/lib/is-booking-passed";
+import type { ISetting } from "@/features/settings/model";
+import { apiGet } from "@/shared/http/api";
+import { useCurrency } from "@/shared/context/currency-context";
 import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useState } from "react";
 

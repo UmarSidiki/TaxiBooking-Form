@@ -1,7 +1,7 @@
 "use client";
 
-import { AdminPartnerDocumentStatusBadge } from "@/components/admin-partners/admin-partner-status-badges";
-import { Button } from "@/components/ui/button";
+import { AdminPartnerDocumentStatusBadge } from "@/features/partners/ui/admin-partner-status-badges";
+import { Button } from "@/shared/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -9,9 +9,9 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
-import { Textarea } from "@/components/ui/textarea";
-import type { useAdminPartners } from "@/hooks/partners/useAdminPartners";
+} from "@/shared/ui/dialog";
+import { Textarea } from "@/shared/ui/textarea";
+import type { useAdminPartners } from "@/features/partners/hooks/useAdminPartners";
 import { FileText, XCircle } from "lucide-react";
 import Image from "next/image";
 

@@ -1,4 +1,4 @@
-import type { BookingPatchAction } from '@/lib/schemas/booking-patch.schema';
+import type { BookingPatchAction } from '@/features/booking/schema/booking-patch.schema';
 
 export function bookingPatchSuccessMessage(action: BookingPatchAction): string {
   const actionPastTense =

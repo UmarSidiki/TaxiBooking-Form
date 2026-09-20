@@ -1,6 +1,6 @@
-import type { IFormField, IFormStyle } from "@/models/form-layout";
-import type { useBookingForm } from "@/contexts/BookingFormContext";
-import type { useStep1 } from "@/hooks/form/form-steps/useStep1";
+import type { IFormField, IFormStyle } from "@/features/form-builder/model";
+import type { useBookingForm } from "@/features/booking/context/booking-form-context";
+import type { useStep1 } from "@/features/booking/hooks/form-steps/useStep1";
 import type { useTranslations } from "next-intl";
 import type { CSSProperties, ReactNode } from "react";
 

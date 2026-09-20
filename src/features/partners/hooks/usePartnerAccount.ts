@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
-import { PARTNER_DOCUMENT_MIME_TYPES } from "@/lib/partners/partner-document-mime-types";
-import type { PartnerAccountData } from "@/components/partner-account/partner-account.types";
+import { PARTNER_DOCUMENT_MIME_TYPES } from "@/features/partners/lib/partner-document-mime-types";
+import type { PartnerAccountData } from "@/features/partners/ui/partner-account.types";
 
 export function usePartnerAccount() {
   const t = useTranslations("Dashboard.Partners.Dashboard");

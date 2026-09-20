@@ -2,14 +2,14 @@
 
 import { useState, useEffect } from "react";
 import type { FormEvent } from "react";
-import "@/style/EmbeddableLayout.css";
-import { Card } from "@/components/ui/card";
-import { useStep1 } from "@/hooks/form/form-steps/useStep1";
-import { useBookingStops } from "@/hooks/form/useBookingStops";
-import { useIframeBodyResize } from "@/hooks/embeddable/useIframeBodyResize";
-import { MIN_PASSENGERS } from "@/lib/form/passenger-limits";
+import "@/shared/style/embeddable-layout.css";
+import { Card } from "@/shared/ui/card";
+import { useStep1 } from "@/features/booking/hooks/form-steps/useStep1";
+import { useBookingStops } from "@/features/booking/hooks/useBookingStops";
+import { useIframeBodyResize } from "@/features/booking/hooks/useIframeBodyResize";
+import { MIN_PASSENGERS } from "@/features/booking/lib/passenger-limits";
 import { useTranslations } from "next-intl";
-import { useBookingForm } from "@/contexts/BookingFormContext";
+import { useBookingForm } from "@/features/booking/context/booking-form-context";
 import { EmbeddableV1Progress } from "./embeddable-v1-progress";
 import { EmbeddableV1RouteFields } from "./embeddable-v1-route-fields";
 import { EmbeddableV1ScheduleFields } from "./embeddable-v1-schedule-fields";

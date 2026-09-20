@@ -1,6 +1,7 @@
-import { sendOrderConfirmationEmail, sendOrderNotificationEmail } from '@/controllers/email/bookings';
-import { connectDB } from '@/lib/database';
-import { Booking } from '@/models/booking';
+import { sendOrderConfirmationEmail } from '@/features/booking/email/order-confirmation';
+import { sendOrderNotificationEmail } from '@/features/booking/email/order-notification';
+import { connectDB } from '@/shared/db';
+import { Booking } from '@/features/booking/model';
 import type { BookingEmailData } from './booking-email-data';
 
 export interface BookingEmailResult {

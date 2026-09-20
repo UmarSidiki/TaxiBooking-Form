@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server";
-import { connectDB } from "@/lib/database";
-import { Booking } from "@/models/booking";
-import { Setting } from "@/models/settings";
-import { DASHBOARD_PREVIEW_LIMIT } from "@/lib/dashboard/dashboard-preview-limit";
-import { DEFAULT_BOOKING_TIMEZONE } from "@/lib/rides/ride-constants";
+import { connectDB } from "@/shared/db";
+import { Booking } from "@/features/booking/model";
+import { Setting } from "@/features/settings/model";
+import { DASHBOARD_PREVIEW_LIMIT } from "@/features/dashboard/lib/dashboard-preview-limit";
+import { DEFAULT_BOOKING_TIMEZONE } from "@/features/rides/lib/ride-constants";
 
 export async function GET() {
   try {

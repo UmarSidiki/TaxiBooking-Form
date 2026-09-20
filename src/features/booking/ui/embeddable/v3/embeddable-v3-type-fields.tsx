@@ -1,6 +1,6 @@
 "use client";
 
-import type { FormData } from "@/contexts/BookingFormContext";
+import type { FormData } from "@/features/booking/context/booking-form-context";
 import type { useTranslations } from "next-intl";
 
 type TFn = ReturnType<typeof useTranslations>;

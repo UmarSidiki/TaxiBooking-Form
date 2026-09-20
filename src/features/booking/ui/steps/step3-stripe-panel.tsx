@@ -1,17 +1,17 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import type { Step3PaymentMethodsProps } from "@/components/form/steps/step3-payment-methods.types";
-import { DEFAULT_STRIPE_CURRENCY } from "@/lib/payments/stripe-currency";
-import { Button } from "@/components/ui/button";
+import type { Step3PaymentMethodsProps } from "@/features/booking/ui/steps/step3-payment-methods.types";
+import { DEFAULT_STRIPE_CURRENCY } from "@/features/payments/lib/stripe-currency";
+import { Button } from "@/shared/ui/button";
 import { CheckCircle2, Loader2 } from "lucide-react";
 
 const StripeProvider = dynamic(
-  () => import("@/components/providers/stripe-provider"),
+  () => import("@/features/payments/ui/stripe-provider"),
   { ssr: false }
 );
 const StripePaymentForm = dynamic(
-  () => import("@/components/payment/StripePaymentForm"),
+  () => import("@/features/payments/ui/stripe-payment-form"),
   { ssr: false }
 );
 

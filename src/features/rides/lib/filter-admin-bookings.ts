@@ -1,4 +1,4 @@
-import type { IBooking } from "@/models/booking";
+import type { IBooking } from "@/features/booking/model";
 import type { DateRange } from "react-day-picker";
 
 const START_OF_DAY_HOURS = 0;

@@ -1,17 +1,17 @@
 "use client";
 
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Badge } from "@/shared/ui/badge";
+import { Button } from "@/shared/ui/button";
+import { Input } from "@/shared/ui/input";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
-import { LayoutManager } from "@/components/form-builder/layout-manager";
-import type { useFormBuilder } from "@/hooks/form-builder/useFormBuilder";
+} from "@/shared/ui/dialog";
+import { LayoutManager } from "@/features/form-builder/ui/layout-manager";
+import type { useFormBuilder } from "@/features/form-builder/hooks/useFormBuilder";
 import { Check, LayoutTemplate, Loader2, Pencil, Save } from "lucide-react";
 
 type Builder = ReturnType<typeof useFormBuilder>;

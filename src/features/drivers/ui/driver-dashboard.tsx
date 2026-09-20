@@ -1,12 +1,12 @@
 "use client";
 
-import { DriverRideCard } from "@/components/rides/driver-ride-card";
-import { DriverRideDetailDialog } from "@/components/rides/driver-ride-detail-dialog";
-import { DriverRidesToolbar } from "@/components/rides/driver-rides-toolbar";
-import { AdminRidesTabPanel } from "@/components/rides/admin-rides-tab-panel";
-import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useDriverDashboard } from "@/hooks/rides/useDriverDashboard";
+import { DriverRideCard } from "@/features/rides/ui/driver-ride-card";
+import { DriverRideDetailDialog } from "@/features/rides/ui/driver-ride-detail-dialog";
+import { DriverRidesToolbar } from "@/features/rides/ui/driver-rides-toolbar";
+import { AdminRidesTabPanel } from "@/features/rides/ui/admin-rides-tab-panel";
+import { Badge } from "@/shared/ui/badge";
+import { Tabs, TabsList, TabsTrigger } from "@/shared/ui/tabs";
+import { useDriverDashboard } from "@/features/drivers/hooks/useDriverDashboard";
 import { Ban, CalendarDays, CheckCircle, Loader2 } from "lucide-react";
 
 export default function DriverDashboard() {

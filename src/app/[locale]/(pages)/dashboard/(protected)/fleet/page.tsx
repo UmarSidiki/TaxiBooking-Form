@@ -1,9 +1,9 @@
 "use client";
 
-import { FleetPageFilters } from "@/components/fleet/fleet-page-filters";
-import { FleetPageGrid } from "@/components/fleet/fleet-page-grid";
-import { FleetPageHeader } from "@/components/fleet/fleet-page-header";
-import { useAdminFleet } from "@/hooks/fleet/useAdminFleet";
+import { FleetPageFilters } from "@/features/fleet/ui/fleet-page-filters";
+import { FleetPageGrid } from "@/features/fleet/ui/fleet-page-grid";
+import { FleetPageHeader } from "@/features/fleet/ui/fleet-page-header";
+import { useAdminFleet } from "@/features/fleet/hooks/useAdminFleet";
 
 const FleetPage = () => {
   const fleet = useAdminFleet();

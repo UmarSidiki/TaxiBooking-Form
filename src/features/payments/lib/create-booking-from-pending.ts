@@ -1,15 +1,15 @@
-import { notifyEligiblePartners } from '@/lib/partners/notify-eligible-partners';
-import { Booking, PendingBooking } from '@/models/booking';
-import { Vehicle } from '@/models/vehicle';
-import { buildBookingEmailData } from '@/lib/payments/booking-email-data';
-import { buildPaidBookingRecord } from '@/lib/payments/build-paid-booking-record';
-import { isDuplicateKeyError } from '@/lib/payments/calculate-booking-total';
+import { notifyEligiblePartners } from '@/features/partners/lib/notify-eligible-partners';
+import { Booking, PendingBooking } from '@/features/booking/model';
+import { Vehicle } from '@/features/fleet/model';
+import { buildBookingEmailData } from '@/features/payments/lib/booking-email-data';
+import { buildPaidBookingRecord } from '@/features/payments/lib/build-paid-booking-record';
+import { isDuplicateKeyError } from '@/features/payments/lib/calculate-booking-total';
 import type {
   FinalizePaidBookingInput,
   FinalizePaidBookingResult,
-} from '@/lib/payments/finalize-paid-booking.types';
-import { loadPaymentSettings } from '@/lib/payments/load-payment-settings';
-import { sendBookingEmails } from '@/lib/payments/send-booking-emails';
+} from '@/features/payments/lib/finalize-paid-booking.types';
+import { loadPaymentSettings } from '@/features/payments/lib/load-payment-settings';
+import { sendBookingEmails } from '@/features/payments/lib/send-booking-emails';
 
 const PAID_AMOUNT_TOLERANCE = 0.05;
 

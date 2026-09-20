@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import Stripe from 'stripe';
-import { connectDB } from '@/lib/database';
-import { Booking, PendingBooking } from '@/models/booking';
-import { Setting } from '@/models/settings';
-import { finalizePaidBooking } from '@/lib/payments/finalize-paid-booking';
-import { getStripeApiVersion } from '@/lib/payments/stripe-client';
+import { connectDB } from '@/shared/db';
+import { Booking, PendingBooking } from '@/features/booking/model';
+import { Setting } from '@/features/settings/model';
+import { finalizePaidBooking } from '@/features/payments/lib/finalize-paid-booking';
+import { getStripeApiVersion } from '@/features/payments/lib/stripe-client';
 
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';

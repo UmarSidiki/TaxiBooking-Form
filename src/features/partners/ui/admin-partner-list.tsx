@@ -2,16 +2,16 @@
 
 import {
   AdminPartnerStatusBadge,
-} from "@/components/admin-partners/admin-partner-status-badges";
-import { Button } from "@/components/ui/button";
+} from "@/features/partners/ui/admin-partner-status-badges";
+import { Button } from "@/shared/ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import type { useAdminPartners } from "@/hooks/partners/useAdminPartners";
+} from "@/shared/ui/card";
+import type { useAdminPartners } from "@/features/partners/hooks/useAdminPartners";
 import { Clock, Eye, Users } from "lucide-react";
 
 type AdminPartnersState = ReturnType<typeof useAdminPartners>;

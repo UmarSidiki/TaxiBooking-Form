@@ -1,7 +1,7 @@
 "use client";
 
-import { Card, CardContent } from "@/components/ui/card";
-import { AdminHomeHeader } from "@/components/admin-home/admin-home-header";
+import { Card, CardContent } from "@/shared/ui/card";
+import { AdminHomeHeader } from "@/features/dashboard/ui/admin-home-header";
 import type { useTranslations } from "next-intl";
 
 type TFn = ReturnType<typeof useTranslations>;

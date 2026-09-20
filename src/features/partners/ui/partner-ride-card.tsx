@@ -2,11 +2,11 @@
 
 import {
   PartnerRideStatusBadge,
-} from "@/components/partner-rides/partner-ride-badges";
-import type { PartnerRideBooking } from "@/components/partner-rides/partner-ride.types";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import type { usePartnerRides } from "@/hooks/rides/usePartnerRides";
+} from "@/features/partners/ui/partner-ride-badges";
+import type { PartnerRideBooking } from "@/features/partners/ui/partner-ride.types";
+import { Button } from "@/shared/ui/button";
+import { Card, CardContent } from "@/shared/ui/card";
+import type { usePartnerRides } from "@/features/rides/hooks/usePartnerRides";
 import {
   Baby,
   Calendar,

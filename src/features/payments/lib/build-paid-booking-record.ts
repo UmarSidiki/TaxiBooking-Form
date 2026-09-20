@@ -1,6 +1,6 @@
-import { getCurrencySymbol } from '@/lib/utils';
-import type { IPendingBooking } from '@/models/booking/PendingBooking';
-import type { PaymentProvider } from '@/lib/payments/finalize-paid-booking.types';
+import { getCurrencySymbol } from '@/shared/lib/utils';
+import type { IPendingBooking } from '@/features/booking/model/PendingBooking';
+import type { PaymentProvider } from '@/features/payments/lib/finalize-paid-booking.types';
 
 export function buildPaidBookingRecord(
   orderId: string,

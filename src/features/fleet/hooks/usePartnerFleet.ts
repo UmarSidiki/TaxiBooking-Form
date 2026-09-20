@@ -2,10 +2,10 @@
 
 import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
-import { apiGet } from "@/utils/api";
-import { resolveVehicleImageSrc } from "@/lib/fleet/resolve-vehicle-image-src";
-import type { IVehicle } from "@/models/vehicle";
-import type { PartnerFleetData } from "@/components/partner-fleet/partner-fleet.types";
+import { apiGet } from "@/shared/http/api";
+import { resolveVehicleImageSrc } from "@/features/fleet/lib/resolve-vehicle-image-src";
+import type { IVehicle } from "@/features/fleet/model";
+import type { PartnerFleetData } from "@/features/partners/ui/partner-fleet.types";
 
 export function usePartnerFleet() {
   const t = useTranslations("Dashboard.Partners.Fleet");

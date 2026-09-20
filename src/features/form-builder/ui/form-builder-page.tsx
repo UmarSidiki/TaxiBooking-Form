@@ -1,11 +1,11 @@
 "use client";
 
-import { FormBuilderCanvas } from "@/components/form-builder/form-builder-canvas";
-import { FormBuilderHeader } from "@/components/form-builder/form-builder-header";
-import { FormBuilderInspector } from "@/components/form-builder/form-builder-inspector";
-import { FormBuilderPalette } from "@/components/form-builder/form-builder-palette";
-import { FieldPreview } from "@/components/form-builder/field-preview";
-import { useFormBuilder } from "@/hooks/form-builder/useFormBuilder";
+import { FormBuilderCanvas } from "@/features/form-builder/ui/form-builder-canvas";
+import { FormBuilderHeader } from "@/features/form-builder/ui/form-builder-header";
+import { FormBuilderInspector } from "@/features/form-builder/ui/form-builder-inspector";
+import { FormBuilderPalette } from "@/features/form-builder/ui/form-builder-palette";
+import { FieldPreview } from "@/features/form-builder/ui/field-preview";
+import { useFormBuilder } from "@/features/form-builder/hooks/useFormBuilder";
 import {
   DndContext,
   closestCenter,

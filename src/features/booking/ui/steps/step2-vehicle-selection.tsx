@@ -2,10 +2,10 @@
 
 import { memo, useMemo } from "react";
 import { ArrowLeft } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { useStep2 } from "@/hooks/form/form-steps/useStep2";
+import { Button } from "@/shared/ui/button";
+import { useStep2 } from "@/features/booking/hooks/form-steps/useStep2";
 import { useTranslations } from "next-intl";
-import { useCurrency } from "@/contexts/CurrencyContext";
+import { useCurrency } from "@/shared/context/currency-context";
 import { Step2Map } from "./step2-map";
 import { Step2TripSummary } from "./step2-trip-summary";
 import { Step2VehicleList } from "./step2-vehicle-list";

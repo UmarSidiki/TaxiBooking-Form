@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { connectDB } from "@/lib/database";
-import { Booking } from "@/models/booking";
+import { connectDB } from "@/shared/db";
+import { Booking } from "@/features/booking/model";
 
 export async function POST(request: NextRequest) {
   try {
@@ -17,7 +17,7 @@ export async function POST(request: NextRequest) {
 
     // Delete pending booking if exists (user cancelled before payment)
     if (orderId) {
-      const { PendingBooking } = await import("@/models/booking");
+      const { PendingBooking } = await import("@/features/booking/model");
       const pendingBooking = await PendingBooking.findOne({ orderId });
 
       if (pendingBooking) {

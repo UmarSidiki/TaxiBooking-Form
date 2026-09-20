@@ -10,8 +10,8 @@ This is a **taxi booking Next.js app** (public wizard + admin + driver + partner
 ## Stack (do not change unless asked)
 
 - Next.js App Router + React 19 + TypeScript + Tailwind v4 + shadcn/ui
-- MongoDB + Mongoose (`connectDB()` from `@/lib/database`)
-- NextAuth v4 (`src/lib/auth/options.ts`) — no parallel JWT/auth library
+- MongoDB + Mongoose (`connectDB()` from `@/shared/db`)
+- NextAuth v4 (`src/features/auth/lib/options.ts`) — no parallel JWT/auth library
 - Zod 4 · next-intl · Stripe + MultiSafepay · Google Maps · Nodemailer
 
 Do not introduce Hono, Drizzle, Better Auth, Expo, or a `backend/` folder.
@@ -27,24 +27,22 @@ Do not introduce Hono, Drizzle, Better Auth, Expo, or a `backend/` folder.
 src/app/api/booking/route.ts
 
 # GOOD
-src/app/api/booking/route.ts                    # HTTP only
-src/lib/bookings/create-booking.service.ts      # business rules
-src/lib/bookings/booking.repo.ts                # mongoose queries
-src/lib/schemas/booking.schema.ts               # zod
+src/app/api/booking/route.ts                                    # HTTP only
+src/features/booking/lib/create-cash-booking.service.ts         # business rules
+src/features/booking/lib/booking.repo.ts                        # mongoose queries
+src/features/booking/schema/cash-booking.schema.ts              # zod
 ```
 
 ## Layout (keep this shape)
 
 ```
-src/app/[locale]/     # pages — thin
-src/app/api/          # route handlers — HTTP + status
-src/components/       # UI; ui/ is shadcn only
-src/lib/<domain>/     # *.service.ts + *.repo.ts
-src/lib/schemas/      # Zod
-src/models/<domain>/  # Mongoose
-messages/             # i18n dictionaries
+src/app/[locale]/          # pages — thin
+src/app/api/               # route handlers — HTTP + status
+src/features/<domain>/     # ui, hooks, lib, model, schema, email
+src/shared/                # ui, db, i18n, style, generic lib (no feature imports)
+messages/                  # i18n dictionaries
 ```
 
-- Pages compose. Hooks (`src/hooks/`) own client logic. Route handlers do not price, send mail, or talk to Stripe directly — call `src/lib/payments/` or a domain service.
-- shadcn primitives stay in `src/components/ui/`. Do not edit them to add business UI.
+- Pages compose. Hooks live in `src/features/<domain>/hooks/`. Route handlers do not price, send mail, or talk to Stripe directly — call `src/features/payments/lib/` or a domain service.
+- shadcn primitives stay in `src/shared/ui/`. Do not edit them to add business UI.
 - Match existing names and imports. Stay on the requested task.

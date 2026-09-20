@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
-import { apiGet } from "@/utils/api";
-import type { DashboardStats } from "@/components/admin-home/admin-home.types";
+import { apiGet } from "@/shared/http/api";
+import type { DashboardStats } from "@/features/dashboard/ui/admin-home.types";
 
 export function useAdminHome() {
   const [stats, setStats] = useState<DashboardStats | null>(null);

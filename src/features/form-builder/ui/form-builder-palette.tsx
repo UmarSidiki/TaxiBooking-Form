@@ -1,18 +1,18 @@
 "use client";
 
-import { SortableField } from "@/components/form-builder/builder-sortable-field";
-import { FIELD_REGISTRY } from "@/components/form-builder/field-registry";
-import { Button } from "@/components/ui/button";
+import { SortableField } from "@/features/form-builder/ui/builder-sortable-field";
+import { FIELD_REGISTRY } from "@/features/form-builder/ui/field-registry";
+import { Button } from "@/shared/ui/button";
 import {
   Card,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
-import { Separator } from "@/components/ui/separator";
-import type { useFormBuilder } from "@/hooks/form-builder/useFormBuilder";
-import type { BookingFieldType } from "@/models/form-layout";
+} from "@/shared/ui/card";
+import { Label } from "@/shared/ui/label";
+import { Separator } from "@/shared/ui/separator";
+import type { useFormBuilder } from "@/features/form-builder/hooks/useFormBuilder";
+import type { BookingFieldType } from "@/features/form-builder/model";
 import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { Layers, Plus } from "lucide-react";
 

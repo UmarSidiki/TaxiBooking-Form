@@ -1,8 +1,8 @@
 "use client";
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import type { DashboardStats } from "@/components/admin-home/admin-home.types";
-import { DASHBOARD_PREVIEW_LIMIT } from "@/lib/dashboard/dashboard-preview-limit";
+import { Card, CardContent, CardHeader, CardTitle } from "@/shared/ui/card";
+import type { DashboardStats } from "@/features/dashboard/ui/admin-home.types";
+import { DASHBOARD_PREVIEW_LIMIT } from "@/features/dashboard/lib/dashboard-preview-limit";
 import { MapPin } from "lucide-react";
 import type { useTranslations } from "next-intl";
 

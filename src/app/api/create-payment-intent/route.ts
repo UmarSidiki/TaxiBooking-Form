@@ -1,17 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server';
 import Stripe from 'stripe';
-import { Setting } from '@/models/settings';
-import { connectDB } from '@/lib/database';
-import { PendingBooking } from '@/models/booking';
-import { Vehicle } from '@/models/vehicle';
-import { generateShortId } from '@/lib/generate-id';
-import { DEFAULT_STRIPE_CURRENCY } from '@/lib/payments/stripe-currency';
-import { getStripeClient } from '@/lib/payments/stripe-client';
+import { Setting } from '@/features/settings/model';
+import { connectDB } from '@/shared/db';
+import { PendingBooking } from '@/features/booking/model';
+import { Vehicle } from '@/features/fleet/model';
+import { generateShortId } from '@/shared/lib/generate-id';
+import { DEFAULT_STRIPE_CURRENCY } from '@/features/payments/lib/stripe-currency';
+import { getStripeClient } from '@/features/payments/lib/stripe-client';
 import {
   calculateBookingPrice,
   fetchRouteDistanceKm,
-} from '@/lib/payments/calculate-booking-total';
-import { isValidEmail } from '@/lib/validation';
+} from '@/features/payments/lib/calculate-booking-total';
+import { isValidEmail } from '@/shared/lib/validation';
 
 export const dynamic = 'force-dynamic';
 

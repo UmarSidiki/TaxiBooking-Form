@@ -2,16 +2,16 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { useTranslations } from "next-intl";
-import type { IBooking } from "@/models/booking";
-import type { IDriver } from "@/models/driver";
-import type { IPartner } from "@/models/partner";
-import type { ISetting } from "@/models/settings";
-import { apiGet, apiPatch } from "@/utils/api";
+import type { IBooking } from "@/features/booking/model";
+import type { IDriver } from "@/features/drivers/model";
+import type { IPartner } from "@/features/partners/model";
+import type { ISetting } from "@/features/settings/model";
+import { apiGet, apiPatch } from "@/shared/http/api";
 import { DateRange } from "react-day-picker";
-import { useCurrency } from "@/contexts/CurrencyContext";
-import { isBookingPassed as isBookingPassedAt } from "@/lib/rides/is-booking-passed";
-import { filterAdminBookings } from "@/lib/rides/filter-admin-bookings";
-import { DEFAULT_BOOKING_TIMEZONE } from "@/lib/rides/ride-constants";
+import { useCurrency } from "@/shared/context/currency-context";
+import { isBookingPassed as isBookingPassedAt } from "@/features/rides/lib/is-booking-passed";
+import { filterAdminBookings } from "@/features/rides/lib/filter-admin-bookings";
+import { DEFAULT_BOOKING_TIMEZONE } from "@/features/rides/lib/ride-constants";
 
 const DEFAULT_REFUND_PERCENTAGE = 100;
 

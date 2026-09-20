@@ -1,4 +1,4 @@
-import type { DistanceData } from "@/contexts/BookingFormContext";
+import type { DistanceData } from "@/features/booking/context/booking-form-context";
 
 export const MIN_DISTANCE_QUERY_LENGTH = 3;
 

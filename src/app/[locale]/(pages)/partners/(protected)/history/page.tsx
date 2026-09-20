@@ -2,9 +2,9 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { useTranslations } from "next-intl";
-import { apiGet } from "@/utils/api";
-import { isBookingPassed as isBookingPassedAt } from "@/lib/rides/is-booking-passed";
-import { ISetting } from "@/models/settings";
+import { apiGet } from "@/shared/http/api";
+import { isBookingPassed as isBookingPassedAt } from "@/features/rides/lib/is-booking-passed";
+import { ISetting } from "@/features/settings/model";
 import {
   Calendar,
   Clock,
@@ -18,8 +18,8 @@ import {
   Plane,
   Star,
 } from "lucide-react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/shared/ui/card";
+import { Badge } from "@/shared/ui/badge";
 
 interface Booking {
   _id: string;

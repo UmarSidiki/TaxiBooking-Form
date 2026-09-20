@@ -1,21 +1,21 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Card, CardContent } from "@/components/ui/card";
-import { AdminRideCardDialogs } from "@/components/rides/admin-ride-card-dialogs";
-import { AdminRideCardAssignActions } from "@/components/rides/admin-ride-card-assign-actions";
-import { AdminRideCardCustomer } from "@/components/rides/admin-ride-card-customer";
-import { AdminRideCardExtras } from "@/components/rides/admin-ride-card-extras";
-import { AdminRideCardHeader } from "@/components/rides/admin-ride-card-header";
-import { AdminRideCardRoute } from "@/components/rides/admin-ride-card-route";
-import { AdminRideCardSchedule } from "@/components/rides/admin-ride-card-schedule";
-import type { IBooking } from "@/models/booking";
-import type { IDriver } from "@/models/driver";
-import type { IPartner } from "@/models/partner";
+import { Card, CardContent } from "@/shared/ui/card";
+import { AdminRideCardDialogs } from "@/features/rides/ui/admin-ride-card-dialogs";
+import { AdminRideCardAssignActions } from "@/features/rides/ui/admin-ride-card-assign-actions";
+import { AdminRideCardCustomer } from "@/features/rides/ui/admin-ride-card-customer";
+import { AdminRideCardExtras } from "@/features/rides/ui/admin-ride-card-extras";
+import { AdminRideCardHeader } from "@/features/rides/ui/admin-ride-card-header";
+import { AdminRideCardRoute } from "@/features/rides/ui/admin-ride-card-route";
+import { AdminRideCardSchedule } from "@/features/rides/ui/admin-ride-card-schedule";
+import type { IBooking } from "@/features/booking/model";
+import type { IDriver } from "@/features/drivers/model";
+import type { IPartner } from "@/features/partners/model";
 import type { useTranslations } from "next-intl";
 import type { Dispatch, SetStateAction } from "react";
-import type { AdminRideReview } from "@/hooks/rides/useAdminRides";
-import { DEFAULT_ASSIGN_PARTNER_MARGIN } from "@/lib/rides/default-assign-partner-margin";
+import type { AdminRideReview } from "@/features/rides/hooks/useAdminRides";
+import { DEFAULT_ASSIGN_PARTNER_MARGIN } from "@/features/rides/lib/default-assign-partner-margin";
 
 export type AdminRideCardProps = {
   booking: IBooking;

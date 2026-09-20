@@ -1,9 +1,9 @@
 "use client";
 
 import React from "react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import { Button } from "@/shared/ui/button";
+import { Card, CardContent } from "@/shared/ui/card";
+import { Badge } from "@/shared/ui/badge";
 import {
   Baby,
   Calendar,
@@ -23,10 +23,10 @@ import {
   User,
   Users,
 } from "lucide-react";
-import type { IBooking } from "@/models/booking";
-import { RideMapLine } from "@/components/rides/ride-map-line";
-import { RidePaymentStatusBadge } from "@/components/rides/ride-payment-status-badge";
-import { RideStatusBadge } from "@/components/rides/ride-status-badge";
+import type { IBooking } from "@/features/booking/model";
+import { RideMapLine } from "@/features/rides/ui/ride-map-line";
+import { RidePaymentStatusBadge } from "@/features/rides/ui/ride-payment-status-badge";
+import { RideStatusBadge } from "@/features/rides/ui/ride-status-badge";
 import type { useTranslations } from "next-intl";
 
 export function DriverRideCard({

@@ -1,14 +1,14 @@
 "use client";
 
-import { PartnerAccountStatusBadge } from "@/components/partner-account/partner-account-status-badge";
-import type { PartnerAccountData } from "@/components/partner-account/partner-account.types";
+import { PartnerAccountStatusBadge } from "@/features/partners/ui/partner-account-status-badge";
+import type { PartnerAccountData } from "@/features/partners/ui/partner-account.types";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from "@/shared/ui/card";
 import type { useTranslations } from "next-intl";
 
 type TFn = ReturnType<typeof useTranslations<"Dashboard.Partners.Dashboard">>;

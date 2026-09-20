@@ -1,9 +1,9 @@
 "use client";
 
-import { Input } from "@/components/ui/input";
-import type { PaymentTabFieldsProps } from "@/components/settings/payment-tab-props";
+import { Input } from "@/shared/ui/input";
+import type { PaymentTabFieldsProps } from "@/features/settings/ui/payment-tab-props";
 import { Banknote, Building2, CreditCard } from "lucide-react";
-import { useCurrency } from "@/contexts/CurrencyContext";
+import { useCurrency } from "@/shared/context/currency-context";
 
 
 export function PaymentTabMultiSafepay({

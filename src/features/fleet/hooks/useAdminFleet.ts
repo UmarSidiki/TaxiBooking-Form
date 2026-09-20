@@ -1,6 +1,6 @@
 "use client";
 
-import type { VehicleForm } from "@/components/fleet/vehicle-form.types";
+import type { VehicleForm } from "@/features/fleet/ui/vehicle-form.types";
 import {
   DEFAULT_BABY_SEAT_PRICE,
   DEFAULT_CHILD_SEAT_PRICE,
@@ -9,10 +9,10 @@ import {
   DEFAULT_VEHICLE_RETURN_PRICE_PERCENTAGE,
   INITIAL_VEHICLE_FORM,
   RESET_VEHICLE_FORM,
-} from "@/lib/fleet/vehicle-form-defaults";
-import { resolveVehicleImageSrc } from "@/lib/fleet/resolve-vehicle-image-src";
-import type { IVehicle } from "@/models/vehicle";
-import { apiDelete, apiGet, apiPatch, apiPost } from "@/utils/api";
+} from "@/features/fleet/lib/vehicle-form-defaults";
+import { resolveVehicleImageSrc } from "@/features/fleet/lib/resolve-vehicle-image-src";
+import type { IVehicle } from "@/features/fleet/model";
+import { apiDelete, apiGet, apiPatch, apiPost } from "@/shared/http/api";
 import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useMemo, useState, type FormEvent } from "react";
 

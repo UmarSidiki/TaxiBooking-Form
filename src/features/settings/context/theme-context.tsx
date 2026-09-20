@@ -1,9 +1,9 @@
 "use client";
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
-import { apiFetch } from "@/utils/api";
-import type { ISetting } from "@/models/settings";
-import type { ThemeSettings } from "@/lib/theme-settings";
+import { apiFetch } from "@/shared/http/api";
+import type { ISetting } from "@/features/settings/model";
+import type { ThemeSettings } from "@/features/settings/lib/theme-settings";
 
 interface ThemeContextType {
   settings: Partial<ISetting> | null;

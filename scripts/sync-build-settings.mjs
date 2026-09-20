@@ -8,7 +8,7 @@ import { fileURLToPath } from 'url';
 import { MongoClient } from 'mongodb';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const outputPath = join(__dirname, '../src/config/baked-settings.json');
+const outputPath = join(__dirname, '../src/shared/config/baked-settings.json');
 
 const defaults = {
   adminEmail: null,

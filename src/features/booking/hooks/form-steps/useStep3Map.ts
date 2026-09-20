@@ -1,9 +1,9 @@
 "use client";
 
 import { importLibrary, setOptions } from "@googlemaps/js-api-loader";
-import { DEFAULT_MAP_CENTER, DEFAULT_MAP_ZOOM } from "@/lib/maps/map-defaults";
-import type { FormData } from "@/contexts/BookingFormContext";
-import type { ISetting } from "@/models/settings";
+import { DEFAULT_MAP_CENTER, DEFAULT_MAP_ZOOM } from "@/features/booking/lib/maps/map-defaults";
+import type { FormData } from "@/features/booking/context/booking-form-context";
+import type { ISetting } from "@/features/settings/model";
 import type { Dispatch, MutableRefObject, RefObject, SetStateAction } from "react";
 import { useEffect } from "react";
 

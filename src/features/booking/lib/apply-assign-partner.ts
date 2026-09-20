@@ -1,6 +1,6 @@
-import { Partner } from '@/models/partner';
-import type { IBooking } from '@/models/booking';
-import type { BookingPatchApplyResult } from '@/lib/bookings/booking-patch-result';
+import { Partner } from '@/features/partners/model';
+import type { IBooking } from '@/features/booking/model';
+import type { BookingPatchApplyResult } from '@/features/booking/lib/booking-patch-result';
 
 export async function applyAssignPartner(
   booking: IBooking,

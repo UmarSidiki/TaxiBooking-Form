@@ -2,9 +2,9 @@
 
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { Badge } from "@/components/ui/badge";
-import { FIELD_REGISTRY } from "@/components/form-builder/field-registry";
-import type { IFormField } from "@/models/form-layout";
+import { Badge } from "@/shared/ui/badge";
+import { FIELD_REGISTRY } from "@/features/form-builder/ui/field-registry";
+import type { IFormField } from "@/features/form-builder/model";
 import { Eye, EyeOff, GripVertical, Lock, MapPin, Trash2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 

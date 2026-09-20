@@ -1,8 +1,8 @@
 "use client";
 
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import type { IFormLayout } from "@/models/form-layout";
+import { Badge } from "@/shared/ui/badge";
+import { Button } from "@/shared/ui/button";
+import type { IFormLayout } from "@/features/form-builder/model";
 import { Copy, LayoutTemplate, Plus, Star, Trash2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 

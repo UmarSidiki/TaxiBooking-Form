@@ -1,4 +1,4 @@
-import type { PartnerDocument } from "@/components/admin-partners/admin-partner.types";
+import type { PartnerDocument } from "@/features/partners/ui/admin-partner.types";
 
 export type PartnerAccountData = {
   _id: string;

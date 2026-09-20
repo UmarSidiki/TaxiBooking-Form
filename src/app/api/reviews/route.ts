@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { connectDB } from "@/lib/database";
-import { Review } from "@/models/review";
-import { Booking } from "@/models/booking";
+import { connectDB } from "@/shared/db";
+import { Review } from "@/features/reviews/model";
+import { Booking } from "@/features/booking/model";
 
 // POST - Create a new review
 export async function POST(request: NextRequest) {

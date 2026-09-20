@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { connectDB } from "@/lib/database";
-import { Setting } from "@/models/settings";
+import { connectDB } from "@/shared/db";
+import { Setting } from "@/features/settings/model";
 
 // GET settings
 export async function GET() {

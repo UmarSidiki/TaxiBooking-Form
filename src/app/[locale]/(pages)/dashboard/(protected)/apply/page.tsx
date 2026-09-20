@@ -6,9 +6,9 @@ import {
   CardContent,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+} from "@/shared/ui/card";
+import { Button } from "@/shared/ui/button";
+import { Badge } from "@/shared/ui/badge";
 import { 
   Copy, 
   Check, 
@@ -22,8 +22,8 @@ import {
   Blocks,
   Star,
 } from "lucide-react";
-import { apiGet } from "@/utils/api";
-import type { IFormLayout } from "@/models/form-layout";
+import { apiGet } from "@/shared/http/api";
+import type { IFormLayout } from "@/features/form-builder/model";
 import { useTranslations } from "next-intl";
 
 interface FormVariant {

@@ -1,15 +1,15 @@
 "use client";
 
-import { FormPreview } from "@/components/form-builder/form-preview";
-import { Badge } from "@/components/ui/badge";
+import { FormPreview } from "@/features/form-builder/ui/form-preview";
+import { Badge } from "@/shared/ui/badge";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import type { useFormBuilder } from "@/hooks/form-builder/useFormBuilder";
+} from "@/shared/ui/card";
+import type { useFormBuilder } from "@/features/form-builder/hooks/useFormBuilder";
 import { Grid3X3, Monitor, Smartphone } from "lucide-react";
 
 type Builder = ReturnType<typeof useFormBuilder>;

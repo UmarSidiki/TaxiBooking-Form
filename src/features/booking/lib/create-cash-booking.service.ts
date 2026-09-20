@@ -1,22 +1,20 @@
-import {
-  sendOrderConfirmationEmail,
-  sendOrderNotificationEmail,
-} from '@/controllers/email/bookings';
-import { connectDB } from '@/lib/database';
-import { generateTripId } from '@/lib/generate-id';
-import { getCurrencySymbol } from '@/lib/utils';
-import { sanitizeInput } from '@/lib/validation';
+import { sendOrderConfirmationEmail } from '@/features/booking/email/order-confirmation';
+import { sendOrderNotificationEmail } from '@/features/booking/email/order-notification';
+import { connectDB } from '@/shared/db';
+import { generateTripId } from '@/shared/lib/generate-id';
+import { getCurrencySymbol } from '@/shared/lib/utils';
+import { sanitizeInput } from '@/shared/lib/validation';
 import {
   createBookingDocument,
   findRecentDuplicateBooking,
   updateBookingFields,
-} from '@/lib/bookings/booking.repo';
-import { calculateCashBookingTotal } from '@/lib/bookings/calculate-cash-booking-total';
-import { createCashBookingEmailData } from '@/lib/bookings/create-cash-booking-email-data';
-import { getSettingsCurrency } from '@/lib/bookings/get-settings-currency';
-import { initCashBookingPartners } from '@/lib/bookings/init-cash-booking-partners';
-import type { BookingInput } from '@/models/booking';
-import { Vehicle } from '@/models/vehicle';
+} from '@/features/booking/lib/booking.repo';
+import { calculateCashBookingTotal } from '@/features/booking/lib/calculate-cash-booking-total';
+import { createCashBookingEmailData } from '@/features/booking/lib/create-cash-booking-email-data';
+import { getSettingsCurrency } from '@/features/booking/lib/get-settings-currency';
+import { initCashBookingPartners } from '@/features/booking/lib/init-cash-booking-partners';
+import type { BookingInput } from '@/features/booking/model';
+import { Vehicle } from '@/features/fleet/model';
 
 export type CreateCashBookingResult =
   | {

@@ -1,14 +1,14 @@
 import type { ReactNode } from "react";
 import { redirect } from "next/navigation";
 import { getServerSession } from "next-auth";
-import { connectDB } from "@/lib/database";
-import { Setting } from "@/models/settings";
-import { Partner } from "@/models/partner";
+import { connectDB } from "@/shared/db";
+import { Setting } from "@/features/settings/model";
+import { Partner } from "@/features/partners/model";
 
-import { authOptions } from "@/lib/auth/options";
-import { PartnerSidebar } from "@/components/PartnerSidebar";
-import { LanguageSwitcher } from "@/components/LanguageSwitcher";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { authOptions } from "@/features/auth";
+import { PartnerSidebar } from "@/features/partners/ui/partner-sidebar";
+import { LanguageSwitcher } from "@/shared/chrome/language-switcher";
+import { SidebarProvider, SidebarTrigger } from "@/shared/ui/sidebar";
 
 type PartnerLayoutProps = {
   children: ReactNode;

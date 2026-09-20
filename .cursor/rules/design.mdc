@@ -5,7 +5,7 @@ alwaysApply: true
 
 # Design (always apply)
 
-Visual source of truth: `src/style/globals.css`. Change brand, color, type, space, or radius **there**. Dark mode is `.dark` in the same file. See `DESIGN.md`.
+Visual source of truth: `src/shared/style/globals.css`. Change brand, color, type, space, or radius **there**. Dark mode is `.dark` in the same file. See `DESIGN.md`.
 
 ## Never hardcode
 

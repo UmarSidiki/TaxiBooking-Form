@@ -1,10 +1,10 @@
 import type {
   UnverifiedPayment,
   VerifiedPayment,
-} from '@/lib/payments/finalize-paid-booking.types';
-import { loadPaymentSettings } from '@/lib/payments/load-payment-settings';
-import { fetchMultisafepayOrder } from '@/lib/payments/multisafepay-api';
-import type { MultisafepayOrderResponse } from '@/lib/payments/multisafepay-api';
+} from '@/features/payments/lib/finalize-paid-booking.types';
+import { loadPaymentSettings } from '@/features/payments/lib/load-payment-settings';
+import { fetchMultisafepayOrder } from '@/features/payments/lib/multisafepay-api';
+import type { MultisafepayOrderResponse } from '@/features/payments/lib/multisafepay-api';
 
 const DEFAULT_CURRENCY = 'EUR';
 const CENTS_PER_UNIT = 100;

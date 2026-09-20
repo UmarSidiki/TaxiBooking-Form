@@ -1,14 +1,14 @@
 "use client";
 
-import { createLocationFieldRenderers } from "@/components/embeddable/custom-embeddable-location-fields";
-import { createScheduleFieldRenderers } from "@/components/embeddable/custom-embeddable-schedule-fields";
-import { createTypeFieldRenderers } from "@/components/embeddable/custom-embeddable-type-fields";
+import { createLocationFieldRenderers } from "@/features/booking/ui/embeddable/custom-embeddable-location-fields";
+import { createScheduleFieldRenderers } from "@/features/booking/ui/embeddable/custom-embeddable-schedule-fields";
+import { createTypeFieldRenderers } from "@/features/booking/ui/embeddable/custom-embeddable-type-fields";
 import type {
   CustomEmbeddableFieldCtx,
   CustomEmbeddableFieldRendererProps,
-} from "@/components/embeddable/custom-embeddable-field-context";
-import { Button } from "@/components/ui/button";
-import type { IFormField } from "@/models/form-layout";
+} from "@/features/booking/ui/embeddable/custom-embeddable-field-context";
+import { Button } from "@/shared/ui/button";
+import type { IFormField } from "@/features/form-builder/model";
 import { ArrowRight } from "lucide-react";
 
 export type { CustomEmbeddableFieldRendererProps };

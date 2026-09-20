@@ -1,15 +1,15 @@
 "use client";
 
-import { FleetImageSuggestions } from "@/components/fleet/fleet-image-suggestions";
-import type { FleetVehicleFormFieldsProps } from "@/components/fleet/fleet-vehicle-form-fields";
-import { Input } from "@/components/ui/input";
+import { FleetImageSuggestions } from "@/features/fleet/ui/fleet-image-suggestions";
+import type { FleetVehicleFormFieldsProps } from "@/features/fleet/ui/fleet-vehicle-form-fields";
+import { Input } from "@/shared/ui/input";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from "@/shared/ui/select";
 import { useTranslations } from "next-intl";
 
 export function FleetVehicleFormBasic({

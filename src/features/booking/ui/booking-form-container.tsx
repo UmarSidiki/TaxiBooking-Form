@@ -3,14 +3,14 @@
 import React, { lazy, Suspense } from "react";
 import { Loader2 } from "lucide-react";
 // import { useTranslations } from "next-intl";
-import { LanguageSwitcher } from "../LanguageSwitcher";
-import { useBookingFormContainer } from "@/hooks/form/form-container/useBookingFormContainer";
+import { LanguageSwitcher } from "@/shared/chrome/language-switcher";
+import { useBookingFormContainer } from "@/features/booking/hooks/form-container/useBookingFormContainer";
 import Image from "next/image";
 
 // Lazy load steps to reduce initial bundle size
-const Step1TripDetails = lazy(() => import("./steps/Step1TripDetails"));
-const Step2VehicleSelection = lazy(() => import("./steps/Step2VehicleSelection"));
-const Step3Payment = lazy(() => import("./steps/Step3Payment"));
+const Step1TripDetails = lazy(() => import("./steps/step1-trip-details"));
+const Step2VehicleSelection = lazy(() => import("./steps/step2-vehicle-selection"));
+const Step3Payment = lazy(() => import("./steps/step3-payment"));
 
 // Loading fallback component
 const StepLoader = () => (

@@ -1,7 +1,7 @@
 "use client";
 
-import { RideMapLine } from "@/components/rides/ride-map-line";
-import type { IBooking } from "@/models/booking";
+import { RideMapLine } from "@/features/rides/ui/ride-map-line";
+import type { IBooking } from "@/features/booking/model";
 import { ChevronRight, Route } from "lucide-react";
 import { Fragment } from "react";
 import type { useTranslations } from "next-intl";

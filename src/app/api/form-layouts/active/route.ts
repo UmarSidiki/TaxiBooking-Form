@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { connectDB } from "@/lib/database";
-import { FormLayout } from "@/models/form-layout";
+import { connectDB } from "@/shared/db";
+import { FormLayout } from "@/features/form-builder/model";
 
 export async function GET() {
   try {

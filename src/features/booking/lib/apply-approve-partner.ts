@@ -1,6 +1,6 @@
-import { Setting } from '@/models/settings';
-import type { IBooking } from '@/models/booking';
-import type { BookingPatchApplyResult } from '@/lib/bookings/booking-patch-result';
+import { Setting } from '@/features/settings/model';
+import type { IBooking } from '@/features/booking/model';
+import type { BookingPatchApplyResult } from '@/features/booking/lib/booking-patch-result';
 
 export async function applyApprovePartner(
   booking: IBooking,

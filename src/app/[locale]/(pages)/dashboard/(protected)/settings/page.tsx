@@ -1,18 +1,18 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/shared/ui/button";
 import { Loader2, Save, Palette, CreditCard, MapPin, Mail, Settings as SettingsIcon } from "lucide-react";
-import type { ISetting } from "@/models/settings";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import type { ISetting } from "@/features/settings/model";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs";
 import { useTranslations } from "next-intl";
-import { apiGet, apiPost } from "@/utils/api";
-import AppearanceTab from "@/components/settings/AppearanceTab";
-import BookingTab from "@/components/settings/BookingTab";
-import MapTab from "@/components/settings/MapTab";
-import PaymentTab from "@/components/settings/PaymentTab";
-import SmtpTab from "@/components/settings/SmtpTab";
-import FeaturesTab from "@/components/settings/FeaturesTab";
+import { apiGet, apiPost } from "@/shared/http/api";
+import AppearanceTab from "@/features/settings/ui/appearance-tab";
+import BookingTab from "@/features/settings/ui/booking-tab";
+import MapTab from "@/features/settings/ui/map-tab";
+import PaymentTab from "@/features/settings/ui/payment-tab";
+import SmtpTab from "@/features/settings/ui/smtp-tab";
+import FeaturesTab from "@/features/settings/ui/features-tab";
 
 const SettingsPage = () => {
   const [settings, setSettings] = useState<Partial<ISetting>>({});

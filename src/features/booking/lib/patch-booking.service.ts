@@ -1,19 +1,19 @@
-import { connectDB } from '@/lib/database';
-import { notifyEligiblePartners } from '@/lib/partners/notify-eligible-partners';
-import { applyBookingPatch } from '@/lib/bookings/apply-booking-patch';
+import { connectDB } from '@/shared/db';
+import { notifyEligiblePartners } from '@/features/partners/lib/notify-eligible-partners';
+import { applyBookingPatch } from '@/features/booking/lib/apply-booking-patch';
 import {
   findBookingById,
   updateBookingById,
-} from '@/lib/bookings/booking.repo';
-import { creditPartnerOnComplete } from '@/lib/bookings/credit-partner-on-complete';
-import { sendAssignmentEmails } from '@/lib/bookings/send-assignment-emails';
-import { sendCancelCustomerEmail } from '@/lib/bookings/send-cancel-customer-email';
-import { sendReassignmentEmails } from '@/lib/bookings/send-reassignment-emails';
+} from '@/features/booking/lib/booking.repo';
+import { creditPartnerOnComplete } from '@/features/booking/lib/credit-partner-on-complete';
+import { sendAssignmentEmails } from '@/features/booking/lib/send-assignment-emails';
+import { sendCancelCustomerEmail } from '@/features/booking/lib/send-cancel-customer-email';
+import { sendReassignmentEmails } from '@/features/booking/lib/send-reassignment-emails';
 import {
   parseBookingPatchBody,
   type BookingPatchAction,
-} from '@/lib/schemas/booking-patch.schema';
-import type { IBooking } from '@/models/booking';
+} from '@/features/booking/schema/booking-patch.schema';
+import type { IBooking } from '@/features/booking/model';
 
 export type PatchBookingResult =
   | { ok: true; booking: IBooking; action: BookingPatchAction }

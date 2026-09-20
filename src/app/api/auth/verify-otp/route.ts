@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { connectDB } from "@/lib/database";
-import { PasswordReset } from "@/models/user";
+import { connectDB } from "@/shared/db";
+import { PasswordReset } from "@/features/auth/model";
 
 export async function POST(request: NextRequest) {
   try {

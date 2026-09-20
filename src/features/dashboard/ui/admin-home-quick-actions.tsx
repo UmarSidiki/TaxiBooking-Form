@@ -1,6 +1,6 @@
 "use client";
 
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent } from "@/shared/ui/card";
 import { Calendar, Car, Settings, Users } from "lucide-react";
 import type { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";

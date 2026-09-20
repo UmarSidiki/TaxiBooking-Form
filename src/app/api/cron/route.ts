@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
-import { sendThankYouEmails } from "@/utils/sendThankYouEmails";
-import { cleanupAbandonedBookings } from "@/utils/cleanupAbandonedBookings";
-import { deleteSuspendedPartners } from "@/utils/deleteSuspendedPartners";
-import { deleteOldCompletedRides } from "@/utils/deleteOldCompletedRides";
+import { sendThankYouEmails } from "@/features/booking/lib/send-thank-you-emails";
+import { cleanupAbandonedBookings } from "@/features/booking/lib/cleanup-abandoned-bookings";
+import { deleteSuspendedPartners } from "@/features/partners/lib/delete-suspended-partners";
+import { deleteOldCompletedRides } from "@/features/rides/lib/delete-old-completed-rides";
 
 export async function GET() {
   console.log('🕒 Cron job triggered');

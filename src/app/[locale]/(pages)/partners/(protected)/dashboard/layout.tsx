@@ -1,9 +1,9 @@
 import type { ReactNode } from "react";
 import { redirect } from "next/navigation";
 import { getServerSession } from "next-auth";
-import { connectDB } from "@/lib/database";
-import { Partner } from "@/models/partner";
-import { authOptions } from "@/lib/auth/options";
+import { connectDB } from "@/shared/db";
+import { Partner } from "@/features/partners/model";
+import { authOptions } from "@/features/auth";
 
 type DashboardLayoutProps = {
   children: ReactNode;

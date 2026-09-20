@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
-import { connectDB } from "@/lib/database";
-import { Partner, type IPartnerDocument } from "@/models/partner";
-import { authOptions } from "@/lib/auth/options";
-import { sendPartnerApprovalEmail } from "@/controllers/email/partners";
+import { connectDB } from "@/shared/db";
+import { Partner, type IPartnerDocument } from "@/features/partners/model";
+import { authOptions } from "@/features/auth";
+import { sendPartnerApprovalEmail } from "@/features/partners/email/notification";
 
 export async function PATCH(
   request: NextRequest,

@@ -1,16 +1,16 @@
 "use client";
 
 import { useState, useCallback, useRef } from "react";
-import { useBookingForm } from "@/contexts/BookingFormContext";
-import { useTheme } from "@/contexts/ThemeContext";
+import { useBookingForm } from "@/features/booking/context/booking-form-context";
+import { useTheme } from "@/features/settings/context/theme-context";
 import { useTranslations } from "next-intl";
-import { isPlaceInServiceArea } from "@/lib/maps/is-place-in-service-area";
-import { useStep1Distance } from "@/hooks/form/form-steps/useStep1Distance";
-import { useStep1GoogleMaps } from "@/hooks/form/form-steps/useStep1GoogleMaps";
-import { useStep1StopAutocomplete } from "@/hooks/form/form-steps/useStep1StopAutocomplete";
-import { getStep1Errors } from "@/lib/form/get-step1-errors";
-import { createStep1EmbedUrl } from "@/lib/form/create-step1-embed-url";
-import { navigateEmbedToStep2 } from "@/lib/form/navigate-embed-to-step2";
+import { isPlaceInServiceArea } from "@/features/booking/lib/maps/is-place-in-service-area";
+import { useStep1Distance } from "@/features/booking/hooks/form-steps/useStep1Distance";
+import { useStep1GoogleMaps } from "@/features/booking/hooks/form-steps/useStep1GoogleMaps";
+import { useStep1StopAutocomplete } from "@/features/booking/hooks/form-steps/useStep1StopAutocomplete";
+import { getStep1Errors } from "@/features/booking/lib/get-step1-errors";
+import { createStep1EmbedUrl } from "@/features/booking/lib/create-step1-embed-url";
+import { navigateEmbedToStep2 } from "@/features/booking/lib/navigate-embed-to-step2";
 
 export function useStep1() {
   const [mapLoaded, setMapLoaded] = useState(false);

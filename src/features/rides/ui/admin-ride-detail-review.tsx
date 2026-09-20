@@ -1,9 +1,9 @@
 "use client";
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import type { AdminRideReview } from "@/hooks/rides/useAdminRides";
-import { LONG_EN_US_DATE, REVIEW_STAR_MAX } from "@/lib/rides/ride-format";
-import type { IBooking } from "@/models/booking";
+import { Card, CardContent, CardHeader, CardTitle } from "@/shared/ui/card";
+import type { AdminRideReview } from "@/features/rides/hooks/useAdminRides";
+import { LONG_EN_US_DATE, REVIEW_STAR_MAX } from "@/features/rides/lib/ride-format";
+import type { IBooking } from "@/features/booking/model";
 import { Star } from "lucide-react";
 
 export function AdminRideDetailReview({

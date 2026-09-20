@@ -1,12 +1,12 @@
 "use client";
 
-import { RideMapLine } from "@/components/rides/ride-map-line";
-import { RidePaymentStatusBadge } from "@/components/rides/ride-payment-status-badge";
-import { RideStatusBadge } from "@/components/rides/ride-status-badge";
-import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import type { IBooking } from "@/models/booking";
-import type { useDriverDashboard } from "@/hooks/rides/useDriverDashboard";
+import { RideMapLine } from "@/features/rides/ui/ride-map-line";
+import { RidePaymentStatusBadge } from "@/features/rides/ui/ride-payment-status-badge";
+import { RideStatusBadge } from "@/features/rides/ui/ride-status-badge";
+import { Badge } from "@/shared/ui/badge";
+import { Card, CardContent, CardHeader, CardTitle } from "@/shared/ui/card";
+import type { IBooking } from "@/features/booking/model";
+import type { useDriverDashboard } from "@/features/drivers/hooks/useDriverDashboard";
 import {
   Baby,
   Ban,

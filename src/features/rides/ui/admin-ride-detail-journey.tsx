@@ -1,8 +1,8 @@
 "use client";
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { formatStopWaitDuration } from "@/lib/rides/format-stop-wait-duration";
-import type { IBooking } from "@/models/booking";
+import { Card, CardContent, CardHeader, CardTitle } from "@/shared/ui/card";
+import { formatStopWaitDuration } from "@/features/rides/lib/format-stop-wait-duration";
+import type { IBooking } from "@/features/booking/model";
 import {
   Baby,
   CalendarDays,

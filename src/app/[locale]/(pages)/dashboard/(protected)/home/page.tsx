@@ -1,19 +1,19 @@
 "use client";
 
-import { Badge } from "@/components/ui/badge";
-import { useCurrency } from "@/contexts/CurrencyContext";
-import { useAdminHome } from "@/hooks/dashboard/useAdminHome";
-import { AdminHomeHeader } from "@/components/admin-home/admin-home-header";
-import { AdminHomeLoading } from "@/components/admin-home/admin-home-loading";
+import { Badge } from "@/shared/ui/badge";
+import { useCurrency } from "@/shared/context/currency-context";
+import { useAdminHome } from "@/features/dashboard/hooks/useAdminHome";
+import { AdminHomeHeader } from "@/features/dashboard/ui/admin-home-header";
+import { AdminHomeLoading } from "@/features/dashboard/ui/admin-home-loading";
 import {
   AdminHomeEmpty,
   AdminHomeError,
-} from "@/components/admin-home/admin-home-status";
-import { AdminHomeBookingStats } from "@/components/admin-home/admin-home-booking-stats";
-import { AdminHomeRevenue } from "@/components/admin-home/admin-home-revenue";
-import { AdminHomeRecentBookings } from "@/components/admin-home/admin-home-recent-bookings";
-import { AdminHomeDestinations } from "@/components/admin-home/admin-home-destinations";
-import { AdminHomeQuickActions } from "@/components/admin-home/admin-home-quick-actions";
+} from "@/features/dashboard/ui/admin-home-status";
+import { AdminHomeBookingStats } from "@/features/dashboard/ui/admin-home-booking-stats";
+import { AdminHomeRevenue } from "@/features/dashboard/ui/admin-home-revenue";
+import { AdminHomeRecentBookings } from "@/features/dashboard/ui/admin-home-recent-bookings";
+import { AdminHomeDestinations } from "@/features/dashboard/ui/admin-home-destinations";
+import { AdminHomeQuickActions } from "@/features/dashboard/ui/admin-home-quick-actions";
 
 export default function DashboardPage() {
   const { currencySymbol } = useCurrency();

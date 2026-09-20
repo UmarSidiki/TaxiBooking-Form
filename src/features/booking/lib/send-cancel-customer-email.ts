@@ -1,7 +1,7 @@
-import { sendOrderCancellationEmail } from '@/controllers/email/bookings';
-import type { IBooking } from '@/models/booking';
-import { createCancellationEmailData } from '@/lib/bookings/build-cancellation-email-data';
-import type { BookingPatchAction } from '@/lib/schemas/booking-patch.schema';
+import { sendOrderCancellationEmail } from '@/features/booking/email/order-cancellation';
+import type { IBooking } from '@/features/booking/model';
+import { createCancellationEmailData } from '@/features/booking/lib/build-cancellation-email-data';
+import type { BookingPatchAction } from '@/features/booking/schema/booking-patch.schema';
 
 export async function sendCancelCustomerEmail(
   action: BookingPatchAction,

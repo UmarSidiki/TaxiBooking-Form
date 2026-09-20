@@ -1,6 +1,6 @@
-import { Booking } from '@/models/booking';
-import { Setting } from '@/models/settings';
-import { notifyEligiblePartners } from '@/lib/partners/notify-eligible-partners';
+import { Booking } from '@/features/booking/model';
+import { Setting } from '@/features/settings/model';
+import { notifyEligiblePartners } from '@/features/partners/lib/notify-eligible-partners';
 
 export async function initCashBookingPartners(
   savedBookingId: string,

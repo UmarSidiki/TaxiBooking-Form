@@ -1,8 +1,8 @@
 "use client";
 
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent } from "@/shared/ui/card";
 import { CheckCircle2, Clock, Users, XCircle } from "lucide-react";
-import type { useAdminPartners } from "@/hooks/partners/useAdminPartners";
+import type { useAdminPartners } from "@/features/partners/hooks/useAdminPartners";
 
 type AdminPartnersState = ReturnType<typeof useAdminPartners>;
 

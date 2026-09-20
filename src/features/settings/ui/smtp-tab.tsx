@@ -1,10 +1,10 @@
 import React from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/shared/ui/card";
+import { Input } from "@/shared/ui/input";
+import { Button } from "@/shared/ui/button";
 import { Loader2, Mail } from "lucide-react";
-import { ISetting } from "@/models/settings";
-import { apiPost } from "@/utils/api";
+import { ISetting } from "@/features/settings/model";
+import { apiPost } from "@/shared/http/api";
 import { useTranslations } from "next-intl";
 
 interface SmtpTabProps {

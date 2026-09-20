@@ -1,10 +1,10 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import type { DistanceData, FormData } from "@/contexts/BookingFormContext";
-import { DEFAULT_VEHICLE_MINIMUM_HOURS } from "@/lib/fleet/vehicle-form-defaults";
-import type { IVehicle } from "@/models/vehicle";
+import { Button } from "@/shared/ui/button";
+import { Card } from "@/shared/ui/card";
+import type { DistanceData, FormData } from "@/features/booking/context/booking-form-context";
+import { DEFAULT_VEHICLE_MINIMUM_HOURS } from "@/features/fleet/lib/vehicle-form-defaults";
+import type { IVehicle } from "@/features/fleet/model";
 import {
   CheckCircle2,
   Loader2,

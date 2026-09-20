@@ -1,15 +1,15 @@
 "use client";
 
-import { Card, CardContent } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
+import { Card, CardContent } from "@/shared/ui/card";
+import { Input } from "@/shared/ui/input";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import type { useAdminPartners } from "@/hooks/partners/useAdminPartners";
+} from "@/shared/ui/select";
+import type { useAdminPartners } from "@/features/partners/hooks/useAdminPartners";
 import { Filter, Search } from "lucide-react";
 
 type AdminPartnersState = ReturnType<typeof useAdminPartners>;

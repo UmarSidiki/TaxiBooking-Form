@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth/options";
-import { connectDB } from "@/lib/database";
-import { Vehicle, type IVehicle } from "@/models/vehicle";
+import { authOptions } from "@/features/auth";
+import { connectDB } from "@/shared/db";
+import { Vehicle, type IVehicle } from "@/features/fleet/model";
 
 // GET - Fetch all vehicles (Public endpoint - customers need to see available vehicles)
 export async function GET(request: NextRequest) {

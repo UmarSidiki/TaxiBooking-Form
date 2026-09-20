@@ -1,7 +1,7 @@
 "use client";
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import type { IBooking } from "@/models/booking";
+import { Card, CardContent, CardHeader, CardTitle } from "@/shared/ui/card";
+import type { IBooking } from "@/features/booking/model";
 import { Car, Mail, PhoneCall, Plane, User, UserCheck } from "lucide-react";
 import type { useTranslations } from "next-intl";
 

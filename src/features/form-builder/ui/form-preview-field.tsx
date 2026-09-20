@@ -1,8 +1,8 @@
 "use client";
 
-import { FIELD_REGISTRY } from "@/components/form-builder/field-registry";
-import { SortablePreviewItem } from "@/components/form-builder/sortable-preview-item";
-import type { IFormField, IFormStyle } from "@/models/form-layout";
+import { FIELD_REGISTRY } from "@/features/form-builder/ui/field-registry";
+import { SortablePreviewItem } from "@/features/form-builder/ui/sortable-preview-item";
+import type { IFormField, IFormStyle } from "@/features/form-builder/model";
 import {
   ArrowLeftRight,
   ArrowRight,

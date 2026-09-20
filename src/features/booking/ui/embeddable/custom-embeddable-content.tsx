@@ -4,8 +4,8 @@ import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { AlertCircle } from "lucide-react";
-import type { IFormLayout } from "@/models/form-layout";
-import { DynamicBookingForm } from "@/components/embeddable/custom-dynamic-booking-form";
+import type { IFormLayout } from "@/features/form-builder/model";
+import { DynamicBookingForm } from "@/features/booking/ui/embeddable/custom-dynamic-booking-form";
 
 export function CustomEmbeddableContent() {
   const t = useTranslations("embeddable");

@@ -2,8 +2,8 @@ import {
   DEFAULT_VEHICLE_MINIMUM_HOURS,
   DEFAULT_VEHICLE_PRICE_PER_HOUR,
   DEFAULT_VEHICLE_RETURN_PRICE_PERCENTAGE,
-} from "@/lib/fleet/vehicle-form-defaults";
-import type { IVehicle } from '@/models/vehicle';
+} from "@/features/fleet/lib/vehicle-form-defaults";
+import type { IVehicle } from '@/features/fleet/model';
 
 export interface BookingPriceInput {
   bookingType?: 'destination' | 'hourly';

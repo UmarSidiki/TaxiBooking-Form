@@ -1,10 +1,10 @@
-import type { IBooking } from '@/models/booking';
-import type { BookingPatchBody } from '@/lib/schemas/booking-patch.schema';
-import { applyApprovePartner } from '@/lib/bookings/apply-approve-partner';
-import { applyAssignDriver } from '@/lib/bookings/apply-assign-driver';
-import { applyAssignPartner } from '@/lib/bookings/apply-assign-partner';
-import { applyCancelBooking } from '@/lib/bookings/apply-cancel-booking';
-import type { BookingPatchApplyResult } from '@/lib/bookings/booking-patch-result';
+import type { IBooking } from '@/features/booking/model';
+import type { BookingPatchBody } from '@/features/booking/schema/booking-patch.schema';
+import { applyApprovePartner } from '@/features/booking/lib/apply-approve-partner';
+import { applyAssignDriver } from '@/features/booking/lib/apply-assign-driver';
+import { applyAssignPartner } from '@/features/booking/lib/apply-assign-partner';
+import { applyCancelBooking } from '@/features/booking/lib/apply-cancel-booking';
+import type { BookingPatchApplyResult } from '@/features/booking/lib/booking-patch-result';
 
 export async function applyBookingPatch(
   booking: IBooking,

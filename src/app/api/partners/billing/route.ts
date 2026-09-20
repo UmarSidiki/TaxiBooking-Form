@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 
-import { connectDB } from "@/lib/database";
-import { Partner } from "@/models/partner";
-import { authOptions } from "@/lib/auth/options";
-import { sanitizeInput } from "@/lib/validation";
+import { connectDB } from "@/shared/db";
+import { Partner } from "@/features/partners/model";
+import { authOptions } from "@/features/auth";
+import { sanitizeInput } from "@/shared/lib/validation";
 
 const sanitizeString = (value: unknown, limit = 180) => {
   if (typeof value !== "string") {

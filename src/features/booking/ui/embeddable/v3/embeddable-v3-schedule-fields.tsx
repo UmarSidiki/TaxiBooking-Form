@@ -1,11 +1,11 @@
 "use client";
 
-import { Input } from "@/components/ui/input";
-import type { FormData, FormErrors } from "@/contexts/BookingFormContext";
+import { Input } from "@/shared/ui/input";
+import type { FormData, FormErrors } from "@/features/booking/context/booking-form-context";
 import {
   MAX_PASSENGERS,
   MIN_PASSENGERS,
-} from "@/lib/form/passenger-limits";
+} from "@/features/booking/lib/passenger-limits";
 import { AlertCircle, Calendar, Clock, Users } from "lucide-react";
 import type { useTranslations } from "next-intl";
 

@@ -1,9 +1,9 @@
 "use client";
 
-import { BookingPaymentIcons } from "@/components/form/booking-payment-icons";
-import { Card } from "@/components/ui/card";
-import type { DistanceData, FormData } from "@/contexts/BookingFormContext";
-import type { IVehicle } from "@/models/vehicle";
+import { BookingPaymentIcons } from "@/features/booking/ui/booking-payment-icons";
+import { Card } from "@/shared/ui/card";
+import type { DistanceData, FormData } from "@/features/booking/context/booking-form-context";
+import type { IVehicle } from "@/features/fleet/model";
 import type { useTranslations } from "next-intl";
 import { Step2IncludedServices } from "./step2-included-services";
 import { Step2PriceBreakdown } from "./step2-price-breakdown";

@@ -1,7 +1,7 @@
 "use client";
 
-import { BookingPaymentIcons } from "@/components/form/booking-payment-icons";
-import { Button } from "@/components/ui/button";
+import { BookingPaymentIcons } from "@/features/booking/ui/booking-payment-icons";
+import { Button } from "@/shared/ui/button";
 import { ArrowRight, Car } from "lucide-react";
 import type { useTranslations } from "next-intl";
 

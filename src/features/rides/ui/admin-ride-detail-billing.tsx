@@ -1,9 +1,9 @@
 "use client";
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { RidePaymentStatusBadge } from "@/components/rides/ride-payment-status-badge";
-import { RideStatusBadge } from "@/components/rides/ride-status-badge";
-import type { IBooking } from "@/models/booking";
+import { Card, CardContent, CardHeader, CardTitle } from "@/shared/ui/card";
+import { RidePaymentStatusBadge } from "@/features/rides/ui/ride-payment-status-badge";
+import { RideStatusBadge } from "@/features/rides/ui/ride-status-badge";
+import type { IBooking } from "@/features/booking/model";
 import {
   Ban,
   Calendar,

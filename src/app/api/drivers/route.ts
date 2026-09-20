@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
-import { connectDB } from "@/lib/database";
-import { Driver, type IDriver } from "@/models/driver";
+import { connectDB } from "@/shared/db";
+import { Driver, type IDriver } from "@/features/drivers/model";
 import bcrypt from "bcryptjs";
 import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth/options";
-import { isValidEmail } from "@/lib/validation";
+import { authOptions } from "@/features/auth";
+import { isValidEmail } from "@/shared/lib/validation";
 
 // GET - Fetch all drivers
 export async function GET(request: NextRequest) {

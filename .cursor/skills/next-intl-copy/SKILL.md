@@ -5,13 +5,13 @@ description: eight-locale next-intl copy for the taxi booking form. Use when add
 
 # next-intl copy
 
-Locales: `en` `fr` `es` `de` `nl` `it` `ru` `ar`. Default `en`. Config: `src/i18n/routing.ts`, `src/i18n/request.ts`, `src/i18n/navigation.ts`.
+Locales: `en` `fr` `es` `de` `nl` `it` `ru` `ar`. Default `en`. Config: `src/shared/i18n/routing.ts`, `src/shared/i18n/request.ts`, `src/shared/i18n/navigation.ts`.
 
 ## Always
 
 - Add or change keys in **all eight** `messages/{locale}.json` files in the same change.
 - Keep key paths identical across locales. Nested objects match existing files (`Step1`, `Step2`, `Footer`, …).
-- UI: `useTranslations('Step1')` / `getTranslations`. Links/router: `Link` / `useRouter` from `@/i18n/navigation`.
+- UI: `useTranslations('Step1')` / `getTranslations`. Links/router: `Link` / `useRouter` from `@/shared/i18n/navigation`.
 - Never show raw Zod, NextAuth, Stripe, or Mongoose English to users. Map to a dictionary key.
 - Loading strings end with `…`.
 
@@ -28,4 +28,4 @@ Locales: `en` `fr` `es` `de` `nl` `it` `ru` `ar`. Default `en`. Config: `src/i18
 
 ## Email
 
-HTML email templates in `src/controllers/email/` are mostly English today. Do not silently switch them to i18n unless the task is email localization. UI chrome still goes through `messages/`.
+HTML email templates in `src/features/<domain>/email/` are mostly English today. Do not silently switch them to i18n unless the task is email localization. UI chrome still goes through `messages/`.

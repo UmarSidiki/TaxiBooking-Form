@@ -1,5 +1,5 @@
-import { connectDB } from "@/lib/database";
-import { Setting, type ISetting } from "@/models/settings";
+import { connectDB } from "@/shared/db";
+import { Setting, type ISetting } from "@/features/settings/model";
 
 export type ThemeSettings = Pick<ISetting, "primaryColor" | "secondaryColor" | "borderRadius"> &
   Partial<Omit<ISetting, "primaryColor" | "secondaryColor" | "borderRadius">>;

@@ -1,4 +1,4 @@
-import { Badge } from '@/components/ui/badge';
+import { Badge } from '@/shared/ui/badge';
 import { CheckCircle, Clock, RefreshCw, X } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 

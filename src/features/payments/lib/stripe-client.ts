@@ -1,6 +1,6 @@
 import Stripe from 'stripe';
-import { connectDB } from '@/lib/database';
-import { Setting } from '@/models/settings';
+import { connectDB } from '@/shared/db';
+import { Setting } from '@/features/settings/model';
 
 const DEFAULT_API_VERSION = '2026-07-29.dahlia' as Stripe.LatestApiVersion;
 

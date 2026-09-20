@@ -1,4 +1,4 @@
-import { MINUTES_PER_HOUR } from "@/lib/time/minutes-per-hour";
+import { MINUTES_PER_HOUR } from "@/shared/lib/minutes-per-hour";
 
 export function formatStopWaitDuration(durationMinutes: number): string {
   if (durationMinutes >= MINUTES_PER_HOUR) {

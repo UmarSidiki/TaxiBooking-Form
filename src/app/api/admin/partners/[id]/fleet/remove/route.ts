@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
-import { connectDB } from "@/lib/database";
-import Partner, { type IFleetRequest } from "@/models/partner/Partner";
-import { authOptions } from "@/lib/auth/options";
+import { connectDB } from "@/shared/db";
+import Partner, { type IFleetRequest } from "@/features/partners/model/Partner";
+import { authOptions } from "@/features/auth";
 
 export async function DELETE(
   request: Request,

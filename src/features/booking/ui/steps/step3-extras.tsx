@@ -1,8 +1,8 @@
 "use client";
 
-import { Input } from "@/components/ui/input";
-import { Card } from "@/components/ui/card";
-import type { useStep3 } from "@/hooks/form/form-steps/useStep3";
+import { Input } from "@/shared/ui/input";
+import { Card } from "@/shared/ui/card";
+import type { useStep3 } from "@/features/booking/hooks/form-steps/useStep3";
 import type { useTranslations } from "next-intl";
 
 type Step = ReturnType<typeof useStep3>;

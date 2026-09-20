@@ -1,9 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useBookingForm } from "@/contexts/BookingFormContext";
+import { useBookingForm } from "@/features/booking/context/booking-form-context";
 import { useSearchParams } from "next/navigation";
-import type { FormData } from "@/contexts/BookingFormContext";
+import type { FormData } from "@/features/booking/context/booking-form-context";
 import { useTranslations } from "next-intl";
 
 export function useBookingFormContainer() {

@@ -1,12 +1,12 @@
 import { type ReactNode } from "react";
 import { redirect } from "next/navigation";
 import { getServerSession } from "next-auth";
-import { connectDB } from "@/lib/database";
-import { Setting } from "@/models/settings";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { DriverSidebar } from "@/components/DriverSidebar";
-import { LanguageSwitcher } from "@/components/LanguageSwitcher";
-import { authOptions } from "@/lib/auth/options";
+import { connectDB } from "@/shared/db";
+import { Setting } from "@/features/settings/model";
+import { SidebarProvider, SidebarTrigger } from "@/shared/ui/sidebar";
+import { DriverSidebar } from "@/features/drivers/ui/driver-sidebar";
+import { LanguageSwitcher } from "@/shared/chrome/language-switcher";
+import { authOptions } from "@/features/auth";
 import { getTranslations } from "next-intl/server";
 
 type DriverLayoutProps = {

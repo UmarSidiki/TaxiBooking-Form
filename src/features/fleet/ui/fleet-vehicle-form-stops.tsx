@@ -1,8 +1,8 @@
 "use client";
 
-import type { FleetVehicleFormFieldsProps } from "@/components/fleet/fleet-vehicle-form-fields";
-import { Input } from "@/components/ui/input";
-import { useCurrency } from "@/contexts/CurrencyContext";
+import type { FleetVehicleFormFieldsProps } from "@/features/fleet/ui/fleet-vehicle-form-fields";
+import { Input } from "@/shared/ui/input";
+import { useCurrency } from "@/shared/context/currency-context";
 import { useTranslations } from "next-intl";
 
 export function FleetVehicleFormStops({

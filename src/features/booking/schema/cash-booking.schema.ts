@@ -3,8 +3,8 @@ import {
   isValidEmail,
   isValidName,
   isValidPhone,
-} from '@/lib/validation';
-import type { BookingInput } from '@/models/booking';
+} from '@/shared/lib/validation';
+import type { BookingInput } from '@/features/booking/model';
 
 export const cashBookingStopSchema = z
   .object({

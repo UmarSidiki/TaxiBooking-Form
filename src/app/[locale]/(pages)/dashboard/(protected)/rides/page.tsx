@@ -1,13 +1,13 @@
 "use client";
 
-import { AdminRideCancelDialog } from "@/components/rides/admin-ride-cancel-dialog";
-import { AdminRideCardList } from "@/components/rides/admin-ride-card-list";
-import { AdminRideDetailDialog } from "@/components/rides/admin-ride-detail-dialog";
-import { AdminRidesTabPanel } from "@/components/rides/admin-rides-tab-panel";
-import { AdminRidesToolbar } from "@/components/rides/admin-rides-toolbar";
-import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useAdminRides } from "@/hooks/rides/useAdminRides";
+import { AdminRideCancelDialog } from "@/features/rides/ui/admin-ride-cancel-dialog";
+import { AdminRideCardList } from "@/features/rides/ui/admin-ride-card-list";
+import { AdminRideDetailDialog } from "@/features/rides/ui/admin-ride-detail-dialog";
+import { AdminRidesTabPanel } from "@/features/rides/ui/admin-rides-tab-panel";
+import { AdminRidesToolbar } from "@/features/rides/ui/admin-rides-toolbar";
+import { Badge } from "@/shared/ui/badge";
+import { Tabs, TabsList, TabsTrigger } from "@/shared/ui/tabs";
+import { useAdminRides } from "@/features/rides/hooks/useAdminRides";
 import { Ban, CalendarDays, CheckCircle } from "lucide-react";
 
 export default function RidesPage() {

@@ -12,10 +12,10 @@ import {
   X,
   Timer,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import type { IFormField } from "@/models/form-layout";
-import type { CustomEmbeddableFieldCtx } from "@/components/embeddable/custom-embeddable-field-context";
+import { Button } from "@/shared/ui/button";
+import { Input } from "@/shared/ui/input";
+import type { IFormField } from "@/features/form-builder/model";
+import type { CustomEmbeddableFieldCtx } from "@/features/booking/ui/embeddable/custom-embeddable-field-context";
 
 type Ctx = CustomEmbeddableFieldCtx;
 

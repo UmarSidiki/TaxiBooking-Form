@@ -2,9 +2,9 @@
 
 import { useCallback, useEffect } from "react";
 import type { Dispatch, MutableRefObject, SetStateAction } from "react";
-import type { FormData, FormErrors } from "@/contexts/BookingFormContext";
-import { MIN_POLYGON_POINTS } from "@/lib/maps/map-defaults";
-import type { ISetting } from "@/models/settings";
+import type { FormData, FormErrors } from "@/features/booking/context/booking-form-context";
+import { MIN_POLYGON_POINTS } from "@/features/booking/lib/maps/map-defaults";
+import type { ISetting } from "@/features/settings/model";
 import type { useTranslations } from "next-intl";
 
 type TFn = ReturnType<typeof useTranslations>;

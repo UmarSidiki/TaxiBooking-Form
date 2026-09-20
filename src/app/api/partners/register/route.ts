@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { hash } from "bcryptjs";
-import { connectDB } from "@/lib/database";
-import { Partner } from "@/models/partner";
-import { sendAdminPartnerRegistrationEmail } from "@/controllers/email/admin";
-import { isValidEmail, isValidPhone, sanitizeInput } from "@/lib/validation";
+import { connectDB } from "@/shared/db";
+import { Partner } from "@/features/partners/model";
+import { sendAdminPartnerRegistrationEmail } from "@/features/partners/email/partner-notification";
+import { isValidEmail, isValidPhone, sanitizeInput } from "@/shared/lib/validation";
 
 export async function POST(request: NextRequest) {
   try {

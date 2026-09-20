@@ -1,7 +1,7 @@
 "use client";
 
-import type { DistanceData, FormData } from "@/contexts/BookingFormContext";
-import type { IVehicle } from "@/models/vehicle";
+import type { DistanceData, FormData } from "@/features/booking/context/booking-form-context";
+import type { IVehicle } from "@/features/fleet/model";
 import { Loader2 } from "lucide-react";
 import type { useTranslations } from "next-intl";
 import { Step2VehicleCard } from "./step2-vehicle-card";

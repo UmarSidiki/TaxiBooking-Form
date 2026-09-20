@@ -1,6 +1,6 @@
 "use client";
 
-import type { DistanceData, FormData } from "@/contexts/BookingFormContext";
+import type { DistanceData, FormData } from "@/features/booking/context/booking-form-context";
 import { Calendar, Clock, Flag, MapPin, Users } from "lucide-react";
 import type { useTranslations } from "next-intl";
 

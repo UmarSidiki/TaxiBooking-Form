@@ -1,6 +1,6 @@
 import nodemailer from "nodemailer";
-import { connectDB } from "@/lib/database";
-import { Setting } from "@/models/settings";
+import { connectDB } from "@/shared/db";
+import { Setting } from "@/features/settings/model";
 
 export async function sendEmail(
   mailOptions: nodemailer.SendMailOptions

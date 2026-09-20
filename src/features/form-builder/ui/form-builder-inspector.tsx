@@ -1,16 +1,16 @@
 "use client";
 
-import { FormBuilderButtonProperties } from "@/components/form-builder/form-builder-button-properties";
-import { FormBuilderDesignTab } from "@/components/form-builder/form-builder-design-tab";
-import { FormBuilderEmptyProperties } from "@/components/form-builder/form-builder-empty-properties";
-import { FormBuilderFieldProperties } from "@/components/form-builder/form-builder-field-properties";
+import { FormBuilderButtonProperties } from "@/features/form-builder/ui/form-builder-button-properties";
+import { FormBuilderDesignTab } from "@/features/form-builder/ui/form-builder-design-tab";
+import { FormBuilderEmptyProperties } from "@/features/form-builder/ui/form-builder-empty-properties";
+import { FormBuilderFieldProperties } from "@/features/form-builder/ui/form-builder-field-properties";
 import {
   Card,
   CardContent,
   CardHeader,
-} from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import type { useFormBuilder } from "@/hooks/form-builder/useFormBuilder";
+} from "@/shared/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs";
+import type { useFormBuilder } from "@/features/form-builder/hooks/useFormBuilder";
 
 type Builder = ReturnType<typeof useFormBuilder>;
 

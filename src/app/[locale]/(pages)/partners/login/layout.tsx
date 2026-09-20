@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
-import { connectDB } from "@/lib/database";
-import { Setting } from "@/models/settings";
+import { connectDB } from "@/shared/db";
+import { Setting } from "@/features/settings/model";
 
 export default async function PartnerLoginLayout({
   children,

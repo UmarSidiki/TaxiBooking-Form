@@ -1,10 +1,10 @@
 import React from "react";
 import { useTranslations } from "next-intl";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Switch } from "@/components/ui/switch";
-import { Input } from "@/components/ui/input";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/shared/ui/card";
+import { Switch } from "@/shared/ui/switch";
+import { Input } from "@/shared/ui/input";
 import { Users, Car, Receipt, Code, Wrench } from "lucide-react";
-import type { ISetting } from "@/models/settings";
+import type { ISetting } from "@/features/settings/model";
 
 // Simple Label component inline
 const Label = ({ htmlFor, className, children, ...props }: React.LabelHTMLAttributes<HTMLLabelElement>) => (

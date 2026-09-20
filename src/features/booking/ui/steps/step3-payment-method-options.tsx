@@ -1,6 +1,6 @@
 "use client";
 
-import type { Step3PaymentMethodsProps } from "@/components/form/steps/step3-payment-methods.types";
+import type { Step3PaymentMethodsProps } from "@/features/booking/ui/steps/step3-payment-methods.types";
 import { Building2, CheckCircle2, CreditCard, Wallet } from "lucide-react";
 
 export function Step3PaymentMethodOptions({

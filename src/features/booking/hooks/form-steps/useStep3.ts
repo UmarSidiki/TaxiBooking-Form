@@ -1,14 +1,14 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { useBookingForm } from "@/contexts/BookingFormContext";
+import { useBookingForm } from "@/features/booking/context/booking-form-context";
 import { useRouter } from "next/navigation";
 import { useTranslations, useLocale } from "next-intl";
-import { useTheme } from "@/contexts/ThemeContext";
-import { ISetting } from "@/models/settings";
-import { useStep3Map } from "@/hooks/form/form-steps/useStep3Map";
-import { useStep3Payments } from "@/hooks/form/form-steps/useStep3Payments";
-import { useStep3Pricing } from "@/hooks/form/form-steps/useStep3Pricing";
+import { useTheme } from "@/features/settings/context/theme-context";
+import { ISetting } from "@/features/settings/model";
+import { useStep3Map } from "@/features/booking/hooks/form-steps/useStep3Map";
+import { useStep3Payments } from "@/features/booking/hooks/form-steps/useStep3Payments";
+import { useStep3Pricing } from "@/features/booking/hooks/form-steps/useStep3Pricing";
 
 export function useStep3() {
   const t = useTranslations();

@@ -1,6 +1,6 @@
-import { Partner } from '@/models/partner';
-import type { IBooking } from '@/models/booking';
-import type { BookingPatchAction } from '@/lib/schemas/booking-patch.schema';
+import { Partner } from '@/features/partners/model';
+import type { IBooking } from '@/features/booking/model';
+import type { BookingPatchAction } from '@/features/booking/schema/booking-patch.schema';
 
 export async function creditPartnerOnComplete(input: {
   action: BookingPatchAction;

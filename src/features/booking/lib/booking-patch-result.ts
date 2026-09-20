@@ -1,4 +1,4 @@
-import type { IBooking } from '@/models/booking';
+import type { IBooking } from '@/features/booking/model';
 
 export type BookingPatchApplyOk = {
   ok: true;

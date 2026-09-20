@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { connectDB } from "@/lib/database";
-import {Driver} from "@/models/driver";
+import { connectDB } from "@/shared/db";
+import {Driver} from "@/features/drivers/model";
 import bcrypt from "bcryptjs";
 
 // GET - Fetch a single driver

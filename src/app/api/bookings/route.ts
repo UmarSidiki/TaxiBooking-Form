@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { connectDB } from "@/lib/database";
-import { Booking, type IBooking } from "@/models/booking";
+import { connectDB } from "@/shared/db";
+import { Booking, type IBooking } from "@/features/booking/model";
 
 // GET all bookings
 export async function GET(request: NextRequest) {

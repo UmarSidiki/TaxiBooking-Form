@@ -1,4 +1,4 @@
-import type { VehicleForm } from "@/components/fleet/vehicle-form.types";
+import type { VehicleForm } from "@/features/fleet/ui/vehicle-form.types";
 
 export const PLACEHOLDER_VEHICLE_IMAGE = "/placeholder-car.jpg";
 

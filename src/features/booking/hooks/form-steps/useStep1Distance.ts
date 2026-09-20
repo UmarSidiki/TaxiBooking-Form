@@ -2,12 +2,12 @@
 
 import { useCallback, useEffect, useMemo, useRef } from "react";
 import type { Dispatch, MutableRefObject, SetStateAction } from "react";
-import type { DistanceData, FormData } from "@/contexts/BookingFormContext";
+import type { DistanceData, FormData } from "@/features/booking/context/booking-form-context";
 import {
   fetchBookingDistance,
   MIN_DISTANCE_QUERY_LENGTH,
-} from "@/lib/maps/fetch-booking-distance";
-import { DISTANCE_DEBOUNCE_MS } from "@/lib/maps/distance-debounce";
+} from "@/features/booking/lib/maps/fetch-booking-distance";
+import { DISTANCE_DEBOUNCE_MS } from "@/features/booking/lib/maps/distance-debounce";
 
 export function useStep1Distance({
   formData,

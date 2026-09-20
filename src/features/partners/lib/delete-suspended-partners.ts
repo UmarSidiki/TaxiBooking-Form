@@ -1,5 +1,5 @@
-import { connectDB } from "@/lib/database";
-import { Partner } from "@/models/partner";
+import { connectDB } from "@/shared/db";
+import { Partner } from "@/features/partners/model";
 
 export async function deleteSuspendedPartners() {
   try {

@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
-import { apiGet } from "@/utils/api";
-import type { ISetting } from "@/models/settings";
+import { apiGet } from "@/shared/http/api";
+import type { ISetting } from "@/features/settings/model";
 import { AlertCircle, ArrowLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
 

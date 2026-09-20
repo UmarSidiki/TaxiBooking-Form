@@ -5,7 +5,7 @@ import { Loader2 } from "lucide-react";
 
 // Dynamically import providers and container to reduce initial bundle
 const BookingFormProvider = dynamic(
-  () => import("@/contexts/BookingFormContext").then(mod => ({ default: mod.BookingFormProvider })),
+  () => import("@/features/booking/context/booking-form-context").then(mod => ({ default: mod.BookingFormProvider })),
   { 
     ssr: false,
     loading: () => (
@@ -17,7 +17,7 @@ const BookingFormProvider = dynamic(
 );
 
 const BookingFormContainer = dynamic(
-  () => import("@/components/form/BookingFormContainer"),
+  () => import("@/features/booking/ui/booking-form-container"),
   { 
     ssr: false,
     loading: () => (

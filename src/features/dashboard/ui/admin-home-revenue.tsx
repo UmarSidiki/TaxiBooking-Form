@@ -1,8 +1,8 @@
 "use client";
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import type { DashboardStats } from "@/components/admin-home/admin-home.types";
-import { cn } from "@/lib/utils";
+import { Card, CardContent, CardHeader, CardTitle } from "@/shared/ui/card";
+import type { DashboardStats } from "@/features/dashboard/ui/admin-home.types";
+import { cn } from "@/shared/lib/utils";
 import { ArrowDownRight, ArrowUpRight, Calendar, DollarSign } from "lucide-react";
 import type { useTranslations } from "next-intl";
 

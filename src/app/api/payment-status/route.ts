@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { connectDB } from '@/lib/database';
-import { Booking } from '@/models/booking';
+import { connectDB } from '@/shared/db';
+import { Booking } from '@/features/booking/model';
 
 export const dynamic = 'force-dynamic';
 

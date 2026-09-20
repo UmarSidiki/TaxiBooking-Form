@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth/options";
-import { connectDB } from "@/lib/database";
-import { FormLayout } from "@/models/form-layout";
-import { FormLayoutCreateSchema } from "@/lib/schemas/form-layout.schema";
+import { authOptions } from "@/features/auth";
+import { connectDB } from "@/shared/db";
+import { FormLayout } from "@/features/form-builder/model";
+import { FormLayoutCreateSchema } from "@/features/form-builder/schema/form-layout.schema";
 import { ZodError } from "zod";
 
 // GET - Fetch all form layouts (Admin only)

@@ -11,7 +11,7 @@ Read Stripe / MultiSafepay docs via Context7 before changing provider calls.
 
 **Provider says paid → then `finalizePaidBooking`.** Never set `paymentStatus: "completed"` from the browser or from a client-sent amount.
 
-Canonical path: `src/lib/payments/finalize-paid-booking.ts`.
+Canonical path: `src/features/payments/lib/finalize-paid-booking.ts`.
 
 Thin wrappers (keep them thin):
 
@@ -20,8 +20,8 @@ Thin wrappers (keep them thin):
 - `src/app/api/stripe-webhook/route.ts`
 - `src/app/api/multisafepay-webhook/route.ts`
 - `src/app/api/complete-payment/route.ts` — return URL / client confirm
-- `src/lib/payments/stripe-client.ts`
-- `src/lib/payments/multisafepay-api.ts`
+- `src/features/payments/lib/stripe-client.ts`
+- `src/features/payments/lib/multisafepay-api.ts`
 
 ## Flow
 

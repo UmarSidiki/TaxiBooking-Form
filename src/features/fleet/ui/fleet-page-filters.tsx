@@ -1,15 +1,15 @@
 "use client";
 
-import { Card, CardContent } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
+import { Card, CardContent } from "@/shared/ui/card";
+import { Input } from "@/shared/ui/input";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import type { useAdminFleet } from "@/hooks/fleet/useAdminFleet";
+} from "@/shared/ui/select";
+import type { useAdminFleet } from "@/features/fleet/hooks/useAdminFleet";
 import { Search } from "lucide-react";
 
 type AdminFleetState = ReturnType<typeof useAdminFleet>;

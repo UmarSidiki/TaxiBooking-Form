@@ -1,7 +1,7 @@
-import { connectDB } from "@/lib/database";
-import { Booking } from "@/models/booking";
-import { Setting } from "@/models/settings";
-import { sendOrderThankYouEmail } from "@/controllers/email/bookings";
+import { connectDB } from "@/shared/db";
+import { Booking } from "@/features/booking/model";
+import { Setting } from "@/features/settings/model";
+import { sendOrderThankYouEmail } from "@/features/booking/email/order-thank-you";
 
 export async function sendThankYouEmails() {
   try {

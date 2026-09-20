@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
-import { connectDB } from "@/lib/database";
-import { Booking } from "@/models/booking";
-import { authOptions } from "@/lib/auth/options";
+import { connectDB } from "@/shared/db";
+import { Booking } from "@/features/booking/model";
+import { authOptions } from "@/features/auth";
 
 export async function GET() {
   try {

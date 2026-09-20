@@ -3,14 +3,14 @@
 import * as React from "react"
 import { CalendarIcon } from "lucide-react"
 import { DateRange } from "react-day-picker"
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
-import { Calendar } from "@/components/ui/calendar"
+import { cn } from "@/shared/lib/utils"
+import { Button } from "@/shared/ui/button"
+import { Calendar } from "@/shared/ui/calendar"
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover"
+} from "@/shared/ui/popover"
 
 interface DateRangePickerProps {
   date?: DateRange

@@ -2,10 +2,10 @@
 
 import React, { useEffect, useState } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
-import { Card } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
+import { Card } from '@/shared/ui/card';
+import { Button } from '@/shared/ui/button';
 import { XCircle, ArrowLeft, Loader2 } from 'lucide-react';
-import { apiGet } from '@/utils/api';
+import { apiGet } from '@/shared/http/api';
 import { useTranslations } from 'next-intl';
 
 export default function PaymentCancelledPage() {

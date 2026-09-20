@@ -1,10 +1,10 @@
 "use client";
 
-import type { FormBuilderStyleEditorProps } from "@/components/form-builder/form-builder-style-editor-props";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Separator } from "@/components/ui/separator";
-import { Switch } from "@/components/ui/switch";
+import type { FormBuilderStyleEditorProps } from "@/features/form-builder/ui/form-builder-style-editor-props";
+import { Input } from "@/shared/ui/input";
+import { Label } from "@/shared/ui/label";
+import { Separator } from "@/shared/ui/separator";
+import { Switch } from "@/shared/ui/switch";
 import { Settings2, Type } from "lucide-react";
 
 export function FormBuilderDesignButtonFooter({

@@ -1,11 +1,11 @@
 "use client";
 
-import { AdminRideAssignDriverDialog } from "@/components/rides/admin-ride-assign-driver-dialog";
-import { AdminRideAssignPartnerDialog } from "@/components/rides/admin-ride-assign-partner-dialog";
-import { AdminRidePartnerApprovalDialog } from "@/components/rides/admin-ride-partner-approval-dialog";
-import type { AdminRideCardDialogsProps } from "@/components/rides/admin-ride-card-dialogs.types";
+import { AdminRideAssignDriverDialog } from "@/features/rides/ui/admin-ride-assign-driver-dialog";
+import { AdminRideAssignPartnerDialog } from "@/features/rides/ui/admin-ride-assign-partner-dialog";
+import { AdminRidePartnerApprovalDialog } from "@/features/rides/ui/admin-ride-partner-approval-dialog";
+import type { AdminRideCardDialogsProps } from "@/features/rides/ui/admin-ride-card-dialogs.types";
 
-export type { AdminRideCardDialogsProps } from "@/components/rides/admin-ride-card-dialogs.types";
+export type { AdminRideCardDialogsProps } from "@/features/rides/ui/admin-ride-card-dialogs.types";
 
 export function AdminRideCardDialogs(p: AdminRideCardDialogsProps) {
   return (

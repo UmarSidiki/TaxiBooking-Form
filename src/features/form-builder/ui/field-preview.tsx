@@ -1,7 +1,7 @@
 "use client";
 
-import { FIELD_REGISTRY } from "@/components/form-builder/field-registry";
-import type { IFormField } from "@/models/form-layout";
+import { FIELD_REGISTRY } from "@/features/form-builder/ui/field-registry";
+import type { IFormField } from "@/features/form-builder/model";
 import { GripVertical, MapPin } from "lucide-react";
 import { useTranslations } from "next-intl";
 

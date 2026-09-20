@@ -1,8 +1,8 @@
 import React from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
+import { Card, CardContent, CardHeader, CardTitle } from "@/shared/ui/card";
+import { Input } from "@/shared/ui/input";
 import { Square, Circle, Globe } from "lucide-react";
-import { ISetting } from "@/models/settings";
+import { ISetting } from "@/features/settings/model";
 import { useTranslations } from "next-intl";
 
 interface AppearanceTabProps {

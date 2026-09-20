@@ -1,9 +1,9 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import type { FormData, FormErrors } from "@/contexts/BookingFormContext";
-import { STOP_WAIT_OPTIONS_15_MIN } from "@/lib/form/stop-wait-duration-options";
+import { Button } from "@/shared/ui/button";
+import { Input } from "@/shared/ui/input";
+import type { FormData, FormErrors } from "@/features/booking/context/booking-form-context";
+import { STOP_WAIT_OPTIONS_15_MIN } from "@/features/booking/lib/stop-wait-duration-options";
 import type { useTranslations } from "next-intl";
 import { Clock, Flag, Loader2, MapPin, X } from "lucide-react";
 import type { Dispatch, RefObject, SetStateAction } from "react";

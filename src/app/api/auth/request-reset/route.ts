@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import { connectDB } from "@/lib/database";
-import { User } from "@/models/user";
-import { PasswordReset } from "@/models/user";
-import { sendPasswordResetOTP } from "@/controllers/email/PasswordResetOTP";
-import { isValidEmail } from "@/lib/validation";
+import { connectDB } from "@/shared/db";
+import { User } from "@/features/auth/model";
+import { PasswordReset } from "@/features/auth/model";
+import { sendPasswordResetOTP } from "@/features/auth/email/password-reset-otp";
+import { isValidEmail } from "@/shared/lib/validation";
 
 // Generate 6-digit OTP
 function generateOTP(): string {

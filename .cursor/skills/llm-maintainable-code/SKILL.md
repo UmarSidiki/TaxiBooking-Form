@@ -9,14 +9,14 @@ Write and refactor so a human **or** another model can find the rule, change one
 
 ## Before coding
 
-1. Read `AGENTS.md` if not already in context.
-2. Search for an existing `*.service.ts` / `*.repo.ts` / schema in `src/lib/` — extend that pattern, don't invent a third.
+1. Read `AGENTS.md` and `ARCHITECTURE.md` if not already in context.
+2. Search for an existing `*.service.ts` / `*.repo.ts` / schema in `src/features/<domain>/` — extend that pattern, don't invent a third.
 3. If the target file is already **>200 lines**, extract the concern you are touching into a sibling file as part of the same change.
 
 ## Size and shape
 
 - Target **<150 lines**, split before **200**. One concern per file.
-- Route / page / component = orchestration. Rules live in `src/lib/<domain>/`.
+- Route / page / component = orchestration. Rules live in `src/features/<domain>/lib/`.
 - Name files after the verb+noun: `finalize-paid-booking.ts`, `calculate-booking-price.ts`, `notify-eligible-partners.ts`.
 - Named exports. Kebab-case files. PascalCase React functions.
 
@@ -26,9 +26,9 @@ src/app/api/booking/route.ts
 
 # GOOD
 src/app/api/booking/route.ts                 # parse + status
-src/lib/bookings/create-booking.service.ts
-src/lib/bookings/booking.repo.ts
-src/lib/schemas/booking.schema.ts
+src/features/booking/lib/create-cash-booking.service.ts
+src/features/booking/lib/booking.repo.ts
+src/features/booking/schema/cash-booking.schema.ts
 ```
 
 ## Boundaries LLMs must see
@@ -50,7 +50,7 @@ Do not duplicate types: Zod infers I/O; Mongoose infers documents.
 - Match local names (`connectDB`, `finalizePaidBooking`, `tripId`).
 - No drive-by renames, no new folders at the repo root, no stack swaps.
 - Independent I/O with `Promise.all`. No `any`. No swallowed `catch`.
-- Avoid barrels that re-export everything. Import the file you mean.
+- Avoid barrels that re-export everything. Import the file you mean. Auth may export `authOptions` from `@/features/auth` (server only).
 
 ## Checklist before finishing
 
@@ -60,4 +60,4 @@ Do not duplicate types: Zod infers I/O; Mongoose infers documents.
 - [ ] No secrets logged
 - [ ] `npm run lint` when the change is non-trivial
 
-Deeper folder map: [reference.md](reference.md)
+Deeper folder map: [reference.md](reference.md) and [ARCHITECTURE.md](../../../ARCHITECTURE.md)

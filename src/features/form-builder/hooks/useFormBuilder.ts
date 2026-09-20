@@ -19,15 +19,15 @@ import type {
   IFormField,
   BookingFieldType,
   IFormStyle,
-} from "@/models/form-layout";
-import { apiGet, apiPost, apiPatch, apiDelete } from "@/utils/api";
-import { useMediaQuery } from "@/hooks/useMediaQuery";
+} from "@/features/form-builder/model";
+import { apiGet, apiPost, apiPatch, apiDelete } from "@/shared/http/api";
+import { useMediaQuery } from "@/shared/hooks/useMediaQuery";
 import {
   FIELD_REGISTRY,
   DEFAULT_STYLE,
   createDefaultFields,
-} from "@/components/form-builder/field-registry";
-import { applyLoadedFormLayout, FORM_BUILDER_DRAFT_KEY } from "@/lib/form-builder/apply-loaded-form-layout";
+} from "@/features/form-builder/ui/field-registry";
+import { applyLoadedFormLayout, FORM_BUILDER_DRAFT_KEY } from "@/features/form-builder/lib/apply-loaded-form-layout";
 
 const TABLET_MAX_WIDTH_QUERY = "(max-width: 1024px)";
 const DRAG_ACTIVATION_DISTANCE_PX = 5;

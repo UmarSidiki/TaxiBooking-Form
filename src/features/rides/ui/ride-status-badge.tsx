@@ -1,7 +1,7 @@
-import { Badge } from '@/components/ui/badge';
+import { Badge } from '@/shared/ui/badge';
 import { Calendar, CheckCircle, X } from 'lucide-react';
 import { useTranslations } from 'next-intl';
-import type { IBooking } from '@/models/booking';
+import type { IBooking } from '@/features/booking/model';
 
 const BADGE_CLASSES =
   'text-white font-semibold flex items-center gap-1.5 px-3 py-1 rounded-full text-xs';

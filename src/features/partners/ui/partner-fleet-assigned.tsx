@@ -1,9 +1,9 @@
 "use client";
 
-import { PartnerFleetVehicleCard } from "@/components/partner-fleet/partner-fleet-vehicle-card";
-import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
-import type { IVehicle } from "@/models/vehicle";
+import { PartnerFleetVehicleCard } from "@/features/partners/ui/partner-fleet-vehicle-card";
+import { Badge } from "@/shared/ui/badge";
+import { Separator } from "@/shared/ui/separator";
+import type { IVehicle } from "@/features/fleet/model";
 import { Info } from "lucide-react";
 import type { useTranslations } from "next-intl";
 

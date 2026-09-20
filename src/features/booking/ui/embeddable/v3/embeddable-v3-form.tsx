@@ -2,13 +2,13 @@
 
 import { useState, useEffect } from "react";
 import type { FormEvent } from "react";
-import "@/style/EmbeddableLayout.css";
-import { Card } from "@/components/ui/card";
-import { useStep1 } from "@/hooks/form/form-steps/useStep1";
-import { useBookingStops } from "@/hooks/form/useBookingStops";
-import { useIframeBodyResize } from "@/hooks/embeddable/useIframeBodyResize";
+import "@/shared/style/embeddable-layout.css";
+import { Card } from "@/shared/ui/card";
+import { useStep1 } from "@/features/booking/hooks/form-steps/useStep1";
+import { useBookingStops } from "@/features/booking/hooks/useBookingStops";
+import { useIframeBodyResize } from "@/features/booking/hooks/useIframeBodyResize";
 import { useTranslations } from "next-intl";
-import { useBookingForm } from "@/contexts/BookingFormContext";
+import { useBookingForm } from "@/features/booking/context/booking-form-context";
 import { EmbeddableV3TypeFields } from "./embeddable-v3-type-fields";
 import { EmbeddableV3LocationFields } from "./embeddable-v3-location-fields";
 import { EmbeddableV3ScheduleFields } from "./embeddable-v3-schedule-fields";

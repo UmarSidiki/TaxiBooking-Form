@@ -1,10 +1,10 @@
 "use client";
 
-import { PartnerAccountBanners } from "@/components/partner-account/partner-account-banners";
-import { PartnerAccountDocuments } from "@/components/partner-account/partner-account-documents";
-import { PartnerAccountProfile } from "@/components/partner-account/partner-account-profile";
-import { PartnerAccountUpload } from "@/components/partner-account/partner-account-upload";
-import { usePartnerAccount } from "@/hooks/partners/usePartnerAccount";
+import { PartnerAccountBanners } from "@/features/partners/ui/partner-account-banners";
+import { PartnerAccountDocuments } from "@/features/partners/ui/partner-account-documents";
+import { PartnerAccountProfile } from "@/features/partners/ui/partner-account-profile";
+import { PartnerAccountUpload } from "@/features/partners/ui/partner-account-upload";
+import { usePartnerAccount } from "@/features/partners/hooks/usePartnerAccount";
 
 export default function PartnerAccountPage() {
   const {

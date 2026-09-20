@@ -1,15 +1,15 @@
 "use client";
 
-import { PartnerAccountStatusBadge } from "@/components/partner-account/partner-account-status-badge";
-import type { PartnerAccountData } from "@/components/partner-account/partner-account.types";
-import { Button } from "@/components/ui/button";
+import { PartnerAccountStatusBadge } from "@/features/partners/ui/partner-account-status-badge";
+import type { PartnerAccountData } from "@/features/partners/ui/partner-account.types";
+import { Button } from "@/shared/ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from "@/shared/ui/card";
 import { FileText } from "lucide-react";
 import type { useTranslations } from "next-intl";
 

@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { Setting } from '@/models/settings';
-import { connectDB } from '@/lib/database';
-import { PendingBooking } from '@/models/booking';
-import { generateShortId } from '@/lib/generate-id';
-import { resolvePublicBaseUrl } from '@/lib/payments/resolve-base-url';
+import { Setting } from '@/features/settings/model';
+import { connectDB } from '@/shared/db';
+import { PendingBooking } from '@/features/booking/model';
+import { generateShortId } from '@/shared/lib/generate-id';
+import { resolvePublicBaseUrl } from '@/features/payments/lib/resolve-base-url';
 
 export const dynamic = 'force-dynamic';
 

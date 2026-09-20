@@ -1,7 +1,7 @@
 "use client";
 
-import type { Step3PaymentMethodsProps } from "@/components/form/steps/step3-payment-methods.types";
-import { Button } from "@/components/ui/button";
+import type { Step3PaymentMethodsProps } from "@/features/booking/ui/steps/step3-payment-methods.types";
+import { Button } from "@/shared/ui/button";
 import { CheckCircle2, Loader2 } from "lucide-react";
 
 export function Step3CashPanel({

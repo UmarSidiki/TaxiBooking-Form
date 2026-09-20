@@ -2,13 +2,13 @@
 
 import { memo } from "react";
 import type { ChangeEvent } from "react";
-import { useBookingStops } from "@/hooks/form/useBookingStops";
-import { useStep1 } from "@/hooks/form/form-steps/useStep1";
+import { useBookingStops } from "@/features/booking/hooks/useBookingStops";
+import { useStep1 } from "@/features/booking/hooks/form-steps/useStep1";
 import { useTranslations } from "next-intl";
 import {
   MAX_PASSENGERS,
   MIN_PASSENGERS,
-} from "@/lib/form/passenger-limits";
+} from "@/features/booking/lib/passenger-limits";
 import { Step1BookingTypeFields } from "./step1-booking-type-fields";
 import { Step1DurationTripTypeFields } from "./step1-duration-trip-type-fields";
 import { Step1Footer } from "./step1-footer";

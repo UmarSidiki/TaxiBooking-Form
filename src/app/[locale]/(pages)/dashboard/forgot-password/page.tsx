@@ -13,15 +13,15 @@ import {
 } from "lucide-react";
 import { gsap } from "gsap";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@/shared/ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
+} from "@/shared/ui/card";
+import { Input } from "@/shared/ui/input";
 
 export default function ForgotPasswordPage() {
   const router = useRouter();

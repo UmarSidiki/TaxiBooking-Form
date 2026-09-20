@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
-import { connectDB } from "@/lib/database";
-import { Setting } from "@/models/settings";
-import { sendEmail } from "@/lib/email";
+import { connectDB } from "@/shared/db";
+import { Setting } from "@/features/settings/model";
+import { sendEmail } from "@/features/settings/lib/email";
 
 export async function POST() {
   await connectDB();

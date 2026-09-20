@@ -1,9 +1,9 @@
 "use client";
 
-import { AdminPartnerDetailsDocuments } from "@/components/admin-partners/admin-partner-details-documents";
-import { AdminPartnerDetailsFleet } from "@/components/admin-partners/admin-partner-details-fleet";
-import { AdminPartnerDetailsProfile } from "@/components/admin-partners/admin-partner-details-profile";
-import { Button } from "@/components/ui/button";
+import { AdminPartnerDetailsDocuments } from "@/features/partners/ui/admin-partner-details-documents";
+import { AdminPartnerDetailsFleet } from "@/features/partners/ui/admin-partner-details-fleet";
+import { AdminPartnerDetailsProfile } from "@/features/partners/ui/admin-partner-details-profile";
+import { Button } from "@/shared/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -11,8 +11,8 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
-import type { useAdminPartners } from "@/hooks/partners/useAdminPartners";
+} from "@/shared/ui/dialog";
+import type { useAdminPartners } from "@/features/partners/hooks/useAdminPartners";
 import { CheckCircle2, XCircle } from "lucide-react";
 
 type AdminPartnersState = ReturnType<typeof useAdminPartners>;

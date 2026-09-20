@@ -1,8 +1,8 @@
 "use client";
 
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import type { PartnerFleetData, PartnerFleetRequest } from "@/components/partner-fleet/partner-fleet.types";
-import type { IVehicle } from "@/models/vehicle";
+import { Alert, AlertDescription, AlertTitle } from "@/shared/ui/alert";
+import type { PartnerFleetData, PartnerFleetRequest } from "@/features/partners/ui/partner-fleet.types";
+import type { IVehicle } from "@/features/fleet/model";
 import { AlertCircle, CheckCircle, Clock, Info } from "lucide-react";
 import type { useTranslations } from "next-intl";
 import type { ReactElement } from "react";

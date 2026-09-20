@@ -1,4 +1,4 @@
-import { Setting } from '@/models/settings';
+import { Setting } from '@/features/settings/model';
 
 const DEFAULT_CURRENCY = 'EUR';
 

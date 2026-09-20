@@ -1,9 +1,9 @@
 "use client";
 
-import { FleetVehicleCard } from "@/components/fleet/fleet-vehicle-card";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import type { useAdminFleet } from "@/hooks/fleet/useAdminFleet";
+import { FleetVehicleCard } from "@/features/fleet/ui/fleet-vehicle-card";
+import { Button } from "@/shared/ui/button";
+import { Card, CardContent } from "@/shared/ui/card";
+import type { useAdminFleet } from "@/features/fleet/hooks/useAdminFleet";
 import { Car, Loader2, Plus } from "lucide-react";
 
 type AdminFleetState = ReturnType<typeof useAdminFleet>;

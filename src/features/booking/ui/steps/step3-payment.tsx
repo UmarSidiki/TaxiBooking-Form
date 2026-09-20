@@ -2,14 +2,14 @@
 
 import React, { memo, useEffect } from "react";
 import { ArrowLeft } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { useStep3 } from "@/hooks/form/form-steps/useStep3";
+import { Button } from "@/shared/ui/button";
+import { useStep3 } from "@/features/booking/hooks/form-steps/useStep3";
 import { useTranslations } from "next-intl";
-import { useCurrency } from "@/contexts/CurrencyContext";
-import { Step3BookingSummary } from "@/components/form/steps/step3-booking-summary";
-import { Step3Extras } from "@/components/form/steps/step3-extras";
-import { Step3PaymentMethods } from "@/components/form/steps/step3-payment-methods";
-import { Step3PersonalDetails } from "@/components/form/steps/step3-personal-details";
+import { useCurrency } from "@/shared/context/currency-context";
+import { Step3BookingSummary } from "@/features/booking/ui/steps/step3-booking-summary";
+import { Step3Extras } from "@/features/booking/ui/steps/step3-extras";
+import { Step3PaymentMethods } from "@/features/booking/ui/steps/step3-payment-methods";
+import { Step3PersonalDetails } from "@/features/booking/ui/steps/step3-personal-details";
 
 function Step3Payment() {
   const step = useStep3();

@@ -4,9 +4,9 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
-import { LONG_EN_US_DATE } from "@/lib/rides/ride-format";
-import type { IBooking } from "@/models/booking";
+} from "@/shared/ui/dialog";
+import { LONG_EN_US_DATE } from "@/features/rides/lib/ride-format";
+import type { IBooking } from "@/features/booking/model";
 import { Car } from "lucide-react";
 import type { useTranslations } from "next-intl";
 

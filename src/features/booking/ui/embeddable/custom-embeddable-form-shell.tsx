@@ -3,8 +3,8 @@
 import React from "react";
 import Image from "next/image";
 import { AlertCircle, Car, CheckCircle, MapPin } from "lucide-react";
-import { Card } from "@/components/ui/card";
-import type { IFormField, IFormStyle } from "@/models/form-layout";
+import { Card } from "@/shared/ui/card";
+import type { IFormField, IFormStyle } from "@/features/form-builder/model";
 import type { CSSProperties, FormEvent, RefObject } from "react";
 import type { useTranslations } from "next-intl";
 

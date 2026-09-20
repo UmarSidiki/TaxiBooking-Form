@@ -1,10 +1,10 @@
 "use client";
 
-import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import type { DashboardStats } from "@/components/admin-home/admin-home.types";
-import { DASHBOARD_PREVIEW_LIMIT } from "@/lib/dashboard/dashboard-preview-limit";
-import { cn } from "@/lib/utils";
+import { Badge } from "@/shared/ui/badge";
+import { Card, CardContent, CardHeader, CardTitle } from "@/shared/ui/card";
+import type { DashboardStats } from "@/features/dashboard/ui/admin-home.types";
+import { DASHBOARD_PREVIEW_LIMIT } from "@/features/dashboard/lib/dashboard-preview-limit";
+import { cn } from "@/shared/lib/utils";
 import { Calendar } from "lucide-react";
 import type { useTranslations } from "next-intl";
 

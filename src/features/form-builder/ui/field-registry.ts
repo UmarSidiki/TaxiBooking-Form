@@ -13,7 +13,7 @@ import {
   Timer,
   ToggleLeft,
 } from "lucide-react";
-import type { BookingFieldType, IFormField, IFormStyle } from "@/models/form-layout";
+import type { BookingFieldType, IFormField, IFormStyle } from "@/features/form-builder/model";
 
 export const FIELD_REGISTRY: Record<
   BookingFieldType,

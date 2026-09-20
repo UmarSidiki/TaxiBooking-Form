@@ -1,4 +1,4 @@
-import { Booking, type IBooking } from '@/models/booking';
+import { Booking, type IBooking } from '@/features/booking/model';
 
 const DUPLICATE_WINDOW_MS = 2 * 60 * 1000;
 

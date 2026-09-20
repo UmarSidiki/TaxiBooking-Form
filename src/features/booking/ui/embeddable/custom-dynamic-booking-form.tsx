@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import "@/style/EmbeddableLayout.css";
+import "@/shared/style/embeddable-layout.css";
 import Image from "next/image";
 import {
   Clock,
@@ -16,19 +16,19 @@ import {
   Car,
   CheckCircle,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Card } from "@/components/ui/card";
-import { useStep1 } from "@/hooks/form/form-steps/useStep1";
-import { useBookingStops } from "@/hooks/form/useBookingStops";
-import { useIframeBodyResize } from "@/hooks/embeddable/useIframeBodyResize";
-import { MIN_PASSENGERS } from "@/lib/form/passenger-limits";
+import { Button } from "@/shared/ui/button";
+import { Input } from "@/shared/ui/input";
+import { Card } from "@/shared/ui/card";
+import { useStep1 } from "@/features/booking/hooks/form-steps/useStep1";
+import { useBookingStops } from "@/features/booking/hooks/useBookingStops";
+import { useIframeBodyResize } from "@/features/booking/hooks/useIframeBodyResize";
+import { MIN_PASSENGERS } from "@/features/booking/lib/passenger-limits";
 import { useTranslations } from "next-intl";
-import { useBookingForm } from "@/contexts/BookingFormContext";
-import type { IFormLayout, IFormField } from "@/models/form-layout";
-import { CUSTOM_EMBEDDABLE_DEFAULT_STYLE } from "@/components/embeddable/custom-embeddable-default-style";
-import { useCustomEmbeddableFieldRenderers } from "@/components/embeddable/custom-embeddable-field-renderers";
-import { CustomEmbeddableFormShell } from "@/components/embeddable/custom-embeddable-form-shell";
+import { useBookingForm } from "@/features/booking/context/booking-form-context";
+import type { IFormLayout, IFormField } from "@/features/form-builder/model";
+import { CUSTOM_EMBEDDABLE_DEFAULT_STYLE } from "@/features/booking/ui/embeddable/custom-embeddable-default-style";
+import { useCustomEmbeddableFieldRenderers } from "@/features/booking/ui/embeddable/custom-embeddable-field-renderers";
+import { CustomEmbeddableFormShell } from "@/features/booking/ui/embeddable/custom-embeddable-form-shell";
 
 export function DynamicBookingForm({ layout }: { layout: IFormLayout }) {
   const t = useTranslations("embeddable");

@@ -1,5 +1,5 @@
-import type { IVehicle } from '@/models/vehicle';
-import type { BookingInput } from '@/models/booking';
+import type { IVehicle } from '@/features/fleet/model';
+import type { BookingInput } from '@/features/booking/model';
 
 const DEFAULT_PRICE_PER_HOUR = 30;
 const DEFAULT_MINIMUM_HOURS = 2;

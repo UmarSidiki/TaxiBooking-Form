@@ -1,8 +1,8 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import type { FormData } from "@/contexts/BookingFormContext";
+import { Button } from "@/shared/ui/button";
+import { Input } from "@/shared/ui/input";
+import type { FormData } from "@/features/booking/context/booking-form-context";
 import { Clock } from "lucide-react";
 import type { useTranslations } from "next-intl";
 

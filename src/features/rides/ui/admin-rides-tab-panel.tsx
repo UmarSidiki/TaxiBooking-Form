@@ -1,8 +1,8 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { TabsContent } from "@/components/ui/tabs";
+import { Button } from "@/shared/ui/button";
+import { Card, CardContent } from "@/shared/ui/card";
+import { TabsContent } from "@/shared/ui/tabs";
 import { Loader2, RefreshCw } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import type { useTranslations } from "next-intl";

@@ -1,7 +1,7 @@
-import { connectDB } from '@/lib/database';
-import { getBakedSettings } from '@/lib/settings/baked-settings';
-import { Setting } from '@/models/settings';
-import { User } from '@/models/user';
+import { connectDB } from '@/shared/db';
+import { getBakedSettings } from '@/shared/config/baked-settings';
+import { Setting } from '@/features/settings/model';
+import { User } from '@/features/auth/model';
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 

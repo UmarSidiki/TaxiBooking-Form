@@ -9,18 +9,18 @@ One operator. Customers book; admins dispatch; drivers execute; partners take ov
 
 ## Public wizard (3 steps)
 
-1. **Trip** — `src/components/form/steps/Step1TripDetails.tsx` + `src/hooks/form/form-steps/useStep1.ts`  
+1. **Trip** — `src/features/booking/ui/steps/step1-trip-details.tsx` + `src/features/booking/hooks/form-steps/useStep1.ts`  
    Booking type: `destination` | `hourly`. Trip: `oneway` | `roundtrip`. Pickup, dropoff, stops, date/time, passengers, duration (hourly).
 2. **Vehicle** — Step2 + fleet from `Vehicle` model (active only). Show computed price.
 3. **Pay + passenger** — Step3. Stripe / MultiSafepay / cash. Contact fields.
 
-Embeddable variants: `src/app/[locale]/embeddable/v1|v2|v3` and `custom/[id]`. Form layouts live in `FormLayout` (admin form-builder).
+Embeddable variants: `src/app/[locale]/embeddable/v1|v2|v3` and `custom/[id]`. UI: `src/features/booking/ui/embeddable/`. Form layouts live in `FormLayout` (admin form-builder).
 
 Do not add a fourth step without updating step indicator copy in all locales.
 
 ## Fare (always server)
 
-Use `calculateBookingPrice` in `src/lib/payments/calculate-booking-total.ts`.
+Use `calculateBookingPrice` in `src/features/payments/lib/calculate-booking-total.ts`.
 
 - Destination: `base + (pricePerKm × distanceKm)`, then `minimumFare`, then round-trip `returnPricePercentage`.
 - Hourly: `pricePerHour × max(duration, minimumHours)`.
@@ -52,9 +52,9 @@ Payment `paymentStatus`: `pending` | `completed` | `failed` | `refunded`.
 
 ## When adding a field
 
-1. Mongoose schema + TypeScript document type.
-2. Zod input schema if it crosses HTTP.
-3. Wizard UI + hook.
+1. Mongoose schema + TypeScript document type in `src/features/<domain>/model/`.
+2. Zod input schema in `src/features/<domain>/schema/` if it crosses HTTP.
+3. Wizard UI + hook in `src/features/booking/`.
 4. Price function if it affects money.
 5. Email/PDF if customers see it.
 6. All 8 `messages/*.json` files.

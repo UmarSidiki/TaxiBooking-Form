@@ -1,11 +1,11 @@
 "use client";
 
-import { FleetVehicleFormBasic } from "@/components/fleet/fleet-vehicle-form-basic";
-import { FleetVehicleFormCapacity } from "@/components/fleet/fleet-vehicle-form-capacity";
-import { FleetVehicleFormPricing } from "@/components/fleet/fleet-vehicle-form-pricing";
-import { FleetVehicleFormStops } from "@/components/fleet/fleet-vehicle-form-stops";
-import type { VehicleForm } from "@/components/fleet/vehicle-form.types";
-import { Button } from "@/components/ui/button";
+import { FleetVehicleFormBasic } from "@/features/fleet/ui/fleet-vehicle-form-basic";
+import { FleetVehicleFormCapacity } from "@/features/fleet/ui/fleet-vehicle-form-capacity";
+import { FleetVehicleFormPricing } from "@/features/fleet/ui/fleet-vehicle-form-pricing";
+import { FleetVehicleFormStops } from "@/features/fleet/ui/fleet-vehicle-form-stops";
+import type { VehicleForm } from "@/features/fleet/ui/vehicle-form.types";
+import { Button } from "@/shared/ui/button";
 import { Loader2, Save } from "lucide-react";
 import { useTranslations } from "next-intl";
 import type { FormEvent } from "react";

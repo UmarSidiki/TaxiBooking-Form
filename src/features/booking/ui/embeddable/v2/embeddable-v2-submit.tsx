@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@/shared/ui/button";
 import { ArrowRight, Car } from "lucide-react";
 import type { useTranslations } from "next-intl";
 import Image from "next/image";

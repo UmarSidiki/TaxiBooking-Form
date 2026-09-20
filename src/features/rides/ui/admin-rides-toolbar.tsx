@@ -1,17 +1,17 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
+import { Button } from "@/shared/ui/button";
+import { Card } from "@/shared/ui/card";
+import { Input } from "@/shared/ui/input";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { DateRangePicker } from "@/components/ui/date-range-picker";
-import type { useAdminRides } from "@/hooks/rides/useAdminRides";
+} from "@/shared/ui/select";
+import { DateRangePicker } from "@/shared/ui/date-range-picker";
+import type { useAdminRides } from "@/features/rides/hooks/useAdminRides";
 import { Car, CreditCard, Filter, RefreshCw, Search } from "lucide-react";
 
 type Rides = ReturnType<typeof useAdminRides>;

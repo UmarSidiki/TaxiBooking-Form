@@ -1,8 +1,8 @@
 "use client";
 
-import { PartnerFleetVehicleCard } from "@/components/partner-fleet/partner-fleet-vehicle-card";
-import type { PartnerFleetData, PartnerFleetRequest } from "@/components/partner-fleet/partner-fleet.types";
-import type { IVehicle } from "@/models/vehicle";
+import { PartnerFleetVehicleCard } from "@/features/partners/ui/partner-fleet-vehicle-card";
+import type { PartnerFleetData, PartnerFleetRequest } from "@/features/partners/ui/partner-fleet.types";
+import type { IVehicle } from "@/features/fleet/model";
 import { Car } from "lucide-react";
 import type { useTranslations } from "next-intl";
 

@@ -1,7 +1,7 @@
 "use client";
 
-import type { PartnerRideBooking } from "@/components/partner-rides/partner-ride.types";
-import { Badge } from "@/components/ui/badge";
+import type { PartnerRideBooking } from "@/features/partners/ui/partner-ride.types";
+import { Badge } from "@/shared/ui/badge";
 import { CheckCircle, Clock, RefreshCw, X } from "lucide-react";
 import type { useTranslations } from "next-intl";
 

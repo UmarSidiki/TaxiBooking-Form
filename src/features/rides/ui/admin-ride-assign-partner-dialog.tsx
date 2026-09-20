@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@/shared/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -8,18 +8,18 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+} from "@/shared/ui/dialog";
+import { Input } from "@/shared/ui/input";
+import { Label } from "@/shared/ui/label";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import type { AdminRideCardDialogsProps } from "@/components/rides/admin-ride-card-dialogs.types";
-import { PARTNER_ASSIGN_DB_SETTLE_MS } from "@/lib/rides/partner-assign-db-settle";
+} from "@/shared/ui/select";
+import type { AdminRideCardDialogsProps } from "@/features/rides/ui/admin-ride-card-dialogs.types";
+import { PARTNER_ASSIGN_DB_SETTLE_MS } from "@/features/rides/lib/partner-assign-db-settle";
 import { Loader2, Users } from "lucide-react";
 
 type Props = Pick<

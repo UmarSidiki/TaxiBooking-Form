@@ -1,16 +1,16 @@
 "use client";
 
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Separator } from "@/components/ui/separator";
+import { Input } from "@/shared/ui/input";
+import { Label } from "@/shared/ui/label";
+import { Separator } from "@/shared/ui/separator";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import type { IFormStyle } from "@/models/form-layout";
+} from "@/shared/ui/select";
+import type { IFormStyle } from "@/features/form-builder/model";
 import { ArrowRight } from "lucide-react";
 import type { useTranslations } from "next-intl";
 import type { Dispatch, SetStateAction } from "react";

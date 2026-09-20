@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth/options";
-import { connectDB } from "@/lib/database";
-import {Vehicle, IVehicle } from "@/models/vehicle";
+import { authOptions } from "@/features/auth";
+import { connectDB } from "@/shared/db";
+import {Vehicle, IVehicle } from "@/features/fleet/model";
 
 // GET - Fetch a single vehicle by ID (Public - needed for booking flow)
 export async function GET(

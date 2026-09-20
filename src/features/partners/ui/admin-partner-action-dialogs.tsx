@@ -1,9 +1,9 @@
 "use client";
 
-import { AdminPartnerDocumentDialog } from "@/components/admin-partners/admin-partner-document-dialog";
-import { AdminPartnerFleetActionDialogs } from "@/components/admin-partners/admin-partner-fleet-action-dialogs";
-import { AdminPartnerRejectSuspendDialogs } from "@/components/admin-partners/admin-partner-reject-suspend-dialogs";
-import type { useAdminPartners } from "@/hooks/partners/useAdminPartners";
+import { AdminPartnerDocumentDialog } from "@/features/partners/ui/admin-partner-document-dialog";
+import { AdminPartnerFleetActionDialogs } from "@/features/partners/ui/admin-partner-fleet-action-dialogs";
+import { AdminPartnerRejectSuspendDialogs } from "@/features/partners/ui/admin-partner-reject-suspend-dialogs";
+import type { useAdminPartners } from "@/features/partners/hooks/useAdminPartners";
 
 type AdminPartnersState = ReturnType<typeof useAdminPartners>;
 

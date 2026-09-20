@@ -1,4 +1,4 @@
-import type { IBooking } from '@/models/booking';
+import type { IBooking } from '@/features/booking/model';
 
 const FALLBACK_VEHICLE_DETAILS = { name: 'N/A', price: '0', seats: '4' };
 

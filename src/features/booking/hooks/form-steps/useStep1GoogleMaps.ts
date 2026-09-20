@@ -7,9 +7,9 @@ import {
   DEFAULT_MAP_ZOOM,
   MAP_LOAD_DEFER_MS,
   MIN_POLYGON_POINTS,
-} from "@/lib/maps/map-defaults";
-import type { FormData, FormErrors } from "@/contexts/BookingFormContext";
-import type { ISetting } from "@/models/settings";
+} from "@/features/booking/lib/maps/map-defaults";
+import type { FormData, FormErrors } from "@/features/booking/context/booking-form-context";
+import type { ISetting } from "@/features/settings/model";
 import { useTranslations } from "next-intl";
 import type { Dispatch, MutableRefObject, RefObject, SetStateAction } from "react";
 

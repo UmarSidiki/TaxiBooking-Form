@@ -1,4 +1,4 @@
-import { MIN_POLYGON_POINTS } from "@/lib/maps/map-defaults";
+import { MIN_POLYGON_POINTS } from "@/features/booking/lib/maps/map-defaults";
 
 export function isPointInPolygon(
   point: { lat: number; lng: number },

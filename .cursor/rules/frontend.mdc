@@ -6,13 +6,13 @@ alwaysApply: false
 
 # Frontend
 
-- Pages in `src/app/[locale]/` stay thin. Screens and widgets live in `src/components/<feature>/`.
-- shadcn primitives stay in `src/components/ui/`. Do not edit them to add business UI — wrap them.
-- Data fetching and step logic live in hooks (`src/hooks/form/…`), not inside JSX.
+- Pages in `src/app/[locale]/` stay thin. Screens and widgets live in `src/features/<domain>/ui/`.
+- shadcn primitives stay in `src/shared/ui/`. Do not edit them to add business UI — wrap them.
+- Data fetching and step logic live in hooks (`src/features/booking/hooks/…`), not inside JSX.
 - Auth: `getServerSession` in server layouts; `useSession` on the client. Gate by role (`admin`, `driver`, `partner`).
 - Copy: `useTranslations()` / `getTranslations()`. Dictionaries: `messages/{locale}.json` (all 8 locales). Never show raw API or Zod English.
-- Public wizard: `src/components/form/` (steps 1–3). Do not fork a fourth step without updating indicators and i18n.
-- Links are `<Link>` from `@/i18n/navigation` or `next/link`. Don't `onClick` navigate (breaks open-in-new-tab).
+- Public wizard: `src/features/booking/ui/` (steps 1–3). Do not fork a fourth step without updating indicators and i18n.
+- Links are `<Link>` from `@/shared/i18n/navigation` or `next/link`. Don't `onClick` navigate (breaks open-in-new-tab).
 - Forms: visible `Label htmlFor`, `autoComplete`, correct `type`. Errors next to the field.
 - Prefer uncontrolled inputs; controlled inputs must stay cheap.
 - Colocate feature files. Do not grow a 400-line page — extract.

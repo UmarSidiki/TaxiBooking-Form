@@ -1,4 +1,4 @@
-import { PLACEHOLDER_VEHICLE_IMAGE } from "@/lib/fleet/vehicle-form-defaults";
+import { PLACEHOLDER_VEHICLE_IMAGE } from "@/features/fleet/lib/vehicle-form-defaults";
 
 export function resolveVehicleImageSrc(
   src: string,

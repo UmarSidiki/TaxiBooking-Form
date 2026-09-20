@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { connectDB } from '@/lib/database';
-import { bookingPatchSuccessMessage } from '@/lib/bookings/booking-patch-message';
+import { connectDB } from '@/shared/db';
+import { bookingPatchSuccessMessage } from '@/features/booking/lib/booking-patch-message';
 import {
   deleteBookingById,
   findBookingById,
-} from '@/lib/bookings/booking.repo';
-import { patchBooking } from '@/lib/bookings/patch-booking.service';
-import { resolveBookingRequestBaseUrl } from '@/lib/bookings/resolve-booking-request-base-url';
+} from '@/features/booking/lib/booking.repo';
+import { patchBooking } from '@/features/booking/lib/patch-booking.service';
+import { resolveBookingRequestBaseUrl } from '@/features/booking/lib/resolve-booking-request-base-url';
 
 export async function GET(
   _request: NextRequest,

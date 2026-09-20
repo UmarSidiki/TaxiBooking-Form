@@ -1,9 +1,9 @@
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
-import { authOptions } from "@/lib/auth/options";
-import { connectDB } from "@/lib/database";
-import { Setting } from "@/models/settings";
-import { Partner } from "@/models/partner";
+import { authOptions } from "@/features/auth";
+import { connectDB } from "@/shared/db";
+import { Setting } from "@/features/settings/model";
+import { Partner } from "@/features/partners/model";
 
 export default async function PartnersPage() {
   // Check if partners module is enabled

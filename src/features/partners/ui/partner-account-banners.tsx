@@ -1,7 +1,7 @@
 "use client";
 
-import type { PartnerAccountData } from "@/components/partner-account/partner-account.types";
-import { Card, CardContent } from "@/components/ui/card";
+import type { PartnerAccountData } from "@/features/partners/ui/partner-account.types";
+import { Card, CardContent } from "@/shared/ui/card";
 import { AlertCircle, CheckCircle2, Clock, XCircle } from "lucide-react";
 import type { useTranslations } from "next-intl";
 

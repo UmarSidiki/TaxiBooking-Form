@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { connectDB } from "@/lib/database";
-import { Booking } from "@/models/booking";
-import { Setting } from "@/models/settings";
-import { getCurrencySymbol } from "@/lib/utils";
+import { connectDB } from "@/shared/db";
+import { Booking } from "@/features/booking/model";
+import { Setting } from "@/features/settings/model";
+import { getCurrencySymbol } from "@/shared/lib/utils";
 import {
   Document,
   Page,

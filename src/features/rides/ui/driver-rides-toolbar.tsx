@@ -1,10 +1,10 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { DateRangePicker } from "@/components/ui/date-range-picker";
-import { Input } from "@/components/ui/input";
-import type { useDriverDashboard } from "@/hooks/rides/useDriverDashboard";
+import { Button } from "@/shared/ui/button";
+import { Card } from "@/shared/ui/card";
+import { DateRangePicker } from "@/shared/ui/date-range-picker";
+import { Input } from "@/shared/ui/input";
+import type { useDriverDashboard } from "@/features/drivers/hooks/useDriverDashboard";
 import { Car, Filter, RefreshCw, Search } from "lucide-react";
 
 type DriverDashboardState = ReturnType<typeof useDriverDashboard>;

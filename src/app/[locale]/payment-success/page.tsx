@@ -2,11 +2,11 @@
 
 import React, { useEffect, useState, useRef } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
-import { Card } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
+import { Card } from '@/shared/ui/card';
+import { Button } from '@/shared/ui/button';
 import { CheckCircle2, XCircle, Loader2, AlertCircle } from 'lucide-react';
-import { ensurePaymentFinalized } from '@/utils/complete-payment';
-import { useTheme } from '@/contexts/ThemeContext';
+import { ensurePaymentFinalized } from '@/features/payments/lib/complete-payment';
+import { useTheme } from '@/features/settings/context/theme-context';
 import { useTranslations, useLocale } from 'next-intl';
 
 export default function PaymentSuccessPage() {

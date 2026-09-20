@@ -1,6 +1,6 @@
 # Design
 
-Visual source of truth: `src/style/globals.css`. shadcn/ui New York, Tailwind v4, CSS variables.
+Visual source of truth: `src/shared/style/globals.css`. shadcn/ui New York, Tailwind v4, CSS variables.
 
 ## Surfaces
 

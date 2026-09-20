@@ -1,7 +1,7 @@
 "use client";
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { apiGet } from '@/utils/api';
+import { apiGet } from '@/shared/http/api';
 
 interface CurrencyContextType {
   currency: string;

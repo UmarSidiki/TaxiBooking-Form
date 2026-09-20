@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth/options";
-import { connectDB } from "@/lib/database";
-import { FormLayout } from "@/models/form-layout";
+import { authOptions } from "@/features/auth";
+import { connectDB } from "@/shared/db";
+import { FormLayout } from "@/features/form-builder/model";
 
 // POST - Duplicate a layout
 export async function POST(

@@ -1,15 +1,15 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { useBookingForm } from "@/contexts/BookingFormContext";
+import { useBookingForm } from "@/features/booking/context/booking-form-context";
 import { importLibrary, setOptions } from "@googlemaps/js-api-loader";
-import { useTheme } from "@/contexts/ThemeContext";
-import { buildStopCostBreakdown } from "@/lib/form/build-stop-cost-breakdown";
+import { useTheme } from "@/features/settings/context/theme-context";
+import { buildStopCostBreakdown } from "@/features/booking/lib/build-stop-cost-breakdown";
 import {
   DEFAULT_VEHICLE_MINIMUM_HOURS,
   DEFAULT_VEHICLE_PRICE_PER_HOUR,
   DEFAULT_VEHICLE_RETURN_PRICE_PERCENTAGE,
-} from "@/lib/fleet/vehicle-form-defaults";
+} from "@/features/fleet/lib/vehicle-form-defaults";
 
 export function useStep2() {
   const [mapLoaded, setMapLoaded] = useState(false);

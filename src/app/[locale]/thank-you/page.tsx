@@ -2,12 +2,12 @@
 
 import React, { useEffect, useState } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardContent } from '@/shared/ui/card';
 import { CheckCircle, Loader2, Mail, Phone, Home } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { useTheme } from '@/contexts/ThemeContext';
+import { Button } from '@/shared/ui/button';
+import { useTheme } from '@/features/settings/context/theme-context';
 import { useTranslations } from 'next-intl';
-import { useCurrency } from '@/contexts/CurrencyContext';
+import { useCurrency } from '@/shared/context/currency-context';
 export default function ThankYouPage() {
   const t = useTranslations();
   const searchParams = useSearchParams();

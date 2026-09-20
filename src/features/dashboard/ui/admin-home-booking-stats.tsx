@@ -1,7 +1,7 @@
 "use client";
 
-import { Card, CardContent } from "@/components/ui/card";
-import type { DashboardStats } from "@/components/admin-home/admin-home.types";
+import { Card, CardContent } from "@/shared/ui/card";
+import type { DashboardStats } from "@/features/dashboard/ui/admin-home.types";
 import { Calendar, CheckCircle, Clock, XCircle } from "lucide-react";
 import type { useTranslations } from "next-intl";
 

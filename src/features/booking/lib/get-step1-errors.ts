@@ -1,4 +1,4 @@
-import type { FormData, FormErrors } from "@/contexts/BookingFormContext";
+import type { FormData, FormErrors } from "@/features/booking/context/booking-form-context";
 import type { useTranslations } from "next-intl";
 
 type TFn = ReturnType<typeof useTranslations>;

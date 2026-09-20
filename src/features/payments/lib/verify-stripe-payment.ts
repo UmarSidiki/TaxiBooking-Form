@@ -1,12 +1,12 @@
-import { loadPaymentSettings } from '@/lib/payments/load-payment-settings';
+import { loadPaymentSettings } from '@/features/payments/lib/load-payment-settings';
 import {
   getPaidAmountFromPaymentIntent,
   getStripeClient,
-} from '@/lib/payments/stripe-client';
+} from '@/features/payments/lib/stripe-client';
 import type {
   UnverifiedPayment,
   VerifiedPayment,
-} from '@/lib/payments/finalize-paid-booking.types';
+} from '@/features/payments/lib/finalize-paid-booking.types';
 
 const DEFAULT_CURRENCY = 'EUR';
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { Card } from "@/components/ui/card";
+import { Card } from "@/shared/ui/card";
 import {
   Calendar,
   Car,
@@ -13,7 +13,7 @@ import {
   Shield,
   Users,
 } from "lucide-react";
-import type { useStep3 } from "@/hooks/form/form-steps/useStep3";
+import type { useStep3 } from "@/features/booking/hooks/form-steps/useStep3";
 import type { useTranslations } from "next-intl";
 
 type Step = ReturnType<typeof useStep3>;

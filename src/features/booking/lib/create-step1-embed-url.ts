@@ -1,4 +1,4 @@
-import type { FormData } from "@/contexts/BookingFormContext";
+import type { FormData } from "@/features/booking/context/booking-form-context";
 
 export function createStep1EmbedUrl(formData: FormData): string {
   const locale = window.location.pathname.split("/")[1]; // Extract locale from URL path

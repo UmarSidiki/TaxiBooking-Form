@@ -1,8 +1,8 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { AdminHomeHeader } from "@/components/admin-home/admin-home-header";
+import { Button } from "@/shared/ui/button";
+import { Card, CardContent } from "@/shared/ui/card";
+import { AdminHomeHeader } from "@/features/dashboard/ui/admin-home-header";
 import { AlertCircle } from "lucide-react";
 import type { useTranslations } from "next-intl";
 

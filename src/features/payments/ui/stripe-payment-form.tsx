@@ -11,7 +11,7 @@ import type {
   StripeExpressCheckoutElementConfirmEvent,
   StripeExpressCheckoutElementReadyEvent,
 } from "@stripe/stripe-js";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/shared/ui/button";
 import {
   Loader2,
   Shield,
@@ -21,7 +21,7 @@ import {
   AlertCircle,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { getCurrencySymbol } from "@/lib/utils";
+import { getCurrencySymbol } from "@/shared/lib/utils";
 
 interface BookingData {
   pickup: string;

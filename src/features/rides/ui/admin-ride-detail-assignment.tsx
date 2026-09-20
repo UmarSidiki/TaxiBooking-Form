@@ -1,7 +1,7 @@
 "use client";
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import type { IBooking } from "@/models/booking";
+import { Card, CardContent, CardHeader, CardTitle } from "@/shared/ui/card";
+import type { IBooking } from "@/features/booking/model";
 import { User, UserCheck, Users } from "lucide-react";
 
 export function AdminRideDetailAssignment({

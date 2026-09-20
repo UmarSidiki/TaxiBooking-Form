@@ -5,7 +5,7 @@ alwaysApply: true
 
 # Zod (always apply)
 
-Runtime types live in `src/lib/schemas/`. TypeScript types are `z.infer<typeof schema>`. Do not declare a parallel union, interface, or DTO next to a schema.
+Runtime types live in `src/features/<domain>/schema/`. TypeScript types are `z.infer<typeof schema>`. Do not declare a parallel union, interface, or DTO next to a schema.
 
 Mongoose `IBooking` / `IVehicle` types describe **documents**. They are not a substitute for parsing HTTP input.
 

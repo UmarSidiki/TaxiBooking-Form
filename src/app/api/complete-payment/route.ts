@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { finalizePaidBooking } from '@/lib/payments/finalize-paid-booking';
+import { finalizePaidBooking } from '@/features/payments/lib/finalize-paid-booking';
 
 export const dynamic = 'force-dynamic';
 export const maxDuration = 30;

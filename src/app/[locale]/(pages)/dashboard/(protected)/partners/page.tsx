@@ -1,11 +1,11 @@
 "use client";
 
-import { AdminPartnerActionDialogs } from "@/components/admin-partners/admin-partner-action-dialogs";
-import { AdminPartnerDetailsDialog } from "@/components/admin-partners/admin-partner-details-dialog";
-import { AdminPartnerFilters } from "@/components/admin-partners/admin-partner-filters";
-import { AdminPartnerList } from "@/components/admin-partners/admin-partner-list";
-import { AdminPartnerStats } from "@/components/admin-partners/admin-partner-stats";
-import { useAdminPartners } from "@/hooks/partners/useAdminPartners";
+import { AdminPartnerActionDialogs } from "@/features/partners/ui/admin-partner-action-dialogs";
+import { AdminPartnerDetailsDialog } from "@/features/partners/ui/admin-partner-details-dialog";
+import { AdminPartnerFilters } from "@/features/partners/ui/admin-partner-filters";
+import { AdminPartnerList } from "@/features/partners/ui/admin-partner-list";
+import { AdminPartnerStats } from "@/features/partners/ui/admin-partner-stats";
+import { useAdminPartners } from "@/features/partners/hooks/useAdminPartners";
 
 export default function AdminPartnersPage() {
   const partners = useAdminPartners();

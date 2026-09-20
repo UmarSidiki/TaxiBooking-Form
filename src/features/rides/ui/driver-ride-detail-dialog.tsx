@@ -1,17 +1,17 @@
 "use client";
 
-import { DriverRideDetailJourney } from "@/components/rides/driver-ride-detail-journey";
-import { DriverRideDetailPassenger } from "@/components/rides/driver-ride-detail-passenger";
-import { DriverRideDetailPayment } from "@/components/rides/driver-ride-detail-payment";
-import { Card, CardContent } from "@/components/ui/card";
+import { DriverRideDetailJourney } from "@/features/rides/ui/driver-ride-detail-journey";
+import { DriverRideDetailPassenger } from "@/features/rides/ui/driver-ride-detail-passenger";
+import { DriverRideDetailPayment } from "@/features/rides/ui/driver-ride-detail-payment";
+import { Card, CardContent } from "@/shared/ui/card";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
-import type { useDriverDashboard } from "@/hooks/rides/useDriverDashboard";
+} from "@/shared/ui/dialog";
+import type { useDriverDashboard } from "@/features/drivers/hooks/useDriverDashboard";
 import { Car, Info } from "lucide-react";
 
 type DriverDashboardState = ReturnType<typeof useDriverDashboard>;

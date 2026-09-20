@@ -1,8 +1,8 @@
 "use client";
 
-import type { FormBuilderStyleEditorProps } from "@/components/form-builder/form-builder-style-editor-props";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import type { FormBuilderStyleEditorProps } from "@/features/form-builder/ui/form-builder-style-editor-props";
+import { Input } from "@/shared/ui/input";
+import { Label } from "@/shared/ui/label";
 import { Palette } from "lucide-react";
 
 export function FormBuilderDesignColors({

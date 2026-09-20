@@ -1,6 +1,6 @@
-import { Driver } from '@/models/driver';
-import type { IBooking } from '@/models/booking';
-import type { BookingPatchApplyResult } from '@/lib/bookings/booking-patch-result';
+import { Driver } from '@/features/drivers/model';
+import type { IBooking } from '@/features/booking/model';
+import type { BookingPatchApplyResult } from '@/features/booking/lib/booking-patch-result';
 
 export async function applyAssignDriver(
   driverId: unknown,

@@ -1,5 +1,5 @@
-import { DEFAULT_STYLE } from "@/components/form-builder/field-registry";
-import type { IFormField, IFormLayout, IFormStyle } from "@/models/form-layout";
+import { DEFAULT_STYLE } from "@/features/form-builder/ui/field-registry";
+import type { IFormField, IFormLayout, IFormStyle } from "@/features/form-builder/model";
 import type { Dispatch, SetStateAction } from "react";
 
 const FORM_BUILDER_DRAFT_KEY = "formBuilderDraft";

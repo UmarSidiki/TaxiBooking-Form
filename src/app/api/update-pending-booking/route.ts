@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { connectDB } from '@/lib/database';
-import { PendingBooking } from '@/models/booking';
+import { connectDB } from '@/shared/db';
+import { PendingBooking } from '@/features/booking/model';
 
 const CONTACT_FIELDS = [
   'firstName',

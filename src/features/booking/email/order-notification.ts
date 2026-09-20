@@ -1,10 +1,10 @@
-import { sendEmail } from '@/lib/email';
-import { resolveAdminNotificationEmails } from '@/lib/email/resolve-admin-emails';
-import { connectDB } from '@/lib/database';
-import { getBakedSettings } from '@/lib/settings/baked-settings';
-import { Setting } from '@/models/settings';
-import { getCurrencySymbol } from '@/lib/utils';
-import type { BookingEmailData } from '@/lib/payments/booking-email-data';
+import { sendEmail } from '@/features/settings/lib/email';
+import { resolveAdminNotificationEmails } from '@/features/settings/lib/resolve-admin-emails';
+import { connectDB } from '@/shared/db';
+import { getBakedSettings } from '@/shared/config/baked-settings';
+import { Setting } from '@/features/settings/model';
+import { getCurrencySymbol } from '@/shared/lib/utils';
+import type { BookingEmailData } from '@/features/payments/lib/booking-email-data';
 
 function generateOwnerEmailHTML(
   bookingData: BookingEmailData,

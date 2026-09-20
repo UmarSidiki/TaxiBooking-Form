@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { connectDB } from '@/lib/database';
-import { Setting } from '@/models/settings';
-import { finalizePaidBooking } from '@/lib/payments/finalize-paid-booking';
-import { resolvePublicBaseUrl } from '@/lib/payments/resolve-base-url';
+import { connectDB } from '@/shared/db';
+import { Setting } from '@/features/settings/model';
+import { finalizePaidBooking } from '@/features/payments/lib/finalize-paid-booking';
+import { resolvePublicBaseUrl } from '@/features/payments/lib/resolve-base-url';
 
 export const dynamic = 'force-dynamic';
 export const maxDuration = 60;

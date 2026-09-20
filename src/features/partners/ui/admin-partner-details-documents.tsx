@@ -1,12 +1,12 @@
 "use client";
 
-import type { Partner, PartnerDocument, Vehicle } from "@/components/admin-partners/admin-partner.types";
+import type { Partner, PartnerDocument, Vehicle } from "@/features/partners/ui/admin-partner.types";
 import {
   AdminPartnerDocumentStatusBadge,
   AdminPartnerStatusBadge,
-} from "@/components/admin-partners/admin-partner-status-badges";
-import { Button } from "@/components/ui/button";
-import type { useAdminPartners } from "@/hooks/partners/useAdminPartners";
+} from "@/features/partners/ui/admin-partner-status-badges";
+import { Button } from "@/shared/ui/button";
+import type { useAdminPartners } from "@/features/partners/hooks/useAdminPartners";
 import {
   CheckCircle2,
   Clock,

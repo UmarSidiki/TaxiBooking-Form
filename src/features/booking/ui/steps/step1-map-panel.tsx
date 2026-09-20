@@ -1,7 +1,7 @@
 "use client";
 
-import { Card } from "@/components/ui/card";
-import type { DistanceData, FormData } from "@/contexts/BookingFormContext";
+import { Card } from "@/shared/ui/card";
+import type { DistanceData, FormData } from "@/features/booking/context/booking-form-context";
 import {
   CalendarDays,
   Clock,

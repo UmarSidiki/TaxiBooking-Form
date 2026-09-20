@@ -1,9 +1,9 @@
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
-import { authOptions } from "@/lib/auth/options";
-import { connectDB } from "@/lib/database";
-import { Setting } from "@/models/settings";
-import DriverLoginForm from "./components/DriverLoginForm";
+import { authOptions } from "@/features/auth";
+import { connectDB } from "@/shared/db";
+import { Setting } from "@/features/settings/model";
+import DriverLoginForm from "@/features/drivers/ui/driver-login-form";
 
 export default async function DriversPage() {
   // Check if drivers module is enabled

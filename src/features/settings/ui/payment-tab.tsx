@@ -1,15 +1,15 @@
 import React from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/shared/ui/card";
 import { Building2, CreditCard, Banknote } from "lucide-react";
-import { ISetting } from "@/models/settings";
+import { ISetting } from "@/features/settings/model";
 import { useTranslations } from "next-intl";
-import { PaymentTabBank } from "@/components/settings/payment-tab-bank";
-import { PaymentTabGateway } from "@/components/settings/payment-tab-gateway";
-import { PaymentTabInfo } from "@/components/settings/payment-tab-info";
-import { PaymentTabMethods } from "@/components/settings/payment-tab-methods";
-import { PaymentTabMultiSafepay } from "@/components/settings/payment-tab-multisafepay";
-import { PaymentTabStripe } from "@/components/settings/payment-tab-stripe";
-import { PaymentTabStripeSettings } from "@/components/settings/payment-tab-stripe-settings";
+import { PaymentTabBank } from "@/features/settings/ui/payment-tab-bank";
+import { PaymentTabGateway } from "@/features/settings/ui/payment-tab-gateway";
+import { PaymentTabInfo } from "@/features/settings/ui/payment-tab-info";
+import { PaymentTabMethods } from "@/features/settings/ui/payment-tab-methods";
+import { PaymentTabMultiSafepay } from "@/features/settings/ui/payment-tab-multisafepay";
+import { PaymentTabStripe } from "@/features/settings/ui/payment-tab-stripe";
+import { PaymentTabStripeSettings } from "@/features/settings/ui/payment-tab-stripe-settings";
 
 interface PaymentTabProps {
   settings: Partial<ISetting>;

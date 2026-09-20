@@ -1,101 +1,85 @@
-# TaxiBooking-Form
+# Taxi booking form
 
-A comprehensive, enterprise-grade transport booking management solution built with **Next.js 15**. This application streamlines the entire lifecycle of professional driver services, from client reservations to fleet dispatching and partner management.
+Web app for one taxi / chauffeur operator: public 3-step booking wizard (and embeddable forms), admin dispatch dashboard, driver portal, and partner portal.
 
-It is designed for shuttle services, private transfer companies, and chauffeurs who need a modern, automated booking engine with robust backend management.
+Not a multi-operator marketplace. Product rules: [PRODUCT.md](./PRODUCT.md). Visual tokens: [DESIGN.md](./DESIGN.md). Folder map: [ARCHITECTURE.md](./ARCHITECTURE.md). Agent rules: [AGENTS.md](./AGENTS.md).
 
-## 🌟 Core Modules
+## Stack
 
-### 1. 🚍 Customer Booking Engine
-A seamless, 3-step wizard optimized for conversion:
-- **Ride Details**: Integrated with **Google Maps API** for autocomplete, distance matrix calculations, and route visualization. Supports one-way, round-trip, and hourly bookings.
-- **Vehicle Selection**: Dynamic display of available fleet categories (Economy, Business, Van, etc.) with automated pricing based on distance, duration, and vehicle base rates.
-- **Secure Payment**: Clients can pay online via **Stripe** (Credit Cards) or **MultiSafepay** (iDEAL, Bancontact, etc.), or choose cash on delivery.
+- Next.js 16 (App Router) · React 19 · TypeScript
+- Tailwind CSS v4 · shadcn/ui (New York)
+- MongoDB · Mongoose 9
+- NextAuth.js v4 (JWT)
+- next-intl (en, fr, es, de, nl, it, ru, ar)
+- Stripe PaymentIntents · MultiSafepay · cash
+- Google Maps (Places, Distance Matrix, JS API)
+- Nodemailer (SMTP from Settings in MongoDB)
 
-### 2. ⚡ Admin Dashboard
-A powerful command center for business owners:
-- **Ride Management**: View, edit, specificy drivers, or cancel incoming bookings. Monitor ride status (Pending, Paid, Completed, Cancelled).
-- **Fleet Control**: Manage vehicle inventory, set pricing rules (per km/hour), and configure luggage/passenger capacities.
-- **System Configuration**: Update website settings, SMTP email servers, payment API keys, and map restrictions directly from the UI.
-- **Revenue Insights**: Basic dashboard for tracking bookings and revenue flows.
+## Install
 
-### 3. 🤝 Partner & Driver Portals
-Dedicated interfaces for your workforce:
-- **Partner Portal**: Allows external transport companies to register, upload compliance documents (licenses, insurance), and accept "farmed-out" or affiliate rides.
-- **Driver Mobile View**: Simplified dashboard for drivers to view their upcoming schedule, trip details, and navigation links.
+Prerequisites: Node.js 20+, a MongoDB instance, a Google Maps API key (Places, Maps JavaScript, Distance Matrix).
 
-## 🚀 Key Features
-
--   **Dynamic Pricing Engine**: Automatically calculates fares based on distance, time, return trips, and vehicle class multipliers.
--   **Global Payment Processing**: Native integration with **Stripe** and **MultiSafepay** webhooks for real-time payment status updates.
--   **Automated Communication**:
-    -   Instant email confirmations for clients and admins using **Nodemailer**.
-    -   Professional PDF Invoices generated on-the-fly with `@react-pdf/renderer`.
--   **Internationalization (i18n)**: Fully localized in 8 languages (English, German, French, Italian, Spanish, Dutch, Russian, Arabic) using `next-intl`.
--   **Role-Based Security**: Secure authentication and session management via **NextAuth.js** with distinct roles for Admin, Partner, and Driver.
--   **Smart Address Handling**: Limits location search to specific countries and manages custom service area bounds.
-
-## 🛠️ Tech Stack
-
--   **Framework**: [Next.js 15 (App Router)](https://nextjs.org/)
--   **Language**: [TypeScript](https://www.typescriptlang.org/)
--   **Styling**: [Tailwind CSS](https://tailwindcss.com/) & [Shadcn UI](https://ui.shadcn.com/) (Radix Primitives)
--   **Database**: [MongoDB](https://www.mongodb.com/) & [Mongoose](https://mongoosejs.com/)
--   **Auth**: [NextAuth.js](https://next-auth.js.org/)
--   **Maps & Geocoding**: Google Maps JavaScript API, Places API, Distance Matrix API
--   **Forms**: React Hook Form & Zod Validation
--   **Emails**: Nodemailer with Handlebars templates
--   **PDFs**: @react-pdf/renderer
-
-## 🏁 Getting Started
-
-### Prerequisites
--   Node.js 18+
--   MongoDB Instance (Local or Atlas)
--   Google Maps API Key (Places, Maps JS, Distance Matrix enabled)
-
-### Installation
-
-1.  **Clone the repository**
-    ```bash
-    git clone https://github.com/UmarSidiki/TaxiBooking-Form.git
-    cd TaxiBooking-Form
-    ```
-
-2.  **Install dependencies**
-    ```bash
-    npm install
-    ```
-
-3.  **Environment Setup**
-    Copy the example environment file:
-    ```bash
-    cp .env.example .env.local
-    ```
-    Populate `.env.local` with your credentials:
-    -   `MONGODB_URI`
-    -   `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY`
-    -   `NEXTAUTH_SECRET`
-
-4.  **Run Development Server**
-    ```bash
-    npm run dev
-    ```
-    Access the app at [http://localhost:3000](http://localhost:3000).
-
-## 📂 Project Structure
-
-```text
-src/
-├── app/                  # Next.js App Router
-│   ├── [locale]/         # Localized routes (Main App)
-│   ├── api/              # API Endpoints (Booking, Admin, Webhooks)
-├── components/
-│   ├── form/             # Multi-step Booking Wizard Components
-│   ├── settings/         # Admin Dashboard Settings Panels
-│   ├── payment/          # Stripe/MultiSafepay Forms
-├── lib/                  # Utilities (DB, Email, Auth)
-├── messages/             # i18n Translation Files (JSON)
-├── models/               # Mongoose Data Models (Booking, User, Vehicle)
-└── style/                # Tailwind & Global Styles
+```bash
+npm install
+cp .env.example .env.local
 ```
+
+Required in `.env.local`:
+
+| Variable | Purpose |
+|---|---|
+| `MONGODB_URI` | Mongo connection string |
+| `NEXTAUTH_SECRET` | NextAuth JWT secret |
+| `NEXTAUTH_URL` | App origin (local: `http://localhost:3000`) |
+| `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` | Maps / Places / Distance Matrix |
+
+Stripe, MultiSafepay, and SMTP are configured in the **admin Settings** UI (MongoDB), not only in env. See `.env.example` for optional public site copy (`NEXT_PUBLIC_WEBSITE_NAME`, support phone/email).
+
+Never commit `.env.local` or real secrets.
+
+## Run
+
+```bash
+npm run dev
+```
+
+Open [http://localhost:3000](http://localhost:3000). Default locale is `en` (`/en`, …). Admin: `/en/dashboard`. Drivers: `/en/drivers`. Partners: `/en/partners`.
+
+## Build
+
+```bash
+npm run build
+npm start
+```
+
+`npm run build` runs `scripts/sync-build-settings.mjs` first (writes non-secret settings from Mongo into `src/shared/config/baked-settings.json` when `MONGODB_URI` is set), then `next build`.
+
+## Test
+
+There is no automated test suite. Before merging:
+
+```bash
+npx tsc --noEmit
+npm run lint
+npm run build
+```
+
+## Deploy
+
+Any Node host that can run `npm run build` and `npm start` (or a Next.js platform such as Vercel).
+
+1. Set the same env vars as `.env.example` on the host (`MONGODB_URI`, `NEXTAUTH_SECRET`, `NEXTAUTH_URL` must match the public URL).
+2. Configure Stripe / MultiSafepay webhook URLs to `/api/stripe-webhook` and `/api/multisafepay-webhook`.
+3. Point cron at `/api/cron/*` if you use abandoned-booking cleanup.
+4. After first deploy, sign in as admin and fill Settings (SMTP, payment keys, maps bounds, tax).
+
+## Layout (short)
+
+```
+src/app/           Next.js routes (do not relocate page.tsx / route.ts)
+src/features/      Domain modules (booking, payments, fleet, rides, …)
+src/shared/        UI primitives, DB, i18n, tokens — never imports features
+messages/          next-intl dictionaries
+```
+
+Import with `@/features/…` and `@/shared/…`. Details in [ARCHITECTURE.md](./ARCHITECTURE.md).

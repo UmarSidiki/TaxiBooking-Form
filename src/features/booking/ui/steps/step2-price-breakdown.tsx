@@ -1,8 +1,8 @@
 "use client";
 
-import type { FormData } from "@/contexts/BookingFormContext";
-import { buildStopCostBreakdown } from "@/lib/form/build-stop-cost-breakdown";
-import type { IVehicle } from "@/models/vehicle";
+import type { FormData } from "@/features/booking/context/booking-form-context";
+import { buildStopCostBreakdown } from "@/features/booking/lib/build-stop-cost-breakdown";
+import type { IVehicle } from "@/features/fleet/model";
 import type { useTranslations } from "next-intl";
 
 type TFn = ReturnType<typeof useTranslations>;

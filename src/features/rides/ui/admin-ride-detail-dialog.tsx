@@ -1,12 +1,12 @@
 "use client";
 
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent } from "@/shared/ui/card";
 import {
   Dialog,
   DialogContent,
-} from "@/components/ui/dialog";
-import type { IBooking } from "@/models/booking";
-import type { AdminRideReview } from "@/hooks/rides/useAdminRides";
+} from "@/shared/ui/dialog";
+import type { IBooking } from "@/features/booking/model";
+import type { AdminRideReview } from "@/features/rides/hooks/useAdminRides";
 import type { useTranslations } from "next-intl";
 import { Info } from "lucide-react";
 import { AdminRideDetailAssignment } from "./admin-ride-detail-assignment";

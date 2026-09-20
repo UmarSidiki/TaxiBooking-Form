@@ -1,4 +1,4 @@
-import bakedSettings from '@/config/baked-settings.json';
+import bakedSettings from '@/shared/config/baked-settings.json';
 
 export interface BakedSettings {
   adminEmail: string | null;

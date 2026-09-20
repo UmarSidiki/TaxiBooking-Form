@@ -1,15 +1,15 @@
 "use client";
 
-import { PartnerRideCard } from "@/components/partner-rides/partner-ride-card";
-import { PartnerRideDetailDialog } from "@/components/partner-rides/partner-ride-detail-dialog";
+import { PartnerRideCard } from "@/features/partners/ui/partner-ride-card";
+import { PartnerRideDetailDialog } from "@/features/partners/ui/partner-ride-detail-dialog";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { usePartnerRides } from "@/hooks/rides/usePartnerRides";
+} from "@/shared/ui/card";
+import { usePartnerRides } from "@/features/rides/hooks/usePartnerRides";
 import { Car } from "lucide-react";
 
 export default function PartnerRidesPage() {

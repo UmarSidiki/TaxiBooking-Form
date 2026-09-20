@@ -1,8 +1,8 @@
-import { Booking, PendingBooking } from '@/models/booking';
+import { Booking, PendingBooking } from '@/features/booking/model';
 import type {
   FinalizePaidBookingInput,
   FinalizePaidBookingResult,
-} from '@/lib/payments/finalize-paid-booking.types';
+} from '@/features/payments/lib/finalize-paid-booking.types';
 
 export async function tryFastPathFinalized(
   input: FinalizePaidBookingInput

@@ -1,7 +1,7 @@
-import { sendEmail } from "@/lib/email";
-import { connectDB } from "@/lib/database";
-import { Setting } from "@/models/settings";
-import { getCurrencySymbol } from "@/lib/utils";
+import { sendEmail } from "@/features/settings/lib/email";
+import { connectDB } from "@/shared/db";
+import { Setting } from "@/features/settings/model";
+import { getCurrencySymbol } from "@/shared/lib/utils";
 
 interface RideAssignmentData {
   tripId: string;

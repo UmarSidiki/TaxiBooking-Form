@@ -1,6 +1,6 @@
 "use client";
 
-import type { IBooking } from "@/models/booking";
+import type { IBooking } from "@/features/booking/model";
 import { Mail, PhoneCall, User } from "lucide-react";
 
 export function AdminRideCardCustomer({ booking }: { booking: IBooking }) {

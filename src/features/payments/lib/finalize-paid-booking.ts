@@ -1,21 +1,21 @@
-import { connectDB } from '@/lib/database';
-import { Booking, PendingBooking } from '@/models/booking';
-import { buildBookingEmailDataFromBooking } from '@/lib/payments/booking-email-data';
-import { createBookingFromPending } from '@/lib/payments/create-booking-from-pending';
-import { sendBookingEmails } from '@/lib/payments/send-booking-emails';
-import { tryFastPathFinalized } from '@/lib/payments/try-fast-path-finalized';
-import { verifyMultisafepayPayment } from '@/lib/payments/verify-multisafepay-payment';
-import { verifyStripePayment } from '@/lib/payments/verify-stripe-payment';
+import { connectDB } from '@/shared/db';
+import { Booking, PendingBooking } from '@/features/booking/model';
+import { buildBookingEmailDataFromBooking } from '@/features/payments/lib/booking-email-data';
+import { createBookingFromPending } from '@/features/payments/lib/create-booking-from-pending';
+import { sendBookingEmails } from '@/features/payments/lib/send-booking-emails';
+import { tryFastPathFinalized } from '@/features/payments/lib/try-fast-path-finalized';
+import { verifyMultisafepayPayment } from '@/features/payments/lib/verify-multisafepay-payment';
+import { verifyStripePayment } from '@/features/payments/lib/verify-stripe-payment';
 import type {
   FinalizePaidBookingInput,
   FinalizePaidBookingResult,
-} from '@/lib/payments/finalize-paid-booking.types';
+} from '@/features/payments/lib/finalize-paid-booking.types';
 
 export type {
   FinalizePaidBookingInput,
   FinalizePaidBookingResult,
   PaymentProvider,
-} from '@/lib/payments/finalize-paid-booking.types';
+} from '@/features/payments/lib/finalize-paid-booking.types';
 
 const DEFAULT_CURRENCY = 'EUR';
 

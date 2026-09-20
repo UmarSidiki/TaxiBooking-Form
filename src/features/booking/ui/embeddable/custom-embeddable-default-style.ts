@@ -1,4 +1,4 @@
-import type { IFormStyle } from "@/models/form-layout";
+import type { IFormStyle } from "@/features/form-builder/model";
 
 // ─── Default Style Fallback ────────────────────────────────────────────────
 export const CUSTOM_EMBEDDABLE_DEFAULT_STYLE: IFormStyle = {

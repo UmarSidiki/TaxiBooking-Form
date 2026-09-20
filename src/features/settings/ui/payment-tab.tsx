@@ -43,7 +43,7 @@ const PaymentTab: React.FC<PaymentTabProps> = ({
       id: "multisafepay",
       label: "MultiSafepay",
       Icon: CreditCard,
-      description: "iDEAL, Bancontact, PayPal & more",
+      description: t("Dashboard.Settings.multisafepay-methods-desc"),
     },
     {
       id: "cash",

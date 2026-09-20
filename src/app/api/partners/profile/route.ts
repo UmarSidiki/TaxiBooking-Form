@@ -1,34 +1,23 @@
 import { NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
 import { connectDB } from "@/shared/db";
 import { Partner } from "@/features/partners/model";
-import { authOptions } from "@/features/auth";
+import { requireRole } from "@/features/auth/lib/require-role";
+import { jsonError } from "@/shared/http/json-error";
 
 export async function GET() {
   try {
-    const session = await getServerSession(authOptions);
-
-    if (!session?.user || session.user.role !== "partner") {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
+    const access = await requireRole("partner");
+    if (!access.ok) return access.response;
 
     await connectDB();
-
-    const partner = await Partner.findById(session.user.id).select("-password");
-
-    if (!partner) {
-      return NextResponse.json(
-        { success: false, error: "Partner not found" },
-        { status: 404 }
-      );
-    }
+    const partner = await Partner.findById(access.session.user.id).select(
+      "-password"
+    );
+    if (!partner) return jsonError("not_found", 404);
 
     return NextResponse.json({ success: true, partner }, { status: 200 });
   } catch (error) {
     console.error("Error fetching partner profile:", error);
-    return NextResponse.json(
-      { success: false, error: "An error occurred while fetching profile" },
-      { status: 500 }
-    );
+    return jsonError("internal_error", 500);
   }
 }

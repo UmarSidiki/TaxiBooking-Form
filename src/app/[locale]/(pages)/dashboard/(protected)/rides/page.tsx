@@ -16,9 +16,12 @@ export default function RidesPage() {
     t,
     filteredBookings,
     isLoading,
+    loadError,
     activeTab,
     setActiveTab,
     fetchBookings,
+    notice,
+    setNotice,
   } = rides;
 
   return (
@@ -39,11 +42,43 @@ export default function RidesPage() {
         setSortBy={rides.setSortBy}
       />
 
+      {loadError ? (
+        <p
+          className="rounded-md border border-border bg-card px-4 py-3 text-sm"
+          role="alert"
+        >
+          {loadError}
+          <button
+            type="button"
+            className="ms-3 text-primary underline-offset-4 hover:underline"
+            onClick={() => void fetchBookings()}
+          >
+            {t("Dashboard.Home.try-again")}
+          </button>
+        </p>
+      ) : null}
+
+      {notice ? (
+        <p
+          className="rounded-md border border-border bg-card px-4 py-3 text-sm text-foreground"
+          role="status"
+        >
+          {notice}
+          <button
+            type="button"
+            className="ms-3 text-primary underline-offset-4 hover:underline"
+            onClick={() => setNotice(null)}
+          >
+            {t("Dashboard.Rides.Dismiss")}
+          </button>
+        </p>
+      ) : null}
+
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="flex w-full flex-col sm:flex-row gap-2 bg-background p-1 rounded-lg border border-border shadow-sm h-auto overflow-x-auto">
+        <TabsList className="flex h-auto w-full flex-col gap-2 overflow-x-auto rounded-md border border-border bg-muted p-1 sm:flex-row">
           <TabsTrigger
             value="upcoming"
-            className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-md transition-all data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm"
+            className="flex min-h-11 w-full items-center justify-center gap-2 rounded-md px-4 py-3 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
           >
             <CalendarDays className="w-4 h-4" />
             <span className="font-medium">
@@ -60,7 +95,7 @@ export default function RidesPage() {
           </TabsTrigger>
           <TabsTrigger
             value="passed"
-            className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-md transition-all data-[state=active]:bg-secondary data-[state=active]:text-white data-[state=active]:shadow-sm"
+            className="flex min-h-11 w-full items-center justify-center gap-2 rounded-md px-4 py-3 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
           >
             <CheckCircle className="w-4 h-4" />
             <span className="font-medium">
@@ -77,7 +112,7 @@ export default function RidesPage() {
           </TabsTrigger>
           <TabsTrigger
             value="canceled"
-            className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-md transition-all data-[state=active]:bg-destructive data-[state=active]:text-destructive-foreground data-[state=active]:shadow-sm"
+            className="flex min-h-11 w-full items-center justify-center gap-2 rounded-md px-4 py-3 data-[state=active]:bg-destructive data-[state=active]:text-destructive-foreground"
           >
             <Ban className="w-4 h-4" />
             <span className="font-medium">

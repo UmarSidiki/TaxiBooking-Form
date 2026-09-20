@@ -1,51 +1,30 @@
 import { NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
 import { connectDB } from "@/shared/db";
 import Partner, { type IFleetRequest } from "@/features/partners/model/Partner";
-import { authOptions } from "@/features/auth";
+import { requireAdmin } from "@/features/auth/lib/require-role";
+import { parseJsonBody } from "@/shared/http/parse-json-body";
+import { jsonError } from "@/shared/http/json-error";
+import { vehicleIdBodySchema } from "@/features/partners/schema/partner-write.schema";
 
 export async function DELETE(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const session = await getServerSession(authOptions);
-
-    if (!session?.user?.role || session.user.role !== "admin") {
-      return NextResponse.json(
-        { success: false, message: "Unauthorized" },
-        { status: 401 }
-      );
-    }
+    const access = await requireAdmin();
+    if (!access.ok) return access.response;
 
     const { id: partnerId } = await params;
-    const { vehicleId } = await request.json();
-
-    if (!partnerId) {
-      return NextResponse.json(
-        { success: false, message: "Partner ID is required" },
-        { status: 400 }
-      );
-    }
-
-    if (!vehicleId) {
-      return NextResponse.json(
-        { success: false, message: "Vehicle ID is required" },
-        { status: 400 }
-      );
-    }
+    const parsed = await parseJsonBody(request, vehicleIdBodySchema);
+    if (!parsed.ok) return parsed.response;
+    const { vehicleId } = parsed.data;
 
     await connectDB();
 
     // Find the partner
     const partner = await Partner.findById(partnerId);
 
-    if (!partner) {
-      return NextResponse.json(
-        { success: false, message: "Partner not found" },
-        { status: 404 }
-      );
-    }
+    if (!partner) return jsonError("not_found", 404);
 
     // Find the specific approved fleet request
     const fleetRequestIndex = partner.fleetRequests?.findIndex(
@@ -53,10 +32,7 @@ export async function DELETE(
     );
 
     if (fleetRequestIndex === -1 || fleetRequestIndex === undefined) {
-      return NextResponse.json(
-        { success: false, message: "No approved fleet found for this vehicle" },
-        { status: 400 }
-      );
+      return jsonError("not_found", 404);
     }
 
     // Remove the fleet request
@@ -94,9 +70,6 @@ export async function DELETE(
     });
   } catch (error) {
     console.error("Error removing fleet from partner:", error);
-    return NextResponse.json(
-      { success: false, message: "Internal server error" },
-      { status: 500 }
-    );
+    return jsonError("internal_error", 500);
   }
 }

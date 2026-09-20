@@ -32,7 +32,7 @@ export function FormBuilderButtonProperties({
                             </div>
                             <div>
                               <p className="text-sm font-semibold">{t("button_properties.search_button")}</p>
-                              <p className="text-[11px] text-muted-foreground">{t("button_properties.configure_button")}</p>
+                              <p className="text-xs text-muted-foreground">{t("button_properties.configure_button")}</p>
                             </div>
                           </div>
 
@@ -57,7 +57,17 @@ export function FormBuilderButtonProperties({
                               <Label className="text-xs font-medium">{t("button_properties.width")}</Label>
                               <Select
                                 value={formStyle.buttonWidth || "full"}
-                                onValueChange={(v) => setFormStyle((s) => ({ ...s, buttonWidth: v as any }))}
+                                onValueChange={(v) => {
+                                  if (
+                                    v === "full" ||
+                                    v === "two-thirds" ||
+                                    v === "half" ||
+                                    v === "third" ||
+                                    v === "quarter"
+                                  ) {
+                                    setFormStyle((s) => ({ ...s, buttonWidth: v }));
+                                  }
+                                }}
                               >
                                 <SelectTrigger className="h-8 text-sm"><SelectValue /></SelectTrigger>
                                 <SelectContent>
@@ -94,7 +104,11 @@ export function FormBuilderButtonProperties({
                               <Label className="text-xs font-medium">{t("button_properties.size")}</Label>
                               <Select
                                 value={formStyle.buttonSize || "default"}
-                                onValueChange={(v) => setFormStyle((s) => ({ ...s, buttonSize: v as any }))}
+                                onValueChange={(v) => {
+                                  if (v === "small" || v === "default" || v === "large") {
+                                    setFormStyle((s) => ({ ...s, buttonSize: v }));
+                                  }
+                                }}
                               >
                                 <SelectTrigger className="h-8 text-sm"><SelectValue /></SelectTrigger>
                                 <SelectContent>

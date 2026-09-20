@@ -3,84 +3,43 @@ import { hash } from "bcryptjs";
 import { connectDB } from "@/shared/db";
 import { Partner } from "@/features/partners/model";
 import { sendAdminPartnerRegistrationEmail } from "@/features/partners/email/partner-notification";
-import { isValidEmail, isValidPhone, sanitizeInput } from "@/shared/lib/validation";
+import { sanitizeInput } from "@/shared/lib/validation";
+import { parseJsonBody } from "@/shared/http/parse-json-body";
+import { jsonError } from "@/shared/http/json-error";
+import { partnerRegisterSchema } from "@/features/partners/schema/partner-write.schema";
 
 export async function POST(request: NextRequest) {
   try {
-    const { name, email, password, phone, address, city, country } =
-      await request.json();
-
-    if (!name || !email || !password) {
-      return NextResponse.json(
-        { error: "Name, email, and password are required" },
-        { status: 400 }
-      );
-    }
-
-    // Validate email format
-    if (!isValidEmail(email)) {
-      return NextResponse.json(
-        { error: "Invalid email address format" },
-        { status: 400 }
-      );
-    }
-
-    // Validate phone if provided
-    if (phone && !isValidPhone(phone)) {
-      return NextResponse.json(
-        { error: "Invalid phone number format" },
-        { status: 400 }
-      );
-    }
-
-    if (password.length < 8) {
-      return NextResponse.json(
-        { error: "Password must be at least 8 characters long" },
-        { status: 400 }
-      );
-    }
+    const parsed = await parseJsonBody(request, partnerRegisterSchema);
+    if (!parsed.ok) return parsed.response;
+    const { name, email, password, phone, address, city, country } = parsed.data;
 
     await connectDB();
-
-    // Check if partner already exists
-    const existingPartner = await Partner.findOne({ email: email.toLowerCase().trim() });
-
+    const existingPartner = await Partner.findOne({
+      email: email.toLowerCase().trim(),
+    });
     if (existingPartner) {
-      return NextResponse.json(
-        { error: "An account with this email already exists" },
-        { status: 409 }
-      );
+      return jsonError("conflict", 409);
     }
 
-    // Hash password
-    const hashedPassword = await hash(password, 10);
-
-    // Sanitize text inputs
-    const sanitizedName = sanitizeInput(name.trim());
-    const sanitizedAddress = address ? sanitizeInput(address.trim()) : undefined;
-    const sanitizedCity = city ? sanitizeInput(city.trim()) : undefined;
-    const sanitizedCountry = country ? sanitizeInput(country.trim()) : undefined;
-
-    // Create new partner
     const partner = await Partner.create({
-      name: sanitizedName,
+      name: sanitizeInput(name.trim()),
       email: email.toLowerCase().trim(),
-      password: hashedPassword,
+      password: await hash(password, 10),
       phone: phone?.trim(),
-      address: sanitizedAddress,
-      city: sanitizedCity,
-      country: sanitizedCountry,
+      address: address ? sanitizeInput(address.trim()) : undefined,
+      city: city ? sanitizeInput(city.trim()) : undefined,
+      country: country ? sanitizeInput(country.trim()) : undefined,
       status: "pending",
       documents: [],
       isActive: true,
     });
 
-    // Get base URL from request
-    const baseUrl = request.headers.get('origin') || 
-                    request.headers.get('referer')?.split('/').slice(0, 3).join('/') || 
-                    process.env.NEXT_PUBLIC_BASE_URL;
+    const baseUrl =
+      request.headers.get("origin") ||
+      request.headers.get("referer")?.split("/").slice(0, 3).join("/") ||
+      process.env.NEXT_PUBLIC_BASE_URL;
 
-    // Send notification email to admin
     try {
       await sendAdminPartnerRegistrationEmail({
         name: partner.name,
@@ -88,23 +47,18 @@ export async function POST(request: NextRequest) {
         phone: partner.phone,
         city: partner.city,
         country: partner.country,
-        baseUrl: baseUrl,
+        baseUrl,
       });
     } catch (emailError) {
-      // Continue with registration even if email fails
+      console.error("Partner registration email failed:", emailError);
     }
 
     return NextResponse.json(
-      {
-        message: "Partner registered successfully",
-        partnerId: partner._id,
-      },
+      { success: true, partnerId: partner._id },
       { status: 201 }
     );
   } catch (error) {
-    return NextResponse.json(
-      { error: "An error occurred during registration" },
-      { status: 500 }
-    );
+    console.error("Partner register failed:", error);
+    return jsonError("internal_error", 500);
   }
 }

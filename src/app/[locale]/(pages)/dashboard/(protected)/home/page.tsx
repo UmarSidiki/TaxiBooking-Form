@@ -1,6 +1,8 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { Badge } from "@/shared/ui/badge";
+import { useLocale } from "next-intl";
 import { useCurrency } from "@/shared/context/currency-context";
 import { useAdminHome } from "@/features/dashboard/hooks/useAdminHome";
 import { AdminHomeHeader } from "@/features/dashboard/ui/admin-home-header";
@@ -18,6 +20,12 @@ import { AdminHomeQuickActions } from "@/features/dashboard/ui/admin-home-quick-
 export default function DashboardPage() {
   const { currencySymbol } = useCurrency();
   const { stats, isLoading, error, t } = useAdminHome();
+  const locale = useLocale();
+  const [updatedAt, setUpdatedAt] = useState("");
+
+  useEffect(() => {
+    setUpdatedAt(new Intl.DateTimeFormat(locale).format(new Date()));
+  }, [locale]);
 
   if (isLoading) {
     return <AdminHomeLoading t={t} />;
@@ -35,11 +43,13 @@ export default function DashboardPage() {
     <div className="space-y-6">
       {/* Header */}
       <AdminHomeHeader t={t}>
-        <div className="flex items-center space-x-3">
-          <Badge variant="outline" className="hidden sm:flex bg-white">
-            {t("Dashboard.Home.last-updated")} {new Date().toLocaleDateString()}
-          </Badge>
-        </div>
+        {updatedAt ? (
+          <div className="flex items-center space-x-3">
+            <Badge variant="outline" className="hidden sm:flex">
+              {t("Dashboard.Home.last-updated")} {updatedAt}
+            </Badge>
+          </div>
+        ) : null}
       </AdminHomeHeader>
 
       {/* Stats Grid */}

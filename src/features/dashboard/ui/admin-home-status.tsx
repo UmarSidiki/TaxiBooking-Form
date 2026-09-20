@@ -10,56 +10,44 @@ type TFn = ReturnType<typeof useTranslations>;
 
 export function AdminHomeError({ t, error }: { t: TFn; error: string }) {
   return (
-      <div className="space-y-6">
-        <AdminHomeHeader t={t} />
-
-        <Card className="border-red-200 bg-red-50">
-          <CardContent className="p-6">
-            <div className="flex items-start space-x-4">
-              <div className="flex-shrink-0">
-                <AlertCircle className="h-12 w-12 text-red-500" />
-              </div>
-              <div>
-                <h3 className="text-lg font-semibold text-red-900 mb-2">
-                  {t("Dashboard.Home.error-loading-dashboard")}
-                </h3>
-                <p className="text-red-700 mb-4">{error}</p>
-                <Button
-                  variant="outline"
-                  onClick={() => window.location.reload()}
-                >
-                  {t("Dashboard.Home.try-again")}
-                </Button>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+    <div className="space-y-6">
+      <AdminHomeHeader t={t} />
+      <Card className="desk-card border-destructive/40">
+        <CardContent className="flex gap-4 p-6">
+          <AlertCircle className="size-6 shrink-0 text-destructive" />
+          <div>
+            <h3 className="text-lg font-semibold text-foreground">
+              {t("Dashboard.Home.error-loading-dashboard")}
+            </h3>
+            <p className="mt-2 text-sm text-muted-foreground">{error}</p>
+            <Button
+              variant="outline"
+              className="mt-4 h-11"
+              onClick={() => window.location.reload()}
+            >
+              {t("Dashboard.Home.try-again")}
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
   );
 }
 
 export function AdminHomeEmpty({ t }: { t: TFn }) {
   return (
-      <div className="space-y-6">
-        <AdminHomeHeader t={t} />
-
-        <Card className="border-yellow-200 bg-yellow-50">
-          <CardContent className="p-6">
-            <div className="flex items-start space-x-4">
-              <div className="flex-shrink-0">
-                <AlertCircle className="h-12 w-12 text-yellow-500" />
-              </div>
-              <div>
-                <h3 className="text-lg font-semibold text-yellow-900 mb-2">
-                  {t("Dashboard.Home.no-data-available")}
-                </h3>
-                <p className="text-yellow-700">
-                  {t("Dashboard.Home.no-bookings-or-revenue-data-found")}
-                </p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+    <div className="space-y-6">
+      <AdminHomeHeader t={t} />
+      <Card className="desk-card border-border">
+        <CardContent className="p-6">
+          <h3 className="text-lg font-semibold text-foreground">
+            {t("Dashboard.Home.no-data-available")}
+          </h3>
+          <p className="mt-2 text-sm text-muted-foreground">
+            {t("Dashboard.Home.no-bookings-or-revenue-data-found")}
+          </p>
+        </CardContent>
+      </Card>
+    </div>
   );
 }

@@ -4,6 +4,9 @@ import { connectDB } from "@/shared/db";
 import Partner, { type IFleetRequest } from "@/features/partners/model/Partner";
 import Vehicle from "@/features/fleet/model/Vehicle";
 import { authOptions } from "@/features/auth";
+import { parseJsonBody } from "@/shared/http/parse-json-body";
+import { jsonError } from "@/shared/http/json-error";
+import { vehicleIdBodySchema } from "@/features/partners/schema/partner-write.schema";
 import { sendFleetRequestNotificationEmail } from "@/features/partners/email/fleet-notification";
 import { getBaseUrl } from "@/shared/lib/get-base-url";
 
@@ -12,20 +15,12 @@ export async function POST(request: NextRequest) {
     const session = await getServerSession(authOptions);
 
     if (!session?.user?.email) {
-      return NextResponse.json(
-        { success: false, message: "Unauthorized" },
-        { status: 401 }
-      );
+      return jsonError("unauthorized", 401);
     }
 
-    const { vehicleId } = await request.json();
-
-    if (!vehicleId) {
-      return NextResponse.json(
-        { success: false, message: "Vehicle ID is required" },
-        { status: 400 }
-      );
-    }
+    const parsed = await parseJsonBody(request, vehicleIdBodySchema);
+    if (!parsed.ok) return parsed.response;
+    const { vehicleId } = parsed.data;
 
     await connectDB();
 
@@ -33,18 +28,12 @@ export async function POST(request: NextRequest) {
     const partner = await Partner.findOne({ email: session.user.email });
 
     if (!partner) {
-      return NextResponse.json(
-        { success: false, message: "Partner not found" },
-        { status: 404 }
-      );
+      return jsonError("not_found", 404);
     }
 
     // Check if partner is approved
     if (partner.status !== "approved") {
-      return NextResponse.json(
-        { success: false, message: "Only approved partners can request fleet assignment" },
-        { status: 403 }
-      );
+      return jsonError("forbidden", 403);
     }
 
     // Check if partner already has a pending fleet request for this vehicle
@@ -53,10 +42,7 @@ export async function POST(request: NextRequest) {
     );
     
     if (existingRequest) {
-      return NextResponse.json(
-        { success: false, message: "You already have a pending request for this vehicle" },
-        { status: 400 }
-      );
+      return jsonError("conflict", 400);
     }
 
     // Initialize fleetRequests array if it doesn't exist
@@ -97,9 +83,6 @@ export async function POST(request: NextRequest) {
     });
   } catch (error) {
     console.error("Error requesting fleet:", error);
-    return NextResponse.json(
-      { success: false, message: "Internal server error" },
-      { status: 500 }
-    );
+    return jsonError("internal_error", 500);
   }
 }

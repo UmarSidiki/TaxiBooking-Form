@@ -11,7 +11,7 @@ export default async function DashboardPage() {
   }
 
   // If user is logged in but not an admin, redirect to drivers page
-  if (session.user.role !== "admin") {
+  if (session.user.role !== "admin" && session.user.role !== "superadmin") {
     redirect(`/drivers`);
   }
 

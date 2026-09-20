@@ -4,7 +4,7 @@ import { useTranslations } from 'next-intl';
 import type { IBooking } from '@/features/booking/model';
 
 const BADGE_CLASSES =
-  'text-white font-semibold flex items-center gap-1.5 px-3 py-1 rounded-full text-xs';
+  'font-semibold flex items-center gap-1.5 px-3 py-1 rounded-full text-xs';
 
 type RideStatusBadgeProps = {
   booking: Pick<IBooking, 'status' | 'date'>;
@@ -20,7 +20,7 @@ export function RideStatusBadge({
   if (booking.status === 'canceled') {
     return (
       <Badge
-        className={`${BADGE_CLASSES} bg-destructive hover:bg-destructive/90`}
+        className={`${BADGE_CLASSES} bg-destructive text-destructive-foreground hover:bg-destructive/90`}
       >
         <X className="w-3 h-3" /> {t('Dashboard.Rides.Canceled')}
       </Badge>
@@ -41,7 +41,7 @@ export function RideStatusBadge({
   }
 
   return (
-    <Badge className={`${BADGE_CLASSES} bg-primary hover:bg-primary/90`}>
+    <Badge className={`${BADGE_CLASSES} bg-primary text-primary-foreground hover:bg-primary/90`}>
       <Calendar className="w-3 h-3" /> {t('Dashboard.Rides.Upcoming')}
     </Badge>
   );

@@ -58,7 +58,7 @@ export function AdminRideCardRoute({
                 ) : (
                   <RideMapLine
                     start={booking.pickup}
-                    end={booking.dropoff || "N/A"}
+                    end={booking.dropoff || t("Dashboard.Rides.NotSpecified")}
                   />
                 )}
               </div>

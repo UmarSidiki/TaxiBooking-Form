@@ -53,25 +53,25 @@ export function AdminRideAssignDriverDialog({
                 <span className="line-clamp-2">{booking.assignedDriver ? t("Dashboard.Rides.reassign-driver") : t("Dashboard.Rides.assign-driver")}</span>
               </DialogTitle>
               <DialogDescription className="text-sm">
-                {booking.assignedDriver 
-                  ? "Change the driver assigned to this booking"
-                  : "Select a driver to assign to this booking"}
+                {booking.assignedDriver
+                  ? t("Dashboard.Rides.change-driver")
+                  : t("Dashboard.Rides.select-driver")}
               </DialogDescription>
             </DialogHeader>
             
             <div className="space-y-4 py-4">
               <div className="bg-muted/50 rounded-lg p-3 sm:p-4 space-y-2">
                 <div className="flex items-center justify-between text-sm">
-                  <span className="text-muted-foreground">Trip ID</span>
+                  <span className="text-muted-foreground">{t("ThankYou.trip-id")}</span>
                   <span className="font-medium">#{booking.tripId}</span>
                 </div>
                 <div className="flex items-center justify-between text-sm">
-                  <span className="text-muted-foreground">Date & Time</span>
-                  <span className="font-medium">{booking.date} at {booking.time}</span>
+                  <span className="text-muted-foreground">{t("Dashboard.Rides.departure")}</span>
+                  <span className="font-medium">{booking.date} {booking.time}</span>
                 </div>
                 {booking.assignedDriver && (
                   <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-0 pt-2 border-t">
-                    <span className="text-sm text-muted-foreground">Current Driver</span>
+                    <span className="text-sm text-muted-foreground">{t("Dashboard.Rides.assigned-driver")}</span>
                     <div className="text-left sm:text-right">
                       <p className="font-medium text-sm">{booking.assignedDriver.name}</p>
                       <p className="text-xs text-muted-foreground truncate">{booking.assignedDriver.email}</p>
@@ -81,13 +81,15 @@ export function AdminRideAssignDriverDialog({
               </div>
 
               <div>
-                <Label className="text-sm font-medium mb-2 block">
-                  {booking.assignedDriver ? "Select New Driver" : "Select Driver"}
+                <Label className="mb-2 block text-sm font-medium">
+                  {booking.assignedDriver
+                    ? t("Dashboard.Rides.select-new-driver")
+                    : t("Dashboard.Rides.select-driver")}
                 </Label>
                 <Select value={selectedDriver} onValueChange={setSelectedDriver}>
-                  <SelectTrigger className="w-full">
-                    <User className="w-4 h-4 mr-2 flex-shrink-0" />
-                    <SelectValue placeholder="Choose a driver..." />
+                  <SelectTrigger className="h-11 w-full">
+                    <User className="me-2 size-4 shrink-0" />
+                    <SelectValue placeholder={t("Dashboard.Rides.choose-driver")} />
                   </SelectTrigger>
                   <SelectContent>
                     {drivers.map((driver) => (
@@ -112,7 +114,7 @@ export function AdminRideAssignDriverDialog({
                 onClick={() => setShowAssignDriverModal(false)}
                 className="w-full sm:w-auto"
               >
-                Cancel
+                {t("Dashboard.Rides.cancel")}
               </Button>
               <Button
                 onClick={async () => {
@@ -129,7 +131,9 @@ export function AdminRideAssignDriverDialog({
                 {assigningId === booking._id?.toString() ? (
                   <>
                     <Loader2 className="w-4 h-4 animate-spin mr-2" />
-                    {booking.assignedDriver ? "Reassigning..." : "Assigning..."}
+                    {booking.assignedDriver
+                      ? t("Dashboard.Rides.reassign")
+                      : t("Dashboard.Rides.assigning")}
                   </>
                 ) : (
                   <>

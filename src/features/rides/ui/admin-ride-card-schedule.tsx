@@ -1,8 +1,10 @@
 "use client";
 
 import type { IBooking } from "@/features/booking/model";
+import { SHORT_DATE } from "@/features/rides/lib/ride-format";
 import { CalendarDays, Clock, DollarSign, Users } from "lucide-react";
-import type { useTranslations } from "next-intl";
+import { useLocale, type useTranslations } from "next-intl";
+import type { ReactNode } from "react";
 
 type TFn = ReturnType<typeof useTranslations>;
 
@@ -15,111 +17,91 @@ export function AdminRideCardSchedule({
   t: TFn;
   currencySymbol: string;
 }) {
+  const locale = useLocale();
+  const dateLabel =
+    booking.tripType === "roundtrip"
+      ? t("Dashboard.Rides.DepartureDate")
+      : t("Dashboard.Rides.Date");
+  const timeLabel =
+    booking.tripType === "roundtrip"
+      ? t("Dashboard.Rides.DepartureTime")
+      : t("Dashboard.Rides.Time");
+  const roundtrip = booking.tripType === "roundtrip" && booking.returnDate;
+
   return (
     <>
-            {/* Trip Details Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-              <div className="flex flex-col gap-1">
-                <div className="flex items-center gap-2 text-xs text-gray-500">
-                  <CalendarDays className="w-3 h-3" />
-                  {booking.tripType === "roundtrip"
-                    ? t("Dashboard.Rides.DepartureDate")
-                    : t("Dashboard.Rides.Date")}
-                </div>
-                <p className="text-sm font-medium text-gray-900">
-                  {new Date(booking.date).toLocaleDateString("en-US", {
-                    month: "short",
-                    day: "numeric",
-                  })}
-                </p>
-              </div>
-              <div className="flex flex-col gap-1">
-                <div className="flex items-center gap-2 text-xs text-gray-500">
-                  <Clock className="w-3 h-3" />
-                  {booking.tripType === "roundtrip"
-                    ? t("Dashboard.Rides.DepartureTime")
-                    : t("Dashboard.Rides.Time")}
-                </div>
-                <p className="text-sm font-medium text-gray-900">
-                  {booking.time}
-                </p>
-              </div>
-              {booking.tripType === "roundtrip" && booking.returnDate ? (
-                <>
-                  <div className="flex flex-col gap-1">
-                    <div className="flex items-center gap-2 text-xs text-gray-500">
-                      <CalendarDays className="w-3 h-3" />
-                      {t("Dashboard.Rides.ReturnDate")}
-                    </div>
-                    <p className="text-sm font-medium text-gray-900">
-                      {new Date(booking.returnDate).toLocaleDateString(
-                        "en-US",
-                        {
-                          month: "short",
-                          day: "numeric",
-                        }
-                      )}
-                    </p>
-                  </div>
-                  <div className="flex flex-col gap-1">
-                    <div className="flex items-center gap-2 text-xs text-gray-500">
-                      <Clock className="w-3 h-3" />
-                      {t("Dashboard.Rides.ReturnTime")}
-                    </div>
-                    <p className="text-sm font-medium text-gray-900">
-                      {booking.returnTime}
-                    </p>
-                  </div>
-                </>
-              ) : (
-                <>
-                  <div className="flex flex-col gap-1">
-                    <div className="flex items-center gap-2 text-xs text-gray-500">
-                      <Users className="w-3 h-3" />
-                      {t("Dashboard.Rides.Passengers")}
-                    </div>
-                    <p className="text-sm font-medium text-gray-900">
-                      {booking.passengers}
-                    </p>
-                  </div>
-                  <div className="flex flex-col gap-1">
-                    <div className="flex items-center gap-2 text-xs text-gray-500">
-                      <DollarSign className="w-3 h-3" />
-                      {t("Dashboard.Rides.Price")}
-                    </div>
-                    <p className="text-sm font-medium text-gray-900">
-                      {currencySymbol}
-                      {booking.totalAmount?.toFixed(2)}
-                    </p>
-                  </div>
-                </>
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <Stat
+          icon={<CalendarDays className="size-3" />}
+          label={dateLabel}
+          value={new Date(booking.date).toLocaleDateString(locale, SHORT_DATE)}
+        />
+        <Stat icon={<Clock className="size-3" />} label={timeLabel} value={booking.time} />
+        {roundtrip ? (
+          <>
+            <Stat
+              icon={<CalendarDays className="size-3" />}
+              label={t("Dashboard.Rides.ReturnDate")}
+              value={new Date(booking.returnDate as string).toLocaleDateString(
+                locale,
+                SHORT_DATE
               )}
-            </div>
-
-            {/* Second row for Passengers and Price on roundtrip bookings */}
-            {booking.tripType === "roundtrip" && booking.returnDate && (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                <div className="flex flex-col gap-1">
-                  <div className="flex items-center gap-2 text-xs text-gray-500">
-                    <Users className="w-3 h-3" />
-                    {t("Dashboard.Rides.Passengers")}
-                  </div>
-                  <p className="text-sm font-medium text-gray-900">
-                    {booking.passengers}
-                  </p>
-                </div>
-                <div className="flex flex-col gap-1">
-                  <div className="flex items-center gap-2 text-xs text-gray-500">
-                    <DollarSign className="w-3 h-3" />
-                    {t("Dashboard.Rides.Price")}
-                  </div>
-                  <p className="text-sm font-medium text-gray-900">
-                    {currencySymbol}
-                    {booking.totalAmount?.toFixed(2)}
-                  </p>
-                </div>
-              </div>
-            )}
+            />
+            <Stat
+              icon={<Clock className="size-3" />}
+              label={t("Dashboard.Rides.ReturnTime")}
+              value={booking.returnTime ?? ""}
+            />
+          </>
+        ) : (
+          <>
+            <Stat
+              icon={<Users className="size-3" />}
+              label={t("Dashboard.Rides.Passengers")}
+              value={String(booking.passengers)}
+            />
+            <Stat
+              icon={<DollarSign className="size-3" />}
+              label={t("Dashboard.Rides.Price")}
+              value={`${currencySymbol}${booking.totalAmount?.toFixed(2)}`}
+            />
+          </>
+        )}
+      </div>
+      {roundtrip ? (
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <Stat
+            icon={<Users className="size-3" />}
+            label={t("Dashboard.Rides.Passengers")}
+            value={String(booking.passengers)}
+          />
+          <Stat
+            icon={<DollarSign className="size-3" />}
+            label={t("Dashboard.Rides.Price")}
+            value={`${currencySymbol}${booking.totalAmount?.toFixed(2)}`}
+          />
+        </div>
+      ) : null}
     </>
+  );
+}
+
+function Stat({
+  icon,
+  label,
+  value,
+}: {
+  icon: ReactNode;
+  label: string;
+  value: string;
+}) {
+  return (
+    <div className="flex flex-col gap-1">
+      <div className="flex items-center gap-2 text-xs text-muted-foreground">
+        {icon}
+        {label}
+      </div>
+      <p className="text-sm font-medium text-foreground">{value}</p>
+    </div>
   );
 }

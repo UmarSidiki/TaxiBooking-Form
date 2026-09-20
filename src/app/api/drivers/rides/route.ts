@@ -1,32 +1,22 @@
 import { NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
 import { connectDB } from "@/shared/db";
 import { Booking } from "@/features/booking/model";
-import { authOptions } from "@/features/auth";
+import { requireRole } from "@/features/auth/lib/require-role";
+import { jsonError } from "@/shared/http/json-error";
 
 export async function GET() {
   try {
-    const session = await getServerSession(authOptions);
-
-    if (!session?.user || session.user.role !== "driver") {
-      return NextResponse.json(
-        {
-          success: false,
-          message: "Unauthorized",
-        },
-        { status: 401 }
-      );
-    }
+    const access = await requireRole("driver");
+    if (!access.ok) return access.response;
 
     await connectDB();
-
-    // Find all bookings assigned to this driver
     const bookings = await Booking.find({
-      "assignedDriver._id": session.user.id,
-      status: { $in: ["upcoming", "completed"] }
+      "assignedDriver._id": access.session.user.id,
+      status: { $in: ["upcoming", "completed"] },
     })
-    .sort({ date: 1, time: 1 })
-    .select("-__v");
+      .sort({ date: 1, time: 1 })
+      .select("-__v")
+      .limit(500);
 
     return NextResponse.json({
       success: true,
@@ -34,12 +24,6 @@ export async function GET() {
     });
   } catch (error) {
     console.error("Error fetching driver rides:", error);
-    return NextResponse.json(
-      {
-        success: false,
-        message: error instanceof Error ? error.message : "Failed to fetch rides",
-      },
-      { status: 500 }
-    );
+    return jsonError("internal_error", 500);
   }
 }

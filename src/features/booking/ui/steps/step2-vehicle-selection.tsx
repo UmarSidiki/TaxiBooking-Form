@@ -19,6 +19,8 @@ function Step2VehicleSelection() {
     // Context values
     formData,
     vehicles,
+    vehiclesLoading,
+    vehiclesError,
     distanceData,
 
     // Tax settings
@@ -65,6 +67,8 @@ function Step2VehicleSelection() {
 
         <Step2VehicleList
           vehicles={vehicles}
+          vehiclesLoading={vehiclesLoading}
+          vehiclesError={vehiclesError}
           sortedVehicles={sortedVehicles}
           formData={formData}
           distanceData={distanceData}

@@ -1,6 +1,7 @@
 import fs from "fs";
 import path from "path";
 import { NextResponse } from "next/server";
+import { jsonError } from "@/shared/http/json-error";
 
 export async function GET() {
   try {
@@ -29,6 +30,6 @@ export async function GET() {
     return NextResponse.json({ success: true, data: images });
   } catch (error) {
     console.error("Error reading public folder for fleet images", error);
-    return NextResponse.json({ success: false, data: [], message: "Failed to read public images" }, { status: 500 });
+    return jsonError("internal_error", 500);
   }
 }

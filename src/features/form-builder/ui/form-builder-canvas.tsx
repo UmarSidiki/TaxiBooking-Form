@@ -38,44 +38,46 @@ export function FormBuilderCanvas({
           <div className="lg:col-span-6">
             <Card className="border border-border bg-card overflow-hidden h-full flex flex-col">
               <CardHeader className="p-0 shrink-0">
-                <div className="px-4 pt-4 pb-3 border-b border-border/50 bg-gradient-to-r from-primary/5 to-primary/10 flex items-center justify-between">
+                <div className="flex items-center justify-between gap-3 border-b border-border px-4 py-3">
                   <div>
                     <CardTitle className="text-base flex items-center gap-2">
                       <Grid3X3 className="h-4 w-4 text-primary" /> {t("preview")}
                       {isTabletOrMobile && (
-                        <Badge variant="secondary" className="text-[10px] ml-2">Auto-Mobile</Badge>
+                        <Badge variant="secondary" className="text-xs ms-2">{t("ui.width_mobile")}</Badge>
                       )}
                     </CardTitle>
                     <CardDescription className="text-xs mt-0.5">
-                      {previewMode === 'mobile' ? 'Mobile View (Auto)' : `Desktop Grid (${formStyle.columns || 2} Cols)`}
+                      {previewMode === "mobile"
+                        ? t("ui.width_mobile")
+                        : t("ui.grid_columns")}
                     </CardDescription>
                   </div>
                   <div className="flex items-center gap-1 bg-muted rounded-md p-0.5 border">
                     <button
                       onClick={() => setPreviewMode("desktop")}
                       disabled={isTabletOrMobile} // Disable manual override if auto-active
-                      className={`p-1.5 rounded flex items-center gap-1.5 text-xs font-medium transition-all ${
+                      className={`p-1.5 rounded flex items-center gap-1.5 text-xs font-medium transition-shadow ${
                         previewMode === "desktop" ? "bg-card shadow-sm text-primary" : "hover:bg-card/50 text-muted-foreground"
                       } ${isTabletOrMobile ? 'opacity-50 cursor-not-allowed' : ''}`}
                     >
-                      <Monitor className="h-3.5 w-3.5" /> Desktop
+                      <Monitor className="h-3.5 w-3.5" /> {t("ui.grid_columns")}
                     </button>
                     <button
                       onClick={() => setPreviewMode("mobile")}
                       disabled={isTabletOrMobile}
-                      className={`p-1.5 rounded flex items-center gap-1.5 text-xs font-medium transition-all ${
+                      className={`p-1.5 rounded flex items-center gap-1.5 text-xs font-medium transition-shadow ${
                         previewMode === "mobile" ? "bg-card shadow-sm text-primary" : "hover:bg-card/50 text-muted-foreground"
                       } ${isTabletOrMobile ? 'opacity-50 cursor-not-allowed' : ''}`}
                     >
-                      <Smartphone className="h-3.5 w-3.5" /> Mobile
+                      <Smartphone className="h-3.5 w-3.5" /> {t("ui.width_mobile")}
                     </button>
                   </div>
                 </div>
               </CardHeader>
-              <CardContent className="p-6 bg-slate-50/50 flex-1 overflow-y-auto flex items-center justify-center">
+              <CardContent className="flex flex-1 items-center justify-center overflow-y-auto bg-background p-6">
                 <div
-                  className={`w-full transition-all duration-500 ease-in-out ${
-                    previewMode === "mobile" ? "max-w-[360px] border-x-8 border-y-[16px] border-slate-800 rounded-[2rem] shadow-2xl overflow-hidden bg-white" : "max-w-full"
+                  className={`w-full transition-shadow duration-500 ease-in-out ${
+                    previewMode === "mobile" ? "max-w-[360px] border-x-8 border-y-[16px] border-sidebar rounded-[2rem] shadow-2xl overflow-hidden bg-card" : "max-w-full"
                   }`}
                 >
                   <FormPreview

@@ -1,9 +1,8 @@
 "use client";
 
 import { Input } from "@/shared/ui/input";
+import { Button } from "@/shared/ui/button";
 import type { PaymentTabFieldsProps } from "@/features/settings/ui/payment-tab-props";
-import { Banknote, Building2, CreditCard } from "lucide-react";
-import { useCurrency } from "@/shared/context/currency-context";
 
 
 export function PaymentTabMultiSafepay({
@@ -35,8 +34,8 @@ export function PaymentTabMultiSafepay({
                   <span
                     className={
                       settings.multisafepayTestMode
-                        ? "text-orange-600 font-medium"
-                        : "text-green-600 font-medium"
+                        ? "text-accent-foreground font-medium"
+                        : "text-primary font-medium"
                     }
                   >
                     {settings.multisafepayTestMode
@@ -62,7 +61,7 @@ export function PaymentTabMultiSafepay({
                     )
                   }
                 />
-                <p className="text-xs text-gray-500 mt-1">
+                <p className="text-xs text-muted-foreground mt-1">
                   {t('Dashboard.Settings.your-multisafepay-api-key-from-the-dashboard')}
                 </p>
               </div>
@@ -75,22 +74,23 @@ export function PaymentTabMultiSafepay({
                     type="text"
                     readOnly
                     value={typeof window !== 'undefined' ? `${window.location.origin}/api/multisafepay-webhook` : '/api/multisafepay-webhook'}
-                    className="bg-gray-50 text-gray-600"
+                    className="bg-muted text-muted-foreground"
                   />
-                  <button
+                  <Button
                     type="button"
+                    variant="secondary"
+                    className="h-11 whitespace-nowrap"
                     onClick={() => {
                       const webhookUrl = typeof window !== 'undefined' 
                         ? `${window.location.origin}/api/multisafepay-webhook` 
                         : '/api/multisafepay-webhook';
                       navigator.clipboard.writeText(webhookUrl);
                     }}
-                    className="px-3 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 text-sm whitespace-nowrap"
                   >
                     {t("Dashboard.Settings.copy")}
-                  </button>
+                  </Button>
                 </div>
-                <p className="text-xs text-gray-500 mt-1">
+                <p className="text-xs text-muted-foreground mt-1">
                   {t("Dashboard.Settings.add-this-url-in-multisafepay-dashboard")}
                 </p>
               </div>

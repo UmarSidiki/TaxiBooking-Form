@@ -1,80 +1,64 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { apiGet } from "@/shared/http/api";
 import { resolveVehicleImageSrc } from "@/features/fleet/lib/resolve-vehicle-image-src";
 import type { IVehicle } from "@/features/fleet/model";
 import type { PartnerFleetData } from "@/features/partners/ui/partner-fleet.types";
 
+export type PartnerFleetConfirm =
+  | { kind: "request"; vehicleId: string }
+  | { kind: "cancel"; vehicleId: string }
+  | { kind: "remove" };
+
 export function usePartnerFleet() {
   const t = useTranslations("Dashboard.Partners.Fleet");
   const [vehicles, setVehicles] = useState<IVehicle[]>([]);
   const [partner, setPartner] = useState<PartnerFleetData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [cancellingVehicleId, setCancellingVehicleId] = useState<string | null>(null);
   const [removingFleet, setRemovingFleet] = useState(false);
+  const [confirm, setConfirm] = useState<PartnerFleetConfirm | null>(null);
+  const [notice, setNotice] = useState<string | null>(null);
 
   const resolveImageSrc = (src: string) =>
-    resolveVehicleImageSrc(
-      src,
-      "Invalid vehicle image URL. Falling back to placeholder."
-    );
+    resolveVehicleImageSrc(src, "Invalid vehicle image URL. Falling back to placeholder.");
 
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     setIsLoading(true);
+    setLoadError(null);
     try {
-      const [vehiclesData, partnerData] = await Promise.all([
+      const [vehiclesData, partnerRes] = await Promise.all([
         apiGet<{ success: boolean; data: IVehicle[] }>("/api/vehicles"),
-        fetch("/api/partners/profile").then(res => res.json())
+        fetch("/api/partners/profile"),
       ]);
-
-      if (vehiclesData.success) {
-        setVehicles(vehiclesData.data);
-      } else {
-        console.error("Failed to fetch vehicles");
-      }
-
+      const partnerData = await partnerRes.json();
+      if (vehiclesData.success) setVehicles(vehiclesData.data);
       if (partnerData.success) {
         setPartner(partnerData.partner);
       } else {
-        console.error("Failed to fetch partner data:", partnerData.error || partnerData);
         setPartner(null);
+        setLoadError(t("failed-to-load-partner-data"));
       }
-    } catch (error) {
-      console.error("Error fetching data:", error);
+    } catch {
       setPartner(null);
+      setLoadError(t("failed-to-load-partner-data"));
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [t]);
 
   useEffect(() => {
-    fetchData();
-  }, []);
+    void fetchData();
+  }, [fetchData]);
 
-  const pendingRequests = partner?.fleetRequests?.filter(req => req.status === "pending") || [];
-  const approvedRequests = partner?.fleetRequests?.filter(req => req.status === "approved") || [];
+  const pendingRequests = partner?.fleetRequests?.filter((req) => req.status === "pending") || [];
+  const approvedRequests = partner?.fleetRequests?.filter((req) => req.status === "approved") || [];
 
-  const handleFleetRequest = async (vehicleId: string) => {
-    if (!partner || submitting) return;
-    
-    // Check if already has a pending request for this vehicle
-    const existingRequest = pendingRequests.find(req => req.vehicleId === vehicleId);
-    if (existingRequest) {
-      alert(t("already-requested-this-vehicle"));
-      return;
-    }
-    
-    // Show confirmation dialog if partner already has an approved fleet
-    if (partner.fleetStatus === "approved" || approvedRequests.length > 0) {
-      const confirmed = window.confirm(
-        t("confirm-fleet-change-message")
-      );
-      if (!confirmed) return;
-    }
-    
+  const requestFleet = async (vehicleId: string) => {
     setSubmitting(true);
     try {
       const response = await fetch("/api/partners/fleet/request", {
@@ -84,24 +68,32 @@ export function usePartnerFleet() {
       });
       const data = await response.json();
       if (response.ok && data.success) {
-        await fetchData(); // Refresh all data
+        await fetchData();
+        setNotice(t("fleet-request-submitted"));
       } else {
-        alert(data.message || t("fleet-request-failed"));
+        setNotice(t("fleet-request-failed"));
       }
-    } catch (error) {
-      console.error("Error requesting fleet:", error);
-      alert(t("fleet-request-failed"));
+    } catch {
+      setNotice(t("fleet-request-failed"));
     } finally {
       setSubmitting(false);
     }
   };
 
-  const handleCancelRequest = async (vehicleId: string) => {
-    if (!partner || cancellingVehicleId) return;
-    
-    const confirmed = window.confirm(t("confirm-cancel-request"));
-    if (!confirmed) return;
-    
+  const handleFleetRequest = (vehicleId: string) => {
+    if (!partner || submitting) return;
+    if (pendingRequests.find((req) => req.vehicleId === vehicleId)) {
+      setNotice(t("already-requested-this-vehicle"));
+      return;
+    }
+    if (partner.fleetStatus === "approved" || approvedRequests.length > 0) {
+      setConfirm({ kind: "request", vehicleId });
+      return;
+    }
+    void requestFleet(vehicleId);
+  };
+
+  const cancelRequest = async (vehicleId: string) => {
     setCancellingVehicleId(vehicleId);
     try {
       const response = await fetch("/api/partners/fleet/cancel", {
@@ -110,42 +102,36 @@ export function usePartnerFleet() {
         body: JSON.stringify({ vehicleId }),
       });
       const data = await response.json();
-      if (response.ok && data.success) {
-        await fetchData(); // Refresh all data
-      } else {
-        alert(data.message || t("cancel-request-failed"));
-      }
-    } catch (error) {
-      console.error("Error cancelling fleet request:", error);
-      alert(t("cancel-request-failed"));
+      if (response.ok && data.success) await fetchData();
+      else setNotice(t("cancel-request-failed"));
+    } catch {
+      setNotice(t("cancel-request-failed"));
     } finally {
       setCancellingVehicleId(null);
     }
   };
 
-  const handleRemoveFleet = async () => {
-    if (!partner || removingFleet) return;
-    
-    const confirmed = window.confirm(t("confirm-remove-fleet"));
-    if (!confirmed) return;
-    
+  const removeFleet = async () => {
     setRemovingFleet(true);
     try {
-      const response = await fetch("/api/partners/fleet/remove", {
-        method: "DELETE",
-      });
+      const response = await fetch("/api/partners/fleet/remove", { method: "DELETE" });
       const data = await response.json();
-      if (response.ok && data.success) {
-        await fetchData(); // Refresh all data
-      } else {
-        alert(data.message || t("remove-fleet-failed"));
-      }
-    } catch (error) {
-      console.error("Error removing fleet:", error);
-      alert(t("remove-fleet-failed"));
+      if (response.ok && data.success) await fetchData();
+      else setNotice(t("remove-fleet-failed"));
+    } catch {
+      setNotice(t("remove-fleet-failed"));
     } finally {
       setRemovingFleet(false);
     }
+  };
+
+  const runConfirm = async () => {
+    if (!confirm) return;
+    const current = confirm;
+    setConfirm(null);
+    if (current.kind === "request") await requestFleet(current.vehicleId);
+    if (current.kind === "cancel") await cancelRequest(current.vehicleId);
+    if (current.kind === "remove") await removeFleet();
   };
 
   return {
@@ -153,14 +139,20 @@ export function usePartnerFleet() {
     vehicles,
     partner,
     isLoading,
+    loadError,
     submitting,
     cancellingVehicleId,
     removingFleet,
     resolveImageSrc,
     pendingRequests,
-    approvedRequests,
     handleFleetRequest,
-    handleCancelRequest,
-    handleRemoveFleet,
+    handleCancelRequest: (vehicleId: string) => setConfirm({ kind: "cancel", vehicleId }),
+    handleRemoveFleet: () => setConfirm({ kind: "remove" }),
+    fetchData,
+    confirm,
+    setConfirm,
+    runConfirm,
+    notice,
+    setNotice,
   };
 }

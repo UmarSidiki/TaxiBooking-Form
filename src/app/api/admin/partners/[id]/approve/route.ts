@@ -1,33 +1,28 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
 import { connectDB } from "@/shared/db";
 import { Partner, type IPartnerDocument } from "@/features/partners/model";
-import { authOptions } from "@/features/auth";
 import { sendPartnerApprovalEmail } from "@/features/partners/email/notification";
+import { requireAdmin } from "@/features/auth/lib/require-role";
+import { jsonError } from "@/shared/http/json-error";
 
 export async function PATCH(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const session = await getServerSession(authOptions);
-
-    if (!session?.user || session.user.role !== "admin") {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
+    const access = await requireAdmin();
+    if (!access.ok) return access.response;
 
     const { id } = await params;
     await connectDB();
 
     const partner = await Partner.findById(id);
 
-    if (!partner) {
-      return NextResponse.json({ error: "Partner not found" }, { status: 404 });
-    }
+    if (!partner) return jsonError("not_found", 404);
 
     partner.status = "approved";
     partner.approvedAt = new Date();
-    partner.approvedBy = session.user.id;
+    partner.approvedBy = access.session.user.id;
     partner.rejectionReason = undefined;
     partner.suspendedAt = undefined;
     partner.suspendedBy = undefined;
@@ -65,9 +60,6 @@ export async function PATCH(
     );
   } catch (error) {
     console.error("Error approving partner:", error);
-    return NextResponse.json(
-      { error: "An error occurred while approving partner" },
-      { status: 500 }
-    );
+    return jsonError("internal_error", 500);
   }
 }

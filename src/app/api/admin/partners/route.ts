@@ -1,39 +1,36 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
+import { z } from "zod";
 import { connectDB } from "@/shared/db";
 import { Partner } from "@/features/partners/model";
-import { authOptions } from "@/features/auth";
+import { requireAdmin } from "@/features/auth/lib/require-role";
+import { jsonError } from "@/shared/http/json-error";
+
+const partnerListQuerySchema = z.object({
+  status: z
+    .enum(["pending", "approved", "rejected", "suspended"])
+    .optional(),
+});
 
 export async function GET(request: NextRequest) {
   try {
-    const session = await getServerSession(authOptions);
-
-    if (!session?.user || session.user.role !== "admin") {
-      return NextResponse.json(
-        { error: "Unauthorized" },
-        { status: 401 }
-      );
-    }
+    const access = await requireAdmin();
+    if (!access.ok) return access.response;
 
     await connectDB();
+    const parsed = partnerListQuerySchema.safeParse({
+      status: request.nextUrl.searchParams.get("status") ?? undefined,
+    });
+    if (!parsed.success) return jsonError("invalid_body", 400);
 
-    const { searchParams } = new URL(request.url);
-    const status = searchParams.get("status");
-
-    const query = status ? { status } : {};
+    const query = parsed.data.status ? { status: parsed.data.status } : {};
     const partners = await Partner.find(query)
       .select("-password")
-      .sort({ createdAt: -1 });
+      .sort({ createdAt: -1 })
+      .limit(500);
 
-    return NextResponse.json(
-      { partners },
-      { status: 200 }
-    );
+    return NextResponse.json({ partners }, { status: 200 });
   } catch (error) {
     console.error("Error fetching partners:", error);
-    return NextResponse.json(
-      { error: "An error occurred while fetching partners" },
-      { status: 500 }
-    );
+    return jsonError("internal_error", 500);
   }
 }

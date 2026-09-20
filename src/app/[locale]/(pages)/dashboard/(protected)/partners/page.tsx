@@ -9,24 +9,56 @@ import { useAdminPartners } from "@/features/partners/hooks/useAdminPartners";
 
 export default function AdminPartnersPage() {
   const partners = useAdminPartners();
-  const { t, loading } = partners;
+  const { t, loading, loadError } = partners;
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-[400px]">
-        <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+      <div className="flex min-h-[400px] items-center justify-center text-sm text-muted-foreground">
+        {t("title")}…
       </div>
+    );
+  }
+
+  if (loadError) {
+    return (
+      <p className="rounded-md border border-border bg-card px-4 py-3 text-sm" role="alert">
+        {loadError}
+        <button
+          type="button"
+          className="ms-3 text-primary underline-offset-4 hover:underline"
+          onClick={() => void partners.fetchPartners()}
+        >
+          {t("retry")}
+        </button>
+      </p>
     );
   }
 
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold">{t("title")}</h1>
-        <p className="text-muted-foreground mt-2">
+          <h1 className="text-2xl font-semibold tracking-tight text-foreground">
+            {t("title")}
+          </h1>
+          <p className="mt-1 text-sm text-muted-foreground">
           {t("description")}
         </p>
       </div>
+      {partners.notice ? (
+        <p
+          className="rounded-md border border-border bg-card px-4 py-3 text-sm"
+          role="status"
+        >
+          {partners.notice}
+          <button
+            type="button"
+            className="ms-3 text-primary underline-offset-4 hover:underline"
+            onClick={() => partners.setNotice(null)}
+          >
+            {t("dismiss")}
+          </button>
+        </p>
+      ) : null}
 
       <AdminPartnerStats t={partners.t} stats={partners.stats} />
 
@@ -43,6 +75,7 @@ export default function AdminPartnersPage() {
         filteredPartners={partners.filteredPartners}
         setSelectedPartner={partners.setSelectedPartner}
         setShowDetailsDialog={partners.setShowDetailsDialog}
+        formatCurrency={partners.formatCurrency}
       />
 
       <AdminPartnerDetailsDialog

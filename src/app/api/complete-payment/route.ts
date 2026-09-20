@@ -1,31 +1,24 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { finalizePaidBooking } from '@/features/payments/lib/finalize-paid-booking';
+import { NextRequest, NextResponse } from "next/server";
+import { finalizePaidBooking } from "@/features/payments/lib/finalize-paid-booking";
+import { parseJsonBody } from "@/shared/http/parse-json-body";
+import { jsonError } from "@/shared/http/json-error";
+import { completePaymentBodySchema } from "@/features/payments/schema/checkout.schema";
 
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 export const maxDuration = 30;
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json();
-    const { provider, paymentIntentId, transactionId, orderId } = body;
-
-    if (provider !== 'stripe' && provider !== 'multisafepay') {
-      return NextResponse.json(
-        { success: false, message: 'Invalid payment provider' },
-        { status: 400 }
-      );
-    }
+    const parsed = await parseJsonBody(request, completePaymentBodySchema);
+    if (!parsed.ok) return parsed.response;
 
     const baseUrl =
       process.env.NEXT_PUBLIC_BASE_URL ||
-      request.headers.get('origin') ||
+      request.headers.get("origin") ||
       undefined;
 
     const result = await finalizePaidBooking({
-      provider,
-      paymentIntentId,
-      transactionId,
-      orderId,
+      ...parsed.data,
       baseUrl,
     });
 
@@ -33,7 +26,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(
         {
           success: false,
-          message: result.message,
+          error: "payment_failed",
           retryable: result.retryable ?? false,
         },
         { status: result.retryable ? 202 : 400 }
@@ -48,14 +41,7 @@ export async function POST(request: NextRequest) {
       emails: result.emails,
     });
   } catch (error) {
-    console.error('complete-payment error:', error);
-    return NextResponse.json(
-      {
-        success: false,
-        message: error instanceof Error ? error.message : 'Payment completion failed',
-        retryable: true,
-      },
-      { status: 500 }
-    );
+    console.error("complete-payment error:", error);
+    return jsonError("internal_error", 500);
   }
 }

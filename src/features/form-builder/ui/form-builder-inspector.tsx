@@ -37,12 +37,18 @@ export function FormBuilderInspector({
       <Card className="border border-border bg-card overflow-hidden sticky top-6 h-[calc(100vh-140px)] flex flex-col">
         <Tabs defaultValue="properties" className="w-full flex flex-col h-full">
           <CardHeader className="p-0 shrink-0">
-            <div className="px-4 pt-4 pb-0 border-b border-border/50 bg-gradient-to-r from-primary/5 to-primary/10">
-              <TabsList className="grid w-full grid-cols-2 bg-transparent p-0 pb-3 h-auto">
-                <TabsTrigger value="properties" className="data-[state=active]:bg-background data-[state=active]:shadow-sm rounded-md py-1.5 text-xs text-muted-foreground data-[state=active]:text-foreground">
+            <div className="border-b border-border px-4 pt-4">
+              <TabsList className="grid h-auto w-full grid-cols-2 bg-transparent p-0 pb-3">
+                <TabsTrigger
+                  value="properties"
+                  className="min-h-11 rounded-md text-xs text-muted-foreground data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm"
+                >
                   {t("properties")}
                 </TabsTrigger>
-                <TabsTrigger value="design" className="data-[state=active]:bg-background data-[state=active]:shadow-sm rounded-md py-1.5 text-xs text-muted-foreground data-[state=active]:text-foreground">
+                <TabsTrigger
+                  value="design"
+                  className="min-h-11 rounded-md text-xs text-muted-foreground data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm"
+                >
                   {t("design")}
                 </TabsTrigger>
               </TabsList>

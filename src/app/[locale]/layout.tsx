@@ -1,6 +1,6 @@
 import type { CSSProperties } from "react";
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Libre_Franklin } from "next/font/google";
 import "@/shared/style/globals.css";
 import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { notFound } from "next/navigation";
@@ -23,6 +23,12 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
   display: "swap",
   preload: true,
+});
+
+const deskSans = Libre_Franklin({
+  variable: "--font-desk-sans",
+  subsets: ["latin"],
+  display: "swap",
 });
 
 const siteName = process.env.NEXT_PUBLIC_WEBSITE_NAME ?? "Booking Form";
@@ -90,7 +96,7 @@ export default async function RootLayout({ children, params }: Props) {
   } as CSSProperties;
 
   return (
-    <html lang={locale}>
+    <html lang={locale} dir={locale === "ar" ? "rtl" : "ltr"}>
       <head>
         {/* Preconnect to external services for faster loading */}
         <link rel="preconnect" href="https://maps.googleapis.com" />
@@ -99,7 +105,7 @@ export default async function RootLayout({ children, params }: Props) {
       </head>
       <body
         style={cssVariables}
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} ${deskSans.variable} antialiased`}
       >
         <AuthSessionProvider>
           <ThemeProvider initialSettings={serializedThemeSettings}>

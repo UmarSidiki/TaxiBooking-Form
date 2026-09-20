@@ -13,6 +13,7 @@ import {
 } from "@/shared/ui/card";
 import type { useAdminPartners } from "@/features/partners/hooks/useAdminPartners";
 import { Clock, Eye, Users } from "lucide-react";
+import { useLocale } from "next-intl";
 
 type AdminPartnersState = ReturnType<typeof useAdminPartners>;
 
@@ -21,14 +22,17 @@ export function AdminPartnerList({
   filteredPartners,
   setSelectedPartner,
   setShowDetailsDialog,
+  formatCurrency,
 }: Pick<
   AdminPartnersState,
-  "t" | "filteredPartners" | "setSelectedPartner" | "setShowDetailsDialog"
+  "t" | "filteredPartners" | "setSelectedPartner" | "setShowDetailsDialog" | "formatCurrency"
 >) {
+  const locale = useLocale();
+
   return (
     <>
       {/* Partners List */}
-      <Card>
+      <Card className="desk-card border-border">
         <CardHeader>
           <CardTitle>{t("partners-count", { 0: filteredPartners.length })}</CardTitle>
           <CardDescription>
@@ -64,7 +68,7 @@ export function AdminPartnerList({
                         </p>
                         <p className="text-xs text-muted-foreground mt-1">
                           {t("registered")}{" "}
-                          {new Date(partner.registeredAt).toLocaleDateString()}
+                          {new Date(partner.registeredAt).toLocaleDateString(locale)}
                         </p>
                       </div>
                     </div>
@@ -77,13 +81,13 @@ export function AdminPartnerList({
                           </p>
                           {partner.fleetStatus === "pending" && (
                             <div className="mt-1">
-                              <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-300">
+                              <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium bg-accent text-accent-foreground">
                                 <Clock className="w-3 h-3" />
                                 {t("fleet-pending")}
                               </span>
                               {partner.requestedFleet && (
                                 <p className="text-xs text-muted-foreground mt-1">
-                                  Vehicle requested
+                                  {t("vehicle-requested")}
                                 </p>
                               )}
                             </div>
@@ -92,18 +96,18 @@ export function AdminPartnerList({
                           {partner.totalEarnings !== undefined && partner.totalEarnings > 0 && (
                             <div className="mt-2">
                               <p className="text-xs text-muted-foreground">{t("total-earnings")}</p>
-                              <p className="text-sm font-bold text-green-600">
-                                €{partner.totalEarnings.toFixed(2)}
+                              <p className="text-sm font-bold text-primary">
+                                {formatCurrency(partner.totalEarnings)}
                               </p>
                               {partner.onlineEarnings !== undefined && partner.cashEarnings !== undefined && (
                                 <div className="text-xs text-muted-foreground mt-1 space-y-1">
                                   <div className="flex justify-between">
                                     <span>{t("online-payment")}</span>
-                                    <span>€{partner.onlineEarnings.toFixed(2)}</span>
+                                    <span>{formatCurrency(partner.onlineEarnings)}</span>
                                   </div>
                                   <div className="flex justify-between">
                                     <span>{t("cash-payment")}</span>
-                                    <span>€{partner.cashEarnings.toFixed(2)}</span>
+                                    <span>{formatCurrency(partner.cashEarnings)}</span>
                                   </div>
                                 </div>
                               )}

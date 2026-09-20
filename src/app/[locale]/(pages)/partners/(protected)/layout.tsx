@@ -1,14 +1,13 @@
 import type { ReactNode } from "react";
 import { redirect } from "next/navigation";
 import { getServerSession } from "next-auth";
+
 import { connectDB } from "@/shared/db";
 import { Setting } from "@/features/settings/model";
-import { Partner } from "@/features/partners/model";
-
 import { authOptions } from "@/features/auth";
 import { PartnerSidebar } from "@/features/partners/ui/partner-sidebar";
-import { LanguageSwitcher } from "@/shared/chrome/language-switcher";
-import { SidebarProvider, SidebarTrigger } from "@/shared/ui/sidebar";
+import { DeskChromeHeader } from "@/features/dashboard/ui/desk-chrome-header";
+import { SidebarInset, SidebarProvider } from "@/shared/ui/sidebar";
 
 type PartnerLayoutProps = {
   children: ReactNode;
@@ -23,65 +22,30 @@ export default async function PartnerProtectedLayout({
   const session = await getServerSession(authOptions);
 
   if (!session?.user) {
-    redirect(`/partners/login`);
+    redirect(`/${locale}/partners/login`);
   }
 
-  // Check if user is a partner
+  if (session.user.role === "admin" || session.user.role === "superadmin") {
+    redirect(`/${locale}/dashboard`);
+  }
+
   if (session.user.role !== "partner") {
-    // If admin, redirect to admin dashboard
-    if (session.user.role === "admin") {
-      redirect(`/dashboard`);
-    }
-    // Otherwise, redirect to home
-    redirect(`/`);
+    redirect(`/${locale}`);
   }
 
-  // Check if partners module is enabled
   await connectDB();
   const settings = await Setting.findOne();
   if (settings && settings.enablePartners === false) {
-    redirect(`/`);
-  }
-
-  // Get partner data to check approval status
-  const partner = await Partner.findOne({ email: session.user.email });
-  
-  // If partner is not approved and trying to access pages other than account, redirect to account
-  if (partner && partner.status !== "approved") {
-    // Get current pathname - we'll allow account page but redirect dashboard/rides/history
-    // This is a server component, so we'll handle this by checking if they're on dashboard/rides/history
-    // and redirect to account. The account page itself should not redirect.
+    redirect(`/${locale}`);
   }
 
   return (
     <SidebarProvider>
-      <div className="flex h-screen w-screen bg-gray-50">
-        <PartnerSidebar locale={locale} />
-        <div className="flex-1 flex flex-col overflow-hidden">
-          <header className="bg-white shadow-sm border-b border-gray-200 z-10">
-            <div className="flex items-center justify-between px-4 py-3">
-              <SidebarTrigger className="text-gray-500 hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded-md p-2" />
-              <div className="flex items-center gap-4">
-                <div className="hidden sm:block text-sm text-gray-500">
-                  Welcome, {session.user.name}
-                </div>
-                <div className="hidden md:block text-sm text-gray-500">
-                  {new Date().toLocaleDateString("en-US", {
-                    weekday: "long",
-                    year: "numeric",
-                    month: "long",
-                    day: "numeric",
-                  })}
-                </div>
-                <LanguageSwitcher />
-              </div>
-            </div>
-          </header>
-          <main className="flex-1 overflow-auto p-6 bg-gray-50">
-            {children}
-          </main>
-        </div>
-      </div>
+      <PartnerSidebar locale={locale} />
+      <SidebarInset>
+        <DeskChromeHeader />
+        <div className="flex-1 overflow-auto p-6">{children}</div>
+      </SidebarInset>
     </SidebarProvider>
   );
 }

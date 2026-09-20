@@ -1,49 +1,32 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
 import { connectDB } from "@/shared/db";
 import { Booking } from "@/features/booking/model";
-import { authOptions } from "@/features/auth";
 import { Partner } from "@/features/partners/model";
 import { sendRideAssignmentEmail } from "@/features/rides/email/ride-assignment";
+import { requireRole } from "@/features/auth/lib/require-role";
+import { jsonError } from "@/shared/http/json-error";
 
 export async function POST(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const session = await getServerSession(authOptions);
-
-    if (!session?.user || session.user.role !== "partner") {
-      return NextResponse.json(
-        { success: false, message: "Unauthorized" },
-        { status: 401 }
-      );
-    }
+    const access = await requireRole("partner");
+    if (!access.ok) return access.response;
 
     const { id } = await params;
     const rideId = id;
-    if (!rideId) {
-      return NextResponse.json(
-        { success: false, message: "Ride ID is required" },
-        { status: 400 }
-      );
-    }
+    if (!rideId) return jsonError("invalid_body", 400);
 
     await connectDB();
 
-    // Get the partner
-    const partner = await Partner.findById(session.user.id);
+    const partner = await Partner.findById(access.session.user.id);
     
     // Check if partner has an approved fleet (check both new and old system)
     const hasApprovedFleet = partner?.currentFleet || 
                               (partner?.fleetStatus === "approved" && partner?.requestedFleet);
     
-    if (!partner || !hasApprovedFleet) {
-      return NextResponse.json(
-        { success: false, message: "Partner not approved for fleet operations" },
-        { status: 403 }
-      );
-    }
+    if (!partner || !hasApprovedFleet) return jsonError("forbidden", 403);
 
     // Get the vehicle ID from currentFleet or requestedFleet
     const partnerVehicleId = partner.currentFleet || partner.requestedFleet;
@@ -78,10 +61,7 @@ export async function POST(
 
     if (!updatedRide) {
       console.log(`Ride ${rideId} was already assigned to another partner or unavailable`);
-      return NextResponse.json(
-        { success: false, message: "Ride was already assigned to another partner" },
-        { status: 409 }
-      );
+      return jsonError("conflict", 409);
     }
 
     console.log(`Successfully assigned ride ${rideId} to partner ${partner.name}`);
@@ -141,12 +121,6 @@ export async function POST(
     });
   } catch (error) {
     console.error("Error accepting ride:", error);
-    return NextResponse.json(
-      {
-        success: false,
-        message: error instanceof Error ? error.message : "Failed to accept ride",
-      },
-      { status: 500 }
-    );
+    return jsonError("internal_error", 500);
   }
 }

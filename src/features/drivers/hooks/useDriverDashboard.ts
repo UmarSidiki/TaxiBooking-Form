@@ -24,21 +24,26 @@ export function useDriverDashboard() {
   const [showFilters, setShowFilters] = useState(false);
   const [timezone, setTimezone] = useState<string>(DEFAULT_BOOKING_TIMEZONE);
 
+  const [loadError, setLoadError] = useState<string | null>(null);
+
   const fetchAssignedRides = useCallback(async () => {
     setIsLoading(true);
+    setLoadError(null);
     try {
       const data = await apiGet<{ success: boolean; data: IBooking[] }>(
         "/api/drivers/rides"
       );
       if (data.success) {
         setBookings(data.data);
+      } else {
+        setLoadError(t("Drivers.load_error"));
       }
-    } catch (error) {
-      console.error("Error fetching assigned rides:", error);
+    } catch {
+      setLoadError(t("Drivers.load_error"));
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [t]);
 
   const fetchSettings = useCallback(async () => {
     try {
@@ -100,5 +105,6 @@ export function useDriverDashboard() {
     timezone,
     fetchAssignedRides,
     isBookingPassed,
+    loadError,
   };
 }

@@ -1,6 +1,5 @@
 "use client";
 
-import { Card, CardContent } from "@/shared/ui/card";
 import {
   Dialog,
   DialogContent,
@@ -45,11 +44,7 @@ export function AdminRideDetailDialog({
         <DialogContent className="w-[95vw] sm:w-full sm:max-w-4xl max-h-[90vh] overflow-y-auto">
           {detailBooking ? (
             <div className="space-y-6">
-              <AdminRideDetailHeader
-                booking={detailBooking}
-                t={t}
-                isBookingPassed={isBookingPassed}
-              />
+              <AdminRideDetailHeader booking={detailBooking} t={t} />
 
               <div className="grid gap-6 md:grid-cols-2">
                 {/* Journey Details */}
@@ -61,19 +56,17 @@ export function AdminRideDetailDialog({
 
               {/* Special Notes */}
               {detailBooking.notes ? (
-                <Card className="border border-border bg-secondary/10">
-                  <CardContent className="p-4">
-                    <div className="flex items-start gap-3">
+                <div className="rounded-md border border-border bg-card p-4">
+                  <div className="flex items-start gap-3">
                       <Info className="w-5 h-5 text-secondary-foreground flex-shrink-0 mt-0.5" />
                       <div>
-                        <p className="font-semibold text-gray-800 mb-1">
+                        <p className="font-semibold text-foreground mb-1">
                           {t("Dashboard.Rides.SpecialNotes")}
                         </p>
-                        <p className="text-gray-700">{detailBooking.notes}</p>
+                        <p className="text-foreground">{detailBooking.notes}</p>
                       </div>
                     </div>
-                  </CardContent>
-                </Card>
+                </div>
               ) : null}
 
               {/* Billing Information */}
@@ -86,12 +79,13 @@ export function AdminRideDetailDialog({
               {/* Assignment Information - Show for completed rides */}
               <AdminRideDetailAssignment
                 booking={detailBooking}
+                t={t}
                 isBookingPassed={isBookingPassed}
               />
 
-              {/* Customer Review - Only show for completed rides */}
               <AdminRideDetailReview
                 booking={detailBooking}
+                t={t}
                 bookingReviews={bookingReviews}
               />
             </div>

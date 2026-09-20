@@ -70,7 +70,7 @@ export function FormPreview({
   if (enabledFields.length === 0) {
     return (
       <div
-        className="flex flex-col items-center justify-center py-16 text-center transition-all duration-300 relative overflow-hidden"
+        className="flex flex-col items-center justify-center py-16 text-center transition-shadow duration-200 relative overflow-hidden"
         style={containerStyle}
       >
         <GridBackground columns={style.columns || 2} gap={style.fieldGap || 12} />
@@ -90,7 +90,7 @@ export function FormPreview({
   const inputPadding = style.inputSize === "compact" ? "py-1.5" : style.inputSize === "large" ? "py-3.5" : "py-2.5";
   const inputText = style.inputSize === "compact" ? "text-xs" : style.inputSize === "large" ? "text-base" : "text-sm";
   const inputBaseClass =
-    `w-full border pl-9 pr-3 ${inputPadding} ${inputText} transition-all duration-200 focus:outline-none focus:ring-2`;
+    `w-full border pl-9 pr-3 ${inputPadding} ${inputText} transition-shadow duration-200 focus:outline-none focus:ring-2`;
 
 
   return (
@@ -110,13 +110,13 @@ export function FormPreview({
               className="flex flex-1 flex-col items-center relative"
             >
               {index < 2 && (
-                <div className="absolute top-3 left-1/2 w-full h-0.5 bg-slate-200 -z-10" />
+                <div className="absolute top-3 left-1/2 w-full h-0.5 bg-border -z-10" />
               )}
               <div
-                className={`flex h-6 w-6 items-center justify-center rounded-full border-2 transition-all duration-300 ${
+                className={`flex h-6 w-6 items-center justify-center rounded-full border-2 transition-shadow duration-200 ${
                   index === 0
                     ? "text-white shadow-sm"
-                    : "border-slate-300 bg-white text-slate-400"
+                    : "border-border bg-card text-muted-foreground"
                 }`}
                 style={
                   index === 0
@@ -130,7 +130,7 @@ export function FormPreview({
                 <Icon className="h-3 w-3" />
               </div>
               <span
-                className={`mt-1 text-[10px] font-medium ${
+                className={`mt-1 text-xs font-medium ${
                   index === 0 ? "font-bold" : "text-neutral-500"
                 }`}
                 style={index === 0 ? { color: style.primaryColor } : {}}
@@ -143,7 +143,7 @@ export function FormPreview({
       )}
 
       <div
-        className="p-4 sm:p-6 transition-all duration-300 relative overflow-hidden"
+        className="p-4 sm:p-6 transition-shadow duration-200 relative overflow-hidden"
         style={containerStyle}
       >
         <GridBackground columns={style.columns || 2} gap={style.fieldGap || 12} />
@@ -199,7 +199,7 @@ export function FormPreview({
                 >
                    <button
                       type="button"
-                      className={`font-semibold tracking-wide transition-all duration-200 shadow-md flex items-center justify-center gap-2 w-full ${
+                      className={`font-semibold tracking-wide transition-shadow duration-200 shadow-md flex items-center justify-center gap-2 w-full ${
                         style.buttonSize === 'small' ? 'py-1.5 text-xs rounded' :
                         style.buttonSize === 'large' ? 'py-3.5 text-base rounded-lg' :
                         'py-2.5 text-sm rounded-lg'
@@ -256,7 +256,7 @@ export function FormPreview({
             >
                <button
                   type="button"
-                  className={`font-semibold tracking-wide transition-all duration-200 shadow-md flex items-center justify-center gap-2 w-full ${
+                  className={`font-semibold tracking-wide transition-shadow duration-200 shadow-md flex items-center justify-center gap-2 w-full ${
                     style.buttonSize === 'small' ? 'py-1.5 text-xs rounded' :
                     style.buttonSize === 'large' ? 'py-3.5 text-base rounded-lg' :
                     'py-2.5 text-sm rounded-lg'

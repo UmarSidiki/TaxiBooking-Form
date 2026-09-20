@@ -109,7 +109,9 @@
     "subtotal": "المجموع الفرعي",
     "tax": "الضريبة ({0}%)",
     "included": "مشمول",
-    "incl-tax": "(شامل الضريبة)"
+    "incl-tax": "(شامل الضريبة)",
+    "no-vehicles": "لا توجد مركبات متاحة الآن.",
+    "vehicles-load-error": "تعذر تحميل المركبات. أعد المحاولة."
   },
   "not-set": "غير محدد",
   "Step3": {
@@ -406,7 +408,19 @@
       "ConfirmCancellation": "تأكيد الإلغاء",
       "JourneyDetails": "تفاصيل الرحلة",
       "PickupLocation": "موقع الالتقاط",
-      "DropoffLocation": "موقع التنزيل"
+      "DropoffLocation": "موقع التنزيل",
+      "Dismiss": "إغلاق",
+      "assigning": "جارٍ التعيين…",
+      "approve_assign": "اعتماد وتعيين",
+      "assign_partner_help": "يعتمد الرحلة للشركاء ويعيّن الشريك المحدد.",
+      "reassign_partner_help": "اختر شريكًا آخر وعدّل الهامش.",
+      "assignment-information": "التعيين",
+      "customer-review": "تقييم العميل",
+      "submitted-on": "أُرسل في {date}",
+      "choose-driver": "اختر سائقًا…",
+      "select-new-driver": "اختر سائقًا جديدًا",
+      "current-status": "الحالة الحالية",
+      "margin-helper": "حدد الهامش الذي يُحتفظ به من إجمالي الحجز."
     },
     "Home": {
       "failed-to-fetch-dashboard-stats": "فشل جلب إحصائيات لوحة التحكم",
@@ -517,7 +531,9 @@
         "notes": "ملاحظات",
         "ride-accepted-successfully": "تم قبول الرحلة بنجاح!",
         "failed-to-accept-ride": "فشل قبول الرحلة",
-        "partner-earnings-label": "مستحقاتك"
+        "partner-earnings-label": "مستحقاتك",
+        "retry": "إعادة المحاولة",
+        "dismiss": "إغلاق"
       },
       "Rides": {
         "my-rides": "رحلاتي",
@@ -550,7 +566,10 @@
         "no-ride-history-yet": "لا يوجد سجل رحلات بعد",
         "ride-history": "سجل الرحلات",
         "view-details": "عرض التفاصيل",
-        "your-payout": "مستحقاتك"
+        "your-payout": "مستحقاتك",
+        "retry": "إعادة المحاولة",
+        "load-error": "تعذر تحميل الرحلات. حاول مرة أخرى.",
+        "customer-review": "تقييم العميل"
       },
       "Sidebar": {
         "partner-portal": "بوابة الشركاء",
@@ -657,7 +676,8 @@
         "confirm-delete-fleet-request": "تأكيد حذف طلب الأسطول",
         "delete": "حذف",
         "delete-fleet-request": "حذف طلب الأسطول",
-        "deleting": "جاري الحذف..."
+        "deleting": "جاري الحذف...",
+        "dismiss": "إغلاق"
       }
     },
     "Admin": {
@@ -759,7 +779,14 @@
         "deleting": "جاري الحذف...",
         "delete": "حذف",
         "partner-assigned-successfully": "تم تعيين الشريك بنجاح",
-        "partner-reassigned-successfully": "تم إعادة تعيين الشريك بنجاح"
+        "partner-reassigned-successfully": "تم إعادة تعيين الشريك بنجاح",
+        "payout_recalculated": "أُعيد حساب رصيد الدفع.",
+        "payout_failed": "تعذر إعادة حساب الدفع. حاول مرة أخرى.",
+        "dismiss": "إخفاء",
+        "vehicle-requested": "تم طلب مركبة",
+        "recalculate-payout": "إعادة حساب الدفع",
+        "load-error": "تعذر تحميل الشركاء. أعد المحاولة.",
+        "retry": "إعادة المحاولة"
       }
     },
     "Features": {
@@ -847,7 +874,10 @@
       "stop-price-per-hour-description": "رسوم إضافية لكل ساعة انتظار في التوقفات",
       "active-available-for-booking": "نشط (متاح للحجز)",
       "update-vehicle": "تحديث المركبة",
-      "cancel": "إلغاء"
+      "cancel": "إلغاء",
+      "vehicle_saved": "تم حفظ المركبة.",
+      "vehicle_deleted": "تم حذف المركبة.",
+      "dismiss": "إخفاء"
     },
     "Settings": {
       "and-get-your-api-keys-from-the-dashboard": "واحصل على مفاتيح API الخاصة بك من لوحة التحكم.",
@@ -1016,7 +1046,26 @@
       "redirect-immediately-after-booking": "أعد التوجيه إلى عنوان URL المخصص مباشرةً بعد الحجز (تخطي صفحة \"شكرًا لك\")",
       "redirect-immediately-after-booking-help": "في حالة التمكين وتعيين عنوان URL لإعادة التوجيه، سيتم إرسال العملاء مباشرة إلى عنوان URL المخصص بعد الحجز.",
       "thank-you-stay-time": "وقت البقاء في صفحة الشكر (بالثواني)",
-      "thank-you-stay-time-help": "كم ثانية تظهر صفحة الشكر قبل إعادة توجيه العملاء. \nاضبط على 0 لإعادة التوجيه على الفور."
+      "thank-you-stay-time-help": "كم ثانية تظهر صفحة الشكر قبل إعادة توجيه العملاء. \nاضبط على 0 لإعادة التوجيه على الفور.",
+      "smtp": "SMTP",
+      "features": "الميزات",
+      "saving": "جاري الحفظ…",
+      "appearance_scope": "هذه الألوان والزوايا للنموذج العام وليس لمكتب الإدارة.",
+      "timezone_help": "لأوقات الحجز والرسائل.",
+      "loading": "جارٍ التحميل…",
+      "draw_hint": "انقر نقاطًا. انقر النقطة الأولى أو انقر مرتين للإنهاء.",
+      "drawing_active": "جارٍ الرسم…",
+      "draw_shape": "رسم منطقة الخدمة",
+      "bounds_note": "يُحفظ المضلع. هذه الأرقام هي المربع المحيط.",
+      "smtp_test_ok": "أُرسل بريد الاختبار. تحقق من صندوق الوارد.",
+      "smtp_test_failed": "فشل اختبار SMTP. تحقق من المضيف والمستخدم وكلمة المرور.",
+      "smtp_testing": "جارٍ الاختبار…",
+      "ssl": "SSL",
+      "multisafepay-methods-desc": "iDEAL وBancontact وPayPal والمزيد",
+      "today": "اليوم",
+      "setup": "الإعداد",
+      "today_help": "ما هو نشط اليوم للترحيل والدفع.",
+      "setup_help": "إعدادات عند التثبيت أو عند تعطل شيء ما."
     }
   },
   "Sidebar": {
@@ -1047,7 +1096,12 @@
     "billing": "الفواتير",
     "account_settings": "الحساب والإعدادات",
     "driver_management": "إدارة السائقين",
-    "partner_management": "إدارة الشركاء"
+    "partner_management": "إدارة الشركاء",
+    "dispatch": "التوزيع",
+    "capacity": "السعة",
+    "network": "الشبكة",
+    "booking_site": "موقع الحجز",
+    "desk": "المكتب"
   },
   "FormBuilder": {
     "title": "منشئ النماذج",
@@ -1264,7 +1318,44 @@
       "pill": "بيضاوي (Pill)",
       "label_color": "لون التسمية",
       "footer": "التذييل",
-      "footer_images": "صور التذييل"
+      "footer_images": "صور التذييل",
+      "desktop_layout": "تخطيط سطح المكتب",
+      "mobile_layout": "تخطيط الجوال",
+      "grid_width": "عرض الشبكة",
+      "optional": "اختياري",
+      "same_as_desktop": "نفس سطح المكتب",
+      "same_as_mobile_default": "نفس الجوال الافتراضي",
+      "logic_validation": "المنطق والتحقق",
+      "remove_border": "إزالة الإطار",
+      "remove_border_help": "إخفاء الصندوق المحيط بالأزرار",
+      "only_in_mode": "فقط في وضع {mode}",
+      "show_steps": "إظهار الخطوات",
+      "desktop_columns": "أعمدة سطح المكتب",
+      "transparency": "الشفافية",
+      "transparent": "شفاف",
+      "opaque": "غير شفاف",
+      "container_radius": "نصف قطر الحاوية",
+      "radius_units_help": "استخدم rem أو px أو % (مثل 0.75rem).",
+      "title_color": "لون العنوان",
+      "title_alignment": "محاذاة العنوان",
+      "subtitle": "العنوان الفرعي",
+      "subtitle_alignment": "محاذاة العنوان الفرعي",
+      "heading_placeholder": "نص الترويسة",
+      "subtitle_placeholder": "نص العنوان الفرعي",
+      "footer_placeholder": "نص التذييل",
+      "text_and_input": "ألوان النص والحقول",
+      "body_text_color": "لون النص",
+      "input_text_color": "لون نص الحقل",
+      "input_background": "خلفية الحقل",
+      "booking_type_button": "زر نوع الحجز",
+      "show_footer_images": "إظهار صور التذييل",
+      "text_alignment": "محاذاة النص",
+      "buttons": "الأزرار",
+      "header": "الترويسة",
+      "background_effects": "الخلفية والتأثيرات",
+      "half_side_by_side": "نصف (جنبًا إلى جنب)",
+      "styling": "التنسيق",
+      "full_width_pct": "عرض كامل (100%)"
     },
     "button_properties": {
       "alignment": "تنسيق",
@@ -1293,7 +1384,14 @@
       "width": "عرض"
     },
     "disabled-message": "تم تعطيل وحدة منشئ النماذج حاليًا من قبل المسؤول.",
-    "disabled-title": "الوحدة معطلة"
+    "disabled-title": "الوحدة معطلة",
+    "loading": "جارٍ التحميل…",
+    "name_required": "أدخل اسم التخطيط.",
+    "saved": "تم حفظ التخطيط.",
+    "created": "تم إنشاء التخطيط.",
+    "save_failed": "تعذر حفظ التخطيط. حاول مرة أخرى.",
+    "dismiss": "إخفاء",
+    "load_error": "تعذر تحميل التخطيطات. أعد المحاولة."
   },
   "ThankYouPage": {
     "no-payment-information-found": "لم يتم العثور على معلومات الدفع.",
@@ -1362,7 +1460,11 @@
     "password": "كلمة المرور",
     "leave-empty-to-keep-current-password": "اتركه فارغًا للاحتفاظ بكلمة المرور الحالية",
     "update-driver": "تحديث السائق",
-    "cancel": "إلغاء"
+    "cancel": "إلغاء",
+    "driver-saved": "تم حفظ السائق.",
+    "driver-deleted": "تم حذف السائق.",
+    "loading": "جاري تحميل السائقين…",
+    "delete": "حذف"
   },
   "Drivers": {
     "driver-dashboard": "لوحة تحكم السائق",
@@ -1383,7 +1485,11 @@
     "signing-in": "جاري تسجيل الدخول...",
     "need-assistance": "تحتاج مساعدة؟",
     "contact-support": "اتصل بالدعم",
-    "all-rights-reserved": "جميع الحقوق محفوظة."
+    "all-rights-reserved": "جميع الحقوق محفوظة.",
+    "navigate": "فتح التنقل",
+    "load_error": "تعذر تحميل رحلاتك. حاول مرة أخرى.",
+    "retry": "إعادة المحاولة",
+    "passengers": "الركاب"
   },
   "Stripe": {
     "payment-system-not-ready-please-refresh-the-page": "نظام الدفع غير جاهز. يرجى تحديث الصفحة.",
@@ -1493,5 +1599,126 @@
   },
   "common": {
     "go-home": "العودة إلى المنزل"
+  },
+  "Auth": {
+    "Desk": {
+      "operations": "التشغيل",
+      "staff": "الموظف",
+      "log_out": "تسجيل الخروج",
+      "signing_out": "جاري الخروج…",
+      "fallback_name": "المكتب",
+      "cover_kicker": "صالة خاصة",
+      "cover_title": "سجل اليوم، مكتب واحد.",
+      "cover_body": "عيّن السائقين والشركاء وسعّر الأسطول، ودع النموذج يحمل ألوان المشغّل."
+    },
+    "SignIn": {
+      "title": "تسجيل الدخول",
+      "subtitle": "أدخل البريد وكلمة المرور.",
+      "email": "البريد",
+      "password": "كلمة المرور",
+      "submit": "دخول",
+      "submitting": "جاري الدخول…",
+      "forgot": "نسيت كلمة المرور؟",
+      "invalid": "تحقق من البريد وكلمة المرور ثم أعد المحاولة.",
+      "show_password": "إظهار كلمة المرور",
+      "hide_password": "إخفاء كلمة المرور"
+    },
+    "Forgot": {
+      "title_email": "إعادة تعيين كلمة المرور",
+      "title_otp": "أدخل الرمز",
+      "title_password": "كلمة مرور جديدة",
+      "subtitle_email": "سنرسل رمزًا لمرة واحدة إلى هذا العنوان.",
+      "subtitle_otp": "أدخل الرمز المكوّن من 6 أرقام من بريدك.",
+      "subtitle_password": "اختر كلمة مرور من 8 أحرف على الأقل.",
+      "email": "البريد الإلكتروني",
+      "otp": "الرمز",
+      "new_password": "كلمة المرور الجديدة",
+      "confirm_password": "تأكيد كلمة المرور",
+      "send": "إرسال الرمز",
+      "sending": "جارٍ الإرسال…",
+      "verify": "تحقق من الرمز",
+      "verifying": "جارٍ التحقق…",
+      "reset": "تحديث كلمة المرور",
+      "resetting": "جارٍ التحديث…",
+      "back": "العودة لتسجيل الدخول",
+      "back_email": "استخدام بريد آخر",
+      "otp_sent": "تم إرسال الرمز. تحقق من صندوق الوارد.",
+      "otp_verified": "تم تأكيد الرمز. عيّن كلمة المرور الجديدة.",
+      "reset_ok": "تم تحديث كلمة المرور. جارٍ فتح تسجيل الدخول…",
+      "send_failed": "تعذر إرسال الرمز. تحقق من البريد وحاول مرة أخرى.",
+      "otp_invalid": "الرمز خاطئ أو منتهٍ. اطلب رمزًا جديدًا.",
+      "mismatch": "كلمتا المرور غير متطابقتين.",
+      "too_short": "استخدم 8 أحرف على الأقل.",
+      "reset_failed": "تعذر تحديث كلمة المرور. حاول مرة أخرى."
+    },
+    "DriverSignIn": {
+      "title": "دخول السائق",
+      "subtitle": "افتح الرحلات المعيّنة لك.",
+      "cover_kicker": "التعيينات",
+      "cover_title": "استلامات اليوم، قائمة واحدة.",
+      "cover_body": "اطلع على الرحلات المعيّنة لك وانطلق إلى أول استلام."
+    },
+    "PartnerSignIn": {
+      "title": "دخول الشريك",
+      "subtitle": "اقبل الفائض وأدر الوصول إلى الأسطول.",
+      "register": "التسجيل كشريك",
+      "cover_kicker": "مكتب الشريك",
+      "cover_title": "فائض يناسب أسطولك.",
+      "cover_body": "اطلب الفئات، اقبل الرحلات المعروضة، وتابع الفوترة."
+    },
+    "PartnerRegister": {
+      "title": "التسجيل كشريك",
+      "subtitle": "أنشئ حسابًا ثم ارفع مستندات الامتثال.",
+      "name": "الاسم الكامل",
+      "email": "البريد",
+      "phone": "الهاتف",
+      "address": "العنوان",
+      "city": "المدينة",
+      "country": "البلد",
+      "password": "كلمة المرور",
+      "confirm_password": "تأكيد كلمة المرور",
+      "submit": "إنشاء الحساب",
+      "submitting": "جارٍ إنشاء الحساب…",
+      "success_title": "تم إنشاء الحساب",
+      "success_body": "سجّل الدخول وارفع مستنداتك للمراجعة.",
+      "go_login": "الذهاب إلى تسجيل الدخول",
+      "sign_in": "لديك حساب؟ تسجيل الدخول",
+      "mismatch": "كلمتا المرور غير متطابقتين.",
+      "too_short": "استخدم 8 أحرف على الأقل.",
+      "failed": "تعذر إنشاء الحساب. تحقق من البيانات وحاول مرة أخرى.",
+      "show_password": "إظهار كلمة المرور",
+      "hide_password": "إخفاء كلمة المرور",
+      "cover_kicker": "مكتب الشريك",
+      "cover_title": "انضم إلى فائض هذا المشغّل.",
+      "cover_body": "شركة واحدة وفئات أسطول مشتركة — وليست سوقًا لعلامات متعددة."
+    }
+  },
+  "AppError": {
+    "title": "حدث خطأ",
+    "description": "أعد تحميل الصفحة. إذا تكرر ذلك، حاول لاحقًا أو تواصل مع المشغّل.",
+    "retry": "إعادة المحاولة",
+    "home": "الصفحة الرئيسية",
+    "loading": "جارٍ التحميل…"
+  },
+  "NotFound": {
+    "title": "الصفحة غير موجودة",
+    "description": "هذه الصفحة غير موجودة أو تم نقلها.",
+    "home": "الصفحة الرئيسية"
+  },
+  "ApiErrors": {
+    "invalid_body": "راجع النموذج ثم أعد المحاولة.",
+    "unauthorized": "سجّل الدخول للمتابعة.",
+    "forbidden": "ليست لديك صلاحية الوصول.",
+    "not_found": "تعذر العثور على هذا السجل.",
+    "conflict": "هذا الإجراء لم يعد متاحًا.",
+    "internal_error": "حدث خطأ. أعد المحاولة.",
+    "request_failed": "فشل الطلب. أعد المحاولة.",
+    "smtp_not_configured": "لم يتم إعداد SMTP بعد.",
+    "smtp_failed": "تعذر إرسال رسالة الاختبار. راجع إعدادات SMTP.",
+    "payment_init_failed": "تعذر بدء الدفع. راجع بياناتك ثم أعد المحاولة.",
+    "payment_failed": "تعذر إتمام الدفع. أعد المحاولة.",
+    "payment_not_configured": "مدفوعات البطاقة غير مُعدّة بعد.",
+    "price_changed": "تغير السعر. حدّث الصفحة ثم أعد المحاولة.",
+    "distance_failed": "تعذر حساب المسار. راجع العناوين."
   }
 }

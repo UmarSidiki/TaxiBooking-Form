@@ -1,88 +1,56 @@
 "use client";
 
+import { FormBuilderColorField } from "@/features/form-builder/ui/form-builder-color-field";
 import type { FormBuilderStyleEditorProps } from "@/features/form-builder/ui/form-builder-style-editor-props";
-import { Input } from "@/shared/ui/input";
 import { Label } from "@/shared/ui/label";
 import { Palette } from "lucide-react";
 
 export function FormBuilderDesignColors({
+  t,
   formStyle,
   setFormStyle,
 }: FormBuilderStyleEditorProps) {
   return (
-    <>
-                      {/* INPUT & TEXT COLORS */}
-                      <div className="space-y-3">
-                        <div className="flex items-center gap-2">
-                          <Palette className="h-4 w-4 text-primary" />
-                          <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Text & Input Colors</Label>
-                        </div>
-
-                        <div className="space-y-1.5">
-                          <Label className="text-xs font-medium">Body Text Color</Label>
-                          <div className="flex items-center gap-2">
-                            <input
-                              type="color"
-                              value={formStyle.textColor}
-                              onChange={(e) => setFormStyle((s) => ({ ...s, textColor: e.target.value }))}
-                              className="h-8 w-8 rounded cursor-pointer border-0 p-0"
-                            />
-                            <Input className="h-8 text-xs font-mono flex-1" value={formStyle.textColor} onChange={(e) => setFormStyle((s) => ({ ...s, textColor: e.target.value }))} />
-                          </div>
-                        </div>
-
-                        <div className="space-y-1.5">
-                          <Label className="text-xs font-medium">Label Color</Label>
-                          <div className="flex items-center gap-2">
-                            <input
-                              type="color"
-                              value={formStyle.labelColor}
-                              onChange={(e) => setFormStyle((s) => ({ ...s, labelColor: e.target.value }))}
-                              className="h-8 w-8 rounded cursor-pointer border-0 p-0"
-                            />
-                            <Input className="h-8 text-xs font-mono flex-1" value={formStyle.labelColor} onChange={(e) => setFormStyle((s) => ({ ...s, labelColor: e.target.value }))} />
-                          </div>
-                        </div>
-
-                        <div className="space-y-1.5">
-                          <Label className="text-xs font-medium">Input Text Color</Label>
-                          <div className="flex items-center gap-2">
-                            <input
-                              type="color"
-                              value={formStyle.inputTextColor}
-                              onChange={(e) => setFormStyle((s) => ({ ...s, inputTextColor: e.target.value }))}
-                              className="h-8 w-8 rounded cursor-pointer border-0 p-0"
-                            />
-                            <Input className="h-8 text-xs font-mono flex-1" value={formStyle.inputTextColor} onChange={(e) => setFormStyle((s) => ({ ...s, inputTextColor: e.target.value }))} />
-                          </div>
-                        </div>
-
-                        <div className="space-y-1.5">
-                          <Label className="text-xs font-medium">Input Background Color</Label>
-                          <div className="flex items-center gap-2">
-                            <input
-                              type="color"
-                              value={formStyle.inputBackgroundColor}
-                              onChange={(e) => setFormStyle((s) => ({ ...s, inputBackgroundColor: e.target.value }))}
-                              className="h-8 w-8 rounded cursor-pointer border-0 p-0"
-                            />
-                            <Input className="h-8 text-xs font-mono flex-1" value={formStyle.inputBackgroundColor} onChange={(e) => setFormStyle((s) => ({ ...s, inputBackgroundColor: e.target.value }))} />
-                          </div>
-                        </div>
-
-                        <div className="space-y-1.5">
-                          <Label className="text-xs font-medium">Input Border Color</Label>
-                          <div className="flex items-center gap-2">
-                            <input
-                              type="color"
-                              value={formStyle.inputBorderColor}
-                              onChange={(e) => setFormStyle((s) => ({ ...s, inputBorderColor: e.target.value }))}
-                              className="h-8 w-8 rounded cursor-pointer border-0 p-0"
-                            />
-                            <Input className="h-8 text-xs font-mono flex-1" value={formStyle.inputBorderColor} onChange={(e) => setFormStyle((s) => ({ ...s, inputBorderColor: e.target.value }))} />
-                          </div>
-                        </div>
-                      </div>
-    </>
+    <div className="space-y-3">
+      <div className="flex items-center gap-2">
+        <Palette className="size-4 text-primary" />
+        <Label className="text-xs font-semibold text-muted-foreground">
+          {t("ui.text_and_input")}
+        </Label>
+      </div>
+      <FormBuilderColorField
+        label={t("ui.body_text_color")}
+        value={formStyle.textColor}
+        onChange={(textColor) => setFormStyle((style) => ({ ...style, textColor }))}
+      />
+      <FormBuilderColorField
+        label={t("label_color")}
+        value={formStyle.labelColor}
+        onChange={(labelColor) =>
+          setFormStyle((style) => ({ ...style, labelColor }))
+        }
+      />
+      <FormBuilderColorField
+        label={t("ui.input_text_color")}
+        value={formStyle.inputTextColor}
+        onChange={(inputTextColor) =>
+          setFormStyle((style) => ({ ...style, inputTextColor }))
+        }
+      />
+      <FormBuilderColorField
+        label={t("ui.input_background")}
+        value={formStyle.inputBackgroundColor}
+        onChange={(inputBackgroundColor) =>
+          setFormStyle((style) => ({ ...style, inputBackgroundColor }))
+        }
+      />
+      <FormBuilderColorField
+        label={t("ui.border_color")}
+        value={formStyle.inputBorderColor}
+        onChange={(inputBorderColor) =>
+          setFormStyle((style) => ({ ...style, inputBorderColor }))
+        }
+      />
+    </div>
   );
 }

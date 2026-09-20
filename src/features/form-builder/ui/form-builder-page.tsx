@@ -23,6 +23,21 @@ export function FormBuilderPage() {
 
   return (
     <div className="space-y-6">
+      {builder.notice ? (
+        <p
+          className="rounded-md border border-border bg-card px-4 py-3 text-sm"
+          role="status"
+        >
+          {builder.notice}
+          <button
+            type="button"
+            className="ms-3 text-primary underline-offset-4 hover:underline"
+            onClick={() => builder.setNotice(null)}
+          >
+            {builder.t("dismiss")}
+          </button>
+        </p>
+      ) : null}
       <FormBuilderHeader
         t={builder.t}
         layouts={builder.layouts}

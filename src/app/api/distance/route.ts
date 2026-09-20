@@ -1,119 +1,99 @@
 import { NextRequest, NextResponse } from "next/server";
+import { parseJsonBody } from "@/shared/http/parse-json-body";
+import { jsonError } from "@/shared/http/json-error";
+import { distanceRequestSchema } from "@/features/booking/schema/checkout.schema";
 
 export const dynamic = "force-dynamic";
 
+function formatDuration(minutes: number) {
+  const hours = Math.floor(minutes / 60);
+  const mins = minutes % 60;
+  if (hours > 0) {
+    return `${hours} hour${hours > 1 ? "s" : ""} ${mins} min${mins !== 1 ? "s" : ""}`;
+  }
+  return `${mins} min${mins !== 1 ? "s" : ""}`;
+}
+
 export async function POST(request: NextRequest) {
   try {
-    const { origin, destination, stops = [], isRoundTrip } = await request.json();
-
-    if (!origin || !destination) {
-      return NextResponse.json(
-        { success: false, message: "Origin and destination are required" },
-        { status: 400 }
-      );
-    }
+    const parsed = await parseJsonBody(request, distanceRequestSchema);
+    if (!parsed.ok) return parsed.response;
+    const { origin, destination, stops, isRoundTrip } = parsed.data;
 
     const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
-
     if (!apiKey) {
-      return NextResponse.json(
-        { success: false, message: "Google Maps API key not configured" },
-        { status: 500 }
-      );
+      return jsonError("maps_not_configured", 500);
     }
 
-    // Build waypoints string for Directions API
-    let waypoints = '';
-    if (stops.length > 0) {
-      const validStops = stops.filter((stop: string) => stop.trim());
-      if (validStops.length > 0) {
-        waypoints = `&waypoints=${validStops.map((stop: string) => `via:${encodeURIComponent(stop)}`).join('|')}`;
-      }
-    }
+    const validStops = stops.filter((stop) => stop.trim());
+    const waypoints =
+      validStops.length > 0
+        ? `&waypoints=${validStops.map((stop) => `via:${encodeURIComponent(stop)}`).join("|")}`
+        : "";
 
-    // Call Google Maps Directions API
     const url = `https://maps.googleapis.com/maps/api/directions/json?origin=${encodeURIComponent(
       origin
     )}&destination=${encodeURIComponent(destination)}${waypoints}&key=${apiKey}&units=metric`;
 
     const response = await fetch(url);
-    const data = await response.json();
+    const data = (await response.json()) as {
+      status: string;
+      routes?: Array<{
+        legs: Array<{
+          distance: { value: number };
+          duration: { value: number };
+          start_address?: string;
+          end_address?: string;
+        }>;
+      }>;
+    };
 
     if (data.status !== "OK") {
-      return NextResponse.json(
-        { 
-          success: false, 
-          message: `Failed to calculate distance. Google API Status: ${data.status}`,
-          status: data.status
-        },
-        { status: 400 }
-      );
+      return jsonError("distance_failed", 400);
     }
 
-    const route = data.routes[0];
+    const route = data.routes?.[0];
     if (!route) {
-      return NextResponse.json(
-        { success: false, message: "Could not find route between locations" },
-        { status: 400 }
-      );
+      return jsonError("distance_failed", 400);
     }
 
-    let distanceInMeters = route.legs.reduce((total: number, leg: { distance: { value: number } }) => total + leg.distance.value, 0);
-    let distanceInKm = distanceInMeters / 1000;
-    let durationInSeconds = route.legs.reduce((total: number, leg: { duration: { value: number } }) => total + leg.duration.value, 0);
-    let durationInMinutes = Math.round(durationInSeconds / 60);
+    let distanceInMeters = route.legs.reduce(
+      (total, leg) => total + leg.distance.value,
+      0
+    );
+    let durationInSeconds = route.legs.reduce(
+      (total, leg) => total + leg.duration.value,
+      0
+    );
 
-    // If it's a round trip, double the distance and time
     if (isRoundTrip) {
       distanceInMeters *= 2;
-      distanceInKm *= 2;
       durationInSeconds *= 2;
-      durationInMinutes *= 2;
     }
 
-    // Format duration text for round trips
-    const formatDuration = (minutes: number) => {
-      const hours = Math.floor(minutes / 60);
-      const mins = minutes % 60;
-      if (hours > 0) {
-        return `${hours} hour${hours > 1 ? 's' : ''} ${mins} min${mins !== 1 ? 's' : ''}`;
-      }
-      return `${mins} min${mins !== 1 ? 's' : ''}`;
-    };
-
-    // Format distance text
-    const formatDistance = (km: number, isRoundTrip: boolean) => {
-      if (isRoundTrip) {
-        return `${km.toFixed(1)} km (round trip)`;
-      }
-      return `${km.toFixed(1)} km`;
-    };
+    const distanceInKm = distanceInMeters / 1000;
+    const durationInMinutes = Math.round(durationInSeconds / 60);
 
     return NextResponse.json({
       success: true,
       data: {
         distance: {
           value: distanceInMeters,
-          text: formatDistance(distanceInKm, isRoundTrip),
+          text: `${distanceInKm.toFixed(1)} km${isRoundTrip ? " (round trip)" : ""}`,
           km: parseFloat(distanceInKm.toFixed(2)),
         },
         duration: {
           value: durationInSeconds,
-          text: isRoundTrip ? formatDuration(durationInMinutes) : formatDuration(durationInMinutes),
+          text: formatDuration(durationInMinutes),
           minutes: durationInMinutes,
         },
         origin: route.legs[0]?.start_address,
         destination: route.legs[route.legs.length - 1]?.end_address,
-        stops: stops,
+        stops,
       },
     });
   } catch (error) {
-    return NextResponse.json(
-      {
-        success: false,
-        message: error instanceof Error ? error.message : "Distance calculation failed",
-      },
-      { status: 500 }
-    );
+    console.error("Distance calculation failed:", error);
+    return jsonError("internal_error", 500);
   }
 }

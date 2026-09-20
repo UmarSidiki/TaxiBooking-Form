@@ -4,8 +4,8 @@ import { getServerSession } from "next-auth";
 
 import { authOptions } from "@/features/auth";
 import { AppSidebar } from "@/features/dashboard/ui/app-sidebar";
-import { LanguageSwitcher } from "@/shared/chrome/language-switcher";
-import { SidebarProvider, SidebarTrigger } from "@/shared/ui/sidebar";
+import { DeskChromeHeader } from "@/features/dashboard/ui/desk-chrome-header";
+import { SidebarInset, SidebarProvider } from "@/shared/ui/sidebar";
 
 type DashboardLayoutProps = {
   children: ReactNode;
@@ -23,32 +23,18 @@ export default async function DashboardProtectedLayout({
     redirect(`/dashboard/signin`);
   }
 
-  // Additional check: ensure user is admin
-  if (session.user.role !== "admin") {
+  const role = session.user.role;
+  if (role !== "admin" && role !== "superadmin") {
     redirect(`/drivers`);
   }
 
   return (
     <SidebarProvider>
-      <div className="flex h-screen w-screen bg-gray-50">
-        <AppSidebar locale={locale} />
-        <div className="flex-1 flex flex-col overflow-hidden">
-          <header className="bg-white shadow-sm border-b border-gray-200 z-10">
-            <div className="flex items-center justify-between px-4 py-3">
-              <SidebarTrigger className="text-gray-500 hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded-md p-2" />
-              <div className="flex items-center gap-4">
-                <div className="text-sm text-gray-500">
-                  {new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
-                </div>
-                <LanguageSwitcher />
-              </div>
-            </div>
-          </header>
-          <main className="flex-1 overflow-auto p-6 bg-gray-50">
-            {children}
-          </main>
-        </div>
-      </div>
+      <AppSidebar locale={locale} />
+      <SidebarInset>
+        <DeskChromeHeader />
+        <div className="flex-1 overflow-auto p-6">{children}</div>
+      </SidebarInset>
     </SidebarProvider>
   );
 }

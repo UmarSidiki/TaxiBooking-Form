@@ -10,6 +10,8 @@ type TFn = ReturnType<typeof useTranslations>;
 
 export function Step2VehicleList({
   vehicles,
+  vehiclesLoading,
+  vehiclesError,
   sortedVehicles,
   formData,
   distanceData,
@@ -21,6 +23,8 @@ export function Step2VehicleList({
   t,
 }: {
   vehicles: IVehicle[];
+  vehiclesLoading: boolean;
+  vehiclesError: string | null;
   sortedVehicles: IVehicle[];
   formData: FormData;
   distanceData: DistanceData | null;
@@ -31,14 +35,30 @@ export function Step2VehicleList({
   handleVehicleSelect: (vehicleId: string) => void;
   t: TFn;
 }) {
+  if (vehiclesLoading) {
+    return (
+      <div className="py-12 text-center">
+        <Loader2 className="mx-auto mb-2 size-8 animate-spin text-primary" />
+        <p className="text-sm text-muted-foreground">
+          {t("Step2.loading-available-vehicles")}
+        </p>
+      </div>
+    );
+  }
+
+  if (vehiclesError) {
+    return (
+      <p className="rounded-md border border-border bg-card px-4 py-3 text-sm" role="alert">
+        {t("Step2.vehicles-load-error")}
+      </p>
+    );
+  }
+
   if (vehicles.length === 0) {
     return (
-          <div className="text-center py-12">
-            <Loader2 className="h-8 w-8 animate-spin mx-auto text-primary mb-2" />
-            <p className="text-gray-500 text-sm">
-              {t("Step2.loading-available-vehicles")}
-            </p>
-          </div>
+      <p className="rounded-md border border-border bg-card px-4 py-3 text-sm">
+        {t("Step2.no-vehicles")}
+      </p>
     );
   }
 

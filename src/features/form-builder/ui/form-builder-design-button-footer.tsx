@@ -1,5 +1,7 @@
 "use client";
 
+import { FormBuilderAlignToggle } from "@/features/form-builder/ui/form-builder-align-toggle";
+import { FormBuilderColorField } from "@/features/form-builder/ui/form-builder-color-field";
 import type { FormBuilderStyleEditorProps } from "@/features/form-builder/ui/form-builder-style-editor-props";
 import { Input } from "@/shared/ui/input";
 import { Label } from "@/shared/ui/label";
@@ -14,91 +16,80 @@ export function FormBuilderDesignButtonFooter({
 }: FormBuilderStyleEditorProps) {
   return (
     <>
-                      {/* BUTTON STYLING */}
-                      <div className="space-y-3">
-                        <div className="flex items-center gap-2">
-                          <Settings2 className="h-4 w-4 text-primary" />
-                          <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Buttons</Label>
-                        </div>
-
-                        <div className="space-y-2 bg-muted/20 p-3 rounded border border-muted">
-                          <Label className="text-xs font-medium text-muted-foreground">{t("button_properties.search_button")}</Label>
-                          <p className="text-[10px] text-muted-foreground">{t("button_properties.click_to_configure")}</p>
-                        </div>
-
-                        <div className="space-y-2 bg-muted/20 p-3 rounded border border-muted">
-                          <Label className="text-xs font-medium text-muted-foreground">Booking Type Button</Label>
-                          <div className="space-y-1.5">
-                            <Label className="text-[10px]">Background Color</Label>
-                            <div className="flex items-center gap-2">
-                              <input
-                                type="color"
-                                value={formStyle.bookingTypeButtonColor || "#0f172a"}
-                                onChange={(e) => setFormStyle((s) => ({ ...s, bookingTypeButtonColor: e.target.value }))}
-                                className="h-7 w-7 rounded cursor-pointer border-0 p-0"
-                              />
-                              <Input className="h-7 text-xs font-mono flex-1" value={formStyle.bookingTypeButtonColor || "#0f172a"} onChange={(e) => setFormStyle((s) => ({ ...s, bookingTypeButtonColor: e.target.value }))} />
-                            </div>
-                          </div>
-                          <div className="space-y-1.5">
-                            <Label className="text-[10px]">Text Color</Label>
-                            <div className="flex items-center gap-2">
-                              <input
-                                type="color"
-                                value={formStyle.bookingTypeButtonTextColor || "#ffffff"}
-                                onChange={(e) => setFormStyle((s) => ({ ...s, bookingTypeButtonTextColor: e.target.value }))}
-                                className="h-7 w-7 rounded cursor-pointer border-0 p-0"
-                              />
-                              <Input className="h-7 text-xs font-mono flex-1" value={formStyle.bookingTypeButtonTextColor || "#ffffff"} onChange={(e) => setFormStyle((s) => ({ ...s, bookingTypeButtonTextColor: e.target.value }))} />
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-
-                      <Separator />
-
-                      {/* FOOTER SECTION */}
-                      <div className="space-y-3">
-                        <div className="flex items-center gap-2">
-                          <Type className="h-4 w-4 text-primary" />
-                          <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Footer</Label>
-                        </div>
-
-                        <div className="space-y-1.5">
-                          <Label className="text-xs font-medium">Footer Text</Label>
-                          <Input
-                            value={formStyle.footerText}
-                            onChange={(e) => setFormStyle((s) => ({ ...s, footerText: e.target.value }))}
-                            className="h-8 text-xs"
-                            placeholder="Enter footer text"
-                          />
-                        </div>
-
-                        <div className="space-y-1.5">
-                          <Label className="text-xs font-medium">Text Alignment</Label>
-                          <div className="flex gap-1">
-                            {(['left', 'center', 'right'] as const).map((align) => (
-                              <button
-                                key={align}
-                                onClick={() => setFormStyle((s) => ({ ...s, footerTextAlignment: align }))}
-                                className={`flex-1 py-1.5 rounded text-xs font-medium transition-all ${
-                                  formStyle.footerTextAlignment === align
-                                    ? 'bg-primary text-white'
-                                    : 'bg-muted text-muted-foreground hover:bg-muted/80'
-                                }`}
-                                title={align.charAt(0).toUpperCase() + align.slice(1)}
-                              >
-                                {align === 'left' ? '←' : align === 'center' ? '↔' : '→'}
-                              </button>
-                            ))}
-                          </div>
-                        </div>
-
-                        <div className="flex items-center justify-between">
-                          <Label className="text-xs font-medium">Show Footer Images</Label>
-                          <Switch checked={formStyle.showFooterImages} onCheckedChange={(c) => setFormStyle((s) => ({ ...s, showFooterImages: c }))} />
-                        </div>
-                      </div>
+      <div className="space-y-3">
+        <div className="flex items-center gap-2">
+          <Settings2 className="size-4 text-primary" />
+          <Label className="text-xs font-semibold text-muted-foreground">
+            {t("ui.buttons")}
+          </Label>
+        </div>
+        <div className="space-y-2 rounded-md border border-border bg-muted/20 p-3">
+          <Label className="text-xs font-medium text-muted-foreground">
+            {t("button_properties.search_button")}
+          </Label>
+          <p className="text-xs text-muted-foreground">
+            {t("button_properties.click_to_configure")}
+          </p>
+        </div>
+        <div className="space-y-3 rounded-md border border-border bg-muted/20 p-3">
+          <Label className="text-xs font-medium text-muted-foreground">
+            {t("ui.booking_type_button")}
+          </Label>
+          <FormBuilderColorField
+            label={t("button_properties.background_color")}
+            value={formStyle.bookingTypeButtonColor || "#0f172a"}
+            onChange={(bookingTypeButtonColor) =>
+              setFormStyle((style) => ({ ...style, bookingTypeButtonColor }))
+            }
+          />
+          <FormBuilderColorField
+            label={t("button_properties.text_color")}
+            value={formStyle.bookingTypeButtonTextColor || "#ffffff"}
+            onChange={(bookingTypeButtonTextColor) =>
+              setFormStyle((style) => ({ ...style, bookingTypeButtonTextColor }))
+            }
+          />
+        </div>
+      </div>
+      <Separator />
+      <div className="space-y-3">
+        <div className="flex items-center gap-2">
+          <Type className="size-4 text-primary" />
+          <Label className="text-xs font-semibold text-muted-foreground">
+            {t("ui.footer")}
+          </Label>
+        </div>
+        <div className="space-y-1.5">
+          <Label className="text-xs font-medium">{t("footer_text")}</Label>
+          <Input
+            value={formStyle.footerText}
+            onChange={(event) =>
+              setFormStyle((style) => ({ ...style, footerText: event.target.value }))
+            }
+            className="h-11 text-sm"
+            placeholder={t("ui.footer_placeholder")}
+          />
+        </div>
+        <div className="space-y-1.5">
+          <Label className="text-xs font-medium">{t("ui.text_alignment")}</Label>
+          <FormBuilderAlignToggle
+            t={t}
+            value={formStyle.footerTextAlignment ?? "center"}
+            onChange={(footerTextAlignment) =>
+              setFormStyle((style) => ({ ...style, footerTextAlignment }))
+            }
+          />
+        </div>
+        <div className="flex min-h-11 items-center justify-between gap-3">
+          <Label className="text-xs font-medium">{t("ui.show_footer_images")}</Label>
+          <Switch
+            checked={formStyle.showFooterImages}
+            onCheckedChange={(showFooterImages) =>
+              setFormStyle((style) => ({ ...style, showFooterImages }))
+            }
+          />
+        </div>
+      </div>
     </>
   );
 }

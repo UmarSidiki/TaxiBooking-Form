@@ -1,85 +1,46 @@
-import { z } from 'zod';
+import { z } from "zod";
+import { mongoIdSchema } from "@/shared/schema/mongo-id";
 
 export const BOOKING_PATCH_ACTIONS = [
-  'cancel',
-  'complete',
-  'assign',
-  'assignpartner',
-  'approvepartner',
+  "cancel",
+  "complete",
+  "assign",
+  "assignpartner",
+  "approvepartner",
 ] as const;
 
 export const bookingPatchActionSchema = z.enum(BOOKING_PATCH_ACTIONS);
 
 export type BookingPatchAction = z.infer<typeof bookingPatchActionSchema>;
 
-export const bookingPatchBodySchema = z
-  .object({
-    action: z.unknown().optional(),
-    refundPercentage: z.unknown().optional(),
-    driverId: z.unknown().optional(),
-    partnerId: z.unknown().optional(),
-    marginPercentage: z.unknown().optional(),
-  })
-  .passthrough();
+export const bookingPatchBodySchema = z.object({
+  action: z.string().transform((value) => value.toLowerCase()),
+  refundPercentage: z.coerce.number().min(0).max(100).optional(),
+  driverId: mongoIdSchema.optional(),
+  partnerId: mongoIdSchema.optional(),
+  marginPercentage: z.coerce.number().optional(),
+});
 
-export type BookingPatchBody = {
+export type BookingPatchBody = z.infer<typeof bookingPatchBodySchema> & {
   action: BookingPatchAction;
-  refundPercentage?: number;
-  driverId?: unknown;
-  partnerId?: unknown;
-  marginPercentage?: unknown;
 };
 
 type ParseOk = { success: true; data: BookingPatchBody };
-type ParseErr = { success: false; status: 400; message: string };
+type ParseErr = { success: false; status: 400; error: "invalid_body" };
 
 export function parseBookingPatchBody(body: unknown): ParseOk | ParseErr {
-  if (body === null || typeof body !== 'object') {
-    throw new TypeError(`Cannot read properties of ${String(body)}`);
+  const parsed = bookingPatchBodySchema.safeParse(body);
+  if (!parsed.success) {
+    return { success: false, status: 400, error: "invalid_body" };
   }
 
-  const record = body as Record<string, unknown>;
-  const rawAction =
-    typeof record.action === 'string' ? record.action.toLowerCase() : undefined;
-  const normalizedRefundPercentage =
-    record.refundPercentage !== undefined
-      ? Number(record.refundPercentage)
-      : undefined;
-
-  if (!rawAction) {
-    return { success: false, status: 400, message: 'Action is required' };
-  }
-
-  const parsedAction = bookingPatchActionSchema.safeParse(rawAction);
-  if (!parsedAction.success) {
-    return {
-      success: false,
-      status: 400,
-      message: `Unsupported action: ${rawAction}`,
-    };
-  }
-
-  if (
-    normalizedRefundPercentage !== undefined &&
-    (Number.isNaN(normalizedRefundPercentage) ||
-      normalizedRefundPercentage < 0 ||
-      normalizedRefundPercentage > 100)
-  ) {
-    return {
-      success: false,
-      status: 400,
-      message: 'Refund percentage must be a number between 0 and 100',
-    };
+  const action = bookingPatchActionSchema.safeParse(parsed.data.action);
+  if (!action.success) {
+    return { success: false, status: 400, error: "invalid_body" };
   }
 
   return {
     success: true,
-    data: {
-      action: parsedAction.data,
-      refundPercentage: normalizedRefundPercentage,
-      driverId: record.driverId,
-      partnerId: record.partnerId,
-      marginPercentage: record.marginPercentage,
-    },
+    data: { ...parsed.data, action: action.data },
   };
 }

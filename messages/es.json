@@ -109,7 +109,9 @@
     "subtotal": "Subtotal",
     "tax": "Impuestos ({0}%)",
     "included": "Incluido",
-    "incl-tax": "(Imp. Incl.)"
+    "incl-tax": "(Imp. Incl.)",
+    "no-vehicles": "No hay vehículos disponibles ahora.",
+    "vehicles-load-error": "No se pudieron cargar los vehículos. Inténtalo de nuevo."
   },
   "not-set": "No establecido",
   "Step3": {
@@ -406,7 +408,19 @@
       "ConfirmCancellation": "Confirmar Cancelación",
       "JourneyDetails": "Detalles del Trayecto",
       "PickupLocation": "Lugar de Recogida",
-      "DropoffLocation": "Lugar de Destino"
+      "DropoffLocation": "Lugar de Destino",
+      "Dismiss": "Cerrar",
+      "assigning": "Asignando…",
+      "approve_assign": "Aprobar y asignar",
+      "assign_partner_help": "Esto aprueba el viaje para socios y lo asigna al socio elegido.",
+      "reassign_partner_help": "Elija otro socio y ajuste el margen.",
+      "assignment-information": "Asignación",
+      "customer-review": "Reseña del cliente",
+      "submitted-on": "Enviado el {date}",
+      "choose-driver": "Elegir un conductor…",
+      "select-new-driver": "Seleccionar otro conductor",
+      "current-status": "Estado actual",
+      "margin-helper": "Defina el margen que se retiene del total de la reserva."
     },
     "Home": {
       "failed-to-fetch-dashboard-stats": "Error al obtener estadísticas del tablero",
@@ -517,7 +531,9 @@
         "notes": "Notas",
         "ride-accepted-successfully": "¡Viaje aceptado con éxito!",
         "failed-to-accept-ride": "Error al aceptar viaje",
-        "partner-earnings-label": "Su pago"
+        "partner-earnings-label": "Su pago",
+        "retry": "Reintentar",
+        "dismiss": "Cerrar"
       },
       "Rides": {
         "my-rides": "Mis Viajes",
@@ -550,7 +566,10 @@
         "no-ride-history-yet": "Aún no hay historial de viajes",
         "ride-history": "Historial de Viajes",
         "view-details": "Ver Detalles",
-        "your-payout": "Su Pago"
+        "your-payout": "Su Pago",
+        "retry": "Reintentar",
+        "load-error": "No se pudieron cargar los viajes. Inténtelo de nuevo.",
+        "customer-review": "Reseña del cliente"
       },
       "Sidebar": {
         "partner-portal": "Portal de Socios",
@@ -657,7 +676,8 @@
         "confirm-delete-fleet-request": "Confirmar Eliminación de Solicitud de Flota",
         "delete": "Eliminar",
         "delete-fleet-request": "Eliminar Solicitud de Flota",
-        "deleting": "Eliminando..."
+        "deleting": "Eliminando...",
+        "dismiss": "Cerrar"
       }
     },
     "Admin": {
@@ -759,7 +779,14 @@
         "deleting": "Eliminando...",
         "delete": "Eliminar",
         "partner-assigned-successfully": "Socio asignado con éxito",
-        "partner-reassigned-successfully": "Socio reasignado con éxito"
+        "partner-reassigned-successfully": "Socio reasignado con éxito",
+        "payout_recalculated": "Saldo de pago recalculado.",
+        "payout_failed": "No se pudo recalcular el pago. Inténtelo de nuevo.",
+        "dismiss": "Cerrar",
+        "vehicle-requested": "Vehículo solicitado",
+        "recalculate-payout": "Recalcular el pago",
+        "load-error": "No se pudieron cargar los socios. Inténtalo de nuevo.",
+        "retry": "Reintentar"
       }
     },
     "Features": {
@@ -847,7 +874,10 @@
       "stop-price-per-hour-description": "Cargo adicional por hora de espera en paradas",
       "active-available-for-booking": "Activo (Disponible para reservar)",
       "update-vehicle": "Actualizar Vehículo",
-      "cancel": "Cancelar"
+      "cancel": "Cancelar",
+      "vehicle_saved": "Vehículo guardado.",
+      "vehicle_deleted": "Vehículo eliminado.",
+      "dismiss": "Cerrar"
     },
     "Settings": {
       "and-get-your-api-keys-from-the-dashboard": "y obtenga sus claves API desde el panel.",
@@ -1016,7 +1046,26 @@
       "redirect-immediately-after-booking": "Redirigir a una URL personalizada inmediatamente después de realizar la reserva (omitir la página de agradecimiento)",
       "redirect-immediately-after-booking-help": "Si está habilitado y se establece una URL de redireccionamiento, los clientes serán enviados directamente a la URL personalizada después de realizar la reserva.",
       "thank-you-stay-time": "Tiempo de permanencia en la página de agradecimiento (segundos)",
-      "thank-you-stay-time-help": "Cuántos segundos se muestra la página de agradecimiento antes de redirigir a los clientes. \nEstablezca en 0 para redirigir inmediatamente."
+      "thank-you-stay-time-help": "Cuántos segundos se muestra la página de agradecimiento antes de redirigir a los clientes. \nEstablezca en 0 para redirigir inmediatamente.",
+      "smtp": "SMTP",
+      "features": "Funciones",
+      "saving": "Guardando…",
+      "appearance_scope": "Estos colores y radios aplican al formulario público, no a este escritorio.",
+      "timezone_help": "Se usa para horarios de reserva y correos.",
+      "loading": "Cargando…",
+      "draw_hint": "Haga clic para dibujar. Pulse el primer punto o haga doble clic para terminar.",
+      "drawing_active": "Dibujando…",
+      "draw_shape": "Dibujar zona",
+      "bounds_note": "El polígono se guarda. Estos números son el recuadro.",
+      "smtp_test_ok": "Correo de prueba enviado. Revise la bandeja de entrada.",
+      "smtp_test_failed": "Falló la prueba SMTP. Compruebe host, usuario y contraseña.",
+      "smtp_testing": "Probando…",
+      "ssl": "SSL",
+      "multisafepay-methods-desc": "iDEAL, Bancontact, PayPal y más",
+      "today": "Hoy",
+      "setup": "Configuración",
+      "today_help": "Lo que está activo hoy para despacho y pago.",
+      "setup_help": "Ajustes que cambia al instalar o cuando algo falla."
     }
   },
   "Sidebar": {
@@ -1047,7 +1096,12 @@
     "billing": "Facturación",
     "account_settings": "Cuenta y Ajustes",
     "driver_management": "Gestión de Conductores",
-    "partner_management": "Gestión de Socios"
+    "partner_management": "Gestión de Socios",
+    "dispatch": "Despacho",
+    "capacity": "Capacidad",
+    "network": "Red",
+    "booking_site": "Sitio de reservas",
+    "desk": "Escritorio"
   },
   "FormBuilder": {
     "title": "Constructor de Formularios",
@@ -1264,7 +1318,44 @@
       "pill": "Píldora",
       "label_color": "Color de Etiqueta",
       "footer": "Pie",
-      "footer_images": "Imágenes de Pie"
+      "footer_images": "Imágenes de Pie",
+      "desktop_layout": "Diseño de escritorio",
+      "mobile_layout": "Diseño móvil",
+      "grid_width": "Ancho de cuadrícula",
+      "optional": "Opcional",
+      "same_as_desktop": "Igual que escritorio",
+      "same_as_mobile_default": "Igual que el móvil",
+      "logic_validation": "Lógica y validación",
+      "remove_border": "Quitar el marco",
+      "remove_border_help": "Ocultar el recuadro alrededor de los botones",
+      "only_in_mode": "Solo en modo {mode}",
+      "show_steps": "Mostrar pasos",
+      "desktop_columns": "Columnas de escritorio",
+      "transparency": "Transparencia",
+      "transparent": "Transparente",
+      "opaque": "Opaco",
+      "container_radius": "Radio del contenedor",
+      "radius_units_help": "Use rem, px o % (p. ej. 0.75rem).",
+      "title_color": "Color del título",
+      "title_alignment": "Alineación del título",
+      "subtitle": "Subtítulo",
+      "subtitle_alignment": "Alineación del subtítulo",
+      "heading_placeholder": "Texto de cabecera",
+      "subtitle_placeholder": "Texto del subtítulo",
+      "footer_placeholder": "Texto del pie",
+      "text_and_input": "Colores de texto y campos",
+      "body_text_color": "Color del cuerpo",
+      "input_text_color": "Color del texto del campo",
+      "input_background": "Fondo del campo",
+      "booking_type_button": "Botón de tipo de reserva",
+      "show_footer_images": "Mostrar imágenes del pie",
+      "text_alignment": "Alineación del texto",
+      "buttons": "Botones",
+      "header": "Cabecera",
+      "background_effects": "Fondo y efectos",
+      "half_side_by_side": "Mitad (uno al lado del otro)",
+      "styling": "Estilo",
+      "full_width_pct": "Ancho completo (100 %)"
     },
     "button_properties": {
       "alignment": "Alineación",
@@ -1293,7 +1384,14 @@
       "width": "Ancho"
     },
     "disabled-message": "El módulo de creación de formularios está actualmente deshabilitado por el administrador.",
-    "disabled-title": "Módulo deshabilitado"
+    "disabled-title": "Módulo deshabilitado",
+    "loading": "Cargando…",
+    "name_required": "Introduzca un nombre de diseño.",
+    "saved": "Diseño guardado.",
+    "created": "Diseño creado.",
+    "save_failed": "No se pudo guardar. Inténtelo de nuevo.",
+    "dismiss": "Cerrar",
+    "load_error": "No se pudieron cargar los diseños. Inténtalo de nuevo."
   },
   "ThankYouPage": {
     "no-payment-information-found": "No se encontró información de pago.",
@@ -1362,7 +1460,11 @@
     "password": "Contraseña",
     "leave-empty-to-keep-current-password": "Deje vacío para mantener la contraseña actual",
     "update-driver": "Actualizar Conductor",
-    "cancel": "Cancelar"
+    "cancel": "Cancelar",
+    "driver-saved": "Conductor guardado.",
+    "driver-deleted": "Conductor eliminado.",
+    "loading": "Cargando conductores…",
+    "delete": "Eliminar"
   },
   "Drivers": {
     "driver-dashboard": "Tablero del Conductor",
@@ -1383,7 +1485,11 @@
     "signing-in": "Iniciando sesión...",
     "need-assistance": "¿Necesita asistencia?",
     "contact-support": "Contactar Soporte",
-    "all-rights-reserved": "Todos los derechos reservados."
+    "all-rights-reserved": "Todos los derechos reservados.",
+    "navigate": "Abrir navegación",
+    "load_error": "No pudimos cargar sus viajes. Inténtelo de nuevo.",
+    "retry": "Reintentar",
+    "passengers": "Pasajeros"
   },
   "Stripe": {
     "payment-system-not-ready-please-refresh-the-page": "Sistema de pago no listo. Por favor actualice la página.",
@@ -1493,5 +1599,126 @@
   },
   "common": {
     "go-home": "Ir a casa"
+  },
+  "Auth": {
+    "Desk": {
+      "operations": "Operaciones",
+      "staff": "Equipo",
+      "log_out": "Cerrar sesión",
+      "signing_out": "Cerrando sesión…",
+      "fallback_name": "Mesa",
+      "cover_kicker": "Terminal privada",
+      "cover_title": "La agenda de hoy, un solo escritorio.",
+      "cover_body": "Asigne conductores y socios, fije tarifas y deje que el formulario lleve los colores del operador."
+    },
+    "SignIn": {
+      "title": "Iniciar sesión",
+      "subtitle": "Introduzca su correo y contraseña.",
+      "email": "Correo",
+      "password": "Contraseña",
+      "submit": "Entrar",
+      "submitting": "Entrando…",
+      "forgot": "¿Olvidó la contraseña?",
+      "invalid": "Revise el correo y la contraseña e inténtelo de nuevo.",
+      "show_password": "Mostrar contraseña",
+      "hide_password": "Ocultar contraseña"
+    },
+    "Forgot": {
+      "title_email": "Restablecer contraseña",
+      "title_otp": "Introducir el código",
+      "title_password": "Nueva contraseña",
+      "subtitle_email": "Enviaremos un código de un solo uso a esta dirección.",
+      "subtitle_otp": "Introduzca el código de 6 dígitos de su correo.",
+      "subtitle_password": "Elija una contraseña de al menos 8 caracteres.",
+      "email": "Correo",
+      "otp": "Código",
+      "new_password": "Nueva contraseña",
+      "confirm_password": "Confirmar contraseña",
+      "send": "Enviar código",
+      "sending": "Enviando…",
+      "verify": "Verificar código",
+      "verifying": "Verificando…",
+      "reset": "Actualizar contraseña",
+      "resetting": "Actualizando…",
+      "back": "Volver a iniciar sesión",
+      "back_email": "Usar otro correo",
+      "otp_sent": "Código enviado. Revise su bandeja de entrada.",
+      "otp_verified": "Código confirmado. Defina su nueva contraseña.",
+      "reset_ok": "Contraseña actualizada. Abriendo el acceso…",
+      "send_failed": "No pudimos enviar un código. Compruebe el correo e inténtelo de nuevo.",
+      "otp_invalid": "Ese código es incorrecto o ha caducado. Solicite uno nuevo.",
+      "mismatch": "Las contraseñas no coinciden.",
+      "too_short": "Use al menos 8 caracteres.",
+      "reset_failed": "No pudimos actualizar la contraseña. Inténtelo de nuevo."
+    },
+    "DriverSignIn": {
+      "title": "Acceso de conductor",
+      "subtitle": "Abra sus viajes asignados.",
+      "cover_kicker": "Asignaciones",
+      "cover_title": "Recogidas de hoy, una lista.",
+      "cover_body": "Vea los viajes asignados y salga hacia la primera recogida."
+    },
+    "PartnerSignIn": {
+      "title": "Acceso de socio",
+      "subtitle": "Acepte el desbordamiento y gestione el acceso a la flota.",
+      "register": "Registrarse como socio",
+      "cover_kicker": "Mostrador afiliado",
+      "cover_title": "Desbordamiento que encaja con su flota.",
+      "cover_body": "Solicite categorías, acepte viajes ofrecidos y controle la facturación."
+    },
+    "PartnerRegister": {
+      "title": "Registrarse como socio",
+      "subtitle": "Cree una cuenta y luego suba los documentos de cumplimiento.",
+      "name": "Nombre completo",
+      "email": "Correo",
+      "phone": "Teléfono",
+      "address": "Dirección",
+      "city": "Ciudad",
+      "country": "País",
+      "password": "Contraseña",
+      "confirm_password": "Confirmar contraseña",
+      "submit": "Crear cuenta",
+      "submitting": "Creando cuenta…",
+      "success_title": "Cuenta creada",
+      "success_body": "Inicie sesión y suba sus documentos para revisarlos.",
+      "go_login": "Ir a iniciar sesión",
+      "sign_in": "¿Ya tiene cuenta? Iniciar sesión",
+      "mismatch": "Las contraseñas no coinciden.",
+      "too_short": "Use al menos 8 caracteres.",
+      "failed": "No pudimos crear la cuenta. Revise los datos e inténtelo de nuevo.",
+      "show_password": "Mostrar contraseña",
+      "hide_password": "Ocultar contraseña",
+      "cover_kicker": "Mostrador afiliado",
+      "cover_title": "Únase al desbordamiento de este operador.",
+      "cover_body": "Una empresa, categorías de flota compartidas — no un mercado de marcas."
+    }
+  },
+  "AppError": {
+    "title": "Algo salió mal",
+    "description": "Recarga esta página. Si vuelve a ocurrir, inténtalo más tarde o contacta al operador.",
+    "retry": "Reintentar",
+    "home": "Inicio",
+    "loading": "Cargando…"
+  },
+  "NotFound": {
+    "title": "Página no encontrada",
+    "description": "Esta página no existe o se ha movido.",
+    "home": "Inicio"
+  },
+  "ApiErrors": {
+    "invalid_body": "Revisa el formulario e inténtalo de nuevo.",
+    "unauthorized": "Inicia sesión para continuar.",
+    "forbidden": "No tienes acceso a esto.",
+    "not_found": "No encontramos ese registro.",
+    "conflict": "Esa acción ya no está disponible.",
+    "internal_error": "Algo salió mal. Inténtalo de nuevo.",
+    "request_failed": "La solicitud falló. Inténtalo de nuevo.",
+    "smtp_not_configured": "SMTP aún no está configurado.",
+    "smtp_failed": "No se pudo enviar el correo de prueba. Revisa SMTP.",
+    "payment_init_failed": "El pago no pudo iniciarse. Revisa tus datos.",
+    "payment_failed": "No se pudo completar el pago. Inténtalo de nuevo.",
+    "payment_not_configured": "Los pagos con tarjeta aún no están configurados.",
+    "price_changed": "La tarifa cambió. Actualiza e inténtalo de nuevo.",
+    "distance_failed": "No pudimos calcular la ruta. Revisa las direcciones."
   }
 }

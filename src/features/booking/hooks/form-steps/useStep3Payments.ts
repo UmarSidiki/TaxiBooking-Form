@@ -7,6 +7,8 @@ import type { FormData, FormErrors } from "@/features/booking/context/booking-fo
 import type { ISetting } from "@/features/settings/model";
 import type { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 import type { useTranslations } from "next-intl";
+import { apiErrorMessage } from "@/shared/lib/api-error-copy";
+import { ApiError } from "@/shared/http/api";
 import { useCallback, useEffect, type Dispatch, type MutableRefObject, type SetStateAction } from "react";
 
 export function useStep3Payments({
@@ -27,7 +29,6 @@ export function useStep3Payments({
   setStripeOrderId,
   creatingPaymentIntent,
   setCreatingPaymentIntent,
-  paymentError,
   setPaymentError,
   paymentInitialized,
   setPaymentInitialized,
@@ -127,14 +128,13 @@ export function useStep3Payments({
         setPaymentError(null);
         setPaymentInitialized(true);
       } else {
-        const errorMsg = data.message || t('Step3.failed-to-initialize-payment');
-        console.error("Payment intent init failed:", errorMsg);
-        setPaymentError(errorMsg);
+        const code =
+          typeof data.error === "string" ? data.error : "payment_init_failed";
+        setPaymentError(apiErrorMessage((key) => t(`ApiErrors.${key}`), code));
       }
     } catch (err) {
-      console.error("Error initializing payment intent:", err);
-      const errorMessage = err instanceof Error ? err.message : t('Step3.network-error-occurred');
-      setPaymentError(errorMessage);
+      const code = err instanceof ApiError ? err.code : "request_failed";
+      setPaymentError(apiErrorMessage((key) => t(`ApiErrors.${key}`), code));
     } finally {
       setCreatingPaymentIntent(false);
     }

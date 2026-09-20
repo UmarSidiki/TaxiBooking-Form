@@ -45,7 +45,7 @@ export function AdminPartnerDocumentDialog({
 
           {selectedDocument && (
             <div className="space-y-4 overflow-y-auto flex-1 pr-2">
-              <div className="border rounded-lg overflow-auto bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
+              <div className="border rounded-lg overflow-auto bg-muted flex items-center justify-center">
                 {selectedDocument.mimeType.startsWith("image/") ? (
                   <div className="w-full p-4">
                     <div className="relative w-full h-[70vh] mx-auto">

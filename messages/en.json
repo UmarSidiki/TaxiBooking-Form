@@ -109,7 +109,9 @@
     "subtotal": "Subtotal",
     "tax": "Tax ({0}%)",
     "included": "Included",
-    "incl-tax": "(Incl. Tax)"
+    "incl-tax": "(Incl. Tax)",
+    "no-vehicles": "No vehicles are available right now.",
+    "vehicles-load-error": "Could not load vehicles. Try again."
   },
   "not-set": "Not Set",
   "Step3": {
@@ -406,7 +408,19 @@
       "ConfirmCancellation": "Confirm Cancellation",
       "JourneyDetails": "Journey Details",
       "PickupLocation": "Pickup Location",
-      "DropoffLocation": "Drop off Location"
+      "DropoffLocation": "Drop off Location",
+      "Dismiss": "Dismiss",
+      "assigning": "Assigning…",
+      "approve_assign": "Approve & assign",
+      "assign_partner_help": "This approves the ride for partners and assigns the selected partner.",
+      "reassign_partner_help": "Choose a different partner and adjust the margin.",
+      "assignment-information": "Assignment",
+      "customer-review": "Customer review",
+      "submitted-on": "Submitted {date}",
+      "choose-driver": "Choose a driver…",
+      "select-new-driver": "Select new driver",
+      "current-status": "Current status",
+      "margin-helper": "Set the margin to keep from the booking total."
     },
     "Home": {
       "failed-to-fetch-dashboard-stats": "Failed to fetch dashboard stats",
@@ -517,7 +531,9 @@
         "notes": "Notes",
         "ride-accepted-successfully": "Ride accepted successfully!",
         "failed-to-accept-ride": "Failed to accept ride",
-        "partner-earnings-label": "Your payout"
+        "partner-earnings-label": "Your payout",
+        "retry": "Try again",
+        "dismiss": "Dismiss"
       },
       "Rides": {
         "my-rides": "My Rides",
@@ -550,7 +566,10 @@
         "no-ride-history-yet": "No ride history yet",
         "ride-history": "Ride History",
         "view-details": "View Details",
-        "your-payout": "Your Payout"
+        "your-payout": "Your Payout",
+        "retry": "Try again",
+        "load-error": "Could not load rides. Try again.",
+        "customer-review": "Customer review"
       },
       "Sidebar": {
         "partner-portal": "Partner Portal",
@@ -657,7 +676,8 @@
         "confirm-delete-fleet-request": "Confirm Delete Fleet Request",
         "delete": "Delete",
         "delete-fleet-request": "Delete Fleet Request",
-        "deleting": "Deleting..."
+        "deleting": "Deleting...",
+        "dismiss": "Dismiss"
       }
     },
     "Admin": {
@@ -759,7 +779,14 @@
         "deleting": "Deleting...",
         "delete": "Delete",
         "partner-assigned-successfully": "Partner assigned successfully",
-        "partner-reassigned-successfully": "Partner reassigned successfully"
+        "partner-reassigned-successfully": "Partner reassigned successfully",
+        "payout_recalculated": "Payout balance recalculated.",
+        "payout_failed": "Could not recalculate the payout. Try again.",
+        "dismiss": "Dismiss",
+        "vehicle-requested": "Vehicle requested",
+        "recalculate-payout": "Recalculate payout",
+        "load-error": "Could not load partners. Try again.",
+        "retry": "Try again"
       }
     },
     "Features": {
@@ -847,7 +874,10 @@
       "stop-price-per-hour-description": "Additional charge per hour of wait time at stops",
       "active-available-for-booking": "Active (Available for booking)",
       "update-vehicle": "Update Vehicle",
-      "cancel": "Cancel"
+      "cancel": "Cancel",
+      "vehicle_saved": "Vehicle saved.",
+      "vehicle_deleted": "Vehicle deleted.",
+      "dismiss": "Dismiss"
     },
     "Settings": {
       "and-get-your-api-keys-from-the-dashboard": "and get your API keys from the dashboard.",
@@ -1016,7 +1046,26 @@
       "sofort-giropay-and-more-european-payment-methods": "SOFORT, Giropay, and more European payment methods",
       "available-methods-depend-on-your-multisafepay-account-settings": "Available methods depend on your MultiSafepay account settings.",
       "payment-gateway": "Payment Gateway",
-      "select-your-preferred-payment-gateway": "Select Your Preferred Payment Gateway"
+      "select-your-preferred-payment-gateway": "Select Your Preferred Payment Gateway",
+      "smtp": "SMTP",
+      "features": "Features",
+      "saving": "Saving…",
+      "appearance_scope": "These colors and corners apply to the public booking form and embeddable widgets, not this desk.",
+      "timezone_help": "Used for booking times and email timestamps.",
+      "loading": "Loading…",
+      "draw_hint": "Click points to draw. Click the first point or double-click to finish.",
+      "drawing_active": "Drawing…",
+      "draw_shape": "Draw service area",
+      "bounds_note": "The polygon is saved. These numbers are the bounding box.",
+      "smtp_test_ok": "Test email sent. Check the inbox.",
+      "smtp_test_failed": "SMTP test failed. Check host, user, and password.",
+      "smtp_testing": "Testing…",
+      "ssl": "SSL",
+      "multisafepay-methods-desc": "iDEAL, Bancontact, PayPal and more",
+      "today": "Today",
+      "setup": "Setup",
+      "today_help": "What is live for dispatch and checkout today.",
+      "setup_help": "Plumbing you change when installing or when something breaks."
     }
   },
   "Sidebar": {
@@ -1047,7 +1096,12 @@
     "billing": "Billing",
     "account_settings": "Account & Settings",
     "driver_management": "Driver Management",
-    "partner_management": "Partner Management"
+    "partner_management": "Partner Management",
+    "dispatch": "Dispatch",
+    "capacity": "Capacity",
+    "network": "Network",
+    "booking_site": "Booking site",
+    "desk": "Desk"
   },
   "FormBuilder": {
     "title": "Form Builder",
@@ -1290,10 +1344,54 @@
       "pill": "Pill",
       "label_color": "Label Color",
       "footer": "Footer",
-      "footer_images": "Footer Images"
+      "footer_images": "Footer Images",
+      "desktop_layout": "Desktop layout",
+      "mobile_layout": "Mobile layout",
+      "grid_width": "Grid width",
+      "optional": "Optional",
+      "same_as_desktop": "Same as desktop",
+      "same_as_mobile_default": "Same as mobile default",
+      "logic_validation": "Logic and validation",
+      "remove_border": "Remove border container",
+      "remove_border_help": "Hide the bordered box around buttons",
+      "only_in_mode": "Only in {mode} mode",
+      "show_steps": "Show steps",
+      "desktop_columns": "Desktop columns",
+      "transparency": "Transparency",
+      "transparent": "Transparent",
+      "opaque": "Opaque",
+      "container_radius": "Container radius",
+      "radius_units_help": "Use rem, px, or % (for example 0.75rem).",
+      "title_color": "Title color",
+      "title_alignment": "Title alignment",
+      "subtitle": "Subtitle",
+      "subtitle_alignment": "Subtitle alignment",
+      "heading_placeholder": "Header text",
+      "subtitle_placeholder": "Subtitle text",
+      "footer_placeholder": "Footer text",
+      "text_and_input": "Text and input colors",
+      "body_text_color": "Body text color",
+      "input_text_color": "Input text color",
+      "input_background": "Input background",
+      "booking_type_button": "Booking type button",
+      "show_footer_images": "Show footer images",
+      "text_alignment": "Text alignment",
+      "buttons": "Buttons",
+      "header": "Header",
+      "background_effects": "Background and effects",
+      "half_side_by_side": "Half (side by side)",
+      "styling": "Styling",
+      "full_width_pct": "Full width (100%)"
     },
     "disabled-title": "Module Disabled",
-    "disabled-message": "The form builder module is currently disabled by the administrator."
+    "disabled-message": "The form builder module is currently disabled by the administrator.",
+    "loading": "Loading…",
+    "name_required": "Enter a layout name.",
+    "saved": "Layout saved.",
+    "created": "Layout created.",
+    "save_failed": "Could not save the layout. Try again.",
+    "dismiss": "Dismiss",
+    "load_error": "Could not load layouts. Try again."
   },
   "ThankYouPage": {
     "no-payment-information-found": "No payment information found.",
@@ -1362,7 +1460,11 @@
     "password": "Password",
     "leave-empty-to-keep-current-password": "Leave empty to keep current password",
     "update-driver": "Update Driver",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "driver-saved": "Driver saved.",
+    "driver-deleted": "Driver deleted.",
+    "loading": "Loading drivers…",
+    "delete": "Delete"
   },
   "Drivers": {
     "driver-dashboard": "Driver Dashboard",
@@ -1383,7 +1485,11 @@
     "signing-in": "Signing in...",
     "need-assistance": "Need assistance?",
     "contact-support": "Contact Support",
-    "all-rights-reserved": "All rights reserved."
+    "all-rights-reserved": "All rights reserved.",
+    "navigate": "Open navigation",
+    "load_error": "We could not load your trips. Try again.",
+    "retry": "Try again",
+    "passengers": "Passengers"
   },
   "Stripe": {
     "payment-system-not-ready-please-refresh-the-page": "Payment system not ready. Please refresh the page.",
@@ -1493,5 +1599,126 @@
   },
   "common": {
     "go-home": "Go Home"
+  },
+  "Auth": {
+    "Desk": {
+      "operations": "Operations",
+      "staff": "Staff",
+      "log_out": "Log out",
+      "signing_out": "Signing out…",
+      "fallback_name": "Desk",
+      "cover_kicker": "Private terminal",
+      "cover_title": "Today’s book, one desk.",
+      "cover_body": "Assign drivers and partners, price the fleet, and keep the booking form in the operator’s colors."
+    },
+    "SignIn": {
+      "title": "Sign in",
+      "subtitle": "Enter your email and password to open the desk.",
+      "email": "Email",
+      "password": "Password",
+      "submit": "Sign in",
+      "submitting": "Signing in…",
+      "forgot": "Forgot password?",
+      "invalid": "Check your email and password, then try again.",
+      "show_password": "Show password",
+      "hide_password": "Hide password"
+    },
+    "Forgot": {
+      "title_email": "Reset password",
+      "title_otp": "Enter the code",
+      "title_password": "Set a new password",
+      "subtitle_email": "We will email a one-time code to this address.",
+      "subtitle_otp": "Enter the 6-digit code from your inbox.",
+      "subtitle_password": "Choose a password with at least 8 characters.",
+      "email": "Email",
+      "otp": "Code",
+      "new_password": "New password",
+      "confirm_password": "Confirm password",
+      "send": "Send code",
+      "sending": "Sending…",
+      "verify": "Verify code",
+      "verifying": "Verifying…",
+      "reset": "Update password",
+      "resetting": "Updating…",
+      "back": "Back to sign in",
+      "back_email": "Use a different email",
+      "otp_sent": "Code sent. Check your inbox.",
+      "otp_verified": "Code confirmed. Set your new password.",
+      "reset_ok": "Password updated. Opening sign in…",
+      "send_failed": "We could not send a code. Check the email and try again.",
+      "otp_invalid": "That code is wrong or expired. Request a new one.",
+      "mismatch": "Passwords do not match.",
+      "too_short": "Use at least 8 characters.",
+      "reset_failed": "We could not update the password. Try again."
+    },
+    "DriverSignIn": {
+      "title": "Driver sign in",
+      "subtitle": "Open your assigned trips.",
+      "cover_kicker": "Assignments",
+      "cover_title": "Today’s pickups, one list.",
+      "cover_body": "See the trips assigned to you and leave for the first pickup."
+    },
+    "PartnerSignIn": {
+      "title": "Partner sign in",
+      "subtitle": "Accept overflow and manage your fleet access.",
+      "register": "Register as a partner",
+      "cover_kicker": "Affiliate desk",
+      "cover_title": "Overflow that fits your fleet.",
+      "cover_body": "Request categories, accept offered rides, and keep billing in one place."
+    },
+    "PartnerRegister": {
+      "title": "Register as a partner",
+      "subtitle": "Create an account, then upload compliance documents.",
+      "name": "Full name",
+      "email": "Email",
+      "phone": "Phone",
+      "address": "Address",
+      "city": "City",
+      "country": "Country",
+      "password": "Password",
+      "confirm_password": "Confirm password",
+      "submit": "Create account",
+      "submitting": "Creating account…",
+      "success_title": "Account created",
+      "success_body": "Sign in and upload your documents so we can review them.",
+      "go_login": "Go to sign in",
+      "sign_in": "Already have an account? Sign in",
+      "mismatch": "Passwords do not match.",
+      "too_short": "Use at least 8 characters.",
+      "failed": "We could not create the account. Check the details and try again.",
+      "show_password": "Show password",
+      "hide_password": "Hide password",
+      "cover_kicker": "Affiliate desk",
+      "cover_title": "Join this operator’s overflow.",
+      "cover_body": "One company, shared fleet categories — not a marketplace of brands."
+    }
+  },
+  "AppError": {
+    "title": "Something went wrong",
+    "description": "Reload this page. If it happens again, try later or contact the operator.",
+    "retry": "Try again",
+    "home": "Go home",
+    "loading": "Loading…"
+  },
+  "NotFound": {
+    "title": "Page not found",
+    "description": "This page does not exist or was moved.",
+    "home": "Go home"
+  },
+  "ApiErrors": {
+    "invalid_body": "Check the form and try again.",
+    "unauthorized": "Sign in to continue.",
+    "forbidden": "You do not have access to this.",
+    "not_found": "We could not find that record.",
+    "conflict": "That action is no longer available.",
+    "internal_error": "Something went wrong. Try again.",
+    "request_failed": "The request failed. Try again.",
+    "smtp_not_configured": "SMTP is not configured yet.",
+    "smtp_failed": "The test email could not be sent. Check SMTP settings.",
+    "payment_init_failed": "Payment could not start. Check your details and try again.",
+    "payment_failed": "Payment could not be completed. Try again.",
+    "payment_not_configured": "Card payments are not configured yet.",
+    "price_changed": "The fare changed. Refresh and try again.",
+    "distance_failed": "We could not calculate the route. Check the addresses."
   }
 }

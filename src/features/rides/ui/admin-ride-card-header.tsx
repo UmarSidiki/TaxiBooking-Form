@@ -41,10 +41,10 @@ export function AdminRideCardHeader({
                   />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-gray-900 text-lg">
+                  <h3 className="font-semibold text-foreground text-lg">
                     {t("Dashboard.Rides.Trip")} #{booking.tripId.slice(0, 8)}
                   </h3>
-                  <p className="text-sm text-gray-500">
+                  <p className="text-sm text-muted-foreground">
                     {booking.vehicleDetails?.name || booking.selectedVehicle}
                   </p>
                 </div>

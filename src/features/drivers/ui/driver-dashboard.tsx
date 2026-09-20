@@ -5,6 +5,7 @@ import { DriverRideDetailDialog } from "@/features/rides/ui/driver-ride-detail-d
 import { DriverRidesToolbar } from "@/features/rides/ui/driver-rides-toolbar";
 import { AdminRidesTabPanel } from "@/features/rides/ui/admin-rides-tab-panel";
 import { Badge } from "@/shared/ui/badge";
+import { Button } from "@/shared/ui/button";
 import { Tabs, TabsList, TabsTrigger } from "@/shared/ui/tabs";
 import { useDriverDashboard } from "@/features/drivers/hooks/useDriverDashboard";
 import { Ban, CalendarDays, CheckCircle, Loader2 } from "lucide-react";
@@ -21,20 +22,14 @@ export default function DriverDashboard() {
     setDetailBooking,
     fetchAssignedRides,
     isBookingPassed,
+    loadError,
   } = rides;
 
   if (isLoading) {
     return (
-      <div className="flex flex-col items-center justify-center py-16">
-        <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-4">
-          <Loader2 className="w-8 h-8 animate-spin text-primary" />
-        </div>
-        <h3 className="text-lg font-semibold text-gray-900 mb-2">
-          {t("Dashboard.Rides.LoadingRides")}
-        </h3>
-        <p className="text-gray-500">
-          {t("Dashboard.Rides.LoadingRidesDescription")}
-        </p>
+      <div className="flex flex-col items-center justify-center py-16 text-muted-foreground">
+        <Loader2 className="mb-4 size-8 animate-spin text-primary" />
+        <p className="text-sm">{t("Dashboard.Rides.LoadingRides")}</p>
       </div>
     );
   }
@@ -52,139 +47,72 @@ export default function DriverDashboard() {
         dateRange={rides.dateRange}
         setDateRange={rides.setDateRange}
       />
-
-      {/* Tabs Section */}
+      {loadError ? (
+        <p className="rounded-md border border-border bg-card px-4 py-3 text-sm" role="alert">
+          {loadError}
+          <Button variant="outline" className="ms-3 h-11" onClick={fetchAssignedRides}>
+            {t("Drivers.retry")}
+          </Button>
+        </p>
+      ) : null}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-3 bg-background p-1 rounded-lg border border-border shadow-sm h-auto">
-          <TabsTrigger
-            value="upcoming"
-            className="flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 py-2 sm:py-3 px-2 sm:px-4 rounded-md transition-all data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm text-xs sm:text-sm"
-          >
-            <CalendarDays className="w-3 h-3 sm:w-4 sm:h-4" />
-            <span className="font-medium text-center">
-              {t("Dashboard.Rides.UpcomingRides")}
-            </span>
-            {filteredBookings.length > 0 && activeTab === "upcoming" && (
-              <Badge
-                variant="secondary"
-                className="ml-0 sm:ml-1 bg-primary/20 text-primary text-xs"
-              >
-                {filteredBookings.length}
-              </Badge>
-            )}
+        <TabsList className="grid h-auto w-full grid-cols-3 gap-1 bg-muted p-1">
+          <TabsTrigger value="upcoming" className="min-h-11 gap-2 text-xs sm:text-sm">
+            <CalendarDays className="size-4" />
+            {t("Dashboard.Rides.UpcomingRides")}
+            {filteredBookings.length > 0 && activeTab === "upcoming" ? (
+              <Badge variant="secondary">{filteredBookings.length}</Badge>
+            ) : null}
           </TabsTrigger>
-          <TabsTrigger
-            value="passed"
-            className="flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 py-2 sm:py-3 px-2 sm:px-4 rounded-md transition-all data-[state=active]:bg-secondary data-[state=active]:text-white data-[state=active]:shadow-sm text-xs sm:text-sm"
-          >
-            <CheckCircle className="w-3 h-3 sm:w-4 sm:h-4" />
-            <span className="font-medium text-center">
-              {t("Dashboard.Rides.CompletedRides")}
-            </span>
-            {filteredBookings.length > 0 && activeTab === "passed" && (
-              <Badge
-                variant="secondary"
-                className="ml-0 sm:ml-1 bg-secondary/20 text-secondary-foreground text-xs"
-              >
-                {filteredBookings.length}
-              </Badge>
-            )}
+          <TabsTrigger value="passed" className="min-h-11 gap-2 text-xs sm:text-sm">
+            <CheckCircle className="size-4" />
+            {t("Dashboard.Rides.CompletedRides")}
           </TabsTrigger>
-          <TabsTrigger
-            value="canceled"
-            className="flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 py-2 sm:py-3 px-2 sm:px-4 rounded-md transition-all data-[state=active]:bg-destructive data-[state=active]:text-destructive-foreground data-[state=active]:shadow-sm text-xs sm:text-sm"
-          >
-            <Ban className="w-3 h-3 sm:w-4 sm:h-4" />
-            <span className="font-medium text-center">
-              {t("Dashboard.Rides.CanceledRides")}
-            </span>
-            {filteredBookings.length > 0 && activeTab === "canceled" && (
-              <Badge
-                variant="secondary"
-                className="ml-0 sm:ml-1 bg-destructive/20 text-destructive text-xs"
-              >
-                {filteredBookings.length}
-              </Badge>
-            )}
+          <TabsTrigger value="canceled" className="min-h-11 gap-2 text-xs sm:text-sm">
+            <Ban className="size-4" />
+            {t("Dashboard.Rides.CanceledRides")}
           </TabsTrigger>
         </TabsList>
-
-        <AdminRidesTabPanel
-          value="upcoming"
-          isLoading={isLoading}
-          isEmpty={filteredBookings.length === 0}
-          fetchBookings={fetchAssignedRides}
-          t={t}
-          loadingWrapClass="bg-primary/10"
-          loadingIconClass="text-primary"
-          emptyIcon={CalendarDays}
-          emptyTitle={t("Dashboard.Rides.NoUpcomingRides")}
-          emptyDescription={t("Dashboard.Rides.NoUpcomingRidesDescription")}
-          gridClassName="grid grid-cols-1 xl:grid-cols-2 gap-3 sm:gap-4"
-        >
-          {filteredBookings.map((booking) => (
-            <DriverRideCard
-              key={booking._id?.toString()}
-              booking={booking}
-              t={t}
-              currencySymbol={currencySymbol}
-              isBookingPassed={isBookingPassed}
-              setDetailBooking={setDetailBooking}
-            />
-          ))}
-        </AdminRidesTabPanel>
-
-        <AdminRidesTabPanel
-          value="passed"
-          isLoading={isLoading}
-          isEmpty={filteredBookings.length === 0}
-          fetchBookings={fetchAssignedRides}
-          t={t}
-          loadingWrapClass="bg-secondary/10"
-          loadingIconClass="text-secondary-foreground"
-          emptyIcon={CheckCircle}
-          emptyTitle={t("Dashboard.Rides.NoCompletedRides")}
-          emptyDescription={t("Dashboard.Rides.NoCompletedRidesDescription")}
-          gridClassName="grid grid-cols-1 xl:grid-cols-2 gap-3 sm:gap-4"
-        >
-          {filteredBookings.map((booking) => (
-            <DriverRideCard
-              key={booking._id?.toString()}
-              booking={booking}
-              t={t}
-              currencySymbol={currencySymbol}
-              isBookingPassed={isBookingPassed}
-              setDetailBooking={setDetailBooking}
-            />
-          ))}
-        </AdminRidesTabPanel>
-
-        <AdminRidesTabPanel
-          value="canceled"
-          isLoading={isLoading}
-          isEmpty={filteredBookings.length === 0}
-          fetchBookings={fetchAssignedRides}
-          t={t}
-          loadingWrapClass="bg-destructive/10"
-          loadingIconClass="text-destructive"
-          emptyIcon={Ban}
-          emptyTitle={t("Dashboard.Rides.NoCanceledRides")}
-          emptyDescription={t("Dashboard.Rides.NoCanceledRidesDescription")}
-          gridClassName="grid grid-cols-1 xl:grid-cols-2 gap-3 sm:gap-4"
-        >
-          {filteredBookings.map((booking) => (
-            <DriverRideCard
-              key={booking._id?.toString()}
-              booking={booking}
-              t={t}
-              currencySymbol={currencySymbol}
-              isBookingPassed={isBookingPassed}
-              setDetailBooking={setDetailBooking}
-            />
-          ))}
-        </AdminRidesTabPanel>
+        {(["upcoming", "passed", "canceled"] as const).map((value) => (
+          <AdminRidesTabPanel
+            key={value}
+            value={value}
+            isLoading={isLoading}
+            isEmpty={filteredBookings.length === 0}
+            fetchBookings={fetchAssignedRides}
+            t={t}
+            loadingWrapClass="bg-muted"
+            loadingIconClass="text-muted-foreground"
+            emptyIcon={value === "canceled" ? Ban : value === "passed" ? CheckCircle : CalendarDays}
+            emptyTitle={
+              value === "upcoming"
+                ? t("Dashboard.Rides.NoUpcomingRides")
+                : value === "passed"
+                  ? t("Dashboard.Rides.NoCompletedRides")
+                  : t("Dashboard.Rides.NoCanceledRides")
+            }
+            emptyDescription={
+              value === "upcoming"
+                ? t("Dashboard.Rides.NoUpcomingRidesDescription")
+                : value === "passed"
+                  ? t("Dashboard.Rides.NoCompletedRidesDescription")
+                  : t("Dashboard.Rides.NoCanceledRidesDescription")
+            }
+            gridClassName="grid grid-cols-1 gap-4 xl:grid-cols-2"
+          >
+            {filteredBookings.map((booking) => (
+              <DriverRideCard
+                key={booking._id?.toString()}
+                booking={booking}
+                t={t}
+                currencySymbol={currencySymbol}
+                isBookingPassed={isBookingPassed}
+                setDetailBooking={setDetailBooking}
+              />
+            ))}
+          </AdminRidesTabPanel>
+        ))}
       </Tabs>
-
       <DriverRideDetailDialog
         t={rides.t}
         currencySymbol={rides.currencySymbol}

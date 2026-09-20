@@ -3,9 +3,11 @@
 import { useState, useEffect, useCallback } from "react";
 import { useTranslations } from "next-intl";
 import type { Partner, PartnerDocument, Vehicle } from "@/features/partners/ui/admin-partner.types";
+import { useAdminPartnerFormat } from "@/features/partners/hooks/use-admin-partner-format";
 
 export function useAdminPartners() {
   const t = useTranslations("Dashboard.Admin.Partners");
+  const { formatCurrency, formatDate } = useAdminPartnerFormat();
   const [partners, setPartners] = useState<Partner[]>([]);
   const [filteredPartners, setFilteredPartners] = useState<Partner[]>([]);
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
@@ -27,10 +29,13 @@ export function useAdminPartners() {
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [payoutProcessingId, setPayoutProcessingId] = useState<string | null>(null);
+  const [notice, setNotice] = useState<string | null>(null);
+  const [loadError, setLoadError] = useState<string | null>(null);
 
   const fetchPartners = useCallback(async () => {
     try {
       setLoading(true);
+      setLoadError(null);
       const [partnersResponse, vehiclesResponse] = await Promise.all([
         fetch("/api/admin/partners"),
         fetch("/api/vehicles")
@@ -41,17 +46,19 @@ export function useAdminPartners() {
 
       if (partnersResponse.ok) {
         setPartners(partnersData.partners);
+      } else {
+        setLoadError(t("load-error"));
       }
       
       if (vehiclesResponse.ok && vehiclesData.success) {
         setVehicles(vehiclesData.data);
       }
-    } catch (error) {
-      console.error("Error fetching data:", error);
+    } catch {
+      setLoadError(t("load-error"));
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [t]);
 
   const filterPartners = useCallback(() => {
     let filtered = partners;
@@ -70,28 +77,6 @@ export function useAdminPartners() {
 
     setFilteredPartners(filtered);
   }, [partners, statusFilter, searchQuery]);
-
-  const formatCurrency = useCallback((amount?: number) => {
-    return new Intl.NumberFormat(undefined, {
-      style: "currency",
-      currency: "EUR",
-    }).format(amount ?? 0);
-  }, []);
-
-  const formatDate = useCallback((value?: string | null) => {
-    if (!value) {
-      return t("never-paid");
-    }
-    const parsed = new Date(value);
-    if (Number.isNaN(parsed.getTime())) {
-      return t("never-paid");
-    }
-    return parsed.toLocaleDateString(undefined, {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-    });
-  }, [t]);
 
   const updatePartnerCollections = useCallback((updated: Partner) => {
     setPartners((prev) =>
@@ -142,15 +127,15 @@ export function useAdminPartners() {
         }
 
         updatePartnerCollections(data.partner);
-        alert(`Payout recalculated: Outstanding balance €${data.summary.payoutBalance.toFixed(2)} from ${data.summary.bookingsProcessed} bookings`);
+        setNotice(t("payout_recalculated"));
       } catch (error) {
         console.error("Failed to recalculate payout", error);
-        alert(`Error: ${error instanceof Error ? error.message : "Failed to recalculate payout"}`);
+        setNotice(t("payout_failed"));
       } finally {
         setPayoutProcessingId(null);
       }
     },
-    [updatePartnerCollections]
+    [updatePartnerCollections, t]
   );
 
   useEffect(() => {
@@ -394,5 +379,8 @@ export function useAdminPartners() {
     handleFleetRemove,
     handleFleetDelete,
     stats,
+    notice,
+    setNotice,
+    loadError,
   };
 }

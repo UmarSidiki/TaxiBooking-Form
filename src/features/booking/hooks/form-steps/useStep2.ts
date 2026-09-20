@@ -23,6 +23,8 @@ export function useStep2() {
     setFormData,
     vehicles,
     setVehicles,
+    vehiclesLoading,
+    vehiclesError,
     distanceData,
     setCurrentStep,
     setDistanceData,
@@ -290,6 +292,8 @@ export function useStep2() {
     // Context values
     formData,
     vehicles,
+    vehiclesLoading,
+    vehiclesError,
     distanceData,
 
     // Tax settings

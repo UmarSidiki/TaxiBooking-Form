@@ -6,7 +6,7 @@ export function RideMapLine({ start, end }: { start: string; end: string }) {
       <span className="max-w-[6rem] truncate" title={start}>
         {start}
       </span>
-      <ChevronRight className="h-3 w-3 text-gray-400" />
+      <ChevronRight className="h-3 w-3 text-muted-foreground" />
       <span className="max-w-[6rem] truncate" title={end}>
         {end}
       </span>

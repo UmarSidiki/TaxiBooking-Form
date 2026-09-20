@@ -44,10 +44,10 @@ export function AdminRidesTabPanel({
           >
             <Loader2 className={`w-8 h-8 animate-spin ${loadingIconClass}`} />
           </div>
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">
+          <h3 className="mb-2 text-lg font-semibold text-foreground">
             {t("Dashboard.Rides.LoadingRides")}
           </h3>
-          <p className="text-gray-500">
+          <p className="text-muted-foreground">
             {t("Dashboard.Rides.LoadingRidesDescription")}
           </p>
         </div>
@@ -57,10 +57,10 @@ export function AdminRidesTabPanel({
             <div className="w-20 h-20 bg-secondary/10 rounded-full flex items-center justify-center mx-auto mb-6">
               <EmptyIcon className="w-10 h-10 text-secondary-foreground" />
             </div>
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">
+            <h3 className="mb-2 text-xl font-semibold text-foreground">
               {emptyTitle}
             </h3>
-            <p className="text-gray-500 mb-6 max-w-md mx-auto">
+            <p className="mx-auto mb-6 max-w-md text-muted-foreground">
               {emptyDescription}
             </p>
             <Button

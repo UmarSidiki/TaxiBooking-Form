@@ -1,5 +1,6 @@
 "use client";
 
+import { AdminPartnerDetailsBilling } from "@/features/partners/ui/admin-partner-details-billing";
 import { AdminPartnerDetailsDocuments } from "@/features/partners/ui/admin-partner-details-documents";
 import { AdminPartnerDetailsFleet } from "@/features/partners/ui/admin-partner-details-fleet";
 import { AdminPartnerDetailsProfile } from "@/features/partners/ui/admin-partner-details-profile";
@@ -80,8 +81,9 @@ export function AdminPartnerDetailsDialog({
               <AdminPartnerDetailsProfile
                 t={t}
                 selectedPartner={selectedPartner}
+                formatCurrency={formatCurrency}
               />
-              <AdminPartnerDetailsDocuments
+              <AdminPartnerDetailsBilling
                 t={t}
                 selectedPartner={selectedPartner}
                 formatCurrency={formatCurrency}
@@ -89,6 +91,10 @@ export function AdminPartnerDetailsDialog({
                 payoutProcessingId={payoutProcessingId}
                 handleMarkPayoutPaid={handleMarkPayoutPaid}
                 handleRecalculatePayout={handleRecalculatePayout}
+              />
+              <AdminPartnerDetailsDocuments
+                t={t}
+                selectedPartner={selectedPartner}
                 setSelectedDocument={setSelectedDocument}
                 setShowDocumentDialog={setShowDocumentDialog}
               />
@@ -108,7 +114,7 @@ export function AdminPartnerDetailsDialog({
               {selectedPartner.status === "rejected" &&
                 selectedPartner.rejectionReason && (
                   <div>
-                    <h3 className="font-semibold mb-2 text-red-600">
+                    <h3 className="mb-2 font-semibold text-destructive">
                       {t("partner-rejection-reason")}
                     </h3>
                     <p className="text-sm">{selectedPartner.rejectionReason}</p>

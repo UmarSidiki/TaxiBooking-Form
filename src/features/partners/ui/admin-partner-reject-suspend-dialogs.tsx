@@ -107,8 +107,8 @@ export function AdminPartnerRejectSuspendDialogs({
           </DialogHeader>
 
           <div className="space-y-4">
-            <div className="bg-yellow-50 dark:bg-yellow-950/20 border border-yellow-200 dark:border-yellow-900 rounded-lg p-4">
-              <p className="text-sm text-yellow-900 dark:text-yellow-100">
+            <div className="bg-accent border border-border rounded-lg p-4">
+              <p className="text-sm text-accent-foreground">
                 <strong>{t("warning-label")}</strong> {t("data-deletion-notice")}
               </p>
             </div>

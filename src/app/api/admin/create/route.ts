@@ -1,56 +1,40 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { hash } from 'bcryptjs';
+import { NextRequest, NextResponse } from "next/server";
+import { hash } from "bcryptjs";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/features/auth";
-import { connectDB } from '@/shared/db';
-import { User } from '@/features/auth/model';
+import { connectDB } from "@/shared/db";
+import { User } from "@/features/auth/model";
+import { parseJsonBody } from "@/shared/http/parse-json-body";
+import { jsonError } from "@/shared/http/json-error";
+import { createAdminSchema } from "@/features/auth/schema/password-reset.schema";
 
 export async function POST(request: NextRequest) {
   try {
-    const { email, password, name, role = 'admin' } = await request.json();
-
-    if (!email || !password || !name) {
-      return NextResponse.json(
-        { success: false, message: 'Email, password, and name are required' },
-        { status: 400 }
-      );
-    }
+    const parsed = await parseJsonBody(request, createAdminSchema);
+    if (!parsed.ok) return parsed.response;
+    const { email, password, name, role } = parsed.data;
 
     await connectDB();
+    const adminCount = await User.countDocuments({
+      role: { $in: ["admin", "superadmin"] },
+    });
 
-    // Check if any admin already exists
-    const adminCount = await User.countDocuments({ role: { $in: ['admin', 'superadmin'] } });
-    
-    // If admins exist, require authentication
     if (adminCount > 0) {
       const session = await getServerSession(authOptions);
-      
-      // If user is not authenticated or not an admin, deny request
-      if (!session || !session.user || (session.user.role !== 'admin' && session.user.role !== 'superadmin')) {
-        return NextResponse.json(
-          { success: false, message: 'Unauthorized: Only existing admins can create new admin users' },
-          { status: 403 }
-        );
+      if (
+        !session?.user ||
+        (session.user.role !== "admin" && session.user.role !== "superadmin")
+      ) {
+        return jsonError("forbidden", 403);
       }
     }
-    // If no admins exist, allow first-time setup without authentication
 
-    // Check if user already exists
     const existingUser = await User.findOne({ email: email.toLowerCase() });
-    if (existingUser) {
-      return NextResponse.json(
-        { success: false, message: 'User with this email already exists' },
-        { status: 409 }
-      );
-    }
+    if (existingUser) return jsonError("conflict", 409);
 
-    // Hash password
-    const hashedPassword = await hash(password, 10);
-
-    // Create user
     const user = await User.create({
       email: email.toLowerCase(),
-      password: hashedPassword,
+      password: await hash(password, 10),
       name,
       role,
       isActive: true,
@@ -58,7 +42,6 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({
       success: true,
-      message: `${role} user created successfully`,
       user: {
         id: user._id,
         email: user.email,
@@ -67,10 +50,7 @@ export async function POST(request: NextRequest) {
       },
     });
   } catch (error) {
-    console.error('Error creating user:', error);
-    return NextResponse.json(
-      { success: false, message: 'Internal server error' },
-      { status: 500 }
-    );
+    console.error("Error creating user:", error);
+    return jsonError("internal_error", 500);
   }
 }

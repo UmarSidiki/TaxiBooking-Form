@@ -3,52 +3,29 @@ import { connectDB } from "@/shared/db";
 import { User } from "@/features/auth/model";
 import { PasswordReset } from "@/features/auth/model";
 import { sendPasswordResetOTP } from "@/features/auth/email/password-reset-otp";
-import { isValidEmail } from "@/shared/lib/validation";
+import { parseJsonBody } from "@/shared/http/parse-json-body";
+import { jsonError } from "@/shared/http/json-error";
+import { requestResetSchema } from "@/features/auth/schema/password-reset.schema";
 
-// Generate 6-digit OTP
 function generateOTP(): string {
   return Math.floor(100000 + Math.random() * 900000).toString();
 }
 
 export async function POST(request: NextRequest) {
   try {
-    const { email } = await request.json();
-
-    if (!email) {
-      return NextResponse.json(
-        { error: "Email is required" },
-        { status: 400 }
-      );
-    }
-
-    // Validate email format
-    if (!isValidEmail(email)) {
-      return NextResponse.json(
-        { error: "Invalid email address format" },
-        { status: 400 }
-      );
-    }
+    const parsed = await parseJsonBody(request, requestResetSchema);
+    if (!parsed.ok) return parsed.response;
+    const email = parsed.data.email.toLowerCase().trim();
 
     await connectDB();
-
-    // Check if user exists
-    const user = await User.findOne({ email: email.toLowerCase().trim() });
-
+    const user = await User.findOne({ email });
     if (!user) {
-      return NextResponse.json(
-        { error: "No account found with this email address" },
-        { status: 404 }
-      );
+      return jsonError("not_found", 404);
     }
 
-    // Generate OTP
     const otp = generateOTP();
-    const expiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
-
-    // Delete any existing unused OTPs for this email
+    const expiresAt = new Date(Date.now() + 10 * 60 * 1000);
     await PasswordReset.deleteMany({ email: user.email, isUsed: false });
-
-    // Create new OTP record
     await PasswordReset.create({
       email: user.email,
       otp,
@@ -56,28 +33,18 @@ export async function POST(request: NextRequest) {
       isUsed: false,
     });
 
-    // Send OTP email
     const emailSent = await sendPasswordResetOTP({
       email: user.email,
       otp,
       name: user.name,
     });
-
     if (!emailSent) {
-      return NextResponse.json(
-        { error: "Failed to send OTP email. Please try again." },
-        { status: 500 }
-      );
+      return jsonError("smtp_failed", 500);
     }
 
-    return NextResponse.json(
-      { message: "If an account exists with this email, an OTP has been sent." },
-      { status: 200 }
-    );
+    return NextResponse.json({ success: true });
   } catch (error) {
-    return NextResponse.json(
-      { error: "An error occurred. Please try again." },
-      { status: 500 }
-    );
+    console.error("request-reset failed:", error);
+    return jsonError("internal_error", 500);
   }
 }

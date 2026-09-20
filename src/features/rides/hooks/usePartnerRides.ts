@@ -15,45 +15,41 @@ export function usePartnerRides() {
   const { currencySymbol } = useCurrency();
   const [bookings, setBookings] = useState<PartnerRideBooking[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [detailBooking, setDetailBooking] = useState<PartnerRideBooking | null>(null);
   const [timezone, setTimezone] = useState<string>(DEFAULT_BOOKING_TIMEZONE);
 
   const fetchSettings = async () => {
     try {
-      const data = await apiGet<{ success: boolean; data: ISetting }>(
-        "/api/settings"
-      );
-      if (data.success && data.data.timezone) {
-        setTimezone(data.data.timezone);
-      }
+      const data = await apiGet<{ success: boolean; data: ISetting }>("/api/settings");
+      if (data.success && data.data.timezone) setTimezone(data.data.timezone);
     } catch (error) {
       console.error("Error fetching settings:", error);
     }
   };
 
-  const fetchRides = async () => {
+  const fetchRides = useCallback(async () => {
+    setLoadError(null);
+    setLoading(true);
     try {
       const response = await fetch("/api/partners/rides");
       const data = await response.json();
-
-      if (data.success) {
-        setBookings(data.data);
-      }
-    } catch (error) {
-      console.error("Error fetching rides:", error);
+      if (data.success) setBookings(data.data);
+      else setLoadError(t("load-error"));
+    } catch {
+      setLoadError(t("load-error"));
     } finally {
       setLoading(false);
     }
-  };
+  }, [t]);
 
   useEffect(() => {
-    fetchRides();
-    fetchSettings();
-  }, []);
+    void fetchRides();
+    void fetchSettings();
+  }, [fetchRides]);
 
   const isBookingPassed = useCallback(
-    (dateStr: string, timeStr: string) =>
-      isBookingPassedAt(dateStr, timeStr, timezone),
+    (dateStr: string, timeStr: string) => isBookingPassedAt(dateStr, timeStr, timezone),
     [timezone]
   );
 
@@ -66,6 +62,8 @@ export function usePartnerRides() {
     tRides,
     currencySymbol,
     loading,
+    loadError,
+    fetchRides,
     detailBooking,
     setDetailBooking,
     isBookingPassed,

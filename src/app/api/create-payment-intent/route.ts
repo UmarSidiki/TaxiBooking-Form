@@ -12,52 +12,19 @@ import {
   fetchRouteDistanceKm,
 } from '@/features/payments/lib/calculate-booking-total';
 import { isValidEmail } from '@/shared/lib/validation';
+import { parseJsonBody } from '@/shared/http/parse-json-body';
+import { jsonError } from '@/shared/http/json-error';
+import { paymentIntentBodySchema } from '@/features/payments/schema/checkout.schema';
+import { registerPaymentMethodDomain } from '@/features/payments/lib/register-payment-method-domain';
 
 export const dynamic = 'force-dynamic';
 
-const registeredDomains = new Set<string>();
-
-async function registerPaymentMethodDomain(stripe: Stripe, request: NextRequest) {
-  const host = request.headers.get('x-forwarded-host') || request.headers.get('host');
-  const domain = host?.split(':')[0]?.toLowerCase();
-  if (!domain || domain === 'localhost' || domain.endsWith('.local')) {
-    return;
-  }
-  if (registeredDomains.has(domain)) {
-    return;
-  }
-
-  try {
-    await stripe.paymentMethodDomains.create({ domain_name: domain });
-    registeredDomains.add(domain);
-  } catch (error) {
-    registeredDomains.add(domain);
-    if (
-      error instanceof Stripe.errors.StripeError &&
-      error.code !== 'resource_already_exists'
-    ) {
-      console.warn('Could not register Stripe payment method domain:', error.message);
-    }
-  }
-}
-
 export async function POST(request: NextRequest) {
   try {
-    const {
-      amount,
-      currency,
-      customerEmail,
-      customerName,
-      description,
-      bookingData,
-    } = await request.json();
-
-    if (!bookingData?.selectedVehicle) {
-      return NextResponse.json(
-        { success: false, message: 'Booking data is required' },
-        { status: 400 }
-      );
-    }
+    const parsed = await parseJsonBody(request, paymentIntentBodySchema);
+    if (!parsed.ok) return parsed.response;
+    const { amount, currency, customerEmail, customerName, description, bookingData } =
+      parsed.data;
 
     await connectDB();
     const settings = await Setting.findOne();
@@ -66,66 +33,48 @@ export async function POST(request: NextRequest) {
     const stripe = await getStripeClient();
 
     if (!stripe) {
-      return NextResponse.json(
-        { success: false, message: 'Stripe is not configured. Please add your Stripe API keys in settings.' },
-        { status: 500 }
-      );
+      return jsonError("payment_not_configured", 500);
     }
 
     const vehicle = await Vehicle.findById(bookingData.selectedVehicle);
     if (!vehicle) {
-      return NextResponse.json(
-        { success: false, message: 'Selected vehicle was not found' },
-        { status: 400 }
-      );
+      return jsonError("not_found", 400);
     }
 
     if (bookingData.bookingType !== 'hourly' && (!bookingData.pickup || !bookingData.dropoff)) {
-      return NextResponse.json(
-        { success: false, message: 'Pickup and destination are required' },
-        { status: 400 }
-      );
+      return jsonError("invalid_body", 400);
     }
 
     const distanceKm =
-      bookingData.bookingType === 'hourly'
+      bookingData.bookingType === "hourly"
         ? undefined
         : await fetchRouteDistanceKm({
-            pickup: bookingData.pickup,
-            dropoff: bookingData.dropoff,
+            pickup: bookingData.pickup ?? "",
+            dropoff: bookingData.dropoff ?? "",
             stops: bookingData.stops,
           });
 
     if (bookingData.bookingType !== 'hourly' && bookingData.pickup && bookingData.dropoff && distanceKm == null) {
-      return NextResponse.json(
-        { success: false, message: 'Could not calculate trip distance. Please try again.' },
-        { status: 400 }
-      );
+      return jsonError("distance_failed", 400);
     }
 
     const priced = calculateBookingPrice(vehicle, bookingData, settings || {}, distanceKm);
     if (!priced.total || priced.total <= 0) {
-      return NextResponse.json(
-        { success: false, message: 'Invalid amount' },
-        { status: 400 }
-      );
+      return jsonError("invalid_body", 400);
     }
 
     if (typeof amount === 'number' && amount > 0) {
       const delta = Math.abs(amount - priced.total);
       if (delta > Math.max(5, priced.total * 0.15)) {
-        return NextResponse.json(
-          {
-            success: false,
-            message: 'The price changed. Please refresh and try again.',
-          },
-          { status: 409 }
-        );
+        return jsonError("price_changed", 409);
       }
     }
 
     const orderId = generateShortId(5);
-    const validEmail = isValidEmail(customerEmail) ? customerEmail.trim() : undefined;
+    const validEmail =
+      customerEmail && isValidEmail(customerEmail)
+        ? customerEmail.trim()
+        : undefined;
     const validName =
       typeof customerName === 'string' && customerName.trim() && !/^First Last$/i.test(customerName.trim())
         ? customerName.trim()
@@ -200,19 +149,9 @@ export async function POST(request: NextRequest) {
     });
   } catch (e: unknown) {
     console.error('Error creating payment intent:', e);
-    let message = 'Failed to create payment intent';
-    let details = 'unknown_error';
-    let statusCode = 500;
     if (e instanceof Stripe.errors.StripeError) {
-      message = e.message;
-      details = e.type;
-      statusCode = e.statusCode || 500;
-    } else if (e instanceof Error) {
-      message = e.message;
+      return jsonError("payment_failed", e.statusCode || 500);
     }
-    return NextResponse.json(
-      { success: false, message, details },
-      { status: statusCode }
-    );
+    return jsonError("internal_error", 500);
   }
 }

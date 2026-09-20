@@ -1,39 +1,39 @@
 import { NextRequest, NextResponse } from "next/server";
+import { z } from "zod";
 import { connectDB } from "@/shared/db";
-import { Booking, type IBooking } from "@/features/booking/model";
+import { Booking } from "@/features/booking/model";
+import { requireAdmin } from "@/features/auth/lib/require-role";
+import { jsonError } from "@/shared/http/json-error";
 
-// GET all bookings
+const bookingListQuerySchema = z.object({
+  status: z.enum(["upcoming", "completed", "canceled"]).optional(),
+});
+
+const BOOKING_LIST_CAP = 500;
+
 export async function GET(request: NextRequest) {
   try {
+    const access = await requireAdmin();
+    if (!access.ok) return access.response;
+
     await connectDB();
+    const parsed = bookingListQuerySchema.safeParse({
+      status: request.nextUrl.searchParams.get("status") ?? undefined,
+    });
+    if (!parsed.success) return jsonError("invalid_body", 400);
 
-    const searchParams = request.nextUrl.searchParams;
-    const status = searchParams.get('status'); // upcoming, completed, canceled
-
-    // Build query
-    const query: Partial<Pick<IBooking, 'status'>> = {};
-    if (status) {
-      query.status = status as "upcoming" | "completed" | "canceled";
-    }
-
-    // Fetch bookings sorted by date (newest first)
-    const bookings = await Booking
-      .find(query)
-      .sort({ createdAt: -1 });
+    const query = parsed.data.status ? { status: parsed.data.status } : {};
+    const bookings = await Booking.find(query)
+      .sort({ createdAt: -1 })
+      .limit(BOOKING_LIST_CAP);
 
     return NextResponse.json({
       success: true,
       data: bookings,
-      count: bookings.length
+      count: bookings.length,
     });
   } catch (error) {
     console.error("Error fetching bookings:", error);
-    return NextResponse.json(
-      {
-        success: false,
-        message: error instanceof Error ? error.message : "Failed to fetch bookings",
-      },
-      { status: 500 }
-    );
+    return jsonError("internal_error", 500);
   }
 }

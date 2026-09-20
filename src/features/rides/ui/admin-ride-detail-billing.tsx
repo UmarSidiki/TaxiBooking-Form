@@ -1,19 +1,11 @@
 "use client";
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/shared/ui/card";
+import type { IBooking } from "@/features/booking/model";
+import { DeskOverlaySection } from "@/features/rides/ui/desk-overlay-section";
 import { RidePaymentStatusBadge } from "@/features/rides/ui/ride-payment-status-badge";
 import { RideStatusBadge } from "@/features/rides/ui/ride-status-badge";
-import type { IBooking } from "@/features/booking/model";
-import {
-  Ban,
-  Calendar,
-  Clock,
-  CreditCard,
-  DollarSign,
-  Receipt,
-  RefreshCw,
-} from "lucide-react";
-import type { useTranslations } from "next-intl";
+import { Ban, RefreshCw } from "lucide-react";
+import { useLocale, type useTranslations } from "next-intl";
 
 type TFn = ReturnType<typeof useTranslations>;
 
@@ -26,96 +18,74 @@ export function AdminRideDetailBilling({
   t: TFn;
   currencySymbol: string;
 }) {
+  const locale = useLocale();
+
   return (
-              <Card className="border border-border shadow-sm bg-background">
-                <CardHeader className="pb-3 border-b">
-                  <CardTitle className="text-lg flex items-center gap-2 text-gray-900">
-                    <Receipt className="w-5 h-5 text-primary" />
-                    {t("Dashboard.Rides.BillingAndPayment")}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                    <div className="text-center p-4 bg-secondary/10 rounded-lg">
-                      <DollarSign className="w-6 h-6 text-secondary-foreground mx-auto mb-2" />
-                      <p className="text-sm text-gray-500 mb-1">
-                        {t("Dashboard.Rides.TotalAmount")}
-                      </p>
-                      <p className="text-2xl font-bold text-gray-900">
-                        {currencySymbol}
-                        {booking.totalAmount?.toFixed(2)}
-                      </p>
-                    </div>
-
-                    <div className="text-center p-4 bg-secondary/10 rounded-lg">
-                      <CreditCard className="w-6 h-6 text-secondary-foreground mx-auto mb-2" />
-                      <p className="text-sm text-gray-500 mb-1">
-                        {t("Dashboard.Rides.PaymentMethod")}
-                      </p>
-                      <p className="text-lg font-semibold text-gray-900 capitalize">
-                        {booking.paymentMethod?.replace("_", " ") ||
-                          "N/A"}
-                      </p>
-                    </div>
-
-                    <div className="text-center p-4 bg-secondary/10 rounded-lg">
-                      <Clock className="w-6 h-6 text-secondary-foreground mx-auto mb-2" />
-                      <p className="text-sm text-gray-500 mb-1">
-                        {t("Dashboard.Rides.PaymentStatus")}
-                      </p>
-                      <div className="flex justify-center">
-                        <RidePaymentStatusBadge status={booking.paymentStatus} />
-                      </div>
-                    </div>
-
-                    <div className="text-center p-4 bg-secondary/10 rounded-lg">
-                      <Calendar className="w-6 h-6 text-secondary-foreground mx-auto mb-2" />
-                      <p className="text-sm text-gray-500 mb-1">
-                        {t("Dashboard.Rides.TripStatus")}
-                      </p>
-                      <div className="flex justify-center">
-                        <RideStatusBadge booking={booking} />
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Cancellation/Refund Info */}
-                  {booking.status === "canceled" ||
-                  booking.refundAmount ? (
-                    <div className="mt-4 p-4 bg-secondary/10 border border-secondary/20 rounded-lg">
-                      {booking.status === "canceled" &&
-                        booking.canceledAt && (
-                          <div className="flex items-center gap-2 text-gray-700 mb-2">
-                            <Ban className="w-4 h-4" />
-                            <span className="font-medium">
-                              {t("Dashboard.Rides.CanceledOn")}{" "}
-                              {new Date(
-                                booking.canceledAt
-                              ).toLocaleString()}
-                            </span>
-                          </div>
-                        )}
-                      {booking.refundAmount &&
-                        booking.refundAmount > 0 && (
-                          <div className="flex items-center justify-between text-gray-700">
-                            <span className="flex items-center gap-2">
-                              <RefreshCw className="w-4 h-4" />
-                              {t("Dashboard.Rides.RefundProcessed")}
-                            </span>
-                            <span className="font-bold">
-                              {currencySymbol}
-                              {booking.refundAmount.toFixed(2)}
-                              {booking.refundPercentage && (
-                                <span className="text-sm font-normal ml-1">
-                                  ({booking.refundPercentage}%)
-                                </span>
-                              )}
-                            </span>
-                          </div>
-                        )}
-                    </div>
-                  ) : null}
-                </CardContent>
-              </Card>
+    <DeskOverlaySection title={t("Dashboard.Rides.BillingAndPayment")}>
+      <dl className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div>
+          <dt className="text-xs font-medium text-muted-foreground">
+            {t("Dashboard.Rides.TotalAmount")}
+          </dt>
+          <dd className="text-lg font-semibold text-foreground">
+            {currencySymbol}
+            {booking.totalAmount?.toFixed(2)}
+          </dd>
+        </div>
+        <div>
+          <dt className="text-xs font-medium text-muted-foreground">
+            {t("Dashboard.Rides.PaymentMethod")}
+          </dt>
+          <dd className="capitalize text-foreground">
+            {booking.paymentMethod?.replace("_", " ") ||
+              t("Dashboard.Rides.NotSpecified")}
+          </dd>
+        </div>
+        <div>
+          <dt className="mb-1 text-xs font-medium text-muted-foreground">
+            {t("Dashboard.Rides.PaymentStatus")}
+          </dt>
+          <dd>
+            <RidePaymentStatusBadge status={booking.paymentStatus} />
+          </dd>
+        </div>
+        <div>
+          <dt className="mb-1 text-xs font-medium text-muted-foreground">
+            {t("Dashboard.Rides.TripStatus")}
+          </dt>
+          <dd>
+            <RideStatusBadge booking={booking} />
+          </dd>
+        </div>
+      </dl>
+      {booking.status === "canceled" || booking.refundAmount ? (
+        <div className="space-y-2 border-t border-border pt-3 text-sm">
+          {booking.status === "canceled" && booking.canceledAt ? (
+            <p className="flex items-center gap-2">
+              <Ban className="size-4" />
+              {t("Dashboard.Rides.CanceledOn")}{" "}
+              {new Date(booking.canceledAt).toLocaleString(locale)}
+            </p>
+          ) : null}
+          {booking.refundAmount && booking.refundAmount > 0 ? (
+            <p className="flex items-center justify-between gap-2">
+              <span className="inline-flex items-center gap-2">
+                <RefreshCw className="size-4" />
+                {t("Dashboard.Rides.RefundProcessed")}
+              </span>
+              <span className="font-semibold">
+                {currencySymbol}
+                {booking.refundAmount.toFixed(2)}
+                {booking.refundPercentage ? (
+                  <span className="ms-1 font-normal text-muted-foreground">
+                    ({booking.refundPercentage}%)
+                  </span>
+                ) : null}
+              </span>
+            </p>
+          ) : null}
+        </div>
+      ) : null}
+    </DeskOverlaySection>
   );
 }

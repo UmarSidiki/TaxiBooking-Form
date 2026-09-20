@@ -2,8 +2,7 @@
 
 import { Input } from "@/shared/ui/input";
 import type { PaymentTabFieldsProps } from "@/features/settings/ui/payment-tab-props";
-import { Banknote, Building2, CreditCard } from "lucide-react";
-import { useCurrency } from "@/shared/context/currency-context";
+import { Building2 } from "lucide-react";
 
 
 export function PaymentTabBank({
@@ -20,7 +19,7 @@ export function PaymentTabBank({
               <Building2 className="h-5 w-5" />
               {t("Dashboard.Settings.bank-account-details")}{" "}
             </h3>
-            <p className="text-xs text-gray-600 mb-4">
+            <p className="text-xs text-muted-foreground mb-4">
               {t(
                 "Dashboard.Settings.these-details-will-be-shown-to-customers-who-choose-bank-transfer-payment"
               )}{" "}

@@ -1,69 +1,44 @@
 import { NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
 import { connectDB } from "@/shared/db";
 import Partner, { type IFleetRequest } from "@/features/partners/model/Partner";
-import { authOptions } from "@/features/auth";
+import { requireRole } from "@/features/auth/lib/require-role";
+import { jsonError } from "@/shared/http/json-error";
 
 export async function DELETE() {
   try {
-    const session = await getServerSession(authOptions);
-
-    if (!session?.user?.email) {
-      return NextResponse.json(
-        { success: false, message: "Unauthorized" },
-        { status: 401 }
-      );
-    }
+    const access = await requireRole("partner");
+    if (!access.ok) return access.response;
 
     await connectDB();
-
-    // Find the partner
-    const partner = await Partner.findOne({ email: session.user.email });
-
-    if (!partner) {
-      return NextResponse.json(
-        { success: false, message: "Partner not found" },
-        { status: 404 }
-      );
-    }
-
-    // Check if partner has an approved fleet
-    if (!partner.currentFleet) {
-      return NextResponse.json(
-        { success: false, message: "No fleet assigned to remove" },
-        { status: 400 }
-      );
-    }
+    const partner = await Partner.findById(access.session.user.id);
+    if (!partner) return jsonError("not_found", 404);
+    if (!partner.currentFleet) return jsonError("not_found", 404);
 
     const removedFleetId = partner.currentFleet;
-
-    // Clear the current fleet
     partner.currentFleet = undefined;
 
-    // Also remove the approved fleet request from fleetRequests array
     if (partner.fleetRequests && partner.fleetRequests.length > 0) {
       partner.fleetRequests = partner.fleetRequests.filter(
-        (req: IFleetRequest) => !(req.vehicleId.toString() === removedFleetId.toString() && req.status === "approved")
+        (req: IFleetRequest) =>
+          !(
+            req.vehicleId.toString() === removedFleetId.toString() &&
+            req.status === "approved"
+          )
       );
     }
 
-    // Clear backward compatibility fields if they match the removed fleet
-    if (partner.requestedFleet?.toString() === removedFleetId.toString() && partner.fleetStatus === "approved") {
+    if (
+      partner.requestedFleet?.toString() === removedFleetId.toString() &&
+      partner.fleetStatus === "approved"
+    ) {
       partner.requestedFleet = undefined;
       partner.fleetStatus = "none";
     }
 
     await partner.save();
-
-    return NextResponse.json({
-      success: true,
-      message: "Fleet removed successfully",
-    });
+    return NextResponse.json({ success: true });
   } catch (error) {
     console.error("Error removing fleet:", error);
-    return NextResponse.json(
-      { success: false, message: "Internal server error" },
-      { status: 500 }
-    );
+    return jsonError("internal_error", 500);
   }
 }

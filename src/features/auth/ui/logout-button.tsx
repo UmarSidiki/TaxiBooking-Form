@@ -2,18 +2,22 @@
 
 import { useState } from "react";
 import { signOut } from "next-auth/react";
+import { useTranslations } from "next-intl";
 
 import { Button } from "@/shared/ui/button";
 
 type LogoutButtonProps = {
   className?: string;
   callbackUrl?: string;
+  variant?: "outline" | "ghost";
 };
 
 export default function LogoutButton({
   className,
   callbackUrl,
+  variant = "outline",
 }: LogoutButtonProps) {
+  const t = useTranslations("Auth.Desk");
   const [loading, setLoading] = useState(false);
 
   const handleSignOut = async () => {
@@ -30,9 +34,9 @@ export default function LogoutButton({
       onClick={handleSignOut}
       className={className}
       disabled={loading}
-      variant="outline"
+      variant={variant}
     >
-      {loading ? "Signing out..." : "Log out"}
+      {loading ? t("signing_out") : t("log_out")}
     </Button>
   );
 }

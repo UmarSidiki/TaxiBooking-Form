@@ -26,6 +26,7 @@ export function useAdminFleet() {
   const [categoryFilter, setCategoryFilter] = useState<string>("all");
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [formData, setFormData] = useState<VehicleForm>(INITIAL_VEHICLE_FORM);
+  const [notice, setNotice] = useState<string | null>(null);
 
   const resolveImageSrc = resolveVehicleImageSrc;
 
@@ -40,7 +41,7 @@ export function useAdminFleet() {
       }
     } catch (error) {
       console.error("Error fetching vehicles:", error);
-      alert(t("Dashboard.Fleet.failed-to-fetch-vehicles"));
+      setNotice(t("Dashboard.Fleet.failed-to-fetch-vehicles"));
     } finally {
       setIsLoading(false);
     }
@@ -68,15 +69,15 @@ export function useAdminFleet() {
         : await apiPost<{ success: boolean; message: string }>(url, formData);
 
       if (data.success) {
-        alert(data.message);
+        setNotice(t("Dashboard.Fleet.vehicle_saved"));
         resetForm();
         fetchVehicles();
       } else {
-        alert(data.message || t("Dashboard.Fleet.operation-failed"));
+        setNotice(t("Dashboard.Fleet.operation-failed"));
       }
     } catch (error) {
       console.error("Error saving vehicle:", error);
-      alert(t("Dashboard.Fleet.failed-to-save-vehicle"));
+      setNotice(t("Dashboard.Fleet.failed-to-save-vehicle"));
     } finally {
       setIsLoading(false);
     }
@@ -102,15 +103,16 @@ export function useAdminFleet() {
     window.scrollTo({ top: 0, behavior: "smooth" }); // Scroll to top to show form
   };
 
-  const handleDelete = async (id: string) => {
-    if (
-      !confirm(
-        t("Dashboard.Fleet.are-you-sure-you-want-to-delete-this-vehicle")
-      )
-    ) {
-      return;
-    }
+  const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
 
+  const handleDelete = (id: string) => {
+    setPendingDeleteId(id);
+  };
+
+  const confirmDelete = async () => {
+    if (!pendingDeleteId) return;
+    const id = pendingDeleteId;
+    setPendingDeleteId(null);
     try {
       setIsLoading(true);
       const data = await apiDelete<{ success: boolean; message: string }>(
@@ -118,14 +120,14 @@ export function useAdminFleet() {
       );
 
       if (data.success) {
-        alert(data.message);
+        setNotice(t("Dashboard.Fleet.vehicle_deleted"));
         fetchVehicles();
       } else {
-        alert(data.message || t("Dashboard.Fleet.delete-failed"));
+        setNotice(t("Dashboard.Fleet.delete-failed"));
       }
     } catch (error) {
       console.error("Error deleting vehicle:", error);
-      alert(t("Dashboard.Fleet.failed-to-delete-vehicle"));
+      setNotice(t("Dashboard.Fleet.failed-to-delete-vehicle"));
     } finally {
       setIsLoading(false);
     }
@@ -168,7 +170,12 @@ export function useAdminFleet() {
     handleSubmit,
     handleEdit,
     handleDelete,
+    pendingDeleteId,
+    setPendingDeleteId,
+    confirmDelete,
     resetForm,
     filteredVehicles,
+    notice,
+    setNotice,
   };
 }

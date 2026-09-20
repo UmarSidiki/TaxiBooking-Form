@@ -10,72 +10,30 @@ export function AdminPartnerStats({
   t,
   stats,
 }: Pick<AdminPartnersState, "t" | "stats">) {
+  const items = [
+    { label: t("total-partners"), value: stats.total, icon: Users },
+    { label: t("pending"), value: stats.pending, icon: Clock },
+    { label: t("approved"), value: stats.approved, icon: CheckCircle2 },
+    { label: t("rejected"), value: stats.rejected, icon: XCircle },
+  ];
+
   return (
-    <>
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <Card>
+    <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
+      {items.map((item) => (
+        <Card key={item.label} className="desk-card border-border">
           <CardContent className="pt-6">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-muted-foreground">
-                  {t("total-partners")}
+                  {item.label}
                 </p>
-                <p className="text-2xl font-bold">{stats.total}</p>
+                <p className="text-2xl font-semibold text-foreground">{item.value}</p>
               </div>
-              <Users className="w-8 h-8 text-primary opacity-50" />
+              <item.icon className="size-6 text-primary" />
             </div>
           </CardContent>
         </Card>
-
-        <Card>
-          <CardContent className="pt-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-muted-foreground">
-                  {t("pending")}
-                </p>
-                <p className="text-2xl font-bold text-yellow-600">
-                  {stats.pending}
-                </p>
-              </div>
-              <Clock className="w-8 h-8 text-yellow-600 opacity-50" />
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="pt-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-muted-foreground">
-                  {t("approved")}
-                </p>
-                <p className="text-2xl font-bold text-green-600">
-                  {stats.approved}
-                </p>
-              </div>
-              <CheckCircle2 className="w-8 h-8 text-green-600 opacity-50" />
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="pt-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-muted-foreground">
-                  {t("rejected")}
-                </p>
-                <p className="text-2xl font-bold text-red-600">
-                  {stats.rejected}
-                </p>
-              </div>
-              <XCircle className="w-8 h-8 text-red-600 opacity-50" />
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-    </>
+      ))}
+    </div>
   );
 }

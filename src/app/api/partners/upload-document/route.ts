@@ -1,82 +1,33 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
 import { connectDB } from "@/shared/db";
 import { Partner } from "@/features/partners/model";
-import { authOptions } from "@/features/auth";
+import { requireRole } from "@/features/auth/lib/require-role";
+import { parseJsonBody } from "@/shared/http/parse-json-body";
+import { jsonError } from "@/shared/http/json-error";
+import { partnerDocumentSchema } from "@/features/partners/schema/partner-write.schema";
 
 export async function POST(request: NextRequest) {
   try {
-    const session = await getServerSession(authOptions);
+    const access = await requireRole("partner");
+    if (!access.ok) return access.response;
 
-    if (!session?.user || session.user.role !== "partner") {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
-    const { type, fileName, fileData, mimeType, fileSize } =
-      await request.json();
-
-    if (!type || !fileName || !fileData || !mimeType || !fileSize) {
-      return NextResponse.json(
-        {
-          error:
-            "Document type, file name, file data, mime type, and file size are required",
-        },
-        { status: 400 }
-      );
-    }
-
-    // Validate mime type
-    const allowedMimeTypes = [
-      "application/pdf",
-      "image/jpeg",
-      "image/jpg",
-      "image/png",
-    ];
-    if (!allowedMimeTypes.includes(mimeType)) {
-      return NextResponse.json(
-        { error: "Only PDF, JPG, and PNG files are allowed" },
-        { status: 400 }
-      );
-    }
-
-    // Validate base64 data
-    if (!fileData.startsWith("data:")) {
-      return NextResponse.json(
-        { error: "Invalid file data format" },
-        { status: 400 }
-      );
-    }
+    const parsed = await parseJsonBody(request, partnerDocumentSchema);
+    if (!parsed.ok) return parsed.response;
 
     await connectDB();
+    const partner = await Partner.findById(access.session.user.id);
+    if (!partner) return jsonError("not_found", 404);
 
-    const partner = await Partner.findById(session.user.id);
-
-    if (!partner) {
-      return NextResponse.json({ error: "Partner not found" }, { status: 404 });
-    }
-
-    // Add document to partner's documents array
     partner.documents.push({
-      type,
-      fileName,
-      fileData,
-      mimeType,
-      fileSize,
+      ...parsed.data,
       status: "pending",
       uploadedAt: new Date(),
     });
-
     await partner.save();
 
-    return NextResponse.json(
-      { message: "Document uploaded successfully" },
-      { status: 200 }
-    );
+    return NextResponse.json({ success: true });
   } catch (error) {
     console.error("Error uploading document:", error);
-    return NextResponse.json(
-      { error: "An error occurred while uploading document" },
-      { status: 500 }
-    );
+    return jsonError("internal_error", 500);
   }
 }

@@ -45,7 +45,7 @@ export default function FormBuilderGuard({ children }: FormBuilderGuardProps) {
           <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-primary/10 mb-4">
             <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin" />
           </div>
-          <p className="text-sm text-muted-foreground">Loading...</p>
+          <p className="text-sm text-muted-foreground">{t("FormBuilder.loading")}</p>
         </div>
       </div>
     );
@@ -53,24 +53,24 @@ export default function FormBuilderGuard({ children }: FormBuilderGuardProps) {
 
   if (!isEnabled) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
+      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-background to-muted">
         <div className="max-w-md">
           <div className="flex justify-center mb-4">
             <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-destructive/10">
               <AlertCircle className="w-8 h-8 text-destructive" />
             </div>
           </div>
-          <h1 className="text-2xl font-bold text-slate-900 mb-2 text-center">
+          <h1 className="text-2xl font-bold text-foreground mb-2 text-center">
             {t("form-builder.disabled-title") || "Module Disabled"}
           </h1>
-          <p className="text-slate-600 mb-6 text-center">
+          <p className="text-muted-foreground mb-6 text-center">
             {t("form-builder.disabled-message") ||
               "The form builder module is currently disabled by the administrator."}
           </p>
           <div className="flex justify-center">
             <button
               onClick={() => router.back()}
-              className="inline-flex items-center justify-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors"
+              className="inline-flex min-h-11 items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2 text-primary-foreground transition-colors hover:bg-primary/90"
             >
               <ArrowLeft className="w-4 h-4" />
               {t("common.go-back") || "Go Back"}

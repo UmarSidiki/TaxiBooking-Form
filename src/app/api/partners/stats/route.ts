@@ -1,23 +1,17 @@
 import { NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
 import { connectDB } from "@/shared/db";
 import { Booking, type IBooking } from "@/features/booking/model";
-import { authOptions } from "@/features/auth";
+import { requireRole } from "@/features/auth/lib/require-role";
+import { jsonError } from "@/shared/http/json-error";
 
 export async function GET() {
   try {
-    const session = await getServerSession(authOptions);
-
-    if (!session?.user || session.user.role !== "partner") {
-      return NextResponse.json(
-        { success: false, error: "Unauthorized" },
-        { status: 401 }
-      );
-    }
+    const access = await requireRole("partner");
+    if (!access.ok) return access.response;
 
     await connectDB();
 
-    const partnerId = session.user.id;
+    const partnerId = access.session.user.id;
     const now = new Date();
 
     // Get all bookings assigned to this partner
@@ -102,12 +96,6 @@ export async function GET() {
     );
   } catch (error) {
     console.error("Error fetching partner stats:", error);
-    return NextResponse.json(
-      {
-        success: false,
-        error: "An error occurred while fetching stats",
-      },
-      { status: 500 }
-    );
+    return jsonError("internal_error", 500);
   }
 }

@@ -1,8 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/features/auth";
 import { connectDB } from "@/shared/db";
 import Partner, { type IFleetRequest } from "@/features/partners/model/Partner";
+import { requireAdmin } from "@/features/auth/lib/require-role";
+import { parseJsonBody } from "@/shared/http/parse-json-body";
+import { jsonError } from "@/shared/http/json-error";
+import { vehicleIdBodySchema } from "@/features/partners/schema/partner-write.schema";
 
 export async function DELETE(
   request: NextRequest,
@@ -10,28 +12,18 @@ export async function DELETE(
 ) {
   const { id } = await params;
   try {
-    const session = await getServerSession(authOptions);
+    const access = await requireAdmin();
+    if (!access.ok) return access.response;
 
-    if (!session?.user?.role || session.user.role !== "admin") {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
-    const { vehicleId } = await request.json();
-
-    if (!vehicleId) {
-      return NextResponse.json(
-        { error: "Vehicle ID is required" },
-        { status: 400 }
-      );
-    }
+    const parsed = await parseJsonBody(request, vehicleIdBodySchema);
+    if (!parsed.ok) return parsed.response;
+    const { vehicleId } = parsed.data;
 
     await connectDB();
 
     const partner = await Partner.findById(id);
 
-    if (!partner) {
-      return NextResponse.json({ error: "Partner not found" }, { status: 404 });
-    }
+    if (!partner) return jsonError("not_found", 404);
 
     // Remove the rejected fleet request from the array
     if (partner.fleetRequests && partner.fleetRequests.length > 0) {
@@ -48,9 +40,6 @@ export async function DELETE(
     });
   } catch (error) {
     console.error("Error deleting fleet request:", error);
-    return NextResponse.json(
-      { error: "Failed to delete fleet request" },
-      { status: 500 }
-    );
+    return jsonError("internal_error", 500);
   }
 }

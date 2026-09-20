@@ -5,7 +5,7 @@ import { Button } from "@/shared/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/shared/ui/card";
 import { Separator } from "@/shared/ui/separator";
 import type { IVehicle } from "@/features/fleet/model";
-import { Car, CheckCircle, Edit, Package, Trash2, Users, XCircle } from "lucide-react";
+import { CheckCircle, Edit, Package, Trash2, Users, XCircle } from "lucide-react";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 
@@ -23,7 +23,7 @@ export function FleetVehicleCard ({
   const t = useTranslations();
   return (
     <Card
-      className={`group hover:shadow-lg transition-all duration-300 border border-border hover:border-primary/20 bg-card min-w-[350px] sm:min-w-[300px] ${
+      className={`group min-w-[350px] border border-border bg-card transition-shadow duration-200 hover:border-primary/20 hover:shadow-md sm:min-w-[300px] ${
         !vehicle.isActive ? "opacity-60" : ""
       }`}
     >
@@ -45,7 +45,7 @@ export function FleetVehicleCard ({
               size="sm"
               variant="outline"
               onClick={() => onEdit(vehicle)}
-              className="h-8 w-8 p-0 hover:bg-primary/10 hover:text-primary hover:border-primary/20"
+              className="size-11 p-0 hover:border-primary/20 hover:bg-primary/10 hover:text-primary"
             >
               <Edit className="h-3 w-3" />
             </Button>
@@ -53,7 +53,7 @@ export function FleetVehicleCard ({
               size="sm"
               variant="destructive"
               onClick={() => onDelete(vehicle._id!)}
-              className="h-8 w-8 p-0"
+              className="size-11 p-0"
             >
               <Trash2 className="h-3 w-3" />
             </Button>

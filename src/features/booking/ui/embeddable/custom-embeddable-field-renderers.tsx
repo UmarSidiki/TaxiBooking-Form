@@ -1,5 +1,6 @@
 "use client";
 
+import type { CSSProperties } from "react";
 import { createLocationFieldRenderers } from "@/features/booking/ui/embeddable/custom-embeddable-location-fields";
 import { createScheduleFieldRenderers } from "@/features/booking/ui/embeddable/custom-embeddable-schedule-fields";
 import { createTypeFieldRenderers } from "@/features/booking/ui/embeddable/custom-embeddable-type-fields";
@@ -13,6 +14,8 @@ import { ArrowRight } from "lucide-react";
 
 export type { CustomEmbeddableFieldRendererProps };
 
+type MobileSpanStyle = CSSProperties & { "--mobile-span": number };
+
 export function useCustomEmbeddableFieldRenderers(
   props: CustomEmbeddableFieldRendererProps
 ) {
@@ -21,7 +24,7 @@ export function useCustomEmbeddableFieldRenderers(
   const FieldLabel = ({ field }: { field: IFormField }) => {
     if (!style.showLabels) return null;
     return (
-      <label className="block text-[10px] sm:text-xs font-medium mb-0.5 sm:mb-1" style={{ color: style.labelColor }}>
+      <label className="mb-0.5 block text-xs font-medium sm:mb-1" style={{ color: style.labelColor }}>
         {field.label}
         {field.required && <span className="text-red-500 ml-0.5">*</span>}
       </label>
@@ -110,14 +113,16 @@ export function useCustomEmbeddableFieldRenderers(
       mobileSpan = Math.max(1, Math.ceil(cols / 4));
     }
 
+    const fieldStyle: MobileSpanStyle = {
+      gridColumn: `span ${span} / span ${span}`,
+      "--mobile-span": mobileSpan,
+    };
+
     return (
       <div
         key={field.id}
         className="field-responsive-width"
-        style={{ 
-          gridColumn: `span ${span} / span ${span}`,
-          ['--mobile-span' as any]: mobileSpan 
-        }}
+        style={fieldStyle}
       >
         {fieldContent}
       </div>
@@ -140,17 +145,19 @@ export function useCustomEmbeddableFieldRenderers(
     const alignment = style.buttonAlignment || "center";
     const justify = alignment === "left" ? "flex-start" : alignment === "right" ? "flex-end" : "center";
 
+    const buttonStyle: MobileSpanStyle = {
+      gridColumn: isFullWidthRow ? "1 / -1" : `span ${span} / span ${span}`,
+      display: "flex",
+      justifyContent: isFullWidthRow ? justify : undefined,
+      alignItems: "flex-end",
+      "--mobile-span": cols,
+    };
+
     return (
       <div
         key="submit-btn"
         className="field-responsive-width"
-        style={{
-          gridColumn: isFullWidthRow ? "1 / -1" : `span ${span} / span ${span}`,
-          display: "flex",
-          justifyContent: isFullWidthRow ? justify : undefined,
-          alignItems: "flex-end",
-          ['--mobile-span' as any]: cols // Force full width on mobile for button
-        }}
+        style={buttonStyle}
       >
         <Button
           type="submit"

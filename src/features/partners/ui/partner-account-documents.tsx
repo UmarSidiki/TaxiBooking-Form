@@ -11,7 +11,7 @@ import {
   CardTitle,
 } from "@/shared/ui/card";
 import { FileText } from "lucide-react";
-import type { useTranslations } from "next-intl";
+import { useLocale, type useTranslations } from "next-intl";
 
 type TFn = ReturnType<typeof useTranslations<"Dashboard.Partners.Dashboard">>;
 
@@ -22,68 +22,63 @@ export function PartnerAccountDocuments({
   t: TFn;
   partner: PartnerAccountData;
 }) {
+  const locale = useLocale();
+
   return (
-      <Card>
-        <CardHeader>
-          <CardTitle>{t("uploaded-documents")}</CardTitle>
-          <CardDescription>
-            {t("view-the-status-of-your-uploaded-documents")}
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          {partner.documents.length === 0 ? (
-            <div className="text-center py-8 text-muted-foreground">
-              <FileText className="w-12 h-12 mx-auto mb-3 opacity-50" />
-              <p>{t("no-documents-uploaded-yet")}</p>
-            </div>
-          ) : (
-            <div className="space-y-3">
-              {partner.documents.map((doc, index) => (
-                <div
-                  key={index}
-                  className="flex flex-col sm:flex-row sm:items-center gap-3 p-4 border rounded-lg hover:bg-muted/50 transition-colors"
-                >
-                  <div className="flex items-center gap-3 flex-1 min-w-0">
-                    <FileText className="w-5 h-5 text-primary flex-shrink-0" />
-                    <div className="flex-1 min-w-0">
-                      <p className="font-medium capitalize truncate">
-                        {doc.type.replace("_", " ")}
+    <Card className="desk-card border-border">
+      <CardHeader>
+        <CardTitle>{t("uploaded-documents")}</CardTitle>
+        <CardDescription>{t("view-the-status-of-your-uploaded-documents")}</CardDescription>
+      </CardHeader>
+      <CardContent>
+        {partner.documents.length === 0 ? (
+          <div className="py-8 text-center text-muted-foreground">
+            <FileText className="mx-auto mb-3 size-12 opacity-50" />
+            <p>{t("no-documents-uploaded-yet")}</p>
+          </div>
+        ) : (
+          <div className="space-y-3">
+            {partner.documents.map((doc) => (
+              <div
+                key={`${doc.fileName}-${doc.uploadedAt}`}
+                className="flex flex-col gap-3 rounded-md border border-border p-4 sm:flex-row sm:items-center"
+              >
+                <div className="flex min-w-0 flex-1 items-center gap-3">
+                  <FileText className="size-5 shrink-0 text-primary" />
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate font-medium capitalize">{doc.type.replace("_", " ")}</p>
+                    <p className="truncate text-sm text-muted-foreground">{doc.fileName}</p>
+                    <p className="mt-1 text-xs text-muted-foreground">
+                      {t("uploaded")}: {new Date(doc.uploadedAt).toLocaleDateString(locale)} •{" "}
+                      {(doc.fileSize / 1024).toFixed(0)} KB
+                    </p>
+                    {doc.status === "rejected" && doc.rejectionReason ? (
+                      <p className="mt-1 text-xs text-destructive">
+                        {t("reason")}: {doc.rejectionReason}
                       </p>
-                      <p className="text-sm text-muted-foreground truncate">
-                        {doc.fileName}
-                      </p>
-                      <p className="text-xs text-muted-foreground mt-1">
-                        {t("uploaded")}:{" "}
-                        {new Date(doc.uploadedAt).toLocaleDateString()} •{" "}
-                        {(doc.fileSize / 1024).toFixed(0)} KB
-                      </p>
-                      {doc.status === "rejected" && doc.rejectionReason && (
-                        <p className="text-xs text-red-600 dark:text-red-400 mt-1">
-                          {t("reason")}: {doc.rejectionReason}
-                        </p>
-                      )}
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-2 flex-shrink-0">
-                    <PartnerAccountStatusBadge status={doc.status} t={t} />
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => {
-                        const link = document.createElement("a");
-                        link.href = doc.fileData;
-                        link.download = doc.fileName;
-                        link.click();
-                      }}
-                    >
-                      {t("download")}
-                    </Button>
+                    ) : null}
                   </div>
                 </div>
-              ))}
-            </div>
-          )}
-        </CardContent>
-      </Card>
+                <div className="flex shrink-0 items-center gap-2">
+                  <PartnerAccountStatusBadge status={doc.status} t={t} />
+                  <Button
+                    variant="outline"
+                    className="h-11"
+                    onClick={() => {
+                      const link = document.createElement("a");
+                      link.href = doc.fileData;
+                      link.download = doc.fileName;
+                      link.click();
+                    }}
+                  >
+                    {t("download")}
+                  </Button>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </CardContent>
+    </Card>
   );
 }

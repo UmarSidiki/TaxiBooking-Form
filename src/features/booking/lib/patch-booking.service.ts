@@ -28,7 +28,7 @@ export async function patchBooking(
 
   const parsed = parseBookingPatchBody(body);
   if (!parsed.success) {
-    return { ok: false, status: parsed.status, message: parsed.message };
+    return { ok: false, status: parsed.status, message: parsed.error };
   }
 
   const booking = await findBookingById(id);

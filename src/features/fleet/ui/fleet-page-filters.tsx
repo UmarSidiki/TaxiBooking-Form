@@ -38,20 +38,20 @@ export function FleetPageFilters({
         <div className="flex flex-col space-y-3 sm:space-y-0 sm:flex-row sm:gap-4">
           <div className="flex-1">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Search className="absolute start-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
               <Input
                 placeholder={t(
                   "Dashboard.Fleet.search-vehicles-by-name-description-or-category"
                 )}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10 h-10 sm:h-9"
+                className="h-11 ps-10"
               />
             </div>
           </div>
           <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
             <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-              <SelectTrigger className="w-full sm:w-40 h-10 sm:h-9">
+              <SelectTrigger className="h-11 w-full sm:w-40">
                 <SelectValue placeholder={t("Dashboard.Fleet.category")} />
               </SelectTrigger>
               <SelectContent>
@@ -79,7 +79,7 @@ export function FleetPageFilters({
               </SelectContent>
             </Select>
             <Select value={statusFilter} onValueChange={setStatusFilter}>
-              <SelectTrigger className="w-full sm:w-32 h-10 sm:h-9">
+              <SelectTrigger className="h-11 w-full sm:w-32">
                 <SelectValue placeholder={t("Dashboard.Fleet.status")} />
               </SelectTrigger>
               <SelectContent>

@@ -31,7 +31,7 @@ export function PartnerFleetPending({
         <div>
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-2xl font-semibold tracking-tight">{t("pending-requests")}</h2>
-            <Badge variant="outline" className="bg-yellow-50 text-yellow-700 border-yellow-200">
+            <Badge variant="outline">
               <Clock className="w-3 h-3 mr-1" />
               {t("awaiting-approval")}
             </Badge>

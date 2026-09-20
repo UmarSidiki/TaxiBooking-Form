@@ -27,6 +27,8 @@ export function useAdminRides() {
   const [bookings, setBookings] = useState<IBooking[]>([]);
   const [filteredBookings, setFilteredBookings] = useState<IBooking[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [notice, setNotice] = useState<string | null>(null);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState("upcoming");
   const [cancelingId, setCancelingId] = useState<string | null>(null);
   const [showCancelDialog, setShowCancelDialog] = useState(false);
@@ -52,19 +54,22 @@ export function useAdminRides() {
 
   const fetchBookings = useCallback(async () => {
     setIsLoading(true);
+    setLoadError(null);
     try {
       const data = await apiGet<{ success: boolean; data: IBooking[] }>(
         "/api/bookings"
       );
       if (data.success) {
         setBookings(data.data);
+      } else {
+        setLoadError(t("Dashboard.Rides.ErrorLoading"));
       }
-    } catch (error) {
-      console.error("Error fetching bookings:", error);
+    } catch {
+      setLoadError(t("Dashboard.Rides.ErrorLoading"));
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [t]);
 
   const fetchDrivers = useCallback(async () => {
     try {
@@ -174,11 +179,11 @@ export function useAdminRides() {
         setShowCancelDialog(false);
         setSelectedBooking(null);
       } else {
-        alert(`${t("Dashboard.Rides.CancelError")}: ${data.message}`);
+        setNotice(`${t("Dashboard.Rides.CancelError")}: ${data.message}`);
       }
     } catch (error) {
       console.error("Error canceling booking:", error);
-      alert(t("Dashboard.Rides.CancelBookingError"));
+      setNotice(t("Dashboard.Rides.CancelBookingError"));
     } finally {
       setCancelingId(null);
     }
@@ -203,13 +208,13 @@ export function useAdminRides() {
         );
         // Reset edit mode
         setSelectedBooking(null);
-        alert(
+        setNotice(
           data.data.assignedDriver && bookingId !== data.data.assignedDriver._id
             ? t("Dashboard.Rides.driver-reassigned-successfully")
             : t("Dashboard.Rides.driver-assigned-successfully")
         );
       } else {
-        alert(
+        setNotice(
           t("Dashboard.Rides.assignment-failed-data-message", {
             0: data.message,
           })
@@ -217,7 +222,7 @@ export function useAdminRides() {
       }
     } catch (error) {
       console.error("Error assigning driver:", error);
-      alert(t("Dashboard.Rides.failed-to-assign-driver"));
+      setNotice(t("Dashboard.Rides.failed-to-assign-driver"));
     } finally {
       setAssigningId(null);
     }
@@ -242,14 +247,14 @@ export function useAdminRides() {
         );
         // Reset edit mode
         setSelectedBooking(null);
-        alert(
+        setNotice(
           data.data.assignedPartner &&
             bookingId !== data.data.assignedPartner._id
             ? t("Dashboard.Rides.partner-reassigned-successfully")
             : t("Dashboard.Rides.partner-assigned-successfully")
         );
       } else {
-        alert(
+        setNotice(
           t("Dashboard.Rides.assignment-failed-data-message", {
             0: data.message,
           })
@@ -257,7 +262,7 @@ export function useAdminRides() {
       }
     } catch (error) {
       console.error("Error assigning partner:", error);
-      alert(t("Dashboard.Rides.failed-to-assign-partner"));
+      setNotice(t("Dashboard.Rides.failed-to-assign-partner"));
     } finally {
       setAssigningId(null);
     }
@@ -283,11 +288,11 @@ export function useAdminRides() {
         setBookings((prev) =>
           prev.map((b) => (b._id?.toString() === bookingId ? data.data : b))
         );
-        alert(t("Dashboard.Rides.partner-review-approved"));
+        setNotice(t("Dashboard.Rides.partner-review-approved"));
         return true;
       } else {
         console.error("Partner approval failed:", data.message);
-        alert(
+        setNotice(
           t("Dashboard.Rides.partner-review-error", {
             0: data.message,
           })
@@ -296,7 +301,7 @@ export function useAdminRides() {
       }
     } catch (error) {
       console.error("Error approving partner review:", error);
-      alert(t("Dashboard.Rides.partner-review-generic-error"));
+      setNotice(t("Dashboard.Rides.partner-review-generic-error"));
       return false;
     } finally {
       setApprovingPartnerId(null);
@@ -318,6 +323,7 @@ export function useAdminRides() {
     bookings,
     filteredBookings,
     isLoading,
+    loadError,
     activeTab,
     setActiveTab,
     cancelingId,
@@ -347,6 +353,8 @@ export function useAdminRides() {
     timezone,
     bookingReviews,
     setBookingReviews,
+    notice,
+    setNotice,
     fetchBookings,
     isBookingPassed,
     handleCancelClick,

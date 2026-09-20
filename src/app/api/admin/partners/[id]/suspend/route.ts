@@ -1,38 +1,30 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
 import { connectDB } from "@/shared/db";
 import { Partner } from "@/features/partners/model";
-import { authOptions } from "@/features/auth";
 import { sendPartnerSuspensionEmail } from "@/features/partners/email/notification";
+import { requireAdmin } from "@/features/auth/lib/require-role";
+import { parseJsonBody } from "@/shared/http/parse-json-body";
+import { jsonError } from "@/shared/http/json-error";
+import { reasonBodySchema } from "@/features/partners/schema/partner-write.schema";
 
 export async function PATCH(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const session = await getServerSession(authOptions);
-
-    if (!session?.user || session.user.role !== "admin") {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
+    const access = await requireAdmin();
+    if (!access.ok) return access.response;
 
     const { id } = await params;
-    const { reason } = await request.json();
-
-    if (!reason) {
-      return NextResponse.json(
-        { error: "Suspension reason is required" },
-        { status: 400 }
-      );
-    }
+    const parsed = await parseJsonBody(request, reasonBodySchema);
+    if (!parsed.ok) return parsed.response;
+    const { reason } = parsed.data;
 
     await connectDB();
 
     const partner = await Partner.findById(id);
 
-    if (!partner) {
-      return NextResponse.json({ error: "Partner not found" }, { status: 404 });
-    }
+    if (!partner) return jsonError("not_found", 404);
 
     // Calculate deletion date (30 days from now)
     const deletionDate = new Date();
@@ -41,7 +33,7 @@ export async function PATCH(
     partner.status = "suspended";
     partner.rejectionReason = reason;
     partner.suspendedAt = new Date();
-    partner.suspendedBy = session.user.id;
+    partner.suspendedBy = access.session.user.id;
     partner.scheduledDeletionAt = deletionDate;
     partner.isActive = false;
 
@@ -73,9 +65,6 @@ export async function PATCH(
     );
   } catch (error) {
     console.error("Error suspending partner:", error);
-    return NextResponse.json(
-      { error: "An error occurred while suspending partner" },
-      { status: 500 }
-    );
+    return jsonError("internal_error", 500);
   }
 }

@@ -1,11 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
 import { connectDB } from "@/shared/db";
 import Partner, { type IFleetRequest } from "@/features/partners/model/Partner";
 import Vehicle from "@/features/fleet/model/Vehicle";
-import { authOptions } from "@/features/auth";
 import { sendFleetApprovalEmail } from "@/features/partners/email/fleet-notification";
 import { getBaseUrl } from "@/shared/lib/get-base-url";
+import { requireAdmin } from "@/features/auth/lib/require-role";
+import { parseJsonBody } from "@/shared/http/parse-json-body";
+import { jsonError } from "@/shared/http/json-error";
+import { vehicleIdBodySchema } from "@/features/partners/schema/partner-write.schema";
 
 export async function PATCH(
   request: NextRequest,
@@ -13,70 +15,37 @@ export async function PATCH(
 ) {
   const { id } = await params;
   try {
-    const session = await getServerSession(authOptions);
+    const access = await requireAdmin();
+    if (!access.ok) return access.response;
 
-    if (!session?.user?.role || session.user.role !== "admin") {
-      return NextResponse.json(
-        { success: false, message: "Unauthorized" },
-        { status: 401 }
-      );
-    }
-
+    const parsed = await parseJsonBody(request, vehicleIdBodySchema);
+    if (!parsed.ok) return parsed.response;
+    const { vehicleId } = parsed.data;
     const partnerId = id;
-    const { vehicleId } = await request.json();
-
-    if (!partnerId) {
-      return NextResponse.json(
-        { success: false, message: "Partner ID is required" },
-        { status: 400 }
-      );
-    }
-
-    if (!vehicleId) {
-      return NextResponse.json(
-        { success: false, message: "Vehicle ID is required" },
-        { status: 400 }
-      );
-    }
 
     await connectDB();
 
     // Find the partner
     const partner = await Partner.findById(partnerId);
 
-    if (!partner) {
-      return NextResponse.json(
-        { success: false, message: "Partner not found" },
-        { status: 404 }
-      );
-    }
+    if (!partner) return jsonError("not_found", 404);
 
     // Find the specific fleet request
     const fleetRequest = partner.fleetRequests?.find(
       (req: IFleetRequest) => req.vehicleId.toString() === vehicleId && req.status === "pending"
     );
 
-    if (!fleetRequest) {
-      return NextResponse.json(
-        { success: false, message: "No pending fleet request found for this vehicle" },
-        { status: 400 }
-      );
-    }
+    if (!fleetRequest) return jsonError("not_found", 404);
 
     // Verify vehicle exists
     const vehicle = await Vehicle.findById(vehicleId);
 
-    if (!vehicle) {
-      return NextResponse.json(
-        { success: false, message: "Requested vehicle not found" },
-        { status: 404 }
-      );
-    }
+    if (!vehicle) return jsonError("not_found", 404);
 
     // Update the specific fleet request
     fleetRequest.status = "approved";
     fleetRequest.approvedAt = new Date();
-    fleetRequest.approvedBy = session.user.email;
+    fleetRequest.approvedBy = access.session.user.email;
 
     // Set as current fleet if no current fleet exists
     if (!partner.currentFleet) {
@@ -87,7 +56,7 @@ export async function PATCH(
     partner.fleetStatus = "approved";
     partner.requestedFleet = vehicleId;
     partner.fleetApprovedAt = new Date();
-    partner.fleetApprovedBy = session.user.email;
+    partner.fleetApprovedBy = access.session.user.email;
 
     await partner.save();
 
@@ -113,9 +82,6 @@ export async function PATCH(
     });
   } catch (error) {
     console.error("Error approving fleet:", error);
-    return NextResponse.json(
-      { success: false, message: "Internal server error" },
-      { status: 500 }
-    );
+    return jsonError("internal_error", 500);
   }
 }

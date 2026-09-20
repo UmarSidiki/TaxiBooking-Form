@@ -1,5 +1,6 @@
 "use client";
 
+import { Badge } from "@/shared/ui/badge";
 import { CheckCircle2, Clock, XCircle } from "lucide-react";
 import type { useTranslations } from "next-intl";
 
@@ -12,34 +13,34 @@ export function PartnerAccountStatusBadge({
   status: string;
   t: TFn;
 }) {
-    switch (status) {
-      case "approved":
-        return (
-          <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300">
-            <CheckCircle2 className="w-3 h-3" />
-            {t("approved")}
-          </span>
-        );
-      case "rejected":
-        return (
-          <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300">
-            <XCircle className="w-3 h-3" />
-            {t("rejected")}
-          </span>
-        );
-      case "suspended":
-        return (
-          <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-700 dark:bg-gray-900 dark:text-gray-300">
-            <XCircle className="w-3 h-3" />
-            {t("suspended")}
-          </span>
-        );
-      default:
-        return (
-          <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-300">
-            <Clock className="w-3 h-3" />
-            {t("pending")}
-          </span>
-        );
-    }
+  if (status === "approved") {
+    return (
+      <Badge className="gap-1">
+        <CheckCircle2 className="size-3" />
+        {t("approved")}
+      </Badge>
+    );
+  }
+  if (status === "rejected") {
+    return (
+      <Badge variant="destructive" className="gap-1">
+        <XCircle className="size-3" />
+        {t("rejected")}
+      </Badge>
+    );
+  }
+  if (status === "suspended") {
+    return (
+      <Badge variant="secondary" className="gap-1">
+        <XCircle className="size-3" />
+        {t("suspended")}
+      </Badge>
+    );
+  }
+  return (
+    <Badge variant="outline" className="gap-1">
+      <Clock className="size-3" />
+      {t("pending")}
+    </Badge>
+  );
 }

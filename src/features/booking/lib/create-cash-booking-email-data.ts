@@ -1,10 +1,10 @@
 import { getCurrencySymbol } from '@/shared/lib/utils';
 import { getSettingsCurrency } from '@/features/booking/lib/get-settings-currency';
-import type { BookingInput } from '@/features/booking/model';
+import type { CashBookingInput } from '@/features/booking/schema/cash-booking.schema';
 import type { IVehicle } from '@/features/fleet/model';
 
 export async function createCashBookingEmailData(
-  formData: BookingInput,
+  formData: CashBookingInput,
   vehicle: IVehicle,
   tripId: string,
   totalAmount: number,

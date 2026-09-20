@@ -1,96 +1,77 @@
 "use client";
 
+import { FormBuilderAlignToggle } from "@/features/form-builder/ui/form-builder-align-toggle";
+import { FormBuilderColorField } from "@/features/form-builder/ui/form-builder-color-field";
 import type { FormBuilderStyleEditorProps } from "@/features/form-builder/ui/form-builder-style-editor-props";
 import { Input } from "@/shared/ui/input";
 import { Label } from "@/shared/ui/label";
 import { Type } from "lucide-react";
 
 export function FormBuilderDesignHeader({
+  t,
   formStyle,
   setFormStyle,
 }: FormBuilderStyleEditorProps) {
   return (
-    <>
-                      {/* HEADER SECTION */}
-                      <div className="space-y-3">
-                        <div className="flex items-center gap-2">
-                          <Type className="h-4 w-4 text-primary" />
-                          <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Header</Label>
-                        </div>
-
-                        <div className="space-y-1.5">
-                          <Label className="text-xs font-medium">Title</Label>
-                          <Input
-                            value={formStyle.headingText}
-                            onChange={(e) => setFormStyle((s) => ({ ...s, headingText: e.target.value }))}
-                            className="h-8 text-xs"
-                            placeholder="Enter header text"
-                          />
-                        </div>
-
-                        <div className="space-y-1.5">
-                          <Label className="text-xs font-medium">Title Color</Label>
-                          <div className="flex items-center gap-2">
-                            <input
-                              type="color"
-                              value={formStyle.headingColor}
-                              onChange={(e) => setFormStyle((s) => ({ ...s, headingColor: e.target.value }))}
-                              className="h-8 w-8 rounded cursor-pointer border-0 p-0"
-                            />
-                            <Input className="h-8 text-xs font-mono flex-1" value={formStyle.headingColor} onChange={(e) => setFormStyle((s) => ({ ...s, headingColor: e.target.value }))} />
-                          </div>
-                        </div>
-
-                        <div className="space-y-1.5">
-                          <Label className="text-xs font-medium">Title Alignment</Label>
-                          <div className="flex gap-1">
-                            {(['left', 'center', 'right'] as const).map((align) => (
-                              <button
-                                key={align}
-                                onClick={() => setFormStyle((s) => ({ ...s, headingAlignment: align }))}
-                                className={`flex-1 py-1.5 rounded text-xs font-medium transition-all ${
-                                  formStyle.headingAlignment === align
-                                    ? 'bg-primary text-white'
-                                    : 'bg-muted text-muted-foreground hover:bg-muted/80'
-                                }`}
-                                title={align.charAt(0).toUpperCase() + align.slice(1)}
-                              >
-                                {align === 'left' ? '←' : align === 'center' ? '↔' : '→'}
-                              </button>
-                            ))}
-                          </div>
-                        </div>
-
-                        <div className="space-y-1.5">
-                          <Label className="text-xs font-medium">Subtitle</Label>
-                          <Input
-                            value={formStyle.subHeadingText || ""}
-                            onChange={(e) => setFormStyle((s) => ({ ...s, subHeadingText: e.target.value }))}
-                            className="h-8 text-xs"
-                            placeholder="Enter subtitle text"
-                          />
-                        </div>
-
-                        <div className="space-y-1.5">
-                          <Label className="text-xs font-medium">Subtitle Alignment</Label>
-                          <div className="flex gap-1">
-                            {(['left', 'center', 'right'] as const).map((align) => (
-                              <button
-                                key={align}
-                                onClick={() => setFormStyle((s) => ({ ...s, subHeadingAlignment: align }))}
-                                className={`flex-1 py-1.5 rounded text-xs font-medium transition-all ${
-                                  formStyle.subHeadingAlignment === align
-                                    ? 'bg-primary text-white'
-                                    : 'bg-muted text-muted-foreground hover:bg-muted/80'
-                                }`}
-                                title={align.charAt(0).toUpperCase() + align.slice(1)}
-                              >
-                                {align === 'left' ? '←' : align === 'center' ? '↔' : '→'}
-                              </button>
-                            ))}
-                          </div>
-                        </div>
-                      </div>
-    </>
+    <div className="space-y-3">
+      <div className="flex items-center gap-2">
+        <Type className="size-4 text-primary" />
+        <Label className="text-xs font-semibold text-muted-foreground">
+          {t("ui.header")}
+        </Label>
+      </div>
+      <div className="space-y-1.5">
+        <Label className="text-xs font-medium">{t("header_text")}</Label>
+        <Input
+          value={formStyle.headingText}
+          onChange={(event) =>
+            setFormStyle((style) => ({ ...style, headingText: event.target.value }))
+          }
+          className="h-11 text-sm"
+          placeholder={t("ui.heading_placeholder")}
+        />
+      </div>
+      <FormBuilderColorField
+        label={t("ui.title_color")}
+        value={formStyle.headingColor}
+        onChange={(headingColor) =>
+          setFormStyle((style) => ({ ...style, headingColor }))
+        }
+      />
+      <div className="space-y-1.5">
+        <Label className="text-xs font-medium">{t("ui.title_alignment")}</Label>
+        <FormBuilderAlignToggle
+          t={t}
+          value={formStyle.headingAlignment ?? "center"}
+          onChange={(headingAlignment) =>
+            setFormStyle((style) => ({ ...style, headingAlignment }))
+          }
+        />
+      </div>
+      <div className="space-y-1.5">
+        <Label className="text-xs font-medium">{t("ui.subtitle")}</Label>
+        <Input
+          value={formStyle.subHeadingText || ""}
+          onChange={(event) =>
+            setFormStyle((style) => ({
+              ...style,
+              subHeadingText: event.target.value,
+            }))
+          }
+          className="h-11 text-sm"
+          placeholder={t("ui.subtitle_placeholder")}
+        />
+      </div>
+      <div className="space-y-1.5">
+        <Label className="text-xs font-medium">{t("ui.subtitle_alignment")}</Label>
+        <FormBuilderAlignToggle
+          t={t}
+          value={formStyle.subHeadingAlignment || "center"}
+          onChange={(subHeadingAlignment) =>
+            setFormStyle((style) => ({ ...style, subHeadingAlignment }))
+          }
+        />
+      </div>
+    </div>
   );
 }

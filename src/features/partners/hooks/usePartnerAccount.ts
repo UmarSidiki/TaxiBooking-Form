@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { PARTNER_DOCUMENT_MIME_TYPES } from "@/features/partners/lib/partner-document-mime-types";
 import type { PartnerAccountData } from "@/features/partners/ui/partner-account.types";
@@ -20,11 +20,8 @@ export function usePartnerAccount() {
   const hasDocumentsUnderReview =
     partner?.documents && partner.documents.some((doc) => doc.status === "pending");
 
-  useEffect(() => {
-    fetchPartnerData();
-  }, []);
-
-  const fetchPartnerData = async () => {
+  const fetchPartnerData = useCallback(async () => {
+    setLoading(true);
     try {
       const response = await fetch("/api/partners/profile");
       const data = await response.json();
@@ -32,15 +29,18 @@ export function usePartnerAccount() {
       if (response.ok) {
         setPartner(data.partner);
       } else {
-        setError(data.error || "Failed to fetch partner data");
+        setError(t("failed-to-load-partner-data"));
       }
-    } catch (error) {
-      console.error("Error fetching partner data:", error);
-      setError("An error occurred while fetching data");
+    } catch {
+      setError(t("failed-to-load-partner-data"));
     } finally {
       setLoading(false);
     }
-  };
+  }, [t]);
+
+  useEffect(() => {
+    void fetchPartnerData();
+  }, [fetchPartnerData]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -134,5 +134,6 @@ export function usePartnerAccount() {
     hasDocumentsUnderReview,
     handleFileChange,
     handleUpload,
+    fetchPartnerData,
   };
 }

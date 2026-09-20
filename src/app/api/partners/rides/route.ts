@@ -1,31 +1,21 @@
 import { NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
 import { connectDB } from "@/shared/db";
 import { Booking } from "@/features/booking/model";
-import { authOptions } from "@/features/auth";
+import { requireRole } from "@/features/auth/lib/require-role";
+import { jsonError } from "@/shared/http/json-error";
 
 export async function GET() {
   try {
-    const session = await getServerSession(authOptions);
-
-    if (!session?.user || session.user.role !== "partner") {
-      return NextResponse.json(
-        {
-          success: false,
-          message: "Unauthorized",
-        },
-        { status: 401 }
-      );
-    }
+    const access = await requireRole("partner");
+    if (!access.ok) return access.response;
 
     await connectDB();
-
-    // Find all bookings assigned to this partner
     const bookings = await Booking.find({
-      "assignedPartner._id": session.user.id,
+      "assignedPartner._id": access.session.user.id,
     })
       .sort({ date: 1, time: 1 })
-      .select("-__v");
+      .select("-__v")
+      .limit(500);
 
     return NextResponse.json({
       success: true,
@@ -33,13 +23,6 @@ export async function GET() {
     });
   } catch (error) {
     console.error("Error fetching partner rides:", error);
-    return NextResponse.json(
-      {
-        success: false,
-        message:
-          error instanceof Error ? error.message : "Failed to fetch rides",
-      },
-      { status: 500 }
-    );
+    return jsonError("internal_error", 500);
   }
 }

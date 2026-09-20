@@ -28,7 +28,7 @@ export function getPartnerFleetStatusInfo(
     if (pendingRequests.length > 0) {
       const requestedVehicles = pendingRequests.map(req => {
         const vehicle = vehicles.find(v => v._id === req.vehicleId);
-        return vehicle?.name || 'Unknown Vehicle';
+        return vehicle?.name || t("no-description");
       }).join(', ');
       
       return {
@@ -47,7 +47,7 @@ export function getPartnerFleetStatusInfo(
           variant: "default",
           icon: <Clock className="h-4 w-4" />,
           title: t("pending-approval"),
-          description: `${t("requested-vehicle")}: ${requestedVehicle?.name || 'N/A'}. ${t("waiting-for-admin-approval")}`,
+          description: `${t("requested-vehicle")}: ${requestedVehicle?.name || t("no-description")}. ${t("waiting-for-admin-approval")}`,
         };
       case "approved":
         return {

@@ -1,9 +1,8 @@
 "use client";
 
 import { Input } from "@/shared/ui/input";
+import { Button } from "@/shared/ui/button";
 import type { PaymentTabFieldsProps } from "@/features/settings/ui/payment-tab-props";
-import { Banknote, Building2, CreditCard } from "lucide-react";
-import { useCurrency } from "@/shared/context/currency-context";
 
 
 export function PaymentTabStripe({
@@ -37,8 +36,8 @@ export function PaymentTabStripe({
                   <span
                     className={
                       settings.stripeTestMode
-                        ? "text-orange-600 font-medium"
-                        : "text-green-600 font-medium"
+                        ? "text-accent-foreground font-medium"
+                        : "text-primary font-medium"
                     }
                   >
                     {settings.stripeTestMode
@@ -67,7 +66,7 @@ export function PaymentTabStripe({
                   )
                 }
               />
-              <p className="text-xs text-gray-500 mt-1">
+              <p className="text-xs text-muted-foreground mt-1">
                 {t("Dashboard.Settings.your-stripe")}{" "}
                 {settings.stripeTestMode ? "test" : "live"}{" "}
                 {t("Dashboard.Settings.publishable-key-starts-with-pk_")}
@@ -90,7 +89,7 @@ export function PaymentTabStripe({
                   )
                 }
               />
-              <p className="text-xs text-gray-500 mt-1">
+              <p className="text-xs text-muted-foreground mt-1">
                 {t("Dashboard.Settings.your-stripe-0")}{" "}
                 {settings.stripeTestMode ? "test" : "live"}{" "}
                 {t(
@@ -113,7 +112,7 @@ export function PaymentTabStripe({
                   )
                 }
               />
-              <p className="text-xs text-gray-500 mt-1">
+              <p className="text-xs text-muted-foreground mt-1">
                 {t(
                   "Dashboard.Settings.webhook-signing-secret-for-secure-payment-status-updates"
                 )}{" "}
@@ -128,34 +127,35 @@ export function PaymentTabStripe({
                   type="text"
                   readOnly
                   value={typeof window !== 'undefined' ? `${window.location.origin}/api/stripe-webhook` : '/api/stripe-webhook'}
-                  className="bg-gray-50 text-gray-600"
+                  className="bg-muted text-muted-foreground"
                 />
-                <button
+                <Button
                   type="button"
+                  variant="secondary"
+                  className="h-11 whitespace-nowrap"
                   onClick={() => {
                     const webhookUrl = typeof window !== 'undefined' 
                       ? `${window.location.origin}/api/stripe-webhook` 
                       : '/api/stripe-webhook';
                     navigator.clipboard.writeText(webhookUrl);
                   }}
-                  className="px-3 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 text-sm whitespace-nowrap"
                 >
                   {t("Dashboard.Settings.copy")}
-                </button>
+                </Button>
               </div>
-              <p className="text-xs text-gray-500 mt-1">
+              <p className="text-xs text-muted-foreground mt-1">
                 {t("Dashboard.Settings.add-this-url-in-stripe-dashboard-webhooks")}
               </p>
-              <div className="mt-3 rounded-lg border border-slate-200 bg-slate-50 p-3">
-                <p className="text-xs font-medium text-slate-800 mb-2">
+              <div className="mt-3 rounded-lg border border-border bg-muted p-3">
+                <p className="text-xs font-medium text-foreground mb-2">
                   {t("Dashboard.Settings.stripe-webhook-events-heading")}
                 </p>
-                <ul className="space-y-1 font-mono text-xs text-slate-700">
+                <ul className="space-y-1 font-mono text-xs text-foreground">
                   <li>payment_intent.succeeded</li>
                   <li>payment_intent.payment_failed</li>
                   <li>charge.refunded</li>
                 </ul>
-                <p className="text-xs text-slate-500 mt-2">
+                <p className="text-xs text-muted-foreground mt-2">
                   {t("Dashboard.Settings.stripe-webhook-events-help")}
                 </p>
               </div>

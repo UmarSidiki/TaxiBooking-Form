@@ -84,13 +84,16 @@ export function FormBuilderHeader({
                 </Button>
               </div>
             ) : (
-              <h1
-                className="text-2xl sm:text-3xl font-bold text-foreground cursor-pointer hover:text-primary/80 transition-colors flex items-center gap-2 group"
+              <button
+                type="button"
+                className="flex items-center gap-2 text-start"
                 onClick={() => setEditingName(true)}
               >
-                {layoutName || t("ui.untitled_layout")}
-                <Pencil className="h-4 w-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
-              </h1>
+                <h1 className="text-2xl font-semibold tracking-tight text-foreground">
+                  {layoutName || t("ui.untitled_layout")}
+                </h1>
+                <Pencil className="size-4 text-muted-foreground" />
+              </button>
             )}
             <div className="flex items-center gap-3 mt-1">
               <p className="text-muted-foreground text-sm">
@@ -124,7 +127,7 @@ export function FormBuilderHeader({
               </DialogHeader>
               <LayoutManager
                 layouts={layouts}
-                currentId={currentLayout?._id ?? null}
+                currentId={currentLayout?._id ?? undefined}
                 onSelect={selectLayout}
                 onDuplicate={duplicateLayout}
                 onDelete={deleteLayout}

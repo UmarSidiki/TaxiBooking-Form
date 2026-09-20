@@ -1,5 +1,5 @@
 import type { IVehicle } from '@/features/fleet/model';
-import type { BookingInput } from '@/features/booking/model';
+import type { CashBookingInput } from '@/features/booking/schema/cash-booking.schema';
 
 const DEFAULT_PRICE_PER_HOUR = 30;
 const DEFAULT_MINIMUM_HOURS = 2;
@@ -10,7 +10,7 @@ const DEFAULT_RETURN_PERCENTAGE = 100;
 const MINUTES_PER_HOUR = 60;
 
 export async function calculateCashBookingTotal(
-  formData: BookingInput,
+  formData: CashBookingInput,
   vehicle: IVehicle,
   baseUrl: string
 ): Promise<number> {

@@ -24,9 +24,11 @@ type TFn = AdminPartnersState["t"];
 export function AdminPartnerDetailsProfile({
   t,
   selectedPartner,
+  formatCurrency,
 }: {
   t: TFn;
   selectedPartner: Partner;
+  formatCurrency: AdminPartnersState["formatCurrency"];
 }) {
   return (
     <>
@@ -72,28 +74,28 @@ export function AdminPartnerDetailsProfile({
 
                 {/* Earnings Summary */}
                 {(selectedPartner.totalEarnings !== undefined && selectedPartner.totalEarnings > 0) && (
-                  <div className="mt-6 p-4 bg-green-50 dark:bg-green-950/20 border border-green-200 dark:border-green-900 rounded-lg">
-                    <h4 className="font-semibold text-green-900 dark:text-green-100 mb-3 flex items-center gap-2">
-                      <span className="text-lg">💰</span>
+                  <div className="mt-6 rounded-lg border border-border bg-card p-4">
+                    <h4 className="mb-3 flex items-center gap-2 font-semibold text-foreground">
+                      <PiggyBank className="size-5" />
                       {t("earnings-summary")}
                     </h4>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                       <div className="text-center">
-                        <p className="text-sm text-green-700 dark:text-green-300">{t("total-earnings")}</p>
-                        <p className="text-xl font-bold text-green-900 dark:text-green-100">
-                          €{selectedPartner.totalEarnings?.toFixed(2)}
+                        <p className="text-sm text-muted-foreground">{t("total-earnings")}</p>
+                        <p className="text-xl font-bold text-foreground">
+                          {formatCurrency(selectedPartner.totalEarnings)}
                         </p>
                       </div>
                       <div className="text-center">
-                        <p className="text-sm text-green-700 dark:text-green-300">{t("online-payment")}</p>
-                        <p className="text-lg font-semibold text-green-800 dark:text-green-200">
-                          €{selectedPartner.onlineEarnings?.toFixed(2) || "0.00"}
+                        <p className="text-sm text-muted-foreground">{t("online-payment")}</p>
+                        <p className="text-lg font-semibold text-foreground">
+                          {formatCurrency(selectedPartner.onlineEarnings)}
                         </p>
                       </div>
                       <div className="text-center">
-                        <p className="text-sm text-green-700 dark:text-green-300">{t("cash-payment")}</p>
-                        <p className="text-lg font-semibold text-green-800 dark:text-green-200">
-                          €{selectedPartner.cashEarnings?.toFixed(2) || "0.00"}
+                        <p className="text-sm text-muted-foreground">{t("cash-payment")}</p>
+                        <p className="text-lg font-semibold text-foreground">
+                          {formatCurrency(selectedPartner.cashEarnings)}
                         </p>
                       </div>
                     </div>

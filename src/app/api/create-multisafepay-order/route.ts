@@ -4,11 +4,16 @@ import { connectDB } from '@/shared/db';
 import { PendingBooking } from '@/features/booking/model';
 import { generateShortId } from '@/shared/lib/generate-id';
 import { resolvePublicBaseUrl } from '@/features/payments/lib/resolve-base-url';
+import { parseJsonBody } from '@/shared/http/parse-json-body';
+import { jsonError } from '@/shared/http/json-error';
+import { multisafepayOrderBodySchema } from '@/features/payments/schema/checkout.schema';
 
 export const dynamic = 'force-dynamic';
 
 export async function POST(request: NextRequest) {
   try {
+    const parsed = await parseJsonBody(request, multisafepayOrderBodySchema);
+    if (!parsed.ok) return parsed.response;
     const {
       amount,
       currency,
@@ -19,14 +24,7 @@ export async function POST(request: NextRequest) {
       locale,
       bookingData,
       totalAmount,
-    } = await request.json();
-
-    if (!amount || amount <= 0) {
-      return NextResponse.json(
-        { success: false, message: 'Invalid amount' },
-        { status: 400 }
-      );
-    }
+    } = parsed.data;
 
     await connectDB();
     const settings = await Setting.findOne();
@@ -34,22 +32,12 @@ export async function POST(request: NextRequest) {
     const multisafepayTestMode = settings?.multisafepayTestMode ?? true;
 
     if (!multisafepayApiKey) {
-      return NextResponse.json(
-        { success: false, message: 'MultiSafepay is not configured. Please add your API key in settings.' },
-        { status: 500 }
-      );
+      return jsonError("payment_not_configured", 500);
     }
 
     const baseUrl = resolvePublicBaseUrl(request);
     if (!baseUrl) {
-      return NextResponse.json(
-        {
-          success: false,
-          message:
-            'Public site URL is not configured. Set NEXT_PUBLIC_BASE_URL in Vercel (e.g. https://your-domain.com).',
-        },
-        { status: 500 }
-      );
+      return jsonError("payment_not_configured", 500);
     }
 
     const apiUrl = multisafepayTestMode
@@ -108,15 +96,8 @@ export async function POST(request: NextRequest) {
     const data = await response.json();
 
     if (!response.ok || !data.success) {
-      console.error('MultiSafepay API error:', data);
-      return NextResponse.json(
-        {
-          success: false,
-          message: data.error_info || 'Failed to create MultiSafepay order',
-          details: data,
-        },
-        { status: response.status || 400 }
-      );
+      console.error("MultiSafepay API error");
+      return jsonError("payment_failed", response.status || 400);
     }
 
     return NextResponse.json({
@@ -129,7 +110,6 @@ export async function POST(request: NextRequest) {
     });
   } catch (e: unknown) {
     console.error('Error creating MultiSafepay order:', e);
-    const message = e instanceof Error ? e.message : 'Failed to create MultiSafepay order';
-    return NextResponse.json({ success: false, message }, { status: 500 });
+    return jsonError("internal_error", 500);
   }
 }

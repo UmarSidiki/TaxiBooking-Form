@@ -5,69 +5,54 @@ import { PartnerAccountDocuments } from "@/features/partners/ui/partner-account-
 import { PartnerAccountProfile } from "@/features/partners/ui/partner-account-profile";
 import { PartnerAccountUpload } from "@/features/partners/ui/partner-account-upload";
 import { usePartnerAccount } from "@/features/partners/hooks/usePartnerAccount";
+import { Button } from "@/shared/ui/button";
+import { Loader2 } from "lucide-react";
 
 export default function PartnerAccountPage() {
-  const {
-    t,
-    partner,
-    loading,
-    uploading,
-    documentType,
-    setDocumentType,
-    selectedFile,
-    setSelectedFile,
-    error,
-    success,
-    fileInputKey,
-    hasDocumentsUnderReview,
-    handleFileChange,
-    handleUpload,
-  } = usePartnerAccount();
+  const account = usePartnerAccount();
+  const { t, partner, loading, error } = account;
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-[400px]">
-        <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+      <div className="flex flex-col items-center justify-center py-16 text-muted-foreground">
+        <Loader2 className="mb-4 size-8 animate-spin text-primary" />
+        <p className="text-sm">{t("loading")}…</p>
       </div>
     );
   }
 
   if (!partner) {
     return (
-      <div className="text-center py-12">
-        <p className="text-red-600">{t("failed-to-load-partner-data")}</p>
-      </div>
+      <p className="rounded-md border border-border bg-card px-4 py-3 text-sm" role="alert">
+        {error || t("failed-to-load-partner-data")}
+        <Button variant="outline" className="ms-3 h-11" onClick={() => void account.fetchPartnerData()}>
+          {t("retry")}
+        </Button>
+      </p>
     );
   }
 
   return (
     <div className="space-y-6">
-      {/* Account Status Banner */}
       <PartnerAccountBanners
         t={t}
         partner={partner}
-        hasDocumentsUnderReview={hasDocumentsUnderReview}
+        hasDocumentsUnderReview={account.hasDocumentsUnderReview}
       />
-
-      {/* Profile Information */}
       <PartnerAccountProfile t={t} partner={partner} />
-
-      {/* Document Upload */}
       <PartnerAccountUpload
         t={t}
-        documentType={documentType}
-        setDocumentType={setDocumentType}
-        selectedFile={selectedFile}
-        setSelectedFile={setSelectedFile}
-        error={error}
-        success={success}
-        fileInputKey={fileInputKey}
-        uploading={uploading}
-        handleFileChange={handleFileChange}
-        handleUpload={handleUpload}
+        documentType={account.documentType}
+        setDocumentType={account.setDocumentType}
+        selectedFile={account.selectedFile}
+        setSelectedFile={account.setSelectedFile}
+        error={account.error}
+        success={account.success}
+        fileInputKey={account.fileInputKey}
+        uploading={account.uploading}
+        handleFileChange={account.handleFileChange}
+        handleUpload={account.handleUpload}
       />
-
-      {/* Uploaded Documents */}
       <PartnerAccountDocuments t={t} partner={partner} />
     </div>
   );

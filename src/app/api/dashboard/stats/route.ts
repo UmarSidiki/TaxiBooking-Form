@@ -4,9 +4,14 @@ import { Booking } from "@/features/booking/model";
 import { Setting } from "@/features/settings/model";
 import { DASHBOARD_PREVIEW_LIMIT } from "@/features/dashboard/lib/dashboard-preview-limit";
 import { DEFAULT_BOOKING_TIMEZONE } from "@/features/rides/lib/ride-constants";
+import { requireAdmin } from "@/features/auth/lib/require-role";
+import { jsonError } from "@/shared/http/json-error";
 
 export async function GET() {
   try {
+    const access = await requireAdmin();
+    if (!access.ok) return access.response;
+
     await connectDB();
 
     // Get Timezone
@@ -140,9 +145,6 @@ export async function GET() {
     });
   } catch (error) {
     console.error("Error fetching dashboard stats:", error);
-    return NextResponse.json(
-      { success: false, message: "Failed to fetch dashboard stats" },
-      { status: 500 }
-    );
+    return jsonError("internal_error", 500);
   }
 }

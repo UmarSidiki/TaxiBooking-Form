@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { connectDB } from "@/shared/db";
 import { FormLayout } from "@/features/form-builder/model";
+import { jsonError } from "@/shared/http/json-error";
 
 export async function GET() {
   try {
@@ -21,9 +22,6 @@ export async function GET() {
     return NextResponse.json({ success: true, data: layout });
   } catch (error) {
     console.error("Error fetching active layout:", error);
-    return NextResponse.json(
-      { success: false, message: "Failed to fetch active layout" },
-      { status: 500 }
-    );
+    return jsonError("internal_error", 500);
   }
 }

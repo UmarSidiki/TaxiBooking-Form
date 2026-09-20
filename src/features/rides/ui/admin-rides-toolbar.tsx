@@ -12,7 +12,7 @@ import {
 } from "@/shared/ui/select";
 import { DateRangePicker } from "@/shared/ui/date-range-picker";
 import type { useAdminRides } from "@/features/rides/hooks/useAdminRides";
-import { Car, CreditCard, Filter, RefreshCw, Search } from "lucide-react";
+import { CreditCard, Filter, RefreshCw, Search } from "lucide-react";
 
 type Rides = ReturnType<typeof useAdminRides>;
 
@@ -52,11 +52,10 @@ export function AdminRidesToolbar({
       <div className="mb-6 sm:mb-8">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
           <div>
-            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 flex items-center gap-2">
-              <Car className="w-8 h-8 text-primary" />
+            <h1 className="text-2xl font-semibold tracking-tight text-foreground">
               {t("Dashboard.Rides.Title")}
             </h1>
-            <p className="text-gray-500 mt-1">
+            <p className="mt-1 text-sm text-muted-foreground">
               {t("Dashboard.Rides.Description")}
             </p>
           </div>
@@ -66,7 +65,7 @@ export function AdminRidesToolbar({
               variant="outline"
               size="sm"
               disabled={isLoading}
-              className="flex items-center gap-2"
+              className="flex min-h-11 items-center gap-2"
             >
               <RefreshCw
                 className={`w-4 h-4 ${isLoading ? "animate-spin" : ""}`}
@@ -77,10 +76,10 @@ export function AdminRidesToolbar({
         </div>
 
         {/* Search and Filters */}
-        <Card className="p-4 border border-gray-200 shadow-sm bg-white">
+        <Card className="desk-card border-border p-4">
           <div className="flex flex-col space-y-4">
             <div className="flex flex-wrap items-center justify-between gap-3">
-              <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
+              <h3 className="flex items-center gap-2 text-base font-semibold text-foreground">
                 <Filter className="w-5 h-5 text-secondary-foreground" />
                 {t("Dashboard.Rides.FilterBookings")}
               </h3>
@@ -98,12 +97,12 @@ export function AdminRidesToolbar({
             </div>
 
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-secondary-foreground w-4 h-4" />
+              <Search className="absolute start-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
               <Input
                 placeholder={t("Dashboard.Rides.SearchPlaceholder")}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 h-10"
+                className="h-11 w-full ps-10"
               />
             </div>
 

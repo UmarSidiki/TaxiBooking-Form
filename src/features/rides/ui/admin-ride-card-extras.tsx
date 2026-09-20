@@ -14,44 +14,46 @@ export function AdminRideCardExtras({
   t: TFn;
 }) {
   return (
-            <div className="space-y-2 pt-2 border-t border-gray-100">
+            <div className="space-y-2 pt-2 border-t border-border">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
                 <div className="flex items-center gap-2">
-                  <Users className="w-3 h-3 text-gray-400" />
-                  <span className="text-gray-600">Passengers:</span>
-                  <span className="font-medium text-gray-900">
+                  <Users className="w-3 h-3 text-muted-foreground" />
+                  <span className="text-muted-foreground">
+                    {t("Dashboard.Rides.passengers")}
+                  </span>
+                  <span className="font-medium text-foreground">
                     {booking.passengers}
                   </span>
                 </div>
                 {booking.childSeats > 0 && (
                   <div className="flex items-center gap-2">
-                    <Baby className="w-3 h-3 text-gray-400" />
-                    <span className="text-gray-600">
+                    <Baby className="w-3 h-3 text-muted-foreground" />
+                    <span className="text-muted-foreground">
                       {t("Dashboard.Rides.child-seats")}
                     </span>
-                    <span className="font-medium text-gray-900">
+                    <span className="font-medium text-foreground">
                       {booking.childSeats}
                     </span>
                   </div>
                 )}
                 {booking.babySeats > 0 && (
                   <div className="flex items-center gap-2">
-                    <Baby className="w-3 h-3 text-gray-400" />
-                    <span className="text-gray-600">
+                    <Baby className="w-3 h-3 text-muted-foreground" />
+                    <span className="text-muted-foreground">
                       {t("Dashboard.Rides.baby-seats")}
                     </span>
-                    <span className="font-medium text-gray-900">
+                    <span className="font-medium text-foreground">
                       {booking.babySeats}
                     </span>
                   </div>
                 )}
                 {booking.flightNumber && (
                   <div className="flex items-center gap-2">
-                    <Plane className="w-3 h-3 text-gray-400" />
-                    <span className="text-gray-600">
+                    <Plane className="w-3 h-3 text-muted-foreground" />
+                    <span className="text-muted-foreground">
                       {t("Dashboard.Rides.flight-number")}
                     </span>
-                    <span className="font-medium text-gray-900">
+                    <span className="font-medium text-foreground">
                       {booking.flightNumber}
                     </span>
                   </div>

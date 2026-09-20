@@ -1,120 +1,73 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
-
 import { connectDB } from "@/shared/db";
 import { Partner } from "@/features/partners/model";
-import { authOptions } from "@/features/auth";
-import { sanitizeInput } from "@/shared/lib/validation";
+import { requireRole } from "@/features/auth/lib/require-role";
+import { parseJsonBody } from "@/shared/http/parse-json-body";
+import { jsonError } from "@/shared/http/json-error";
+import { partnerBillingSchema } from "@/features/partners/schema/partner-write.schema";
 
-const sanitizeString = (value: unknown, limit = 180) => {
-  if (typeof value !== "string") {
-    return undefined;
-  }
-  const trimmed = sanitizeInput(value).trim();
-  if (!trimmed) {
-    return undefined;
-  }
+function clip(value: string | undefined, limit: number) {
+  const trimmed = value?.trim();
+  if (!trimmed) return undefined;
   return trimmed.slice(0, limit);
-};
+}
 
 export async function GET() {
   try {
-    const session = await getServerSession(authOptions);
-
-    if (!session?.user || session.user.role !== "partner") {
-      return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
-    }
+    const access = await requireRole("partner");
+    if (!access.ok) return access.response;
 
     await connectDB();
-
-    const partner = await Partner.findById(session.user.id).select("-password");
-
-    if (!partner) {
-      return NextResponse.json({ success: false, error: "Partner not found" }, { status: 404 });
-    }
-
-    return NextResponse.json(
-      {
-        success: true,
-        billingDetails: partner.billingDetails || {},
-        payoutBalance: partner.payoutBalance || 0,
-        lastPayoutAt: partner.lastPayoutAt || null,
-      },
-      { status: 200 }
+    const partner = await Partner.findById(access.session.user.id).select(
+      "-password"
     );
+    if (!partner) return jsonError("not_found", 404);
+
+    return NextResponse.json({
+      success: true,
+      billingDetails: partner.billingDetails || {},
+      payoutBalance: partner.payoutBalance || 0,
+      lastPayoutAt: partner.lastPayoutAt || null,
+    });
   } catch (error) {
-    return NextResponse.json(
-      { success: false, error: "Failed to load billing details" },
-      { status: 500 }
-    );
+    console.error("Billing GET failed:", error);
+    return jsonError("internal_error", 500);
   }
 }
 
 export async function PATCH(request: NextRequest) {
   try {
-    const session = await getServerSession(authOptions);
+    const access = await requireRole("partner");
+    if (!access.ok) return access.response;
 
-    if (!session?.user || session.user.role !== "partner") {
-      return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
-    }
+    const parsed = await parseJsonBody(request, partnerBillingSchema);
+    if (!parsed.ok) return parsed.response;
 
     await connectDB();
-
-    const payload = await request.json();
-    if (!payload || typeof payload !== "object") {
-      return NextResponse.json({ success: false, error: "Invalid request body" }, { status: 400 });
-    }
-
-    const sanitizedBilling = {
-      accountHolder: sanitizeString(payload.accountHolder, 120),
-      bankName: sanitizeString(payload.bankName, 120),
-      accountNumber: sanitizeString(payload.accountNumber, 60),
-      iban: sanitizeString(payload.iban, 64),
-      swift: sanitizeString(payload.swift, 60),
-      notes: sanitizeString(payload.notes, 500),
+    const normalizedBilling = {
+      accountHolder: clip(parsed.data.accountHolder, 120),
+      bankName: clip(parsed.data.bankName, 120),
+      accountNumber: clip(parsed.data.accountNumber, 60),
+      iban: clip(parsed.data.iban, 64),
+      swift: clip(parsed.data.swift, 60),
+      notes: clip(parsed.data.notes, 500),
     };
 
-    const normalizedBilling = Object.entries(sanitizedBilling).reduce(
-      (acc, [key, value]) => {
-        if (typeof value === "string") {
-          acc[key as keyof typeof sanitizedBilling] = value;
-        }
-        return acc;
-      },
-      {} as Partial<Record<keyof typeof sanitizedBilling, string>>
-    );
-
     const updatedPartner = await Partner.findByIdAndUpdate(
-      session.user.id,
-      {
-        $set: {
-          billingDetails: normalizedBilling,
-        },
-      },
-      {
-        returnDocument: 'after',
-        runValidators: true,
-        select: "-password",
-      }
+      access.session.user.id,
+      { $set: { billingDetails: normalizedBilling } },
+      { returnDocument: "after", runValidators: true, select: "-password" }
     );
+    if (!updatedPartner) return jsonError("not_found", 404);
 
-    if (!updatedPartner) {
-      return NextResponse.json({ success: false, error: "Partner not found" }, { status: 404 });
-    }
-
-    return NextResponse.json(
-      {
-        success: true,
-        billingDetails: updatedPartner.billingDetails || {},
-        payoutBalance: updatedPartner.payoutBalance || 0,
-        lastPayoutAt: updatedPartner.lastPayoutAt || null,
-      },
-      { status: 200 }
-    );
+    return NextResponse.json({
+      success: true,
+      billingDetails: updatedPartner.billingDetails || {},
+      payoutBalance: updatedPartner.payoutBalance || 0,
+      lastPayoutAt: updatedPartner.lastPayoutAt || null,
+    });
   } catch (error) {
-    return NextResponse.json(
-      { success: false, error: "Failed to save billing details" },
-      { status: 500 }
-    );
+    console.error("Billing PATCH failed:", error);
+    return jsonError("internal_error", 500);
   }
 }

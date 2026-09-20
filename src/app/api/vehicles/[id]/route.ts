@@ -1,166 +1,75 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/features/auth";
 import { connectDB } from "@/shared/db";
-import {Vehicle, IVehicle } from "@/features/fleet/model";
+import { Vehicle } from "@/features/fleet/model";
+import { requireAdmin } from "@/features/auth/lib/require-role";
+import { parseJsonBody } from "@/shared/http/parse-json-body";
+import { jsonError } from "@/shared/http/json-error";
+import { vehiclePatchSchema } from "@/features/fleet/schema/vehicle-write.schema";
 
-// GET - Fetch a single vehicle by ID (Public - needed for booking flow)
 export async function GET(
-  request: NextRequest,
+  _request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     await connectDB();
     const { id } = await params;
-
     const vehicle = await Vehicle.findById(id);
-
-    if (!vehicle) {
-      return NextResponse.json(
-        {
-          success: false,
-          message: "Vehicle not found",
-        },
-        { status: 404 }
-      );
-    }
-
-    return NextResponse.json({
-      success: true,
-      data: vehicle,
-    });
+    if (!vehicle) return jsonError("not_found", 404);
+    return NextResponse.json({ success: true, data: vehicle });
   } catch (error) {
     console.error("Error fetching vehicle:", error);
-    return NextResponse.json(
-      {
-        success: false,
-        message: error instanceof Error ? error.message : "Failed to fetch vehicle",
-      },
-      { status: 500 }
-    );
+    return jsonError("internal_error", 500);
   }
 }
 
-// PUT - Update a vehicle (Admin only)
 export async function PUT(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    // Authentication check
-    const session = await getServerSession(authOptions);
-    if (!session || !session.user) {
-      return NextResponse.json(
-        { success: false, message: "Unauthorized" },
-        { status: 401 }
-      );
-    }
+    const access = await requireAdmin();
+    if (!access.ok) return access.response;
 
-    // Role-based access control
-    const userRole = session.user.role;
-    if (userRole !== "admin" && userRole !== "superadmin") {
-      return NextResponse.json(
-        { success: false, message: "Forbidden: Admin access required" },
-        { status: 403 }
-      );
-    }
+    const parsed = await parseJsonBody(request, vehiclePatchSchema);
+    if (!parsed.ok) return parsed.response;
 
     await connectDB();
     const { id } = await params;
-    const body: Partial<IVehicle> = await request.json();
-
     const vehicle = await Vehicle.findByIdAndUpdate(
       id,
-      { ...body, updatedAt: new Date() },
-      { returnDocument: 'after', runValidators: true }
+      { ...parsed.data, updatedAt: new Date() },
+      { returnDocument: "after", runValidators: true }
     );
-
-    if (!vehicle) {
-      return NextResponse.json(
-        {
-          success: false,
-          message: "Vehicle not found",
-        },
-        { status: 404 }
-      );
-    }
-
-    return NextResponse.json({
-      success: true,
-      message: "Vehicle updated successfully",
-      data: vehicle,
-    });
+    if (!vehicle) return jsonError("not_found", 404);
+    return NextResponse.json({ success: true, data: vehicle });
   } catch (error) {
     console.error("Error updating vehicle:", error);
-    return NextResponse.json(
-      {
-        success: false,
-        message: error instanceof Error ? error.message : "Failed to update vehicle",
-      },
-      { status: 500 }
-    );
+    return jsonError("internal_error", 500);
   }
 }
 
-// PATCH - Update a vehicle (alias for PUT)
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  context: { params: Promise<{ id: string }> }
 ) {
-  return PUT(request, { params });
+  return PUT(request, context);
 }
 
-// DELETE - Delete a vehicle (Admin only)
 export async function DELETE(
-  request: NextRequest,
+  _request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    // Authentication check
-    const session = await getServerSession(authOptions);
-    if (!session || !session.user) {
-      return NextResponse.json(
-        { success: false, message: "Unauthorized" },
-        { status: 401 }
-      );
-    }
-
-    // Role-based access control
-    const userRole = session.user.role;
-    if (userRole !== "admin" && userRole !== "superadmin") {
-      return NextResponse.json(
-        { success: false, message: "Forbidden: Admin access required" },
-        { status: 403 }
-      );
-    }
+    const access = await requireAdmin();
+    if (!access.ok) return access.response;
 
     await connectDB();
     const { id } = await params;
-
     const vehicle = await Vehicle.findByIdAndDelete(id);
-
-    if (!vehicle) {
-      return NextResponse.json(
-        {
-          success: false,
-          message: "Vehicle not found",
-        },
-        { status: 404 }
-      );
-    }
-
-    return NextResponse.json({
-      success: true,
-      message: "Vehicle deleted successfully",
-    });
+    if (!vehicle) return jsonError("not_found", 404);
+    return NextResponse.json({ success: true });
   } catch (error) {
     console.error("Error deleting vehicle:", error);
-    return NextResponse.json(
-      {
-        success: false,
-        message: error instanceof Error ? error.message : "Failed to delete vehicle",
-      },
-      { status: 500 }
-    );
+    return jsonError("internal_error", 500);
   }
 }

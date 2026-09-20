@@ -1,28 +1,34 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { connectDB } from '@/shared/db';
-import { Booking } from '@/features/booking/model';
+import { NextRequest, NextResponse } from "next/server";
+import { z } from "zod";
+import { connectDB } from "@/shared/db";
+import { Booking } from "@/features/booking/model";
+import { jsonError } from "@/shared/http/json-error";
 
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 
-/**
- * Lightweight check — avoids running full payment finalization when already done.
- */
+const paymentStatusQuerySchema = z
+  .object({
+    tripId: z.string().min(1).optional(),
+    paymentIntentId: z.string().min(1).optional(),
+    transactionId: z.string().min(1).optional(),
+  })
+  .refine(
+    (value) => Boolean(value.tripId || value.paymentIntentId || value.transactionId)
+  );
+
 export async function GET(request: NextRequest) {
   try {
-    const { searchParams } = request.nextUrl;
-    const tripId = searchParams.get('tripId');
-    const paymentIntentId = searchParams.get('paymentIntentId');
-    const transactionId = searchParams.get('transactionId');
-
-    if (!tripId && !paymentIntentId && !transactionId) {
-      return NextResponse.json(
-        { success: false, message: 'Missing identifier' },
-        { status: 400 }
-      );
-    }
+    const parsed = paymentStatusQuerySchema.safeParse({
+      tripId: request.nextUrl.searchParams.get("tripId") ?? undefined,
+      paymentIntentId:
+        request.nextUrl.searchParams.get("paymentIntentId") ?? undefined,
+      transactionId:
+        request.nextUrl.searchParams.get("transactionId") ?? undefined,
+    });
+    if (!parsed.success) return jsonError("invalid_body", 400);
 
     await connectDB();
-
+    const { tripId, paymentIntentId, transactionId } = parsed.data;
     const orConditions: Record<string, string>[] = [];
     if (tripId) {
       orConditions.push({ tripId }, { multisafepayOrderId: tripId });
@@ -36,9 +42,9 @@ export async function GET(request: NextRequest) {
 
     const booking = await Booking.findOne({
       $or: orConditions,
-      paymentStatus: 'completed',
+      paymentStatus: "completed",
     })
-      .select('tripId confirmationEmailSent adminNotificationSent')
+      .select("tripId confirmationEmailSent adminNotificationSent")
       .lean();
 
     if (!booking) {
@@ -57,10 +63,7 @@ export async function GET(request: NextRequest) {
       ),
     });
   } catch (error) {
-    console.error('payment-status error:', error);
-    return NextResponse.json(
-      { success: false, finalized: false },
-      { status: 500 }
-    );
+    console.error("payment-status error:", error);
+    return jsonError("internal_error", 500);
   }
 }

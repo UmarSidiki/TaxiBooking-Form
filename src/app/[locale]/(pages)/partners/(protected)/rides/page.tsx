@@ -2,15 +2,9 @@
 
 import { PartnerRideCard } from "@/features/partners/ui/partner-ride-card";
 import { PartnerRideDetailDialog } from "@/features/partners/ui/partner-ride-detail-dialog";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/shared/ui/card";
 import { usePartnerRides } from "@/features/rides/hooks/usePartnerRides";
-import { Car } from "lucide-react";
+import { Button } from "@/shared/ui/button";
+import { Car, Loader2 } from "lucide-react";
 
 export default function PartnerRidesPage() {
   const rides = usePartnerRides();
@@ -19,6 +13,8 @@ export default function PartnerRidesPage() {
     tRides,
     currencySymbol,
     loading,
+    loadError,
+    fetchRides,
     detailBooking,
     setDetailBooking,
     isBookingPassed,
@@ -27,8 +23,9 @@ export default function PartnerRidesPage() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-[400px]">
-        <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+      <div className="flex flex-col items-center justify-center py-16 text-muted-foreground">
+        <Loader2 className="mb-4 size-8 animate-spin text-primary" />
+        <p className="text-sm">{t("rides")}…</p>
       </div>
     );
   }
@@ -36,45 +33,35 @@ export default function PartnerRidesPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold">{t("rides")}</h1>
-        <p className="text-muted-foreground mt-2">
-          {t("your-upcoming-scheduled-rides")}
-        </p>
+        <h1 className="text-2xl font-semibold tracking-tight">{t("rides")}</h1>
+        <p className="mt-1 text-sm text-muted-foreground">{t("your-upcoming-scheduled-rides")}</p>
       </div>
-
-      {/* Rides List */}
-      <Card>
-        <CardHeader>
-          <CardTitle>
-            {t("upcoming-rides")} ({upcomingBookings.length})
-          </CardTitle>
-          <CardDescription>
-            {t("view-and-manage-your-assigned-rides")}
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          {upcomingBookings.length === 0 ? (
-            <div className="text-center py-12 text-muted-foreground">
-              <Car className="w-12 h-12 mx-auto mb-3 opacity-50" />
-              <p>{t("no-upcoming-rides-found")}</p>
-            </div>
-          ) : (
-            <div className="space-y-4">
-              {upcomingBookings.map((booking) => (
-                <PartnerRideCard
-                  key={booking._id}
-                  booking={booking}
-                  t={t}
-                  currencySymbol={currencySymbol}
-                  isBookingPassed={isBookingPassed}
-                  setDetailBooking={setDetailBooking}
-                />
-              ))}
-            </div>
-          )}
-        </CardContent>
-      </Card>
-
+      {loadError ? (
+        <p className="rounded-md border border-border bg-card px-4 py-3 text-sm" role="alert">
+          {loadError}
+          <Button variant="outline" className="ms-3 h-11" onClick={() => void fetchRides()}>
+            {t("retry")}
+          </Button>
+        </p>
+      ) : upcomingBookings.length === 0 ? (
+        <div className="rounded-md border border-border bg-card py-12 text-center text-muted-foreground">
+          <Car className="mx-auto mb-3 size-12 opacity-50" />
+          <p>{t("no-upcoming-rides-found")}</p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
+          {upcomingBookings.map((booking) => (
+            <PartnerRideCard
+              key={booking._id}
+              booking={booking}
+              t={t}
+              currencySymbol={currencySymbol}
+              isBookingPassed={isBookingPassed}
+              setDetailBooking={setDetailBooking}
+            />
+          ))}
+        </div>
+      )}
       <PartnerRideDetailDialog
         t={t}
         tRides={tRides}

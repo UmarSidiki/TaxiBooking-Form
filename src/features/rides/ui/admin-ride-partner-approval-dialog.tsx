@@ -67,17 +67,19 @@ export function AdminRidePartnerApprovalDialog({
             <div className="space-y-4 py-4">
               <div className="bg-muted/50 rounded-lg p-3 sm:p-4 space-y-2">
                 <div className="flex items-center justify-between text-sm">
-                  <span className="text-muted-foreground">Trip ID</span>
+                  <span className="text-muted-foreground">{t("ThankYou.trip-id")}</span>
                   <span className="font-medium">#{booking.tripId}</span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-muted-foreground">Total Amount</span>
-                  <span className="font-semibold text-base sm:text-lg">{currencySymbol}{totalAmountValue.toFixed(2)}</span>
+                  <span className="text-sm text-muted-foreground">{t("Dashboard.Rides.TotalAmount")}</span>
+                  <span className="text-base font-semibold sm:text-lg">{currencySymbol}{totalAmountValue.toFixed(2)}</span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-muted-foreground">Current Status</span>
-                  <Badge variant={isPartnerReviewPending ? "destructive" : "secondary"} className="text-xs text-white">
-                    {isPartnerReviewPending ? "Pending Approval" : "Approved"}
+                  <span className="text-sm text-muted-foreground">{t("Dashboard.Rides.current-status")}</span>
+                  <Badge variant={isPartnerReviewPending ? "destructive" : "secondary"} className="text-xs">
+                    {isPartnerReviewPending
+                      ? t("Dashboard.Rides.partner-review-status-pending")
+                      : t("Dashboard.Rides.partner-review-status-approved")}
                   </Badge>
                 </div>
               </div>
@@ -100,7 +102,7 @@ export function AdminRidePartnerApprovalDialog({
                     <span className="text-sm text-muted-foreground">%</span>
                   </div>
                   <p className="text-xs text-muted-foreground mt-1">
-                    Set the margin percentage to keep from the total booking amount
+                    {t("Dashboard.Rides.margin-helper")}
                   </p>
                 </div>
 
@@ -113,11 +115,11 @@ export function AdminRidePartnerApprovalDialog({
                       {currencySymbol}{marginPreviewAmount.toFixed(2)}
                     </p>
                   </div>
-                  <div className="bg-green-50 rounded-lg p-3 border border-green-200">
+                  <div className="rounded-lg border border-border bg-accent p-3">
                     <Label className="text-xs uppercase tracking-wide text-muted-foreground">
                       {t("Dashboard.Rides.partner-payout-amount")}
                     </Label>
-                    <p className="text-lg sm:text-xl font-bold text-green-600 mt-1">
+                    <p className="mt-1 text-lg font-bold text-primary sm:text-xl">
                       {currencySymbol}{partnerPayoutPreview.toFixed(2)}
                     </p>
                   </div>
@@ -131,7 +133,7 @@ export function AdminRidePartnerApprovalDialog({
                 onClick={() => setShowPartnerApprovalModal(false)}
                 className="w-full sm:w-auto"
               >
-                Cancel
+                {t("Dashboard.Rides.cancel")}
               </Button>
               <Button
                 onClick={async () => {

@@ -46,6 +46,7 @@ export function useFormBuilder() {
   const [layoutDescription, setLayoutDescription] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [notice, setNotice] = useState<string | null>(null);
   const [previewMode, setPreviewMode] = useState<"desktop" | "mobile">("desktop");
   const [activeId, setActiveId] = useState<string | null>(null);
   const [showManager, setShowManager] = useState(false);
@@ -89,13 +90,15 @@ export function useFormBuilder() {
       );
       if (data.success) {
         setLayouts(data.data);
+      } else {
+        setNotice(t("load_error"));
       }
-    } catch (error) {
-      console.error("Error fetching layouts:", error);
+    } catch {
+      setNotice(t("load_error"));
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [t]);
 
   useEffect(() => {
     fetchLayouts();
@@ -263,7 +266,7 @@ export function useFormBuilder() {
   const saveLayout = async () => {
     if (isSavingRef.current) return;
     if (!layoutName.trim()) {
-      alert("Please enter a layout name");
+      setNotice(t("name_required"));
       return;
     }
     isSavingRef.current = true;
@@ -300,9 +303,9 @@ export function useFormBuilder() {
           setLastSaved(new Date());
           localStorage.removeItem(FORM_BUILDER_DRAFT_KEY);
           await fetchLayouts();
-          alert("Layout saved successfully!");
+          setNotice(t("saved"));
         } else {
-          alert("Failed to save layout: " + (data.message || "Unknown error"));
+          setNotice(t("save_failed"));
         }
       } else {
         const data = await apiPost<{ success: boolean; data: IFormLayout; message: string }>(
@@ -313,14 +316,14 @@ export function useFormBuilder() {
           setLastSaved(new Date());
           localStorage.removeItem(FORM_BUILDER_DRAFT_KEY);
           await fetchLayouts();
-          alert("Layout created successfully!");
+          setNotice(t("created"));
         } else {
-          alert("Failed to create layout: " + (data.message || "Unknown error"));
+          setNotice(t("save_failed"));
         }
       }
     } catch (error) {
       console.error("Error saving layout:", error);
-      alert("Failed to save layout: " + (error instanceof Error ? error.message : "Unknown error"));
+      setNotice(t("save_failed"));
     } finally {
       isSavingRef.current = false;
       setIsSaving(false);
@@ -462,5 +465,7 @@ export function useFormBuilder() {
     setDefaultLayout,
     resetToDefaults,
     draggedField,
+    notice,
+    setNotice,
   };
 }

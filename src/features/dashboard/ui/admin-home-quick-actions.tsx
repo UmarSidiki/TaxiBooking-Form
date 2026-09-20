@@ -1,88 +1,86 @@
 "use client";
 
-import { Card, CardContent } from "@/shared/ui/card";
+import { Link } from "@/shared/i18n/navigation";
+import { useEffect, useState } from "react";
 import { Calendar, Car, Settings, Users } from "lucide-react";
 import type { useTranslations } from "next-intl";
-import { useRouter } from "next/navigation";
+
+import { Card, CardContent } from "@/shared/ui/card";
+import type { ISetting } from "@/features/settings/model";
 
 type TFn = ReturnType<typeof useTranslations>;
 
 export function AdminHomeQuickActions({ t }: { t: TFn }) {
-  const router = useRouter();
+  const [partnersOn, setPartnersOn] = useState(false);
+
+  useEffect(() => {
+    const load = async () => {
+      try {
+        const response = await fetch("/api/settings", { cache: "no-store" });
+        const data = await response.json();
+        if (data.success) {
+          const settings = data.data as Partial<ISetting>;
+          setPartnersOn(settings.enablePartners ?? false);
+        }
+      } catch {
+        setPartnersOn(false);
+      }
+    };
+    load();
+  }, []);
+
+  const actions = [
+    {
+      href: "/dashboard/rides",
+      icon: Calendar,
+      title: t("Dashboard.Home.view-all-bookings"),
+      hint: t("Dashboard.Home.manage-all-rides"),
+    },
+    {
+      href: "/dashboard/fleet",
+      icon: Car,
+      title: t("Dashboard.Home.manage-fleet"),
+      hint: t("Dashboard.Home.vehicle-management"),
+    },
+    partnersOn
+      ? {
+          href: "/dashboard/partners",
+          icon: Users,
+          title: t("Dashboard.Home.view-partners"),
+          hint: t("Dashboard.Home.partner-management"),
+        }
+      : null,
+    {
+      href: "/dashboard/settings",
+      icon: Settings,
+      title: t("Dashboard.Home.settings"),
+      hint: t("Dashboard.Home.configure-system"),
+    },
+  ].filter(Boolean) as {
+    href: string;
+    icon: typeof Calendar;
+    title: string;
+    hint: string;
+  }[];
+
   return (
-      <div>
-        <h2 className="text-xl font-semibold text-gray-900 mb-4">
-          {t("Dashboard.Home.quick-actions")}
-        </h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <Card
-            className="border-0 shadow-sm hover:shadow-md transition-all cursor-pointer group"
-            onClick={() => router.push("/dashboard/rides")}
-          >
-            <CardContent className="p-6 text-center">
-              <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mx-auto mb-4 group-hover:bg-blue-200 transition-colors">
-                <Calendar className="h-6 w-6 text-blue-600" />
-              </div>
-              <h3 className="font-medium text-gray-900">
-                {t("Dashboard.Home.view-all-bookings")}
-              </h3>
-              <p className="text-sm text-gray-500 mt-1">
-                {t("Dashboard.Home.manage-all-rides")}
-              </p>
-            </CardContent>
-          </Card>
-
-          <Card
-            className="border-0 shadow-sm hover:shadow-md transition-all cursor-pointer group"
-            onClick={() => router.push("/dashboard/fleet")}
-          >
-            <CardContent className="p-6 text-center">
-              <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mx-auto mb-4 group-hover:bg-green-200 transition-colors">
-                <Car className="h-6 w-6 text-green-600" />
-              </div>
-              <h3 className="font-medium text-gray-900">
-                {t("Dashboard.Home.manage-fleet")}
-              </h3>
-              <p className="text-sm text-gray-500 mt-1">
-                {t("Dashboard.Home.vehicle-management")}
-              </p>
-            </CardContent>
-          </Card>
-
-          <Card
-            className="border-0 shadow-sm hover:shadow-md transition-all cursor-pointer group"
-            onClick={() => router.push("/dashboard/partners")}
-          >
-            <CardContent className="p-6 text-center">
-              <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mx-auto mb-4 group-hover:bg-purple-200 transition-colors">
-                <Users className="h-6 w-6 text-purple-600" />
-              </div>
-              <h3 className="font-medium text-gray-900">
-                {t("Dashboard.Home.view-partners")}
-              </h3>
-              <p className="text-sm text-gray-500 mt-1">
-                {t("Dashboard.Home.partner-management")}
-              </p>
-            </CardContent>
-          </Card>
-
-          <Card
-            className="border-0 shadow-sm hover:shadow-md transition-all cursor-pointer group"
-            onClick={() => router.push("/dashboard/settings")}
-          >
-            <CardContent className="p-6 text-center">
-              <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center mx-auto mb-4 group-hover:bg-gray-200 transition-colors">
-                <Settings className="h-6 w-6 text-gray-600" />
-              </div>
-              <h3 className="font-medium text-gray-900">
-                {t("Dashboard.Home.settings")}
-              </h3>
-              <p className="text-sm text-gray-500 mt-1">
-                {t("Dashboard.Home.configure-system")}
-              </p>
-            </CardContent>
-          </Card>
-        </div>
+    <div>
+      <h2 className="text-lg font-semibold text-foreground">
+        {t("Dashboard.Home.quick-actions")}
+      </h2>
+      <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        {actions.map((action) => (
+          <Link key={action.href} href={action.href} className="block">
+            <Card className="desk-card h-full border-border transition-shadow duration-200 hover:shadow-md">
+              <CardContent className="p-5">
+                <action.icon className="size-5 text-primary" />
+                <h3 className="mt-4 font-medium text-foreground">{action.title}</h3>
+                <p className="mt-1 text-sm text-muted-foreground">{action.hint}</p>
+              </CardContent>
+            </Card>
+          </Link>
+        ))}
       </div>
+    </div>
   );
 }

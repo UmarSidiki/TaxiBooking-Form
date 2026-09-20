@@ -26,7 +26,7 @@ export function PartnerFleetAssigned({
         <div>
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-2xl font-semibold tracking-tight">{t("currently-assigned")}</h2>
-            <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
+            <Badge variant="outline">
               <Info className="w-3 h-3 mr-1" />
               {t("can-request-additional-vehicles")}
             </Badge>

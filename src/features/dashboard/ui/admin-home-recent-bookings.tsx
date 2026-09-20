@@ -4,7 +4,6 @@ import { Badge } from "@/shared/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/shared/ui/card";
 import type { DashboardStats } from "@/features/dashboard/ui/admin-home.types";
 import { DASHBOARD_PREVIEW_LIMIT } from "@/features/dashboard/lib/dashboard-preview-limit";
-import { cn } from "@/shared/lib/utils";
 import { Calendar } from "lucide-react";
 import type { useTranslations } from "next-intl";
 
@@ -19,75 +18,54 @@ export function AdminHomeRecentBookings({
   stats: DashboardStats;
   currencySymbol: string;
 }) {
+  const bookings = stats.recentBookings ?? [];
+
   return (
-        <Card className="border-0 shadow-sm">
-          <CardHeader className="pb-3">
-            <div className="flex items-center justify-between">
-              <CardTitle className="text-lg font-semibold text-gray-900">
-                {t("Dashboard.Home.recent-bookings")}
-              </CardTitle>
-            </div>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {stats.recentBookings && stats.recentBookings.length > 0 ? (
-                stats.recentBookings.slice(0, DASHBOARD_PREVIEW_LIMIT).map((booking) => (
-                  <div
-                    key={booking.id}
-                    className="flex items-center justify-between"
-                  >
-                    <div className="flex items-center space-x-3">
-                      <div
-                        className={cn(
-                          "w-2 h-2 rounded-full",
-                          booking.status === "completed"
-                            ? "bg-green-500"
-                            : booking.status === "upcoming"
-                            ? "bg-amber-500"
-                            : "bg-red-500"
-                        )}
-                      ></div>
-                      <div>
-                        <p className="text-sm font-medium text-gray-900">
-                          {booking.customer}
-                        </p>
-                        <p className="text-xs text-gray-500">{booking.date}</p>
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <p className="text-sm font-medium text-gray-900">
-                        {currencySymbol}{booking.amount}
-                      </p>
-                      <Badge
-                        variant="outline"
-                        className={cn(
-                          "text-xs",
-                          booking.status === "completed"
-                            ? "text-green-600 border-green-200 bg-green-50"
-                            : booking.status === "upcoming"
-                            ? "text-amber-600 border-amber-200 bg-amber-50"
-                            : "text-red-600 border-red-200 bg-red-50"
-                        )}
-                      >
-                        {booking.status === "completed"
-                          ? t("Dashboard.Rides.Completed")
-                          : booking.status === "upcoming"
-                          ? t("Dashboard.Rides.Upcoming")
-                          : t("Dashboard.Rides.Canceled")}
-                      </Badge>
-                    </div>
-                  </div>
-                ))
-              ) : (
-                <div className="text-center py-6">
-                  <Calendar className="h-8 w-8 text-gray-400 mx-auto mb-2" />
-                  <p className="text-sm text-gray-500">
-                    {t("Dashboard.Home.no-recent-bookings")}
+    <Card className="desk-card border-border">
+      <CardHeader className="pb-2">
+        <CardTitle className="text-base font-semibold text-foreground">
+          {t("Dashboard.Home.recent-bookings")}
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        {bookings.length === 0 ? (
+          <div className="py-8 text-center">
+            <Calendar className="mx-auto size-8 text-muted-foreground" />
+            <p className="mt-2 text-sm text-muted-foreground">
+              {t("Dashboard.Home.no-recent-bookings")}
+            </p>
+          </div>
+        ) : (
+          <ul className="space-y-4">
+            {bookings.slice(0, DASHBOARD_PREVIEW_LIMIT).map((booking) => (
+              <li
+                key={booking.id}
+                className="flex items-center justify-between gap-3"
+              >
+                <div className="min-w-0">
+                  <p className="truncate text-sm font-medium text-foreground">
+                    {booking.customer}
                   </p>
+                  <p className="text-xs text-muted-foreground">{booking.date}</p>
                 </div>
-              )}
-            </div>
-          </CardContent>
-        </Card>
+                <div className="text-end">
+                  <p className="text-sm font-medium text-foreground">
+                    {currencySymbol}
+                    {booking.amount}
+                  </p>
+                  <Badge variant="outline" className="mt-1 text-xs">
+                    {booking.status === "completed"
+                      ? t("Dashboard.Rides.Completed")
+                      : booking.status === "upcoming"
+                        ? t("Dashboard.Rides.Upcoming")
+                        : t("Dashboard.Rides.Canceled")}
+                  </Badge>
+                </div>
+              </li>
+            ))}
+          </ul>
+        )}
+      </CardContent>
+    </Card>
   );
 }

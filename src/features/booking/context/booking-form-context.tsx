@@ -1,10 +1,11 @@
 "use client";
 
 import React, { createContext, useContext, useState, useEffect, ReactNode, useMemo, useCallback } from 'react';
-import { apiFetch, apiGet } from "@/shared/http/api";
+import { apiGet } from "@/shared/http/api";
 import { IVehicle } from '@/features/fleet/model';
 import { IFormLayout } from '@/features/form-builder/model';
 import { useSearchParams } from 'next/navigation';
+import { useBookingVehicles } from "@/features/booking/hooks/use-booking-vehicles";
 
 export interface FormData {
   bookingType: "destination" | "hourly";
@@ -63,6 +64,8 @@ export interface FormErrors {
   cardNumber?: string;
   expiry?: string;
   cvv?: string;
+  childSeats?: string;
+  babySeats?: string;
 }
 
 interface BookingFormContextType {
@@ -74,6 +77,8 @@ interface BookingFormContextType {
   setErrors: React.Dispatch<React.SetStateAction<FormErrors>>;
   vehicles: IVehicle[];
   setVehicles: React.Dispatch<React.SetStateAction<IVehicle[]>>;
+  vehiclesLoading: boolean;
+  vehiclesError: string | null;
   distanceData: DistanceData | null;
   setDistanceData: React.Dispatch<React.SetStateAction<DistanceData | null>>;
   calculatingDistance: boolean;
@@ -126,7 +131,8 @@ export function BookingFormProvider({ children }: { children: ReactNode }) {
   const [currentStep, setCurrentStep] = useState<1 | 2 | 3>(1);
   const [formData, setFormData] = useState<FormData>(defaultFormData);
   const [errors, setErrors] = useState<FormErrors>({});
-  const [vehicles, setVehicles] = useState<IVehicle[]>([]);
+  const { vehicles, setVehicles, vehiclesLoading, vehiclesError } =
+    useBookingVehicles();
   const [distanceData, setDistanceData] = useState<DistanceData | null>(null);
   const [calculatingDistance, setCalculatingDistance] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -324,28 +330,6 @@ export function BookingFormProvider({ children }: { children: ReactNode }) {
     }
   }, [distanceData, isHydrated, isEmbedded]);
 
-
-
-  // Fetch vehicles list on mount to persist selection across steps
-  useEffect(() => {
-    // Defer vehicle fetch slightly to prioritize initial render
-    const timeoutId = setTimeout(() => {
-      const fetchVehicles = async () => {
-        try {
-          const data = await apiFetch<{ success: boolean; data: IVehicle[] }>('/api/vehicles?isActive=true');
-          if (data.success) {
-            setVehicles(data.data);
-          }
-        } catch (error) {
-          console.error('Error fetching vehicles:', error);
-        }
-      };
-      fetchVehicles();
-    }, 100);
-
-    return () => clearTimeout(timeoutId);
-  }, []);
-
   const resetForm = useCallback(() => {
     setFormData(defaultFormData);
     setErrors({});
@@ -369,6 +353,8 @@ export function BookingFormProvider({ children }: { children: ReactNode }) {
     setErrors,
     vehicles,
     setVehicles,
+    vehiclesLoading,
+    vehiclesError,
     distanceData,
     setDistanceData,
     calculatingDistance,
@@ -382,6 +368,9 @@ export function BookingFormProvider({ children }: { children: ReactNode }) {
     formData,
     errors,
     vehicles,
+    setVehicles,
+    vehiclesLoading,
+    vehiclesError,
     distanceData,
     calculatingDistance,
     isLoading,

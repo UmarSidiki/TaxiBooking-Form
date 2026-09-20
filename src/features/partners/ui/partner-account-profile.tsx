@@ -21,7 +21,7 @@ export function PartnerAccountProfile({
   partner: PartnerAccountData;
 }) {
   return (
-      <Card>
+      <Card className="desk-card border-border">
         <CardHeader>
           <CardTitle>{t("profile-information")}</CardTitle>
           <CardDescription>{t("your-partner-account-details")}</CardDescription>

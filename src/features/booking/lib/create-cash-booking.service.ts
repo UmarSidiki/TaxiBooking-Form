@@ -13,7 +13,7 @@ import { calculateCashBookingTotal } from '@/features/booking/lib/calculate-cash
 import { createCashBookingEmailData } from '@/features/booking/lib/create-cash-booking-email-data';
 import { getSettingsCurrency } from '@/features/booking/lib/get-settings-currency';
 import { initCashBookingPartners } from '@/features/booking/lib/init-cash-booking-partners';
-import type { BookingInput } from '@/features/booking/model';
+import type { CashBookingInput } from '@/features/booking/schema/cash-booking.schema';
 import { Vehicle } from '@/features/fleet/model';
 
 export type CreateCashBookingResult =
@@ -26,7 +26,7 @@ export type CreateCashBookingResult =
   | { ok: false; status: number; message: string };
 
 export async function createCashBooking(
-  formData: BookingInput,
+  formData: CashBookingInput,
   origin: string,
   baseUrl?: string
 ): Promise<CreateCashBookingResult> {

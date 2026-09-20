@@ -35,11 +35,11 @@ export function Step3Extras({
                   type="number"
                   min="0"
                   max="5"
-                  className={`w-20 ${(errors as any).childSeats ? "border-red-500" : ""}`}
+                  className={`w-20 ${errors.childSeats ? "border-destructive" : ""}`}
                   value={formData.childSeats === 0 ? "" : formData.childSeats}
                   placeholder="0"
-                  aria-invalid={!!(errors as any).childSeats}
-                  aria-describedby={(errors as any).childSeats ? "child-seats-error" : undefined}
+                  aria-invalid={!!errors.childSeats}
+                  aria-describedby={errors.childSeats ? "child-seats-error" : undefined}
                   onChange={(e) => {
                     const value = e.target.value;
                     if (value === "") {
@@ -57,9 +57,9 @@ export function Step3Extras({
                     }
                   }}
                 />
-                {(errors as any).childSeats && (
-                  <p id="child-seats-error" className="text-red-500 text-xs mt-1">
-                    {(errors as any).childSeats}
+                {errors.childSeats && (
+                  <p id="child-seats-error" className="mt-1 text-xs text-destructive">
+                    {errors.childSeats}
                   </p>
                 )}
               </div>
@@ -74,11 +74,11 @@ export function Step3Extras({
                   type="number"
                   min="0"
                   max="5"
-                  className={`w-20 ${(errors as any).babySeats ? "border-red-500" : ""}`}
+                  className={`w-20 ${errors.babySeats ? "border-destructive" : ""}`}
                   value={formData.babySeats === 0 ? "" : formData.babySeats}
                   placeholder="0"
-                  aria-invalid={!!(errors as any).babySeats}
-                  aria-describedby={(errors as any).babySeats ? "baby-seats-error" : undefined}
+                  aria-invalid={!!errors.babySeats}
+                  aria-describedby={errors.babySeats ? "baby-seats-error" : undefined}
                   onChange={(e) => {
                     const value = e.target.value;
                     if (value === "") {
@@ -96,9 +96,9 @@ export function Step3Extras({
                     }
                   }}
                 />
-                {(errors as any).babySeats && (
-                  <p id="baby-seats-error" className="text-red-500 text-xs mt-1">
-                    {(errors as any).babySeats}
+                {errors.babySeats && (
+                  <p id="baby-seats-error" className="mt-1 text-xs text-destructive">
+                    {errors.babySeats}
                   </p>
                 )}
               </div>

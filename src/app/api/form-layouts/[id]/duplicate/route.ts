@@ -1,41 +1,22 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/features/auth";
 import { connectDB } from "@/shared/db";
 import { FormLayout } from "@/features/form-builder/model";
+import { requireAdmin } from "@/features/auth/lib/require-role";
+import { jsonError } from "@/shared/http/json-error";
 
-// POST - Duplicate a layout
 export async function POST(
-  request: NextRequest,
+  _request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const session = await getServerSession(authOptions);
-    if (!session || !session.user) {
-      return NextResponse.json(
-        { success: false, message: "Unauthorized" },
-        { status: 401 }
-      );
-    }
-
-    const userRole = session.user.role;
-    if (userRole !== "admin" && userRole !== "superadmin") {
-      return NextResponse.json(
-        { success: false, message: "Forbidden: Admin access required" },
-        { status: 403 }
-      );
-    }
+    const access = await requireAdmin();
+    if (!access.ok) return access.response;
 
     const { id } = await params;
     await connectDB();
 
     const original = await FormLayout.findById(id);
-    if (!original) {
-      return NextResponse.json(
-        { success: false, message: "Layout not found" },
-        { status: 404 }
-      );
-    }
+    if (!original) return jsonError("not_found", 404);
 
     const duplicate = await FormLayout.create({
       name: `${original.name} (Copy)`,
@@ -46,14 +27,11 @@ export async function POST(
     });
 
     return NextResponse.json(
-      { success: true, data: duplicate, message: "Layout duplicated successfully" },
+      { success: true, data: duplicate },
       { status: 201 }
     );
   } catch (error) {
     console.error("Error duplicating form layout:", error);
-    return NextResponse.json(
-      { success: false, message: "Failed to duplicate form layout" },
-      { status: 500 }
-    );
+    return jsonError("internal_error", 500);
   }
 }

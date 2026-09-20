@@ -1,43 +1,49 @@
 /**
- * Centralized API utility for front-end fetch logic.
- * Provides typed, scalable, and readable API interaction.
+ * Front-end fetch helper. Failures throw ApiError with a code, never raw bodies.
  */
 
 export class ApiError extends Error {
   status: number;
-  constructor(message: string, status: number) {
-    super(message);
+  code: string;
+
+  constructor(code: string, status: number) {
+    super(code);
     this.name = "ApiError";
+    this.code = code;
     this.status = status;
   }
 }
 
-/**
- * Generic API fetch function.
- * @param url - API endpoint
- * @param options - Fetch options
- * @returns Parsed JSON response
- * @throws ApiError on non-OK response
- */
+type ErrorEnvelope = {
+  error?: unknown;
+  success?: unknown;
+};
+
+function codeFromBody(text: string): string {
+  try {
+    const body = JSON.parse(text) as ErrorEnvelope;
+    if (typeof body.error === "string" && body.error.length > 0) {
+      return body.error;
+    }
+  } catch {
+    // Non-JSON error pages still map to a stable code.
+  }
+  return "request_failed";
+}
+
 export async function apiFetch<T>(url: string, options?: RequestInit): Promise<T> {
   const response = await fetch(url, options);
   if (!response.ok) {
     const errorText = await response.text();
-    throw new ApiError(errorText || `API error: ${response.status}`, response.status);
+    throw new ApiError(codeFromBody(errorText), response.status);
   }
   return response.json() as Promise<T>;
 }
 
-/**
- * Helper for GET requests.
- */
 export async function apiGet<T>(url: string): Promise<T> {
   return apiFetch<T>(url, { method: "GET" });
 }
 
-/**
- * Helper for POST requests.
- */
 export async function apiPost<T>(url: string, body: unknown): Promise<T> {
   return apiFetch<T>(url, {
     method: "POST",
@@ -46,9 +52,6 @@ export async function apiPost<T>(url: string, body: unknown): Promise<T> {
   });
 }
 
-/**
- * Helper for PATCH requests.
- */
 export async function apiPatch<T>(url: string, body: unknown): Promise<T> {
   return apiFetch<T>(url, {
     method: "PATCH",
@@ -57,9 +60,6 @@ export async function apiPatch<T>(url: string, body: unknown): Promise<T> {
   });
 }
 
-/**
- * Helper for DELETE requests.
- */
 export async function apiDelete<T>(url: string): Promise<T> {
   return apiFetch<T>(url, { method: "DELETE" });
 }

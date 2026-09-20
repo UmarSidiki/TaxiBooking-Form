@@ -1,109 +1,58 @@
 import { NextRequest, NextResponse } from "next/server";
-import { connectDB } from "@/shared/db";
-import { Driver, type IDriver } from "@/features/drivers/model";
 import bcrypt from "bcryptjs";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/features/auth";
-import { isValidEmail } from "@/shared/lib/validation";
+import { connectDB } from "@/shared/db";
+import { Driver } from "@/features/drivers/model";
+import { requireAdmin } from "@/features/auth/lib/require-role";
+import { parseJsonBody } from "@/shared/http/parse-json-body";
+import { jsonError } from "@/shared/http/json-error";
+import { driverCreateSchema } from "@/features/drivers/schema/driver-write.schema";
 
-// GET - Fetch all drivers
 export async function GET(request: NextRequest) {
   try {
-    await connectDB();
+    const access = await requireAdmin();
+    if (!access.ok) return access.response;
 
+    await connectDB();
     const { searchParams } = new URL(request.url);
     const isActive = searchParams.get("isActive");
-
     const filter = isActive !== null ? { isActive: isActive === "true" } : {};
+    const drivers = await Driver.find(filter)
+      .sort({ createdAt: -1 })
+      .select("-password");
 
-    const drivers = await Driver.find(filter).sort({ createdAt: -1 }).select("-password");
-
-    return NextResponse.json({
-      success: true,
-      data: drivers,
-    });
+    return NextResponse.json({ success: true, data: drivers });
   } catch (error) {
-    return NextResponse.json(
-      {
-        success: false,
-        message: error instanceof Error ? error.message : "Failed to fetch drivers",
-      },
-      { status: 500 }
-    );
+    console.error("Error fetching drivers:", error);
+    return jsonError("internal_error", 500);
   }
 }
 
-// POST - Create a new driver
 export async function POST(request: NextRequest) {
   try {
-    // Check if user is authenticated and is an admin
-    const session = await getServerSession(authOptions);
-    if (!session?.user || session.user.role !== 'admin') {
-      return NextResponse.json(
-        { success: false, message: 'Unauthorized. Admin access required.' },
-        { status: 403 }
-      );
-    }
+    const access = await requireAdmin();
+    if (!access.ok) return access.response;
+
+    const parsed = await parseJsonBody(request, driverCreateSchema);
+    if (!parsed.ok) return parsed.response;
 
     await connectDB();
+    const existingDriver = await Driver.findOne({ email: parsed.data.email });
+    if (existingDriver) return jsonError("conflict", 400);
 
-    const body: IDriver = await request.json();
-
-    // Validate required fields
-    if (!body.name || !body.email || !body.password) {
-      return NextResponse.json(
-        {
-          success: false,
-          message: "Missing required fields",
-        },
-        { status: 400 }
-      );
-    }
-
-    // Validate email format
-    if (!isValidEmail(body.email)) {
-      return NextResponse.json(
-        { success: false, message: "Invalid email address format" },
-        { status: 400 }
-      );
-    }
-
-    // Check if email already exists
-    const existingDriver = await Driver.findOne({ email: body.email });
-    if (existingDriver) {
-      return NextResponse.json(
-        {
-          success: false,
-          message: "Email already exists",
-        },
-        { status: 400 }
-      );
-    }
-
-    // Hash password
-    const hashedPassword = await bcrypt.hash(body.password, 12);
-
+    const hashedPassword = await bcrypt.hash(parsed.data.password, 12);
     const driver = await Driver.create({
-      ...body,
+      ...parsed.data,
       password: hashedPassword,
     });
-
-    // Return driver without password
     const driverResponse = { ...driver.toObject() };
     delete driverResponse.password;
 
-    return NextResponse.json({
-      success: true,
-      message: "Driver created successfully",
-      data: driverResponse,
-    }, { status: 201 });
-  } catch (error) {
     return NextResponse.json(
-      {
-        success: false,
-        message: error instanceof Error ? error.message : "Failed to create driver",
-      },
-      { status: 500 }
+      { success: true, data: driverResponse },
+      { status: 201 }
     );
+  } catch (error) {
+    console.error("Error creating driver:", error);
+    return jsonError("internal_error", 500);
   }
 }

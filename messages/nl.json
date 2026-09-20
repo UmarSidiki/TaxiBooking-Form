@@ -109,7 +109,9 @@
     "subtotal": "Subtotaal",
     "tax": "BTW ({0}%)",
     "included": "Inbegrepen",
-    "incl-tax": "(Incl. BTW)"
+    "incl-tax": "(Incl. BTW)",
+    "no-vehicles": "Er zijn nu geen voertuigen beschikbaar.",
+    "vehicles-load-error": "Voertuigen konden niet worden geladen. Probeer opnieuw."
   },
   "not-set": "Niet ingesteld",
   "Step3": {
@@ -406,7 +408,19 @@
       "ConfirmCancellation": "Annulering Bevestigen",
       "JourneyDetails": "Reisdetails",
       "PickupLocation": "Ophaallocatie",
-      "DropoffLocation": "Bestemming"
+      "DropoffLocation": "Bestemming",
+      "Dismiss": "Sluiten",
+      "assigning": "Toewijzen…",
+      "approve_assign": "Goedkeuren en toewijzen",
+      "assign_partner_help": "Dit keurt de rit voor partners goed en wijst de gekozen partner toe.",
+      "reassign_partner_help": "Kies een andere partner en pas de marge aan.",
+      "assignment-information": "Toewijzing",
+      "customer-review": "Klantbeoordeling",
+      "submitted-on": "Ingediend op {date}",
+      "choose-driver": "Kies een chauffeur…",
+      "select-new-driver": "Nieuwe chauffeur kiezen",
+      "current-status": "Huidige status",
+      "margin-helper": "Stel de marge in die u van het boekingsbedrag houdt."
     },
     "Home": {
       "failed-to-fetch-dashboard-stats": "Ophalen dashboardstatistieken mislukt",
@@ -517,7 +531,9 @@
         "notes": "Notities",
         "ride-accepted-successfully": "Rit succesvol geaccepteerd!",
         "failed-to-accept-ride": "Rit accepteren mislukt",
-        "partner-earnings-label": "Uw uitbetaling"
+        "partner-earnings-label": "Uw uitbetaling",
+        "retry": "Opnieuw proberen",
+        "dismiss": "Sluiten"
       },
       "Rides": {
         "my-rides": "Mijn Ritten",
@@ -550,7 +566,10 @@
         "no-ride-history-yet": "Nog geen ritgeschiedenis",
         "ride-history": "Ritgeschiedenis",
         "view-details": "Bekijk Details",
-        "your-payout": "Uw Uitbetaling"
+        "your-payout": "Uw Uitbetaling",
+        "retry": "Opnieuw proberen",
+        "load-error": "Ritten konden niet worden geladen. Probeer het opnieuw.",
+        "customer-review": "Klantbeoordeling"
       },
       "Sidebar": {
         "partner-portal": "Partner Portaal",
@@ -657,7 +676,8 @@
         "confirm-delete-fleet-request": "Bevestig Verwijderen Wagenparkaanvraag",
         "delete": "Verwijderen",
         "delete-fleet-request": "Wagenparkaanvraag Verwijderen",
-        "deleting": "Verwijderen..."
+        "deleting": "Verwijderen...",
+        "dismiss": "Sluiten"
       }
     },
     "Admin": {
@@ -759,7 +779,14 @@
         "deleting": "Verwijderen...",
         "delete": "Verwijderen",
         "partner-assigned-successfully": "Partner succesvol toegewezen",
-        "partner-reassigned-successfully": "Partner succesvol opnieuw toegewezen"
+        "partner-reassigned-successfully": "Partner succesvol opnieuw toegewezen",
+        "payout_recalculated": "Uitbetalingssaldo herberekend.",
+        "payout_failed": "Uitbetaling kon niet herberekend worden. Probeer opnieuw.",
+        "dismiss": "Sluiten",
+        "vehicle-requested": "Voertuig aangevraagd",
+        "recalculate-payout": "Uitbetaling herberekenen",
+        "load-error": "Partners konden niet worden geladen. Probeer opnieuw.",
+        "retry": "Opnieuw proberen"
       }
     },
     "Features": {
@@ -847,7 +874,10 @@
       "stop-price-per-hour-description": "Extra kosten per uur wachttijd bij stops",
       "active-available-for-booking": "Actief (Beschikbaar voor boeking)",
       "update-vehicle": "Voertuig Bijwerken",
-      "cancel": "Annuleren"
+      "cancel": "Annuleren",
+      "vehicle_saved": "Voertuig opgeslagen.",
+      "vehicle_deleted": "Voertuig verwijderd.",
+      "dismiss": "Sluiten"
     },
     "Settings": {
       "and-get-your-api-keys-from-the-dashboard": "en haal uw API-sleutels op uit het dashboard.",
@@ -1016,7 +1046,26 @@
       "redirect-immediately-after-booking": "Omleiding naar aangepaste URL onmiddellijk na het boeken (sla de bedankpagina over)",
       "redirect-immediately-after-booking-help": "Indien ingeschakeld en een omleidings-URL is ingesteld, worden klanten na het boeken rechtstreeks naar de aangepaste URL gestuurd.",
       "thank-you-stay-time": "Verblijftijd bedankpagina (seconden)",
-      "thank-you-stay-time-help": "Hoeveel seconden wordt de bedankpagina weergegeven voordat klanten worden omgeleid. \nStel in op 0 om onmiddellijk om te leiden."
+      "thank-you-stay-time-help": "Hoeveel seconden wordt de bedankpagina weergegeven voordat klanten worden omgeleid. \nStel in op 0 om onmiddellijk om te leiden.",
+      "smtp": "SMTP",
+      "features": "Functies",
+      "saving": "Opslaan…",
+      "appearance_scope": "Deze kleuren en hoeken gelden voor het publieke formulier, niet voor deze balie.",
+      "timezone_help": "Voor rit tijden en e-mails.",
+      "loading": "Laden…",
+      "draw_hint": "Klik punten. Klik het eerste punt of dubbelklik om te eindigen.",
+      "drawing_active": "Tekenen…",
+      "draw_shape": "Servicegebied tekenen",
+      "bounds_note": "De polygoon wordt opgeslagen. Deze cijfers zijn de bounding box.",
+      "smtp_test_ok": "Testmail verzonden. Controleer de inbox.",
+      "smtp_test_failed": "SMTP-test mislukt. Controleer host, gebruiker en wachtwoord.",
+      "smtp_testing": "Testen…",
+      "ssl": "SSL",
+      "multisafepay-methods-desc": "iDEAL, Bancontact, PayPal en meer",
+      "today": "Vandaag",
+      "setup": "Installatie",
+      "today_help": "Wat vandaag live is voor dispatch en afrekenen.",
+      "setup_help": "Instellingen bij installatie of als iets stuk is."
     }
   },
   "Sidebar": {
@@ -1047,7 +1096,12 @@
     "billing": "Facturatie",
     "account_settings": "Account & Instellingen",
     "driver_management": "Chauffeursbeheer",
-    "partner_management": "Partnerbeheer"
+    "partner_management": "Partnerbeheer",
+    "dispatch": "Dispatch",
+    "capacity": "Capaciteit",
+    "network": "Netwerk",
+    "booking_site": "Boekingssite",
+    "desk": "Balie"
   },
   "FormBuilder": {
     "title": "Formulierbouwer",
@@ -1264,7 +1318,44 @@
       "pill": "Pilvormig",
       "label_color": "Labelkleur",
       "footer": "Voettekst",
-      "footer_images": "Voettekst Afbeeldingen"
+      "footer_images": "Voettekst Afbeeldingen",
+      "desktop_layout": "Desktopindeling",
+      "mobile_layout": "Mobiele indeling",
+      "grid_width": "Roosterbreedte",
+      "optional": "Optioneel",
+      "same_as_desktop": "Zelfde als desktop",
+      "same_as_mobile_default": "Zelfde als mobiel",
+      "logic_validation": "Logica en validatie",
+      "remove_border": "Kader verwijderen",
+      "remove_border_help": "Het kader rond knoppen verbergen",
+      "only_in_mode": "Alleen in modus {mode}",
+      "show_steps": "Stappen tonen",
+      "desktop_columns": "Desktopkolommen",
+      "transparency": "Transparantie",
+      "transparent": "Transparant",
+      "opaque": "Ondoorzichtig",
+      "container_radius": "Containerradius",
+      "radius_units_help": "Gebruik rem, px of % (bijv. 0.75rem).",
+      "title_color": "Titelskleur",
+      "title_alignment": "Titeluitlijning",
+      "subtitle": "Ondertitel",
+      "subtitle_alignment": "Ondertiteluitlijning",
+      "heading_placeholder": "Koptekst",
+      "subtitle_placeholder": "Ondertiteltekst",
+      "footer_placeholder": "Voettekst",
+      "text_and_input": "Tekst- en invoerkleuren",
+      "body_text_color": "Tekstkleur",
+      "input_text_color": "Invoertekstkleur",
+      "input_background": "Invoerachtergrond",
+      "booking_type_button": "Boekingstypeknop",
+      "show_footer_images": "Voetafbeeldingen tonen",
+      "text_alignment": "Tekstuitlijning",
+      "buttons": "Knoppen",
+      "header": "Kop",
+      "background_effects": "Achtergrond en effecten",
+      "half_side_by_side": "Helft (naast elkaar)",
+      "styling": "Styling",
+      "full_width_pct": "Volledige breedte (100%)"
     },
     "button_properties": {
       "alignment": "Uitlijning",
@@ -1293,7 +1384,14 @@
       "width": "Breedte"
     },
     "disabled-message": "De formulierbouwermodule is momenteel uitgeschakeld door de beheerder.",
-    "disabled-title": "Module uitgeschakeld"
+    "disabled-title": "Module uitgeschakeld",
+    "loading": "Laden…",
+    "name_required": "Voer een layoutnaam in.",
+    "saved": "Layout opgeslagen.",
+    "created": "Layout aangemaakt.",
+    "save_failed": "Layout kon niet worden opgeslagen. Probeer opnieuw.",
+    "dismiss": "Sluiten",
+    "load_error": "Lay-outs konden niet worden geladen. Probeer opnieuw."
   },
   "ThankYouPage": {
     "no-payment-information-found": "Geen betaalinformatie gevonden.",
@@ -1362,7 +1460,11 @@
     "password": "Wachtwoord",
     "leave-empty-to-keep-current-password": "Laat leeg om huidig wachtwoord te behouden",
     "update-driver": "Chauffeur Bijwerken",
-    "cancel": "Annuleren"
+    "cancel": "Annuleren",
+    "driver-saved": "Chauffeur opgeslagen.",
+    "driver-deleted": "Chauffeur verwijderd.",
+    "loading": "Chauffeurs laden…",
+    "delete": "Verwijderen"
   },
   "Drivers": {
     "driver-dashboard": "Chauffeursdashboard",
@@ -1383,7 +1485,11 @@
     "signing-in": "Inloggen...",
     "need-assistance": "Hulp nodig?",
     "contact-support": "Contact Support",
-    "all-rights-reserved": "Alle rechten voorbehouden."
+    "all-rights-reserved": "Alle rechten voorbehouden.",
+    "navigate": "Navigatie openen",
+    "load_error": "We konden uw ritten niet laden. Probeer opnieuw.",
+    "retry": "Opnieuw proberen",
+    "passengers": "Passagiers"
   },
   "Stripe": {
     "payment-system-not-ready-please-refresh-the-page": "Betaalsysteem niet gereed. Vernieuw de pagina.",
@@ -1493,5 +1599,126 @@
   },
   "common": {
     "go-home": "Ga naar huis"
+  },
+  "Auth": {
+    "Desk": {
+      "operations": "Operatie",
+      "staff": "Team",
+      "log_out": "Uitloggen",
+      "signing_out": "Uitloggen…",
+      "fallback_name": "Balie",
+      "cover_kicker": "Privéterminal",
+      "cover_title": "Het dagboek, één balie.",
+      "cover_body": "Wijs chauffeurs en partners toe, prijs de vloot, en laat het formulier de kleuren van de exploitant dragen."
+    },
+    "SignIn": {
+      "title": "Inloggen",
+      "subtitle": "Vul e-mail en wachtwoord in.",
+      "email": "E-mail",
+      "password": "Wachtwoord",
+      "submit": "Inloggen",
+      "submitting": "Inloggen…",
+      "forgot": "Wachtwoord vergeten?",
+      "invalid": "Controleer e-mail en wachtwoord en probeer opnieuw.",
+      "show_password": "Wachtwoord tonen",
+      "hide_password": "Wachtwoord verbergen"
+    },
+    "Forgot": {
+      "title_email": "Wachtwoord resetten",
+      "title_otp": "Voer de code in",
+      "title_password": "Nieuw wachtwoord",
+      "subtitle_email": "We sturen een eenmalige code naar dit adres.",
+      "subtitle_otp": "Voer de 6-cijferige code uit uw inbox in.",
+      "subtitle_password": "Kies een wachtwoord van minstens 8 tekens.",
+      "email": "E-mail",
+      "otp": "Code",
+      "new_password": "Nieuw wachtwoord",
+      "confirm_password": "Bevestig wachtwoord",
+      "send": "Code verzenden",
+      "sending": "Verzenden…",
+      "verify": "Code controleren",
+      "verifying": "Controleren…",
+      "reset": "Wachtwoord bijwerken",
+      "resetting": "Bijwerken…",
+      "back": "Terug naar aanmelden",
+      "back_email": "Ander e-mailadres gebruiken",
+      "otp_sent": "Code verzonden. Controleer uw inbox.",
+      "otp_verified": "Code bevestigd. Stel uw nieuwe wachtwoord in.",
+      "reset_ok": "Wachtwoord bijgewerkt. Aanmelden wordt geopend…",
+      "send_failed": "We konden geen code verzenden. Controleer het e-mailadres en probeer opnieuw.",
+      "otp_invalid": "Die code is onjuist of verlopen. Vraag een nieuwe aan.",
+      "mismatch": "Wachtwoorden komen niet overeen.",
+      "too_short": "Gebruik minstens 8 tekens.",
+      "reset_failed": "We konden het wachtwoord niet bijwerken. Probeer opnieuw."
+    },
+    "DriverSignIn": {
+      "title": "Chauffeur aanmelden",
+      "subtitle": "Open uw toegewezen ritten.",
+      "cover_kicker": "Opdrachten",
+      "cover_title": "Ophalingen van vandaag, één lijst.",
+      "cover_body": "Zie de ritten die aan u zijn toegewezen en vertrek naar de eerste ophaling."
+    },
+    "PartnerSignIn": {
+      "title": "Partner aanmelden",
+      "subtitle": "Accepteer overflow en beheer vloottoegang.",
+      "register": "Registreer als partner",
+      "cover_kicker": "Affiliate-balie",
+      "cover_title": "Overflow die bij uw vloot past.",
+      "cover_body": "Vraag categorieën aan, accepteer aangeboden ritten en houd facturatie bij."
+    },
+    "PartnerRegister": {
+      "title": "Registreer als partner",
+      "subtitle": "Maak een account en upload daarna compliance-documenten.",
+      "name": "Volledige naam",
+      "email": "E-mail",
+      "phone": "Telefoon",
+      "address": "Adres",
+      "city": "Stad",
+      "country": "Land",
+      "password": "Wachtwoord",
+      "confirm_password": "Bevestig wachtwoord",
+      "submit": "Account maken",
+      "submitting": "Account wordt gemaakt…",
+      "success_title": "Account aangemaakt",
+      "success_body": "Meld u aan en upload uw documenten ter beoordeling.",
+      "go_login": "Naar aanmelden",
+      "sign_in": "Al een account? Aanmelden",
+      "mismatch": "Wachtwoorden komen niet overeen.",
+      "too_short": "Gebruik minstens 8 tekens.",
+      "failed": "We konden het account niet aanmaken. Controleer de gegevens en probeer opnieuw.",
+      "show_password": "Wachtwoord tonen",
+      "hide_password": "Wachtwoord verbergen",
+      "cover_kicker": "Affiliate-balie",
+      "cover_title": "Sluit aan bij de overflow van deze exploitant.",
+      "cover_body": "Eén bedrijf, gedeelde vlootcategorieën — geen marktplaats."
+    }
+  },
+  "AppError": {
+    "title": "Er ging iets mis",
+    "description": "Herlaad deze pagina. Als het opnieuw gebeurt, probeer later of neem contact op met de exploitant.",
+    "retry": "Opnieuw proberen",
+    "home": "Home",
+    "loading": "Laden…"
+  },
+  "NotFound": {
+    "title": "Pagina niet gevonden",
+    "description": "Deze pagina bestaat niet of is verplaatst.",
+    "home": "Home"
+  },
+  "ApiErrors": {
+    "invalid_body": "Controleer het formulier en probeer opnieuw.",
+    "unauthorized": "Meld je aan om door te gaan.",
+    "forbidden": "Je hebt hier geen toegang toe.",
+    "not_found": "Dit record is niet gevonden.",
+    "conflict": "Die actie is niet meer beschikbaar.",
+    "internal_error": "Er ging iets mis. Probeer opnieuw.",
+    "request_failed": "Het verzoek is mislukt. Probeer opnieuw.",
+    "smtp_not_configured": "SMTP is nog niet geconfigureerd.",
+    "smtp_failed": "De testmail kon niet worden verzonden. Controleer SMTP.",
+    "payment_init_failed": "Betaling kon niet starten. Controleer je gegevens.",
+    "payment_failed": "Betaling kon niet worden afgerond. Probeer opnieuw.",
+    "payment_not_configured": "Kaartbetalingen zijn nog niet geconfigureerd.",
+    "price_changed": "Het tarief is gewijzigd. Vernieuw en probeer opnieuw.",
+    "distance_failed": "De route kon niet worden berekend. Controleer de adressen."
   }
 }

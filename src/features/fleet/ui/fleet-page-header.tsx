@@ -39,7 +39,7 @@ export function FleetPageHeader({
   return (
     <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4 lg:mb-6">
       <div>
-        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-foreground">
+        <h1 className="text-2xl font-semibold tracking-tight text-foreground">
           {t("Dashboard.Fleet.fleet-management")}{" "}
         </h1>
         <p className="text-muted-foreground mt-1 text-sm sm:text-base">
@@ -62,7 +62,7 @@ export function FleetPageHeader({
               resetForm();
               setShowForm(true);
             }}
-            className="bg-primary hover:bg-primary/90 text-primary-foreground w-full sm:w-auto"
+            className="h-11 w-full bg-primary text-primary-foreground hover:bg-primary/90 sm:w-auto"
           >
             <Plus className="h-4 w-4 sm:mr-2" />
             <span className="hidden sm:inline">

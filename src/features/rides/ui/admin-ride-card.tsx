@@ -108,7 +108,7 @@ export function AdminRideCard({
     const statusColor = getStatusColor();
 
     return (
-      <Card className="group hover:shadow-lg transition-all duration-300 border border-gray-200 shadow-sm bg-white overflow-hidden">
+      <Card className="group hover:shadow-lg transition-shadow duration-200 border border-border shadow-sm bg-card overflow-hidden">
         {/* Top border indicator */}
         <div
           className={`h-1 ${

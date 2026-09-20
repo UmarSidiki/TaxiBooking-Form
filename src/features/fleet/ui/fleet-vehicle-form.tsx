@@ -6,6 +6,7 @@ import { FleetVehicleFormPricing } from "@/features/fleet/ui/fleet-vehicle-form-
 import { FleetVehicleFormStops } from "@/features/fleet/ui/fleet-vehicle-form-stops";
 import type { VehicleForm } from "@/features/fleet/ui/vehicle-form.types";
 import { Button } from "@/shared/ui/button";
+import { Switch } from "@/shared/ui/switch";
 import { Loader2, Save } from "lucide-react";
 import { useTranslations } from "next-intl";
 import type { FormEvent } from "react";
@@ -43,18 +44,16 @@ export function FleetVehicleForm({
 
         {/* Status */}
         <div className="md:col-span-2">
-          <div className="flex items-center space-x-2">
-            <input
-              type="checkbox"
+          <div className="flex min-h-11 items-center gap-3">
+            <Switch
               id="isActive"
               checked={formData.isActive}
-              onChange={(e) =>
-                setFormData({ ...formData, isActive: e.target.checked })
+              onCheckedChange={(checked) =>
+                setFormData({ ...formData, isActive: checked })
               }
-              className="h-4 w-4 rounded border-gray-300"
             />
             <label htmlFor="isActive" className="text-sm font-medium">
-              {t("Dashboard.Fleet.active-available-for-booking")}{" "}
+              {t("Dashboard.Fleet.active-available-for-booking")}
             </label>
           </div>
         </div>
@@ -65,7 +64,7 @@ export function FleetVehicleForm({
           {isLoading ? (
             <>
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              Saving...
+              {t("Dashboard.Settings.saving")}
             </>
           ) : (
             <>

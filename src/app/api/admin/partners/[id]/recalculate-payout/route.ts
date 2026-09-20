@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
 import { connectDB } from "@/shared/db";
 import { Partner } from "@/features/partners/model";
 import { Booking } from "@/features/booking/model";
-import { authOptions } from "@/features/auth";
+import { requireAdmin } from "@/features/auth/lib/require-role";
+import { jsonError } from "@/shared/http/json-error";
 
 /**
  * Recalculate a partner's payout balance based on completed bookings
@@ -14,20 +14,15 @@ export async function POST(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const session = await getServerSession(authOptions);
-
-    if (!session?.user || session.user.role !== "admin") {
-      return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
-    }
+    const access = await requireAdmin();
+    if (!access.ok) return access.response;
 
     const { id } = await params;
     await connectDB();
 
     const partner = await Partner.findById(id);
 
-    if (!partner) {
-      return NextResponse.json({ success: false, error: "Partner not found" }, { status: 404 });
-    }
+    if (!partner) return jsonError("not_found", 404);
 
     console.log(`🔄 Recalculating payout for partner: ${partner.name} (${partner.email})`);
 
@@ -170,9 +165,6 @@ export async function POST(
     );
   } catch (error) {
     console.error("Error recalculating partner payout:", error);
-    return NextResponse.json(
-      { success: false, error: "Failed to recalculate payout" },
-      { status: 500 }
-    );
+    return jsonError("internal_error", 500);
   }
 }

@@ -109,7 +109,9 @@
     "subtotal": "Subtotale",
     "tax": "Tasse ({0}%)",
     "included": "Incluso",
-    "incl-tax": "(Tasse Incl.)"
+    "incl-tax": "(Tasse Incl.)",
+    "no-vehicles": "Nessun veicolo disponibile al momento.",
+    "vehicles-load-error": "Impossibile caricare i veicoli. Riprova."
   },
   "not-set": "Non Impostato",
   "Step3": {
@@ -406,7 +408,19 @@
       "ConfirmCancellation": "Conferma Cancellazione",
       "JourneyDetails": "Dettagli Viaggio",
       "PickupLocation": "Luogo di Ritiro",
-      "DropoffLocation": "Luogo di Destinazione"
+      "DropoffLocation": "Luogo di Destinazione",
+      "Dismiss": "Chiudi",
+      "assigning": "Assegnazione…",
+      "approve_assign": "Approva e assegna",
+      "assign_partner_help": "Approva la corsa per i partner e la assegna al partner scelto.",
+      "reassign_partner_help": "Scegli un altro partner e regola il margine.",
+      "assignment-information": "Assegnazione",
+      "customer-review": "Recensione del cliente",
+      "submitted-on": "Inviata il {date}",
+      "choose-driver": "Scegli un autista…",
+      "select-new-driver": "Seleziona un nuovo autista",
+      "current-status": "Stato attuale",
+      "margin-helper": "Imposta il margine da trattenere sul totale della prenotazione."
     },
     "Home": {
       "failed-to-fetch-dashboard-stats": "Impossibile recuperare statistiche dashboard",
@@ -517,7 +531,9 @@
         "notes": "Note",
         "ride-accepted-successfully": "Corsa accettata con successo!",
         "failed-to-accept-ride": "Impossibile accettare la corsa",
-        "partner-earnings-label": "Il tuo compenso"
+        "partner-earnings-label": "Il tuo compenso",
+        "retry": "Riprova",
+        "dismiss": "Chiudi"
       },
       "Rides": {
         "my-rides": "Le Mie Corse",
@@ -550,7 +566,10 @@
         "no-ride-history-yet": "Nessuna cronologia corse ancora",
         "ride-history": "Cronologia Corse",
         "view-details": "Vedi Dettagli",
-        "your-payout": "Il Tuo Compenso"
+        "your-payout": "Il Tuo Compenso",
+        "retry": "Riprova",
+        "load-error": "Impossibile caricare le corse. Riprova.",
+        "customer-review": "Recensione del cliente"
       },
       "Sidebar": {
         "partner-portal": "Portale Partner",
@@ -657,7 +676,8 @@
         "confirm-delete-fleet-request": "Conferma Eliminazione Richiesta Flotta",
         "delete": "Elimina",
         "delete-fleet-request": "Elimina Richiesta Flotta",
-        "deleting": "Eliminazione..."
+        "deleting": "Eliminazione...",
+        "dismiss": "Chiudi"
       }
     },
     "Admin": {
@@ -759,7 +779,14 @@
         "deleting": "Eliminazione...",
         "delete": "Elimina",
         "partner-assigned-successfully": "Partner assegnato con successo",
-        "partner-reassigned-successfully": "Partner riassegnato con successo"
+        "partner-reassigned-successfully": "Partner riassegnato con successo",
+        "payout_recalculated": "Saldo di pagamento ricalcolato.",
+        "payout_failed": "Impossibile ricalcolare il pagamento. Riprova.",
+        "dismiss": "Chiudi",
+        "vehicle-requested": "Veicolo richiesto",
+        "recalculate-payout": "Ricalcola il pagamento",
+        "load-error": "Impossibile caricare i partner. Riprova.",
+        "retry": "Riprova"
       }
     },
     "Features": {
@@ -847,7 +874,10 @@
       "stop-price-per-hour-description": "Costo aggiuntivo per ora di attesa alle fermate",
       "active-available-for-booking": "Attivo (Disponibile per prenotazione)",
       "update-vehicle": "Aggiorna Veicolo",
-      "cancel": "Annulla"
+      "cancel": "Annulla",
+      "vehicle_saved": "Veicolo salvato.",
+      "vehicle_deleted": "Veicolo eliminato.",
+      "dismiss": "Chiudi"
     },
     "Settings": {
       "and-get-your-api-keys-from-the-dashboard": "e ottieni le tue chiavi API dalla dashboard.",
@@ -1016,7 +1046,26 @@
       "redirect-immediately-after-booking": "Reindirizzamento all'URL personalizzato subito dopo la prenotazione (salta la pagina di ringraziamento)",
       "redirect-immediately-after-booking-help": "Se abilitato e impostato un URL di reindirizzamento, i clienti verranno indirizzati direttamente all'URL personalizzato dopo la prenotazione.",
       "thank-you-stay-time": "Tempo di permanenza della pagina di ringraziamento (secondi)",
-      "thank-you-stay-time-help": "Quanti secondi viene mostrata la pagina di ringraziamento prima di reindirizzare i clienti. \nImpostato su 0 per reindirizzare immediatamente."
+      "thank-you-stay-time-help": "Quanti secondi viene mostrata la pagina di ringraziamento prima di reindirizzare i clienti. \nImpostato su 0 per reindirizzare immediatamente.",
+      "smtp": "SMTP",
+      "features": "Funzioni",
+      "saving": "Salvataggio…",
+      "appearance_scope": "Questi colori e raggi valgono per il modulo pubblico, non per questo banco.",
+      "timezone_help": "Per orari di prenotazione ed e-mail.",
+      "loading": "Caricamento…",
+      "draw_hint": "Clicca i punti. Clicca il primo punto o fai doppio clic per finire.",
+      "drawing_active": "Disegno…",
+      "draw_shape": "Disegna area",
+      "bounds_note": "Il poligono viene salvato. Questi numeri sono il riquadro.",
+      "smtp_test_ok": "Email di prova inviata. Controlla la posta.",
+      "smtp_test_failed": "Test SMTP non riuscito. Controlla host, utente e password.",
+      "smtp_testing": "Test…",
+      "ssl": "SSL",
+      "multisafepay-methods-desc": "iDEAL, Bancontact, PayPal e altro",
+      "today": "Oggi",
+      "setup": "Installazione",
+      "today_help": "Cosa è attivo oggi per dispatch e pagamento.",
+      "setup_help": "Impostazioni da toccare in installazione o se qualcosa si rompe."
     }
   },
   "Sidebar": {
@@ -1047,7 +1096,12 @@
     "billing": "Fatturazione",
     "account_settings": "Account e Impostazioni",
     "driver_management": "Gestione Autisti",
-    "partner_management": "Gestione Partner"
+    "partner_management": "Gestione Partner",
+    "dispatch": "Dispatch",
+    "capacity": "Capacità",
+    "network": "Rete",
+    "booking_site": "Sito prenotazioni",
+    "desk": "Banco"
   },
   "FormBuilder": {
     "title": "Costruttore Moduli",
@@ -1264,7 +1318,44 @@
       "pill": "Pillola",
       "label_color": "Colore Etichetta",
       "footer": "Piè di pagina",
-      "footer_images": "Immagini Piè di pagina"
+      "footer_images": "Immagini Piè di pagina",
+      "desktop_layout": "Layout desktop",
+      "mobile_layout": "Layout mobile",
+      "grid_width": "Larghezza griglia",
+      "optional": "Facoltativo",
+      "same_as_desktop": "Come desktop",
+      "same_as_mobile_default": "Come predefinito mobile",
+      "logic_validation": "Logica e convalida",
+      "remove_border": "Rimuovi cornice",
+      "remove_border_help": "Nascondi il riquadro intorno ai pulsanti",
+      "only_in_mode": "Solo in modalità {mode}",
+      "show_steps": "Mostra passaggi",
+      "desktop_columns": "Colonne desktop",
+      "transparency": "Trasparenza",
+      "transparent": "Trasparente",
+      "opaque": "Opaco",
+      "container_radius": "Raggio contenitore",
+      "radius_units_help": "Usa rem, px o % (es. 0.75rem).",
+      "title_color": "Colore titolo",
+      "title_alignment": "Allineamento titolo",
+      "subtitle": "Sottotitolo",
+      "subtitle_alignment": "Allineamento sottotitolo",
+      "heading_placeholder": "Testo intestazione",
+      "subtitle_placeholder": "Testo sottotitolo",
+      "footer_placeholder": "Testo piè di pagina",
+      "text_and_input": "Colori testo e campi",
+      "body_text_color": "Colore del testo",
+      "input_text_color": "Colore testo campo",
+      "input_background": "Sfondo campo",
+      "booking_type_button": "Pulsante tipo prenotazione",
+      "show_footer_images": "Mostra immagini piè di pagina",
+      "text_alignment": "Allineamento testo",
+      "buttons": "Pulsanti",
+      "header": "Intestazione",
+      "background_effects": "Sfondo ed effetti",
+      "half_side_by_side": "Metà (affiancati)",
+      "styling": "Stile",
+      "full_width_pct": "Larghezza piena (100%)"
     },
     "button_properties": {
       "alignment": "Allineamento",
@@ -1293,7 +1384,14 @@
       "half": "Metà (50%)"
     },
     "disabled-message": "Il modulo di creazione moduli è attualmente disabilitato dall'amministratore.",
-    "disabled-title": "Modulo disabilitato"
+    "disabled-title": "Modulo disabilitato",
+    "loading": "Caricamento…",
+    "name_required": "Inserisci un nome layout.",
+    "saved": "Layout salvato.",
+    "created": "Layout creato.",
+    "save_failed": "Impossibile salvare il layout. Riprova.",
+    "dismiss": "Chiudi",
+    "load_error": "Impossibile caricare i layout. Riprova."
   },
   "ThankYouPage": {
     "no-payment-information-found": "Nessuna informazione di pagamento trovata.",
@@ -1362,7 +1460,11 @@
     "password": "Password",
     "leave-empty-to-keep-current-password": "Lascia vuoto per mantenere password attuale",
     "update-driver": "Aggiorna Autista",
-    "cancel": "Annulla"
+    "cancel": "Annulla",
+    "driver-saved": "Autista salvato.",
+    "driver-deleted": "Autista eliminato.",
+    "loading": "Caricamento autisti…",
+    "delete": "Elimina"
   },
   "Drivers": {
     "driver-dashboard": "Dashboard Autista",
@@ -1383,7 +1485,11 @@
     "signing-in": "Accesso in corso...",
     "need-assistance": "Serve assistenza?",
     "contact-support": "Contatta Supporto",
-    "all-rights-reserved": "Tutti i diritti riservati."
+    "all-rights-reserved": "Tutti i diritti riservati.",
+    "navigate": "Apri navigazione",
+    "load_error": "Impossibile caricare le corse. Riprova.",
+    "retry": "Riprova",
+    "passengers": "Passeggeri"
   },
   "Stripe": {
     "payment-system-not-ready-please-refresh-the-page": "Sistema di pagamento non pronto. Aggiorna la pagina.",
@@ -1493,5 +1599,126 @@
   },
   "common": {
     "go-home": "Vai a casa"
+  },
+  "Auth": {
+    "Desk": {
+      "operations": "Operazioni",
+      "staff": "Team",
+      "log_out": "Esci",
+      "signing_out": "Uscita…",
+      "fallback_name": "Banco",
+      "cover_kicker": "Terminal privato",
+      "cover_title": "L’agenda di oggi, un solo banco.",
+      "cover_body": "Assegna autisti e partner, tariffa la flotta; il modulo resta nei colori dell’operatore."
+    },
+    "SignIn": {
+      "title": "Accedi",
+      "subtitle": "Inserisci e-mail e password.",
+      "email": "E-mail",
+      "password": "Password",
+      "submit": "Accedi",
+      "submitting": "Accesso…",
+      "forgot": "Password dimenticata?",
+      "invalid": "Controlla e-mail e password e riprova.",
+      "show_password": "Mostra password",
+      "hide_password": "Nascondi password"
+    },
+    "Forgot": {
+      "title_email": "Reimposta password",
+      "title_otp": "Inserisci il codice",
+      "title_password": "Nuova password",
+      "subtitle_email": "Invieremo un codice monouso a questo indirizzo.",
+      "subtitle_otp": "Inserisci il codice a 6 cifre ricevuto via e-mail.",
+      "subtitle_password": "Scegli una password di almeno 8 caratteri.",
+      "email": "E-mail",
+      "otp": "Codice",
+      "new_password": "Nuova password",
+      "confirm_password": "Conferma password",
+      "send": "Invia codice",
+      "sending": "Invio…",
+      "verify": "Verifica codice",
+      "verifying": "Verifica…",
+      "reset": "Aggiorna password",
+      "resetting": "Aggiornamento…",
+      "back": "Torna all’accesso",
+      "back_email": "Usa un’altra e-mail",
+      "otp_sent": "Codice inviato. Controlla la posta.",
+      "otp_verified": "Codice confermato. Imposta la nuova password.",
+      "reset_ok": "Password aggiornata. Apertura accesso…",
+      "send_failed": "Impossibile inviare un codice. Controlla l’e-mail e riprova.",
+      "otp_invalid": "Codice errato o scaduto. Richiedine uno nuovo.",
+      "mismatch": "Le password non coincidono.",
+      "too_short": "Usa almeno 8 caratteri.",
+      "reset_failed": "Impossibile aggiornare la password. Riprova."
+    },
+    "DriverSignIn": {
+      "title": "Accesso autista",
+      "subtitle": "Apri le corse assegnate.",
+      "cover_kicker": "Incarichi",
+      "cover_title": "I ritiri di oggi, un elenco.",
+      "cover_body": "Vedi le corse assegnate e parti verso il primo ritiro."
+    },
+    "PartnerSignIn": {
+      "title": "Accesso partner",
+      "subtitle": "Accetta l’overflow e gestisci l’accesso alla flotta.",
+      "register": "Registrati come partner",
+      "cover_kicker": "Sportello affiliato",
+      "cover_title": "Overflow adatto alla tua flotta.",
+      "cover_body": "Richiedi categorie, accetta corse offerte e tieni la fatturazione."
+    },
+    "PartnerRegister": {
+      "title": "Registrati come partner",
+      "subtitle": "Crea un account, poi carica i documenti di conformità.",
+      "name": "Nome completo",
+      "email": "Email",
+      "phone": "Telefono",
+      "address": "Indirizzo",
+      "city": "Città",
+      "country": "Paese",
+      "password": "Password",
+      "confirm_password": "Conferma password",
+      "submit": "Crea account",
+      "submitting": "Creazione account…",
+      "success_title": "Account creato",
+      "success_body": "Accedi e carica i documenti per la verifica.",
+      "go_login": "Vai all’accesso",
+      "sign_in": "Hai già un account? Accedi",
+      "mismatch": "Le password non coincidono.",
+      "too_short": "Usa almeno 8 caratteri.",
+      "failed": "Impossibile creare l’account. Controlla i dati e riprova.",
+      "show_password": "Mostra password",
+      "hide_password": "Nascondi password",
+      "cover_kicker": "Sportello affiliato",
+      "cover_title": "Entra nell’overflow di questo operatore.",
+      "cover_body": "Un’azienda, categorie di flotta condivise — non un marketplace."
+    }
+  },
+  "AppError": {
+    "title": "Qualcosa è andato storto",
+    "description": "Ricarica questa pagina. Se succede di nuovo, riprova più tardi o contatta l’operatore.",
+    "retry": "Riprova",
+    "home": "Home",
+    "loading": "Caricamento…"
+  },
+  "NotFound": {
+    "title": "Pagina non trovata",
+    "description": "Questa pagina non esiste o è stata spostata.",
+    "home": "Home"
+  },
+  "ApiErrors": {
+    "invalid_body": "Controlla il modulo e riprova.",
+    "unauthorized": "Accedi per continuare.",
+    "forbidden": "Non hai accesso a questa risorsa.",
+    "not_found": "Record non trovato.",
+    "conflict": "Questa azione non è più disponibile.",
+    "internal_error": "Qualcosa è andato storto. Riprova.",
+    "request_failed": "La richiesta non è riuscita. Riprova.",
+    "smtp_not_configured": "SMTP non è ancora configurato.",
+    "smtp_failed": "Impossibile inviare l’email di test. Controlla SMTP.",
+    "payment_init_failed": "Il pagamento non è partito. Controlla i dati.",
+    "payment_failed": "Impossibile completare il pagamento. Riprova.",
+    "payment_not_configured": "I pagamenti con carta non sono ancora configurati.",
+    "price_changed": "La tariffa è cambiata. Aggiorna e riprova.",
+    "distance_failed": "Impossibile calcolare il percorso. Controlla gli indirizzi."
   }
 }

@@ -1,154 +1,70 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/features/auth";
 import { connectDB } from "@/shared/db";
 import { FormLayout } from "@/features/form-builder/model";
 import { FormLayoutUpdateSchema } from "@/features/form-builder/schema/form-layout.schema";
-import { ZodError } from "zod";
+import { requireAdmin } from "@/features/auth/lib/require-role";
+import { parseJsonBody } from "@/shared/http/parse-json-body";
+import { jsonError } from "@/shared/http/json-error";
 
-// GET - Fetch single layout
 export async function GET(
-  request: NextRequest,
+  _request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const { id } = await params;
-
     await connectDB();
     const layout = await FormLayout.findById(id);
-
-    if (!layout) {
-      return NextResponse.json(
-        { success: false, message: "Layout not found" },
-        { status: 404 }
-      );
-    }
-
+    if (!layout) return jsonError("not_found", 404);
     return NextResponse.json({ success: true, data: layout });
   } catch (error) {
     console.error("Error fetching form layout:", error);
-    return NextResponse.json(
-      { success: false, message: "Failed to fetch form layout" },
-      { status: 500 }
-    );
+    return jsonError("internal_error", 500);
   }
 }
 
-// PATCH - Update a form layout
 export async function PATCH(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const session = await getServerSession(authOptions);
-    if (!session || !session.user) {
-      return NextResponse.json(
-        { success: false, message: "Unauthorized" },
-        { status: 401 }
-      );
-    }
+    const access = await requireAdmin();
+    if (!access.ok) return access.response;
 
-    const userRole = session.user.role;
-    if (userRole !== "admin" && userRole !== "superadmin") {
-      return NextResponse.json(
-        { success: false, message: "Forbidden: Admin access required" },
-        { status: 403 }
-      );
-    }
+    const parsed = await parseJsonBody(request, FormLayoutUpdateSchema);
+    if (!parsed.ok) return parsed.response;
 
     const { id } = await params;
     await connectDB();
-    const body = await request.json();
-
-    // Validate request body with Zod
-    const validatedData = FormLayoutUpdateSchema.parse(body);
-
-    // If setting as default, unset other defaults
-    if (validatedData.isDefault) {
+    if (parsed.data.isDefault) {
       await FormLayout.updateMany({ _id: { $ne: id } }, { isDefault: false });
     }
-
-    const layout = await FormLayout.findByIdAndUpdate(id, validatedData, {
-      returnDocument: 'after',
-      runValidators: true
+    const layout = await FormLayout.findByIdAndUpdate(id, parsed.data, {
+      returnDocument: "after",
+      runValidators: true,
     });
-
-    if (!layout) {
-      return NextResponse.json(
-        { success: false, message: "Layout not found" },
-        { status: 404 }
-      );
-    }
-
-    return NextResponse.json({
-      success: true,
-      data: layout,
-      message: "Layout updated successfully",
-    });
+    if (!layout) return jsonError("not_found", 404);
+    return NextResponse.json({ success: true, data: layout });
   } catch (error) {
     console.error("Error updating form layout:", error);
-    
-    if (error instanceof ZodError) {
-      return NextResponse.json(
-        {
-          success: false,
-          message: "Validation error",
-          errors: error.issues.map(e => ({ field: e.path.join('.'), message: e.message }))
-        },
-        { status: 400 }
-      );
-    }
-    
-    return NextResponse.json(
-      { success: false, message: "Failed to update form layout" },
-      { status: 500 }
-    );
+    return jsonError("internal_error", 500);
   }
 }
 
-// DELETE - Delete a form layout
 export async function DELETE(
-  request: NextRequest,
+  _request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const session = await getServerSession(authOptions);
-    if (!session || !session.user) {
-      return NextResponse.json(
-        { success: false, message: "Unauthorized" },
-        { status: 401 }
-      );
-    }
-
-    const userRole = session.user.role;
-    if (userRole !== "admin" && userRole !== "superadmin") {
-      return NextResponse.json(
-        { success: false, message: "Forbidden: Admin access required" },
-        { status: 403 }
-      );
-    }
+    const access = await requireAdmin();
+    if (!access.ok) return access.response;
 
     const { id } = await params;
     await connectDB();
-
     const layout = await FormLayout.findByIdAndDelete(id);
-
-    if (!layout) {
-      return NextResponse.json(
-        { success: false, message: "Layout not found" },
-        { status: 404 }
-      );
-    }
-
-    return NextResponse.json({
-      success: true,
-      message: "Layout deleted successfully",
-    });
+    if (!layout) return jsonError("not_found", 404);
+    return NextResponse.json({ success: true });
   } catch (error) {
     console.error("Error deleting form layout:", error);
-    return NextResponse.json(
-      { success: false, message: "Failed to delete form layout" },
-      { status: 500 }
-    );
+    return jsonError("internal_error", 500);
   }
 }

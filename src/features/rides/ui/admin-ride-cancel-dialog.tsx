@@ -55,7 +55,7 @@ export function AdminRideCancelDialog({
                 {t("Dashboard.Rides.Trip")} #
                 {selectedBooking?.tripId.slice(0, 8)}
               </span>
-              <span className="text-gray-500 mx-2">•</span>
+              <span className="text-muted-foreground mx-2">•</span>
               <span>
                 {selectedBooking?.firstName} {selectedBooking?.lastName}
               </span>
@@ -63,8 +63,8 @@ export function AdminRideCancelDialog({
           </DialogHeader>
 
           <div className="space-y-4 py-4">
-            <div className="bg-secondary/10 border-l-4 border-secondary/30 rounded-r-lg p-4">
-              <p className="text-sm text-gray-700 flex items-start gap-2">
+            <div className="rounded-md border border-border bg-card p-4">
+              <p className="text-sm text-foreground flex items-start gap-2">
                 <AlertTriangle className="w-5 h-5 flex-shrink-0 mt-0.5" />
                 <span>
                   <span className="font-semibold block mb-1">
@@ -82,7 +82,7 @@ export function AdminRideCancelDialog({
 
             {selectedBooking && canRefund(selectedBooking) && (
               <div className="space-y-3 p-4 bg-secondary/10 rounded-lg border border-secondary/20">
-                <label className="text-sm font-semibold text-gray-900 flex items-center gap-2">
+                <label className="text-sm font-semibold text-foreground flex items-center gap-2">
                   <Percent className="w-4 h-4 text-primary" />
                   {t("Dashboard.Rides.RefundPercentage")}
                 </label>
@@ -100,29 +100,17 @@ export function AdminRideCancelDialog({
                         )
                       )
                     }
-                    className="w-24 text-center font-bold text-lg"
+                    className="h-11 w-24 text-center font-bold text-lg"
                   />
-                  <span className="text-lg font-semibold text-gray-600">%</span>
-                  <div className="flex-1">
-                    <Input
-                      type="range"
-                      min="0"
-                      max="100"
-                      value={refundPercentage}
-                      onChange={(e) =>
-                        setRefundPercentage(parseInt(e.target.value))
-                      }
-                      className="w-full cursor-pointer"
-                    />
-                  </div>
+                  <span className="text-lg font-semibold text-muted-foreground">%</span>
                 </div>
                 <div className="p-3 bg-secondary/20 rounded-md border border-secondary/30">
                   <div className="flex justify-between items-center text-sm">
-                    <span className="text-gray-700 flex items-center gap-1">
+                    <span className="text-foreground flex items-center gap-1">
                       <RefreshCw className="w-4 h-4" />
                       {t("Dashboard.Rides.RefundAmount")}
                     </span>
-                    <span className="font-bold text-xl text-gray-900">
+                    <span className="font-bold text-xl text-foreground">
                       {currencySymbol}
                       {(
                         (selectedBooking?.totalAmount || 0) *
@@ -130,7 +118,7 @@ export function AdminRideCancelDialog({
                       ).toFixed(2)}
                     </span>
                   </div>
-                  <div className="flex justify-between items-center text-xs text-gray-500 mt-1">
+                  <div className="flex justify-between items-center text-xs text-muted-foreground mt-1">
                     <span>{t("Dashboard.Rides.TotalAmount")}</span>
                     <span>
                       {currencySymbol}
@@ -142,8 +130,8 @@ export function AdminRideCancelDialog({
             )}
 
             {selectedBooking?.paymentMethod === "cash" && (
-              <div className="bg-secondary/10 border-l-4 border-secondary/30 rounded-r-lg p-4">
-                <p className="text-sm text-gray-700 flex items-start gap-2">
+              <div className="rounded-md border border-border bg-card p-4">
+                <p className="text-sm text-foreground flex items-start gap-2">
                   <CreditCard className="w-5 h-5 flex-shrink-0 mt-0.5" />
                   <span>
                     <span className="font-semibold block mb-1">

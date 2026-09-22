@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { after, NextResponse } from "next/server";
 import { requireAdmin } from "@/features/auth/lib/require-role";
 import {
   currentWhatsAppLink,
@@ -8,6 +8,7 @@ import {
 import { jsonError } from "@/shared/http/json-error";
 
 export const dynamic = "force-dynamic";
+export const maxDuration = 60;
 
 export async function GET() {
   const access = await requireAdmin();
@@ -25,8 +26,9 @@ export async function POST() {
   const access = await requireAdmin();
   if (!access.ok) return access.response;
   try {
-    const data = startWhatsAppPairing();
-    return NextResponse.json({ success: true, data });
+    const { view, done } = await startWhatsAppPairing();
+    after(() => done);
+    return NextResponse.json({ success: true, data: view });
   } catch (error) {
     console.error("WhatsApp session POST failed:", error);
     return jsonError("internal_error", 500);

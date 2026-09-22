@@ -4,16 +4,14 @@ import { connectDB } from '@/shared/db';
 import { getBakedSettings } from '@/shared/config/baked-settings';
 import { Setting } from '@/features/settings/model';
 import { getCurrencySymbol } from '@/shared/lib/utils';
+import { deskRideUrl } from '@/features/booking/lib/booking-mail-url';
 import type { BookingEmailData } from '@/features/payments/lib/booking-email-data';
 
 function generateOwnerEmailHTML(
   bookingData: BookingEmailData,
   currency: string = 'EUR',
   primaryColor: string = '#EAB308',
-  baseUrl?: string,
-  enableDrivers?: boolean,
-  enablePartners?: boolean,
-  bookingId?: string
+  deskUrl?: string | null
 ) {
   const currencySymbol = getCurrencySymbol(currency);
 
@@ -66,7 +64,9 @@ function generateOwnerEmailHTML(
         ${bookingData.stops && bookingData.stops.length > 0 ? bookingData.stops.map((stop, index) =>
           `<tr><td><strong>Stop ${index + 1}:</strong></td><td>${stop.location}</td></tr>`
         ).join('') : ''}
-        <tr><td><strong>To:</strong></td><td>${bookingData.dropoff}</td></tr>
+        ${bookingData.bookingType === 'hourly' || bookingData.dropoff === 'N/A (Hourly booking)'
+          ? (bookingData.duration ? `<tr><td><strong>Duration:</strong></td><td>${bookingData.duration} hours</td></tr>` : '')
+          : `<tr><td><strong>To:</strong></td><td>${bookingData.dropoff}</td></tr>`}
         <tr><td><strong>Departure:</strong></td><td>${bookingData.date} at ${bookingData.time}</td></tr>
         ${bookingData.tripType === 'roundtrip' && bookingData.returnDate ?
           `<tr><td><strong>Return:</strong></td><td>${bookingData.returnDate} at ${bookingData.returnTime}</td></tr>` : ''}
@@ -103,10 +103,10 @@ function generateOwnerEmailHTML(
       </div>
     </div>
 
-    ${(enableDrivers || enablePartners) && baseUrl && bookingId ? `
+    ${deskUrl ? `
     <div class="action-buttons">
       <p style="margin-bottom: 15px; font-weight: bold;">Manage this booking:</p>
-      <a href="${baseUrl}/dashboard/rides?bookingId=${bookingId}" class="btn btn-driver">View & Manage Booking</a>
+      <a href="${deskUrl}" class="btn btn-driver">View & Manage Booking</a>
     </div>
     ` : ''}
 
@@ -142,24 +142,23 @@ export async function sendOrderNotificationEmail(bookingData: BookingEmailData) 
     const currency = settings?.stripeCurrency || baked.stripeCurrency || 'EUR';
     const currencySymbol = getCurrencySymbol(currency);
     const primaryColor = settings?.primaryColor || baked.primaryColor || '#EAB308';
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || bookingData.baseUrl;
-    const enableDrivers = settings?.enableDrivers || false;
-    const enablePartners = settings?.enablePartners || false;
+    const deskUrl = deskRideUrl(
+      process.env.NEXT_PUBLIC_BASE_URL || bookingData.baseUrl,
+      bookingData.locale,
+      bookingData.bookingId
+    );
 
     const htmlContent = generateOwnerEmailHTML(
       bookingData,
       currency,
       primaryColor,
-      baseUrl,
-      enableDrivers,
-      enablePartners,
-      bookingData.bookingId
+      deskUrl
     );
 
     const textBody = `New Booking Received!\n\nReservation ID: ${bookingData.tripId}\nCustomer: ${bookingData.firstName} ${bookingData.lastName}\nEmail: ${bookingData.email}\nPhone: ${bookingData.phone}\nFrom: ${bookingData.pickup}${bookingData.stops && bookingData.stops.length > 0 ? '\nStops: ' + bookingData.stops.map((stop, index) => {
       const durationText = stop.duration && stop.duration > 0 ? ` (Wait: ${stop.duration >= 60 ? `${Math.floor(stop.duration / 60)}h${stop.duration % 60 > 0 ? ` ${stop.duration % 60}m` : ''}` : `${stop.duration}m`})` : '';
       return `Stop ${index + 1}: ${stop.location}${durationText}`;
-    }).join(', ') : ''}\nTo: ${bookingData.dropoff}\nDeparture Date: ${bookingData.date} at ${bookingData.time}${bookingData.tripType === 'roundtrip' && bookingData.returnDate ? `\nReturn Date: ${bookingData.returnDate} at ${bookingData.returnTime}` : ''}${bookingData.flightNumber ? `\nFlight Number: ${bookingData.flightNumber}` : ''}\nVehicle: ${bookingData.vehicleDetails.name}\nTotal Amount: ${currencySymbol}${bookingData.totalAmount}\n\nPlease review and confirm this booking.`;
+    }).join(', ') : ''}${bookingData.bookingType === 'hourly' ? `\nDuration: ${bookingData.duration ? `${bookingData.duration} hours` : 'Hourly'}` : `\nTo: ${bookingData.dropoff}`}\nDeparture Date: ${bookingData.date} at ${bookingData.time}${bookingData.tripType === 'roundtrip' && bookingData.returnDate ? `\nReturn Date: ${bookingData.returnDate} at ${bookingData.returnTime}` : ''}${bookingData.flightNumber ? `\nFlight Number: ${bookingData.flightNumber}` : ''}\nVehicle: ${bookingData.vehicleDetails.name}\nTotal Amount: ${currencySymbol}${bookingData.totalAmount}${deskUrl ? `\n\nManage this booking: ${deskUrl}` : ''}\n\nPlease review and confirm this booking.`;
 
     let anySuccess = false;
 

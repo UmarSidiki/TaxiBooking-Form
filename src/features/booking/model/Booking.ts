@@ -10,6 +10,8 @@ export interface IBooking extends Document {
     duration?: number;
   }>;
   tripType: "oneway" | "roundtrip";
+  bookingType?: "destination" | "hourly";
+  duration?: number;
   date: string;
   time: string;
   returnDate?: string;
@@ -41,6 +43,7 @@ export interface IBooking extends Document {
   subtotalAmount?: number;
   taxAmount?: number;
   taxPercentage?: number;
+  taxIncluded?: boolean;
   refundAmount?: number;
   refundPercentage?: number;
   canceledAt?: Date;
@@ -83,6 +86,8 @@ const BookingSchema: Schema = new Schema({
     duration: { type: Number, default: 0 }
   }],
   tripType: { type: String, enum: ["oneway", "roundtrip"], required: true },
+  bookingType: { type: String, enum: ["destination", "hourly"] },
+  duration: { type: Number },
   date: { type: String, required: true },
   time: { type: String, required: true },
   returnDate: { type: String },

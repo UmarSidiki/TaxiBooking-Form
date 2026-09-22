@@ -1,6 +1,7 @@
 import { sendEmail } from "@/features/settings/lib/email";
 import { connectDB } from "@/shared/db";
 import { Setting } from "@/features/settings/model";
+import { absoluteHttpBase, bookingMailLocale } from "@/features/booking/lib/booking-mail-url";
 
 interface BookingData {
   tripId: string;
@@ -36,6 +37,9 @@ interface BookingData {
   flightNumber?: string;
   bookingId?: string;
   baseUrl?: string;
+  locale?: string;
+  bookingType?: string;
+  duration?: number;
 }
 
 // Email validation utility
@@ -45,10 +49,11 @@ function isValidEmail(email: string): boolean {
 }
 
 function generateEmailHTML(bookingData: BookingData, primaryColor: string = '#EAB308') {
-  const baseUrl = bookingData.baseUrl ? bookingData.baseUrl.replace(/\/$/, "") : "";
-  const reviewUrl = bookingData.bookingId && baseUrl 
-    ? `${baseUrl}/en/review?bookingId=${bookingData.bookingId}`
+  const baseUrl = absoluteHttpBase(bookingData.baseUrl);
+  const reviewUrl = bookingData.bookingId && baseUrl
+    ? `${baseUrl}/${bookingMailLocale(bookingData.locale)}/review?bookingId=${encodeURIComponent(bookingData.bookingId)}`
     : null;
+  const hourly = bookingData.bookingType === "hourly" || bookingData.dropoff === "N/A (Hourly booking)";
 
   return `
 <!DOCTYPE html>
@@ -88,7 +93,9 @@ function generateEmailHTML(bookingData: BookingData, primaryColor: string = '#EA
         ${bookingData.stops && bookingData.stops.length > 0 ? bookingData.stops.map((stop, index) =>
           `<tr><td><strong>Stop ${index + 1}:</strong></td><td>${stop.location}</td></tr>`
         ).join('') : ''}
-        <tr><td><strong>To:</strong></td><td>${bookingData.dropoff}</td></tr>
+        ${hourly
+          ? (bookingData.duration ? `<tr><td><strong>Duration:</strong></td><td>${bookingData.duration} hours</td></tr>` : "")
+          : `<tr><td><strong>To:</strong></td><td>${bookingData.dropoff}</td></tr>`}
         <tr><td><strong>Date:</strong></td><td>${bookingData.date} at ${bookingData.time}</td></tr>
         ${bookingData.tripType === 'roundtrip' && bookingData.returnDate ? 
           `<tr><td><strong>Return:</strong></td><td>${bookingData.returnDate} at ${bookingData.returnTime}</td></tr>` : ''}
@@ -145,7 +152,7 @@ export async function sendOrderThankYouEmail(bookingData: BookingData) {
       text: `Thank You!\n\nDear ${bookingData.firstName} ${bookingData.lastName},\n\nThank you for choosing our service for Reservation #${bookingData.tripId}.\n\nYour trip details:\nFrom: ${bookingData.pickup}${bookingData.stops && bookingData.stops.length > 0 ? '\nStops: ' + bookingData.stops.map((stop, index) => {
         const durationText = stop.duration && stop.duration > 0 ? ` (Wait: ${stop.duration >= 60 ? `${Math.floor(stop.duration / 60)}h${stop.duration % 60 > 0 ? ` ${stop.duration % 60}m` : ''}` : `${stop.duration}m`})` : '';
         return `Stop ${index + 1}: ${stop.location}${durationText}`;
-      }).join(', ') : ''}\nTo: ${bookingData.dropoff}\nDeparture Date: ${bookingData.date} at ${bookingData.time}${bookingData.tripType === 'roundtrip' && bookingData.returnDate ? `\nReturn Date: ${bookingData.returnDate} at ${bookingData.returnTime}` : ''}${bookingData.flightNumber ? `\nFlight Number: ${bookingData.flightNumber}` : ''}\nVehicle: ${bookingData.vehicleDetails.name}\n\nWe hope to serve you again soon!`,
+      }).join(', ') : ''}${bookingData.bookingType === "hourly" || bookingData.dropoff === "N/A (Hourly booking)" ? (bookingData.duration ? `\nDuration: ${bookingData.duration} hours` : "") : `\nTo: ${bookingData.dropoff}`}\nDeparture Date: ${bookingData.date} at ${bookingData.time}${bookingData.tripType === 'roundtrip' && bookingData.returnDate ? `\nReturn Date: ${bookingData.returnDate} at ${bookingData.returnTime}` : ''}${bookingData.flightNumber ? `\nFlight Number: ${bookingData.flightNumber}` : ''}\nVehicle: ${bookingData.vehicleDetails.name}\n\nWe hope to serve you again soon!`,
     });
 
     if (!success) {

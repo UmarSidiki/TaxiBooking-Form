@@ -1,16 +1,13 @@
-import { mkdir } from "node:fs/promises";
-import path from "node:path";
 import type { ConnectionState, WASocket } from "@whiskeysockets/baileys";
 import pino from "pino";
 
-export const WHATSAPP_AUTH_DIR = path.join(process.cwd(), "data", "whatsapp-auth");
+import { loadMongoAuthState } from "@/features/settings/lib/whatsapp-mongo-auth";
 
 const logger = pino({ level: "silent" });
 
 export async function openWhatsAppSocket() {
   const baileys = await import("@whiskeysockets/baileys");
-  await mkdir(WHATSAPP_AUTH_DIR, { recursive: true });
-  const { state, saveCreds } = await baileys.useMultiFileAuthState(WHATSAPP_AUTH_DIR);
+  const { state, saveCreds } = await loadMongoAuthState();
   const sock = baileys.makeWASocket({
     auth: state,
     logger,
@@ -19,14 +16,7 @@ export async function openWhatsAppSocket() {
     shouldSyncHistoryMessage: () => false,
   });
   sock.ev.on("creds.update", saveCreds);
-  return { sock, registered: state.creds.registered };
-}
-
-export async function readWhatsAppRegistered() {
-  const baileys = await import("@whiskeysockets/baileys");
-  await mkdir(WHATSAPP_AUTH_DIR, { recursive: true });
-  const { state } = await baileys.useMultiFileAuthState(WHATSAPP_AUTH_DIR);
-  return state.creds.registered;
+  return { sock, registered: Boolean(state.creds.registered) };
 }
 
 export function waitForOpen(sock: WASocket, timeoutMs: number) {

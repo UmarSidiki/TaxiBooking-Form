@@ -78,6 +78,8 @@ export async function createCashBooking(
     dropoff: formData.dropoff || '',
     stops: formData.stops || [],
     tripType: formData.tripType,
+    bookingType: formData.bookingType,
+    duration: formData.duration,
     date: formData.date,
     time: formData.time,
     returnDate: formData.returnDate,

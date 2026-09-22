@@ -10,6 +10,9 @@ export interface BookingEmailData {
   dropoff: string;
   stops: Array<{ location: string; order: number; duration?: number }>;
   tripType: string;
+  bookingType?: "destination" | "hourly";
+  duration?: number;
+  locale?: string;
   date: string;
   time: string;
   returnDate?: string;
@@ -59,6 +62,9 @@ export function buildBookingEmailData(
     dropoff: pending.bookingData.dropoff || 'N/A (Hourly booking)',
     stops: pending.bookingData.stops || [],
     tripType: pending.bookingData.tripType,
+    bookingType: pending.bookingData.bookingType,
+    duration: pending.bookingData.duration,
+    locale: pending.bookingData.locale,
     date: pending.bookingData.date,
     time: pending.bookingData.time,
     returnDate: pending.bookingData.returnDate,
@@ -106,6 +112,9 @@ export function buildBookingEmailDataFromBooking(
     dropoff: booking.dropoff || 'N/A (Hourly booking)',
     stops: booking.stops || [],
     tripType: booking.tripType,
+    bookingType: booking.bookingType,
+    duration: booking.duration,
+    locale: booking.locale,
     date: booking.date,
     time: booking.time,
     returnDate: booking.returnDate,
@@ -125,6 +134,7 @@ export function buildBookingEmailDataFromBooking(
     subtotalAmount: booking.subtotalAmount,
     taxAmount: booking.taxAmount,
     taxPercentage: booking.taxPercentage,
+    taxIncluded: booking.taxIncluded,
     paymentMethod: options.paymentMethod,
     paymentStatus: booking.paymentStatus,
     baseUrl: options.baseUrl,

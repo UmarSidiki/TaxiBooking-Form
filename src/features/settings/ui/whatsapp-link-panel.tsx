@@ -72,6 +72,7 @@ export function WhatsAppLinkPanel() {
   };
 
   const status = link?.status ?? "needs_scan";
+  const waiting = status === "waiting" && !error;
   const statusLabel = {
     needs_scan: t("whatsapp_needs_scan"),
     waiting: t("whatsapp_linking"),
@@ -104,8 +105,8 @@ export function WhatsAppLinkPanel() {
             {busy ? t("whatsapp_linking") : t("whatsapp_unlink")}
           </Button>
         ) : (
-          <Button type="button" className="h-11" onClick={start} disabled={busy || status === "waiting"}>
-            {busy || status === "waiting" ? t("whatsapp_linking") : t("whatsapp_link")}
+          <Button type="button" className="h-11" onClick={start} disabled={busy || waiting}>
+            {busy || waiting ? t("whatsapp_linking") : t("whatsapp_link")}
           </Button>
         )}
       </div>

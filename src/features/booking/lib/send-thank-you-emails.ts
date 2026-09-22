@@ -83,6 +83,9 @@ export async function sendThankYouEmails() {
           paymentMethod: booking.paymentMethod,
           paymentStatus: booking.paymentStatus,
           bookingId: booking._id.toString(),
+          locale: booking.locale,
+          bookingType: booking.bookingType,
+          duration: booking.duration,
           baseUrl: process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000',
         };
 

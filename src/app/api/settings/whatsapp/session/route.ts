@@ -8,7 +8,7 @@ import {
 import { jsonError } from "@/shared/http/json-error";
 
 export const dynamic = "force-dynamic";
-export const maxDuration = 60;
+export const maxDuration = 120;
 
 export async function GET() {
   const access = await requireAdmin();

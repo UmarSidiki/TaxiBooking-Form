@@ -1,5 +1,3 @@
-import QRCode from "qrcode";
-
 import {
   isFreshLink,
   readWhatsAppLink,
@@ -8,6 +6,7 @@ import {
 } from "@/features/settings/lib/whatsapp-link-store";
 import { withWhatsAppLock } from "@/features/settings/lib/whatsapp-lock";
 import { clearWhatsAppAuth, readWhatsAppRegistered } from "@/features/settings/lib/whatsapp-mongo-auth";
+import { pairWhatsApp } from "@/features/settings/lib/whatsapp-pair";
 import { isLoggedOut, openWhatsAppSocket, waitForOpen } from "@/features/settings/lib/whatsapp-socket";
 
 export type WhatsAppLinkView = {
@@ -52,65 +51,30 @@ export async function currentWhatsAppLink(): Promise<WhatsAppLinkView> {
 }
 
 export async function startWhatsAppPairing() {
-  const stored = await readWhatsAppLink();
-  if (stored?.status === "waiting" && isFreshLink(stored)) {
-    linkView = { status: "waiting", qrDataUrl: stored.qrDataUrl };
-    return { view: linkView, done: pairing ?? Promise.resolve() };
+  if (await readWhatsAppRegistered()) {
+    await publish({ status: "linked", qrDataUrl: null });
+    return { view: linkView, done: Promise.resolve() };
   }
-  if (!pairing) {
-    linkView = { status: "waiting", qrDataUrl: null };
-    pairing = withWhatsAppLock(runPair).finally(() => {
+  if (pairing) {
+    return { view: linkView, done: pairing };
+  }
+  const stored = await readWhatsAppLink();
+  if (stored?.status === "waiting" && stored.qrDataUrl && isFreshLink(stored)) {
+    linkView = { status: "waiting", qrDataUrl: stored.qrDataUrl };
+    return { view: linkView, done: Promise.resolve() };
+  }
+
+  await clearWhatsAppAuth();
+  await publish({ status: "waiting", qrDataUrl: null });
+  pairing = withWhatsAppLock(() => pairWhatsApp(publish))
+    .catch(async (error: unknown) => {
+      console.error("WhatsApp pairing failed:", error);
+      await publish({ status: "failed", qrDataUrl: null });
+    })
+    .finally(() => {
       pairing = null;
     });
-  }
   return { view: linkView, done: pairing };
-}
-
-async function runPair() {
-  try {
-    if (await readWhatsAppRegistered()) {
-      await publish({ status: "linked", qrDataUrl: null });
-      return;
-    }
-    await publish({ status: "waiting", qrDataUrl: null });
-    await pairUntilSettled();
-  } catch (error) {
-    console.error("WhatsApp pairing failed:", error);
-    await publish({ status: "failed", qrDataUrl: null });
-  }
-}
-
-async function pairUntilSettled() {
-  const { sock } = await openWhatsAppSocket();
-  let settled = false;
-  const finish = async (next: WhatsAppLinkView) => {
-    if (settled) return;
-    settled = true;
-    await publish(next);
-    await sock.end(undefined).catch(() => undefined);
-  };
-
-  await new Promise<void>((resolve) => {
-    const timer = setTimeout(() => {
-      void finish({ status: "failed", qrDataUrl: null }).finally(resolve);
-    }, 60_000);
-
-    sock.ev.on("connection.update", (update) => {
-      if (update.qr) {
-        void QRCode.toDataURL(update.qr).then((qrDataUrl) => {
-          if (!settled) void publish({ status: "waiting", qrDataUrl });
-        });
-      }
-      if (update.connection === "open") {
-        clearTimeout(timer);
-        void finish({ status: "linked", qrDataUrl: null }).finally(resolve);
-      } else if (update.connection === "close") {
-        clearTimeout(timer);
-        const status = isLoggedOut(update.lastDisconnect?.error) ? "needs_scan" : "failed";
-        void finish({ status, qrDataUrl: null }).finally(resolve);
-      }
-    });
-  });
 }
 
 export function sendWhatsAppTexts(messages: WhatsAppOutbound[]) {

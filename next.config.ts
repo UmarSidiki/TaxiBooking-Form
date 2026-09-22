@@ -26,7 +26,7 @@ const nextConfig: NextConfig = {
     experimental: {
         optimizePackageImports: ['lucide-react', '@radix-ui/react-dialog', '@radix-ui/react-dropdown-menu'],
     },
-    serverExternalPackages: ['@whiskeysockets/baileys', 'qrcode', 'pino'],
+    serverExternalPackages: ['@whiskeysockets/baileys', 'qrcode', 'pino', '@react-pdf/renderer'],
 };
  
 const withNextIntl = createNextIntlPlugin('./src/shared/i18n/request.ts');

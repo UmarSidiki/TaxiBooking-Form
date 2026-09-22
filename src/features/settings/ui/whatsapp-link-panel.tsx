@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 
 import type { WhatsAppLinkView } from "@/features/settings/ui/whatsapp-desk-types";
@@ -14,20 +14,21 @@ export function WhatsAppLinkPanel() {
   const [link, setLink] = useState<WhatsAppLinkView | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState(false);
+  const requestId = useRef(0);
 
   useEffect(() => {
     let stop = false;
     const pull = async () => {
+      const id = ++requestId.current;
       try {
         const data = await apiGet<{ success: boolean; data: WhatsAppLinkView }>(
           "/api/settings/whatsapp/session"
         );
-        if (!stop && data.success) {
-          setLink(data.data);
-          setError(false);
-        }
+        if (stop || id !== requestId.current || !data.success) return;
+        setLink(data.data);
+        setError(false);
       } catch {
-        if (!stop) setError(true);
+        if (!stop && id === requestId.current) setError(true);
       }
     };
     void pull();
@@ -41,6 +42,7 @@ export function WhatsAppLinkPanel() {
   }, [link?.status]);
 
   const start = async () => {
+    const id = ++requestId.current;
     setBusy(true);
     setError(false);
     try {
@@ -48,9 +50,9 @@ export function WhatsAppLinkPanel() {
         "/api/settings/whatsapp/session",
         {}
       );
-      if (data.success) setLink(data.data);
+      if (id === requestId.current && data.success) setLink(data.data);
     } catch {
-      setError(true);
+      if (id === requestId.current) setError(true);
     } finally {
       setBusy(false);
     }

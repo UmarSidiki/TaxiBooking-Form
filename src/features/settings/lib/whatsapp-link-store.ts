@@ -26,8 +26,7 @@ export async function readWhatsAppLink(): Promise<StoredWhatsAppLink | null> {
 }
 
 export function isFreshLink(link: StoredWhatsAppLink) {
-  const limit = link.qrDataUrl ? FRESH_MS : 15_000;
-  return Date.now() - link.updatedAt < limit;
+  return Date.now() - link.updatedAt < FRESH_MS;
 }
 
 export async function writeWhatsAppLink(status: WhatsAppLinkStatus, qrDataUrl: string | null) {

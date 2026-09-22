@@ -15,8 +15,17 @@ export async function openWhatsAppSocket() {
     markOnlineOnConnect: false,
     shouldSyncHistoryMessage: () => false,
   });
-  sock.ev.on("creds.update", saveCreds);
-  return { sock, registered: Boolean(state.creds.registered) };
+  let pending = Promise.resolve();
+  sock.ev.on("creds.update", () => {
+    pending = pending.then(() => saveCreds()).catch((error: unknown) => {
+      console.error("WhatsApp creds save failed:", error);
+    });
+  });
+  return {
+    sock,
+    registered: Boolean(state.creds.registered),
+    flushCreds: () => pending,
+  };
 }
 
 export function waitForOpen(sock: WASocket, timeoutMs: number) {
@@ -45,8 +54,12 @@ export function waitForOpen(sock: WASocket, timeoutMs: number) {
   });
 }
 
+export function disconnectCode(error: unknown) {
+  if (!error || typeof error !== "object" || !("output" in error)) return null;
+  const code = (error as { output?: { statusCode?: number } }).output?.statusCode;
+  return typeof code === "number" ? code : null;
+}
+
 export function isLoggedOut(error: unknown) {
-  if (!error || typeof error !== "object" || !("output" in error)) return false;
-  const output = (error as { output?: { statusCode?: number } }).output;
-  return output?.statusCode === 401;
+  return disconnectCode(error) === 401;
 }

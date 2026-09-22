@@ -5,6 +5,8 @@ import { Setting } from "@/features/settings/model";
 import { getCurrencySymbol } from "@/shared/lib/utils";
 import { renderInvoicePdf } from "@/features/booking/lib/render-invoice-pdf";
 
+export const runtime = "nodejs";
+
 export async function GET(
   _request: NextRequest,
   { params }: { params: Promise<{ tripId: string }> }

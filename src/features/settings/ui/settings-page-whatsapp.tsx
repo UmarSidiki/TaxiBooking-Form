@@ -7,16 +7,13 @@ import { WhatsAppConfigForm } from "@/features/settings/ui/whatsapp-config-form"
 import { WhatsAppDeliveryList } from "@/features/settings/ui/whatsapp-delivery-list";
 import { WhatsAppLinkPanel } from "@/features/settings/ui/whatsapp-link-panel";
 import { WhatsAppTemplates } from "@/features/settings/ui/whatsapp-templates";
-import { WhatsAppTestSend } from "@/features/settings/ui/whatsapp-test-send";
 import type { WhatsAppDeskConfig, WhatsAppDeskData } from "@/features/settings/ui/whatsapp-desk-types";
 import { SettingsSection } from "@/features/settings/ui/settings-section";
 import { apiGet } from "@/shared/http/api";
 import { Button } from "@/shared/ui/button";
-import { useSearchParams } from "next/navigation";
 
 export function SettingsPageWhatsapp() {
   const t = useTranslations("Dashboard.Settings");
-  const params = useSearchParams();
   const [data, setData] = useState<WhatsAppDeskData | null>(null);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState(false);
@@ -59,8 +56,6 @@ export function SettingsPageWhatsapp() {
     );
   }
 
-  const selected = params.get("template") ?? "";
-
   return (
     <div className="flex flex-col gap-6">
       <div className="flex flex-col gap-1">
@@ -69,21 +64,19 @@ export function SettingsPageWhatsapp() {
         </h1>
         <p className="max-w-xl text-pretty text-sm text-muted-foreground">{t("whatsapp_help")}</p>
       </div>
-      <SettingsSection title={t("whatsapp_link")}>
+      <SettingsSection title={t("whatsapp_connection")} description={t("whatsapp_unofficial")}>
         <WhatsAppLinkPanel />
       </SettingsSection>
       <SettingsSection title={t("whatsapp_settings")}>
         <WhatsAppConfigForm config={data.config} onSaved={onConfig} />
       </SettingsSection>
-      <SettingsSection title={t("whatsapp_templates")}>
+      <SettingsSection title={t("whatsapp_messages")} description={t("whatsapp_messages_help")}>
         <WhatsAppTemplates
           templates={data.templates}
           companyPhone={data.config.companyPhone}
+          defaultLocale={data.config.defaultLocale}
           onChange={() => load(true)}
         />
-      </SettingsSection>
-      <SettingsSection title={t("whatsapp_test")}>
-        <WhatsAppTestSend templateId={selected === "new" ? "" : selected} />
       </SettingsSection>
       <SettingsSection title={t("whatsapp_deliveries")}>
         <WhatsAppDeliveryList deliveries={data.deliveries} />

@@ -1,10 +1,9 @@
 "use client";
 
-import { useMemo, useRef, type Dispatch, type SetStateAction } from "react";
-import { useLocale, useTranslations } from "next-intl";
+import { useRef, type Dispatch, type SetStateAction } from "react";
+import { useTranslations } from "next-intl";
 
-import { DeskSelect } from "@/features/dashboard/ui/desk-select";
-import { whatsappLocales, whatsappVariables } from "@/features/settings/schema/whatsapp.schema";
+import { whatsappVariables } from "@/features/settings/schema/whatsapp.schema";
 import {
   renderWhatsAppTemplate,
   whatsappSampleValues,
@@ -31,61 +30,23 @@ export function WhatsAppTemplateFields({
   onDelete: () => void;
 }) {
   const t = useTranslations("Dashboard.Settings");
-  const uiLocale = useLocale();
   const bodyRef = useRef<HTMLTextAreaElement>(null);
-  const languageNames = useMemo(
-    () => new Intl.DisplayNames([uiLocale], { type: "language" }),
-    [uiLocale]
-  );
-
-  const insert = (token: string) => {
-    const field = bodyRef.current;
-    const snippet = `{{${token}}}`;
-    if (!field) {
-      setDraft((prev) => ({ ...prev, body: prev.body + snippet }));
-      return;
-    }
-    const start = field.selectionStart ?? draft.body.length;
-    const end = field.selectionEnd ?? start;
-    const body = `${draft.body.slice(0, start)}${snippet}${draft.body.slice(end)}`;
-    setDraft((prev) => ({ ...prev, body }));
-  };
-
   const preview = renderWhatsAppTemplate(draft.body, {
     ...whatsappSampleValues,
     companyPhone: companyPhone || whatsappSampleValues.companyPhone,
   });
 
+  const insert = (token: string) => {
+    const field = bodyRef.current;
+    const snippet = `{{${token}}}`;
+    const start = field?.selectionStart ?? draft.body.length;
+    const end = field?.selectionEnd ?? start;
+    const body = `${draft.body.slice(0, start)}${snippet}${draft.body.slice(end)}`;
+    setDraft((prev) => ({ ...prev, body }));
+  };
+
   return (
-    <>
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-        <div>
-          <p className="mb-2 text-sm font-medium">{t("whatsapp_audience")}</p>
-          <DeskSelect
-            value={draft.audience}
-            ariaLabel={t("whatsapp_audience")}
-            onValueChange={(value) =>
-              setDraft((prev) => ({ ...prev, audience: value as "customer" | "desk" }))
-            }
-            options={[
-              { value: "customer", label: t("whatsapp_audience_customer") },
-              { value: "desk", label: t("whatsapp_audience_desk") },
-            ]}
-          />
-        </div>
-        <div>
-          <p className="mb-2 text-sm font-medium">{t("whatsapp_template_locale")}</p>
-          <DeskSelect
-            value={draft.locale}
-            ariaLabel={t("whatsapp_template_locale")}
-            onValueChange={(value) => setDraft((prev) => ({ ...prev, locale: value }))}
-            options={whatsappLocales.map((locale) => ({
-              value: locale,
-              label: languageNames.of(locale) ?? locale,
-            }))}
-          />
-        </div>
-      </div>
+    <div className="flex flex-col gap-4">
       <label className="flex min-h-11 items-center gap-3 text-sm">
         <input
           type="checkbox"
@@ -96,13 +57,13 @@ export function WhatsAppTemplateFields({
         {t("whatsapp_enabled_template")}
       </label>
       <div>
-        <label htmlFor="whatsapp-body" className="mb-2 block text-sm font-medium">
+        <label htmlFor={`whatsapp-body-${draft.audience}`} className="mb-2 block text-sm font-medium">
           {t("whatsapp_body")}
         </label>
         <Textarea
-          id="whatsapp-body"
+          id={`whatsapp-body-${draft.audience}`}
           ref={bodyRef}
-          name="body"
+          name={`body-${draft.audience}`}
           value={draft.body}
           onChange={(event) => setDraft((prev) => ({ ...prev, body: event.target.value }))}
           className="min-h-32"
@@ -117,7 +78,7 @@ export function WhatsAppTemplateFields({
       </div>
       <div>
         <p className="mb-2 text-sm font-medium">{t("whatsapp_preview")}</p>
-        <p className="whitespace-pre-wrap rounded-md border border-border bg-muted p-4 text-sm text-pretty">
+        <p className="whitespace-pre-wrap rounded-md border border-border bg-background p-4 text-sm text-pretty">
           {preview}
         </p>
       </div>
@@ -136,6 +97,6 @@ export function WhatsAppTemplateFields({
           </Button>
         ) : null}
       </div>
-    </>
+    </div>
   );
 }

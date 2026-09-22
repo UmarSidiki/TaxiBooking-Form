@@ -7,7 +7,13 @@ import { ApiError, apiPost } from "@/shared/http/api";
 import { Button } from "@/shared/ui/button";
 import { Input } from "@/shared/ui/input";
 
-export function WhatsAppTestSend({ templateId }: { templateId: string }) {
+export function WhatsAppTestSend({
+  templateId,
+  fieldId,
+}: {
+  templateId: string;
+  fieldId: string;
+}) {
   const t = useTranslations("Dashboard.Settings");
   const [to, setTo] = useState("");
   const [sending, setSending] = useState(false);
@@ -35,12 +41,12 @@ export function WhatsAppTestSend({ templateId }: { templateId: string }) {
 
   return (
     <div className="flex flex-col gap-3">
-      <label htmlFor="whatsapp-test-to" className="text-sm font-medium">
+      <label htmlFor={fieldId} className="text-sm font-medium">
         {t("whatsapp_test_to")}
       </label>
       <Input
-        id="whatsapp-test-to"
-        name="testTo"
+        id={fieldId}
+        name={fieldId}
         type="tel"
         autoComplete="tel"
         spellCheck={false}

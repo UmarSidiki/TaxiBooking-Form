@@ -1,15 +1,16 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 
+import { DeskSelect } from "@/features/dashboard/ui/desk-select";
 import { whatsappLocales } from "@/features/settings/schema/whatsapp.schema";
 import type { WhatsAppDeskConfig } from "@/features/settings/ui/whatsapp-desk-types";
-import { DeskSelect } from "@/features/dashboard/ui/desk-select";
 import { apiPut } from "@/shared/http/api";
 import { Button } from "@/shared/ui/button";
 import { Input } from "@/shared/ui/input";
-import { Textarea } from "@/shared/ui/textarea";
+
+const MAX_NUMBERS = 5;
 
 export function WhatsAppConfigForm({
   config,
@@ -19,32 +20,23 @@ export function WhatsAppConfigForm({
   onSaved: (config: WhatsAppDeskConfig) => void;
 }) {
   const t = useTranslations("Dashboard.Settings");
+  const uiLocale = useLocale();
   const [draft, setDraft] = useState(config);
-  const [numbers, setNumbers] = useState(config.notifyNumbers.join("\n"));
+  const [numbers, setNumbers] = useState<string[]>(
+    config.notifyNumbers.length > 0 ? config.notifyNumbers : [""]
+  );
   const [saving, setSaving] = useState(false);
   const [notice, setNotice] = useState<string | null>(null);
-  const dirty =
-    draft.enabled !== config.enabled ||
-    draft.defaultCallingCode !== config.defaultCallingCode ||
-    draft.companyPhone !== config.companyPhone ||
-    draft.defaultLocale !== config.defaultLocale ||
-    numbers !== config.notifyNumbers.join("\n");
+  const languageNames = new Intl.DisplayNames([uiLocale], { type: "language" });
 
   useEffect(() => {
-    const onLeave = (event: BeforeUnloadEvent) => {
-      if (!dirty) return;
-      event.preventDefault();
-    };
-    window.addEventListener("beforeunload", onLeave);
-    return () => window.removeEventListener("beforeunload", onLeave);
-  }, [dirty]);
+    setDraft(config);
+    setNumbers(config.notifyNumbers.length > 0 ? config.notifyNumbers : [""]);
+  }, [config]);
 
   const save = async () => {
-    const notifyNumbers = numbers
-      .split(/[\n,]/)
-      .map((item) => item.trim())
-      .filter(Boolean);
-    if (notifyNumbers.length > 5) {
+    const notifyNumbers = numbers.map((item) => item.trim()).filter(Boolean);
+    if (notifyNumbers.length > MAX_NUMBERS) {
       setNotice(t("whatsapp_notify_limit"));
       return;
     }
@@ -68,16 +60,19 @@ export function WhatsAppConfigForm({
   };
 
   return (
-    <div className="flex flex-col gap-4">
-      <label className="flex min-h-11 items-center gap-3 text-sm">
+    <div className="flex flex-col gap-5">
+      <label className="flex min-h-11 items-start gap-3 text-sm">
         <input
           type="checkbox"
           name="whatsapp-enabled"
-          className="size-4 accent-primary focus-visible:ring-2 focus-visible:ring-ring"
+          className="mt-1 size-4 accent-primary focus-visible:ring-2 focus-visible:ring-ring"
           checked={draft.enabled}
           onChange={(event) => setDraft((prev) => ({ ...prev, enabled: event.target.checked }))}
         />
-        {t("whatsapp_enabled")}
+        <span>
+          <span className="font-medium">{t("whatsapp_enabled")}</span>
+          <span className="mt-1 block text-muted-foreground">{t("whatsapp_enabled_help")}</span>
+        </span>
       </label>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <div>
@@ -100,46 +95,75 @@ export function WhatsAppConfigForm({
           <p className="mt-1 text-xs text-muted-foreground">{t("whatsapp_calling_code_help")}</p>
         </div>
         <div>
-          <label htmlFor="whatsapp-company-phone" className="mb-2 block text-sm font-medium">
-            {t("whatsapp_company_phone")}
-          </label>
-          <Input
-            id="whatsapp-company-phone"
-            name="companyPhone"
-            type="tel"
-            autoComplete="tel"
-            spellCheck={false}
-            translate="no"
-            value={draft.companyPhone}
-            onChange={(event) =>
-              setDraft((prev) => ({ ...prev, companyPhone: event.target.value }))
-            }
+          <p className="mb-2 text-sm font-medium">{t("whatsapp_default_locale")}</p>
+          <DeskSelect
+            value={draft.defaultLocale}
+            ariaLabel={t("whatsapp_default_locale")}
+            onValueChange={(value) => setDraft((prev) => ({ ...prev, defaultLocale: value }))}
+            options={whatsappLocales.map((locale) => ({
+              value: locale,
+              label: languageNames.of(locale) ?? locale,
+            }))}
           />
+          <p className="mt-1 text-xs text-muted-foreground">{t("whatsapp_fallback_help")}</p>
         </div>
       </div>
+      <fieldset className="flex flex-col gap-3">
+        <legend className="mb-1 text-sm font-medium">{t("whatsapp_notify")}</legend>
+        <p className="text-xs text-muted-foreground">{t("whatsapp_notify_help")}</p>
+        {numbers.map((number, index) => (
+          <div key={index} className="flex items-center gap-2">
+            <label className="sr-only" htmlFor={`whatsapp-desk-${index}`}>
+              {t("whatsapp_number_label")} {index + 1}
+            </label>
+            <Input
+              id={`whatsapp-desk-${index}`}
+              name={`deskNumber-${index}`}
+              type="tel"
+              autoComplete="tel"
+              spellCheck={false}
+              translate="no"
+              value={number}
+              onChange={(event) =>
+                setNumbers((prev) => prev.map((item, i) => (i === index ? event.target.value : item)))
+              }
+            />
+            <Button
+              type="button"
+              variant="outline"
+              className="h-11 shrink-0"
+              onClick={() => setNumbers((prev) => prev.filter((_, i) => i !== index))}
+              disabled={numbers.length === 1 && number === ""}
+            >
+              {t("whatsapp_remove_number")}
+            </Button>
+          </div>
+        ))}
+        <Button
+          type="button"
+          variant="outline"
+          className="h-11 w-fit"
+          disabled={numbers.length >= MAX_NUMBERS}
+          onClick={() => setNumbers((prev) => [...prev, ""])}
+        >
+          {t("whatsapp_add_number")}
+        </Button>
+      </fieldset>
       <div>
-        <label htmlFor="whatsapp-notify" className="mb-2 block text-sm font-medium">
-          {t("whatsapp_notify")}
+        <label htmlFor="whatsapp-company-phone" className="mb-2 block text-sm font-medium">
+          {t("whatsapp_company_phone")}
         </label>
-        <Textarea
-          id="whatsapp-notify"
-          name="notifyNumbers"
-          autoComplete="off"
+        <Input
+          id="whatsapp-company-phone"
+          name="companyPhone"
+          type="tel"
+          autoComplete="tel"
           spellCheck={false}
           translate="no"
-          value={numbers}
-          onChange={(event) => setNumbers(event.target.value)}
+          value={draft.companyPhone}
+          onChange={(event) => setDraft((prev) => ({ ...prev, companyPhone: event.target.value }))}
         />
-        <p className="mt-1 text-xs text-muted-foreground">{t("whatsapp_notify_help")}</p>
-      </div>
-      <div>
-        <p className="mb-2 block text-sm font-medium">{t("whatsapp_default_locale")}</p>
-        <DeskSelect
-          value={draft.defaultLocale}
-          ariaLabel={t("whatsapp_default_locale")}
-          onValueChange={(value) => setDraft((prev) => ({ ...prev, defaultLocale: value }))}
-          options={whatsappLocales.map((locale) => ({ value: locale, label: locale }))}
-        />
+        <p className="mt-1 text-xs text-muted-foreground">{t("whatsapp_company_phone_help")}</p>
       </div>
       {notice ? (
         <p className="text-sm" role="status" aria-live="polite">

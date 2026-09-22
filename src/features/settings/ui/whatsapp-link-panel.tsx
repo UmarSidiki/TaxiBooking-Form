@@ -81,7 +81,6 @@ export function WhatsAppLinkPanel() {
 
   return (
     <div className="flex flex-col gap-4">
-      <p className="text-sm text-muted-foreground">{t("whatsapp_unofficial")}</p>
       <p className="text-sm font-medium" role="status" aria-live="polite">
         {statusLabel}
       </p>
@@ -100,14 +99,15 @@ export function WhatsAppLinkPanel() {
         </p>
       ) : null}
       <div className="flex flex-wrap gap-2">
-        <Button type="button" className="h-11" onClick={start} disabled={busy}>
-          {busy && status !== "linked" ? t("whatsapp_linking") : t("whatsapp_link")}
-        </Button>
         {status === "linked" ? (
           <Button type="button" variant="outline" className="h-11" onClick={unlink} disabled={busy}>
             {busy ? t("whatsapp_linking") : t("whatsapp_unlink")}
           </Button>
-        ) : null}
+        ) : (
+          <Button type="button" className="h-11" onClick={start} disabled={busy || status === "waiting"}>
+            {busy || status === "waiting" ? t("whatsapp_linking") : t("whatsapp_link")}
+          </Button>
+        )}
       </div>
     </div>
   );

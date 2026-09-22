@@ -101,6 +101,8 @@ export function useStep3Payments({
         lastName: formData.lastName,
         email: formData.email,
         phone: formData.phone,
+        whatsappOptIn: formData.whatsappOptIn,
+        locale,
         totalAmount: totalPrice,
         subtotalAmount: displaySubtotalAmount,
         taxAmount: taxAmount,
@@ -148,6 +150,7 @@ export function useStep3Payments({
     taxPercentage,
     paymentSettings?.stripeCurrency,
     formData,
+    locale,
     t,
   ]);
 
@@ -243,6 +246,7 @@ export function useStep3Payments({
           babySeats: Number(formData.babySeats) || 0,
           paymentMethod,
           paymentStatus: "pending",
+          locale,
           totalAmount: totalPrice,
           subtotalAmount: displaySubtotalAmount,
           taxAmount: taxAmount,

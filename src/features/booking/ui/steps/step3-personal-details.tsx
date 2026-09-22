@@ -100,6 +100,18 @@ export function Step3PersonalDetails({
                 <p id="phone-error" className="text-red-500 text-xs mt-1">{errors.phone}</p>
               )}
             </div>
+            <label className="flex min-h-11 items-center gap-3 text-sm">
+              <input
+                type="checkbox"
+                name="whatsappOptIn"
+                className="size-4 accent-primary focus-visible:ring-2 focus-visible:ring-ring"
+                checked={formData.whatsappOptIn}
+                onChange={(event) => {
+                  setFormData((prev) => ({ ...prev, whatsappOptIn: event.target.checked }));
+                }}
+              />
+              {t("Step3.whatsapp_opt_in")}
+            </label>
           </div>
         </Card>
     </>

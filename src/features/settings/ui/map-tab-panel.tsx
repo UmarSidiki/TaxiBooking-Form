@@ -26,10 +26,12 @@ export function MapTabPanel({
           </h3>
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <div>
-              <label className="mb-2 block text-sm font-medium">
+              <label htmlFor="map-initial-latitude" className="mb-2 block text-sm font-medium">
                 {t("Dashboard.Settings.initial-latitude")}
               </label>
               <Input
+                id="map-initial-latitude"
+                name="map-initial-latitude"
                 type="number"
                 step="any"
                 placeholder="46.2044"
@@ -43,10 +45,12 @@ export function MapTabPanel({
               />
             </div>
             <div>
-              <label className="mb-2 block text-sm font-medium">
+              <label htmlFor="map-initial-longitude" className="mb-2 block text-sm font-medium">
                 {t("Dashboard.Settings.initial-longitude")}
               </label>
               <Input
+                id="map-initial-longitude"
+                name="map-initial-longitude"
                 type="number"
                 step="any"
                 placeholder="6.1432"
@@ -75,13 +79,16 @@ export function MapTabPanel({
               className={`h-full w-full ${mapReady ? "opacity-100" : "opacity-0"}`}
             />
             {!mapReady && !mapError ? (
-              <div className="absolute inset-0 flex items-center justify-center text-sm text-muted-foreground">
+              <div className="absolute inset-0 flex items-center justify-center text-sm text-muted-foreground" role="status">
                 {t("Dashboard.Settings.loading-map")}
               </div>
             ) : null}
             {mapError ? (
-              <div className="absolute inset-0 flex items-center justify-center bg-destructive/10 px-4 text-center text-sm text-destructive">
-                {mapError}
+              <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 bg-card/95 px-4 text-center text-sm" role="alert">
+                <p className="max-w-sm text-destructive">{mapError}</p>
+                <Button type="button" variant="outline" onClick={() => window.location.reload()}>
+                  {t("Dashboard.Home.try-again")}
+                </Button>
               </div>
             ) : null}
             {isDrawing ? (

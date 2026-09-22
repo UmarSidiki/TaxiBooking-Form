@@ -35,6 +35,8 @@ export const cashBookingInputSchema = z
     lastName: z.string().trim().min(1).refine(isValidName),
     email: z.string().trim().refine(isValidEmail),
     phone: z.string().trim().refine(isValidPhone),
+    whatsappOptIn: z.boolean().optional().default(false),
+    locale: z.string().trim().max(8).optional(),
     paymentMethod: z.string().optional(),
     paymentStatus: z.string().optional(),
     stripePaymentIntentId: z.string().optional(),

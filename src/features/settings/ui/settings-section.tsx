@@ -8,8 +8,8 @@ export function SettingsSection({
   children: React.ReactNode;
 }) {
   return (
-    <section className="desk-card space-y-4 rounded-md border border-border bg-card p-4">
-      <div className="space-y-1">
+    <section className="desk-card flex flex-col gap-4 rounded-md border border-border bg-card p-4">
+      <div className="flex flex-col gap-1">
         <h2 className="text-lg font-semibold tracking-tight text-foreground">
           {title}
         </h2>

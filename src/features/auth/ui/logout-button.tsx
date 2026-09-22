@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { signOut } from "next-auth/react";
+import { LogOut } from "lucide-react";
 import { useTranslations } from "next-intl";
 
 import { Button } from "@/shared/ui/button";
@@ -36,7 +37,13 @@ export default function LogoutButton({
       disabled={loading}
       variant={variant}
     >
-      {loading ? t("signing_out") : t("log_out")}
+      <LogOut
+        className="hidden size-4 group-data-[collapsible=icon]:inline"
+        aria-hidden="true"
+      />
+      <span className="group-data-[collapsible=icon]:sr-only">
+        {loading ? t("signing_out") : t("log_out")}
+      </span>
     </Button>
   );
 }

@@ -13,17 +13,19 @@ export function AdminHomeHeader({
   t: TFn;
   children?: ReactNode;
 }) {
-  const { data } = useSession();
+  const { data, status } = useSession();
   const name = data?.user?.name;
 
   return (
     <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
       <div>
-        <h1 className="text-2xl font-semibold tracking-tight text-foreground">
+        <h1 className="text-balance text-2xl font-semibold tracking-tight text-foreground">
           {t("Dashboard.Home.dashboard")}
         </h1>
-        <p className="mt-1 text-sm text-muted-foreground">
-          {name
+        <p className="mt-1 min-h-5 text-sm text-muted-foreground">
+          {status === "loading"
+            ? null
+            : name
             ? `${t("Dashboard.Home.welcome-back")} ${name}`
             : t("Dashboard.Home.welcome-back")}
         </p>

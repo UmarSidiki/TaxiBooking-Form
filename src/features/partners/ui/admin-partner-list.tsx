@@ -3,7 +3,6 @@
 import {
   AdminPartnerStatusBadge,
 } from "@/features/partners/ui/admin-partner-status-badges";
-import { Button } from "@/shared/ui/button";
 import {
   Card,
   CardContent,
@@ -12,7 +11,7 @@ import {
   CardTitle,
 } from "@/shared/ui/card";
 import type { useAdminPartners } from "@/features/partners/hooks/useAdminPartners";
-import { Clock, Eye, Users } from "lucide-react";
+import { Clock, Users } from "lucide-react";
 import { useLocale } from "next-intl";
 
 type AdminPartnersState = ReturnType<typeof useAdminPartners>;
@@ -28,6 +27,10 @@ export function AdminPartnerList({
   "t" | "filteredPartners" | "setSelectedPartner" | "setShowDetailsDialog" | "formatCurrency"
 >) {
   const locale = useLocale();
+  const openPartner = (partner: AdminPartnersState["filteredPartners"][number]) => {
+    setSelectedPartner(partner);
+    setShowDetailsDialog(true);
+  };
 
   return (
     <>
@@ -41,8 +44,10 @@ export function AdminPartnerList({
         </CardHeader>
         <CardContent>
           {filteredPartners.length === 0 ? (
-            <div className="text-center py-12 text-muted-foreground">
-              <Users className="w-12 h-12 mx-auto mb-3 opacity-50" />
+            <div className="flex min-h-56 flex-col items-center justify-center text-center text-muted-foreground">
+              <div className="mb-3 flex size-12 items-center justify-center rounded-md bg-muted">
+                <Users className="size-6" aria-hidden="true" />
+              </div>
               <p>{t("no-partners-found")}</p>
             </div>
           ) : (
@@ -50,16 +55,22 @@ export function AdminPartnerList({
               {filteredPartners.map((partner) => (
                 <div
                   key={partner._id}
-                  className="flex flex-col sm:flex-row sm:items-center gap-3 p-4 border rounded-lg hover:bg-muted/50 transition-colors cursor-pointer"
-                  onClick={() => {
-                    setSelectedPartner(partner);
-                    setShowDetailsDialog(true);
+                  role="button"
+                  tabIndex={0}
+                  aria-label={`${t("partner-details")}: ${partner.name}`}
+                  className="flex cursor-pointer flex-col gap-3 rounded-md border p-4 transition-colors duration-200 hover:bg-muted/50 focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 sm:flex-row sm:items-center"
+                  onClick={() => openPartner(partner)}
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter" || event.key === " ") {
+                      event.preventDefault();
+                      openPartner(partner);
+                    }
                   }}
                 >
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 flex-shrink-0 rounded-full bg-primary/10 flex items-center justify-center">
-                        <Users className="w-5 h-5 text-primary" />
+                        <Users className="size-5 text-primary" aria-hidden="true" />
                       </div>
                       <div className="min-w-0 flex-1">
                         <p className="font-semibold truncate">{partner.name}</p>
@@ -82,7 +93,7 @@ export function AdminPartnerList({
                           {partner.fleetStatus === "pending" && (
                             <div className="mt-1">
                               <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium bg-accent text-accent-foreground">
-                                <Clock className="w-3 h-3" />
+                                <Clock className="size-3" aria-hidden="true" />
                                 {t("fleet-pending")}
                               </span>
                               {partner.requestedFleet && (
@@ -115,10 +126,7 @@ export function AdminPartnerList({
                           )}
                         </div>
                     <div className="flex items-center gap-2 flex-shrink-0">
-                      {<AdminPartnerStatusBadge status={partner.status} t={t} />}
-                      <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-                        <Eye className="w-4 h-4" />
-                      </Button>
+                      <AdminPartnerStatusBadge status={partner.status} t={t} />
                     </div>
                   </div>
                 </div>

@@ -29,7 +29,7 @@ export function EmbedVariantList({
   badgeFor?: (variant: EmbedVariant) => string | null;
 }) {
   return (
-    <section className="space-y-3">
+    <section className="flex flex-col gap-3">
       <h3 className="text-xs font-medium text-muted-foreground">{title}</h3>
       <div className="grid gap-2">
         {variants.map((variant) => {
@@ -40,13 +40,14 @@ export function EmbedVariantList({
               key={variant.id}
               type="button"
               onClick={() => onSelect(variant.id)}
-              className={`flex min-h-11 items-start gap-3 rounded-md border px-3 py-3 text-start ${
+              aria-pressed={active}
+              className={`flex min-h-11 items-start gap-3 rounded-md border px-3 py-3 text-start transition-colors duration-200 focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 ${
                 active
                   ? "border-primary bg-accent"
                   : "border-border bg-card hover:bg-muted"
               }`}
             >
-              <span className="mt-0.5 text-primary">{variant.icon}</span>
+              <span className="mt-0.5 text-primary" aria-hidden="true">{variant.icon}</span>
               <span className="min-w-0 flex-1">
                 <span className="flex items-center gap-2 text-sm font-medium text-foreground">
                   {variant.name}
@@ -56,7 +57,7 @@ export function EmbedVariantList({
                   {variant.description}
                 </span>
               </span>
-              {active ? <Check className="size-4 text-primary" /> : null}
+              {active ? <Check className="size-4 text-primary" aria-hidden="true" /> : null}
             </button>
           );
         })}

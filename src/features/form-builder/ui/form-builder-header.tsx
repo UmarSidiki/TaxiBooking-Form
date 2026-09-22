@@ -63,12 +63,14 @@ export function FormBuilderHeader({
   return (
       <>
       {/* ── Header ── */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+      <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
         <div className="flex items-center gap-4">
           <div>
             {editingName ? (
               <div className="flex items-center gap-2">
                 <Input
+                  name="layout-name"
+                  aria-label={t("ui.layout_name_placeholder")}
                   value={layoutName}
                   onChange={(e) => setLayoutName(e.target.value)}
                   placeholder={t("ui.layout_name_placeholder")}
@@ -79,20 +81,20 @@ export function FormBuilderHeader({
                     if (e.key === "Escape") setEditingName(false);
                   }}
                 />
-                <Button size="sm" variant="ghost" onClick={() => setEditingName(false)}>
-                  <Check className="h-4 w-4" />
+                <Button size="icon" variant="ghost" onClick={() => setEditingName(false)} aria-label={t("save_layout")}>
+                  <Check className="size-4" aria-hidden="true" />
                 </Button>
               </div>
             ) : (
               <button
                 type="button"
-                className="flex items-center gap-2 text-start"
+                className="flex min-h-11 items-center gap-2 rounded-sm text-start focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
                 onClick={() => setEditingName(true)}
               >
                 <h1 className="text-2xl font-semibold tracking-tight text-foreground">
                   {layoutName || t("ui.untitled_layout")}
                 </h1>
-                <Pencil className="size-4 text-muted-foreground" />
+                <Pencil className="size-4 text-muted-foreground" aria-hidden="true" />
               </button>
             )}
             <div className="flex items-center gap-3 mt-1">
@@ -107,21 +109,21 @@ export function FormBuilderHeader({
             </div>
           </div>
         </div>
-        <div className="flex items-center gap-2">
-          <Button variant="outline" size="sm" onClick={resetToDefaults}>
+        <div className="flex w-full flex-wrap items-center gap-2 sm:w-auto">
+          <Button variant="outline" onClick={resetToDefaults} className="min-h-11">
             {t("reset")}
           </Button>
           <Dialog open={showManager} onOpenChange={setShowManager}>
             <DialogTrigger asChild>
-              <Button variant="outline" size="sm">
-                <LayoutTemplate className="h-4 w-4 mr-2" />
+              <Button variant="outline" className="min-h-11">
+                <LayoutTemplate className="size-4" aria-hidden="true" />
                 {t("layouts")}
                 {layouts.length > 0 && (
                   <Badge variant="secondary" className="ml-2 text-xs h-5">{layouts.length}</Badge>
                 )}
               </Button>
             </DialogTrigger>
-            <DialogContent className="max-w-md">
+            <DialogContent className="max-h-[90vh] w-[calc(100%-2rem)] max-w-md overflow-y-auto overscroll-contain">
               <DialogHeader>
                 <DialogTitle>{t("layout_manager")}</DialogTitle>
               </DialogHeader>
@@ -137,8 +139,8 @@ export function FormBuilderHeader({
               />
             </DialogContent>
           </Dialog>
-          <Button onClick={saveLayout} disabled={isSaving || !layoutName.trim()} size="sm">
-            {isSaving ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Save className="h-4 w-4 mr-2" />}
+          <Button onClick={saveLayout} disabled={isSaving || !layoutName.trim()} className="min-h-11">
+            {isSaving ? <Loader2 className="size-4 animate-spin" aria-hidden="true" /> : <Save className="size-4" aria-hidden="true" />}
             {t("save_layout")}
           </Button>
         </div>

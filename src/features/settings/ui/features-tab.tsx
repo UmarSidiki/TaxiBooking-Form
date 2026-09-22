@@ -70,17 +70,17 @@ function ModuleRow({
   onCheckedChange: (checked: boolean) => void;
 }) {
   return (
-    <div className="flex items-center justify-between gap-4 rounded-md border border-border p-4">
+    <div className="flex items-start justify-between gap-4 rounded-md border border-border p-4">
       <div className="min-w-0 space-y-1">
         <div className="flex items-center gap-2">
-          <Icon className="size-4 text-primary" />
+          <Icon className="size-4 text-primary" aria-hidden="true" />
           <label htmlFor={id} className="cursor-pointer text-sm font-semibold">
             {title}
           </label>
         </div>
         <p className="text-sm text-muted-foreground">{description}</p>
       </div>
-      <Switch id={id} checked={checked} onCheckedChange={onCheckedChange} />
+      <Switch id={id} checked={checked} onCheckedChange={onCheckedChange} className="mt-0.5" />
     </div>
   );
 }

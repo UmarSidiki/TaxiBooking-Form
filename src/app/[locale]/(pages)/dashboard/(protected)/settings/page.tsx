@@ -1,5 +1,10 @@
-import { SettingsDeskPage } from "@/features/settings/ui/settings-desk-page";
+import { redirect } from "next/navigation";
 
-export default function SettingsPage() {
-  return <SettingsDeskPage />;
+export default async function SettingsIndexPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  redirect(`/${locale}/dashboard/settings/checkout`);
 }

@@ -31,6 +31,8 @@ export function AdminDriverForm({
         <Label htmlFor="driver-name">{t("Driver.name")}</Label>
         <Input
           id="driver-name"
+          name="driver-name"
+          autoComplete="name"
           required
           className="h-11"
           placeholder={t("Driver.driver-name")}
@@ -44,10 +46,12 @@ export function AdminDriverForm({
         <Label htmlFor="driver-email">{t("Driver.email")}</Label>
         <Input
           id="driver-email"
+          name="driver-email"
           required
           type="email"
           className="h-11"
           autoComplete="email"
+          spellCheck={false}
           value={formData.email}
           onChange={(event) =>
             setFormData({ ...formData, email: event.target.value })
@@ -58,6 +62,7 @@ export function AdminDriverForm({
         <Label htmlFor="driver-password">{t("Driver.password")}</Label>
         <Input
           id="driver-password"
+          name="driver-password"
           required={!editingId}
           type="password"
           className="h-11"
@@ -83,16 +88,16 @@ export function AdminDriverForm({
         />
         <Label htmlFor="isActive">{t("Driver.active")}</Label>
       </div>
-      <div className="flex gap-3 pt-2">
+      <div className="flex flex-col-reverse gap-3 pt-2 sm:flex-row">
         <Button type="submit" disabled={isLoading} className="h-11 flex-1">
           {isLoading ? (
             <>
-              <Loader2 className="size-4 animate-spin" />
+              <Loader2 className="size-4 animate-spin" aria-hidden="true" />
               {t("Dashboard.Settings.saving")}
             </>
           ) : (
             <>
-              <Save className="size-4" />
+              <Save className="size-4" aria-hidden="true" />
               {editingId ? t("Driver.update-driver") : t("Driver.add-driver")}
             </>
           )}

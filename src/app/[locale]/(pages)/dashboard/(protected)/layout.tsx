@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { getServerSession } from "next-auth";
 
 import { authOptions } from "@/features/auth";
+import { SettingsDeskProvider } from "@/features/settings/ui/settings-desk-context";
 import { AppSidebar } from "@/features/dashboard/ui/app-sidebar";
 import { DeskChromeHeader } from "@/features/dashboard/ui/desk-chrome-header";
 import { SidebarInset, SidebarProvider } from "@/shared/ui/sidebar";
@@ -30,11 +31,13 @@ export default async function DashboardProtectedLayout({
 
   return (
     <SidebarProvider>
-      <AppSidebar locale={locale} />
-      <SidebarInset>
-        <DeskChromeHeader />
-        <div className="flex-1 overflow-auto p-6">{children}</div>
-      </SidebarInset>
+      <SettingsDeskProvider>
+        <AppSidebar locale={locale} />
+        <SidebarInset>
+          <DeskChromeHeader />
+          <div className="flex-1 overflow-auto p-6">{children}</div>
+        </SidebarInset>
+      </SettingsDeskProvider>
     </SidebarProvider>
   );
 }

@@ -19,7 +19,7 @@ import { useCallback, useEffect, useMemo, useState, type FormEvent } from "react
 export function useAdminFleet() {
   const t = useTranslations();
   const [vehicles, setVehicles] = useState<IVehicle[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
@@ -27,12 +27,14 @@ export function useAdminFleet() {
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [formData, setFormData] = useState<VehicleForm>(INITIAL_VEHICLE_FORM);
   const [notice, setNotice] = useState<string | null>(null);
+  const [loadError, setLoadError] = useState<string | null>(null);
 
   const resolveImageSrc = resolveVehicleImageSrc;
 
   const fetchVehicles = useCallback(async () => {
     try {
       setIsLoading(true);
+      setLoadError(null);
       const data = await apiGet<{ success: boolean; data: IVehicle[] }>(
         "/api/vehicles"
       );
@@ -41,7 +43,7 @@ export function useAdminFleet() {
       }
     } catch (error) {
       console.error("Error fetching vehicles:", error);
-      setNotice(t("Dashboard.Fleet.failed-to-fetch-vehicles"));
+      setLoadError(t("Dashboard.Fleet.failed-to-fetch-vehicles"));
     } finally {
       setIsLoading(false);
     }
@@ -177,5 +179,7 @@ export function useAdminFleet() {
     filteredVehicles,
     notice,
     setNotice,
+    loadError,
+    fetchVehicles,
   };
 }

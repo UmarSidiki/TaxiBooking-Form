@@ -29,7 +29,7 @@ Surfaces (all in product scope):
 
 - Public booking wizard — `/[locale]` and embeddable routes `/[locale]/embeddable/*`
 - Payment result pages — `payment-success`, `payment-cancelled`, `thank-you`
-- Admin dashboard — `/[locale]/dashboard/*` (home, rides, fleet, drivers, partners, form-builder, settings, apply, sign-in, password reset)
+- Admin dashboard — `/[locale]/dashboard/*` (home, rides, fleet, drivers, partners, form-builder, settings subpages, apply, sign-in, password reset)
 - Driver portal — `/[locale]/drivers/*`
 - Partner portal — `/[locale]/partners/*`
 - APIs under `/api/*` (bookings, payments, webhooks, admin, cron)
@@ -55,6 +55,7 @@ Confirmed in the repo:
 - Fleet: vehicles with capacities and rate fields. Partners request access to vehicle categories.
 - Form builder: admin-designed step-1 layouts and styles; presets `v1` `v2` `v3` plus custom layouts.
 - Operator Appearance: `primaryColor`, `secondaryColor`, and `borderRadius` apply at runtime via CSS variables (`--primary-color`, `--secondary-color`, `--border-radius`). Form-builder styles are stored per layout in Mongo. **The public booking form’s colors and styles stay operator-owned.** Later form work must consume those settings; do not bake a locked luxury palette into the public or embeddable form.
+- Admin Settings: plaque sidebar keeps one **Settings** item. Nested routes `/dashboard/settings/{checkout|modules|email|appearance|map|gateways}`; index redirects to checkout. Each page Saves the in-memory document to `POST /api/settings`. Appearance hex paints only the public form.
 - Mail: confirmation, admin notify, assignment, cancellation, partner notify, password OTP. PDF invoices via `@react-pdf/renderer`.
 - i18n dictionaries in `messages/*.json`. UI must not show raw API/Zod English.
 - Destructive actions require confirm. Loading copy ends with `…`.

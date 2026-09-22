@@ -19,6 +19,7 @@ import {
   type DeskNavItem,
 } from "@/features/dashboard/lib/sidebar-nav";
 import { isDeskNavFlagOn } from "@/features/dashboard/lib/is-desk-nav-flag-on";
+import { isSettingsDeskPath } from "@/features/settings/lib/settings-desk-nav";
 
 export function DeskSidebarNav({
   locale,
@@ -49,6 +50,11 @@ export function DeskSidebarNav({
       ))}
     </>
   );
+}
+
+function isDeskNavActive(pathname: string, href: string) {
+  if (pathname === href) return true;
+  return href.endsWith("/settings") && isSettingsDeskPath(pathname);
 }
 
 function isVisible(item: DeskNavItem, approved: boolean) {
@@ -85,7 +91,11 @@ function DeskNavGroupBlock({
             const href = item.href(locale);
             return (
               <SidebarMenuItem key={item.titleKey}>
-                <SidebarMenuButton asChild isActive={pathname === href} tooltip={t(item.titleKey)}>
+                <SidebarMenuButton
+                  asChild
+                  isActive={isDeskNavActive(pathname, href)}
+                  tooltip={t(item.titleKey)}
+                >
                   <Link href={href} className="min-h-11">
                     <item.icon />
                     <span>{t(item.titleKey)}</span>

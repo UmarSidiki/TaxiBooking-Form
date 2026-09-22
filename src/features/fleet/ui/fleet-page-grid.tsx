@@ -4,7 +4,7 @@ import { FleetVehicleCard } from "@/features/fleet/ui/fleet-vehicle-card";
 import { Button } from "@/shared/ui/button";
 import { Card, CardContent } from "@/shared/ui/card";
 import type { useAdminFleet } from "@/features/fleet/hooks/useAdminFleet";
-import { Car, Loader2, Plus } from "lucide-react";
+import { Car, Plus } from "lucide-react";
 
 type AdminFleetState = ReturnType<typeof useAdminFleet>;
 
@@ -30,25 +30,34 @@ export function FleetPageGrid({
 >) {
   if (isLoading) {
     return (
-      <div className="flex justify-center items-center py-12">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4" role="status">
+        <span className="sr-only">{t("Dashboard.Fleet.fleet-management")}…</span>
+        {[0, 1, 2, 3].map((item) => (
+          <Card key={item} className="desk-card gap-4 border-border p-5">
+            <div className="h-5 w-2/3 animate-pulse rounded bg-muted" />
+            <div className="aspect-[16/9] animate-pulse rounded-md bg-muted" />
+            <div className="h-4 w-1/2 animate-pulse rounded bg-muted" />
+          </Card>
+        ))}
       </div>
     );
   }
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
+    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
       {filteredVehicles.length === 0 ? (
         <div className="col-span-full">
-          <Card className="border-2 border-dashed border-border bg-card">
-            <CardContent className="p-8 sm:p-12 text-center">
-              <Car className="h-12 sm:h-16 w-12 sm:w-16 text-muted-foreground mx-auto mb-4" />
+          <Card className="desk-card border-border bg-card">
+            <CardContent className="flex min-h-64 flex-col items-center justify-center p-8 text-center">
+              <div className="mb-4 flex size-12 items-center justify-center rounded-md bg-muted">
+                <Car className="size-6 text-muted-foreground" aria-hidden="true" />
+              </div>
               <h3 className="text-lg font-semibold mb-2 text-foreground">
                 {vehicles.length === 0
                   ? t("Dashboard.Fleet.no-vehicles-yet")
                   : t("Dashboard.Fleet.no-vehicles-match-your-filters")}
               </h3>
-              <p className="text-muted-foreground mb-4 text-sm sm:text-base">
+              <p className="mb-5 max-w-md text-sm text-muted-foreground">
                 {vehicles.length === 0
                   ? t(
                       "Dashboard.Fleet.get-started-by-adding-your-first-vehicle-to-the-fleet"
@@ -57,15 +66,15 @@ export function FleetPageGrid({
                       "Dashboard.Fleet.try-adjusting-your-search-or-filter-criteria"
                     )}
               </p>
-              {vehicles.length === 0 && (
+              {vehicles.length === 0 ? (
                 <Button
                   onClick={() => setShowForm(true)}
-                  className="bg-primary hover:bg-primary/90 text-primary-foreground"
+                  className="min-h-11"
                 >
-                  <Plus className="h-4 w-4 mr-2" />
-                  {t("Dashboard.Fleet.add-your-first-vehicle")}{" "}
+                  <Plus className="size-4" aria-hidden="true" />
+                  {t("Dashboard.Fleet.add-your-first-vehicle")}
                 </Button>
-              )}
+              ) : null}
             </CardContent>
           </Card>
         </div>

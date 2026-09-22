@@ -16,7 +16,7 @@ export function PaymentTabBank({
         {settings.acceptedPaymentMethods?.includes("bank_transfer") && (
           <div className="space-y-4 border-t pt-4">
             <h3 className="text-lg font-medium flex items-center gap-2">
-              <Building2 className="h-5 w-5" />
+              <Building2 className="size-5" aria-hidden="true" />
               {t("Dashboard.Settings.bank-account-details")}{" "}
             </h3>
             <p className="text-xs text-muted-foreground mb-4">
@@ -26,10 +26,12 @@ export function PaymentTabBank({
             </p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium mb-2">
+                <label htmlFor="bank-name" className="mb-2 block text-sm font-medium">
                   {t("Dashboard.Settings.bank-name")}
                 </label>
                 <Input
+                  id="bank-name"
+                  name="bank-name"
                   type="text"
                   placeholder={t("Dashboard.Settings.ubs-switzerland-ag")}
                   value={settings.bankName ?? ""}
@@ -39,10 +41,12 @@ export function PaymentTabBank({
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-2">
+                <label htmlFor="bank-account-name" className="mb-2 block text-sm font-medium">
                   {t("Dashboard.Settings.account-name")}
                 </label>
                 <Input
+                  id="bank-account-name"
+                  name="bank-account-name"
                   type="text"
                   placeholder={t("Dashboard.Settings.company-name")}
                   value={settings.bankAccountName ?? ""}
@@ -55,10 +59,12 @@ export function PaymentTabBank({
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-2">
+                <label htmlFor="bank-account-number" className="mb-2 block text-sm font-medium">
                   {t("Dashboard.Settings.account-number")}
                 </label>
                 <Input
+                  id="bank-account-number"
+                  name="bank-account-number"
                   type="text"
                   placeholder="123456789"
                   value={settings.bankAccountNumber ?? ""}
@@ -71,10 +77,12 @@ export function PaymentTabBank({
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-2">
+                <label htmlFor="bank-iban" className="mb-2 block text-sm font-medium">
                   IBAN
                 </label>
                 <Input
+                  id="bank-iban"
+                  name="bank-iban"
                   type="text"
                   placeholder={t(
                     "Dashboard.Settings.ch93-0076-2011-6238-5295-7"
@@ -86,10 +94,12 @@ export function PaymentTabBank({
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-2">
+                <label htmlFor="bank-swift-bic" className="mb-2 block text-sm font-medium">
                   SWIFT/BIC
                 </label>
                 <Input
+                  id="bank-swift-bic"
+                  name="bank-swift-bic"
                   type="text"
                   placeholder="UBSWCHZH80A"
                   value={settings.bankSwiftBIC ?? ""}

@@ -44,6 +44,8 @@ export function FormBuilderFieldProperties({
         <div className="space-y-1.5">
           <Label className="text-xs font-medium">{t("header_text")}</Label>
           <Input
+            name={`field-${selectedField.id}-label`}
+            aria-label={t("header_text")}
             value={selectedField.label}
             onChange={(event) =>
               updateField(selectedField.id, { label: event.target.value })
@@ -55,6 +57,8 @@ export function FormBuilderFieldProperties({
           <div className="space-y-1.5">
             <Label className="text-xs font-medium">{t("placeholder")}</Label>
             <Input
+              name={`field-${selectedField.id}-placeholder`}
+              aria-label={t("placeholder")}
               value={selectedField.placeholder || ""}
               onChange={(event) =>
                 updateField(selectedField.id, { placeholder: event.target.value })
@@ -85,6 +89,7 @@ export function FormBuilderFieldProperties({
             ) : null}
           </div>
           <Switch
+            aria-label={t("required")}
             checked={selectedField.required}
             disabled={registry?.locked}
             onCheckedChange={(checked) =>
@@ -95,6 +100,7 @@ export function FormBuilderFieldProperties({
         <div className="flex items-center justify-between gap-3">
           <Label className="text-xs font-medium">{t("enabled")}</Label>
           <Switch
+            aria-label={t("enabled")}
             checked={selectedField.enabled}
             disabled={registry?.locked}
             onCheckedChange={() => toggleField(selectedField.id)}
@@ -116,6 +122,7 @@ export function FormBuilderFieldProperties({
               </p>
             </div>
             <Switch
+              aria-label={t("ui.remove_border")}
               checked={selectedField.showBorder === false}
               onCheckedChange={(removing) =>
                 updateField(selectedField.id, { showBorder: !removing })

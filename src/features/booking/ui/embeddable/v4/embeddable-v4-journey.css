@@ -1,0 +1,95 @@
+.v4-journey {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+
+.v4-return {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  min-height: 2.75rem;
+}
+
+.v4-return label {
+  color: var(--v4-ink);
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.embeddable-v4-card [role="switch"] {
+  position: relative;
+  width: 2.85rem;
+  height: 1.7rem;
+  border: 1px solid color-mix(in oklab, var(--v4-ink) 16%, transparent);
+  background: var(--v4-paper);
+  border-radius: var(--v4-button-radius);
+}
+
+.embeddable-v4-card [role="switch"]::before {
+  content: "";
+  position: absolute;
+  inset: -0.6rem;
+}
+
+.embeddable-v4-card [role="switch"][data-state="checked"] {
+  border-color: transparent;
+  background: var(--v4-button);
+}
+
+.embeddable-v4-card [role="switch"] > span {
+  width: 1.15rem;
+  height: 1.15rem;
+  background: var(--v4-ink);
+  border-radius: var(--v4-button-radius);
+  box-shadow: 0 1px 2px color-mix(in oklab, var(--v4-ink) 25%, transparent);
+}
+
+.embeddable-v4-card [role="switch"][data-state="checked"] > span {
+  background: var(--v4-on-button);
+}
+
+.embeddable-v4-card [role="switch"]:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--v4-button) 45%, transparent);
+}
+
+[dir="rtl"] .embeddable-v4-card [role="switch"][data-state="checked"] > span {
+  transform: translateX(-1.25rem);
+}
+
+.v4-stepper {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  border: 1.5px solid color-mix(in oklab, var(--v4-field-ink) 8%, transparent);
+  border-radius: var(--v4-field-radius);
+  background: var(--v4-paper);
+  box-shadow:
+    inset 0 1px 0 color-mix(in oklab, white 80%, transparent),
+    0 8px 18px color-mix(in oklab, var(--v4-field-ink) 12%, transparent);
+}
+
+.v4-stepper button {
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: var(--v4-field-radius);
+  color: var(--v4-field-ink);
+}
+
+.v4-stepper button:disabled {
+  cursor: not-allowed;
+  opacity: 0.35;
+}
+
+.v4-stepper output {
+  min-width: 1.5rem;
+  color: var(--v4-field-ink);
+  font-size: 1rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+}

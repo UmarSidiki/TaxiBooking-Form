@@ -28,6 +28,8 @@ export interface IPendingBooking {
     lastName: string;
     email: string;
     phone: string;
+    whatsappOptIn?: boolean;
+    locale?: string;
     totalAmount: number;
     subtotalAmount?: number;
     taxAmount?: number;

@@ -13,8 +13,15 @@ export default function AdminPartnersPage() {
 
   if (loading) {
     return (
-      <div className="flex min-h-[400px] items-center justify-center text-sm text-muted-foreground">
-        {t("title")}…
+      <div className="space-y-6" role="status">
+        <span className="sr-only">{t("title")}…</span>
+        <div className="h-16 w-64 animate-pulse rounded-md bg-muted" />
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+          {[0, 1, 2, 3].map((item) => (
+            <div key={item} className="h-28 animate-pulse rounded-xl border border-border bg-card" />
+          ))}
+        </div>
+        <div className="h-64 animate-pulse rounded-xl border border-border bg-card" />
       </div>
     );
   }
@@ -25,7 +32,7 @@ export default function AdminPartnersPage() {
         {loadError}
         <button
           type="button"
-          className="ms-3 text-primary underline-offset-4 hover:underline"
+          className="ms-3 min-h-11 rounded-sm text-primary underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
           onClick={() => void partners.fetchPartners()}
         >
           {t("retry")}
@@ -37,10 +44,10 @@ export default function AdminPartnersPage() {
   return (
     <div className="space-y-6">
       <div>
-          <h1 className="text-2xl font-semibold tracking-tight text-foreground">
+          <h1 className="text-balance text-2xl font-semibold tracking-tight text-foreground">
             {t("title")}
           </h1>
-          <p className="mt-1 text-sm text-muted-foreground">
+          <p className="mt-1 text-pretty text-sm text-muted-foreground">
           {t("description")}
         </p>
       </div>
@@ -52,7 +59,7 @@ export default function AdminPartnersPage() {
           {partners.notice}
           <button
             type="button"
-            className="ms-3 text-primary underline-offset-4 hover:underline"
+            className="ms-3 min-h-11 rounded-sm text-primary underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
             onClick={() => partners.setNotice(null)}
           >
             {t("dismiss")}

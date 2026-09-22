@@ -59,24 +59,24 @@ export function FleetVehicleForm({
         </div>
       </div>
 
-      <div className="flex gap-3 pt-6 border-t">
-        <Button type="submit" disabled={isLoading} className="flex-1">
+      <div className="flex flex-col-reverse gap-3 border-t pt-6 sm:flex-row">
+        <Button type="submit" disabled={isLoading} className="min-h-11 flex-1">
           {isLoading ? (
             <>
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              <Loader2 className="size-4 animate-spin" aria-hidden="true" />
               {t("Dashboard.Settings.saving")}
             </>
           ) : (
             <>
-              <Save className="mr-2 h-4 w-4" />
+              <Save className="size-4" aria-hidden="true" />
               {editingId
                 ? t("Dashboard.Fleet.update-vehicle")
                 : t("Dashboard.Fleet.add-vehicle")}
             </>
           )}
         </Button>
-        <Button type="button" variant="outline" onClick={onCancel}>
-          {t("Dashboard.Fleet.cancel")}{" "}
+        <Button type="button" variant="outline" onClick={onCancel} className="min-h-11">
+          {t("Dashboard.Fleet.cancel")}
         </Button>
       </div>
     </form>

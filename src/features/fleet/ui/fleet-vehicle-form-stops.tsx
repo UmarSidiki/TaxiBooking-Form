@@ -20,10 +20,12 @@ export function FleetVehicleFormStops({
       </div>
 
       <div>
-        <label className="block text-sm font-medium mb-2">
+        <label htmlFor="vehicle-stop-price" className="mb-2 block text-sm font-medium">
           {t("Dashboard.Fleet.stop-base-price", {0: currencySymbol})}
         </label>
         <Input
+          id="vehicle-stop-price"
+          name="vehicle-stop-price"
           type="number"
           min="0"
           step="0.01"
@@ -42,10 +44,12 @@ export function FleetVehicleFormStops({
       </div>
 
       <div>
-        <label className="block text-sm font-medium mb-2">
+        <label htmlFor="vehicle-stop-hour-price" className="mb-2 block text-sm font-medium">
           {t("Dashboard.Fleet.stop-price-per-hour", {0: currencySymbol})}
         </label>
         <Input
+          id="vehicle-stop-hour-price"
+          name="vehicle-stop-hour-price"
           type="number"
           min="0"
           step="0.01"

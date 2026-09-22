@@ -31,7 +31,7 @@ export function FormBuilderPage() {
           {builder.notice}
           <button
             type="button"
-            className="ms-3 text-primary underline-offset-4 hover:underline"
+            className="ms-3 min-h-11 rounded-sm text-primary underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
             onClick={() => builder.setNotice(null)}
           >
             {builder.t("dismiss")}

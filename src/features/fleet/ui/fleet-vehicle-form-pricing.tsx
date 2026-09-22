@@ -20,10 +20,12 @@ export function FleetVehicleFormPricing({
       </div>
 
       <div>
-        <label className="block text-sm font-medium mb-2">
+        <label htmlFor="vehicle-base-price" className="mb-2 block text-sm font-medium">
           {t("Dashboard.Fleet.base-price-eur", {0: currencySymbol}) }{" "}
         </label>
         <Input
+          id="vehicle-base-price"
+          name="vehicle-base-price"
           required
           type="number"
           min="0"
@@ -43,10 +45,12 @@ export function FleetVehicleFormPricing({
       </div>
 
       <div>
-        <label className="block text-sm font-medium mb-2">
+        <label htmlFor="vehicle-price-km" className="mb-2 block text-sm font-medium">
           {t("Dashboard.Fleet.price-per-km-eur", {0: currencySymbol})}{" "}
         </label>
         <Input
+          id="vehicle-price-km"
+          name="vehicle-price-km"
           required
           type="number"
           min="0"
@@ -66,10 +70,12 @@ export function FleetVehicleFormPricing({
       </div>
 
       <div>
-        <label className="block text-sm font-medium mb-2">
+        <label htmlFor="vehicle-price-hour" className="mb-2 block text-sm font-medium">
           {t("Dashboard.Fleet.price-per-hour-eur", {0: currencySymbol})}{" "}
         </label>
         <Input
+          id="vehicle-price-hour"
+          name="vehicle-price-hour"
           required
           type="number"
           min="0"
@@ -89,10 +95,12 @@ export function FleetVehicleFormPricing({
       </div>
 
       <div>
-        <label className="block text-sm font-medium mb-2">
+        <label htmlFor="vehicle-minimum-fare" className="mb-2 block text-sm font-medium">
           {t("Dashboard.Fleet.minimum-fare-eur", {0: currencySymbol})}{" "}
         </label>
         <Input
+          id="vehicle-minimum-fare"
+          name="vehicle-minimum-fare"
           required
           type="number"
           min="0"
@@ -112,10 +120,12 @@ export function FleetVehicleFormPricing({
       </div>
 
       <div>
-        <label className="block text-sm font-medium mb-2">
+        <label htmlFor="vehicle-minimum-hours" className="mb-2 block text-sm font-medium">
           {t("Dashboard.Fleet.minimum-hours")}{" "}
         </label>
         <Input
+          id="vehicle-minimum-hours"
+          name="vehicle-minimum-hours"
           required
           type="number"
           min="1"
@@ -135,10 +145,12 @@ export function FleetVehicleFormPricing({
       </div>
 
       <div>
-        <label className="block text-sm font-medium mb-2">
+        <label htmlFor="vehicle-return-percent" className="mb-2 block text-sm font-medium">
           {t("Dashboard.Fleet.return-trip-price")}{" "}
         </label>
         <Input
+          id="vehicle-return-percent"
+          name="vehicle-return-percent"
           required
           type="number"
           min="0"
@@ -157,10 +169,12 @@ export function FleetVehicleFormPricing({
       </div>
 
       <div>
-        <label className="block text-sm font-medium mb-2">
+        <label htmlFor="vehicle-discount" className="mb-2 block text-sm font-medium">
           {t("Dashboard.Fleet.discount")}
         </label>
         <Input
+          id="vehicle-discount"
+          name="vehicle-discount"
           type="number"
           min="0"
           max="100"

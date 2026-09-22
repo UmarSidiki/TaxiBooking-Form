@@ -12,10 +12,11 @@ export type DriverFormValues = Omit<IDriver, "_id" | "createdAt" | "updatedAt"> 
 export function useAdminDrivers() {
   const t = useTranslations();
   const [drivers, setDrivers] = useState<IDriver[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [formData, setFormData] = useState<DriverFormValues>({
     name: "",
     email: "",
@@ -26,13 +27,14 @@ export function useAdminDrivers() {
   const fetchDrivers = useCallback(async () => {
     try {
       setIsLoading(true);
+      setLoadError(null);
       const data = await apiGet<{ success: boolean; data: IDriver[] }>(
         "/api/drivers"
       );
       if (data.success) setDrivers(data.data);
     } catch (error) {
       console.error("Error fetching drivers:", error);
-      setNotice(t("Driver.failed-to-fetch-drivers"));
+      setLoadError(t("Driver.failed-to-fetch-drivers"));
     } finally {
       setIsLoading(false);
     }
@@ -124,5 +126,7 @@ export function useAdminDrivers() {
     setPendingDeleteId,
     confirmDelete,
     resetForm,
+    loadError,
+    fetchDrivers,
   };
 }

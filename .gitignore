@@ -37,6 +37,9 @@ yarn-error.log*
 .env.test.local
 .env.production.local
 
+# WhatsApp linked-device session
+/data/whatsapp-auth/
+
 # local tooling caches
 .impeccable/hook.cache.json
 

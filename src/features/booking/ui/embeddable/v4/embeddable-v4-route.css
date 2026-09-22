@@ -1,0 +1,106 @@
+.v4-stops {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--v4-gap);
+  padding-inline-end: 2.6rem;
+}
+
+.v4-stop {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1.35rem minmax(0, 1fr);
+  column-gap: 0.55rem;
+  align-items: start;
+}
+
+.v4-stop:has(+ .v4-stop)::after {
+  content: "";
+  position: absolute;
+  inset-inline-start: calc(1.35rem / 2 - 1px);
+  top: calc(var(--v4-mark) / 2);
+  bottom: calc((var(--v4-gap) + var(--v4-mark) / 2) * -1);
+  width: 2px;
+  background: color-mix(in oklab, var(--v4-ink) 55%, transparent);
+}
+
+.v4-mark {
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  height: var(--v4-mark);
+  color: var(--v4-ink);
+}
+
+.v4-dot {
+  width: 0.62rem;
+  height: 0.62rem;
+  border: 2px solid currentColor;
+  border-radius: var(--v4-button-radius);
+  background: var(--v4-panel);
+}
+
+.v4-dot-start {
+  width: 0.78rem;
+  height: 0.78rem;
+}
+
+.v4-pin {
+  width: 1.05rem;
+  height: 1.05rem;
+  background: var(--v4-panel);
+}
+.v4-remove,
+.v4-swap,
+.v4-stepper button,
+.v4-add {
+  border: 0;
+  background: transparent;
+  color: var(--v4-field-ink);
+  font: inherit;
+  cursor: pointer;
+}
+
+.v4-remove {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  margin-inline-end: -0.45rem;
+  border-radius: var(--v4-field-radius);
+  color: color-mix(in oklab, var(--v4-field-ink) 62%, white);
+}
+
+.v4-remove:hover,
+.v4-swap:hover,
+.v4-add:hover,
+.v4-stepper button:hover:not(:disabled) {
+  color: var(--v4-field-ink);
+}
+
+.v4-swap {
+  position: absolute;
+  inset-inline-end: 0;
+  top: 50%;
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: var(--v4-button-radius);
+  color: var(--v4-ink);
+  translate: 0 -50%;
+}
+
+.v4-add {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-height: 2.75rem;
+  margin-top: 0.2rem;
+  margin-inline-start: 1.9rem;
+  color: var(--v4-ink);
+  font-size: 1rem;
+  font-weight: 600;
+}
+.v4-stops-plain{padding-inline-end:0}

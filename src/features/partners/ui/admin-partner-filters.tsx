@@ -27,24 +27,28 @@ export function AdminPartnerFilters({
   return (
     <>
       {/* Filters */}
-      <Card>
-        <CardContent className="pt-6">
-          <div className="flex flex-col md:flex-row gap-4">
+      <Card className="desk-card border-border">
+        <CardContent className="p-4">
+          <div className="flex flex-col gap-3 md:flex-row">
             <div className="flex-1">
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                <Search className="absolute start-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" aria-hidden="true" />
                 <Input
+                  name="partner-search"
+                  type="search"
+                  autoComplete="off"
+                  aria-label={t("search-placeholder")}
                   placeholder={t("search-placeholder")}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10"
+                  className="h-11 ps-10"
                 />
               </div>
             </div>
             <div className="w-full md:w-48">
               <Select value={statusFilter} onValueChange={setStatusFilter}>
-                <SelectTrigger>
-                  <Filter className="w-4 h-4 mr-2" />
+                <SelectTrigger className="h-11">
+                  <Filter className="me-2 size-4" aria-hidden="true" />
                   <SelectValue placeholder={t("filter-by-status")} />
                 </SelectTrigger>
                 <SelectContent>

@@ -24,7 +24,7 @@ export function EmbedFormPreview({
   copiedLabel: string;
 }) {
   return (
-    <div className="space-y-4">
+    <div className="flex min-w-0 flex-col gap-4">
       <div className="desk-card overflow-hidden rounded-md border border-border bg-card">
         <div className="flex items-center justify-between border-b border-border bg-muted px-4 py-2 text-xs text-muted-foreground">
           {previewLabel}
@@ -41,12 +41,12 @@ export function EmbedFormPreview({
           <div className="flex items-center justify-between border-b border-border px-4 py-2">
             <span className="font-mono text-xs text-muted-foreground">snippet.js</span>
             <Button size="sm" variant="outline" className="h-11" onClick={onCopy}>
-              {copied ? <Check className="size-4" /> : <Copy className="size-4" />}
+              {copied ? <Check className="size-4" aria-hidden="true" /> : <Copy className="size-4" aria-hidden="true" />}
               {copied ? copiedLabel : copyLabel}
             </Button>
           </div>
           <CardContent className="p-0">
-            <pre className="max-h-[420px] overflow-auto p-4 font-mono text-xs text-foreground">
+            <pre className="max-h-[420px] max-w-full overflow-auto p-4 font-mono text-xs text-foreground">
               <code>{snippet}</code>
             </pre>
           </CardContent>

@@ -23,7 +23,7 @@ export function FleetVehicleCard ({
   const t = useTranslations();
   return (
     <Card
-      className={`group min-w-[350px] border border-border bg-card transition-shadow duration-200 hover:border-primary/20 hover:shadow-md sm:min-w-[300px] ${
+      className={`desk-card group min-w-0 border border-border bg-card transition-colors duration-200 hover:border-primary/30 ${
         !vehicle.isActive ? "opacity-60" : ""
       }`}
     >
@@ -40,22 +40,24 @@ export function FleetVehicleCard ({
               {vehicle.category}
             </Badge>
           </div>
-          <div className="flex gap-1 opacity-100 sm:opacity-0 group-hover:opacity-100 transition-opacity">
+          <div className="flex gap-1 transition-opacity sm:opacity-0 sm:group-hover:opacity-100 sm:group-focus-within:opacity-100">
             <Button
-              size="sm"
+              size="icon"
               variant="outline"
               onClick={() => onEdit(vehicle)}
-              className="size-11 p-0 hover:border-primary/20 hover:bg-primary/10 hover:text-primary"
+              className="size-11 hover:border-primary/20 hover:bg-primary/10 hover:text-primary"
+              aria-label={`${t("Dashboard.Fleet.edit-vehicle")}: ${vehicle.name}`}
             >
-              <Edit className="h-3 w-3" />
+              <Edit className="size-4" aria-hidden="true" />
             </Button>
             <Button
-              size="sm"
+              size="icon"
               variant="destructive"
               onClick={() => onDelete(vehicle._id!)}
-              className="size-11 p-0"
+              className="size-11"
+              aria-label={`${t("FormBuilder.ui.delete")}: ${vehicle.name}`}
             >
-              <Trash2 className="h-3 w-3" />
+              <Trash2 className="size-4" aria-hidden="true" />
             </Button>
           </div>
         </div>
@@ -79,13 +81,13 @@ export function FleetVehicleCard ({
 
         <div className="grid grid-cols-2 gap-3 text-sm">
           <div className="flex items-center gap-2">
-            <Users className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+            <Users className="size-4 shrink-0 text-muted-foreground" aria-hidden="true" />
             <span className="text-foreground">
               {vehicle.persons} {t("Dashboard.Fleet.seats")}
             </span>
           </div>
           <div className="flex items-center gap-2">
-            <Package className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+            <Package className="size-4 shrink-0 text-muted-foreground" aria-hidden="true" />
             <span className="text-foreground">
               {vehicle.baggages} {t("Dashboard.Fleet.bags")}
             </span>
@@ -94,7 +96,7 @@ export function FleetVehicleCard ({
 
         <Separator className="bg-border" />
 
-        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 sm:gap-4">
+        <div className="flex items-start justify-between gap-3">
           <Badge
             variant={vehicle.isActive ? "default" : "secondary"}
             className={
@@ -105,12 +107,12 @@ export function FleetVehicleCard ({
           >
             {vehicle.isActive ? (
               <>
-                <CheckCircle className="h-3 w-3 mr-1" />
+                <CheckCircle className="me-1 size-3" aria-hidden="true" />
                 {t("Dashboard.Fleet.active")}
               </>
             ) : (
               <>
-                <XCircle className="h-3 w-3 mr-1" />
+                <XCircle className="me-1 size-3" aria-hidden="true" />
                 {t("Dashboard.Fleet.inactive")}
               </>
             )}

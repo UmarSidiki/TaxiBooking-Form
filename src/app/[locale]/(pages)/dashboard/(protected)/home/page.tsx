@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { Badge } from "@/shared/ui/badge";
 import { useLocale } from "next-intl";
 import { useCurrency } from "@/shared/context/currency-context";
@@ -18,14 +17,10 @@ import { AdminHomeDestinations } from "@/features/dashboard/ui/admin-home-destin
 import { AdminHomeQuickActions } from "@/features/dashboard/ui/admin-home-quick-actions";
 
 export default function DashboardPage() {
-  const { currencySymbol } = useCurrency();
+  const { currency } = useCurrency();
   const { stats, isLoading, error, t } = useAdminHome();
   const locale = useLocale();
-  const [updatedAt, setUpdatedAt] = useState("");
-
-  useEffect(() => {
-    setUpdatedAt(new Intl.DateTimeFormat(locale).format(new Date()));
-  }, [locale]);
+  const updatedAt = new Intl.DateTimeFormat(locale).format(new Date());
 
   if (isLoading) {
     return <AdminHomeLoading t={t} />;
@@ -40,42 +35,35 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
+    <div className="flex flex-col gap-6">
       <AdminHomeHeader t={t}>
-        {updatedAt ? (
-          <div className="flex items-center space-x-3">
-            <Badge variant="outline" className="hidden sm:flex">
+        <div className="flex items-center gap-3">
+          <Badge variant="outline" className="hidden sm:flex">
+            <span suppressHydrationWarning>
               {t("Dashboard.Home.last-updated")} {updatedAt}
-            </Badge>
-          </div>
-        ) : null}
+            </span>
+          </Badge>
+        </div>
       </AdminHomeHeader>
 
-      {/* Stats Grid */}
+      <AdminHomeRecentBookings
+        t={t}
+        stats={stats}
+        currency={currency}
+        locale={locale}
+      />
+
       <AdminHomeBookingStats t={t} stats={stats} />
 
-      {/* Revenue and Monthly Bookings Section */}
       <AdminHomeRevenue
         t={t}
         stats={stats}
-        currencySymbol={currencySymbol}
+        currency={currency}
+        locale={locale}
       />
 
-      {/* Recent Bookings and Top Destinations */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Recent Bookings */}
-        <AdminHomeRecentBookings
-          t={t}
-          stats={stats}
-          currencySymbol={currencySymbol}
-        />
+      <AdminHomeDestinations t={t} stats={stats} />
 
-        {/* Top Destinations */}
-        <AdminHomeDestinations t={t} stats={stats} />
-      </div>
-
-      {/* Quick Actions */}
       <AdminHomeQuickActions t={t} />
     </div>
   );

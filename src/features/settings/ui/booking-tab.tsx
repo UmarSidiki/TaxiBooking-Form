@@ -19,10 +19,12 @@ export default function BookingTab({
 
   return (
     <div className="space-y-4">
-      <label className="block text-sm font-medium">
+      <label htmlFor="booking-redirect-url" className="block text-sm font-medium">
         {t("Dashboard.Settings.redirect-url")}
       </label>
       <Input
+        id="booking-redirect-url"
+        name="booking-redirect-url"
         type="url"
         className="h-11"
         placeholder={t(
@@ -37,10 +39,12 @@ export default function BookingTab({
       </p>
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div>
-          <label className="mb-2 block text-sm font-medium">
+          <label htmlFor="thank-you-stay-seconds" className="mb-2 block text-sm font-medium">
             {t("Dashboard.Settings.thank-you-stay-time")}
           </label>
           <Input
+            id="thank-you-stay-seconds"
+            name="thank-you-stay-seconds"
             type="number"
             min={0}
             className="h-11 w-32"

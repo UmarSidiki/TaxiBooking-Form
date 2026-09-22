@@ -19,14 +19,13 @@ const FleetPage = () => {
           {fleet.notice}
           <button
             type="button"
-            className="ms-3 text-primary underline-offset-4 hover:underline"
+            className="ms-3 min-h-11 rounded-sm text-primary underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
             onClick={() => fleet.setNotice(null)}
           >
             {fleet.t("Dashboard.Fleet.dismiss")}
           </button>
         </p>
       ) : null}
-      {/* Header Section */}
       <FleetPageHeader
         t={fleet.t}
         showForm={fleet.showForm}
@@ -39,7 +38,19 @@ const FleetPage = () => {
         isLoading={fleet.isLoading}
       />
 
-      {/* Search and Filter Controls */}
+      {fleet.loadError ? (
+        <p className="rounded-md border border-destructive/40 bg-card px-4 py-3 text-sm" role="alert">
+          {fleet.loadError}
+          <button
+            type="button"
+            className="ms-3 min-h-11 rounded-sm text-primary underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
+            onClick={() => void fleet.fetchVehicles()}
+          >
+            {fleet.t("Dashboard.Home.try-again")}
+          </button>
+        </p>
+      ) : null}
+
       <FleetPageFilters
         t={fleet.t}
         searchQuery={fleet.searchQuery}
@@ -50,7 +61,6 @@ const FleetPage = () => {
         setStatusFilter={fleet.setStatusFilter}
       />
 
-      {/* Vehicle Grid */}
       <FleetPageGrid
         t={fleet.t}
         isLoading={fleet.isLoading}

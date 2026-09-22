@@ -42,7 +42,7 @@ export function FormBuilderPalette({
 
   return (
     <div className="lg:col-span-3">
-      <Card className="sticky top-6 flex h-[calc(100vh-140px)] flex-col overflow-hidden border-border">
+      <Card className="flex flex-col overflow-hidden border-border lg:sticky lg:top-6 lg:h-[calc(100vh-140px)]">
         <CardHeader className="shrink-0 border-b border-border p-4">
           <CardTitle className="text-base">{t("form_elements")}</CardTitle>
           <CardDescription className="text-xs">{t("click_to_add")}</CardDescription>
@@ -64,7 +64,7 @@ export function FormBuilderPalette({
                     className="h-11 justify-start gap-2 px-2 text-xs hover:bg-accent"
                     onClick={() => addField(type)}
                   >
-                    <Icon className="size-3.5 shrink-0 text-primary" />
+                    <Icon className="size-3.5 shrink-0 text-primary" aria-hidden="true" />
                     <span className="truncate">{t(reg.labelKey)}</span>
                   </Button>
                 );
@@ -79,11 +79,11 @@ export function FormBuilderPalette({
           <Separator />
           <div className="space-y-2">
             <Label className="flex items-center gap-2 px-1 text-xs font-medium text-muted-foreground">
-              <Layers className="size-3" /> {t("canvas_title")}
+              <Layers className="size-3" aria-hidden="true" /> {t("canvas_title")}
             </Label>
             {fields.length === 0 ? (
               <div className="rounded-md border border-dashed border-border px-4 py-10 text-center">
-                <Plus className="mx-auto mb-2 size-6 text-muted-foreground" />
+                <Plus className="mx-auto mb-2 size-6 text-muted-foreground" aria-hidden="true" />
                 <p className="text-xs text-muted-foreground">{t("empty_form")}</p>
               </div>
             ) : (

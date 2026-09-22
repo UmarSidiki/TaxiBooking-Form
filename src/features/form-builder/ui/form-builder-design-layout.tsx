@@ -73,6 +73,7 @@ export function FormBuilderDesignLayout(props: FormBuilderStyleEditorProps) {
         <div className="flex min-h-11 items-center justify-between gap-3">
           <Label className="text-xs font-medium">{t("glass_effect")}</Label>
           <Switch
+          aria-label={t("glass_effect")}
             checked={formStyle.glassEffect}
             onCheckedChange={(glassEffect) =>
               setFormStyle((style) => ({ ...style, glassEffect }))
@@ -91,6 +92,7 @@ export function FormBuilderDesignLayout(props: FormBuilderStyleEditorProps) {
         <div className="space-y-1.5">
           <Label className="text-xs font-medium">{t("ui.container_radius")}</Label>
           <Input
+            aria-label={t("ui.container_radius")}
             value={formStyle.borderRadius}
             onChange={(event) =>
               setFormStyle((style) => ({ ...style, borderRadius: event.target.value }))
@@ -102,6 +104,7 @@ export function FormBuilderDesignLayout(props: FormBuilderStyleEditorProps) {
         <div className="space-y-1.5">
           <Label className="text-xs font-medium">{t("input_border_radius")}</Label>
           <Input
+            aria-label={t("input_border_radius")}
             value={formStyle.inputBorderRadius || "0.5rem"}
             onChange={(event) =>
               setFormStyle((style) => ({
@@ -143,6 +146,7 @@ function RangeField({
         </span>
       </div>
       <Input
+        aria-label={label}
         type="number"
         className="h-11 w-full"
         min={min}

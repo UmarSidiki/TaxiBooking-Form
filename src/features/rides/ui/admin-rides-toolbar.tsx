@@ -48,48 +48,46 @@ export function AdminRidesToolbar({
 >) {
   return (
     <>
-      {/* Header Section */}
-      <div className="mb-6 sm:mb-8">
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+      <div>
+        <div className="mb-6 flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-end">
           <div>
-            <h1 className="text-2xl font-semibold tracking-tight text-foreground">
+            <h1 className="text-balance text-2xl font-semibold tracking-tight text-foreground">
               {t("Dashboard.Rides.Title")}
             </h1>
-            <p className="mt-1 text-sm text-muted-foreground">
+            <p className="mt-1 text-pretty text-sm text-muted-foreground">
               {t("Dashboard.Rides.Description")}
             </p>
           </div>
-          <div className="flex items-center gap-3 w-full sm:w-auto">
-            <Button
-              onClick={fetchBookings}
-              variant="outline"
-              size="sm"
-              disabled={isLoading}
-              className="flex min-h-11 items-center gap-2"
-            >
-              <RefreshCw
-                className={`w-4 h-4 ${isLoading ? "animate-spin" : ""}`}
-              />
-              {t("Dashboard.Rides.Refresh")}
-            </Button>
-          </div>
+          <Button
+            onClick={fetchBookings}
+            variant="outline"
+            disabled={isLoading}
+            className="min-h-11"
+          >
+            <RefreshCw
+              className={`size-4 ${isLoading ? "animate-spin" : ""}`}
+              aria-hidden="true"
+            />
+            {t("Dashboard.Rides.Refresh")}
+          </Button>
         </div>
 
-        {/* Search and Filters */}
-        <Card className="desk-card border-border p-4">
+        <Card className="desk-card gap-4 border-border p-4">
           <div className="flex flex-col space-y-4">
             <div className="flex flex-wrap items-center justify-between gap-3">
               <h3 className="flex items-center gap-2 text-base font-semibold text-foreground">
-                <Filter className="w-5 h-5 text-secondary-foreground" />
+                <Filter className="size-5 text-secondary-foreground" aria-hidden="true" />
                 {t("Dashboard.Rides.FilterBookings")}
               </h3>
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={() => setShowFilters(!showFilters)}
-                className="flex items-center justify-center gap-2 text-secondary-foreground w-full sm:w-auto"
+                className="min-h-11 text-secondary-foreground"
+                aria-expanded={showFilters}
+                aria-controls="ride-advanced-filters"
               >
-                <Filter className="w-4 h-4" />
+                <Filter className="size-4" aria-hidden="true" />
                 {showFilters
                   ? t("Dashboard.Rides.HideFilters")
                   : t("Dashboard.Rides.ShowFilters")}
@@ -97,8 +95,12 @@ export function AdminRidesToolbar({
             </div>
 
             <div className="relative">
-              <Search className="absolute start-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+              <Search className="absolute start-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" aria-hidden="true" />
               <Input
+                name="ride-search"
+                type="search"
+                autoComplete="off"
+                aria-label={t("Dashboard.Rides.SearchPlaceholder")}
                 placeholder={t("Dashboard.Rides.SearchPlaceholder")}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
@@ -107,7 +109,10 @@ export function AdminRidesToolbar({
             </div>
 
             {showFilters && (
-              <div className="flex flex-col sm:flex-row sm:flex-wrap gap-4 pt-2">
+              <div
+                id="ride-advanced-filters"
+                className="flex flex-col gap-4 pt-2 sm:flex-row sm:flex-wrap"
+              >
                 <DateRangePicker
                   date={dateRange}
                   onDateChange={setDateRange}
@@ -116,7 +121,7 @@ export function AdminRidesToolbar({
 
                 <Select value={paymentFilter} onValueChange={setPaymentFilter}>
                   <SelectTrigger className="flex-1 sm:w-48">
-                    <CreditCard className="w-4 h-4 mr-2" />
+                    <CreditCard className="me-2 size-4" aria-hidden="true" />
                     <SelectValue placeholder={t("Dashboard.Rides.Payment")} />
                   </SelectTrigger>
                   <SelectContent>
@@ -140,7 +145,7 @@ export function AdminRidesToolbar({
 
                 <Select value={sortBy} onValueChange={setSortBy}>
                   <SelectTrigger className="flex-1 sm:w-48">
-                    <Filter className="w-4 h-4 mr-2" />
+                    <Filter className="me-2 size-4" aria-hidden="true" />
                     <SelectValue placeholder={t("Dashboard.Rides.sort-by")} />
                   </SelectTrigger>
                   <SelectContent>

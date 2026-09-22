@@ -6,6 +6,8 @@ export const pendingBookingDataSchema = z.object({
   lastName: z.string().optional(),
   email: z.string().optional(),
   phone: z.string().optional(),
+  whatsappOptIn: z.boolean().optional(),
+  locale: z.string().optional(),
   notes: z.string().optional(),
   flightNumber: z.string().optional(),
 });
@@ -36,6 +38,8 @@ export const checkoutBookingDataSchema = z.object({
   lastName: z.string().optional(),
   email: z.string().optional(),
   phone: z.string().optional(),
+  whatsappOptIn: z.boolean().optional(),
+  locale: z.string().optional(),
 });
 
 export const distanceRequestSchema = z.object({

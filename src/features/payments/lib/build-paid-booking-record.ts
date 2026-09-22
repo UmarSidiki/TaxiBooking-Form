@@ -45,6 +45,8 @@ export function buildPaidBookingRecord(
     lastName: data.lastName,
     email: data.email,
     phone: data.phone,
+    whatsappOptIn: data.whatsappOptIn ?? false,
+    locale: data.locale,
     paymentMethod: options.paymentMethod,
     paymentStatus: 'completed' as const,
     stripePaymentIntentId: options.stripePaymentIntentId,

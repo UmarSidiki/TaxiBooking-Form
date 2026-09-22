@@ -53,14 +53,17 @@ export function LayoutManager({
           {layouts.map((layout) => (
             <div
               key={layout._id}
-              className={`flex cursor-pointer items-center gap-3 rounded-md border p-3 ${
+              className={`flex items-center gap-3 rounded-md border p-3 ${
                 currentId === layout._id
                   ? "border-primary bg-primary/5"
                   : "border-border hover:border-primary/40"
               }`}
-              onClick={() => onSelect(layout)}
             >
-              <div className="min-w-0 flex-1">
+              <button
+                type="button"
+                className="min-w-0 flex-1 rounded-sm text-start focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
+                onClick={() => onSelect(layout)}
+              >
                 <div className="flex items-center gap-2">
                   <p className="truncate text-sm font-medium">{layout.name}</p>
                   {layout.isDefault ? (
@@ -78,7 +81,7 @@ export function LayoutManager({
                     total: layout.fields.length,
                   })}
                 </p>
-              </div>
+              </button>
               <div className="flex items-center gap-1">
                 {!layout.isDefault ? (
                   <button

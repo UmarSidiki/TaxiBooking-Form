@@ -15,6 +15,7 @@ import { getSettingsCurrency } from '@/features/booking/lib/get-settings-currenc
 import { initCashBookingPartners } from '@/features/booking/lib/init-cash-booking-partners';
 import type { CashBookingInput } from '@/features/booking/schema/cash-booking.schema';
 import { Vehicle } from '@/features/fleet/model';
+import { sendBookingWhatsApp } from '@/features/settings/lib/send-booking-whatsapp';
 
 export type CreateCashBookingResult =
   | {
@@ -96,6 +97,8 @@ export async function createCashBooking(
     lastName: formData.lastName,
     email: formData.email,
     phone: formData.phone,
+    whatsappOptIn: formData.whatsappOptIn ?? false,
+    locale: formData.locale,
     paymentMethod: formData.paymentMethod || 'stripe',
     paymentStatus:
       (formData.paymentStatus as
@@ -129,6 +132,7 @@ export async function createCashBooking(
     savedBooking._id.toString()
   );
 
+  const whatsapp = sendBookingWhatsApp(savedBooking._id.toString());
   try {
     const confirmationSent = await sendOrderConfirmationEmail(emailData);
     const adminSent = await sendOrderNotificationEmail(emailData);
@@ -140,6 +144,8 @@ export async function createCashBooking(
     }
   } catch {
     // Email failures are logged but don't prevent booking success
+  } finally {
+    await whatsapp;
   }
 
   return {

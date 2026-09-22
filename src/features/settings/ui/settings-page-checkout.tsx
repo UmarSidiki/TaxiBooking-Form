@@ -1,26 +1,20 @@
 "use client";
 
-import { Building2, CreditCard, Banknote } from "lucide-react";
+import { Banknote, Building2, CreditCard } from "lucide-react";
 import { useTranslations } from "next-intl";
 
-import { SettingsSection } from "@/features/settings/ui/settings-section";
-import { PaymentTabMethods } from "@/features/settings/ui/payment-tab-methods";
-import { PaymentTabCurrency } from "@/features/settings/ui/payment-tab-currency";
-import { FeaturesTabTax } from "@/features/settings/ui/features-tab-tax";
 import BookingTab from "@/features/settings/ui/booking-tab";
-import FeaturesTab from "@/features/settings/ui/features-tab";
-import { SmtpTabTest } from "@/features/settings/ui/smtp-tab-test";
-import type { SettingsDeskPanelsProps } from "@/features/settings/ui/settings-desk-props";
+import { FeaturesTabTax } from "@/features/settings/ui/features-tab-tax";
+import { PaymentTabCurrency } from "@/features/settings/ui/payment-tab-currency";
+import { PaymentTabMethods } from "@/features/settings/ui/payment-tab-methods";
+import { useSettingsDesk } from "@/features/settings/ui/settings-desk-context";
+import { SettingsDeskSave } from "@/features/settings/ui/settings-desk-save";
+import { SettingsSection } from "@/features/settings/ui/settings-section";
 
-export function SettingsTodayPanel({
-  settings,
-  patch,
-  setSettings,
-  isLoading,
-  setIsLoading,
-}: SettingsDeskPanelsProps) {
+export function SettingsPageCheckout() {
   const t = useTranslations();
   const featuresT = useTranslations("Dashboard.Features");
+  const { settings, patch } = useSettingsDesk();
 
   const paymentMethods = [
     {
@@ -31,7 +25,7 @@ export function SettingsTodayPanel({
     },
     {
       id: "multisafepay",
-      label: "MultiSafepay",
+      label: t("Dashboard.Settings.multisafepay"),
       Icon: CreditCard,
       description: t("Dashboard.Settings.multisafepay-methods-desc"),
     },
@@ -50,7 +44,11 @@ export function SettingsTodayPanel({
   ];
 
   return (
-    <div className="space-y-6">
+    <div className="flex flex-col gap-6">
+      <SettingsDeskSave
+        title={t("Dashboard.Settings.nav_checkout")}
+        help={t("Dashboard.Settings.checkout_help")}
+      />
       <SettingsSection title={t("Dashboard.Settings.accepted-payment-methods")}>
         <PaymentTabMethods
           settings={settings}
@@ -77,21 +75,6 @@ export function SettingsTodayPanel({
       </SettingsSection>
       <SettingsSection title={t("Dashboard.Settings.booking-settings")}>
         <BookingTab settings={settings} handleMapSettingsChange={patch} />
-      </SettingsSection>
-      <SettingsSection
-        title={t("Dashboard.Features.module-management")}
-        description={t("Dashboard.Features.enable-or-disable-specific-modules")}
-      >
-        <FeaturesTab settings={settings} onSettingsChange={patch} />
-      </SettingsSection>
-      <SettingsSection title={t("Dashboard.Settings.testing")}>
-        <SmtpTabTest
-          settings={settings}
-          setSettings={setSettings}
-          isLoading={isLoading}
-          setIsLoading={setIsLoading}
-          t={t}
-        />
       </SettingsSection>
     </div>
   );

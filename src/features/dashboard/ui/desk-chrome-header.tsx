@@ -25,11 +25,9 @@ export function DeskChromeHeader() {
     <header className="flex h-14 shrink-0 items-center justify-between gap-3 border-b border-border px-4">
       <SidebarTrigger className="min-h-11 min-w-11" />
       <div className="flex min-w-0 items-center gap-3">
-        {date ? (
-          <p className="hidden truncate text-sm text-muted-foreground sm:block">
-            {date}
-          </p>
-        ) : null}
+        <p className="hidden min-h-5 min-w-0 truncate text-sm text-muted-foreground sm:block sm:max-w-xs">
+          {date}
+        </p>
         <LanguageSwitcher />
       </div>
     </header>

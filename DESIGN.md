@@ -71,7 +71,7 @@ Visual source of truth: `src/shared/style/globals.css`. Two surfaces share Tailw
 
 **Desk** (`[data-surface="desk"]` on every `/dashboard/*`, `/drivers/*`, and `/partners/*` route, including those sign-ins): locked **private-terminal operations counter**. Libre Franklin. Graphite sidebar plaque, limestone canvas, bronze only on primary action and current nav. Appearance must not recolor this surface.
 
-Settings on the admin desk is two job groups — **Today** (methods, tax, currency, thank-you, modules, SMTP test) and **Setup** (timezone, public appearance, map, payment secrets, SMTP host) — not six equal-weight tabs.
+Settings on the admin desk is six usage-ordered subpages — **Daily** (checkout, modules, email) then **Setup** (appearance, map, gateways) — with a secondary nav and per-page Save. The plaque sidebar keeps a single Settings item; `/dashboard/settings` redirects to checkout.
 
 World: private terminal / porte-cochère operations desk (seed `ce80ddc4`, assigned grounded candidate 7, degraded roll — no catalog challengers). Brief-pinned luxury chauffeur back office + Cleaning/Taxi chrome grammar (grouped icon-collapsible sidebar, split login). Color strategy: Restrained. Scene: staff at a well-lit terminal counter, cool daylight on limestone, dark signage rail.
 

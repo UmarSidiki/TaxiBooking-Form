@@ -20,10 +20,12 @@ export function FleetVehicleFormCapacity({
       </div>
 
       <div>
-        <label className="block text-sm font-medium mb-2">
+        <label htmlFor="vehicle-passengers" className="mb-2 block text-sm font-medium">
           {t("Dashboard.Fleet.persons-capacity")}{" "}
         </label>
         <Input
+          id="vehicle-passengers"
+          name="vehicle-passengers"
           required
           type="number"
           min="1"
@@ -40,10 +42,12 @@ export function FleetVehicleFormCapacity({
       </div>
 
       <div>
-        <label className="block text-sm font-medium mb-2">
+        <label htmlFor="vehicle-luggage" className="mb-2 block text-sm font-medium">
           {t("Dashboard.Fleet.baggages-capacity")}{" "}
         </label>
         <Input
+          id="vehicle-luggage"
+          name="vehicle-luggage"
           required
           type="number"
           min="0"
@@ -60,10 +64,12 @@ export function FleetVehicleFormCapacity({
       </div>
 
       <div>
-        <label className="block text-sm font-medium mb-2">
+        <label htmlFor="vehicle-child-seat-price" className="mb-2 block text-sm font-medium">
           {t("Dashboard.Fleet.child-seat-price-eur", {0: currencySymbol})}{" "}
         </label>
         <Input
+          id="vehicle-child-seat-price"
+          name="vehicle-child-seat-price"
           type="number"
           min="0"
           step="0.01"
@@ -79,10 +85,12 @@ export function FleetVehicleFormCapacity({
       </div>
 
       <div>
-        <label className="block text-sm font-medium mb-2">
+        <label htmlFor="vehicle-baby-seat-price" className="mb-2 block text-sm font-medium">
           {t("Dashboard.Fleet.baby-seat-price-eur", {0: currencySymbol})}{" "}
         </label>
         <Input
+          id="vehicle-baby-seat-price"
+          name="vehicle-baby-seat-price"
           type="number"
           min="0"
           step="0.01"

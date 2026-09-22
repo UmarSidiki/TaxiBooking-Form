@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type FormEvent, type ReactNode } from "react";
+import { useRef, useState, type FormEvent, type ReactNode } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { Eye, EyeOff } from "lucide-react";
@@ -35,6 +35,7 @@ export function DeskCredentialsForm({
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const emailRef = useRef<HTMLInputElement>(null);
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -52,6 +53,7 @@ export function DeskCredentialsForm({
 
     if (result?.error) {
       setError(t("invalid"));
+      emailRef.current?.focus();
       return;
     }
 
@@ -67,21 +69,26 @@ export function DeskCredentialsForm({
       <DeskAuthBrand />
       <div className="flex flex-1 items-center justify-center">
         <div className={`w-full ${formWidthClass}`}>
-          <h1 className="text-2xl font-semibold tracking-tight text-foreground">
+          <h1 className="text-balance text-2xl font-semibold tracking-tight text-foreground">
             {title}
           </h1>
-          <p className="mt-2 text-sm text-muted-foreground">{subtitle}</p>
+          <p className="mt-2 text-pretty text-sm text-muted-foreground">{subtitle}</p>
           <form className="mt-8 space-y-5" onSubmit={handleSubmit}>
             <div className="space-y-2">
               <Label htmlFor="email">{t("email")}</Label>
               <Input
+                ref={emailRef}
                 id="email"
+                name="email"
                 type="email"
+                inputMode="email"
                 autoComplete="email"
+                spellCheck={false}
                 value={email}
                 onChange={(event) => setEmail(event.target.value)}
                 required
                 disabled={loading}
+                aria-invalid={error ? true : undefined}
                 className="h-11"
               />
             </div>
@@ -90,35 +97,43 @@ export function DeskCredentialsForm({
               <div className="relative">
                 <Input
                   id="password"
+                  name="password"
                   type={showPassword ? "text" : "password"}
                   autoComplete="current-password"
                   value={password}
                   onChange={(event) => setPassword(event.target.value)}
                   required
                   disabled={loading}
+                  aria-invalid={error ? true : undefined}
                   className="h-11 pe-11"
                 />
                 <button
                   type="button"
-                  className="absolute inset-y-0 end-0 flex min-w-11 items-center justify-center text-muted-foreground hover:text-foreground"
+                  className="absolute inset-y-0 end-0 flex min-w-11 items-center justify-center rounded-md text-muted-foreground transition-colors duration-200 hover:text-foreground focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:opacity-50"
                   onClick={() => setShowPassword((open) => !open)}
                   disabled={loading}
                   aria-label={showPassword ? t("hide_password") : t("show_password")}
                 >
                   {showPassword ? (
-                    <EyeOff className="size-4" />
+                    <EyeOff className="size-4" aria-hidden="true" />
                   ) : (
-                    <Eye className="size-4" />
+                    <Eye className="size-4" aria-hidden="true" />
                   )}
                 </button>
               </div>
-            </div>
-            {error ? (
-              <p className="text-sm text-destructive" role="alert">
+              <p
+                className="min-h-5 text-sm text-destructive"
+                role="alert"
+                aria-live="polite"
+              >
                 {error}
               </p>
-            ) : null}
-            <Button type="submit" disabled={loading} className="h-11 w-full">
+            </div>
+            <Button
+              type="submit"
+              disabled={loading}
+              className="h-11 w-full transition-colors duration-200 active:bg-primary/80"
+            >
               {loading ? t("submitting") : t("submit")}
             </Button>
           </form>

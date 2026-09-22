@@ -1,0 +1,110 @@
+.v4-field {
+  display: flex;
+  align-items: center;
+  min-height: var(--v4-mark);
+  min-width: 0;
+  padding-inline: 0.8rem;
+  border: 1.5px solid color-mix(in oklab, var(--v4-field-ink) 8%, transparent);
+  border-radius: var(--v4-field-radius);
+  background: var(--v4-paper);
+  box-shadow:
+    inset 0 1px 0 color-mix(in oklab, white 80%, transparent),
+    0 1px 2px color-mix(in oklab, var(--v4-field-ink) 8%, transparent),
+    0 8px 18px color-mix(in oklab, var(--v4-field-ink) 12%, transparent);
+  transition: border-color 160ms ease, box-shadow 160ms ease;
+}
+
+.v4-field:has(input:focus-visible) {
+  border-color: var(--v4-button);
+  box-shadow:
+    0 0 0 3px color-mix(in oklab, var(--v4-button) 28%, transparent),
+    0 8px 18px color-mix(in oklab, var(--v4-field-ink) 12%, transparent);
+}
+
+.v4-field:has(input[aria-invalid="true"]) {
+  border-color: var(--destructive);
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--destructive) 28%, transparent);
+}
+
+.v4-field[data-complete="true"]:not(:has([aria-invalid="true"])) {
+  border-color: var(--v4-button);
+}
+
+.v4-field-quiet {
+  gap: 0.6rem;
+  border-color: transparent;
+  background: color-mix(in oklab, var(--v4-paper) 38%, var(--v4-panel));
+  color: color-mix(in oklab, var(--v4-ink) 62%, var(--v4-panel));
+  box-shadow: none;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.v4-prefix {
+  flex: none;
+  margin-inline-end: 0.45rem;
+  color: var(--v4-field-ink);
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.embeddable-v4-card .v4-field input {
+  min-width: 0;
+  width: 100%;
+  height: 2.6rem;
+  padding: 0;
+  border: 0;
+  outline: none;
+  background: transparent;
+  box-shadow: none;
+  color: var(--v4-field-ink);
+  font: inherit;
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.embeddable-v4-card .v4-field input::placeholder {
+  color: var(--v4-field-muted);
+  font-weight: 500;
+}
+
+.embeddable-v4-card .v4-field input:focus-visible {
+  outline: none;
+  box-shadow: none;
+}
+
+.v4-datetime {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1.25fr) minmax(0, 0.85fr);
+  column-gap: 0.45rem;
+}
+
+.v4-icon {
+  color: var(--v4-field-ink);
+}
+
+.embeddable-v4-card .v4-datetime input {
+  position: relative;
+}
+
+.embeddable-v4-card .v4-datetime input::-webkit-calendar-picker-indicator {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.v4-error {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.3rem;
+  margin: 0.3rem 0 0;
+  color: var(--destructive);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  line-height: 1.35;
+}

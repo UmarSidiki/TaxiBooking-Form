@@ -21,6 +21,7 @@ export function FormBuilderAlignToggle({
           key={align}
           type="button"
           onClick={() => onChange(align)}
+          aria-pressed={value === align}
           className={`min-h-11 flex-1 rounded-md text-xs font-medium transition-colors duration-200 ${
             value === align
               ? "bg-primary text-primary-foreground"

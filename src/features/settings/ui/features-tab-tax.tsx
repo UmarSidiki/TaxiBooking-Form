@@ -26,7 +26,7 @@ export function FeaturesTabTax({
       <div className="flex items-center justify-between">
         <div className="flex-1 space-y-1">
           <div className="flex items-center gap-2">
-            <Receipt className="size-4 text-primary" />
+            <Receipt className="size-4 text-primary" aria-hidden="true" />
             <label htmlFor="enableTax" className="cursor-pointer text-base font-semibold">
               {t("tax-module")}
             </label>
@@ -48,6 +48,7 @@ export function FeaturesTabTax({
             <div className="flex items-center gap-2">
               <Input
                 id="taxPercentage"
+                name="taxPercentage"
                 type="number"
                 min="0"
                 max="100"

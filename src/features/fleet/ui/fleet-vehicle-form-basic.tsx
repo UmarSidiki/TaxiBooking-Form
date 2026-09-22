@@ -26,10 +26,12 @@ export function FleetVehicleFormBasic({
       </div>
 
       <div>
-        <label className="block text-sm font-medium mb-2">
+        <label htmlFor="vehicle-name" className="mb-2 block text-sm font-medium">
           {t("Dashboard.Fleet.vehicle-name")}{" "}
         </label>
         <Input
+          id="vehicle-name"
+          name="vehicle-name"
           required
           placeholder={t("Dashboard.Fleet.e-g-mercedes-e-class")}
           value={formData.name}
@@ -38,7 +40,7 @@ export function FleetVehicleFormBasic({
       </div>
 
       <div>
-        <label className="block text-sm font-medium mb-2">
+        <label htmlFor="vehicle-category" className="mb-2 block text-sm font-medium">
           {t("Dashboard.Fleet.category2")}
         </label>
         <Select
@@ -47,7 +49,7 @@ export function FleetVehicleFormBasic({
             setFormData({ ...formData, category: value })
           }
         >
-          <SelectTrigger>
+          <SelectTrigger id="vehicle-category">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -70,13 +72,15 @@ export function FleetVehicleFormBasic({
       </div>
 
       <div className="md:col-span-2">
-        <label className="block text-sm font-medium mb-2">
+        <label htmlFor="vehicle-description" className="mb-2 block text-sm font-medium">
           {t("Dashboard.Fleet.description")}{" "}
         </label>
         <textarea
+          id="vehicle-description"
+          name="vehicle-description"
           required
           placeholder={t("Dashboard.Fleet.describe-the-vehicle-features")}
-          className="w-full min-h-[80px] px-3 py-2 rounded-md border border-input bg-background resize-none"
+          className="min-h-20 w-full resize-none rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:border-ring focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
           value={formData.description}
           onChange={(e) =>
             setFormData({ ...formData, description: e.target.value })
@@ -85,10 +89,13 @@ export function FleetVehicleFormBasic({
       </div>
 
       <div className="md:col-span-2">
-        <label className="block text-sm font-medium mb-2">
+        <label htmlFor="vehicle-image" className="mb-2 block text-sm font-medium">
           {t("Dashboard.Fleet.image-url")}
         </label>
         <Input
+          id="vehicle-image"
+          name="vehicle-image"
+          autoComplete="off"
           placeholder="Use any Custom Image URL or Select from Suggestions"
           value={formData.image}
           onChange={(e) => {

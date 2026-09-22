@@ -10,21 +10,22 @@ import { apiErrorMessage } from "@/shared/lib/api-error-copy";
 import type { SmtpTabProps } from "@/features/settings/ui/smtp-tab-props";
 import type { useTranslations } from "next-intl";
 
-type Props = SmtpTabProps & {
+type Props = {
+  settings: SmtpTabProps["settings"];
+  setSettings: SmtpTabProps["setSettings"];
   t: ReturnType<typeof useTranslations>;
 };
 
 export function SmtpTabTest({
   settings,
   setSettings,
-  isLoading,
-  setIsLoading,
   t,
 }: Props) {
   const [notice, setNotice] = useState<string | null>(null);
+  const [testing, setTesting] = useState(false);
 
   const runTest = async () => {
-    setIsLoading(true);
+    setTesting(true);
     try {
       const response = await apiPost<{ success: boolean; message: string }>(
         "/api/test-smtp",
@@ -43,19 +44,22 @@ export function SmtpTabTest({
         )
       );
     } finally {
-      setIsLoading(false);
+      setTesting(false);
     }
   };
 
   return (
-    <div className="space-y-4 border-t pt-4">
-      <h3 className="text-lg font-medium">{t("Dashboard.Settings.testing")}</h3>
+    <div className="flex flex-col gap-4">
       <div>
-        <label className="mb-2 block text-sm font-medium">
+        <label htmlFor="smtp-test-recipient" className="mb-2 block text-sm font-medium">
           {t("Dashboard.Settings.test-email-recipient")}
         </label>
         <Input
+          id="smtp-test-recipient"
+          name="smtp-test-recipient"
           type="email"
+          autoComplete="email"
+          spellCheck={false}
           value={settings.smtpTestEmail ?? ""}
           onChange={(e) =>
             setSettings((prev) => ({ ...prev, smtpTestEmail: e.target.value }))
@@ -71,15 +75,15 @@ export function SmtpTabTest({
         <Button
           type="button"
           onClick={runTest}
-          disabled={isLoading || !settings.smtpHost || !settings.smtpUser}
+          disabled={testing || !settings.smtpHost || !settings.smtpUser}
           className="min-h-11"
         >
-          {isLoading ? (
-            <Loader2 className="size-4 animate-spin" />
+          {testing ? (
+            <Loader2 className="size-4 animate-spin" aria-hidden="true" />
           ) : (
-            <Mail className="size-4" />
+            <Mail className="size-4" aria-hidden="true" />
           )}
-          {isLoading
+          {testing
             ? t("Dashboard.Settings.smtp_testing")
             : t("Dashboard.Settings.test-smtp")}
         </Button>

@@ -33,6 +33,7 @@ export default function AppearanceTab({
       />
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <ColorField
+          id="appearance-primary-color"
           label={t("Dashboard.Settings.primary-color")}
           value={settings.primaryColor || "#EAB308"}
           fallback="#EAB308"
@@ -40,6 +41,7 @@ export default function AppearanceTab({
           onChange={(value) => handleColorChange("primaryColor", value)}
         />
         <ColorField
+          id="appearance-secondary-color"
           label={t("Dashboard.Settings.secondary-color")}
           value={settings.secondaryColor || "#111827"}
           fallback="#111827"
@@ -48,10 +50,12 @@ export default function AppearanceTab({
         />
       </div>
       <div className="space-y-2">
-        <label className="block text-sm font-medium">
+        <label htmlFor="appearance-corner-sharpness" className="block text-sm font-medium">
           {t("Dashboard.Settings.corner-sharpness")}
         </label>
         <Input
+          id="appearance-corner-sharpness"
+          name="appearance-corner-sharpness"
           type="number"
           min={0}
           max={1.5}
@@ -69,12 +73,14 @@ export default function AppearanceTab({
 }
 
 function ColorField({
+  id,
   label,
   value,
   fallback,
   help,
   onChange,
 }: {
+  id: string;
   label: string;
   value: string;
   fallback: string;
@@ -83,15 +89,19 @@ function ColorField({
 }) {
   return (
     <div>
-      <label className="mb-2 block text-sm font-medium">{label}</label>
+      <label htmlFor={`${id}-text`} className="mb-2 block text-sm font-medium">{label}</label>
       <div className="flex flex-col items-start gap-2 sm:flex-row sm:items-center">
         <Input
+          id={`${id}-picker`}
+          aria-label={label}
           type="color"
           className="h-11 w-12 p-1"
           value={value || fallback}
           onChange={(e) => onChange(e.target.value)}
         />
         <Input
+          id={`${id}-text`}
+          name={id}
           placeholder={fallback}
           className="h-11"
           value={value}

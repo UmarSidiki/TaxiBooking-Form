@@ -27,7 +27,7 @@ export function AdminHomeDestinations({
       <CardContent>
         {destinations.length === 0 ? (
           <div className="py-8 text-center">
-            <MapPin className="mx-auto size-8 text-muted-foreground" />
+            <MapPin className="mx-auto size-8 text-muted-foreground" aria-hidden="true" />
             <p className="mt-2 text-sm text-muted-foreground">
               {t("Dashboard.Home.no-destination-data")}
             </p>
@@ -47,14 +47,19 @@ export function AdminHomeDestinations({
                     {destination.count} {t("Dashboard.Home.bookings")}
                   </p>
                 </div>
-                <div className="flex items-center gap-2">
+                <div className="flex shrink-0 items-center gap-2">
                   <div className="h-1.5 w-20 overflow-hidden rounded-full bg-muted">
                     <div
                       className="h-full bg-primary"
                       style={{ width: `${destination.percentage}%` }}
+                      role="progressbar"
+                      aria-label={destination.name}
+                      aria-valuenow={destination.percentage}
+                      aria-valuemin={0}
+                      aria-valuemax={100}
                     />
                   </div>
-                  <span className="text-sm font-medium text-foreground">
+                  <span className="w-9 text-end text-sm font-medium tabular-nums text-foreground">
                     {destination.percentage}%
                   </span>
                 </div>

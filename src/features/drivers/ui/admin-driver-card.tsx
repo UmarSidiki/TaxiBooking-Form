@@ -35,18 +35,18 @@ export function AdminDriverCard({
               variant="outline"
               onClick={() => onEdit(driver)}
               className="size-11"
-              aria-label={t("Driver.edit-driver")}
+              aria-label={`${t("Driver.edit-driver")}: ${driver.name}`}
             >
-              <Edit className="size-4" />
+              <Edit className="size-4" aria-hidden="true" />
             </Button>
             <Button
               size="sm"
               variant="destructive"
               onClick={() => onDelete(driver._id!)}
               className="size-11"
-              aria-label={t("Driver.delete")}
+              aria-label={`${t("Driver.delete")}: ${driver.name}`}
             >
-              <Trash2 className="size-4" />
+              <Trash2 className="size-4" aria-hidden="true" />
             </Button>
           </div>
         </div>
@@ -56,12 +56,12 @@ export function AdminDriverCard({
         <Badge variant={driver.isActive ? "default" : "secondary"}>
           {driver.isActive ? (
             <>
-              <CheckCircle className="me-1 size-3" />
+              <CheckCircle className="me-1 size-3" aria-hidden="true" />
               {t("Driver.active")}
             </>
           ) : (
             <>
-              <XCircle className="me-1 size-3" />
+              <XCircle className="me-1 size-3" aria-hidden="true" />
               {t("Driver.inactive")}
             </>
           )}

@@ -55,6 +55,7 @@ export async function POST(request: NextRequest) {
           $set: {
             bookingData: {
               ...bookingData,
+              locale: locale || bookingData.locale || "en",
               totalAmount: totalAmount || amount,
             },
             paymentMethod: 'multisafepay',

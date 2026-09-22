@@ -12,17 +12,21 @@ type Props = Pick<SmtpTabProps, "settings" | "setSettings"> & {
 export function SmtpTabFields({ settings, setSettings, t }: Props) {
   return (
     <>
-      <div className="space-y-4">
+      <div className="flex flex-col gap-4">
         <h3 className="text-lg font-medium">
           {t("Dashboard.Settings.sender-information")}
         </h3>
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <div>
-            <label className="mb-2 block text-sm font-medium">
+            <label htmlFor="smtp-from" className="mb-2 block text-sm font-medium">
               {t("Dashboard.Settings.from-email-address")}
             </label>
             <Input
+              id="smtp-from"
+              name="smtp-from"
               type="email"
+              autoComplete="email"
+              spellCheck={false}
               value={settings.smtpFrom ?? ""}
               onChange={(e) =>
                 setSettings((prev) => ({ ...prev, smtpFrom: e.target.value }))
@@ -35,10 +39,12 @@ export function SmtpTabFields({ settings, setSettings, t }: Props) {
             </p>
           </div>
           <div>
-            <label className="mb-2 block text-sm font-medium">
+            <label htmlFor="smtp-sender-name" className="mb-2 block text-sm font-medium">
               {t("Dashboard.Settings.sender-name")}
             </label>
             <Input
+              id="smtp-sender-name"
+              name="smtp-sender-name"
               type="text"
               value={settings.smtpSenderName ?? ""}
               onChange={(e) =>
@@ -54,17 +60,21 @@ export function SmtpTabFields({ settings, setSettings, t }: Props) {
           </div>
         </div>
       </div>
-      <div className="space-y-4">
+      <div className="flex flex-col gap-4">
         <h3 className="text-lg font-medium">
           {t("Dashboard.Settings.smtp-server-settings")}
         </h3>
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <div>
-            <label className="mb-2 block text-sm font-medium">
+            <label htmlFor="smtp-host" className="mb-2 block text-sm font-medium">
               {t("Dashboard.Settings.smtp-host")}
             </label>
             <Input
+              id="smtp-host"
+              name="smtp-host"
               type="text"
+              autoComplete="off"
+              spellCheck={false}
               value={settings.smtpHost ?? ""}
               onChange={(e) =>
                 setSettings((prev) => ({ ...prev, smtpHost: e.target.value }))
@@ -75,10 +85,12 @@ export function SmtpTabFields({ settings, setSettings, t }: Props) {
             </p>
           </div>
           <div>
-            <label className="mb-2 block text-sm font-medium">
+            <label htmlFor="smtp-port" className="mb-2 block text-sm font-medium">
               {t("Dashboard.Settings.smtp-port")}
             </label>
             <Input
+              id="smtp-port"
+              name="smtp-port"
               type="number"
               value={settings.smtpPort ?? 587}
               onChange={(e) =>
@@ -117,17 +129,21 @@ export function SmtpTabFields({ settings, setSettings, t }: Props) {
           </p>
         </div>
       </div>
-      <div className="space-y-4">
+      <div className="flex flex-col gap-4">
         <h3 className="text-lg font-medium">
           {t("Dashboard.Settings.authentication")}
         </h3>
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <div>
-            <label className="mb-2 block text-sm font-medium">
+            <label htmlFor="smtp-user" className="mb-2 block text-sm font-medium">
               {t("Dashboard.Settings.username")}
             </label>
             <Input
+              id="smtp-user"
+              name="smtp-user"
               type="text"
+              autoComplete="username"
+              spellCheck={false}
               value={settings.smtpUser ?? ""}
               onChange={(e) =>
                 setSettings((prev) => ({ ...prev, smtpUser: e.target.value }))
@@ -138,11 +154,14 @@ export function SmtpTabFields({ settings, setSettings, t }: Props) {
             </p>
           </div>
           <div>
-            <label className="mb-2 block text-sm font-medium">
+            <label htmlFor="smtp-pass" className="mb-2 block text-sm font-medium">
               {t("Dashboard.Settings.password")}
             </label>
             <Input
+              id="smtp-pass"
+              name="smtp-pass"
               type="password"
+              autoComplete="new-password"
               value={settings.smtpPass ?? ""}
               onChange={(e) =>
                 setSettings((prev) => ({ ...prev, smtpPass: e.target.value }))

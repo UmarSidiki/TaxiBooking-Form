@@ -1,6 +1,6 @@
 "use client";
 
-import { Blocks, Layers, Smartphone, Star, Zap } from "lucide-react";
+import { Blocks, Layers, MapPinned, Smartphone, Star, Zap } from "lucide-react";
 import type { useTranslations } from "next-intl";
 
 import type { EmbedVariant } from "@/features/form-builder/ui/embed-variant-list";
@@ -48,6 +48,19 @@ export function defaultEmbedVariants(t: TFn): EmbedVariant[] {
       ],
       path: "/embeddable/v3",
       icon: <Smartphone className="size-4" />,
+    },
+    {
+      id: "v4",
+      name: t("variants.v4_name"),
+      description: t("variants.v4_desc"),
+      features: [
+        t("variants.v4_feature1"),
+        t("variants.v4_feature2"),
+        t("variants.v4_feature3"),
+        t("variants.v4_feature4"),
+      ],
+      path: "/embeddable/v4",
+      icon: <MapPinned className="size-4" />,
     },
   ];
 }

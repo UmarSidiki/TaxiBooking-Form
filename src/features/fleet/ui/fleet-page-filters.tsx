@@ -33,13 +33,19 @@ export function FleetPageFilters({
   | "setStatusFilter"
 >) {
   return (
-    <Card className="border border-border bg-card">
+    <Card className="desk-card border-border bg-card">
       <CardContent className="p-3 sm:p-4">
         <div className="flex flex-col space-y-3 sm:space-y-0 sm:flex-row sm:gap-4">
           <div className="flex-1">
             <div className="relative">
-              <Search className="absolute start-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+              <Search className="absolute start-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" aria-hidden="true" />
               <Input
+                name="fleet-search"
+                type="search"
+                autoComplete="off"
+                aria-label={t(
+                  "Dashboard.Fleet.search-vehicles-by-name-description-or-category"
+                )}
                 placeholder={t(
                   "Dashboard.Fleet.search-vehicles-by-name-description-or-category"
                 )}

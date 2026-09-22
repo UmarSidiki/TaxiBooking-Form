@@ -62,6 +62,7 @@ export function FormBuilderDesignButtonFooter({
         <div className="space-y-1.5">
           <Label className="text-xs font-medium">{t("footer_text")}</Label>
           <Input
+            aria-label={t("footer_text")}
             value={formStyle.footerText}
             onChange={(event) =>
               setFormStyle((style) => ({ ...style, footerText: event.target.value }))
@@ -83,6 +84,7 @@ export function FormBuilderDesignButtonFooter({
         <div className="flex min-h-11 items-center justify-between gap-3">
           <Label className="text-xs font-medium">{t("ui.show_footer_images")}</Label>
           <Switch
+            aria-label={t("ui.show_footer_images")}
             checked={formStyle.showFooterImages}
             onCheckedChange={(showFooterImages) =>
               setFormStyle((style) => ({ ...style, showFooterImages }))

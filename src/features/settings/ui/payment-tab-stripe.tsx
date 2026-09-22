@@ -1,8 +1,9 @@
 "use client";
 
 import { Input } from "@/shared/ui/input";
-import { Button } from "@/shared/ui/button";
+import { Switch } from "@/shared/ui/switch";
 import type { PaymentTabFieldsProps } from "@/features/settings/ui/payment-tab-props";
+import { PaymentWebhookCopy } from "@/features/settings/ui/payment-webhook-copy";
 
 
 export function PaymentTabStripe({
@@ -21,17 +22,13 @@ export function PaymentTabStripe({
                 {t("Dashboard.Settings.stripe-configuration")}
               </h3>
               <div className="flex items-center gap-2">
-                <label className="flex items-center gap-2 text-sm">
-                  <input
-                    type="checkbox"
+                <label htmlFor="stripe-test-mode" className="flex items-center gap-2 text-sm">
+                  <Switch
+                    id="stripe-test-mode"
                     checked={settings.stripeTestMode ?? true}
-                    onChange={(e) =>
-                      handleMapSettingsChange(
-                        "stripeTestMode",
-                        e.target.checked
-                      )
+                    onCheckedChange={(checked) =>
+                      handleMapSettingsChange("stripeTestMode", checked)
                     }
-                    className="w-4 h-4"
                   />
                   <span
                     className={
@@ -50,10 +47,12 @@ export function PaymentTabStripe({
 
           <div className="grid grid-cols-1 gap-4">
             <div>
-              <label className="block text-sm font-medium mb-2">
+              <label htmlFor="stripe-publishable-key" className="mb-2 block text-sm font-medium">
                 {t("Dashboard.Settings.publishable-key")}
               </label>
               <Input
+                id="stripe-publishable-key"
+                name="stripe-publishable-key"
                 type="text"
                 placeholder={
                   settings.stripeTestMode ? "pk_test_..." : "pk_live_..."
@@ -73,11 +72,14 @@ export function PaymentTabStripe({
               </p>
             </div>
             <div>
-              <label className="block text-sm font-medium mb-2">
+              <label htmlFor="stripe-secret-key" className="mb-2 block text-sm font-medium">
                 {t("Dashboard.Settings.secret-key")}
               </label>
               <Input
+                id="stripe-secret-key"
+                name="stripe-secret-key"
                 type="password"
+                autoComplete="new-password"
                 placeholder={
                   settings.stripeTestMode ? "sk_test_..." : "sk_live_..."
                 }
@@ -98,11 +100,14 @@ export function PaymentTabStripe({
               </p>
             </div>
             <div>
-              <label className="block text-sm font-medium mb-2">
+              <label htmlFor="stripe-webhook-secret" className="mb-2 block text-sm font-medium">
                 {t("Dashboard.Settings.webhook-secret-optional")}
               </label>
               <Input
+                id="stripe-webhook-secret"
+                name="stripe-webhook-secret"
                 type="password"
+                autoComplete="new-password"
                 placeholder="whsec_..."
                 value={settings.stripeWebhookSecret ?? ""}
                 onChange={(e) =>
@@ -119,29 +124,21 @@ export function PaymentTabStripe({
               </p>
             </div>
             <div>
-              <label className="block text-sm font-medium mb-2">
+              <label htmlFor="stripe-webhook-url" className="mb-2 block text-sm font-medium">
                 {t("Dashboard.Settings.webhook-url")}
               </label>
               <div className="flex gap-2">
                 <Input
+                  id="stripe-webhook-url"
                   type="text"
                   readOnly
                   value={typeof window !== 'undefined' ? `${window.location.origin}/api/stripe-webhook` : '/api/stripe-webhook'}
                   className="bg-muted text-muted-foreground"
                 />
-                <Button
-                  type="button"
-                  variant="secondary"
-                  className="h-11 whitespace-nowrap"
-                  onClick={() => {
-                    const webhookUrl = typeof window !== 'undefined' 
-                      ? `${window.location.origin}/api/stripe-webhook` 
-                      : '/api/stripe-webhook';
-                    navigator.clipboard.writeText(webhookUrl);
-                  }}
-                >
-                  {t("Dashboard.Settings.copy")}
-                </Button>
+                <PaymentWebhookCopy
+                  url={typeof window !== "undefined" ? `${window.location.origin}/api/stripe-webhook` : "/api/stripe-webhook"}
+                  t={t}
+                />
               </div>
               <p className="text-xs text-muted-foreground mt-1">
                 {t("Dashboard.Settings.add-this-url-in-stripe-dashboard-webhooks")}

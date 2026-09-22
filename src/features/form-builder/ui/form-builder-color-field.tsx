@@ -18,11 +18,13 @@ export function FormBuilderColorField({
       <div className="flex items-center gap-2">
         <input
           type="color"
+          aria-label={label}
           value={value}
           onChange={(event) => onChange(event.target.value)}
           className="size-11 cursor-pointer rounded-md border border-input bg-background p-1"
         />
         <Input
+          aria-label={label}
           className="h-11 flex-1 font-mono text-sm"
           value={value}
           onChange={(event) => onChange(event.target.value)}

@@ -1,7 +1,8 @@
 "use client";
 
-import Image from "next/image";
 import { useTranslations } from "next-intl";
+
+import { DeskMark } from "@/features/auth/ui/desk-mark";
 
 export function DeskAuthBrand() {
   const t = useTranslations("Auth.Desk");
@@ -9,9 +10,7 @@ export function DeskAuthBrand() {
 
   return (
     <div className="flex items-center gap-3">
-      <div className="relative size-8 overflow-hidden rounded-md bg-sidebar">
-        <Image src="/icon.png" alt="" fill className="object-cover" />
-      </div>
+      <DeskMark />
       <div className="min-w-0">
         <p className="truncate text-sm font-semibold text-foreground">{name}</p>
         <p className="text-xs text-muted-foreground">{t("operations")}</p>

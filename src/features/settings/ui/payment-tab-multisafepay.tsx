@@ -1,8 +1,9 @@
 "use client";
 
 import { Input } from "@/shared/ui/input";
-import { Button } from "@/shared/ui/button";
+import { Switch } from "@/shared/ui/switch";
 import type { PaymentTabFieldsProps } from "@/features/settings/ui/payment-tab-props";
+import { PaymentWebhookCopy } from "@/features/settings/ui/payment-webhook-copy";
 
 
 export function PaymentTabMultiSafepay({
@@ -19,17 +20,13 @@ export function PaymentTabMultiSafepay({
             <div className="flex items-center justify-between">
               <h3 className="text-lg font-medium">MultiSafepay {t("Dashboard.Settings.configuration")}</h3>
               <div className="flex items-center gap-2">
-                <label className="flex items-center gap-2 text-sm">
-                  <input
-                    type="checkbox"
+                <label htmlFor="multisafepay-test-mode" className="flex items-center gap-2 text-sm">
+                  <Switch
+                    id="multisafepay-test-mode"
                     checked={settings.multisafepayTestMode ?? true}
-                    onChange={(e) =>
-                      handleMapSettingsChange(
-                        "multisafepayTestMode",
-                        e.target.checked
-                      )
+                    onCheckedChange={(checked) =>
+                      handleMapSettingsChange("multisafepayTestMode", checked)
                     }
-                    className="w-4 h-4"
                   />
                   <span
                     className={
@@ -47,11 +44,14 @@ export function PaymentTabMultiSafepay({
             </div>
             <div className="grid grid-cols-1 gap-4">
               <div>
-                <label className="block text-sm font-medium mb-2">
+                <label htmlFor="multisafepay-api-key" className="mb-2 block text-sm font-medium">
                   {t('Dashboard.Settings.api-key')}
                 </label>
                 <Input
+                  id="multisafepay-api-key"
+                  name="multisafepay-api-key"
                   type="password"
+                  autoComplete="new-password"
                   placeholder={t('Dashboard.Settings.your-multisafepay-api-key')}
                   value={settings.multisafepayApiKey ?? ""}
                   onChange={(e) =>
@@ -66,29 +66,21 @@ export function PaymentTabMultiSafepay({
                 </p>
               </div>
               <div>
-                <label className="block text-sm font-medium mb-2">
+                <label htmlFor="multisafepay-webhook-url" className="mb-2 block text-sm font-medium">
                   {t("Dashboard.Settings.webhook-url")}
                 </label>
                 <div className="flex gap-2">
                   <Input
+                    id="multisafepay-webhook-url"
                     type="text"
                     readOnly
                     value={typeof window !== 'undefined' ? `${window.location.origin}/api/multisafepay-webhook` : '/api/multisafepay-webhook'}
                     className="bg-muted text-muted-foreground"
                   />
-                  <Button
-                    type="button"
-                    variant="secondary"
-                    className="h-11 whitespace-nowrap"
-                    onClick={() => {
-                      const webhookUrl = typeof window !== 'undefined' 
-                        ? `${window.location.origin}/api/multisafepay-webhook` 
-                        : '/api/multisafepay-webhook';
-                      navigator.clipboard.writeText(webhookUrl);
-                    }}
-                  >
-                    {t("Dashboard.Settings.copy")}
-                  </Button>
+                  <PaymentWebhookCopy
+                    url={typeof window !== "undefined" ? `${window.location.origin}/api/multisafepay-webhook` : "/api/multisafepay-webhook"}
+                    t={t}
+                  />
                 </div>
                 <p className="text-xs text-muted-foreground mt-1">
                   {t("Dashboard.Settings.add-this-url-in-multisafepay-dashboard")}

@@ -46,23 +46,23 @@ export function AdminHomeBookingStats({
   stats: DashboardStats;
 }) {
   return (
-    <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
+    <dl className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
       {STATS.map((item) => (
         <Card key={item.key} className="desk-card border-border">
           <CardContent className="p-5">
             <div className="flex items-center justify-between gap-3">
-              <item.icon className="size-5 text-primary" />
-              <span className="text-xs font-medium text-muted-foreground">
+              <item.icon className="size-5 text-primary" aria-hidden="true" />
+              <dt className="text-xs font-medium text-muted-foreground">
                 {item.label(t)}
-              </span>
+              </dt>
             </div>
-            <p className="mt-4 text-3xl font-semibold tracking-tight text-foreground">
+            <dd className="mt-4 text-3xl font-semibold tracking-tight tabular-nums text-foreground">
               {item.value(stats)}
-            </p>
+            </dd>
             <p className="mt-1 text-sm text-muted-foreground">{item.hint(t)}</p>
           </CardContent>
         </Card>
       ))}
-    </div>
+    </dl>
   );
 }

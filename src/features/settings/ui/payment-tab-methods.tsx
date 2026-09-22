@@ -31,6 +31,7 @@ export function PaymentTabMethods({
             className="flex items-start gap-3 rounded-md border border-border p-4"
           >
             <Switch
+              aria-label={method.label}
               checked={checked}
               disabled={locked}
               onCheckedChange={(on) => {
@@ -42,7 +43,7 @@ export function PaymentTabMethods({
                 handleMapSettingsChange("acceptedPaymentMethods", updated);
               }}
             />
-            <method.Icon className="mt-0.5 size-5 shrink-0 text-muted-foreground" />
+            <method.Icon className="mt-0.5 size-5 shrink-0 text-muted-foreground" aria-hidden="true" />
             <div className="min-w-0 flex-1">
               <p className="text-sm font-medium text-foreground">{method.label}</p>
               <p className="text-xs text-muted-foreground">{method.description}</p>

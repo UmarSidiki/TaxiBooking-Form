@@ -23,6 +23,7 @@ export function FormBuilderDesignHeader({
       <div className="space-y-1.5">
         <Label className="text-xs font-medium">{t("header_text")}</Label>
         <Input
+          aria-label={t("header_text")}
           value={formStyle.headingText}
           onChange={(event) =>
             setFormStyle((style) => ({ ...style, headingText: event.target.value }))
@@ -51,6 +52,7 @@ export function FormBuilderDesignHeader({
       <div className="space-y-1.5">
         <Label className="text-xs font-medium">{t("ui.subtitle")}</Label>
         <Input
+          aria-label={t("ui.subtitle")}
           value={formStyle.subHeadingText || ""}
           onChange={(event) =>
             setFormStyle((style) => ({

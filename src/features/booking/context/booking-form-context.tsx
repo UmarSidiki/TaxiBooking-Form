@@ -32,6 +32,7 @@ export interface FormData {
   lastName: string;
   email: string;
   phone: string;
+  whatsappOptIn: boolean;
   cardNumber: string;
   expiry: string;
   cvv: string;
@@ -122,6 +123,7 @@ const defaultFormData: FormData = {
   lastName: "",
   email: "",
   phone: "",
+  whatsappOptIn: false,
   cardNumber: "",
   expiry: "",
   cvv: "",
@@ -280,7 +282,14 @@ export function BookingFormProvider({ children }: { children: ReactNode }) {
 
       // Load any data previously stored in sessionStorage (no expiration)
       if (!hasDeepLinkParams) {
-        if (savedData) setFormData(JSON.parse(savedData));
+        if (savedData) {
+          const parsed = JSON.parse(savedData) as Partial<FormData>;
+          setFormData({
+            ...defaultFormData,
+            ...parsed,
+            whatsappOptIn: parsed.whatsappOptIn === true,
+          });
+        }
         if (savedDistance) setDistanceData(JSON.parse(savedDistance));
         if (savedStep) {
           setCurrentStep(parseInt(savedStep, 10) as 1 | 2 | 3);

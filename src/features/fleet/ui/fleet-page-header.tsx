@@ -37,13 +37,13 @@ export function FleetPageHeader({
   | "isLoading"
 >) {
   return (
-    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4 lg:mb-6">
+    <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-end">
       <div>
-        <h1 className="text-2xl font-semibold tracking-tight text-foreground">
-          {t("Dashboard.Fleet.fleet-management")}{" "}
+        <h1 className="text-balance text-2xl font-semibold tracking-tight text-foreground">
+          {t("Dashboard.Fleet.fleet-management")}
         </h1>
-        <p className="text-muted-foreground mt-1 text-sm sm:text-base">
-          {t("Dashboard.Fleet.manage-your-vehicle-fleet-and-pricing")}{" "}
+        <p className="mt-1 text-pretty text-sm text-muted-foreground">
+          {t("Dashboard.Fleet.manage-your-vehicle-fleet-and-pricing")}
         </p>
       </div>
       <Dialog open={showForm} onOpenChange={(open) => {
@@ -56,21 +56,19 @@ export function FleetPageHeader({
         setShowForm(open);
       }}>
         <DialogTrigger asChild>
-          <Button 
+          <Button
             onClick={() => {
               // Ensure form is reset when Add button is clicked
               resetForm();
               setShowForm(true);
             }}
-            className="h-11 w-full bg-primary text-primary-foreground hover:bg-primary/90 sm:w-auto"
+            className="h-11"
           >
-            <Plus className="h-4 w-4 sm:mr-2" />
-            <span className="hidden sm:inline">
-              {t("Dashboard.Fleet.add-vehicle")}
-            </span>
+            <Plus className="size-4" aria-hidden="true" />
+            {t("Dashboard.Fleet.add-vehicle")}
           </Button>
         </DialogTrigger>
-        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+        <DialogContent className="max-h-[90vh] w-[calc(100%-2rem)] max-w-4xl overflow-y-auto overscroll-contain">
           <DialogHeader>
             <DialogTitle>
               {editingId

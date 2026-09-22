@@ -2,6 +2,7 @@ import { sendOrderConfirmationEmail } from '@/features/booking/email/order-confi
 import { sendOrderNotificationEmail } from '@/features/booking/email/order-notification';
 import { connectDB } from '@/shared/db';
 import { Booking } from '@/features/booking/model';
+import { sendBookingWhatsApp } from '@/features/settings/lib/send-booking-whatsapp';
 import type { BookingEmailData } from './booking-email-data';
 
 export interface BookingEmailResult {
@@ -23,22 +24,28 @@ export async function sendBookingEmails(
     return { confirmationSent: false, adminSent: false };
   }
 
+  const whatsapp = sendBookingWhatsApp(bookingId);
+
   let confirmationSent = Boolean(booking.confirmationEmailSent);
   let adminSent = Boolean(booking.adminNotificationSent);
 
-  if (!booking.confirmationEmailSent) {
-    confirmationSent = await sendOrderConfirmationEmail(emailData);
-    if (confirmationSent) {
-      await Booking.updateOne({ _id: bookingId }, { $set: { confirmationEmailSent: true } });
+  try {
+    if (!booking.confirmationEmailSent) {
+      confirmationSent = await sendOrderConfirmationEmail(emailData);
+      if (confirmationSent) {
+        await Booking.updateOne({ _id: bookingId }, { $set: { confirmationEmailSent: true } });
+      }
     }
-  }
 
-  if (!booking.adminNotificationSent) {
-    adminSent = await sendOrderNotificationEmail(emailData);
-    if (adminSent) {
-      await Booking.updateOne({ _id: bookingId }, { $set: { adminNotificationSent: true } });
+    if (!booking.adminNotificationSent) {
+      adminSent = await sendOrderNotificationEmail(emailData);
+      if (adminSent) {
+        await Booking.updateOne({ _id: bookingId }, { $set: { adminNotificationSent: true } });
+      }
     }
-  }
 
-  return { confirmationSent, adminSent };
+    return { confirmationSent, adminSent };
+  } finally {
+    await whatsapp;
+  }
 }

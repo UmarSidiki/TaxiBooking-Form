@@ -11,12 +11,20 @@ type TFn = ReturnType<typeof useTranslations>;
 export function AdminHomeRevenue({
   t,
   stats,
-  currencySymbol,
+  currency,
+  locale,
 }: {
   t: TFn;
   stats: DashboardStats;
-  currencySymbol: string;
+  currency: string;
+  locale: string;
 }) {
+  const money = new Intl.NumberFormat(locale, {
+    style: "currency",
+    currency,
+    maximumFractionDigits: 2,
+  });
+
   return (
     <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
       <Card className="desk-card border-border">
@@ -26,9 +34,8 @@ export function AdminHomeRevenue({
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-3xl font-semibold tracking-tight text-foreground">
-            {currencySymbol}
-            {stats.totalRevenue.toLocaleString()}
+          <p className="text-3xl font-semibold tracking-tight tabular-nums text-foreground">
+            {money.format(stats.totalRevenue)}
           </p>
           <ChangeRow
             value={stats.monthlyChange}
@@ -38,9 +45,8 @@ export function AdminHomeRevenue({
             <span className="text-sm text-muted-foreground">
               {t("Dashboard.Home.monthly-revenue")}
             </span>
-            <span className="text-sm font-medium text-foreground">
-              {currencySymbol}
-              {stats.monthlyRevenue.toLocaleString()}
+            <span className="text-sm font-medium tabular-nums text-foreground">
+              {money.format(stats.monthlyRevenue)}
             </span>
           </div>
         </CardContent>
@@ -52,7 +58,7 @@ export function AdminHomeRevenue({
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-3xl font-semibold tracking-tight text-foreground">
+          <p className="text-3xl font-semibold tracking-tight tabular-nums text-foreground">
             {stats.monthlyBookings}
           </p>
           <ChangeRow
@@ -63,7 +69,7 @@ export function AdminHomeRevenue({
             <span className="text-sm text-muted-foreground">
               {t("Dashboard.Home.completion-rate")}
             </span>
-            <span className="text-sm font-medium text-foreground">
+            <span className="text-sm font-medium tabular-nums text-foreground">
               {stats.totalBookings > 0
                 ? Math.round(
                     (stats.completedBookings / stats.totalBookings) * 100
@@ -89,9 +95,9 @@ function ChangeRow({ value, label }: { value: number; label: string }) {
         )}
       >
         {up ? (
-          <ArrowUpRight className="me-1 size-4" />
+          <ArrowUpRight className="me-1 size-4" aria-hidden="true" />
         ) : (
-          <ArrowDownRight className="me-1 size-4" />
+          <ArrowDownRight className="me-1 size-4" aria-hidden="true" />
         )}
         {Math.abs(value)}%
       </span>

@@ -91,7 +91,8 @@ export function useStep1() {
   };
 
   const redirectToStep2 = () => {
-    if (validateStep()) {
+    if (!validateStep()) return false;
+
       // Persist step change before navigating away so the main form opens on step 2
       setCurrentStep(2);
 
@@ -109,7 +110,7 @@ export function useStep1() {
       const targetUrl = createStep1EmbedUrl(formData);
       const fullUrl = `${window.location.origin}${targetUrl}`;
       navigateEmbedToStep2(fullUrl);
-    }
+      return true;
   };
 
   const handleNext = () => {

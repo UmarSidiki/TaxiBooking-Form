@@ -3,7 +3,7 @@
 import { Button } from "@/shared/ui/button";
 import { Card, CardContent } from "@/shared/ui/card";
 import { TabsContent } from "@/shared/ui/tabs";
-import { Loader2, RefreshCw } from "lucide-react";
+import { RefreshCw } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import type { useTranslations } from "next-intl";
 import type { ReactNode } from "react";
@@ -14,8 +14,6 @@ export function AdminRidesTabPanel({
   isEmpty,
   fetchBookings,
   t,
-  loadingWrapClass,
-  loadingIconClass,
   emptyIcon: EmptyIcon,
   emptyTitle,
   emptyDescription,
@@ -27,48 +25,45 @@ export function AdminRidesTabPanel({
   isEmpty: boolean;
   fetchBookings: () => void;
   t: ReturnType<typeof useTranslations>;
-  loadingWrapClass: string;
-  loadingIconClass: string;
   emptyIcon: LucideIcon;
   emptyTitle: string;
   emptyDescription: string;
   children: ReactNode;
   gridClassName?: string;
+  loadingWrapClass?: string;
+  loadingIconClass?: string;
 }) {
   return (
     <TabsContent value={value} className="mt-6">
       {isLoading ? (
-        <div className="flex flex-col items-center justify-center py-16">
-          <div
-            className={`w-16 h-16 ${loadingWrapClass} rounded-full flex items-center justify-center mb-4`}
-          >
-            <Loader2 className={`w-8 h-8 animate-spin ${loadingIconClass}`} />
-          </div>
-          <h3 className="mb-2 text-lg font-semibold text-foreground">
-            {t("Dashboard.Rides.LoadingRides")}
-          </h3>
-          <p className="text-muted-foreground">
-            {t("Dashboard.Rides.LoadingRidesDescription")}
-          </p>
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-2" role="status">
+          <span className="sr-only">{t("Dashboard.Rides.LoadingRides")}</span>
+          {[0, 1, 2, 3].map((item) => (
+            <Card key={item} className="desk-card gap-4 border-border p-5">
+              <div className="h-5 w-2/3 animate-pulse rounded bg-muted" />
+              <div className="h-4 w-1/2 animate-pulse rounded bg-muted" />
+              <div className="h-20 animate-pulse rounded-md bg-muted" />
+            </Card>
+          ))}
         </div>
       ) : isEmpty ? (
-        <Card className="border-2 border-dashed border-border bg-background">
-          <CardContent className="py-16 text-center">
-            <div className="w-20 h-20 bg-secondary/10 rounded-full flex items-center justify-center mx-auto mb-6">
-              <EmptyIcon className="w-10 h-10 text-secondary-foreground" />
+        <Card className="desk-card border-border bg-card">
+          <CardContent className="flex min-h-64 flex-col items-center justify-center px-6 py-10 text-center">
+            <div className="mb-4 flex size-12 items-center justify-center rounded-md bg-muted">
+              <EmptyIcon className="size-6 text-muted-foreground" aria-hidden="true" />
             </div>
-            <h3 className="mb-2 text-xl font-semibold text-foreground">
+            <h3 className="mb-2 text-lg font-semibold text-foreground">
               {emptyTitle}
             </h3>
-            <p className="mx-auto mb-6 max-w-md text-muted-foreground">
+            <p className="mx-auto mb-6 max-w-md text-sm text-muted-foreground">
               {emptyDescription}
             </p>
             <Button
               onClick={fetchBookings}
               variant="outline"
-              className="flex items-center gap-2"
+              className="min-h-11"
             >
-              <RefreshCw className="w-4 h-4" />
+              <RefreshCw className="size-4" aria-hidden="true" />
               {t("Dashboard.Rides.Refresh")}
             </Button>
           </CardContent>

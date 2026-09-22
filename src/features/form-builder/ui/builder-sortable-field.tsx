@@ -43,47 +43,50 @@ export function SortableField({
     <div
       ref={setNodeRef}
       style={style}
-      className={`group relative flex items-center gap-2.5 rounded-lg border-2 p-2.5 transition-all duration-150 cursor-pointer ${
+      className={`group relative flex items-center gap-2 rounded-md border p-2 transition-colors duration-150 ${
         isDragging
-          ? "opacity-50 border-primary bg-primary/5 shadow-lg"
+          ? "border-primary bg-primary/5 opacity-50"
           : !field.enabled
             ? "opacity-50 border-dashed border-border bg-muted/30"
             : isSelected
-              ? "border-primary bg-primary/5 shadow-sm ring-1 ring-primary/20"
-              : "border-border bg-card hover:border-primary/40 hover:shadow-sm"
+              ? "border-primary bg-primary/5 ring-1 ring-primary/20"
+              : "border-border bg-card hover:border-primary/40"
       }`}
-      onClick={onSelect}
     >
       <button
+        type="button"
         {...attributes}
         {...listeners}
-        className="flex-shrink-0 cursor-grab active:cursor-grabbing p-0.5 rounded hover:bg-muted"
-        onClick={(e) => e.stopPropagation()}
+        className="flex size-8 shrink-0 cursor-grab items-center justify-center rounded-sm hover:bg-muted focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 active:cursor-grabbing"
+        aria-label={t("ui.drag_to_reorder")}
       >
-        <GripVertical className="h-3.5 w-3.5 text-muted-foreground" />
+        <GripVertical className="size-4 text-muted-foreground" aria-hidden="true" />
       </button>
-      <div className="flex-shrink-0 rounded-md bg-primary/10 p-1.5">
-        <Icon className="h-3.5 w-3.5 text-primary" />
-      </div>
-      <div className="flex-1 min-w-0">
-        <div className="flex items-center gap-1.5">
-          <p className="text-xs font-medium truncate">{field.label || (reg ? t(reg.labelKey) : "")}</p>
-          {reg?.locked && (
-            <Lock className="h-2.5 w-2.5 text-muted-foreground/50" />
-          )}
-        </div>
+      <button
+        type="button"
+        className="flex min-w-0 flex-1 items-center gap-2 rounded-sm text-start focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
+        onClick={onSelect}
+      >
+        <span className="shrink-0 rounded-md bg-primary/10 p-1.5">
+          <Icon className="size-3.5 text-primary" aria-hidden="true" />
+        </span>
+        <div className="min-w-0 flex-1">
+          <div className="flex items-center gap-1.5">
+            <p className="truncate text-xs font-medium">{field.label || (reg ? t(reg.labelKey) : "")}</p>
+            {reg?.locked ? <Lock className="size-2.5 text-muted-foreground/50" aria-hidden="true" /> : null}
+          </div>
         <div className="flex items-center gap-1.5 mt-0.5">
           {field.visibleWhen?.bookingType && (
-            <Badge variant="outline" className="text-[9px] px-1 py-0 h-3.5">
+            <Badge variant="outline" className="h-4 px-1 py-0 text-xs">
               {field.visibleWhen.bookingType}
             </Badge>
           )}
           {field.visibleWhen?.tripType && (
-            <Badge variant="outline" className="text-[9px] px-1 py-0 h-3.5">
+            <Badge variant="outline" className="h-4 px-1 py-0 text-xs">
               {t("ui.round_trip")}
             </Badge>
           )}
-          <Badge variant="outline" className="text-[9px] px-1 py-0 h-3.5">
+          <Badge variant="outline" className="h-4 px-1 py-0 text-xs">
             {field.width === "full"
               ? t("full")
               : field.width === "two-thirds"
@@ -95,15 +98,17 @@ export function SortableField({
                     : "¼"}
           </Badge>
         </div>
-      </div>
+        </div>
+      </button>
       <div className="flex items-center gap-0.5">
         <button
+          type="button"
           onClick={(e) => {
             e.stopPropagation();
             onToggle();
           }}
-          className="flex-shrink-0 p-1 rounded hover:bg-muted transition-colors text-muted-foreground hover:text-primary"
-          title={field.enabled ? t("ui.hide_in_preview") : t("ui.show_in_preview")}
+          className="flex size-8 shrink-0 items-center justify-center rounded-sm text-muted-foreground transition-colors hover:bg-muted hover:text-primary focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
+          aria-label={field.enabled ? t("ui.hide_in_preview") : t("ui.show_in_preview")}
         >
           {field.enabled ? (
             <Eye className="h-3.5 w-3.5" />
@@ -112,12 +117,13 @@ export function SortableField({
           )}
         </button>
         <button
+          type="button"
           onClick={(e) => {
             e.stopPropagation();
             onRemove();
           }}
-          className="flex-shrink-0 p-1 rounded hover:bg-destructive/10 text-muted-foreground hover:text-destructive opacity-0 group-hover:opacity-100 transition-all"
-          title={t("ui.remove_from_form")}
+          className="flex size-8 shrink-0 items-center justify-center rounded-sm text-muted-foreground opacity-100 transition-[opacity,color,background-color] hover:bg-destructive/10 hover:text-destructive focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 sm:opacity-0 sm:group-hover:opacity-100 sm:group-focus-within:opacity-100"
+          aria-label={t("ui.remove_from_form")}
         >
           <Trash2 className="h-3.5 w-3.5" />
         </button>

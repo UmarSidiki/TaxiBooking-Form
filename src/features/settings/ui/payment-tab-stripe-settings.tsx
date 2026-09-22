@@ -12,10 +12,12 @@ export function PaymentTabStripeSettings({
   return (
     <div className="space-y-4">
       <div>
-        <label className="mb-2 block text-sm font-medium">
+        <label htmlFor="stripe-statement-descriptor" className="mb-2 block text-sm font-medium">
           {t("Dashboard.Settings.statement-descriptor-suffix")}
         </label>
         <Input
+          id="stripe-statement-descriptor"
+          name="stripe-statement-descriptor"
           type="text"
           className="h-11"
           placeholder="BOOKING"

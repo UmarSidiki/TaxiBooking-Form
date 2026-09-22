@@ -68,7 +68,7 @@ export function AdminPartnerDetailsDialog({
     <>
       {/* Partner Details Dialog */}
       <Dialog open={showDetailsDialog} onOpenChange={setShowDetailsDialog}>
-        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto w-[95vw] sm:w-full">
+        <DialogContent className="max-h-[90vh] w-[calc(100%-2rem)] max-w-3xl overflow-y-auto overscroll-contain">
           <DialogHeader>
             <DialogTitle>{t("partner-details")}</DialogTitle>
             <DialogDescription>
@@ -131,24 +131,24 @@ export function AdminPartnerDetailsDialog({
                   variant="destructive"
                   onClick={() => setShowRejectDialog(true)}
                   disabled={processing}
-                  className="w-full sm:w-auto"
+                  className="min-h-11 w-full sm:w-auto"
                 >
-                  <XCircle className="w-4 h-4 mr-2" />
+                  <XCircle className="size-4" aria-hidden="true" />
                   {t("reject")}
                 </Button>
                 <Button
                   onClick={() => handleApprove(selectedPartner._id)}
                   disabled={processing}
-                  className="w-full sm:w-auto"
+                  className="min-h-11 w-full sm:w-auto"
                 >
                   {processing ? (
                     <>
-                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
+                      <div className="size-4 animate-spin rounded-full border-2 border-primary-foreground border-t-transparent" aria-hidden="true" />
                       {t("processing")}
                     </>
                   ) : (
                     <>
-                      <CheckCircle2 className="w-4 h-4 mr-2" />
+                      <CheckCircle2 className="size-4" aria-hidden="true" />
                       {t("approve-partner")}
                     </>
                   )}
@@ -160,9 +160,9 @@ export function AdminPartnerDetailsDialog({
                 variant="destructive"
                 onClick={() => setShowSuspendDialog(true)}
                 disabled={processing}
-                className="w-full sm:w-auto"
+                className="min-h-11 w-full sm:w-auto"
               >
-                <XCircle className="w-4 h-4 mr-2" />
+                <XCircle className="size-4" aria-hidden="true" />
                 {t("suspend-partner")}
               </Button>
             )}

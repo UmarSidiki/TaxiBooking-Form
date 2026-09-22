@@ -22,7 +22,7 @@ export function DeskSignInForm() {
       footer={
         <Link
           href="/dashboard/forgot-password"
-          className="mt-6 inline-flex min-h-11 items-center text-sm text-primary underline-offset-4 hover:underline"
+          className="mt-4 inline-flex min-h-11 items-center rounded-sm text-sm text-primary underline-offset-4 transition-colors duration-200 hover:underline focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
         >
           {t("forgot")}
         </Link>

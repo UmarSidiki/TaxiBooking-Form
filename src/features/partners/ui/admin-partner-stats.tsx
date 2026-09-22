@@ -18,22 +18,22 @@ export function AdminPartnerStats({
   ];
 
   return (
-    <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
+    <dl className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
       {items.map((item) => (
         <Card key={item.label} className="desk-card border-border">
           <CardContent className="pt-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-muted-foreground">
+                <dt className="text-sm font-medium text-muted-foreground">
                   {item.label}
-                </p>
-                <p className="text-2xl font-semibold text-foreground">{item.value}</p>
+                </dt>
+                <dd className="text-2xl font-semibold tabular-nums text-foreground">{item.value}</dd>
               </div>
-              <item.icon className="size-6 text-primary" />
+              <item.icon className="size-6 text-primary" aria-hidden="true" />
             </div>
           </CardContent>
         </Card>
       ))}
-    </div>
+    </dl>
   );
 }

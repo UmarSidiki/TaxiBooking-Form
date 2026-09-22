@@ -29,6 +29,8 @@ export interface IBooking extends Document {
   lastName: string;
   email: string;
   phone: string;
+  whatsappOptIn?: boolean;
+  locale?: string;
   paymentMethod?: string;
   paymentStatus: "pending" | "completed" | "failed" | "refunded";
   stripePaymentIntentId?: string;
@@ -100,6 +102,8 @@ const BookingSchema: Schema = new Schema({
   lastName: { type: String, required: true },
   email: { type: String, required: true },
   phone: { type: String, required: true },
+  whatsappOptIn: { type: Boolean, default: false },
+  locale: { type: String },
   paymentMethod: { type: String, default: "stripe" },
   paymentStatus: {
     type: String,

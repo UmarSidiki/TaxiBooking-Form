@@ -17,6 +17,7 @@ export function FormBuilderDesignVisibility({
       <div className="flex min-h-11 items-center justify-between gap-3">
         <Label className="text-xs font-medium">{t("show_header")}</Label>
         <Switch
+          aria-label={t("show_header")}
           checked={formStyle.showHeader}
           onCheckedChange={(showHeader) =>
             setFormStyle((style) => ({ ...style, showHeader }))
@@ -26,6 +27,7 @@ export function FormBuilderDesignVisibility({
       <div className="flex min-h-11 items-center justify-between gap-3">
         <Label className="text-xs font-medium">{t("ui.show_steps")}</Label>
         <Switch
+          aria-label={t("ui.show_steps")}
           checked={formStyle.showSteps}
           onCheckedChange={(showSteps) =>
             setFormStyle((style) => ({ ...style, showSteps }))
@@ -35,6 +37,7 @@ export function FormBuilderDesignVisibility({
       <div className="flex min-h-11 items-center justify-between gap-3">
         <Label className="text-xs font-medium">{t("show_footer")}</Label>
         <Switch
+          aria-label={t("show_footer")}
           checked={formStyle.showFooter}
           onCheckedChange={(showFooter) =>
             setFormStyle((style) => ({ ...style, showFooter }))

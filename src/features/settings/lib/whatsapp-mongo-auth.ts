@@ -21,12 +21,21 @@ async function writePayload(name: string, payload: string) {
   await WhatsAppAuth.updateOne({ name }, { $set: { payload } }, { upsert: true });
 }
 
-export async function readWhatsAppRegistered() {
+type StoredCreds = {
+  registered?: boolean;
+  me?: { id?: string } | null;
+};
+
+/** QR login sets `me.id` and leaves `registered` false. Pairing-code login sets `registered`. */
+export function whatsAppCredsLinked(creds: StoredCreds) {
+  return creds.registered === true || Boolean(creds.me?.id);
+}
+
+export async function readWhatsAppLinked() {
   const payload = await readPayload(CREDS);
   if (!payload) return false;
   try {
-    const creds = JSON.parse(payload) as { registered?: boolean };
-    return creds.registered === true;
+    return whatsAppCredsLinked(JSON.parse(payload) as StoredCreds);
   } catch {
     return false;
   }

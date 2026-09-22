@@ -1,7 +1,7 @@
 import type { ConnectionState, WASocket } from "@whiskeysockets/baileys";
 import pino from "pino";
 
-import { loadMongoAuthState } from "@/features/settings/lib/whatsapp-mongo-auth";
+import { loadMongoAuthState, whatsAppCredsLinked } from "@/features/settings/lib/whatsapp-mongo-auth";
 
 const logger = pino({ level: "silent" });
 
@@ -23,7 +23,7 @@ export async function openWhatsAppSocket() {
   });
   return {
     sock,
-    registered: Boolean(state.creds.registered),
+    linked: whatsAppCredsLinked(state.creds),
     flushCreds: () => pending,
   };
 }

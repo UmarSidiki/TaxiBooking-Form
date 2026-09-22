@@ -5,7 +5,7 @@ import {
   clearWhatsAppLink,
 } from "@/features/settings/lib/whatsapp-link-store";
 import { withWhatsAppLock } from "@/features/settings/lib/whatsapp-lock";
-import { clearWhatsAppAuth, readWhatsAppRegistered } from "@/features/settings/lib/whatsapp-mongo-auth";
+import { clearWhatsAppAuth, readWhatsAppLinked } from "@/features/settings/lib/whatsapp-mongo-auth";
 import { pairWhatsApp } from "@/features/settings/lib/whatsapp-pair";
 import { isLoggedOut, openWhatsAppSocket, waitForOpen } from "@/features/settings/lib/whatsapp-socket";
 
@@ -36,22 +36,22 @@ async function publish(next: WhatsAppLinkView) {
 }
 
 export async function currentWhatsAppLink(): Promise<WhatsAppLinkView> {
+  if (await readWhatsAppLinked()) {
+    linkView = { status: "linked", qrDataUrl: null };
+    return linkView;
+  }
   const stored = await readWhatsAppLink();
   if (stored?.status === "waiting" && isFreshLink(stored)) {
     linkView = { status: "waiting", qrDataUrl: stored.qrDataUrl };
     return linkView;
   }
-  const registered = await readWhatsAppRegistered();
   const failed = stored?.status === "failed" && isFreshLink(stored);
-  linkView = {
-    status: registered ? "linked" : failed ? "failed" : "needs_scan",
-    qrDataUrl: null,
-  };
+  linkView = { status: failed ? "failed" : "needs_scan", qrDataUrl: null };
   return linkView;
 }
 
 export async function startWhatsAppPairing() {
-  if (await readWhatsAppRegistered()) {
+  if (await readWhatsAppLinked()) {
     await publish({ status: "linked", qrDataUrl: null });
     return { view: linkView, done: Promise.resolve() };
   }
@@ -79,8 +79,8 @@ export async function startWhatsAppPairing() {
 
 export function sendWhatsAppTexts(messages: WhatsAppOutbound[]) {
   return withWhatsAppLock(async (): Promise<SendResult> => {
-    const { sock, registered } = await openWhatsAppSocket();
-    if (!registered) {
+    const { sock, linked } = await openWhatsAppSocket();
+    if (!linked) {
       await sock.end(undefined).catch(() => undefined);
       await publish({ status: "needs_scan", qrDataUrl: null });
       return { ok: false, reason: "needs_scan" };
@@ -100,7 +100,10 @@ export function sendWhatsAppTexts(messages: WhatsAppOutbound[]) {
       );
       return { ok: true, results };
     } catch (error) {
-      if (isLoggedOut(error)) await publish({ status: "needs_scan", qrDataUrl: null });
+      if (isLoggedOut(error)) {
+        await clearWhatsAppAuth();
+        await publish({ status: "needs_scan", qrDataUrl: null });
+      }
       return { ok: false, reason: isLoggedOut(error) ? "needs_scan" : "failed" };
     } finally {
       await sock.end(undefined).catch(() => undefined);
@@ -110,7 +113,7 @@ export function sendWhatsAppTexts(messages: WhatsAppOutbound[]) {
 
 export function unlinkWhatsApp() {
   return withWhatsAppLock(async () => {
-    if (await readWhatsAppRegistered()) {
+    if (await readWhatsAppLinked()) {
       const { sock } = await openWhatsAppSocket();
       try {
         await waitForOpen(sock, 20_000);

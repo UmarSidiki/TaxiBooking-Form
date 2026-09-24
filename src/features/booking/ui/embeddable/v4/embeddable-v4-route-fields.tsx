@@ -41,7 +41,7 @@ export function EmbeddableV4RouteFields(props: Props) {
         <h2 id="v4-route-title" className="v4-kicker">
           {t("embeddable.where-are-you-going")}
         </h2>
-        <div className="v4-modes">
+        <div className={isHourly ? "v4-modes" : "v4-modes v4-modes-gutter"}>
           {(["destination", "hourly"] as const).map((type) => (
             <button
               key={type}

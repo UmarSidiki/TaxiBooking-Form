@@ -99,10 +99,10 @@ export function useAdminFleet() {
       discount: vehicle.discount === undefined ? 0 : vehicle.discount,
       stopPrice: vehicle.stopPrice || 0,
       stopPricePerHour: vehicle.stopPricePerHour || 0,
+      priceTiers: vehicle.priceTiers ?? [],
     });
     setEditingId(vehicle._id!);
     setShowForm(true);
-    window.scrollTo({ top: 0, behavior: "smooth" }); // Scroll to top to show form
   };
 
   const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);

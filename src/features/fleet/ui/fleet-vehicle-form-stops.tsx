@@ -13,11 +13,6 @@ export function FleetVehicleFormStops({
   const { currencySymbol } = useCurrency();
   return (
     <>
-      <div className="md:col-span-2">
-        <h3 className="text-lg font-semibold mb-4">
-          {t("Dashboard.Fleet.stop-pricing")}
-        </h3>
-      </div>
 
       <div>
         <label htmlFor="vehicle-stop-price" className="mb-2 block text-sm font-medium">

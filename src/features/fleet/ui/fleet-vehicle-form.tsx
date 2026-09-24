@@ -3,6 +3,7 @@
 import { FleetVehicleFormBasic } from "@/features/fleet/ui/fleet-vehicle-form-basic";
 import { FleetVehicleFormCapacity } from "@/features/fleet/ui/fleet-vehicle-form-capacity";
 import { FleetVehicleFormPricing } from "@/features/fleet/ui/fleet-vehicle-form-pricing";
+import { FleetVehicleFormTiers } from "@/features/fleet/ui/fleet-vehicle-form-tiers";
 import { FleetVehicleFormStops } from "@/features/fleet/ui/fleet-vehicle-form-stops";
 import type { VehicleForm } from "@/features/fleet/ui/vehicle-form.types";
 import { Button } from "@/shared/ui/button";
@@ -35,6 +36,9 @@ export function FleetVehicleForm({
 
         {/* Pricing Section */}
         <FleetVehicleFormPricing formData={formData} setFormData={setFormData} />
+
+        {/* Distance-based Tiered Pricing */}
+        <FleetVehicleFormTiers formData={formData} setFormData={setFormData} />
 
         {/* Capacity Section */}
         <FleetVehicleFormCapacity formData={formData} setFormData={setFormData} />

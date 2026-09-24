@@ -3,21 +3,21 @@
   display: flex;
   flex-direction: column;
   gap: var(--v4-gap);
-  padding-inline-end: 2.6rem;
+  padding-inline-end: var(--v4-swap-gutter);
 }
 
 .v4-stop {
   position: relative;
   display: grid;
-  grid-template-columns: 1.35rem minmax(0, 1fr);
-  column-gap: 0.55rem;
+  grid-template-columns: var(--v4-route-track) minmax(0, 1fr);
+  column-gap: var(--v4-route-gap);
   align-items: start;
 }
 
 .v4-stop:has(+ .v4-stop)::after {
   content: "";
   position: absolute;
-  inset-inline-start: calc(1.35rem / 2 - 1px);
+  inset-inline-start: calc(var(--v4-route-track) / 2 - 1px);
   top: calc(var(--v4-mark) / 2);
   bottom: calc((var(--v4-gap) + var(--v4-mark) / 2) * -1);
   width: 2px;

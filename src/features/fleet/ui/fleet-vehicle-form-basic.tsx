@@ -19,11 +19,6 @@ export function FleetVehicleFormBasic({
   const t = useTranslations();
   return (
     <>
-      <div className="md:col-span-2">
-        <h3 className="text-lg font-semibold mb-4">
-          {t("Dashboard.Fleet.basic-information")}
-        </h3>
-      </div>
 
       <div>
         <label htmlFor="vehicle-name" className="mb-2 block text-sm font-medium">

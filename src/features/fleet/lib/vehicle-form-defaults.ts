@@ -29,6 +29,7 @@ const sharedVehicleFormDefaults = {
   babySeatPrice: DEFAULT_BABY_SEAT_PRICE,
   stopPrice: 0,
   stopPricePerHour: 0,
+  priceTiers: [] as { upToKm: number; type: "flat" | "per_km"; price: number }[],
   isActive: true,
 } satisfies Omit<VehicleForm, "image">;
 

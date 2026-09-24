@@ -4,6 +4,7 @@ import {
   DEFAULT_VEHICLE_RETURN_PRICE_PERCENTAGE,
 } from "@/features/fleet/lib/vehicle-form-defaults";
 import type { IVehicle } from '@/features/fleet/model';
+import { applyPriceTiers } from '@/features/fleet/lib/apply-price-tiers';
 
 export interface BookingPriceInput {
   bookingType?: 'destination' | 'hourly';
@@ -48,9 +49,17 @@ export function calculateBookingPrice(
     const hours = Math.max(input.duration || 0, minimumHours);
     vehiclePrice = pricePerHour * hours;
   } else if (typeof distanceKm === 'number' && Number.isFinite(distanceKm)) {
-    const distancePrice = vehicle.pricePerKm * distanceKm;
-    let oneWayPrice = vehicle.price + distancePrice;
-    oneWayPrice = Math.max(oneWayPrice, vehicle.minimumFare);
+    const tieredOneWay = applyPriceTiers(vehicle.priceTiers, distanceKm);
+
+    let oneWayPrice: number;
+    if (tieredOneWay !== undefined) {
+      // Tier-based pricing — minimum fare still applies
+      oneWayPrice = Math.max(tieredOneWay, vehicle.minimumFare);
+    } else {
+      // Legacy formula: base + pricePerKm × distance
+      const distancePrice = vehicle.pricePerKm * distanceKm;
+      oneWayPrice = Math.max(vehicle.price + distancePrice, vehicle.minimumFare);
+    }
 
     if (input.tripType === 'roundtrip') {
       const returnPercentage =

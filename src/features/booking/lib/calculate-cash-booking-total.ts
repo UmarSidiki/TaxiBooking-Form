@@ -1,5 +1,6 @@
 import type { IVehicle } from '@/features/fleet/model';
 import type { CashBookingInput } from '@/features/booking/schema/cash-booking.schema';
+import { applyPriceTiers } from '@/features/fleet/lib/apply-price-tiers';
 
 const DEFAULT_PRICE_PER_HOUR = 30;
 const DEFAULT_MINIMUM_HOURS = 2;
@@ -44,10 +45,16 @@ export async function calculateCashBookingTotal(
           const distanceData = await distanceResponse.json();
           if (distanceData.success) {
             const distanceKm = distanceData.data.distance.km;
-            const distancePrice = vehicle.pricePerKm * distanceKm;
-            let oneWayPrice = vehicle.price + distancePrice;
 
-            oneWayPrice = Math.max(oneWayPrice, vehicle.minimumFare);
+            // Try tier-based pricing first; fall back to base + pricePerKm
+            const tieredOneWay = applyPriceTiers(vehicle.priceTiers, distanceKm);
+            let oneWayPrice: number;
+            if (tieredOneWay !== undefined) {
+              oneWayPrice = Math.max(tieredOneWay, vehicle.minimumFare);
+            } else {
+              const distancePrice = vehicle.pricePerKm * distanceKm;
+              oneWayPrice = Math.max(vehicle.price + distancePrice, vehicle.minimumFare);
+            }
 
             if (formData.tripType === 'roundtrip') {
               const returnPercentage =

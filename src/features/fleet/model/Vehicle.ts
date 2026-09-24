@@ -1,5 +1,15 @@
 import { Schema, model, models } from "mongoose";
 
+/** One band in a distance-based tiered pricing table */
+export interface IPriceTier {
+  /** Upper km boundary of this band (inclusive). Use a very large number for the last band. */
+  upToKm: number;
+  /** "flat" → fixed total for the trip; "per_km" → rate × distance */
+  type: "flat" | "per_km";
+  /** Amount in major currency units (e.g. 30.00) */
+  price: number;
+}
+
 export interface IVehicle {
   _id?: string;
   name: string;
@@ -19,10 +29,25 @@ export interface IVehicle {
   babySeatPrice: number;
   stopPrice: number;
   stopPricePerHour: number;
+  /**
+   * Optional sorted array of distance bands.
+   * When present and non-empty, the pricing engine uses this table instead of
+   * `price + pricePerKm × km`. Bands must be ordered upToKm ascending.
+   */
+  priceTiers?: IPriceTier[];
   isActive: boolean;
   createdAt?: Date;
   updatedAt?: Date;
 }
+
+const PriceTierSchema = new Schema<IPriceTier>(
+  {
+    upToKm: { type: Number, required: true, min: 0 },
+    type: { type: String, required: true, enum: ["flat", "per_km"] },
+    price: { type: Number, required: true, min: 0 },
+  },
+  { _id: false }
+);
 
 const VehicleSchema = new Schema<IVehicle>(
   {
@@ -124,6 +149,11 @@ const VehicleSchema = new Schema<IVehicle>(
       required: false,
       min: [0, "Stop price per hour must be positive"],
       default: 0,
+    },
+    priceTiers: {
+      type: [PriceTierSchema],
+      required: false,
+      default: undefined,
     },
     isActive: {
       type: Boolean,

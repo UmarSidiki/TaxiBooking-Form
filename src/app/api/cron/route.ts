@@ -4,7 +4,14 @@ import { cleanupAbandonedBookings } from "@/features/booking/lib/cleanup-abandon
 import { deleteSuspendedPartners } from "@/features/partners/lib/delete-suspended-partners";
 import { deleteOldCompletedRides } from "@/features/rides/lib/delete-old-completed-rides";
 
-export async function GET() {
+export async function GET(req: Request) {
+  const authHeader = req.headers.get("authorization");
+  const cronSecret = process.env.CRON_SECRET;
+
+  if (cronSecret && authHeader !== `Bearer ${cronSecret}`) {
+    return new NextResponse("Unauthorized", { status: 401 });
+  }
+
   console.log('🕒 Cron job triggered');
 
   // Send thank you emails

@@ -1,14 +1,7 @@
 "use client";
 
-import { FleetVehicleForm } from "@/features/fleet/ui/fleet-vehicle-form";
+import { FleetVehicleDrawer } from "@/features/fleet/ui/fleet-vehicle-drawer";
 import { Button } from "@/shared/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/shared/ui/dialog";
 import type { useAdminFleet } from "@/features/fleet/hooks/useAdminFleet";
 import { Plus } from "lucide-react";
 
@@ -24,6 +17,7 @@ export function FleetPageHeader({
   setFormData,
   handleSubmit,
   isLoading,
+  vehicleCount,
 }: Pick<
   AdminFleetState,
   | "t"
@@ -35,57 +29,53 @@ export function FleetPageHeader({
   | "setFormData"
   | "handleSubmit"
   | "isLoading"
->) {
+> & { vehicleCount: number }) {
   return (
-    <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-end">
-      <div>
-        <h1 className="text-balance text-2xl font-semibold tracking-tight text-foreground">
-          {t("Dashboard.Fleet.fleet-management")}
-        </h1>
-        <p className="mt-1 text-pretty text-sm text-muted-foreground">
-          {t("Dashboard.Fleet.manage-your-vehicle-fleet-and-pricing")}
-        </p>
-      </div>
-      <Dialog open={showForm} onOpenChange={(open) => {
-        if (open) {
-          // Reset form when opening via Add button
-          if (!editingId) {
+    <>
+      <div className="flex flex-col items-start justify-between gap-3 sm:flex-row sm:items-end">
+        {/* Title block */}
+        <div>
+          <h1 className="text-balance text-2xl font-semibold tracking-tight text-foreground">
+            {t("Dashboard.Fleet.fleet-management")}
+          </h1>
+          <p className="mt-1 text-sm text-muted-foreground">
+            {t("Dashboard.Fleet.manage-your-vehicle-fleet-and-pricing")}
+            {vehicleCount > 0 && (
+              <span className="ms-2 inline-flex items-center rounded-full bg-muted px-2 py-0.5 text-xs font-medium text-muted-foreground tabular-nums">
+                {vehicleCount}
+              </span>
+            )}
+          </p>
+        </div>
+
+        {/* Add button */}
+        <Button
+          onClick={() => {
             resetForm();
-          }
-        }
-        setShowForm(open);
-      }}>
-        <DialogTrigger asChild>
-          <Button
-            onClick={() => {
-              // Ensure form is reset when Add button is clicked
-              resetForm();
-              setShowForm(true);
-            }}
-            className="h-11"
-          >
-            <Plus className="size-4" aria-hidden="true" />
-            {t("Dashboard.Fleet.add-vehicle")}
-          </Button>
-        </DialogTrigger>
-        <DialogContent className="max-h-[90vh] w-[calc(100%-2rem)] max-w-4xl overflow-y-auto overscroll-contain">
-          <DialogHeader>
-            <DialogTitle>
-              {editingId
-                ? t("Dashboard.Fleet.edit-vehicle")
-                : t("Dashboard.Fleet.add-new-vehicle")}
-            </DialogTitle>
-          </DialogHeader>
-          <FleetVehicleForm
-            formData={formData}
-            setFormData={setFormData}
-            onSubmit={handleSubmit}
-            onCancel={resetForm}
-            isLoading={isLoading}
-            editingId={editingId}
-          />
-        </DialogContent>
-      </Dialog>
-    </div>
+            setShowForm(true);
+          }}
+          className="h-10 shrink-0 rounded-xl gap-1.5 px-4 font-semibold"
+          id="fleet-add-vehicle-btn"
+        >
+          <Plus className="size-4" aria-hidden="true" />
+          {t("Dashboard.Fleet.add-vehicle")}
+        </Button>
+      </div>
+
+      {/* Slide-over drawer */}
+      <FleetVehicleDrawer
+        open={showForm}
+        onOpenChange={(open) => {
+          if (!open) resetForm();
+          else setShowForm(true);
+        }}
+        formData={formData}
+        setFormData={setFormData}
+        onSubmit={handleSubmit}
+        onCancel={resetForm}
+        isLoading={isLoading}
+        editingId={editingId}
+      />
+    </>
   );
 }

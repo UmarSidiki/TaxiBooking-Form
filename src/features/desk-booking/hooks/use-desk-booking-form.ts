@@ -45,7 +45,7 @@ export interface DeskBookingFormValues {
   notifyCustomer: boolean;
 }
 
-export const EMPTY_DESK_BOOKING: DeskBookingFormValues = {
+const EMPTY_DESK_BOOKING: DeskBookingFormValues = {
   firstName: "",
   lastName: "",
   email: "",

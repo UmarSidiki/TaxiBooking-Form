@@ -2,7 +2,7 @@
  * Required Google Maps Platform usage-attribution ID.
  * https://developers.google.com/maps/documentation/javascript/reference/map?utm_campaign=gmp_git_agentskills_v1
  */
-export const MAPS_ATTRIBUTION_ID = "gmp_git_agentskills_v1";
+const MAPS_ATTRIBUTION_ID = "gmp_git_agentskills_v1";
 
 /**
  * The Maps JavaScript API reads `internalUsageAttributionIds` at runtime, but

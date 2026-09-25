@@ -10,8 +10,31 @@ export interface BookingEmailResult {
   adminSent: boolean;
 }
 
+type EmailFlag = 'confirmationEmailSent' | 'adminNotificationSent';
+
 /**
- * Sends customer + admin emails idempotently using booking flags.
+ * Claims the flag *before* sending. Two concurrent finalize calls (the Stripe
+ * webhook and the success-page fallback fire within a second of each other) both
+ * used to read the flag as false and both send, which is why customers got the
+ * confirmation twice.
+ */
+async function claimEmailSend(bookingId: string, field: EmailFlag): Promise<boolean> {
+  const claimed = await Booking.findOneAndUpdate(
+    { _id: bookingId, [field]: { $ne: true } },
+    { $set: { [field]: true } },
+    { returnDocument: 'after' }
+  );
+  return Boolean(claimed);
+}
+
+/** Hands the claim back when the send failed, so a retry can still deliver. */
+async function releaseEmailSend(bookingId: string, field: EmailFlag): Promise<void> {
+  await Booking.updateOne({ _id: bookingId }, { $set: { [field]: false } });
+}
+
+/**
+ * Sends customer + admin emails at most once per booking, using an atomic claim
+ * on the booking flags so concurrent callers cannot double-send.
  */
 export async function sendBookingEmails(
   emailData: BookingEmailData,
@@ -30,17 +53,17 @@ export async function sendBookingEmails(
   let adminSent = Boolean(booking.adminNotificationSent);
 
   try {
-    if (!booking.confirmationEmailSent) {
+    if (!confirmationSent && (await claimEmailSend(bookingId, 'confirmationEmailSent'))) {
       confirmationSent = await sendOrderConfirmationEmail(emailData);
-      if (confirmationSent) {
-        await Booking.updateOne({ _id: bookingId }, { $set: { confirmationEmailSent: true } });
+      if (!confirmationSent) {
+        await releaseEmailSend(bookingId, 'confirmationEmailSent');
       }
     }
 
-    if (!booking.adminNotificationSent) {
+    if (!adminSent && (await claimEmailSend(bookingId, 'adminNotificationSent'))) {
       adminSent = await sendOrderNotificationEmail(emailData);
-      if (adminSent) {
-        await Booking.updateOne({ _id: bookingId }, { $set: { adminNotificationSent: true } });
+      if (!adminSent) {
+        await releaseEmailSend(bookingId, 'adminNotificationSent');
       }
     }
 

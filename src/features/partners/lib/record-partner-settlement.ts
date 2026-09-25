@@ -1,18 +1,10 @@
 import { connectDB } from "@/shared/db";
+import { isDuplicateKeyError } from "@/shared/lib/mongo-error";
 import { Partner } from "@/features/partners/model";
 import PartnerSettlementEntry, {
   type PartnerSettlementChannel,
   type PartnerSettlementType,
 } from "@/features/partners/model/PartnerSettlementEntry";
-
-function isDuplicateKeyError(error: unknown): boolean {
-  return (
-    typeof error === "object" &&
-    error !== null &&
-    "code" in error &&
-    (error as { code?: number }).code === 11000
-  );
-}
 
 export async function recordPartnerSettlement(input: {
   partnerId: string;

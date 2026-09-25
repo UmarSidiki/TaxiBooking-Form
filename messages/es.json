@@ -481,7 +481,9 @@
       "payment-collected": "Pago cobrado",
       "notify-customer": "Enviar correo al cliente",
       "create-booking": "Crear reserva",
-      "booking-created": "Reserva {tripId} creada"
+      "booking-created": "Reserva {tripId} creada",
+      "NoAwaitingPayment": "No hay presupuestos pendientes de pago",
+      "NoAwaitingPaymentDescription": "Las solicitudes presupuestadas permanecen aquí hasta que el cliente pague."
     },
     "Home": {
       "failed-to-fetch-dashboard-stats": "Error al obtener estadísticas del tablero",
@@ -1044,11 +1046,6 @@
       "test-mode": "Modo Prueba",
       "stripe-configuration": "Configuración de Stripe",
       "payment-configuration": "Configuración de Pago",
-      "limit-address-autocomplete-to-specific-countries-leave-empty-for-no-restrictions": "Limite el autocompletado de direcciones a países específicos. Deje vacío para no restringir.",
-      "only-first-five-countries-used": "Solo se usan los primeros 5 códigos de país por Google Places Autocomplete; los adicionales se ignorarán.",
-      "ch-fr-de-2-letter-country-codes-comma-separated": "CH, ES, FR (códigos de 2 letras, separados por comas)",
-      "country-restrictions": "Restricciones de País",
-      "restrictions": "Restricciones",
       "default-longitude-for-the-map-center": "Longitud predeterminada para el centro del mapa.",
       "initial-longitude": "Longitud Inicial",
       "default-latitude-for-the-map-center": "Latitud predeterminada para el centro del mapa.",

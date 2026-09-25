@@ -103,11 +103,16 @@ export default function StripePaymentForm({
       return;
     }
 
+    // Only the wizard collects contact details up front. The pay-link page has
+    // no bookingData (the booking already carries them), so the guard there
+    // would block every payment; Stripe's Payment Element collects its own
+    // billing details and the PaymentIntent already has receipt_email.
     if (
-      !bookingData?.firstName?.trim() ||
-      !bookingData?.lastName?.trim() ||
-      !bookingData?.email?.trim() ||
-      !bookingData?.phone?.trim()
+      bookingData &&
+      (!bookingData.firstName?.trim() ||
+        !bookingData.lastName?.trim() ||
+        !bookingData.email?.trim() ||
+        !bookingData.phone?.trim())
     ) {
       const message = t("Stripe.complete-contact-details-before-paying");
       walletEvent?.paymentFailed({ reason: "fail" });

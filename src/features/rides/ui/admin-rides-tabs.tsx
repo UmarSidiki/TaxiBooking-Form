@@ -5,7 +5,7 @@ import { Tabs, TabsList, TabsTrigger } from "@/shared/ui/tabs";
 import type { useAdminRides } from "@/features/rides/hooks/useAdminRides";
 import { AdminRideCardList } from "@/features/rides/ui/admin-ride-card-list";
 import { AdminRidesTabPanel } from "@/features/rides/ui/admin-rides-tab-panel";
-import { Ban, CalendarDays, CheckCircle, Inbox } from "lucide-react";
+import { Ban, CalendarDays, CheckCircle, Clock, Inbox } from "lucide-react";
 import { cn } from "@/shared/lib/utils";
 
 type Rides = ReturnType<typeof useAdminRides>;
@@ -13,7 +13,7 @@ type Rides = ReturnType<typeof useAdminRides>;
 export function AdminRidesTabs({ rides }: { rides: Rides }) {
   const { t, activeTab, filteredBookings, enableAppointmentRequest } = rides;
   const count = filteredBookings.length;
-  const cols = enableAppointmentRequest ? "grid-cols-4" : "grid-cols-3";
+  const cols = enableAppointmentRequest ? "grid-cols-5" : "grid-cols-3";
 
   return (
     <Tabs
@@ -28,12 +28,20 @@ export function AdminRidesTabs({ rides }: { rides: Rides }) {
         )}
       >
         {enableAppointmentRequest ? (
-          <RideTab
-            value="requests"
-            icon={Inbox}
-            label={t("Dashboard.Rides.Requests")}
-            count={activeTab === "requests" ? count : 0}
-          />
+          <>
+            <RideTab
+              value="requests"
+              icon={Inbox}
+              label={t("Dashboard.Rides.Requests")}
+              count={activeTab === "requests" ? count : 0}
+            />
+            <RideTab
+              value="awaiting_payment"
+              icon={Clock}
+              label={t("Dashboard.Rides.status-awaiting-payment")}
+              count={activeTab === "awaiting_payment" ? count : 0}
+            />
+          </>
         ) : null}
         <RideTab
           value="upcoming"
@@ -56,13 +64,22 @@ export function AdminRidesTabs({ rides }: { rides: Rides }) {
       </TabsList>
 
       {enableAppointmentRequest ? (
-        <RidePanel
-          rides={rides}
-          value="requests"
-          icon={Inbox}
-          title={t("Dashboard.Rides.NoRequests")}
-          description={t("Dashboard.Rides.NoRequestsDescription")}
-        />
+        <>
+          <RidePanel
+            rides={rides}
+            value="requests"
+            icon={Inbox}
+            title={t("Dashboard.Rides.NoRequests")}
+            description={t("Dashboard.Rides.NoRequestsDescription")}
+          />
+          <RidePanel
+            rides={rides}
+            value="awaiting_payment"
+            icon={Clock}
+            title={t("Dashboard.Rides.NoAwaitingPayment")}
+            description={t("Dashboard.Rides.NoAwaitingPaymentDescription")}
+          />
+        </>
       ) : null}
       <RidePanel
         rides={rides}

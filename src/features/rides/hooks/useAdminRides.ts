@@ -342,6 +342,7 @@ export function useAdminRides() {
       const data = await apiPatch<{
         success: boolean;
         message: string;
+        warning?: string;
         data: IBooking;
       }>(`/api/bookings/${bookingId}`, {
         action: "quote",
@@ -351,7 +352,11 @@ export function useAdminRides() {
         setBookings((prev) =>
           prev.map((b) => (b._id?.toString() === bookingId ? data.data : b))
         );
-        setNotice(t("Dashboard.Rides.quote-sent"));
+        setNotice(
+          data.warning
+            ? t("Dashboard.Rides.quote-failed")
+            : t("Dashboard.Rides.quote-sent")
+        );
         return true;
       }
       setNotice(data.message || t("Dashboard.Rides.quote-failed"));

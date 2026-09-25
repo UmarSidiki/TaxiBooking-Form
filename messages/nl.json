@@ -481,7 +481,9 @@
       "payment-collected": "Betaling ontvangen",
       "notify-customer": "E-mail de klant",
       "create-booking": "Boeking aanmaken",
-      "booking-created": "Boeking {tripId} aangemaakt"
+      "booking-created": "Boeking {tripId} aangemaakt",
+      "NoAwaitingPayment": "Geen offertes in afwachting van betaling",
+      "NoAwaitingPaymentDescription": "Geoffreerde aanvragen blijven hier tot de klant betaalt."
     },
     "Home": {
       "failed-to-fetch-dashboard-stats": "Ophalen dashboardstatistieken mislukt",
@@ -1044,11 +1046,6 @@
       "test-mode": "Test Modus",
       "stripe-configuration": "Stripe Configuratie",
       "payment-configuration": "Betaalconfiguratie",
-      "limit-address-autocomplete-to-specific-countries-leave-empty-for-no-restrictions": "Beperk adres autocomplete tot specifieke landen. Laat leeg voor geen beperkingen.",
-      "only-first-five-countries-used": "Alleen de eerste 5 landcodes worden gebruikt door Google Places Autocomplete; extra codes worden genegeerd.",
-      "ch-fr-de-2-letter-country-codes-comma-separated": "NL, BE, DE (2-letter landcodes, komma-gescheiden)",
-      "country-restrictions": "Landbeperkingen",
-      "restrictions": "Beperkingen",
       "default-longitude-for-the-map-center": "Standaard lengtegraad voor het kaartcentrum.",
       "initial-longitude": "Initiële Lengtegraad",
       "default-latitude-for-the-map-center": "Standaard breedtegraad voor het kaartcentrum.",

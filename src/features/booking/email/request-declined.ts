@@ -1,7 +1,12 @@
 import { sendEmail } from "@/features/settings/lib/email";
 import { connectDB } from "@/shared/db";
 import { Setting } from "@/features/settings/model";
-import { escapeHtml } from "@/shared/lib/escape-html";
+import {
+  emailDetails,
+  emailParagraph,
+  emailShell,
+  type EmailDetail,
+} from "@/features/booking/email/email-layout";
 import type { BookingEmailData } from "@/features/payments/lib/booking-email-data";
 
 function isValidEmail(email: string): boolean {
@@ -24,25 +29,43 @@ export async function sendRequestDeclinedEmail(
     const primaryColor = settings?.primaryColor || "#EAB308";
     const reason = data.declineReason?.trim();
 
-    const html = `
-<!DOCTYPE html><html><body style="font-family:Arial,sans-serif;color:#333">
-  <div style="max-width:600px;margin:0 auto">
-    <div style="border-left:4px solid ${primaryColor};padding:12px;background:#f5f5f5">
-      <h1 style="margin:0;font-size:18px;color:${primaryColor}">Not available</h1>
-    </div>
-    <p>Hi ${escapeHtml(data.firstName)},</p>
-    <p>We cannot take appointment request <strong>#${escapeHtml(data.tripId)}</strong> for that slot.</p>
-    ${reason ? `<p>${escapeHtml(reason)}</p>` : ""}
-    <p>You can submit another request for a different time.</p>
-  </div>
-</body></html>`;
+    const rows: EmailDetail[] = [
+      ["Reference", `#${data.tripId}`],
+      [
+        data.bookingType === "hourly" ? "Duration" : "Drop-off",
+        data.bookingType === "hourly"
+          ? `${data.duration ?? "-"} hours`
+          : (data.dropoff ?? ""),
+      ],
+      ["Date and time", `${data.date} at ${data.time}`],
+    ];
+
+    const html = emailShell({
+      heading: "We cannot take this request",
+      primaryColor,
+      intro: "We are not able to cover this trip at the time you asked for.",
+      sections: [
+        emailDetails(rows),
+        ...(reason ? [emailParagraph(reason)] : []),
+        emailParagraph(
+          "You are welcome to send another request for a different time."
+        ),
+      ],
+      supportEmail: process.env.NEXT_PUBLIC_SUPPORT_EMAIL,
+    });
 
     return sendEmail({
       from: fromField,
       to: data.email,
-      subject: `Not available — #${data.tripId}`,
+      subject: `Request #${data.tripId} not available`,
       html,
-      text: `Not available for #${data.tripId}.${reason ? ` ${reason}` : ""}`,
+      text: `We cannot take this request\n\nReference: #${data.tripId}\n${
+        data.bookingType === "hourly"
+          ? `Duration: ${data.duration ?? "-"} hours`
+          : `Drop-off: ${data.dropoff}`
+      }\nDate and time: ${data.date} at ${data.time}${
+        reason ? `\n\n${reason}` : ""
+      }\n\nYou are welcome to send another request for a different time.`,
     });
   } catch (error) {
     console.error("sendRequestDeclinedEmail:", error);

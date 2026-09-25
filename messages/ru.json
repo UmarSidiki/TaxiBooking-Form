@@ -481,7 +481,9 @@
       "payment-collected": "Оплата получена",
       "notify-customer": "Отправить письмо клиенту",
       "create-booking": "Создать бронирование",
-      "booking-created": "Бронирование {tripId} создано"
+      "booking-created": "Бронирование {tripId} создано",
+      "NoAwaitingPayment": "Нет предложений, ожидающих оплаты",
+      "NoAwaitingPaymentDescription": "Заявки с ценой остаются здесь до оплаты клиентом."
     },
     "Home": {
       "failed-to-fetch-dashboard-stats": "Не удалось получить статистику дашборда",
@@ -1044,11 +1046,6 @@
       "test-mode": "Test режим",
       "stripe-configuration": "Настройка Stripe",
       "payment-configuration": "Конфигурация оплаты",
-      "limit-address-autocomplete-to-specific-countries-leave-empty-for-no-restrictions": "Ограничить автозаполнение адресов конкретными странами. Оставьте пустым, чтобы не ограничивать.",
-      "only-first-five-countries-used": "Google Places Autocomplete использует только первые 5 кодов стран; остальные будут проигнорированы.",
-      "ch-fr-de-2-letter-country-codes-comma-separated": "CH, FR, DE (2-буквенные коды стран через запятую)",
-      "country-restrictions": "Ограничения по странам",
-      "restrictions": "Ограничения",
       "default-longitude-for-the-map-center": "Долгота по умолчанию для центра карты.",
       "initial-longitude": "Начальная долгота",
       "default-latitude-for-the-map-center": "Широта по умолчанию для центра карты.",

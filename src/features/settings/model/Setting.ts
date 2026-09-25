@@ -10,7 +10,6 @@ export interface ISetting {
   redirectImmediatelyAfterBooking?: boolean;
   mapInitialLat?: number;
   mapInitialLng?: number;
-  mapCountryRestrictions?: string[];
   mapBounds?: {
     north: number;
     south: number;
@@ -98,10 +97,6 @@ const SettingSchema = new Schema<ISetting>(
     mapInitialLng: {
       type: Number,
       default: 6.1432, // Geneva, Switzerland
-    },
-    mapCountryRestrictions: {
-      type: [String],
-      default: [], // No restrictions by default
     },
     mapBounds: {
       north: { type: Number },

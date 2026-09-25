@@ -58,6 +58,8 @@ export async function PATCH(
     return NextResponse.json({
       success: true,
       message: bookingPatchSuccessMessage(result.action),
+      // Set when the booking was updated but a follow-up notification failed.
+      warning: result.warn,
       data: result.booking,
     });
   } catch (error) {

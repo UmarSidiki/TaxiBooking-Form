@@ -2,7 +2,12 @@ import { sendEmail } from "@/features/settings/lib/email";
 import { connectDB } from "@/shared/db";
 import { Setting } from "@/features/settings/model";
 import { getCurrencySymbol } from "@/shared/lib/utils";
-import { escapeHtml } from "@/shared/lib/escape-html";
+import {
+  emailDetails,
+  emailParagraph,
+  emailShell,
+  type EmailDetail,
+} from "@/features/booking/email/email-layout";
 import type { BookingEmailData } from "@/features/payments/lib/booking-email-data";
 
 function isValidEmail(email: string): boolean {
@@ -22,31 +27,47 @@ export async function sendRequestReceivedEmail(data: BookingEmailData) {
       : fromAddress;
     const currency = settings?.stripeCurrency || "EUR";
     const currencySymbol = getCurrencySymbol(currency);
-    const primaryColor = settings?.primaryColor || "#EAB308";
+    const amount = Number(data.totalAmount).toFixed(2);
 
-    const html = `
-<!DOCTYPE html><html><body style="font-family:Arial,sans-serif;color:#333">
-  <div style="max-width:600px;margin:0 auto">
-    <div style="border-left:4px solid ${primaryColor};padding:12px;background:#f5f5f5;margin-bottom:16px">
-      <h1 style="margin:0;font-size:18px;color:${primaryColor}">Request received</h1>
-      <p style="margin:8px 0 0">We work strictly by appointment. This is not a confirmation yet.</p>
-    </div>
-    <p>Hi ${escapeHtml(data.firstName)},</p>
-    <p>We received your appointment request <strong>#${escapeHtml(data.tripId)}</strong>.</p>
-    <p><strong>From:</strong> ${escapeHtml(data.pickup)}<br/>
-    ${data.bookingType === "hourly" ? `<strong>Duration:</strong> ${escapeHtml(data.duration ?? "—")} hours` : `<strong>To:</strong> ${escapeHtml(data.dropoff)}`}<br/>
-    <strong>When:</strong> ${escapeHtml(data.date)} at ${escapeHtml(data.time)}<br/>
-    <strong>Indicative rate:</strong> ${currencySymbol}${Number(data.totalAmount).toFixed(2)}</p>
-    <p>We will check availability and email you next steps.</p>
-  </div>
-</body></html>`;
+    const rows: EmailDetail[] = [
+      ["Reference", `#${data.tripId}`],
+      ["Pickup", data.pickup],
+      [
+        data.bookingType === "hourly" ? "Duration" : "Drop-off",
+        data.bookingType === "hourly"
+          ? `${data.duration ?? "-"} hours`
+          : (data.dropoff ?? ""),
+      ],
+      ["Date and time", `${data.date} at ${data.time}`],
+      ["Vehicle", data.vehicleDetails.name],
+      ["Indicative rate", `${currencySymbol}${amount}`],
+    ];
+
+    const html = emailShell({
+      heading: "Appointment request received",
+      primaryColor: settings?.primaryColor || "#EAB308",
+      intro: "We have your request. This is not a confirmed booking yet.",
+      sections: [
+        emailDetails(rows),
+        emailParagraph(
+          "We work strictly by appointment. We will check availability and reply with the confirmed price and a payment link."
+        ),
+      ],
+      supportEmail: process.env.NEXT_PUBLIC_SUPPORT_EMAIL,
+    });
 
     return sendEmail({
       from: fromField,
       to: data.email,
-      subject: `Request received — #${data.tripId}`,
+      subject: `Request received #${data.tripId}`,
       html,
-      text: `Request received for #${data.tripId}. Not confirmed yet. Indicative rate ${currencySymbol}${Number(data.totalAmount).toFixed(2)}.`,
+      text: `Appointment request received\n\nReference: #${data.tripId}\nPickup: ${data.pickup}\n${
+        data.bookingType === "hourly"
+          ? `Duration: ${data.duration ?? "-"} hours`
+          : `Drop-off: ${data.dropoff}`
+      }\nDate and time: ${data.date} at ${data.time}\nVehicle: ${
+        data.vehicleDetails.name
+      }\nIndicative rate: ${currencySymbol}${amount}\n\nThis is not a confirmed booking. We will check availability and reply with the confirmed price and a payment link.`,
     });
   } catch (error) {
     console.error("sendRequestReceivedEmail:", error);

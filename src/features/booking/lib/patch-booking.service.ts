@@ -19,7 +19,13 @@ import {
 import type { IBooking } from '@/features/booking/model';
 
 export type PatchBookingResult =
-  | { ok: true; booking: IBooking; action: BookingPatchAction }
+  | {
+      ok: true;
+      booking: IBooking;
+      action: BookingPatchAction;
+      /** Set when the booking was updated but a follow-up notification failed. */
+      warn?: string;
+    }
   | { ok: false; status: number; message: string };
 
 export async function patchBooking(
@@ -109,8 +115,14 @@ export async function patchBooking(
     paymentToken: applied.paymentToken,
     baseUrl,
   });
-  if (!emailResult.ok) {
-    return { ok: false, status: 502, message: emailResult.message };
+
+  // The booking is already durably updated at this point, so a failed
+  // notification is a warning, not a failure. Returning 502 here made the desk
+  // report an error while the ride had silently moved, so operators saw no
+  // change at all.
+  const warn = emailResult.ok ? undefined : emailResult.message;
+  if (warn) {
+    console.error('Booking updated but notification failed:', id, warn);
   }
 
   if (parsed.data.action === 'approvepartner') {
@@ -143,5 +155,5 @@ export async function patchBooking(
     await clawbackPartnerSettlementsForBooking(booking);
   }
 
-  return { ok: true, booking: updatedBooking, action: parsed.data.action };
+  return { ok: true, booking: updatedBooking, action: parsed.data.action, warn };
 }

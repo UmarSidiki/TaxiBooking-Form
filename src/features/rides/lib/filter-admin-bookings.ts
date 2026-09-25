@@ -32,10 +32,10 @@ export function filterAdminBookings({
 
   switch (activeTab) {
     case "requests":
-      filtered = bookings.filter(
-        (b) =>
-          b.status === "requested" || b.status === "awaiting_payment"
-      );
+      filtered = bookings.filter((b) => b.status === "requested");
+      break;
+    case "awaiting_payment":
+      filtered = bookings.filter((b) => b.status === "awaiting_payment");
       break;
     case "upcoming":
       filtered = bookings.filter((b) => {

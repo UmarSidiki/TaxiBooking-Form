@@ -21,7 +21,7 @@ function isFullyRefunded(charge: Stripe.Charge | string | null): boolean {
   );
 }
 
-export function isPaymentIntentCollectable(
+function isPaymentIntentCollectable(
   paymentIntent: Stripe.PaymentIntent
 ): boolean {
   if (

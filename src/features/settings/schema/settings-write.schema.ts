@@ -11,7 +11,6 @@ export const settingsWriteSchema = z.object({
   redirectImmediatelyAfterBooking: z.boolean().optional(),
   mapInitialLat: z.number().optional(),
   mapInitialLng: z.number().optional(),
-  mapCountryRestrictions: z.array(z.string()).optional(),
   allowedBookingCountries: z.array(z.string().length(2)).optional(),
   mapBounds: z
     .object({

@@ -481,7 +481,9 @@
       "payment-collected": "Payment collected",
       "notify-customer": "Email the customer",
       "create-booking": "Create booking",
-      "booking-created": "Booking {tripId} created"
+      "booking-created": "Booking {tripId} created",
+      "NoAwaitingPayment": "No quotes awaiting payment",
+      "NoAwaitingPaymentDescription": "Quoted requests stay here until the customer pays."
     },
     "Home": {
       "failed-to-fetch-dashboard-stats": "Failed to fetch dashboard stats",
@@ -1044,11 +1046,6 @@
       "test-mode": "Test Mode",
       "stripe-configuration": "Stripe Configuration",
       "payment-configuration": "Payment Configuration",
-      "limit-address-autocomplete-to-specific-countries-leave-empty-for-no-restrictions": "Limit address autocomplete to specific countries. Leave empty for no restrictions.",
-      "only-first-five-countries-used": "Only the first 5 country codes are used by Google Places Autocomplete; additional codes will be ignored.",
-      "ch-fr-de-2-letter-country-codes-comma-separated": "CH, FR, DE (2-letter country codes, comma-separated)",
-      "country-restrictions": "Country Restrictions",
-      "restrictions": "Restrictions",
       "default-longitude-for-the-map-center": "Default longitude for the map center.",
       "initial-longitude": "Initial Longitude",
       "default-latitude-for-the-map-center": "Default latitude for the map center.",

@@ -141,6 +141,21 @@ export function AdminRideCard({
         {booking.status === "requested" ||
         booking.status === "awaiting_payment" ? (
           <div className="flex flex-col gap-2 border-t border-border/60 pt-3">
+            {booking.status === "awaiting_payment" ? (
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <span className="inline-flex items-center rounded-full bg-accent px-2.5 py-1 text-xs font-medium text-accent-foreground">
+                  {t("Dashboard.Rides.status-awaiting-payment")}
+                </span>
+                <span className="text-sm font-semibold tabular-nums">
+                  {currencySymbol}
+                  {(
+                    booking.quotedAmount ??
+                    booking.totalAmount ??
+                    0
+                  ).toFixed(2)}
+                </span>
+              </div>
+            ) : null}
             <Button
               type="button"
               className="min-h-11 w-full sm:w-auto"

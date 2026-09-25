@@ -6,8 +6,10 @@ import { Button } from "@/shared/ui/button";
 import { useStep3 } from "@/features/booking/hooks/form-steps/useStep3";
 import { useTranslations } from "next-intl";
 import { useCurrency } from "@/shared/context/currency-context";
+import { useGeo } from "@/features/geo/context/geo-context";
 import { Step3AppointmentRequestPanel } from "@/features/booking/ui/steps/step3-appointment-request-panel";
 import { Step3BookingSummary } from "@/features/booking/ui/steps/step3-booking-summary";
+import { Step3CountryBlockedPanel } from "@/features/booking/ui/steps/step3-country-blocked-panel";
 import { Step3Extras } from "@/features/booking/ui/steps/step3-extras";
 import { Step3PaymentMethods } from "@/features/booking/ui/steps/step3-payment-methods";
 import { Step3PersonalDetails } from "@/features/booking/ui/steps/step3-personal-details";
@@ -26,10 +28,11 @@ function Step3Payment() {
 
   const { currencySymbol } = useCurrency();
   const t = useTranslations();
+  const { geo } = useGeo();
   const appointFirst = Boolean(paymentSettings?.enableAppointmentRequest);
 
   useEffect(() => {
-    if (appointFirst) return;
+    if (appointFirst || geo.bookingBlocked) return;
     if (paymentSettings?.acceptedPaymentMethods && !selectedPaymentMethod) {
       if (paymentSettings.acceptedPaymentMethods.includes("card") && stripeConfig.enabled) {
         setSelectedPaymentMethod("card");
@@ -41,6 +44,7 @@ function Step3Payment() {
     }
   }, [
     appointFirst,
+    geo.bookingBlocked,
     paymentSettings,
     selectedPaymentMethod,
     setSelectedPaymentMethod,
@@ -65,7 +69,9 @@ function Step3Payment() {
           setFormData={step.setFormData}
           errors={step.errors}
         />
-        {appointFirst ? (
+        {geo.bookingBlocked ? (
+          <Step3CountryBlockedPanel t={t} />
+        ) : appointFirst ? (
           <Step3AppointmentRequestPanel
             t={t}
             currencySymbol={currencySymbol}

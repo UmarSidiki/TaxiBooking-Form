@@ -43,7 +43,7 @@ export interface BookingPriceResult {
   breakdown: BookingPriceBreakdown;
 }
 
-export function roundMoney(value: number): number {
+function roundMoney(value: number): number {
   return Math.round(value * 100) / 100;
 }
 

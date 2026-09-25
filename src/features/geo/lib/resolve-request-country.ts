@@ -131,6 +131,14 @@ async function lookupViaProvider(ip: string): Promise<string | null> {
 export async function resolveRequestCountry(
   request: Request
 ): Promise<ResolvedCountry> {
+  // Local verification only. In production the platform header below is the
+  // single source of truth; without this the block cannot be exercised on
+  // localhost, where there is no header and the client IP is private.
+  if (process.env.NODE_ENV !== "production") {
+    const override = normalizeCountry(process.env.GEO_COUNTRY_OVERRIDE);
+    if (override) return { countryCode: override, source: "platform" };
+  }
+
   for (const header of PLATFORM_COUNTRY_HEADERS) {
     const code = normalizeCountry(request.headers.get(header));
     if (code) return { countryCode: code, source: "platform" };

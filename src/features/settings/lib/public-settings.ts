@@ -13,7 +13,6 @@ export const PUBLIC_SETTING_FIELDS = [
   "redirectImmediatelyAfterBooking",
   "mapInitialLat",
   "mapInitialLng",
-  "mapCountryRestrictions",
   "allowedBookingCountries",
   "mapBounds",
   "mapPolygonPoints",
@@ -43,10 +42,8 @@ export const PUBLIC_SETTING_FIELDS = [
 export type PublicSettingField = (typeof PUBLIC_SETTING_FIELDS)[number];
 
 export type PublicSettings = Pick<ISetting, PublicSettingField> & {
-  hasStripeSecretKey: boolean;
-  hasStripeWebhookSecret: boolean;
+  /** The pay page needs to know whether MultiSafepay is configured. */
   hasMultisafepayApiKey: boolean;
-  hasSmtpPass: boolean;
 };
 
 export function toPublicSettings(
@@ -59,9 +56,6 @@ export function toPublicSettings(
 
   return {
     ...publicSettings,
-    hasStripeSecretKey: Boolean(settings.stripeSecretKey),
-    hasStripeWebhookSecret: Boolean(settings.stripeWebhookSecret),
     hasMultisafepayApiKey: Boolean(settings.multisafepayApiKey),
-    hasSmtpPass: Boolean(settings.smtpPass),
   };
 }

@@ -32,6 +32,10 @@ _Avoid_: Reservation, order, job
 Customer submission before the operator confirms availability. Not a confirmed booking.
 _Avoid_: Booking (until upcoming), reservation (when unpaid)
 
+**Request review**:
+The operator's decision on an Appointment request: quote it, confirm it as cash, or decline it.
+_Avoid_: accept / reject (those are outcomes, not the action), partner review (that is the margin step)
+
 **Quote**:
 Operator-confirmed price with a pay link (`awaiting_payment`).
 _Avoid_: Invoice (until paid), estimate (that is indicative rate)

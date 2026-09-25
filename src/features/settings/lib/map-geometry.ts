@@ -1,6 +1,6 @@
 import type { MapBoundsLiteral } from "@/features/settings/lib/map-bounds";
 
-export function toMapBoundsLiteral(
+function toMapBoundsLiteral(
   bounds: google.maps.LatLngBounds
 ): MapBoundsLiteral {
   return {

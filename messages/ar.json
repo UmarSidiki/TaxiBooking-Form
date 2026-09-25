@@ -481,7 +481,9 @@
       "payment-collected": "تم تحصيل الدفع",
       "notify-customer": "إرسال بريد إلكتروني إلى العميل",
       "create-booking": "إنشاء الحجز",
-      "booking-created": "تم إنشاء الحجز {tripId}"
+      "booking-created": "تم إنشاء الحجز {tripId}",
+      "NoAwaitingPayment": "لا توجد عروض بانتظار الدفع",
+      "NoAwaitingPaymentDescription": "تبقى الطلبات المسعّرة هنا حتى يدفع العميل."
     },
     "Home": {
       "failed-to-fetch-dashboard-stats": "فشل جلب إحصائيات لوحة التحكم",
@@ -1044,11 +1046,6 @@
       "test-mode": "وضع الاختبار (Test)",
       "stripe-configuration": "تكوين Stripe",
       "payment-configuration": "تكوين الدفع",
-      "limit-address-autocomplete-to-specific-countries-leave-empty-for-no-restrictions": "قصر الإكمال التلقائي للعناوين على بلدان محددة. اتركه فارغًا لعدم وجود قيود.",
-      "only-first-five-countries-used": "يتم استخدام أول 5 رموز بلدان فقط بواسطة Google Places Autocomplete؛ سيتم تجاهل الرموز الإضافية.",
-      "ch-fr-de-2-letter-country-codes-comma-separated": "SA, AE, EG (رموز البلدان من حرفين، مفصولة بفواصل)",
-      "country-restrictions": "قيود البلدان",
-      "restrictions": "القيود",
       "default-longitude-for-the-map-center": "خط الطول الافتراضي لمركز الخريطة.",
       "initial-longitude": "خط الطول الأولي",
       "default-latitude-for-the-map-center": "خط العرض الافتراضي لمركز الخريطة.",

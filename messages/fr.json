@@ -481,7 +481,9 @@
       "payment-collected": "Paiement encaissé",
       "notify-customer": "Envoyer un e-mail au client",
       "create-booking": "Créer la réservation",
-      "booking-created": "Réservation {tripId} créée"
+      "booking-created": "Réservation {tripId} créée",
+      "NoAwaitingPayment": "Aucun devis en attente de paiement",
+      "NoAwaitingPaymentDescription": "Les demandes devisées restent ici jusqu'au paiement du client."
     },
     "Home": {
       "failed-to-fetch-dashboard-stats": "Échec de la récupération des stats",
@@ -1044,11 +1046,6 @@
       "test-mode": "Mode Test",
       "stripe-configuration": "Configuration Stripe",
       "payment-configuration": "Configuration de paiement",
-      "limit-address-autocomplete-to-specific-countries-leave-empty-for-no-restrictions": "Limiter l'autocomplétion d'adresse à certains pays (laisser vide pour aucune restriction).",
-      "only-first-five-countries-used": "Seuls les 5 premiers codes pays sont utilisés par Google Places.",
-      "ch-fr-de-2-letter-country-codes-comma-separated": "CH, FR, DE (codes pays 2 lettres)",
-      "country-restrictions": "Restrictions par pays",
-      "restrictions": "Restrictions",
       "default-longitude-for-the-map-center": "Longitude par défaut pour le centre de la carte.",
       "initial-longitude": "Longitude Initiale",
       "default-latitude-for-the-map-center": "Latitude par défaut pour le centre de la carte.",

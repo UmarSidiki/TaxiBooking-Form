@@ -2,7 +2,13 @@ import { sendEmail } from "@/features/settings/lib/email";
 import { connectDB } from "@/shared/db";
 import { Setting } from "@/features/settings/model";
 import { getCurrencySymbol } from "@/shared/lib/utils";
-import { escapeHtml } from "@/shared/lib/escape-html";
+import {
+  emailAction,
+  emailDetails,
+  emailParagraph,
+  emailShell,
+  type EmailDetail,
+} from "@/features/booking/email/email-layout";
 import type { BookingEmailData } from "@/features/payments/lib/booking-email-data";
 
 function isValidEmail(email: string): boolean {
@@ -27,30 +33,50 @@ export async function sendQuoteEmail(
     const primaryColor = settings?.primaryColor || "#EAB308";
     const amount = Number(data.totalAmount).toFixed(2);
 
-    const html = `
-<!DOCTYPE html><html><body style="font-family:Arial,sans-serif;color:#333">
-  <div style="max-width:600px;margin:0 auto">
-    <div style="border-left:4px solid ${primaryColor};padding:12px;background:#f5f5f5">
-      <h1 style="margin:0;font-size:18px;color:${primaryColor}">Availability confirmed</h1>
-    </div>
-    <p>Hi ${escapeHtml(data.firstName)},</p>
-    <p>We can take your trip <strong>#${escapeHtml(data.tripId)}</strong>.</p>
-    <p><strong>Price:</strong> ${currencySymbol}${amount}</p>
-    <p style="text-align:center;margin:24px 0">
-      <a href="${escapeHtml(data.payUrl)}" style="background:${primaryColor};color:#fff;padding:12px 24px;text-decoration:none;border-radius:6px;font-weight:bold">
-        Pay to confirm
-      </a>
-    </p>
-    <p>Your appointment is confirmed only after payment.</p>
-  </div>
-</body></html>`;
+    const rows: EmailDetail[] = [
+      ["Reference", `#${data.tripId}`],
+      ["Pickup", data.pickup],
+      [
+        data.bookingType === "hourly" ? "Duration" : "Drop-off",
+        data.bookingType === "hourly"
+          ? `${data.duration ?? "-"} hours`
+          : (data.dropoff ?? ""),
+      ],
+      ["Date and time", `${data.date} at ${data.time}`],
+      ["Vehicle", data.vehicleDetails.name],
+      ["Total", `${currencySymbol}${amount}`],
+    ];
+
+    const html = emailShell({
+      heading: "We can take your trip",
+      primaryColor,
+      intro: `${currencySymbol}${amount} for this transfer. Pay to confirm the booking.`,
+      sections: [
+        emailDetails(rows),
+        emailAction(data.payUrl, `Pay ${currencySymbol}${amount}`, primaryColor),
+        emailParagraph(
+          "Your booking is confirmed once the payment has gone through. This link stops working after that."
+        ),
+      ],
+      supportEmail: process.env.NEXT_PUBLIC_SUPPORT_EMAIL,
+    });
 
     return sendEmail({
       from: fromField,
       to: data.email,
-      subject: `Availability confirmed — pay to confirm #${data.tripId}`,
+      subject: `Pay to confirm booking #${data.tripId}`,
       html,
-      text: `Availability confirmed for #${data.tripId}. Price ${currencySymbol}${amount}. Pay: ${data.payUrl}`,
+      text: `We can take your trip\n\nReference: #${data.tripId}\nPickup: ${
+        data.pickup
+      }\n${
+        data.bookingType === "hourly"
+          ? `Duration: ${data.duration ?? "-"} hours`
+          : `Drop-off: ${data.dropoff}`
+      }\nDate and time: ${data.date} at ${data.time}\nVehicle: ${
+        data.vehicleDetails.name
+      }\nTotal: ${currencySymbol}${amount}\n\nPay here: ${
+        data.payUrl
+      }\n\nYour booking is confirmed once the payment has gone through.`,
     });
   } catch (error) {
     console.error("sendQuoteEmail:", error);

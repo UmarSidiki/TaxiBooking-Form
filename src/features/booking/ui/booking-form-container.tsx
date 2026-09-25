@@ -5,7 +5,6 @@ import { Loader2 } from "lucide-react";
 // import { useTranslations } from "next-intl";
 import { LanguageSwitcher } from "@/shared/chrome/language-switcher";
 import { useBookingFormContainer } from "@/features/booking/hooks/form-container/useBookingFormContainer";
-import { BookingCountryBlocked } from "@/features/booking/ui/booking-country-blocked";
 import { useGeo } from "@/features/geo/context/geo-context";
 import { useTheme } from "@/features/settings/context/theme-context";
 import Image from "next/image";
@@ -24,25 +23,18 @@ const StepLoader = () => (
 
 export default function BookingFormContainer() {
   const { initialized, currentStep } = useBookingFormContainer();
-  const { geo, isLoading } = useGeo();
+  const { isLoading } = useGeo();
   const { settings } = useTheme();
   // const t = useTranslations();
 
   // Wait until URL params are processed
   if (!initialized) return null;
 
-  // Only hold on the country check when a restriction is actually configured,
-  // and only honour a cached block while that is still true.
+  // Hold only while a configured restriction is still resolving. The block
+  // itself is shown in step 3, in place of the payment options.
   const countryRestricted =
     (settings?.allowedBookingCountries?.length ?? 0) > 0;
   if (countryRestricted && isLoading) return <StepLoader />;
-  if (countryRestricted && geo.bookingBlocked) {
-    return (
-      <BookingCountryBlocked
-        supportEmail={process.env.NEXT_PUBLIC_SUPPORT_EMAIL}
-      />
-    );
-  }
 
   // Get step titles directly from translations
   // const stepTitles = [

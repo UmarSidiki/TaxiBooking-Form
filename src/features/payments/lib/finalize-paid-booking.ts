@@ -133,6 +133,25 @@ export async function finalizePaidBooking(
       };
     }
 
+    // A provider payment arriving for a ride already settled by another method
+    // (e.g. cash) must not be silently treated as an already-finalized booking.
+    const settledByOtherMethod =
+      existingBooking.paymentStatus === 'completed' &&
+      Boolean(existingBooking.paymentMethod) &&
+      !['stripe', 'multisafepay'].includes(existingBooking.paymentMethod ?? '');
+
+    if (settledByOtherMethod) {
+      console.error(
+        'Provider payment for a ride already settled by another method:',
+        existingBooking.tripId,
+        existingBooking.paymentMethod
+      );
+      return {
+        success: false,
+        message: 'This ride was already settled by another payment method',
+      };
+    }
+
     await PendingBooking.deleteOne({ orderId });
 
     const emailData = buildBookingEmailDataFromBooking(existingBooking, {

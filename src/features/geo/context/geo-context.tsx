@@ -11,6 +11,7 @@ import {
 import { apiGet } from "@/shared/http/api";
 
 const STORAGE_KEY = "geo.v1";
+const MAX_AGE_MS = 30 * 60 * 1000;
 
 export type GeoInfo = {
   countryCode: string | null;
@@ -34,12 +35,22 @@ const GeoContext = createContext<GeoContextValue>({
   isLoading: true,
 });
 
+/**
+ * Cached values expire, so an operator changing the country policy does not
+ * leave visitors pinned to a stale decision for the life of the tab.
+ */
 function readStoredGeo(): GeoInfo | null {
   if (typeof window === "undefined") return null;
   try {
     const raw = sessionStorage.getItem(STORAGE_KEY);
     if (!raw) return null;
-    const parsed = JSON.parse(raw) as Partial<GeoInfo>;
+
+    const parsed = JSON.parse(raw) as Partial<GeoInfo> & { at?: number };
+    if (typeof parsed.at !== "number" || Date.now() - parsed.at > MAX_AGE_MS) {
+      sessionStorage.removeItem(STORAGE_KEY);
+      return null;
+    }
+
     return {
       countryCode: typeof parsed.countryCode === "string" ? parsed.countryCode : null,
       dialCode: typeof parsed.dialCode === "string" ? parsed.dialCode : null,
@@ -74,7 +85,10 @@ export function GeoProvider({ children }: { children: ReactNode }) {
         const data = await apiGet<{ success: boolean; data: GeoInfo }>("/api/geo");
         if (cancelled) return;
         setGeo(data.data);
-        sessionStorage.setItem(STORAGE_KEY, JSON.stringify(data.data));
+        sessionStorage.setItem(
+          STORAGE_KEY,
+          JSON.stringify({ ...data.data, at: Date.now() })
+        );
       } catch {
         // Fail open: an unresolved country must never block a real customer.
         if (!cancelled) setGeo(EMPTY_GEO);

@@ -79,6 +79,25 @@ function writeCache(ip: string, countryCode: string | null) {
   });
 }
 
+const PROVIDER_CALLS_PER_MINUTE = 40;
+let providerWindowStart = 0;
+let providerCallsInWindow = 0;
+
+/**
+ * Bounds outbound provider calls: without this, distinct spoofed
+ * `x-forwarded-for` values would each miss the cache and burn the free quota.
+ */
+function canCallProvider(): boolean {
+  const now = Date.now();
+  if (now - providerWindowStart >= 60_000) {
+    providerWindowStart = now;
+    providerCallsInWindow = 0;
+  }
+  if (providerCallsInWindow >= PROVIDER_CALLS_PER_MINUTE) return false;
+  providerCallsInWindow += 1;
+  return true;
+}
+
 /**
  * ip-api's free tier is HTTP-only (so it can never be called from the browser)
  * and is not licensed for commercial use, so it is only a development fallback
@@ -86,6 +105,7 @@ function writeCache(ip: string, countryCode: string | null) {
  */
 async function lookupViaProvider(ip: string): Promise<string | null> {
   if (process.env.GEO_IP_FALLBACK === "off") return null;
+  if (!canCallProvider()) return null;
 
   try {
     const response = await fetch(

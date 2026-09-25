@@ -30,6 +30,8 @@ export type CreateDeskBookingResult =
       tripId: string;
       totalAmount: number;
       outcome: DeskBookingOutcome;
+      /** False when the quote exists but its pay-link email failed to send. */
+      payLinkEmailSent?: boolean;
     }
   | { ok: false; status: number; message: string };
 
@@ -58,6 +60,19 @@ export async function createDeskBooking(
           stops: formData.stops,
         });
 
+  if (
+    formData.bookingType !== "hourly" &&
+    formData.pickup &&
+    formData.dropoff &&
+    distanceKm == null
+  ) {
+    return {
+      ok: false,
+      status: 400,
+      message: "Could not calculate the route distance",
+    };
+  }
+
   const priced = calculateBookingPrice(
     vehicle,
     formData,
@@ -70,7 +85,9 @@ export async function createDeskBooking(
     return { ok: false, status: 400, message: "Calculated fare is zero" };
   }
 
-  const total = isManualPrice ? formData.manualPrice! : priced.total;
+  const total = isManualPrice
+    ? Number(formData.manualPrice!.toFixed(2))
+    : priced.total;
   const isQuote = formData.outcome === "quote";
 
   if (isQuote && !absoluteHttpBase(baseUrl)) {
@@ -122,7 +139,11 @@ export async function createDeskBooking(
     whatsappOptIn: formData.whatsappOptIn ?? false,
     locale: formData.locale,
     paymentMethod,
-    paymentStatus: "pending" as const,
+    // Recorded in the same write as the booking so the payment state can never
+    // be half-applied, and so the confirmation email below reads the truth.
+    paymentStatus: (!isQuote && formData.paymentCollected
+      ? "completed"
+      : "pending") as "pending" | "completed",
     status: isQuote ? ("awaiting_payment" as const) : ("upcoming" as const),
     priceSource: isManualPrice ? ("manual" as const) : ("computed" as const),
     createdBy: {
@@ -156,7 +177,13 @@ export async function createDeskBooking(
 
   if (isQuote) {
     if (!formData.notifyCustomer) {
-      return { ok: true, bookingId, tripId, totalAmount: total, outcome: "quote" };
+      return {
+        ok: true,
+        bookingId,
+        tripId,
+        totalAmount: total,
+        outcome: "quote",
+      };
     }
 
     const emailResult = await sendAppointmentPatchEmails({
@@ -165,15 +192,21 @@ export async function createDeskBooking(
       paymentToken: paymentToken!.token,
       baseUrl,
     });
+
+    // The quote exists and its token is live, so a failed email is a warning
+    // rather than a failure: the operator keeps the tripId and can resend.
     if (!emailResult.ok) {
-      return { ok: false, status: 502, message: emailResult.message };
+      console.error("Desk quote pay-link email failed:", tripId, emailResult.message);
     }
 
-    return { ok: true, bookingId, tripId, totalAmount: total, outcome: "quote" };
-  }
-
-  if (formData.paymentCollected) {
-    await updateBookingFields(bookingId, { paymentStatus: "completed" });
+    return {
+      ok: true,
+      bookingId,
+      tripId,
+      totalAmount: total,
+      outcome: "quote",
+      payLinkEmailSent: emailResult.ok,
+    };
   }
 
   await initCashBookingPartners(bookingId, paymentMethod, total, baseUrl);

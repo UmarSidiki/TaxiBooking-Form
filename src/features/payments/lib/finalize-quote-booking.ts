@@ -69,9 +69,25 @@ export async function finalizeQuoteBooking(input: {
           "Paid amount does not match the quoted total. The charge was refunded.",
       };
     }
+    // No automatic refund path exists for MultiSafepay, so record the shortfall
+    // for manual reconciliation rather than leaving taken money invisible.
+    const shortfall = Number((quoted - input.paidAmount).toFixed(2));
+    await updateBookingFields(String(booking._id), {
+      paymentMismatchAmount: shortfall,
+    });
+    console.error(
+      "Quote underpaid and cannot be auto-refunded; needs manual reconciliation",
+      {
+        tripId: booking.tripId,
+        provider: input.provider,
+        paidAmount: input.paidAmount,
+        quoted,
+        shortfall,
+      }
+    );
     return {
       success: false,
-      message: "Paid amount does not match the quoted total",
+      message: `Paid amount does not match the quoted total (short by ${shortfall}). Needs manual reconciliation.`,
     };
   }
 

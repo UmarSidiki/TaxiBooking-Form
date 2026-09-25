@@ -60,16 +60,18 @@ function vehiclePriceFor(
     return pricePerHour * hours;
   }
 
+  const minimumFare = vehicle.minimumFare ?? 0;
+
   if (typeof distanceKm === "number" && Number.isFinite(distanceKm)) {
     const tieredOneWay = applyPriceTiers(vehicle.priceTiers, distanceKm);
 
     // Tier-based pricing — minimum fare still applies
     const oneWayPrice =
       tieredOneWay !== undefined
-        ? Math.max(tieredOneWay, vehicle.minimumFare)
+        ? Math.max(tieredOneWay, minimumFare)
         : Math.max(
-            vehicle.price + vehicle.pricePerKm * distanceKm,
-            vehicle.minimumFare
+            (vehicle.price ?? 0) + (vehicle.pricePerKm ?? 0) * distanceKm,
+            minimumFare
           );
 
     if (input.tripType === "roundtrip") {
@@ -82,7 +84,7 @@ function vehiclePriceFor(
     return oneWayPrice;
   }
 
-  return vehicle.price;
+  return vehicle.price ?? 0;
 }
 
 function stopsTotal(vehicle: IVehicle, input: BookingPriceInput): number {
@@ -139,13 +141,17 @@ export function calculateBookingPrice(
       : 0;
 
   const total = taxIncluded ? subtotal : subtotal + taxAmount;
+  const roundedTax = roundMoney(taxAmount);
+  const roundedTotal = roundMoney(total);
 
   return {
-    subtotal: roundMoney(taxIncluded ? subtotal - taxAmount : subtotal),
-    taxAmount: roundMoney(taxAmount),
+    // Derived from total - tax so the displayed subtotal always adds up to the
+    // displayed total (independent rounding could otherwise be a cent adrift).
+    subtotal: roundMoney(roundedTotal - roundedTax),
+    taxAmount: roundedTax,
     taxPercentage: enableTax ? taxPercentage : 0,
     taxIncluded,
-    total: roundMoney(total),
+    total: roundedTotal,
     breakdown: {
       vehiclePrice: roundMoney(vehiclePrice),
       discountPercentage,

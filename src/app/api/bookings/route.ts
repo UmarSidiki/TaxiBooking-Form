@@ -83,6 +83,7 @@ export async function POST(request: NextRequest) {
           tripId: result.tripId,
           totalAmount: result.totalAmount,
           outcome: result.outcome,
+          payLinkEmailSent: result.payLinkEmailSent,
         },
       },
       { status: 201 }

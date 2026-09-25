@@ -65,8 +65,12 @@ export default function RidesPage() {
       <NewDeskBookingDrawer
         open={showNewBooking}
         onOpenChange={setShowNewBooking}
-        onCreated={(tripId) => {
-          setNotice(t("Dashboard.Rides.booking-created", { tripId }));
+        onCreated={(tripId, payLinkEmailSent) => {
+          setNotice(
+            payLinkEmailSent === false
+              ? t("Dashboard.Rides.quote-failed")
+              : t("Dashboard.Rides.booking-created", { tripId })
+          );
           void fetchBookings();
         }}
       />

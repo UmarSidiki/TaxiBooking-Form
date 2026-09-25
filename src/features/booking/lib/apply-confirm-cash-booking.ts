@@ -1,6 +1,7 @@
 import type { IBooking } from "@/features/booking/model";
 import type { BookingPatchApplyResult } from "@/features/booking/lib/booking-patch-result";
 import { detachIncompleteQuoteIntent } from "@/features/payments/lib/quote-payment-intent";
+import { assertMultisafepayNotPaid } from "@/features/payments/lib/multisafepay-payment-state";
 
 export async function applyConfirmCashBooking(
   booking: IBooking,
@@ -32,6 +33,13 @@ export async function applyConfirmCashBooking(
     return { ok: false, status: 409, message: detached.message };
   }
 
+  const multisafepay = await assertMultisafepayNotPaid(
+    booking.multisafepayOrderId
+  );
+  if (!multisafepay.ok) {
+    return { ok: false, status: 409, message: multisafepay.message };
+  }
+
   updateData.status = "upcoming";
   updateData.paymentMethod = "cash";
   updateData.paymentStatus = "pending";
@@ -41,9 +49,11 @@ export async function applyConfirmCashBooking(
     updateData.quotedAt = new Date();
   }
 
+  // multisafepayOrderId is intentionally kept: if the customer pays that order
+  // anyway, the webhook can still match the booking and refuse it loudly.
   return {
     ok: true,
     updateData,
-    unsetFields: ["paymentTokenHash", "stripePaymentIntentId", "multisafepayOrderId"],
+    unsetFields: ["paymentTokenHash", "stripePaymentIntentId"],
   };
 }

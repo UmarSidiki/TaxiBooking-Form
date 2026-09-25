@@ -267,7 +267,12 @@ export function useStep3Payments({
         await router.push(target);
         resetForm();
       } else {
-        alert(`Booking failed: ${data.message}`);
+        alert(
+          apiErrorMessage(
+            (key) => t(`ApiErrors.${key}`),
+            typeof data.error === "string" ? data.error : "request_failed"
+          )
+        );
       }
     } catch (error) {
       console.error("Booking error:", error);
@@ -332,7 +337,14 @@ export function useStep3Payments({
         }
         window.location.href = paymentData.paymentUrl;
       } else {
-        alert(`Payment initialization failed: ${paymentData.message}`);
+        alert(
+          apiErrorMessage(
+            (key) => t(`ApiErrors.${key}`),
+            typeof paymentData.error === "string"
+              ? paymentData.error
+              : "payment_init_failed"
+          )
+        );
         isSubmittingRef.current = false;
         setIsLoading(false);
       }

@@ -71,6 +71,20 @@ export async function createAppointmentRequest(
     settings ?? {},
     distanceKm
   );
+
+  // Never store a destination fare that silently ignored the route distance.
+  if (
+    formData.bookingType !== "hourly" &&
+    formData.pickup &&
+    formData.dropoff &&
+    distanceKm == null
+  ) {
+    return { ok: false, status: 400, message: "Could not calculate the route distance" };
+  }
+
+  if (priced.total <= 0) {
+    return { ok: false, status: 400, message: "Calculated fare is zero" };
+  }
   const tripId = generateTripId();
   const currency = await getSettingsCurrency();
   const currencySymbol = getCurrencySymbol(currency);
@@ -135,10 +149,14 @@ export async function createAppointmentRequest(
 
   try {
     const customerSent = await sendRequestReceivedEmail(emailData);
-    await sendNewAppointmentRequestAdminEmail(emailData);
-    if (customerSent) {
+    const adminSent = await sendNewAppointmentRequestAdminEmail(emailData);
+    if (!adminSent) {
+      console.error("Appointment-request admin notification failed:", tripId);
+    }
+    if (customerSent || adminSent) {
       await updateBookingFields(saved._id.toString(), {
-        requestEmailSent: true,
+        ...(customerSent ? { requestEmailSent: true } : {}),
+        ...(adminSent ? { adminRequestEmailSent: true } : {}),
       });
     }
   } catch {

@@ -80,7 +80,7 @@ export function useDeskBookingForm({
   onCreated,
 }: {
   open: boolean;
-  onCreated: (tripId: string) => void;
+  onCreated: (tripId: string, payLinkEmailSent?: boolean) => void;
 }) {
   const t = useTranslations();
   const deskLocale = useLocale();
@@ -286,10 +286,10 @@ export function useDeskBookingForm({
 
       const data = await apiPost<{
         success: boolean;
-        data: { tripId: string };
+        data: { tripId: string; payLinkEmailSent?: boolean };
       }>("/api/bookings", payload);
 
-      onCreated(data.data.tripId);
+      onCreated(data.data.tripId, data.data.payLinkEmailSent);
       reset();
       return true;
     } catch (err) {

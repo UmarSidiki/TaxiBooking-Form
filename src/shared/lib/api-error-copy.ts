@@ -13,6 +13,7 @@ export const API_ERROR_CODES = [
   "payment_not_configured",
   "price_changed",
   "distance_failed",
+  "country_blocked",
 ] as const;
 
 export type ApiErrorCode = (typeof API_ERROR_CODES)[number];

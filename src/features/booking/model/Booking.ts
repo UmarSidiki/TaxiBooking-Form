@@ -59,6 +59,10 @@ export interface IBooking extends Document {
     userId?: string;
     name?: string;
   };
+  /** Whether the inbound appointment-request admin email was sent. */
+  adminRequestEmailSent?: boolean;
+  /** Shortfall in major units when a provider payment did not match the quote. */
+  paymentMismatchAmount?: number;
   refundAmount?: number;
   refundPercentage?: number;
   canceledAt?: Date;
@@ -156,6 +160,8 @@ const BookingSchema: Schema = new Schema({
     userId: { type: Schema.Types.ObjectId, ref: "User" },
     name: { type: String },
   },
+  adminRequestEmailSent: { type: Boolean, default: false },
+  paymentMismatchAmount: { type: Number },
   refundAmount: { type: Number },
   refundPercentage: { type: Number },
   canceledAt: { type: Date },

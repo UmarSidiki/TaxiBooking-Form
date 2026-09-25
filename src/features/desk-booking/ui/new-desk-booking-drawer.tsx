@@ -20,7 +20,7 @@ import {
 interface NewDeskBookingDrawerProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onCreated: (tripId: string) => void;
+  onCreated: (tripId: string, payLinkEmailSent?: boolean) => void;
 }
 
 export function NewDeskBookingDrawer({

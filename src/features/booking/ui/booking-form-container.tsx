@@ -31,11 +31,12 @@ export default function BookingFormContainer() {
   // Wait until URL params are processed
   if (!initialized) return null;
 
-  // Only hold on the country check when a restriction is actually configured.
+  // Only hold on the country check when a restriction is actually configured,
+  // and only honour a cached block while that is still true.
   const countryRestricted =
     (settings?.allowedBookingCountries?.length ?? 0) > 0;
   if (countryRestricted && isLoading) return <StepLoader />;
-  if (geo.bookingBlocked) {
+  if (countryRestricted && geo.bookingBlocked) {
     return (
       <BookingCountryBlocked
         supportEmail={process.env.NEXT_PUBLIC_SUPPORT_EMAIL}

@@ -110,14 +110,10 @@ export function useDeskBookingAutocomplete({
 
     return () => {
       cancelled = true;
-    };
-  }, [open, stopCount, settings, pickupRef, dropoffRef, stopRefs]);
-
-  useEffect(
-    () => () => {
+      // Dispose on close and on any dependency change: the inputs unmount with
+      // the sheet, and re-attaching on the next open re-reads fresh bounds.
       disposersRef.current.forEach((dispose) => dispose());
       disposersRef.current = [];
-    },
-    []
-  );
+    };
+  }, [open, stopCount, settings, pickupRef, dropoffRef, stopRefs]);
 }

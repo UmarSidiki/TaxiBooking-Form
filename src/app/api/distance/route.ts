@@ -57,19 +57,18 @@ export async function POST(request: NextRequest) {
       return jsonError("distance_failed", 400);
     }
 
-    let distanceInMeters = route.legs.reduce(
+    const distanceInMeters = route.legs.reduce(
       (total, leg) => total + leg.distance.value,
       0
     );
-    let durationInSeconds = route.legs.reduce(
+    const durationInSeconds = route.legs.reduce(
       (total, leg) => total + leg.duration.value,
       0
     );
 
-    if (isRoundTrip) {
-      distanceInMeters *= 2;
-      durationInSeconds *= 2;
-    }
+    // Deliberately NOT doubled for round trips: round-trip pricing is applied by
+    // the fare authority using the vehicle's returnPricePercentage, so doubling
+    // the route distance here would double-count it and desync client and server.
 
     const distanceInKm = distanceInMeters / 1000;
     const durationInMinutes = Math.round(durationInSeconds / 60);

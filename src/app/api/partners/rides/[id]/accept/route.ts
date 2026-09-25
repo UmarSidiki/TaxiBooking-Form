@@ -5,9 +5,14 @@ import { Partner } from "@/features/partners/model";
 import { sendRideAssignmentEmail } from "@/features/rides/email/ride-assignment";
 import { requireRole } from "@/features/auth/lib/require-role";
 import { jsonError } from "@/shared/http/json-error";
+import { getPartnerDispatchSettings } from "@/features/partners/lib/get-partner-dispatch-settings";
+import {
+  partnerApprovedVehicleIds,
+  partnerHasApprovedFleet,
+} from "@/features/partners/lib/partner-fleet-eligibility";
 
 export async function POST(
-  request: NextRequest,
+  _request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
@@ -21,59 +26,73 @@ export async function POST(
     await connectDB();
 
     const partner = await Partner.findById(access.session.user.id);
-    
-    // Check if partner has an approved fleet (check both new and old system)
-    const hasApprovedFleet = partner?.currentFleet || 
-                              (partner?.fleetStatus === "approved" && partner?.requestedFleet);
-    
-    if (!partner || !hasApprovedFleet) return jsonError("forbidden", 403);
+    if (!partner || !partnerHasApprovedFleet(partner)) {
+      return jsonError("forbidden", 403);
+    }
 
-    // Get the vehicle ID from currentFleet or requestedFleet
-    const partnerVehicleId = partner.currentFleet || partner.requestedFleet;
+    const vehicleIds = partnerApprovedVehicleIds(partner);
+    const { dispatchAssigneeMode } = await getPartnerDispatchSettings();
 
-    console.log(`Partner ${partner.name} (${partner._id}) attempting to accept ride ${rideId}`);
-
-    // Use MongoDB's atomic findOneAndUpdate to ensure first-come-first-served
-    // All validations are done atomically to prevent race conditions
-    const updatedRide = await Booking.findOneAndUpdate(
-      {
-        _id: rideId,
-        selectedVehicle: partnerVehicleId, // Ensure it matches partner's fleet
-        availableForPartners: true,
-        status: "upcoming", // Only upcoming rides can be accepted
-        assignedPartner: { $exists: false }, // Not assigned yet
-        partnerAcceptanceDeadline: { $gt: new Date() }, // Deadline not expired
-      },
-      {
+    const update: Record<string, unknown> = {
+      $set: {
         assignedPartner: {
-          _id: partner._id,
+          _id: String(partner._id),
           name: partner.name,
           email: partner.email,
         },
         availableForPartners: false,
-        assignmentEmailSent: false, // Reset to send assignment email
+        assignmentEmailSent: false,
       },
-      {
-        returnDocument: 'after',
-        runValidators: true,
-      }
-    );
+      $unset: {
+        partnerAcceptanceDeadline: 1,
+      } as Record<string, 1>,
+    };
+
+    if (dispatchAssigneeMode === "exclusive") {
+      (update.$unset as Record<string, 1>).assignedDriver = 1;
+    }
+
+    const filter: Record<string, unknown> = {
+      _id: rideId,
+      selectedVehicle: { $in: vehicleIds },
+      availableForPartners: true,
+      status: "upcoming",
+      partnerReviewStatus: "approved",
+      partnerAcceptanceDeadline: { $gt: new Date() },
+      $or: [
+        { assignedPartner: { $exists: false } },
+        { assignedPartner: null },
+      ],
+    };
+
+    // Exclusive: do not steal a ride already assigned to a Driver
+    if (dispatchAssigneeMode === "exclusive") {
+      filter.$and = [
+        {
+          $or: [
+            { assignedDriver: { $exists: false } },
+            { assignedDriver: null },
+          ],
+        },
+      ];
+    }
+
+    const updatedRide = await Booking.findOneAndUpdate(filter, update, {
+      returnDocument: "after",
+      runValidators: true,
+    });
 
     if (!updatedRide) {
-      console.log(`Ride ${rideId} was already assigned to another partner or unavailable`);
       return jsonError("conflict", 409);
     }
 
-    console.log(`Successfully assigned ride ${rideId} to partner ${partner.name}`);
-
-    // Send assignment confirmation email
     try {
       await sendRideAssignmentEmail({
         tripId: updatedRide.tripId,
         driverName: partner.name,
         driverEmail: partner.email,
         pickup: updatedRide.pickup,
-        dropoff: updatedRide.dropoff || 'N/A',
+        dropoff: updatedRide.dropoff || "N/A",
         stops: updatedRide.stops || [],
         tripType: updatedRide.tripType,
         date: updatedRide.date,
@@ -82,11 +101,13 @@ export async function POST(
         returnTime: updatedRide.returnTime,
         passengers: updatedRide.passengers,
         selectedVehicle: updatedRide.selectedVehicle,
-        vehicleDetails: updatedRide.vehicleDetails ? {
-          name: updatedRide.vehicleDetails.name,
-          price: updatedRide.vehicleDetails.price,
-          seats: updatedRide.vehicleDetails.seats,
-        } : undefined,
+        vehicleDetails: updatedRide.vehicleDetails
+          ? {
+              name: updatedRide.vehicleDetails.name,
+              price: updatedRide.vehicleDetails.price,
+              seats: updatedRide.vehicleDetails.seats,
+            }
+          : undefined,
         childSeats: updatedRide.childSeats,
         babySeats: updatedRide.babySeats,
         notes: updatedRide.notes,
@@ -97,14 +118,11 @@ export async function POST(
         totalAmount:
           typeof updatedRide.partnerPayoutAmount === "number"
             ? updatedRide.partnerPayoutAmount
-            : typeof updatedRide.totalAmount === "number"
-            ? updatedRide.totalAmount
             : 0,
         flightNumber: updatedRide.flightNumber,
       });
     } catch (emailError) {
       console.error("Error sending assignment email:", emailError);
-      // Continue even if email fails
     }
 
     return NextResponse.json({

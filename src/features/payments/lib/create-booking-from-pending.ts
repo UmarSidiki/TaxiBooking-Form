@@ -1,14 +1,12 @@
-import { notifyEligiblePartners } from '@/features/partners/lib/notify-eligible-partners';
 import { Booking, PendingBooking } from '@/features/booking/model';
 import { Vehicle } from '@/features/fleet/model';
 import { buildBookingEmailData } from '@/features/payments/lib/booking-email-data';
 import { buildPaidBookingRecord } from '@/features/payments/lib/build-paid-booking-record';
-import { isDuplicateKeyError } from '@/features/payments/lib/calculate-booking-total';
+import { isDuplicateKeyError } from '@/shared/lib/mongo-error';
 import type {
   FinalizePaidBookingInput,
   FinalizePaidBookingResult,
 } from '@/features/payments/lib/finalize-paid-booking.types';
-import { loadPaymentSettings } from '@/features/payments/lib/load-payment-settings';
 import { sendBookingEmails } from '@/features/payments/lib/send-booking-emails';
 
 const PAID_AMOUNT_TOLERANCE = 0.05;
@@ -67,15 +65,6 @@ export async function createBookingFromPending(
     });
 
     const emails = await sendBookingEmails(emailData, newBooking._id.toString());
-
-    try {
-      const { settings } = await loadPaymentSettings();
-      if (settings?.enablePartners) {
-        await notifyEligiblePartners(newBooking, baseUrl);
-      }
-    } catch (partnerError) {
-      console.error('Partner notification error:', partnerError);
-    }
 
     await PendingBooking.deleteOne({ orderId });
 

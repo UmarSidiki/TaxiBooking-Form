@@ -3,6 +3,7 @@
 import { PartnerRideCard } from "@/features/partners/ui/partner-ride-card";
 import { PartnerRideDetailDialog } from "@/features/partners/ui/partner-ride-detail-dialog";
 import { usePartnerRides } from "@/features/rides/hooks/usePartnerRides";
+import { DeskPageMeta } from "@/features/dashboard/ui/desk-page-chrome";
 import { Button } from "@/shared/ui/button";
 import { Car, Loader2 } from "lucide-react";
 
@@ -31,11 +32,11 @@ export default function PartnerRidesPage() {
   }
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-semibold tracking-tight">{t("rides")}</h1>
-        <p className="mt-1 text-sm text-muted-foreground">{t("your-upcoming-scheduled-rides")}</p>
-      </div>
+    <div className="flex flex-col gap-6">
+      <DeskPageMeta
+        title={t("rides")}
+        description={t("your-upcoming-scheduled-rides")}
+      />
       {loadError ? (
         <p className="rounded-md border border-border bg-card px-4 py-3 text-sm" role="alert">
           {loadError}

@@ -57,5 +57,7 @@ export function buildPaidBookingRecord(
     subtotalAmount: data.subtotalAmount,
     taxAmount: data.taxAmount,
     taxPercentage: data.taxPercentage,
+    // Partner review required before overflow / assign (no notify until approve)
+    partnerReviewStatus: 'pending' as const,
   };
 }

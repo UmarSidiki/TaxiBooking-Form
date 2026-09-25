@@ -10,6 +10,7 @@ export function DriverSidebar({ locale }: { locale: string }) {
       locale={locale}
       subtitleKey="Sidebar.driver_portal"
       logoutCallbackUrl={`/${locale}/drivers/login`}
+      homeHref={`/${locale}/drivers/dashboard`}
     >
       <DeskSidebarNav locale={locale} groups={driverNavGroups} />
     </DeskPlaqueSidebar>

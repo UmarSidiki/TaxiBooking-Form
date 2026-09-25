@@ -50,6 +50,12 @@ export function useAdminDrivers() {
     setShowForm(false);
   };
 
+  const openCreateForm = () => {
+    setFormData({ name: "", email: "", password: "", isActive: true });
+    setEditingId(null);
+    setShowForm(true);
+  };
+
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     setIsLoading(true);
@@ -126,6 +132,7 @@ export function useAdminDrivers() {
     setPendingDeleteId,
     confirmDelete,
     resetForm,
+    openCreateForm,
     loadError,
     fetchDrivers,
   };

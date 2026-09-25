@@ -16,6 +16,9 @@ export function AdminRideCardList({ rides }: { rides: Rides }) {
           currencySymbol={rides.currencySymbol}
           enablePartners={rides.enablePartners}
           enableDrivers={rides.enableDrivers}
+          partnerCashSettlement={rides.partnerCashSettlement}
+          dispatchAssigneeMode={rides.dispatchAssigneeMode}
+          defaultPartnerMargin={rides.defaultPartnerMargin}
           drivers={rides.drivers}
           partners={rides.partners}
           assigningId={rides.assigningId}
@@ -24,6 +27,9 @@ export function AdminRideCardList({ rides }: { rides: Rides }) {
           handleApprovePartnerReview={rides.handleApprovePartnerReview}
           handleAssignDriver={rides.handleAssignDriver}
           handleAssignPartner={rides.handleAssignPartner}
+          handleQuoteRequest={rides.handleQuoteRequest}
+          handleConfirmCashRequest={rides.handleConfirmCashRequest}
+          handleDeclineRequest={rides.handleDeclineRequest}
           handleCancelClick={rides.handleCancelClick}
           setDetailBooking={rides.setDetailBooking}
           setBookingReviews={rides.setBookingReviews}

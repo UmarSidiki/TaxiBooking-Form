@@ -6,7 +6,8 @@
     "trip-details": "تفاصيل الرحلة",
     "select-vehicle": "اختر المركبة",
     "payment-and-details": "الدفع والتفاصيل",
-    "booking": "الحجز"
+    "booking": "الحجز",
+    "your-details": "بياناتك"
   },
   "Footer": {
     "Copyright": "© 2025 {websiteName} جميع الحقوق محفوظة.",
@@ -196,7 +197,13 @@
     "flight-number-optional": "رقم الرحلة الجوية (اختياري)",
     "pay-online": "ادفع عبر الإنترنت",
     "via-multisafepay": "(عبر MultiSafepay)",
-    "ideal-bancontact-paypal-and-more": "iDEAL, Bancontact, PayPal والمزيد"
+    "ideal-bancontact-paypal-and-more": "iDEAL, Bancontact, PayPal والمزيد",
+    "appointment-request-title": "بياناتك",
+    "appointment-request-help": "نعمل بالمواعيد. أرسل طلباً — نؤكد التوفر قبل الدفع. لا رسوم الآن.",
+    "indicative-rate-label": "سعر إرشادي — يُؤكد بعد التحقق من التوفر:",
+    "request-this-appointment": "اطلب هذا الموعد",
+    "submitting-request": "جارٍ الإرسال…",
+    "whatsapp_confirmation-note": "سيتم إرسال تأكيد الحجز إليك أيضًا على واتساب."
   },
   "booking-failed-data-message": "فشل الحجز: {0}",
   "embeddable": {
@@ -434,7 +441,47 @@
       "choose-driver": "اختر سائقًا…",
       "select-new-driver": "اختر سائقًا جديدًا",
       "current-status": "الحالة الحالية",
-      "margin-helper": "حدد الهامش الذي يُحتفظ به من إجمالي الحجز."
+      "margin-helper": "حدد الهامش الذي يُحتفظ به من إجمالي الحجز.",
+      "Requests": "الطلبات",
+      "NoRequests": "لا طلبات",
+      "NoRequestsDescription": "تظهر طلبات المواعيد الجديدة هنا حتى تقتبس أو تؤكد نقداً أو ترفض.",
+      "status-requested": "مطلوب",
+      "status-awaiting-payment": "بانتظار الدفع",
+      "review-request": "مراجعة الطلب",
+      "request-actions-title": "طلب موعد",
+      "request-actions-help": "طلب #{tripId}",
+      "quoted-amount-label": "السعر المعروض",
+      "estimated-amount-hint": "تقدير إرشادي: {amount}",
+      "decline-reason-label": "ملاحظة للعميل (اختياري)",
+      "confirm-send-pay-link": "أكد وأرسل رابط الدفع",
+      "confirm-as-cash": "أكد نقداً / الدفع يوم الرحلة",
+      "not-available": "غير متاح",
+      "quote-sent": "تم إرسال رابط الدفع.",
+      "quote-failed": "تعذر إرسال رابط الدفع.",
+      "cash-confirmed": "تم التأكيد نقداً.",
+      "cash-confirm-failed": "تعذر التأكيد نقداً.",
+      "request-declined": "تم تعليم الطلب كغير متاح.",
+      "decline-failed": "تعذر رفض الطلب.",
+      "new-booking": "حجز جديد",
+      "new-booking-title": "حجز جديد",
+      "new-booking-help": "أنشئ حجزًا لعميل اتصل أو حضر شخصيًا.",
+      "section-outcome": "النتيجة والسعر",
+      "trip-type": "نوع الرحلة",
+      "select-vehicle": "اختر مركبة",
+      "customer-language": "لغة العميل",
+      "outcome": "النتيجة",
+      "outcome-confirmed": "رحلة مؤكدة",
+      "outcome-confirmed-help": "محجوزة الآن وجاهزة للإسناد. سجّل طريقة دفع العميل.",
+      "outcome-quote": "إرسال رابط الدفع",
+      "outcome-quote-help": "تنتظر الرحلة الدفع ويُرسل إلى العميل رابط دفع بالبريد الإلكتروني.",
+      "computed-fare": "الأجرة المحتسبة",
+      "manual-price": "سعر يدوي (نهائي)",
+      "manual-price-help": "اتركه فارغًا لاستخدام الأجرة المحتسبة. السعر اليدوي نهائي ولا يُعاد احتساب الضريبة.",
+      "manual-price-invalid": "أدخل مبلغًا أكبر من صفر",
+      "payment-collected": "تم تحصيل الدفع",
+      "notify-customer": "إرسال بريد إلكتروني إلى العميل",
+      "create-booking": "إنشاء الحجز",
+      "booking-created": "تم إنشاء الحجز {tripId}"
     },
     "Home": {
       "failed-to-fetch-dashboard-stats": "فشل جلب إحصائيات لوحة التحكم",
@@ -717,6 +764,10 @@
         "documents": "المستندات",
         "uploaded": "محملة",
         "partner-details": "تفاصيل الشريك",
+        "tab-profile": "الملف",
+        "tab-billing": "الفوترة",
+        "tab-documents": "المستندات",
+        "tab-fleet": "الأسطول",
         "review-partner-info": "مراجعة معلومات ومستندات الشريك",
         "status": "الحالة",
         "personal-information": "المعلومات الشخصية",
@@ -800,7 +851,19 @@
         "vehicle-requested": "تم طلب مركبة",
         "recalculate-payout": "إعادة حساب الدفع",
         "load-error": "تعذر تحميل الشركاء. أعد المحاولة.",
-        "retry": "إعادة المحاولة"
+        "retry": "إعادة المحاولة",
+        "remittance-balance-label": "تحويل مستحق",
+        "last-remittance-label": "آخر تحويل: {date}",
+        "mark-remittance-received": "تعليم التحويل مستلماً",
+        "marking-remittance": "جارٍ الحفظ…",
+        "settlement-ledger": "دفتر التسوية",
+        "loading-ledger": "جارٍ تحميل الدفتر…",
+        "empty-ledger": "لا توجد قيود بعد",
+        "settlement-type-payout_credit": "رصيد دفع",
+        "settlement-type-payout_paid": "تم الدفع",
+        "settlement-type-remittance_credit": "تحويل مستحق",
+        "settlement-type-remittance_received": "تم استلام التحويل",
+        "settlement-type-clawback": "استرداد"
       }
     },
     "Features": {
@@ -820,7 +883,23 @@
       "embeddable-form-module": "نموذج الحجز القابل للتضمين",
       "enable-embeddable-booking-form": "تمكين نموذج الحجز القابل للتضمين والذي يمكن دمجه في مواقع الويب الخارجية. \nعند التعطيل، لا يمكن للمستخدمين الوصول إلى صفحة المساعدة هذه.",
       "enable-form-builder": "قم بتمكين أداة إنشاء النماذج لتخصيص حقول نموذج الحجز والتخطيط. \nعند التعطيل، لن يكون من الممكن الوصول إلى صفحة منشئ النماذج.",
-      "form-builder-module": "منشئ النموذج"
+      "form-builder-module": "منشئ النموذج",
+      "dispatch-settlement-title": "التوزيع والتسوية",
+      "dispatch-settlement-description": "كيف يُدفع للشركاء في الرحلات النقدية وما إذا كان يمكن أن يكون للرحلة سائق وشريك معاً.",
+      "cash-settlement-label": "تسوية نقدية",
+      "cash-settlement-keep-cash": "الشريك يحتفظ بالنقد (بدون تحويل)",
+      "cash-settlement-operator-margin": "المشغّل يأخذ الهامش (الشريك يحوّل)",
+      "cash-settlement-help": "الرحلات الإلكترونية دائماً تستخدم مراجعة الهامش. هذا يغيّر فقط فائض النقد.",
+      "dispatch-mode-label": "وضع التعيين",
+      "dispatch-mode-exclusive": "حصري (معيّن واحد)",
+      "dispatch-mode-allow-both": "السماح بالسائق والشريك معاً",
+      "dispatch-mode-help": "الحصري يزيل الطرف الآخر عند التعيين أو القبول.",
+      "default-margin-label": "هامش الشريك الافتراضي (%)",
+      "default-margin-help": "الهامش المقترح عند الموافقة على رحلة للشركاء.",
+      "appointment-request-module": "الموعد أولاً",
+      "enable-appointment-request": "يرسل العملاء طلب موعد. تؤكد التوفر والسعر قبل الدفع. تُرسل رسالة تأكيد الحجز فقط بعد التأكيد.",
+      "desk-booking-module": "حجز من الموظف",
+      "enable-desk-booking": "يمكن للموظفين إنشاء حجوزات نيابة عن العميل، مع سعر يدوي اختياري."
     },
     "Fleet": {
       "failed-to-fetch-vehicles": "فشل جلب المركبات",
@@ -1181,7 +1260,13 @@
       "gateways_help": "أسرار وويب هوك Stripe أو MultiSafepay، مع بيانات البنك.",
       "save": "حفظ",
       "retry": "حاول مرة أخرى",
-      "multisafepay": "MultiSafepay"
+      "multisafepay": "MultiSafepay",
+      "booking-countries-title": "بلدان الحجز",
+      "booking-countries-help": "اقصر الحجوزات على البلدان المحددة. اتركه فارغًا لقبول الحجوزات من أي مكان.",
+      "booking-countries-search": "ابحث عن بلدان",
+      "booking-countries-all-allowed": "كل البلدان مسموح بها",
+      "booking-countries-selected-count": "{count, plural, one {# بلد محدد} other {# بلد محدد}}",
+      "booking-countries-no-results": "لا توجد بلدان تطابق بحثك"
     }
   },
   "Sidebar": {
@@ -1551,7 +1636,9 @@
     "or": "أو",
     "redirecting-in": "إعادة التوجيه خلال",
     "return-to-home": "العودة للصفحة الرئيسية",
-    "seconds": "ثوانٍ"
+    "seconds": "ثوانٍ",
+    "request-received-title": "تم استلام الطلب",
+    "request-received-body": "نعمل بالمواعيد. سنؤكد التوفر ونرسل لك الخطوات التالية. هذا ليس تأكيد حجز بعد."
   },
   "Driver": {
     "failed-to-fetch-drivers": "فشل جلب السائقين",
@@ -1580,7 +1667,10 @@
     "driver-saved": "تم حفظ السائق.",
     "driver-deleted": "تم حذف السائق.",
     "loading": "جاري تحميل السائقين…",
-    "delete": "حذف"
+    "delete": "حذف",
+    "search-drivers": "ابحث بالاسم أو البريد…",
+    "no-drivers-match": "لا يوجد سائقون مطابقون",
+    "try-another-search": "جرّب اسماً آخر أو امسح البحث."
   },
   "Drivers": {
     "driver-dashboard": "لوحة تحكم السائق",
@@ -1849,6 +1939,26 @@
     "payment_failed": "تعذر إتمام الدفع. أعد المحاولة.",
     "payment_not_configured": "مدفوعات البطاقة غير مُعدّة بعد.",
     "price_changed": "تغير السعر. حدّث الصفحة ثم أعد المحاولة.",
-    "distance_failed": "تعذر حساب المسار. راجع العناوين."
+    "distance_failed": "تعذر حساب المسار. راجع العناوين.",
+    "country_blocked": "الحجوزات غير متاحة من موقعك."
+  },
+  "Pay": {
+    "by-appointment": "بالموعد",
+    "pay-to-confirm": "ادفع للتأكيد",
+    "quote-summary": "طلب #{tripId}",
+    "pay-with-card": "ادفع بالبطاقة",
+    "pay-with-multisafepay": "ادفع عبر MultiSafepay",
+    "no-payment-methods": "الدفع عبر الإنترنت غير مهيأ.",
+    "payment-init-failed": "تعذر بدء الدفع.",
+    "link-invalid-title": "الرابط غير موجود",
+    "link-invalid-body": "رابط الدفع هذا غير صالح أو منتهٍ.",
+    "declined-title": "الطلب غير متاح",
+    "declined-body": "تم تعليم طلب الموعد هذا كغير متاح.",
+    "already-paid-title": "مؤكد مسبقاً",
+    "already-paid-body": "الرحلة #{tripId} مدفوعة ومؤكدة مسبقاً."
+  },
+  "CountryBlocked": {
+    "title": "لا نخدم منطقتك حتى الآن",
+    "body": "الحجوزات غير متاحة من موقعك الحالي. إذا كنت تعتقد أن هذا خطأ، فاتصل بنا وسنساعدك."
   }
 }

@@ -1,40 +1,31 @@
 import { connectDB } from "@/shared/db";
 import { Setting, type ISetting } from "@/features/settings/model";
+import {
+  toPublicSettings,
+  type PublicSettings,
+} from "@/features/settings/lib/public-settings";
 
-export type ThemeSettings = Pick<ISetting, "primaryColor" | "secondaryColor" | "borderRadius"> &
-  Partial<Omit<ISetting, "primaryColor" | "secondaryColor" | "borderRadius">>;
+export type ThemeSettings = PublicSettings;
 
-function ensureDefaults(settings: Partial<ISetting> | null): ThemeSettings {
-  const defaults = {
-    primaryColor: "#EAB308",
-    secondaryColor: "#111827",
-    borderRadius: 0.5,
-  };
-
-  if (!settings) {
-    return defaults;
-  }
-
+function withDefaults(settings: PublicSettings): PublicSettings {
   return {
     ...settings,
-    primaryColor: settings.primaryColor || defaults.primaryColor,
-    secondaryColor: settings.secondaryColor || defaults.secondaryColor,
+    primaryColor: settings.primaryColor || "#EAB308",
+    secondaryColor: settings.secondaryColor || "#111827",
     borderRadius:
-      typeof settings.borderRadius === "number"
-        ? settings.borderRadius
-        : defaults.borderRadius,
-  } as ThemeSettings;
+      typeof settings.borderRadius === "number" ? settings.borderRadius : 0.5,
+  };
 }
 
-export async function getThemeSettings(): Promise<ThemeSettings> {
+export async function getThemeSettings(): Promise<PublicSettings> {
   await connectDB();
 
-  const settingsDoc = await Setting.findOne({}).lean<ISetting>().exec();
+  const settingsDoc = await Setting.findOne().lean<ISetting>().exec();
 
   if (!settingsDoc) {
     const created = await Setting.create({});
-    return ensureDefaults(created.toObject());
+    return withDefaults(toPublicSettings(created.toObject() as ISetting));
   }
 
-  return ensureDefaults(settingsDoc);
+  return withDefaults(toPublicSettings(settingsDoc));
 }

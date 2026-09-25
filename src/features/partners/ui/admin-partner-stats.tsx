@@ -18,19 +18,19 @@ export function AdminPartnerStats({
   ];
 
   return (
-    <dl className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+    <dl className="grid grid-cols-2 gap-3 xl:grid-cols-4">
       {items.map((item) => (
-        <Card key={item.label} className="desk-card border-border">
-          <CardContent className="pt-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <dt className="text-sm font-medium text-muted-foreground">
-                  {item.label}
-                </dt>
-                <dd className="text-2xl font-semibold tabular-nums text-foreground">{item.value}</dd>
-              </div>
-              <item.icon className="size-6 text-primary" aria-hidden="true" />
+        <Card key={item.label} className="desk-card border-border/60">
+          <CardContent className="flex items-center justify-between gap-3 p-3.5">
+            <div className="min-w-0">
+              <dt className="truncate text-xs font-medium text-muted-foreground">
+                {item.label}
+              </dt>
+              <dd className="text-xl font-semibold tabular-nums text-foreground">
+                {item.value}
+              </dd>
             </div>
+            <item.icon className="size-5 shrink-0 text-primary" aria-hidden="true" />
           </CardContent>
         </Card>
       ))}

@@ -23,7 +23,8 @@ export const completePaymentBodySchema = z
   );
 
 export const multisafepayOrderBodySchema = z.object({
-  amount: z.number().positive(),
+  /** Advisory only - the server recomputes and charges the authoritative fare. */
+  amount: z.number().optional(),
   currency: z.string().optional(),
   customerEmail: z.string().optional(),
   customerName: z.string().optional(),
@@ -31,7 +32,6 @@ export const multisafepayOrderBodySchema = z.object({
   orderId: z.string().optional(),
   locale: z.string().optional(),
   bookingData: checkoutBookingDataSchema,
-  totalAmount: z.number().optional(),
 });
 
 export const cancelMultisafepayBodySchema = z

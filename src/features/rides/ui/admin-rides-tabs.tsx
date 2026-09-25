@@ -1,25 +1,40 @@
 "use client";
 
-import { Ban, CalendarDays, CheckCircle } from "lucide-react";
-
 import { Badge } from "@/shared/ui/badge";
 import { Tabs, TabsList, TabsTrigger } from "@/shared/ui/tabs";
 import type { useAdminRides } from "@/features/rides/hooks/useAdminRides";
 import { AdminRideCardList } from "@/features/rides/ui/admin-ride-card-list";
 import { AdminRidesTabPanel } from "@/features/rides/ui/admin-rides-tab-panel";
+import { Ban, CalendarDays, CheckCircle, Inbox } from "lucide-react";
+import { cn } from "@/shared/lib/utils";
 
 type Rides = ReturnType<typeof useAdminRides>;
 
-const triggerClass =
-  "min-h-11 min-w-0 gap-1.5 rounded-md px-2 py-2 text-xs transition-colors duration-200 sm:text-sm data-[state=active]:bg-primary data-[state=active]:text-primary-foreground";
-
 export function AdminRidesTabs({ rides }: { rides: Rides }) {
-  const { t, activeTab, filteredBookings, isLoading, fetchBookings } = rides;
+  const { t, activeTab, filteredBookings, enableAppointmentRequest } = rides;
   const count = filteredBookings.length;
+  const cols = enableAppointmentRequest ? "grid-cols-4" : "grid-cols-3";
 
   return (
-    <Tabs value={activeTab} onValueChange={rides.setActiveTab} className="w-full">
-      <TabsList className="grid h-auto w-full grid-cols-3 gap-1 rounded-md border border-border bg-muted p-1">
+    <Tabs
+      value={activeTab}
+      onValueChange={rides.setActiveTab}
+      className="flex w-full flex-col gap-4"
+    >
+      <TabsList
+        className={cn(
+          "grid h-auto w-full gap-1 rounded-xl border border-border/60 bg-muted/40 p-1",
+          cols
+        )}
+      >
+        {enableAppointmentRequest ? (
+          <RideTab
+            value="requests"
+            icon={Inbox}
+            label={t("Dashboard.Rides.Requests")}
+            count={activeTab === "requests" ? count : 0}
+          />
+        ) : null}
         <RideTab
           value="upcoming"
           icon={CalendarDays}
@@ -40,6 +55,15 @@ export function AdminRidesTabs({ rides }: { rides: Rides }) {
         />
       </TabsList>
 
+      {enableAppointmentRequest ? (
+        <RidePanel
+          rides={rides}
+          value="requests"
+          icon={Inbox}
+          title={t("Dashboard.Rides.NoRequests")}
+          description={t("Dashboard.Rides.NoRequestsDescription")}
+        />
+      ) : null}
       <RidePanel
         rides={rides}
         value="upcoming"
@@ -77,11 +101,20 @@ function RideTab({
   count: number;
 }) {
   return (
-    <TabsTrigger value={value} className={triggerClass}>
+    <TabsTrigger
+      value={value}
+      className={cn(
+        "min-h-11 min-w-0 gap-1.5 rounded-lg px-2 py-2 text-xs text-muted-foreground transition-colors duration-200 sm:text-sm",
+        "data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm"
+      )}
+    >
       <Icon className="size-4 shrink-0" aria-hidden="true" />
       <span className="truncate font-medium">{label}</span>
       {count > 0 ? (
-        <Badge variant="outline" className="hidden px-1.5 tabular-nums sm:inline-flex">
+        <Badge
+          variant="secondary"
+          className="hidden px-1.5 tabular-nums sm:inline-flex"
+        >
           {count}
         </Badge>
       ) : null}
@@ -112,6 +145,7 @@ function RidePanel({
       emptyIcon={icon}
       emptyTitle={title}
       emptyDescription={description}
+      gridClassName="flex flex-col gap-3"
     >
       <AdminRideCardList rides={rides} />
     </AdminRidesTabPanel>

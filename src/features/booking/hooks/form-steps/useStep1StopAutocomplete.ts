@@ -3,7 +3,7 @@
 import { useCallback, useEffect } from "react";
 import type { Dispatch, MutableRefObject, SetStateAction } from "react";
 import type { FormData, FormErrors } from "@/features/booking/context/booking-form-context";
-import { MIN_POLYGON_POINTS } from "@/features/booking/lib/maps/map-defaults";
+import { buildAutocompleteOptions } from "@/features/booking/lib/maps/place-autocomplete";
 import type { ISetting } from "@/features/settings/model";
 import type { useTranslations } from "next-intl";
 
@@ -34,25 +34,7 @@ export function useStep1StopAutocomplete({
       const inputRef = stopInputRefs.current[index];
       if (!inputRef) return null;
 
-      const autocompleteOptions: google.maps.places.AutocompleteOptions = {
-        strictBounds: true,
-      };
-
-      // If polygon is defined, use its bounding box for biasing results
-      if (settings?.mapPolygonPoints && settings.mapPolygonPoints.length >= MIN_POLYGON_POINTS) {
-        const bounds = new google.maps.LatLngBounds();
-        settings.mapPolygonPoints.forEach(point => {
-          bounds.extend(new google.maps.LatLng(point.lat, point.lng));
-        });
-        autocompleteOptions.bounds = bounds;
-      } else if (settings?.mapBounds) {
-        // Fallback to rectangular bounds if available
-        const bounds = new google.maps.LatLngBounds(
-          new google.maps.LatLng(settings.mapBounds.south, settings.mapBounds.west),
-          new google.maps.LatLng(settings.mapBounds.north, settings.mapBounds.east)
-        );
-        autocompleteOptions.bounds = bounds;
-      }
+      const autocompleteOptions = buildAutocompleteOptions(settings);
 
       const autocomplete = new window.google.maps.places.Autocomplete(
         inputRef,

@@ -12,6 +12,7 @@ export const settingsWriteSchema = z.object({
   mapInitialLat: z.number().optional(),
   mapInitialLng: z.number().optional(),
   mapCountryRestrictions: z.array(z.string()).optional(),
+  allowedBookingCountries: z.array(z.string().length(2)).optional(),
   mapBounds: z
     .object({
       north: z.number(),
@@ -49,11 +50,16 @@ export const settingsWriteSchema = z.object({
   smtpSenderName: z.string().optional(),
   enablePartners: z.boolean().optional(),
   enableDrivers: z.boolean().optional(),
+  enableAppointmentRequest: z.boolean().optional(),
   enableEmbeddableForm: z.boolean().optional(),
   enableFormBuilder: z.boolean().optional(),
+  enableDeskBooking: z.boolean().optional(),
   enableTax: z.boolean().optional(),
   taxPercentage: z.number().optional(),
   taxIncluded: z.boolean().optional(),
+  partnerCashSettlement: z.enum(["keep_cash", "operator_margin"]).optional(),
+  dispatchAssigneeMode: z.enum(["exclusive", "allow_both"]).optional(),
+  defaultPartnerMarginPercentage: z.number().min(0).max(100).optional(),
   adminEmail: z.string().optional(),
   timezone: z.string().optional(),
 });

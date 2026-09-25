@@ -74,9 +74,15 @@ export default function ThankYouPage() {
           {/* Success Message */}
           <div className="text-center space-y-4 mb-8">
             <h1 className="text-3xl sm:text-4xl font-bold text-gray-900">
-              {t('ThankYou.thank-you-for-your-booking')} </h1>
+              {paymentMethod === "request"
+                ? t("ThankYou.request-received-title")
+                : t("ThankYou.thank-you-for-your-booking")}{" "}
+            </h1>
             <p className="text-lg text-gray-600">
-              {t('ThankYou.your-trip-has-been-successfully-confirmed')} </p>
+              {paymentMethod === "request"
+                ? t("ThankYou.request-received-body")
+                : t("ThankYou.your-trip-has-been-successfully-confirmed")}{" "}
+            </p>
           </div>
 
           {/* Booking Details */}

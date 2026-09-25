@@ -31,16 +31,28 @@ export function filterAdminBookings({
   let filtered: IBooking[] = [];
 
   switch (activeTab) {
+    case "requests":
+      filtered = bookings.filter(
+        (b) =>
+          b.status === "requested" || b.status === "awaiting_payment"
+      );
+      break;
     case "upcoming":
       filtered = bookings.filter((b) => {
         if (b.status === "canceled") return false;
         if (b.status === "completed") return false;
+        if (b.status === "requested" || b.status === "awaiting_payment") {
+          return false;
+        }
         return !isBookingPassed(b.date, b.time);
       });
       break;
     case "passed":
       filtered = bookings.filter((b) => {
         if (b.status === "canceled") return false;
+        if (b.status === "requested" || b.status === "awaiting_payment") {
+          return false;
+        }
         if (b.status === "completed") return true;
         return isBookingPassed(b.date, b.time);
       });

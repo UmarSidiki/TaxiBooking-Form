@@ -8,6 +8,7 @@ import {
   PartnerFleetStatusAlert,
 } from "@/features/partners/ui/partner-fleet-status";
 import { DeskConfirmDialog } from "@/features/dashboard/ui/desk-confirm-dialog";
+import { DeskPageMeta } from "@/features/dashboard/ui/desk-page-chrome";
 import { usePartnerFleet } from "@/features/fleet/hooks/usePartnerFleet";
 import { Button } from "@/shared/ui/button";
 import { Loader2 } from "lucide-react";
@@ -82,11 +83,11 @@ export default function PartnerFleetPage() {
           };
 
   return (
-    <div className="space-y-8">
-      <div>
-        <h1 className="text-2xl font-semibold tracking-tight">{t("fleet-management")}</h1>
-        <p className="mt-1 text-sm text-muted-foreground">{t("select-vehicle-from-admin-fleet")}</p>
-      </div>
+    <div className="flex flex-col gap-8">
+      <DeskPageMeta
+        title={t("fleet-management")}
+        description={t("select-vehicle-from-admin-fleet")}
+      />
       {notice ? (
         <p className="rounded-md border border-border bg-card px-4 py-3 text-sm" role="status">
           {notice}

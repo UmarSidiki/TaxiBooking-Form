@@ -6,8 +6,8 @@ import {
   DEFAULT_MAP_CENTER,
   DEFAULT_MAP_ZOOM,
   MAP_LOAD_DEFER_MS,
-  MIN_POLYGON_POINTS,
 } from "@/features/booking/lib/maps/map-defaults";
+import { buildAutocompleteOptions } from "@/features/booking/lib/maps/place-autocomplete";
 import type { FormData, FormErrors } from "@/features/booking/context/booking-form-context";
 import type { ISetting } from "@/features/settings/model";
 import { useTranslations } from "next-intl";
@@ -92,25 +92,7 @@ export function useStep1GoogleMaps({
           setMapLoaded(true);
         }
 
-        const autocompleteOptions: google.maps.places.AutocompleteOptions = {
-          strictBounds: true,
-        };
-
-        // If polygon is defined, use its bounding box for biasing results
-        if (settings?.mapPolygonPoints && settings.mapPolygonPoints.length >= MIN_POLYGON_POINTS) {
-          const bounds = new google.maps.LatLngBounds();
-          settings.mapPolygonPoints.forEach(point => {
-            bounds.extend(new google.maps.LatLng(point.lat, point.lng));
-          });
-          autocompleteOptions.bounds = bounds;
-        } else if (settings?.mapBounds) {
-          // Fallback to rectangular bounds if available
-          const bounds = new google.maps.LatLngBounds(
-            new google.maps.LatLng(settings.mapBounds.south, settings.mapBounds.west),
-            new google.maps.LatLng(settings.mapBounds.north, settings.mapBounds.east)
-          );
-          autocompleteOptions.bounds = bounds;
-        }
+        const autocompleteOptions = buildAutocompleteOptions(settings);
 
         // Setup Autocomplete for pickup (only once)
         if (

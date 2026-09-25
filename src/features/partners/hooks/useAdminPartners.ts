@@ -113,6 +113,30 @@ export function useAdminPartners() {
     [updatePartnerCollections]
   );
 
+  const handleMarkRemittanceReceived = useCallback(
+    async (partnerId: string) => {
+      try {
+        setPayoutProcessingId(partnerId);
+        const response = await fetch(
+          `/api/admin/partners/${partnerId}/remittance`,
+          { method: "PATCH" }
+        );
+
+        const data = await response.json();
+        if (!response.ok || !data.success || !data.partner) {
+          throw new Error(data.error || "Failed to update remittance");
+        }
+
+        updatePartnerCollections(data.partner);
+      } catch (error) {
+        console.error("Failed to mark remittance as received", error);
+      } finally {
+        setPayoutProcessingId(null);
+      }
+    },
+    [updatePartnerCollections]
+  );
+
   const handleRecalculatePayout = useCallback(
     async (partnerId: string) => {
       try {
@@ -370,6 +394,7 @@ export function useAdminPartners() {
     formatCurrency,
     formatDate,
     handleMarkPayoutPaid,
+    handleMarkRemittanceReceived,
     handleRecalculatePayout,
     handleApprove,
     handleReject,

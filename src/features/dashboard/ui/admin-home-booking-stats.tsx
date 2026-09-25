@@ -12,28 +12,24 @@ const STATS = [
     key: "total" as const,
     icon: Calendar,
     label: (t: TFn) => t("Dashboard.Home.total-bookings"),
-    hint: (t: TFn) => t("Dashboard.Home.all-time-bookings"),
     value: (stats: DashboardStats) => stats.totalBookings,
   },
   {
     key: "completed" as const,
     icon: CheckCircle,
     label: (t: TFn) => t("Dashboard.Rides.Completed"),
-    hint: (t: TFn) => t("Dashboard.Home.successfully-completed-trips"),
     value: (stats: DashboardStats) => stats.completedBookings,
   },
   {
     key: "upcoming" as const,
     icon: Clock,
     label: (t: TFn) => t("Dashboard.Rides.Upcoming"),
-    hint: (t: TFn) => t("Dashboard.Home.scheduled-for-future"),
     value: (stats: DashboardStats) => stats.upcomingBookings,
   },
   {
     key: "canceled" as const,
     icon: XCircle,
     label: (t: TFn) => t("Dashboard.Rides.Canceled"),
-    hint: (t: TFn) => t("Dashboard.Home.canceled-by-customers"),
     value: (stats: DashboardStats) => stats.canceledBookings,
   },
 ];
@@ -46,20 +42,19 @@ export function AdminHomeBookingStats({
   stats: DashboardStats;
 }) {
   return (
-    <dl className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+    <dl className="grid grid-cols-2 gap-3 xl:grid-cols-4">
       {STATS.map((item) => (
-        <Card key={item.key} className="desk-card border-border">
-          <CardContent className="p-5">
-            <div className="flex items-center justify-between gap-3">
-              <item.icon className="size-5 text-primary" aria-hidden="true" />
-              <dt className="text-xs font-medium text-muted-foreground">
+        <Card key={item.key} className="desk-card border-border/60">
+          <CardContent className="flex items-center justify-between gap-3 p-3.5">
+            <div className="min-w-0">
+              <dt className="truncate text-xs font-medium text-muted-foreground">
                 {item.label(t)}
               </dt>
+              <dd className="text-xl font-semibold tabular-nums text-foreground">
+                {item.value(stats)}
+              </dd>
             </div>
-            <dd className="mt-4 text-3xl font-semibold tracking-tight tabular-nums text-foreground">
-              {item.value(stats)}
-            </dd>
-            <p className="mt-1 text-sm text-muted-foreground">{item.hint(t)}</p>
+            <item.icon className="size-5 shrink-0 text-primary" aria-hidden="true" />
           </CardContent>
         </Card>
       ))}

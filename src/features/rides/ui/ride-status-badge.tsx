@@ -1,5 +1,5 @@
 import { Badge } from '@/shared/ui/badge';
-import { Calendar, CheckCircle, X } from 'lucide-react';
+import { Calendar, CheckCircle, Clock, Inbox, X } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import type { IBooking } from '@/features/booking/model';
 
@@ -27,10 +27,31 @@ export function RideStatusBadge({
     );
   }
 
-  const completed =
-    isCompleted ?? new Date(booking.date) < new Date();
+  if (booking.status === 'requested') {
+    return (
+      <Badge
+        className={`${BADGE_CLASSES} bg-secondary text-secondary-foreground`}
+      >
+        <Inbox className="w-3 h-3" /> {t('Dashboard.Rides.status-requested')}
+      </Badge>
+    );
+  }
 
-  if (completed) {
+  if (booking.status === 'awaiting_payment') {
+    return (
+      <Badge
+        className={`${BADGE_CLASSES} bg-secondary text-secondary-foreground`}
+      >
+        <Clock className="w-3 h-3" /> {t('Dashboard.Rides.status-awaiting-payment')}
+      </Badge>
+    );
+  }
+
+  const completed =
+    isCompleted ??
+    (booking.status === 'completed' || new Date(booking.date) < new Date());
+
+  if (completed || booking.status === 'completed') {
     return (
       <Badge
         className={`${BADGE_CLASSES} bg-muted hover:bg-muted/90 text-muted-foreground`}

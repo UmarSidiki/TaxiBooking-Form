@@ -101,7 +101,7 @@ export function MapTabPanel({
             <Button
               type="button"
               onClick={handleStartDrawing}
-              disabled={!mapReady || !!mapError}
+              disabled={!mapReady || !!mapError || isDrawing}
               variant={isDrawing ? "secondary" : "default"}
               className="min-h-11"
             >

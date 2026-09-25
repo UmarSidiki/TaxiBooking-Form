@@ -6,7 +6,8 @@
     "trip-details": "Reisedetails",
     "select-vehicle": "Fahrzeugwahl",
     "payment-and-details": "Zahlung & Details",
-    "booking": "Buchung"
+    "booking": "Buchung",
+    "your-details": "Ihre Angaben"
   },
   "Footer": {
     "Copyright": "© 2025 {websiteName} Alle Rechte vorbehalten.",
@@ -196,7 +197,13 @@
     "flight-number-optional": "Flugnummer (Optional)",
     "pay-online": "Online bezahlen",
     "via-multisafepay": "(via MultiSafepay)",
-    "ideal-bancontact-paypal-and-more": "iDEAL, Bancontact, PayPal & mehr"
+    "ideal-bancontact-paypal-and-more": "iDEAL, Bancontact, PayPal & mehr",
+    "appointment-request-title": "Ihre Angaben",
+    "appointment-request-help": "Wir arbeiten nach Termin. Senden Sie eine Anfrage — wir prüfen die Verfügbarkeit vor der Zahlung. Jetzt keine Belastung.",
+    "indicative-rate-label": "Richtpreis — bestätigt nach Verfügbarkeitsprüfung:",
+    "request-this-appointment": "Termin anfragen",
+    "submitting-request": "Wird gesendet…",
+    "whatsapp_confirmation-note": "Ihre Buchungsbestätigung wird Ihnen zusätzlich per WhatsApp gesendet."
   },
   "booking-failed-data-message": "Buchung fehlgeschlagen: {0}",
   "embeddable": {
@@ -434,7 +441,47 @@
       "choose-driver": "Fahrer wählen…",
       "select-new-driver": "Neuen Fahrer wählen",
       "current-status": "Aktueller Status",
-      "margin-helper": "Legen Sie die Marge fest, die vom Buchungsbetrag einbehalten wird."
+      "margin-helper": "Legen Sie die Marge fest, die vom Buchungsbetrag einbehalten wird.",
+      "Requests": "Anfragen",
+      "NoRequests": "Keine Anfragen",
+      "NoRequestsDescription": "Neue Anfragen erscheinen hier, bis Sie anbieten, Bar bestätigen oder ablehnen.",
+      "status-requested": "Angefragt",
+      "status-awaiting-payment": "Zahlung ausstehend",
+      "review-request": "Anfrage prüfen",
+      "request-actions-title": "Terminanfrage",
+      "request-actions-help": "Anfrage #{tripId}",
+      "quoted-amount-label": "Angebotspreis",
+      "estimated-amount-hint": "Richtwert: {amount}",
+      "decline-reason-label": "Hinweis an Kunden (optional)",
+      "confirm-send-pay-link": "Bestätigen und Zahlungslink senden",
+      "confirm-as-cash": "Als Bar / Zahlung vor Ort bestätigen",
+      "not-available": "Nicht verfügbar",
+      "quote-sent": "Zahlungslink gesendet.",
+      "quote-failed": "Zahlungslink konnte nicht gesendet werden.",
+      "cash-confirmed": "Als Bar bestätigt.",
+      "cash-confirm-failed": "Bar-Bestätigung fehlgeschlagen.",
+      "request-declined": "Anfrage als nicht verfügbar markiert.",
+      "decline-failed": "Ablehnen fehlgeschlagen.",
+      "new-booking": "Neue Buchung",
+      "new-booking-title": "Neue Buchung",
+      "new-booking-help": "Erstellen Sie eine Buchung für einen Kunden, der angerufen hat oder vorbeigekommen ist.",
+      "section-outcome": "Ergebnis und Preis",
+      "trip-type": "Fahrttyp",
+      "select-vehicle": "Fahrzeug auswählen",
+      "customer-language": "Sprache des Kunden",
+      "outcome": "Ergebnis",
+      "outcome-confirmed": "Bestätigte Fahrt",
+      "outcome-confirmed-help": "Sofort gebucht und bereit zur Zuweisung. Erfassen Sie, wie der Kunde bezahlt hat.",
+      "outcome-quote": "Zahlungslink senden",
+      "outcome-quote-help": "Die Fahrt wartet auf Zahlung; der Kunde erhält einen Zahlungslink per E-Mail.",
+      "computed-fare": "Berechneter Preis",
+      "manual-price": "Manueller Preis (endgültig)",
+      "manual-price-help": "Leer lassen, um den berechneten Preis zu verwenden. Ein manueller Preis ist endgültig; Steuern werden nicht neu berechnet.",
+      "manual-price-invalid": "Geben Sie einen Betrag größer als null ein",
+      "payment-collected": "Zahlung erhalten",
+      "notify-customer": "Kunden per E-Mail benachrichtigen",
+      "create-booking": "Buchung erstellen",
+      "booking-created": "Buchung {tripId} erstellt"
     },
     "Home": {
       "failed-to-fetch-dashboard-stats": "Dashboard-Statistiken konnten nicht abgerufen werden",
@@ -717,6 +764,10 @@
         "documents": "Dokumente",
         "uploaded": "Hochgeladen",
         "partner-details": "Partnerdetails",
+        "tab-profile": "Profil",
+        "tab-billing": "Abrechnung",
+        "tab-documents": "Dokumente",
+        "tab-fleet": "Flotte",
         "review-partner-info": "Partnerinformationen und Dokumente prüfen",
         "status": "Status",
         "personal-information": "Persönliche Informationen",
@@ -800,7 +851,19 @@
         "vehicle-requested": "Fahrzeug angefragt",
         "recalculate-payout": "Auszahlung neu berechnen",
         "load-error": "Partner konnten nicht geladen werden. Erneut versuchen.",
-        "retry": "Erneut versuchen"
+        "retry": "Erneut versuchen",
+        "remittance-balance-label": "Offene Abführung",
+        "last-remittance-label": "Letzte Abführung: {date}",
+        "mark-remittance-received": "Abführung als erhalten markieren",
+        "marking-remittance": "Speichern…",
+        "settlement-ledger": "Abrechnungskonto",
+        "loading-ledger": "Konto wird geladen…",
+        "empty-ledger": "Noch keine Einträge",
+        "settlement-type-payout_credit": "Auszahlungs-Gutschrift",
+        "settlement-type-payout_paid": "Auszahlung bezahlt",
+        "settlement-type-remittance_credit": "Abführung fällig",
+        "settlement-type-remittance_received": "Abführung erhalten",
+        "settlement-type-clawback": "Rückbuchung"
       }
     },
     "Features": {
@@ -820,7 +883,23 @@
       "embeddable-form-module": "Einbettbares Buchungsformular",
       "enable-embeddable-booking-form": "Aktivieren Sie das einbettbare Buchungsformular, das auf externen Websites integriert werden kann. \nWenn diese Option deaktiviert ist, können Benutzer nicht auf diese Hilfsseite zugreifen.",
       "enable-form-builder": "Aktivieren Sie das Formularerstellungstool, um die Felder und das Layout des Buchungsformulars anzupassen. \nWenn diese Option deaktiviert ist, ist die Formularerstellungsseite nicht zugänglich.",
-      "form-builder-module": "Formularersteller"
+      "form-builder-module": "Formularersteller",
+      "dispatch-settlement-title": "Disposition & Abrechnung",
+      "dispatch-settlement-description": "Wie Partner bei Barfahrten bezahlt werden und ob eine Fahrt Fahrer und Partner gleichzeitig haben darf.",
+      "cash-settlement-label": "Barabrechnung",
+      "cash-settlement-keep-cash": "Partner behält Bargeld (keine Abführung)",
+      "cash-settlement-operator-margin": "Betreiber nimmt Marge (Partner führt ab)",
+      "cash-settlement-help": "Online-Fahrten nutzen immer die Margenprüfung. Das betrifft nur Bar-Overflow.",
+      "dispatch-mode-label": "Zuweisungsmodus",
+      "dispatch-mode-exclusive": "Exklusiv (ein Zuweisender)",
+      "dispatch-mode-allow-both": "Fahrer und Partner gleichzeitig erlauben",
+      "dispatch-mode-help": "Exklusiv löscht die andere Partei bei Zuweisung oder Annahme.",
+      "default-margin-label": "Standard-Partnermarge (%)",
+      "default-margin-help": "Vorgeschlagene Marge beim Freigeben einer Fahrt für Partner.",
+      "appointment-request-module": "Termin zuerst",
+      "enable-appointment-request": "Kunden senden eine Terminanfrage. Sie bestätigen Verfügbarkeit und Preis vor der Zahlung. Bestätigungs-E-Mails gehen erst nach Freigabe raus.",
+      "desk-booking-module": "Operator-Buchung",
+      "enable-desk-booking": "Mitarbeiter können Buchungen im Namen eines Kunden erstellen, optional mit manuellem Preis."
     },
     "Fleet": {
       "failed-to-fetch-vehicles": "Fahrzeuge konnten nicht abgerufen werden",
@@ -1181,7 +1260,13 @@
       "gateways_help": "Geheimnisse und Webhooks für Stripe oder MultiSafepay sowie Bankdaten.",
       "save": "Speichern",
       "retry": "Erneut versuchen",
-      "multisafepay": "MultiSafepay"
+      "multisafepay": "MultiSafepay",
+      "booking-countries-title": "Buchungsländer",
+      "booking-countries-help": "Beschränken Sie Buchungen auf die ausgewählten Länder. Leer lassen, um Buchungen von überall zu akzeptieren.",
+      "booking-countries-search": "Länder suchen",
+      "booking-countries-all-allowed": "Alle Länder erlaubt",
+      "booking-countries-selected-count": "{count, plural, one {# Land ausgewählt} other {# Länder ausgewählt}}",
+      "booking-countries-no-results": "Keine Länder entsprechen Ihrer Suche"
     }
   },
   "Sidebar": {
@@ -1551,7 +1636,9 @@
     "or": "oder",
     "redirecting-in": "Weiterleitung in",
     "return-to-home": "Zurück zur Startseite",
-    "seconds": "Sekunden"
+    "seconds": "Sekunden",
+    "request-received-title": "Anfrage erhalten",
+    "request-received-body": "Wir arbeiten nach Termin. Wir prüfen die Verfügbarkeit und mailen die nächsten Schritte. Das ist noch keine Buchungsbestätigung."
   },
   "Driver": {
     "failed-to-fetch-drivers": "Fahrer konnten nicht abgerufen werden",
@@ -1580,7 +1667,10 @@
     "driver-saved": "Fahrer gespeichert.",
     "driver-deleted": "Fahrer gelöscht.",
     "loading": "Fahrer werden geladen…",
-    "delete": "Löschen"
+    "delete": "Löschen",
+    "search-drivers": "Nach Name oder E-Mail suchen…",
+    "no-drivers-match": "Keine Fahrer gefunden",
+    "try-another-search": "Anderen Namen versuchen oder Suche löschen."
   },
   "Drivers": {
     "driver-dashboard": "Fahrer-Dashboard",
@@ -1849,6 +1939,26 @@
     "payment_failed": "Zahlung konnte nicht abgeschlossen werden. Erneut versuchen.",
     "payment_not_configured": "Kartenzahlungen sind noch nicht konfiguriert.",
     "price_changed": "Der Preis hat sich geändert. Aktualisieren und erneut versuchen.",
-    "distance_failed": "Die Route konnte nicht berechnet werden. Adressen prüfen."
+    "distance_failed": "Die Route konnte nicht berechnet werden. Adressen prüfen.",
+    "country_blocked": "Buchungen sind von Ihrem Standort aus nicht möglich."
+  },
+  "Pay": {
+    "by-appointment": "Nach Termin",
+    "pay-to-confirm": "Zur Bestätigung zahlen",
+    "quote-summary": "Anfrage #{tripId}",
+    "pay-with-card": "Mit Karte zahlen",
+    "pay-with-multisafepay": "Mit MultiSafepay zahlen",
+    "no-payment-methods": "Online-Zahlung ist nicht eingerichtet.",
+    "payment-init-failed": "Zahlung konnte nicht gestartet werden.",
+    "link-invalid-title": "Link nicht gefunden",
+    "link-invalid-body": "Dieser Zahlungslink ist ungültig oder abgelaufen.",
+    "declined-title": "Anfrage nicht verfügbar",
+    "declined-body": "Diese Anfrage wurde als nicht verfügbar markiert.",
+    "already-paid-title": "Bereits bestätigt",
+    "already-paid-body": "Fahrt #{tripId} ist bereits bezahlt und bestätigt."
+  },
+  "CountryBlocked": {
+    "title": "Wir bedienen Ihre Region noch nicht",
+    "body": "Buchungen sind von Ihrem aktuellen Standort aus nicht möglich. Wenn Sie glauben, dass das ein Fehler ist, kontaktieren Sie uns."
   }
 }

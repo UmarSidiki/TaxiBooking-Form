@@ -38,12 +38,27 @@ export interface IBooking extends Document {
   stripePaymentIntentId?: string;
   multisafepayOrderId?: string;
   multisafepayTransactionId?: string;
-  status?: "upcoming" | "completed" | "canceled";
+  status?: "requested" | "awaiting_payment" | "upcoming" | "completed" | "canceled";
   totalAmount?: number;
+  estimatedAmount?: number;
+  quotedAmount?: number;
+  quotedAt?: Date;
+  declinedAt?: Date;
+  declineReason?: string;
+  paymentTokenHash?: string;
+  requestEmailSent?: boolean;
+  quoteEmailSent?: boolean;
   subtotalAmount?: number;
   taxAmount?: number;
   taxPercentage?: number;
   taxIncluded?: boolean;
+  /** "manual" when an operator set a final price instead of the computed fare. */
+  priceSource?: "computed" | "manual";
+  /** Set when an operator created the booking from the desk. */
+  createdBy?: {
+    userId?: string;
+    name?: string;
+  };
   refundAmount?: number;
   refundPercentage?: number;
   canceledAt?: Date;
@@ -120,14 +135,27 @@ const BookingSchema: Schema = new Schema({
   multisafepayTransactionId: { type: String, unique: true, sparse: true },
   status: {
     type: String,
-    enum: ["upcoming", "completed", "canceled"],
+    enum: ["requested", "awaiting_payment", "upcoming", "completed", "canceled"],
     default: "upcoming"
   },
   totalAmount: { type: Number },
+  estimatedAmount: { type: Number },
+  quotedAmount: { type: Number },
+  quotedAt: { type: Date },
+  declinedAt: { type: Date },
+  declineReason: { type: String },
+  paymentTokenHash: { type: String, index: true, sparse: true },
+  requestEmailSent: { type: Boolean, default: false },
+  quoteEmailSent: { type: Boolean, default: false },
   subtotalAmount: { type: Number },
   taxAmount: { type: Number },
   taxPercentage: { type: Number },
   taxIncluded: { type: Boolean, default: false },
+  priceSource: { type: String, enum: ["computed", "manual"] },
+  createdBy: {
+    userId: { type: Schema.Types.ObjectId, ref: "User" },
+    name: { type: String },
+  },
   refundAmount: { type: Number },
   refundPercentage: { type: Number },
   canceledAt: { type: Date },

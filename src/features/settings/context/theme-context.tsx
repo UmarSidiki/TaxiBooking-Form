@@ -2,11 +2,11 @@
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import { apiFetch } from "@/shared/http/api";
-import type { ISetting } from "@/features/settings/model";
+import type { PublicSettings } from "@/features/settings/lib/public-settings";
 import type { ThemeSettings } from "@/features/settings/lib/theme-settings";
 
 interface ThemeContextType {
-  settings: Partial<ISetting> | null;
+  settings: PublicSettings | null;
   isLoading: boolean;
 }
 
@@ -21,13 +21,13 @@ type ThemeProviderProps = {
 };
 
 export function ThemeProvider({ children, initialSettings = null }: ThemeProviderProps) {
-  const [settings, setSettings] = useState<Partial<ISetting> | null>(initialSettings ?? null);
+  const [settings, setSettings] = useState<PublicSettings | null>(initialSettings ?? null);
   const [isLoading, setIsLoading] = useState(!initialSettings);
 
   // Centralized fetch function so it can be invoked on mount and when settings change elsewhere
   const fetchSettings = async () => {
     try {
-      const data = await apiFetch<{ success: boolean; data: Partial<ISetting> }>("/api/settings");
+      const data = await apiFetch<{ success: boolean; data: PublicSettings }>("/api/settings");
       if (data.success) {
         setSettings(data.data);
       }
@@ -47,7 +47,7 @@ export function ThemeProvider({ children, initialSettings = null }: ThemeProvide
   // Listen for global settings updates and apply delta from event.detail (no refetch when possible)
   useEffect(() => {
     const onSettingsUpdated = (e: Event) => {
-      const custom = e as CustomEvent<Partial<ISetting> | undefined>;
+      const custom = e as CustomEvent<PublicSettings | undefined>;
       if (custom && custom.detail) {
         // Apply new settings directly from event.detail (fast, avoids another GET)
         setSettings(custom.detail);

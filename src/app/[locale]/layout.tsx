@@ -8,6 +8,7 @@ import AuthSessionProvider from "@/features/auth/ui/session-provider";
 import { routing } from "@/shared/i18n/routing";
 import { ThemeProvider } from "@/features/settings/context/theme-context";
 import { CurrencyProvider } from "@/shared/context/currency-context";
+import { GeoProvider } from "@/features/geo/context/geo-context";
 import { getThemeSettings } from "@/features/settings/lib/theme-settings";
 import type { ThemeSettings } from "@/features/settings/lib/theme-settings";
 
@@ -110,7 +111,9 @@ export default async function RootLayout({ children, params }: Props) {
         <AuthSessionProvider>
           <ThemeProvider initialSettings={serializedThemeSettings}>
             <CurrencyProvider>
-              <NextIntlClientProvider>{children}</NextIntlClientProvider>
+              <GeoProvider>
+                <NextIntlClientProvider>{children}</NextIntlClientProvider>
+              </GeoProvider>
             </CurrencyProvider>
           </ThemeProvider>
         </AuthSessionProvider>

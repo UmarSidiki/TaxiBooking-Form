@@ -121,6 +121,15 @@
   }
 }
 
+/* Google Places renders its suggestion list on <body>, outside any modal sheet.
+   Radix's modal lock sets body { pointer-events: none } and only re-enables its
+   own content, so without this the suggestions cannot be clicked or tapped
+   (keyboard still works, because that goes through the focused input). */
+.pac-container {
+  pointer-events: auto;
+  z-index: 100000;
+}
+
 [data-surface="desk"] {
   --radius: 0.375rem;
   --background: oklch(0.968 0.007 250);

@@ -1,6 +1,7 @@
-import { Partner } from '@/features/partners/model';
-import type { IBooking } from '@/features/booking/model';
-import type { BookingPatchApplyResult } from '@/features/booking/lib/booking-patch-result';
+import { Partner } from "@/features/partners/model";
+import type { IBooking } from "@/features/booking/model";
+import type { BookingPatchApplyResult } from "@/features/booking/lib/booking-patch-result";
+import { getPartnerDispatchSettings } from "@/features/partners/lib/get-partner-dispatch-settings";
 
 export async function applyAssignPartner(
   booking: IBooking,
@@ -12,33 +13,30 @@ export async function applyAssignPartner(
     return {
       ok: false,
       status: 400,
-      message: 'Partner ID is required for assignment',
+      message: "Partner ID is required for assignment",
     };
   }
 
   const partner = await Partner.findById(partnerId);
   if (!partner) {
-    return { ok: false, status: 404, message: 'Partner not found' };
+    return { ok: false, status: 404, message: "Partner not found" };
   }
 
-  if (partner.status !== 'approved') {
+  if (partner.status !== "approved") {
     return {
       ok: false,
       status: 400,
-      message: 'Partner must be approved to receive assignments',
+      message: "Partner must be approved to receive assignments",
     };
   }
 
-  if (
-    booking.paymentMethod !== 'cash' &&
-    booking.partnerReviewStatus !== 'approved'
-  ) {
-    console.log('Partner review not approved for booking:', bookingId);
+  if (booking.partnerReviewStatus !== "approved") {
+    console.log("Partner review not approved for booking:", bookingId);
     return {
       ok: false,
       status: 400,
       message:
-        'Booking must be approved for partners before assignment. Please approve first or try again.',
+        "Booking must be approved for partners before assignment. Please approve first or try again.",
     };
   }
 
@@ -48,6 +46,14 @@ export async function applyAssignPartner(
     email: partner.email,
   };
   updateData.assignmentEmailSent = false;
+  updateData.availableForPartners = false;
 
-  return { ok: true, updateData };
+  const { dispatchAssigneeMode } = await getPartnerDispatchSettings();
+  const unsetFields: string[] = ["partnerAcceptanceDeadline"];
+
+  if (dispatchAssigneeMode === "exclusive") {
+    unsetFields.push("assignedDriver");
+  }
+
+  return { ok: true, updateData, unsetFields };
 }

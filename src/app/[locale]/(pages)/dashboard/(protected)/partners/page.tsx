@@ -1,5 +1,7 @@
 "use client";
 
+import { DeskNotice } from "@/features/dashboard/ui/desk-notice";
+import { DeskPageMeta } from "@/features/dashboard/ui/desk-page-chrome";
 import { AdminPartnerActionDialogs } from "@/features/partners/ui/admin-partner-action-dialogs";
 import { AdminPartnerDetailsDialog } from "@/features/partners/ui/admin-partner-details-dialog";
 import { AdminPartnerFilters } from "@/features/partners/ui/admin-partner-filters";
@@ -13,62 +15,51 @@ export default function AdminPartnersPage() {
 
   if (loading) {
     return (
-      <div className="space-y-6" role="status">
+      <div className="flex flex-col gap-5" role="status">
+        <DeskPageMeta title={t("title")} description={t("description")} />
         <span className="sr-only">{t("title")}…</span>
-        <div className="h-16 w-64 animate-pulse rounded-md bg-muted" />
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        <div className="grid grid-cols-2 gap-3 xl:grid-cols-4">
           {[0, 1, 2, 3].map((item) => (
-            <div key={item} className="h-28 animate-pulse rounded-xl border border-border bg-card" />
+            <div
+              key={item}
+              className="h-16 animate-pulse rounded-xl border border-border/60 bg-card"
+            />
           ))}
         </div>
-        <div className="h-64 animate-pulse rounded-xl border border-border bg-card" />
+        <div className="h-12 animate-pulse rounded-2xl border border-border/60 bg-card" />
+        <div className="h-64 animate-pulse rounded-xl border border-border/60 bg-card" />
       </div>
     );
   }
 
   if (loadError) {
     return (
-      <p className="rounded-md border border-border bg-card px-4 py-3 text-sm" role="alert">
-        {loadError}
-        <button
-          type="button"
-          className="ms-3 min-h-11 rounded-sm text-primary underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
-          onClick={() => void partners.fetchPartners()}
+      <div className="flex flex-col gap-5">
+        <DeskPageMeta title={t("title")} description={t("description")} />
+        <DeskNotice
+          variant="error"
+          onRetry={() => void partners.fetchPartners()}
+          retryLabel={t("retry")}
         >
-          {t("retry")}
-        </button>
-      </p>
+          {loadError}
+        </DeskNotice>
+      </div>
     );
   }
 
   return (
-    <div className="space-y-6">
-      <div>
-          <h1 className="text-balance text-2xl font-semibold tracking-tight text-foreground">
-            {t("title")}
-          </h1>
-          <p className="mt-1 text-pretty text-sm text-muted-foreground">
-          {t("description")}
-        </p>
-      </div>
+    <div className="flex flex-col gap-5">
+      <DeskPageMeta title={t("title")} description={t("description")} />
       {partners.notice ? (
-        <p
-          className="rounded-md border border-border bg-card px-4 py-3 text-sm"
-          role="status"
+        <DeskNotice
+          onDismiss={() => partners.setNotice(null)}
+          dismissLabel={t("dismiss")}
         >
           {partners.notice}
-          <button
-            type="button"
-            className="ms-3 min-h-11 rounded-sm text-primary underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
-            onClick={() => partners.setNotice(null)}
-          >
-            {t("dismiss")}
-          </button>
-        </p>
+        </DeskNotice>
       ) : null}
 
       <AdminPartnerStats t={partners.t} stats={partners.stats} />
-
       <AdminPartnerFilters
         t={partners.t}
         searchQuery={partners.searchQuery}
@@ -76,7 +67,6 @@ export default function AdminPartnersPage() {
         statusFilter={partners.statusFilter}
         setStatusFilter={partners.setStatusFilter}
       />
-
       <AdminPartnerList
         t={partners.t}
         filteredPartners={partners.filteredPartners}
@@ -95,6 +85,7 @@ export default function AdminPartnersPage() {
         formatDate={partners.formatDate}
         payoutProcessingId={partners.payoutProcessingId}
         handleMarkPayoutPaid={partners.handleMarkPayoutPaid}
+        handleMarkRemittanceReceived={partners.handleMarkRemittanceReceived}
         handleRecalculatePayout={partners.handleRecalculatePayout}
         setSelectedDocument={partners.setSelectedDocument}
         setShowDocumentDialog={partners.setShowDocumentDialog}

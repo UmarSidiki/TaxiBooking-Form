@@ -4,7 +4,6 @@ import { Link } from "@/shared/i18n/navigation";
 import { Calendar, Car, Settings, Users } from "lucide-react";
 import type { useTranslations } from "next-intl";
 
-import { Card, CardContent } from "@/shared/ui/card";
 import { useSettingsDesk } from "@/features/settings/ui/settings-desk-context";
 
 type TFn = ReturnType<typeof useTranslations>;
@@ -18,57 +17,42 @@ export function AdminHomeQuickActions({ t }: { t: TFn }) {
       href: "/dashboard/rides",
       icon: Calendar,
       title: t("Dashboard.Home.view-all-bookings"),
-      hint: t("Dashboard.Home.manage-all-rides"),
     },
     {
       href: "/dashboard/fleet",
       icon: Car,
       title: t("Dashboard.Home.manage-fleet"),
-      hint: t("Dashboard.Home.vehicle-management"),
     },
     partnersOn
       ? {
           href: "/dashboard/partners",
           icon: Users,
           title: t("Dashboard.Home.view-partners"),
-          hint: t("Dashboard.Home.partner-management"),
         }
       : null,
     {
       href: "/dashboard/settings",
       icon: Settings,
       title: t("Dashboard.Home.settings"),
-      hint: t("Dashboard.Home.configure-system"),
     },
   ].filter(Boolean) as {
     href: string;
     icon: typeof Calendar;
     title: string;
-    hint: string;
   }[];
 
   return (
-    <div>
-      <h2 className="text-lg font-semibold text-foreground">
-        {t("Dashboard.Home.quick-actions")}
-      </h2>
-      <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
-        {actions.map((action) => (
-          <Link
-            key={action.href}
-            href={action.href}
-            className="block rounded-md focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
-          >
-            <Card className="desk-card h-full border-border transition-colors duration-200 hover:border-primary/40 hover:bg-accent/40 active:bg-accent/70">
-              <CardContent className="p-5">
-                <action.icon className="size-5 text-primary" aria-hidden="true" />
-                <h3 className="mt-4 font-medium text-foreground">{action.title}</h3>
-                <p className="mt-1 text-sm text-muted-foreground">{action.hint}</p>
-              </CardContent>
-            </Card>
-          </Link>
-        ))}
-      </div>
+    <div className="flex flex-wrap gap-2">
+      {actions.map((action) => (
+        <Link
+          key={action.href}
+          href={action.href}
+          className="inline-flex min-h-11 items-center gap-2 rounded-xl border border-border/60 bg-card px-3.5 py-2 text-sm font-medium text-foreground transition-colors hover:border-primary/40 hover:bg-accent/40 focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
+        >
+          <action.icon className="size-4 text-primary" aria-hidden="true" />
+          {action.title}
+        </Link>
+      ))}
     </div>
   );
 }

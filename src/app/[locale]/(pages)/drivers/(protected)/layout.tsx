@@ -6,8 +6,7 @@ import { connectDB } from "@/shared/db";
 import { Setting } from "@/features/settings/model";
 import { authOptions } from "@/features/auth";
 import { DriverSidebar } from "@/features/drivers/ui/driver-sidebar";
-import { DeskChromeHeader } from "@/features/dashboard/ui/desk-chrome-header";
-import { SidebarInset, SidebarProvider } from "@/shared/ui/sidebar";
+import { DeskShell } from "@/features/dashboard/ui/desk-shell";
 
 type DriverLayoutProps = {
   children: ReactNode;
@@ -40,12 +39,6 @@ export default async function DriverProtectedLayout({
   }
 
   return (
-    <SidebarProvider>
-      <DriverSidebar locale={locale} />
-      <SidebarInset>
-        <DeskChromeHeader />
-        <div className="flex-1 overflow-auto p-6">{children}</div>
-      </SidebarInset>
-    </SidebarProvider>
+    <DeskShell sidebar={<DriverSidebar locale={locale} />}>{children}</DeskShell>
   );
 }

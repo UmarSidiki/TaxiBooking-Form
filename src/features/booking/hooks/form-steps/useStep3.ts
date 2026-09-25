@@ -161,6 +161,7 @@ export function useStep3() {
     handleCashBooking: payments.handleCashBooking,
     handleBankTransferBooking: payments.handleBankTransferBooking,
     handleMultisafepayBooking: payments.handleMultisafepayBooking,
+    handleAppointmentRequest: payments.handleAppointmentRequest,
     handleBack,
   };
 }

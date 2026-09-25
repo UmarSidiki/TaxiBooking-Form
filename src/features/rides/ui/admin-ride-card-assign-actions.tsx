@@ -3,7 +3,6 @@
 import { Button } from "@/shared/ui/button";
 import type { IBooking } from "@/features/booking/model";
 import type { AdminRideReview } from "@/features/rides/hooks/useAdminRides";
-import { DEFAULT_ASSIGN_PARTNER_MARGIN } from "@/features/rides/lib/default-assign-partner-margin";
 import { AdminRideCardPartnerReview } from "@/features/rides/ui/admin-ride-card-partner-review";
 import { Ban, Edit, Eye, Loader2, UserCheck, Users } from "lucide-react";
 import type { useTranslations } from "next-intl";
@@ -16,6 +15,9 @@ export function AdminRideCardAssignActions({
   t,
   enablePartners,
   enableDrivers,
+  partnerCashSettlement,
+  dispatchAssigneeMode,
+  defaultPartnerMargin,
   isPartnerReviewPending,
   isBookingPassed,
   setPartnerMargin,
@@ -32,6 +34,9 @@ export function AdminRideCardAssignActions({
   t: TFn;
   enablePartners: boolean;
   enableDrivers: boolean;
+  partnerCashSettlement: "keep_cash" | "operator_margin";
+  dispatchAssigneeMode: "exclusive" | "allow_both";
+  defaultPartnerMargin: number;
   isPartnerReviewPending: boolean;
   isBookingPassed: (dateStr: string, timeStr: string) => boolean;
   setPartnerMargin: Dispatch<SetStateAction<number>>;
@@ -40,15 +45,31 @@ export function AdminRideCardAssignActions({
   setAssignPartnerMargin: Dispatch<SetStateAction<number>>;
   setShowAssignPartnerModal: Dispatch<SetStateAction<boolean>>;
   setDetailBooking: (booking: IBooking | null) => void;
-  setBookingReviews: Dispatch<SetStateAction<Record<string, AdminRideReview | null>>>;
+  setBookingReviews: Dispatch<
+    SetStateAction<Record<string, AdminRideReview | null>>
+  >;
   handleCancelClick: (booking: IBooking) => void;
   cancelingId: string | null;
 }) {
-  const upcoming = booking.status !== "canceled" && !isBookingPassed(booking.date, booking.time);
+  const upcoming =
+    booking.status !== "canceled" &&
+    !isBookingPassed(booking.date, booking.time);
+  const bookingId = booking._id?.toString();
+  const needsReview =
+    enablePartners &&
+    (booking.paymentMethod !== "cash" ||
+      partnerCashSettlement === "operator_margin");
+  const exclusive = dispatchAssigneeMode === "exclusive";
+  const showDriverChip =
+    enableDrivers &&
+    (!exclusive || !booking.assignedPartner || Boolean(booking.assignedDriver));
+  const showPartnerChip =
+    enablePartners &&
+    (!exclusive || !booking.assignedDriver || Boolean(booking.assignedPartner));
 
   return (
-    <>
-      {enablePartners && booking.paymentMethod !== "cash" ? (
+    <div className="flex flex-col gap-2 border-t border-border/60 pt-3">
+      {needsReview ? (
         <AdminRideCardPartnerReview
           booking={booking}
           t={t}
@@ -57,67 +78,54 @@ export function AdminRideCardAssignActions({
           setShowPartnerApprovalModal={setShowPartnerApprovalModal}
         />
       ) : null}
-      {enableDrivers && upcoming ? (
-        <div className="border-t border-border pt-3">
-          <div className="flex flex-col gap-3 rounded-lg border border-border bg-muted/40 p-3 sm:flex-row sm:items-center sm:justify-between">
-            <div>
-              <p className="text-sm font-medium">{t("Dashboard.Rides.assign-driver")}</p>
-              {booking.assignedDriver ? (
-                <p className="mt-1 truncate text-xs text-muted-foreground">
-                  {booking.assignedDriver.name}
-                </p>
-              ) : null}
-            </div>
-            <Button
-              className="h-11 w-full sm:w-auto"
-              variant={booking.assignedDriver ? "outline" : "default"}
+
+      {(showDriverChip || showPartnerChip) && upcoming ? (
+        <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap">
+          {showDriverChip ? (
+            <AssignChip
+              label={t("Dashboard.Rides.assign-driver")}
+              value={booking.assignedDriver?.name}
+              assigned={Boolean(booking.assignedDriver)}
+              assignLabel={t("Dashboard.Rides.assign")}
+              reassignLabel={t("Dashboard.Rides.reassign")}
+              icon={booking.assignedDriver ? Edit : UserCheck}
               onClick={() => setShowAssignDriverModal(true)}
-            >
-              {booking.assignedDriver ? <Edit className="size-4" /> : <UserCheck className="size-4" />}
-              {booking.assignedDriver ? t("Dashboard.Rides.reassign") : t("Dashboard.Rides.assign")}
-            </Button>
-          </div>
-        </div>
-      ) : null}
-      {enablePartners && upcoming ? (
-        <div className="border-t border-border pt-3">
-          <div className="flex flex-col gap-3 rounded-lg border border-border bg-muted/40 p-3 sm:flex-row sm:items-center sm:justify-between">
-            <div>
-              <p className="text-sm font-medium">{t("Dashboard.Rides.assign-partner")}</p>
-              {booking.assignedPartner ? (
-                <p className="mt-1 truncate text-xs text-muted-foreground">
-                  {booking.assignedPartner.name}
-                </p>
-              ) : null}
-            </div>
-            <Button
-              className="h-11 w-full sm:w-auto"
-              variant={booking.assignedPartner ? "outline" : "default"}
+            />
+          ) : null}
+          {showPartnerChip ? (
+            <AssignChip
+              label={t("Dashboard.Rides.assign-partner")}
+              value={booking.assignedPartner?.name}
+              assigned={Boolean(booking.assignedPartner)}
+              assignLabel={t("Dashboard.Rides.assign")}
+              reassignLabel={t("Dashboard.Rides.reassign")}
+              icon={booking.assignedPartner ? Edit : Users}
               onClick={() => {
                 setAssignPartnerMargin(
-                  booking.partnerMarginPercentage || DEFAULT_ASSIGN_PARTNER_MARGIN
+                  booking.partnerMarginPercentage || defaultPartnerMargin
                 );
                 setShowAssignPartnerModal(true);
               }}
-            >
-              {booking.assignedPartner ? <Edit className="size-4" /> : <Users className="size-4" />}
-              {booking.assignedPartner ? t("Dashboard.Rides.reassign") : t("Dashboard.Rides.assign")}
-            </Button>
-          </div>
+            />
+          ) : null}
         </div>
       ) : null}
-      <div className="flex flex-col gap-2 border-t border-border pt-2 sm:flex-row">
+
+      <div className="flex flex-col gap-2 sm:flex-row">
         <Button
           variant="outline"
-          className="h-11"
+          className="h-10 flex-1 rounded-xl"
           onClick={async () => {
             setDetailBooking(booking);
             if (
               booking._id &&
-              (booking.status === "canceled" || isBookingPassed(booking.date, booking.time))
+              (booking.status === "canceled" ||
+                isBookingPassed(booking.date, booking.time))
             ) {
               try {
-                const response = await fetch(`/api/reviews?bookingId=${booking._id}`);
+                const response = await fetch(
+                  `/api/reviews?bookingId=${booking._id}`
+                );
                 const data = await response.json();
                 if (data.success && data.review) {
                   setBookingReviews((prev) => ({
@@ -131,27 +139,65 @@ export function AdminRideCardAssignActions({
             }
           }}
         >
-          <Eye className="size-4" />
+          <Eye className="size-4" aria-hidden="true" />
           {t("Dashboard.Rides.ViewDetails")}
         </Button>
         {upcoming ? (
           <Button
             onClick={() => handleCancelClick(booking)}
             variant="destructive"
-            className="h-11"
-            disabled={cancelingId === booking._id?.toString()}
+            className="h-10 rounded-xl sm:w-auto"
+            disabled={cancelingId === bookingId}
           >
-            {cancelingId === booking._id?.toString() ? (
-              <Loader2 className="size-4 animate-spin" />
+            {cancelingId === bookingId ? (
+              <Loader2 className="size-4 animate-spin" aria-hidden="true" />
             ) : (
-              <Ban className="size-4" />
+              <Ban className="size-4" aria-hidden="true" />
             )}
-            {cancelingId === booking._id?.toString()
+            {cancelingId === bookingId
               ? t("Dashboard.Rides.Canceling")
               : t("Dashboard.Rides.Cancel")}
           </Button>
         ) : null}
       </div>
-    </>
+    </div>
+  );
+}
+
+function AssignChip({
+  label,
+  value,
+  assigned,
+  assignLabel,
+  reassignLabel,
+  icon: Icon,
+  onClick,
+}: {
+  label: string;
+  value?: string;
+  assigned: boolean;
+  assignLabel: string;
+  reassignLabel: string;
+  icon: typeof Edit;
+  onClick: () => void;
+}) {
+  return (
+    <div className="flex min-w-0 flex-1 items-center justify-between gap-2 rounded-xl border border-border/60 bg-muted/30 px-3 py-2">
+      <div className="min-w-0">
+        <p className="text-xs text-muted-foreground">{label}</p>
+        {value ? (
+          <p className="truncate text-sm font-medium text-foreground">{value}</p>
+        ) : null}
+      </div>
+      <Button
+        size="sm"
+        variant={assigned ? "outline" : "default"}
+        className="h-9 shrink-0 rounded-lg"
+        onClick={onClick}
+      >
+        <Icon className="size-4" aria-hidden="true" />
+        {assigned ? reassignLabel : assignLabel}
+      </Button>
+    </div>
   );
 }

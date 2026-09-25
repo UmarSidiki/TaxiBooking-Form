@@ -48,7 +48,9 @@ export interface Partner {
   onlineEarnings?: number;
   cashEarnings?: number;
   payoutBalance?: number;
+  remittanceBalance?: number;
   lastPayoutAt?: string;
+  lastRemittanceAt?: string;
   billingDetails?: {
     accountHolder?: string;
     bankName?: string;

@@ -72,7 +72,10 @@ export interface IPartner {
   cashEarnings?: number; // Earnings from cash payments
   billingDetails?: IPartnerBillingDetails;
   payoutBalance?: number;
+  /** Partner still owes operator (cash + margin mode). */
+  remittanceBalance?: number;
   lastPayoutAt?: Date;
+  lastRemittanceAt?: Date;
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -255,7 +258,14 @@ const PartnerSchema = new Schema<IPartner>(
       type: Number,
       default: 0,
     },
+    remittanceBalance: {
+      type: Number,
+      default: 0,
+    },
     lastPayoutAt: {
+      type: Date,
+    },
+    lastRemittanceAt: {
       type: Date,
     },
   },

@@ -137,7 +137,11 @@ export function AdminRidePartnerApprovalDialog({
               </Button>
               <Button
                 onClick={async () => {
-                  const success = await handleApprovePartnerReview(bookingId, partnerMargin);
+                  const success = await handleApprovePartnerReview(
+                    bookingId,
+                    partnerMargin,
+                    { notifyPartners: true }
+                  );
                   if (success) {
                     setShowPartnerApprovalModal(false);
                   }

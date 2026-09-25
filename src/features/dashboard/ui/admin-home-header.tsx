@@ -4,6 +4,8 @@ import type { ReactNode } from "react";
 import { useSession } from "next-auth/react";
 import type { useTranslations } from "next-intl";
 
+import { DeskPageMeta } from "@/features/dashboard/ui/desk-page-chrome";
+
 type TFn = ReturnType<typeof useTranslations>;
 
 export function AdminHomeHeader({
@@ -15,22 +17,20 @@ export function AdminHomeHeader({
 }) {
   const { data, status } = useSession();
   const name = data?.user?.name;
+  const description =
+    status === "loading"
+      ? undefined
+      : name
+        ? `${t("Dashboard.Home.welcome-back")} ${name}`
+        : t("Dashboard.Home.welcome-back");
 
   return (
-    <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-      <div>
-        <h1 className="text-balance text-2xl font-semibold tracking-tight text-foreground">
-          {t("Dashboard.Home.dashboard")}
-        </h1>
-        <p className="mt-1 min-h-5 text-sm text-muted-foreground">
-          {status === "loading"
-            ? null
-            : name
-            ? `${t("Dashboard.Home.welcome-back")} ${name}`
-            : t("Dashboard.Home.welcome-back")}
-        </p>
-      </div>
+    <>
+      <DeskPageMeta
+        title={t("Dashboard.Home.dashboard")}
+        description={description}
+      />
       {children}
-    </div>
+    </>
   );
 }

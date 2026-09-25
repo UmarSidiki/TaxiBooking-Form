@@ -6,7 +6,8 @@
     "trip-details": "Trip Details",
     "select-vehicle": "Select Vehicle",
     "payment-and-details": "Payment & Details",
-    "booking": "Booking"
+    "booking": "Booking",
+    "your-details": "Your details"
   },
   "Footer": {
     "Copyright": "© 2025 {websiteName} All rights reserved.",
@@ -196,7 +197,13 @@
     "flight-number-optional": "Flight Number (Optional)",
     "pay-online": "Pay Online",
     "via-multisafepay": "(via MultiSafepay)",
-    "ideal-bancontact-paypal-and-more": "iDEAL, Bancontact, PayPal & more"
+    "ideal-bancontact-paypal-and-more": "iDEAL, Bancontact, PayPal & more",
+    "appointment-request-title": "Your details",
+    "appointment-request-help": "We work by appointment. Submit a request — we confirm availability before you pay. No charge now.",
+    "indicative-rate-label": "Indicative rate — confirmed after we check availability:",
+    "request-this-appointment": "Request this appointment",
+    "submitting-request": "Submitting…",
+    "whatsapp_confirmation-note": "Your booking confirmation will also be sent to you on WhatsApp."
   },
   "booking-failed-data-message": "Booking failed: {0}",
   "embeddable": {
@@ -434,7 +441,47 @@
       "choose-driver": "Choose a driver…",
       "select-new-driver": "Select new driver",
       "current-status": "Current status",
-      "margin-helper": "Set the margin to keep from the booking total."
+      "margin-helper": "Set the margin to keep from the booking total.",
+      "Requests": "Requests",
+      "NoRequests": "No appointment requests",
+      "NoRequestsDescription": "New appointment requests appear here until you quote, confirm cash, or decline.",
+      "status-requested": "Requested",
+      "status-awaiting-payment": "Awaiting payment",
+      "review-request": "Review request",
+      "request-actions-title": "Appointment request",
+      "request-actions-help": "Request #{tripId}",
+      "quoted-amount-label": "Quoted price",
+      "estimated-amount-hint": "Indicative estimate: {amount}",
+      "decline-reason-label": "Note to customer (optional)",
+      "confirm-send-pay-link": "Confirm & send pay link",
+      "confirm-as-cash": "Confirm as cash / pay on the day",
+      "not-available": "Not available",
+      "quote-sent": "Pay link sent.",
+      "quote-failed": "Could not send pay link.",
+      "cash-confirmed": "Confirmed as cash.",
+      "cash-confirm-failed": "Could not confirm as cash.",
+      "request-declined": "Request marked unavailable.",
+      "decline-failed": "Could not decline request.",
+      "new-booking": "New booking",
+      "new-booking-title": "New booking",
+      "new-booking-help": "Create a booking for a customer who called or walked in.",
+      "section-outcome": "Outcome & price",
+      "trip-type": "Trip type",
+      "select-vehicle": "Select vehicle",
+      "customer-language": "Customer language",
+      "outcome": "Outcome",
+      "outcome-confirmed": "Confirmed ride",
+      "outcome-confirmed-help": "Booked now and ready to assign. Record how the customer paid.",
+      "outcome-quote": "Send pay link",
+      "outcome-quote-help": "The ride waits for payment and the customer is emailed a pay link.",
+      "computed-fare": "Computed fare",
+      "manual-price": "Manual price (final)",
+      "manual-price-help": "Leave blank to use the computed fare. A manual price is final and tax is not recalculated.",
+      "manual-price-invalid": "Enter an amount greater than zero",
+      "payment-collected": "Payment collected",
+      "notify-customer": "Email the customer",
+      "create-booking": "Create booking",
+      "booking-created": "Booking {tripId} created"
     },
     "Home": {
       "failed-to-fetch-dashboard-stats": "Failed to fetch dashboard stats",
@@ -717,6 +764,10 @@
         "documents": "Documents",
         "uploaded": "Uploaded",
         "partner-details": "Partner Details",
+        "tab-profile": "Profile",
+        "tab-billing": "Billing",
+        "tab-documents": "Documents",
+        "tab-fleet": "Fleet",
         "review-partner-info": "Review partner information and documents",
         "status": "Status",
         "personal-information": "Personal Information",
@@ -800,7 +851,19 @@
         "vehicle-requested": "Vehicle requested",
         "recalculate-payout": "Recalculate payout",
         "load-error": "Could not load partners. Try again.",
-        "retry": "Try again"
+        "retry": "Try again",
+        "remittance-balance-label": "Outstanding remittance",
+        "last-remittance-label": "Last remittance: {date}",
+        "mark-remittance-received": "Mark remittance received",
+        "marking-remittance": "Saving…",
+        "settlement-ledger": "Settlement ledger",
+        "loading-ledger": "Loading ledger…",
+        "empty-ledger": "No settlement entries yet",
+        "settlement-type-payout_credit": "Payout credit",
+        "settlement-type-payout_paid": "Payout paid",
+        "settlement-type-remittance_credit": "Remittance due",
+        "settlement-type-remittance_received": "Remittance received",
+        "settlement-type-clawback": "Clawback"
       }
     },
     "Features": {
@@ -820,7 +883,23 @@
       "tax-percentage-description": "Set the tax percentage to be applied on the subtotal of all bookings.",
       "tax-included": "Tax Included in Price",
       "tax-included-description": "When enabled, the tax is already included in the displayed prices. The tax amount will be shown separately for informational purposes but won't be added to the total.",
-      "note-changes-to-module-settings": "Note: Changes to module settings take effect after saving and refreshing the page. Disabling a module hides it from navigation but does not delete existing data."
+      "note-changes-to-module-settings": "Note: Changes to module settings take effect after saving and refreshing the page. Disabling a module hides it from navigation but does not delete existing data.",
+      "dispatch-settlement-title": "Dispatch & settlement",
+      "dispatch-settlement-description": "How Partners are paid on cash rides and whether a ride can have both a Driver and a Partner.",
+      "cash-settlement-label": "Cash settlement",
+      "cash-settlement-keep-cash": "Partner keeps cash (no remittance)",
+      "cash-settlement-operator-margin": "Operator takes margin (Partner remits)",
+      "cash-settlement-help": "Online rides always use margin review. This only changes cash overflow rides.",
+      "dispatch-mode-label": "Assignee mode",
+      "dispatch-mode-exclusive": "Exclusive (one assignee)",
+      "dispatch-mode-allow-both": "Allow Driver and Partner together",
+      "dispatch-mode-help": "Exclusive clears the other party when you assign or a Partner accepts.",
+      "default-margin-label": "Default partner margin (%)",
+      "default-margin-help": "Suggested margin when approving a ride for Partners.",
+      "appointment-request-module": "Appoint first",
+      "enable-appointment-request": "Customers submit an appointment request. You confirm availability and price before they pay. Booking Confirmed emails go out only after confirmation.",
+      "desk-booking-module": "Desk booking",
+      "enable-desk-booking": "Staff can create bookings on a customer's behalf, with an optional manual price."
     },
     "Fleet": {
       "failed-to-fetch-vehicles": "Failed to fetch vehicles",
@@ -1181,7 +1260,13 @@
       "gateways_help": "Secrets and webhooks for Stripe or MultiSafepay, plus bank details.",
       "save": "Save",
       "retry": "Try again",
-      "multisafepay": "MultiSafepay"
+      "multisafepay": "MultiSafepay",
+      "booking-countries-title": "Booking countries",
+      "booking-countries-help": "Restrict bookings to the selected countries. Leave empty to accept bookings from anywhere.",
+      "booking-countries-search": "Search countries",
+      "booking-countries-all-allowed": "All countries allowed",
+      "booking-countries-selected-count": "{count, plural, one {# country selected} other {# countries selected}}",
+      "booking-countries-no-results": "No countries match your search"
     }
   },
   "Sidebar": {
@@ -1551,7 +1636,9 @@
     "or": "or",
     "redirecting-in": "Redirecting in",
     "return-to-home": "Return to Home",
-    "seconds": "seconds"
+    "seconds": "seconds",
+    "request-received-title": "Request received",
+    "request-received-body": "We work by appointment. We will confirm availability and email you next steps. This is not a booking confirmation yet."
   },
   "Driver": {
     "failed-to-fetch-drivers": "Failed to fetch drivers",
@@ -1580,7 +1667,10 @@
     "driver-saved": "Driver saved.",
     "driver-deleted": "Driver deleted.",
     "loading": "Loading drivers…",
-    "delete": "Delete"
+    "delete": "Delete",
+    "search-drivers": "Search by name or email…",
+    "no-drivers-match": "No drivers match",
+    "try-another-search": "Try another name or clear the search."
   },
   "Drivers": {
     "driver-dashboard": "Driver Dashboard",
@@ -1849,6 +1939,26 @@
     "payment_failed": "Payment could not be completed. Try again.",
     "payment_not_configured": "Card payments are not configured yet.",
     "price_changed": "The fare changed. Refresh and try again.",
-    "distance_failed": "We could not calculate the route. Check the addresses."
+    "distance_failed": "We could not calculate the route. Check the addresses.",
+    "country_blocked": "Bookings aren't available from your location."
+  },
+  "Pay": {
+    "by-appointment": "By appointment",
+    "pay-to-confirm": "Pay to confirm",
+    "quote-summary": "Request #{tripId}",
+    "pay-with-card": "Pay with card",
+    "pay-with-multisafepay": "Pay with MultiSafepay",
+    "no-payment-methods": "Online payment is not configured. Contact the operator.",
+    "payment-init-failed": "Could not start payment. Try again.",
+    "link-invalid-title": "Link not found",
+    "link-invalid-body": "This pay link is invalid or expired.",
+    "declined-title": "Request not available",
+    "declined-body": "This appointment request was marked unavailable.",
+    "already-paid-title": "Already confirmed",
+    "already-paid-body": "Trip #{tripId} is already paid and confirmed."
+  },
+  "CountryBlocked": {
+    "title": "We don't serve your region yet",
+    "body": "Bookings aren't available from your current location. If you think this is a mistake, contact us and we'll help."
   }
 }

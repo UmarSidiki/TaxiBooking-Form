@@ -7,6 +7,7 @@ import {
   getPolygonPath,
 } from "@/features/settings/lib/map-geometry";
 import { loadDeskMap } from "@/features/settings/lib/load-desk-map";
+import type { DeskDrawController } from "@/features/settings/lib/desk-map-draw";
 import type { ISetting } from "@/features/settings/model";
 import type { MapTabProps } from "@/features/settings/ui/map-tab-props";
 
@@ -18,9 +19,7 @@ export function useMapTab({
   const mapRef = useRef<HTMLDivElement | null>(null);
   const mapInstanceRef = useRef<google.maps.Map | null>(null);
   const polygonRef = useRef<google.maps.Polygon | null>(null);
-  const drawingManagerRef = useRef<google.maps.drawing.DrawingManager | null>(
-    null
-  );
+  const drawingControllerRef = useRef<DeskDrawController | null>(null);
   const [mapReady, setMapReady] = useState(false);
   const [mapError, setMapError] = useState<string | null>(null);
   const [isDrawing, setIsDrawing] = useState(false);
@@ -60,34 +59,37 @@ export function useMapTab({
       },
       mapInstanceRef,
       polygonRef,
-      drawingManagerRef,
-    }).catch(() => {
+      drawingControllerRef,
+    }).catch((error: unknown) => {
+      console.error("Failed to load the service-area map:", error);
       if (!isMounted) return;
       setMapError(t("Dashboard.Settings.bounds-load-error"));
     });
 
     return () => {
       isMounted = false;
+      drawingControllerRef.current?.cancel();
+      drawingControllerRef.current = null;
       polygonRef.current?.setMap(null);
-      drawingManagerRef.current?.setMap(null);
+      polygonRef.current = null;
       mapInstanceRef.current = null;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [settings.mapInitialLat, settings.mapInitialLng, t]);
 
   const handleStartDrawing = () => {
-    if (!drawingManagerRef.current) return;
+    const controller = drawingControllerRef.current;
+    if (!controller) return;
+
     polygonRef.current?.setMap(null);
     polygonRef.current = null;
-    drawingManagerRef.current.setDrawingMode(
-      google.maps.drawing.OverlayType.POLYGON
-    );
     setIsDrawing(true);
     setBoundsPreview(null);
+    controller.start();
   };
 
   const handleClearBounds = () => {
-    drawingManagerRef.current?.setDrawingMode(null);
+    drawingControllerRef.current?.cancel();
     polygonRef.current?.setMap(null);
     polygonRef.current = null;
     setIsDrawing(false);

@@ -84,7 +84,9 @@ function DeskNavGroupBlock({
 
   return (
     <SidebarGroup>
-      <SidebarGroupLabel>{t(group.labelKey)}</SidebarGroupLabel>
+      <SidebarGroupLabel className="text-sidebar-foreground/80">
+        {t(group.labelKey)}
+      </SidebarGroupLabel>
       <SidebarGroupContent>
         <SidebarMenu>
           {items.map((item) => {
@@ -96,9 +98,9 @@ function DeskNavGroupBlock({
                   isActive={isDeskNavActive(pathname, href)}
                   tooltip={t(item.titleKey)}
                 >
-                  <Link href={href} className="min-h-11">
+                  <Link href={href} className="min-h-11 text-sidebar-foreground">
                     <item.icon />
-                    <span>{t(item.titleKey)}</span>
+                    <span className="text-sidebar-foreground">{t(item.titleKey)}</span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>

@@ -1,11 +1,15 @@
 import { importLibrary, setOptions } from "@googlemaps/js-api-loader";
+import { withMapsAttribution } from "@/features/booking/lib/maps/usage-attribution";
 import type { ISetting } from "@/features/settings/model";
 import {
   attachPolygonListeners,
   createDeskPolygon,
-  DESK_MAP_POLYGON,
   polygonFromBounds,
 } from "@/features/settings/lib/desk-map-polygon";
+import {
+  createDeskDrawController,
+  type DeskDrawController,
+} from "@/features/settings/lib/desk-map-draw";
 
 type LoadDeskMapArgs = {
   mapEl: HTMLDivElement;
@@ -16,7 +20,7 @@ type LoadDeskMapArgs = {
   onError: () => void;
   mapInstanceRef: { current: google.maps.Map | null };
   polygonRef: { current: google.maps.Polygon | null };
-  drawingManagerRef: { current: google.maps.drawing.DrawingManager | null };
+  drawingControllerRef: { current: DeskDrawController | null };
 };
 
 export async function loadDeskMap({
@@ -28,7 +32,7 @@ export async function loadDeskMap({
   onError,
   mapInstanceRef,
   polygonRef,
-  drawingManagerRef,
+  drawingControllerRef,
 }: LoadDeskMapArgs) {
   const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
   if (!apiKey) {
@@ -37,45 +41,29 @@ export async function loadDeskMap({
   }
 
   setOptions({ key: apiKey, v: "weekly" });
-  const [maps, drawing] = await Promise.all([
-    importLibrary("maps"),
-    importLibrary("drawing"),
-  ]);
+  const maps = await importLibrary("maps");
 
-  const map = new maps.Map(mapEl, {
-    center: {
-      lat: settings.mapInitialLat ?? 46.2044,
-      lng: settings.mapInitialLng ?? 6.1432,
-    },
-    zoom: 10,
-    mapTypeControl: false,
-    streetViewControl: false,
-    fullscreenControl: false,
-  });
+  const map = new maps.Map(
+    mapEl,
+    withMapsAttribution({
+      center: {
+        lat: settings.mapInitialLat ?? 46.2044,
+        lng: settings.mapInitialLng ?? 6.1432,
+      },
+      zoom: 10,
+      mapTypeControl: false,
+      streetViewControl: false,
+      fullscreenControl: false,
+    })
+  );
   mapInstanceRef.current = map;
 
-  const manager = new drawing.DrawingManager({
-    drawingMode: null,
-    drawingControl: false,
-    polygonOptions: DESK_MAP_POLYGON,
+  drawingControllerRef.current = createDeskDrawController({
+    map,
+    polygonRef,
+    onPolygonChange,
+    onFinished: onDrawingComplete,
   });
-  manager.setMap(map);
-  drawingManagerRef.current = manager;
-
-  google.maps.event.addListener(
-    manager,
-    "overlaycomplete",
-    (event: google.maps.drawing.OverlayCompleteEvent) => {
-      if (event.type !== "polygon") return;
-      manager.setDrawingMode(null);
-      onDrawingComplete();
-      polygonRef.current?.setMap(null);
-      const newPoly = event.overlay as google.maps.Polygon;
-      polygonRef.current = newPoly;
-      attachPolygonListeners(newPoly, onPolygonChange);
-      onPolygonChange(newPoly);
-    }
-  );
 
   if (settings.mapPolygonPoints && settings.mapPolygonPoints.length > 0) {
     const poly = createDeskPolygon(map, settings.mapPolygonPoints);

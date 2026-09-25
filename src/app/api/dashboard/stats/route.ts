@@ -30,56 +30,67 @@ export async function GET() {
     // Fetch all bookings
     const allBookings = await Booking.find({}).sort({ createdAt: -1 });
 
-    // Filter bookings for current month (exclude cancelled)
+    const isConfirmedRide = (b: (typeof allBookings)[number]) =>
+      b.status === "upcoming" || b.status === "completed";
+
+    // Filter bookings for current month (exclude cancelled and unconfirmed requests)
     const currentMonthBookings = allBookings.filter((booking) => {
       const bookingDate = new Date(booking.date);
-      return bookingDate >= currentMonth && bookingDate <= now && booking.status !== "canceled";
+      return (
+        bookingDate >= currentMonth &&
+        bookingDate <= now &&
+        isConfirmedRide(booking)
+      );
     });
 
-    // Filter bookings for last month (exclude cancelled)
+    // Filter bookings for last month (exclude cancelled and unconfirmed requests)
     const lastMonthBookings = allBookings.filter((booking) => {
       const bookingDate = new Date(booking.date);
-      return bookingDate >= lastMonth && bookingDate < currentMonth && booking.status !== "canceled";
+      return (
+        bookingDate >= lastMonth &&
+        bookingDate < currentMonth &&
+        isConfirmedRide(booking)
+      );
     });
 
     // Calculate stats
-    const totalBookings = allBookings.length;
+    const totalBookings = allBookings.filter(isConfirmedRide).length;
     
     const completedBookings = allBookings.filter((b) => {
       const bookingDateTime = new Date(`${b.date}T${b.time}:00`);
       const isPassed = bookingDateTime < nowInTz;
 
-      return b.status === "completed" || ((b.paymentStatus === "completed" || b.paymentMethod === "cash") && isPassed && b.status !== "canceled");
+      return b.status === "completed" || ((b.paymentStatus === "completed" || b.paymentMethod === "cash") && isPassed && isConfirmedRide(b));
     }).length;
 
     const upcomingBookings = allBookings.filter((b) => {
       const bookingDateTime = new Date(`${b.date}T${b.time}:00`);
       const isPassed = bookingDateTime < nowInTz;
 
-      return !isPassed && b.status !== "canceled";
+      return !isPassed && b.status === "upcoming";
     }).length;
     
     const canceledBookings = allBookings.filter(
       (b) => b.status === "canceled"
     ).length;
 
-    // Calculate revenue (completed payments and cash bookings, exclude cancelled bookings)
+    // Calculate revenue (completed payments and cash bookings, exclude requests)
     const totalRevenue = allBookings
-      .filter((b) => (b.paymentStatus === "completed" || b.paymentMethod === "cash") && b.status !== "canceled")
+      .filter((b) => (b.paymentStatus === "completed" || b.paymentMethod === "cash") && isConfirmedRide(b))
       .reduce((sum, booking) => {
         const amount = typeof booking.totalAmount === 'number' ? booking.totalAmount : parseFloat(String(booking.totalAmount || 0));
         return sum + (isNaN(amount) ? 0 : amount);
       }, 0);
 
     const monthlyRevenue = currentMonthBookings
-      .filter((b) => (b.paymentStatus === "completed" || b.paymentMethod === "cash") && b.status !== "canceled")
+      .filter((b) => (b.paymentStatus === "completed" || b.paymentMethod === "cash") && isConfirmedRide(b))
       .reduce((sum, booking) => {
         const amount = typeof booking.totalAmount === 'number' ? booking.totalAmount : parseFloat(String(booking.totalAmount || 0));
         return sum + (isNaN(amount) ? 0 : amount);
       }, 0);
 
     const lastMonthRevenue = lastMonthBookings
-      .filter((b) => (b.paymentStatus === "completed" || b.paymentMethod === "cash") && b.status !== "canceled")
+      .filter((b) => (b.paymentStatus === "completed" || b.paymentMethod === "cash") && isConfirmedRide(b))
       .reduce((sum, booking) => {
         const amount = typeof booking.totalAmount === 'number' ? booking.totalAmount : parseFloat(String(booking.totalAmount || 0));
         return sum + (isNaN(amount) ? 0 : amount);

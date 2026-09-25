@@ -13,6 +13,7 @@ import {
   customEmbedVariants,
   defaultEmbedVariants,
 } from "@/features/form-builder/ui/embed-default-variants";
+import { DeskPageMeta } from "@/features/dashboard/ui/desk-page-chrome";
 
 export function EmbedFormsPage() {
   const t = useTranslations("WidgetConfigurator");
@@ -84,12 +85,7 @@ export function EmbedFormsPage() {
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex flex-col gap-1">
-        <h1 className="text-balance text-2xl font-semibold tracking-tight text-foreground">
-          {t("install_title")}
-        </h1>
-        <p className="max-w-2xl text-pretty text-sm text-muted-foreground">{t("install_help")}</p>
-      </div>
+      <DeskPageMeta title={t("install_title")} description={t("install_help")} />
       {error ? (
         <p className="rounded-md border border-destructive/40 bg-card px-4 py-3 text-sm text-destructive" role="alert">
           {error}

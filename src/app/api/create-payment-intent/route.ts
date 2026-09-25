@@ -7,13 +7,12 @@ import { Vehicle } from '@/features/fleet/model';
 import { generateShortId } from '@/shared/lib/generate-id';
 import { DEFAULT_STRIPE_CURRENCY } from '@/features/payments/lib/stripe-currency';
 import { getStripeClient } from '@/features/payments/lib/stripe-client';
-import {
-  calculateBookingPrice,
-  fetchRouteDistanceKm,
-} from '@/features/payments/lib/calculate-booking-total';
+import { calculateBookingPrice } from '@/features/payments/lib/fare/calculate-booking-price';
+import { fetchRouteDistanceKm } from '@/features/payments/lib/fare/route-distance';
 import { isValidEmail } from '@/shared/lib/validation';
 import { parseJsonBody } from '@/shared/http/parse-json-body';
 import { jsonError } from '@/shared/http/json-error';
+import { blockIfCountryNotAllowed } from '@/features/geo/lib/booking-country-policy';
 import { paymentIntentBodySchema } from '@/features/payments/schema/checkout.schema';
 import { registerPaymentMethodDomain } from '@/features/payments/lib/register-payment-method-domain';
 
@@ -23,6 +22,11 @@ export async function POST(request: NextRequest) {
   try {
     const parsed = await parseJsonBody(request, paymentIntentBodySchema);
     if (!parsed.ok) return parsed.response;
+
+    const country = await blockIfCountryNotAllowed(request);
+    if (!country.ok) {
+      return jsonError("country_blocked", 403);
+    }
     const { amount, currency, customerEmail, customerName, description, bookingData } =
       parsed.data;
 

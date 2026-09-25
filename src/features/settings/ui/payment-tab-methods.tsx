@@ -21,10 +21,13 @@ export function PaymentTabMethods({
   return (
     <div className="space-y-3">
       {paymentMethods.map((method) => {
-        const locked =
+        // Missing gateway keys only block turning a method ON — always allow OFF.
+        // Otherwise default ["card"] stays checked with a disabled switch forever.
+        const needsGateway =
           (method.id === "card" && !settings.stripePublishableKey) ||
           (method.id === "multisafepay" && !settings.multisafepayApiKey);
         const checked = settings.acceptedPaymentMethods?.includes(method.id) ?? false;
+        const disableToggle = needsGateway && !checked;
         return (
           <div
             key={method.id}
@@ -33,12 +36,14 @@ export function PaymentTabMethods({
             <Switch
               aria-label={method.label}
               checked={checked}
-              disabled={locked}
+              disabled={disableToggle}
               onCheckedChange={(on) => {
-                if (locked) return;
+                if (needsGateway && on) return;
                 const current = settings.acceptedPaymentMethods || [];
                 const updated = on
-                  ? [...current, method.id]
+                  ? current.includes(method.id)
+                    ? current
+                    : [...current, method.id]
                   : current.filter((id) => id !== method.id);
                 handleMapSettingsChange("acceptedPaymentMethods", updated);
               }}

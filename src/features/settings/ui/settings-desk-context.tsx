@@ -15,6 +15,7 @@ import { useTranslations } from "next-intl";
 
 import type { ISetting } from "@/features/settings/model";
 import type { SettingsDeskPatch } from "@/features/settings/ui/settings-desk-props";
+import { toPublicSettings } from "@/features/settings/lib/public-settings";
 import { apiGet, apiPost } from "@/shared/http/api";
 
 type SettingsDeskValue = {
@@ -37,8 +38,13 @@ function withModuleDefaults(data: Partial<ISetting>): Partial<ISetting> {
     ...data,
     enablePartners: data.enablePartners ?? false,
     enableDrivers: data.enableDrivers ?? false,
+    enableAppointmentRequest: data.enableAppointmentRequest ?? false,
     enableEmbeddableForm: data.enableEmbeddableForm ?? false,
     enableFormBuilder: data.enableFormBuilder ?? false,
+    partnerCashSettlement: data.partnerCashSettlement ?? "keep_cash",
+    dispatchAssigneeMode: data.dispatchAssigneeMode ?? "exclusive",
+    defaultPartnerMarginPercentage:
+      data.defaultPartnerMarginPercentage ?? 20,
   };
 }
 
@@ -55,7 +61,7 @@ export function SettingsDeskProvider({ children }: { children: ReactNode }) {
     setLoadError(false);
     try {
       const data = await apiGet<{ success: boolean; data: Partial<ISetting> }>(
-        "/api/settings"
+        "/api/settings?scope=full"
       );
       if (data.success) setSettings(withModuleDefaults(data.data));
       else setLoadError(true);
@@ -91,7 +97,9 @@ export function SettingsDeskProvider({ children }: { children: ReactNode }) {
       if (data.success) {
         if (data.data) setSettings(withModuleDefaults(data.data));
         window.dispatchEvent(
-          new CustomEvent("settingsUpdated", { detail: data.data ?? settings })
+          new CustomEvent("settingsUpdated", {
+            detail: data.data ? toPublicSettings(data.data) : undefined,
+          })
         );
         setNotice(t("Dashboard.Settings.settings-saved-successfully"));
       } else {

@@ -2,6 +2,7 @@
 
 import { BookingPaymentIcons } from "@/features/booking/ui/booking-payment-icons";
 import { Card } from "@/shared/ui/card";
+import { calculateBookingPrice } from "@/features/payments/lib/fare/calculate-booking-price";
 import type { DistanceData, FormData } from "@/features/booking/context/booking-form-context";
 import type { IVehicle } from "@/features/fleet/model";
 import type { useTranslations } from "next-intl";
@@ -16,7 +17,6 @@ export function Step2TripSummary({
   formData,
   vehicles,
   distanceData,
-  calculatePrice,
   enableTax,
   taxPercentage,
   taxIncluded,
@@ -26,13 +26,34 @@ export function Step2TripSummary({
   formData: FormData;
   vehicles: IVehicle[];
   distanceData: DistanceData | null;
-  calculatePrice: (vehicle: IVehicle) => number;
   enableTax: boolean;
   taxPercentage: number;
   taxIncluded: boolean;
   currencySymbol: string;
   t: TFn;
 }) {
+  const selectedVehicle = vehicles.find(
+    (vehicle) => vehicle._id === formData.selectedVehicle
+  );
+
+  const priceBreakdown = selectedVehicle
+    ? calculateBookingPrice(
+        selectedVehicle,
+        {
+          bookingType: formData.bookingType,
+          tripType: formData.tripType,
+          duration: formData.duration,
+          pickup: formData.pickup,
+          dropoff: formData.dropoff,
+          stops: formData.stops,
+          childSeats: formData.childSeats,
+          babySeats: formData.babySeats,
+        },
+        { enableTax, taxPercentage, taxIncluded },
+        distanceData?.distance.km
+      )
+    : null;
+
   return (
       <div className="lg:col-span-1">
         <Card className="sticky top-4 p-5 space-y-4">
@@ -51,7 +72,7 @@ export function Step2TripSummary({
           <Step2PriceBreakdown
             formData={formData}
             vehicles={vehicles}
-            calculatePrice={calculatePrice}
+            priceBreakdown={priceBreakdown}
             enableTax={enableTax}
             taxPercentage={taxPercentage}
             taxIncluded={taxIncluded}

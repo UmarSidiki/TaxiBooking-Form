@@ -156,6 +156,7 @@ export function useStep3Payments({
 
   // Auto-initiate Stripe payment intent when 'card' is selected
   useEffect(() => {
+    if (settings?.enableAppointmentRequest) return;
     if (
       selectedPaymentMethod === "card" &&
       stripeConfig.enabled &&
@@ -167,6 +168,7 @@ export function useStep3Payments({
       createPaymentIntent();
     }
   }, [
+    settings?.enableAppointmentRequest,
     selectedPaymentMethod,
     stripeConfig.enabled,
     totalPrice,
@@ -342,6 +344,54 @@ export function useStep3Payments({
     }
   };
 
+  const handleAppointmentRequest = async () => {
+    if (isSubmittingRef.current) return;
+    if (!validateStep3Contact(formData, t, setErrors)) return;
+
+    isSubmittingRef.current = true;
+    setIsLoading(true);
+    try {
+      const response = await fetch("/api/booking", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          ...formData,
+          childSeats: Number(formData.childSeats) || 0,
+          babySeats: Number(formData.babySeats) || 0,
+          paymentStatus: "pending",
+          locale,
+          totalAmount: totalPrice,
+          subtotalAmount: displaySubtotalAmount,
+          taxAmount: taxAmount,
+          taxPercentage: enableTax ? taxPercentage : 0,
+          taxIncluded: enableTax ? taxIncluded : false,
+        }),
+      });
+      const data = await response.json();
+      if (response.ok) {
+        const target = resolvePostBookingRedirect(
+          settings,
+          `/${locale}/thank-you?tripId=${data.tripId}&amount=${totalPrice.toFixed(2)}&method=request`
+        );
+        await router.push(target);
+        resetForm();
+      } else {
+        setPaymentError(
+          apiErrorMessage(
+            (key) => t(`ApiErrors.${key}`),
+            typeof data.error === "string" ? data.error : "request_failed"
+          )
+        );
+      }
+    } catch (error) {
+      console.error("Appointment request error:", error);
+      setPaymentError(apiErrorMessage((key) => t(`ApiErrors.${key}`), "request_failed"));
+    } finally {
+      isSubmittingRef.current = false;
+      setIsLoading(false);
+    }
+  };
+
   return {
     createPaymentIntent,
     handleStripePaymentSuccess,
@@ -350,5 +400,6 @@ export function useStep3Payments({
     handleCashBooking,
     handleBankTransferBooking,
     handleMultisafepayBooking,
+    handleAppointmentRequest,
   };
 }

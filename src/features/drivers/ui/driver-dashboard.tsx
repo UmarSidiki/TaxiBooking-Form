@@ -4,8 +4,8 @@ import { DriverRideCard } from "@/features/rides/ui/driver-ride-card";
 import { DriverRideDetailDialog } from "@/features/rides/ui/driver-ride-detail-dialog";
 import { DriverRidesToolbar } from "@/features/rides/ui/driver-rides-toolbar";
 import { AdminRidesTabPanel } from "@/features/rides/ui/admin-rides-tab-panel";
+import { DeskNotice } from "@/features/dashboard/ui/desk-notice";
 import { Badge } from "@/shared/ui/badge";
-import { Button } from "@/shared/ui/button";
 import { Tabs, TabsList, TabsTrigger } from "@/shared/ui/tabs";
 import { useDriverDashboard } from "@/features/drivers/hooks/useDriverDashboard";
 import { Ban, CalendarDays, CheckCircle, Loader2 } from "lucide-react";
@@ -35,25 +35,24 @@ export default function DriverDashboard() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="flex flex-col gap-5">
       <DriverRidesToolbar
         t={rides.t}
         isLoading={rides.isLoading}
         fetchAssignedRides={rides.fetchAssignedRides}
-        showFilters={rides.showFilters}
-        setShowFilters={rides.setShowFilters}
         searchQuery={rides.searchQuery}
         setSearchQuery={rides.setSearchQuery}
         dateRange={rides.dateRange}
         setDateRange={rides.setDateRange}
       />
       {loadError ? (
-        <p className="rounded-md border border-border bg-card px-4 py-3 text-sm" role="alert">
+        <DeskNotice
+          variant="error"
+          onRetry={() => void fetchAssignedRides()}
+          retryLabel={t("Drivers.retry")}
+        >
           {loadError}
-          <Button variant="outline" className="ms-3 h-11" onClick={fetchAssignedRides}>
-            {t("Drivers.retry")}
-          </Button>
-        </p>
+        </DeskNotice>
       ) : null}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
         <TabsList className="grid h-auto w-full grid-cols-3 gap-1 bg-muted p-1">
@@ -81,9 +80,13 @@ export default function DriverDashboard() {
             isEmpty={filteredBookings.length === 0}
             fetchBookings={fetchAssignedRides}
             t={t}
-            loadingWrapClass="bg-muted"
-            loadingIconClass="text-muted-foreground"
-            emptyIcon={value === "canceled" ? Ban : value === "passed" ? CheckCircle : CalendarDays}
+            emptyIcon={
+              value === "canceled"
+                ? Ban
+                : value === "passed"
+                  ? CheckCircle
+                  : CalendarDays
+            }
             emptyTitle={
               value === "upcoming"
                 ? t("Dashboard.Rides.NoUpcomingRides")

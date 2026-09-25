@@ -91,7 +91,6 @@ function Step2VehicleSelection() {
         formData={formData}
         vehicles={vehicles}
         distanceData={distanceData}
-        calculatePrice={calculatePrice}
         enableTax={enableTax}
         taxPercentage={taxPercentage}
         taxIncluded={taxIncluded}

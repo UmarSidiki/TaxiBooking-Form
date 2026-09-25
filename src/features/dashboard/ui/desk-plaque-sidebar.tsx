@@ -1,50 +1,70 @@
 "use client";
 
+import type { ComponentProps, ReactNode } from "react";
+import Link from "next/link";
 import { useTranslations } from "next-intl";
 
 import { DeskMark } from "@/features/auth/ui/desk-mark";
-
+import { DeskNavUser } from "@/features/dashboard/ui/desk-nav-user";
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
   SidebarHeader,
-  SidebarRail,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
 } from "@/shared/ui/sidebar";
-import { DeskNavUser } from "@/features/dashboard/ui/desk-nav-user";
 
 export function DeskPlaqueSidebar({
   locale,
   subtitleKey,
   logoutCallbackUrl,
+  homeHref,
   children,
+  ...props
 }: {
   locale: string;
   subtitleKey: string;
   logoutCallbackUrl: string;
-  children: React.ReactNode;
-}) {
+  homeHref?: string;
+  children: ReactNode;
+} & ComponentProps<typeof Sidebar>) {
   const t = useTranslations();
   const name = process.env.NEXT_PUBLIC_WEBSITE_NAME ?? t("Auth.Desk.fallback_name");
+  const href = homeHref ?? `/${locale}/dashboard/home`;
 
   return (
-    <Sidebar collapsible="icon" side={locale === "ar" ? "right" : "left"}>
-      <SidebarHeader className="border-b border-sidebar-border p-3">
-        <div className="flex items-center gap-3 group-data-[collapsible=icon]:justify-center">
-          <DeskMark className="size-8" />
-          <div className="min-w-0 group-data-[collapsible=icon]:hidden">
-            <p className="truncate text-sm font-semibold text-sidebar-foreground">
-              {name}
-            </p>
-            <p className="text-xs text-sidebar-foreground">{t(subtitleKey)}</p>
-          </div>
-        </div>
+    <Sidebar
+      collapsible="offcanvas"
+      variant="inset"
+      side={locale === "ar" ? "right" : "left"}
+      {...props}
+    >
+      <SidebarHeader>
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <SidebarMenuButton
+              asChild
+              className="data-[slot=sidebar-menu-button]:p-1.5!"
+            >
+              <Link href={href}>
+                <DeskMark className="size-8" />
+                <span className="text-base font-semibold text-sidebar-foreground">
+                  {name}
+                </span>
+              </Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
+        <p className="truncate px-2 text-xs text-sidebar-foreground/70 group-data-[collapsible=icon]:hidden">
+          {t(subtitleKey)}
+        </p>
       </SidebarHeader>
       <SidebarContent>{children}</SidebarContent>
-      <SidebarFooter className="border-t border-sidebar-border">
+      <SidebarFooter>
         <DeskNavUser locale={locale} callbackUrl={logoutCallbackUrl} />
       </SidebarFooter>
-      <SidebarRail />
     </Sidebar>
   );
 }

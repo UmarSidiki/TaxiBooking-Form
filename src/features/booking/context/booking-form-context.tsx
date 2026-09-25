@@ -123,7 +123,7 @@ const defaultFormData: FormData = {
   lastName: "",
   email: "",
   phone: "",
-  whatsappOptIn: false,
+  whatsappOptIn: true,
   cardNumber: "",
   expiry: "",
   cvv: "",

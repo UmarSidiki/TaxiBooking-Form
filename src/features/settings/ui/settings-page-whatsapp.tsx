@@ -9,6 +9,7 @@ import { WhatsAppLinkPanel } from "@/features/settings/ui/whatsapp-link-panel";
 import { WhatsAppTemplates } from "@/features/settings/ui/whatsapp-templates";
 import type { WhatsAppDeskConfig, WhatsAppDeskData } from "@/features/settings/ui/whatsapp-desk-types";
 import { SettingsSection } from "@/features/settings/ui/settings-section";
+import { DeskPageMeta } from "@/features/dashboard/ui/desk-page-chrome";
 import { apiGet } from "@/shared/http/api";
 import { Button } from "@/shared/ui/button";
 
@@ -58,12 +59,7 @@ export function SettingsPageWhatsapp() {
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex flex-col gap-1">
-        <h1 className="text-balance text-2xl font-semibold tracking-tight text-foreground">
-          {t("nav_whatsapp")}
-        </h1>
-        <p className="max-w-xl text-pretty text-sm text-muted-foreground">{t("whatsapp_help")}</p>
-      </div>
+      <DeskPageMeta title={t("nav_whatsapp")} description={t("whatsapp_help")} />
       <SettingsSection title={t("whatsapp_connection")} description={t("whatsapp_unofficial")}>
         <WhatsAppLinkPanel />
       </SettingsSection>

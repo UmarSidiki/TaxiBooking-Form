@@ -1,0 +1,3 @@
+# Desk-created Bookings and manual price
+
+Operators take bookings by phone and walk-in, which the public wizard cannot express, so the desk can create a Booking directly as either a confirmed ride or a Quote. The operator may also set a manual price that replaces the computed fare and is final — no rate or tax recalculation — because a price already agreed with the Customer cannot be reconstructed from vehicle rates. Manual pricing is recorded (`priceSource`) alongside the creating operator (`createdBy`), and desk creation deliberately skips the public duplicate guard, whose two-minute window exists to absorb double-submits rather than to stop an operator intentionally booking twice.

@@ -8,13 +8,20 @@ export async function findBookingById(id: string) {
 
 export async function updateBookingById(
   id: string,
-  updateData: Partial<IBooking>
+  updateData: Partial<IBooking>,
+  unsetFields?: string[]
 ) {
-  return Booking.findByIdAndUpdate(
-    id,
-    { $set: updateData },
-    { returnDocument: 'after', runValidators: true }
-  );
+  const update: Record<string, unknown> = {};
+  if (Object.keys(updateData).length > 0) {
+    update.$set = updateData;
+  }
+  if (unsetFields?.length) {
+    update.$unset = Object.fromEntries(unsetFields.map((field) => [field, 1]));
+  }
+  return Booking.findByIdAndUpdate(id, update, {
+    returnDocument: 'after',
+    runValidators: true,
+  });
 }
 
 export async function deleteBookingById(id: string) {

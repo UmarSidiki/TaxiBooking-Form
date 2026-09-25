@@ -1,29 +1,26 @@
 "use client";
 
+import { useState } from "react";
+
+import { NewDeskBookingDrawer } from "@/features/desk-booking/ui/new-desk-booking-drawer";
 import { AdminRideCancelDialog } from "@/features/rides/ui/admin-ride-cancel-dialog";
 import { AdminRideDetailDialog } from "@/features/rides/ui/admin-ride-detail-dialog";
 import { AdminRidesTabs } from "@/features/rides/ui/admin-rides-tabs";
 import { AdminRidesToolbar } from "@/features/rides/ui/admin-rides-toolbar";
+import { DeskNotice } from "@/features/dashboard/ui/desk-notice";
 import { useAdminRides } from "@/features/rides/hooks/useAdminRides";
 
 export default function RidesPage() {
   const rides = useAdminRides();
-  const {
-    t,
-    loadError,
-    fetchBookings,
-    notice,
-    setNotice,
-  } = rides;
+  const { t, loadError, fetchBookings, notice, setNotice } = rides;
+  const [showNewBooking, setShowNewBooking] = useState(false);
 
   return (
-    <div className="space-y-6">
+    <div className="flex flex-col gap-5">
       <AdminRidesToolbar
         t={rides.t}
         isLoading={rides.isLoading}
         fetchBookings={rides.fetchBookings}
-        showFilters={rides.showFilters}
-        setShowFilters={rides.setShowFilters}
         searchQuery={rides.searchQuery}
         setSearchQuery={rides.setSearchQuery}
         dateRange={rides.dateRange}
@@ -32,38 +29,26 @@ export default function RidesPage() {
         setPaymentFilter={rides.setPaymentFilter}
         sortBy={rides.sortBy}
         setSortBy={rides.setSortBy}
+        onNewBooking={() => setShowNewBooking(true)}
       />
 
       {loadError ? (
-        <p
-          className="rounded-md border border-border bg-card px-4 py-3 text-sm"
-          role="alert"
+        <DeskNotice
+          variant="error"
+          onRetry={() => void fetchBookings()}
+          retryLabel={t("Dashboard.Home.try-again")}
         >
           {loadError}
-          <button
-            type="button"
-            className="ms-3 min-h-11 rounded-sm text-primary underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
-            onClick={() => void fetchBookings()}
-          >
-            {t("Dashboard.Home.try-again")}
-          </button>
-        </p>
+        </DeskNotice>
       ) : null}
 
       {notice ? (
-        <p
-          className="rounded-md border border-border bg-card px-4 py-3 text-sm text-foreground"
-          role="status"
+        <DeskNotice
+          onDismiss={() => setNotice(null)}
+          dismissLabel={t("Dashboard.Rides.Dismiss")}
         >
           {notice}
-          <button
-            type="button"
-            className="ms-3 min-h-11 rounded-sm text-primary underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
-            onClick={() => setNotice(null)}
-          >
-            {t("Dashboard.Rides.Dismiss")}
-          </button>
-        </p>
+        </DeskNotice>
       ) : null}
 
       <AdminRidesTabs rides={rides} />
@@ -75,6 +60,15 @@ export default function RidesPage() {
         setDetailBooking={rides.setDetailBooking}
         isBookingPassed={rides.isBookingPassed}
         bookingReviews={rides.bookingReviews}
+      />
+
+      <NewDeskBookingDrawer
+        open={showNewBooking}
+        onOpenChange={setShowNewBooking}
+        onCreated={(tripId) => {
+          setNotice(t("Dashboard.Rides.booking-created", { tripId }));
+          void fetchBookings();
+        }}
       />
 
       <AdminRideCancelDialog

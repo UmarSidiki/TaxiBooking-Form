@@ -1,10 +1,29 @@
 "use client";
 
-import { useSession } from "next-auth/react";
+import { useState } from "react";
+import { EllipsisVertical, LogOut } from "lucide-react";
+import { signOut, useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 
-import { SidebarMenu, SidebarMenuItem } from "@/shared/ui/sidebar";
-import LogoutButton from "@/features/auth/ui/logout-button";
+import {
+  Avatar,
+  AvatarFallback,
+} from "@/shared/ui/avatar";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/shared/ui/dropdown-menu";
+import {
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  useSidebar,
+} from "@/shared/ui/sidebar";
 
 export function DeskNavUser({
   locale,
@@ -14,33 +33,85 @@ export function DeskNavUser({
   callbackUrl?: string;
 }) {
   const { data, status } = useSession();
+  const { isMobile } = useSidebar();
   const t = useTranslations("Auth.Desk");
+  const [signingOut, setSigningOut] = useState(false);
+
   const ready = status !== "loading";
-  const name = ready ? (data?.user?.name ?? t("staff")) : "";
+  const name = ready ? (data?.user?.name ?? t("staff")) : t("loading");
   const email = ready ? (data?.user?.email ?? "") : "";
+  const initials = ready ? name.slice(0, 1).toUpperCase() : "…";
   const signOutUrl = callbackUrl ?? `/${locale}/dashboard/signin`;
+
+  const handleSignOut = async () => {
+    try {
+      setSigningOut(true);
+      await signOut({ callbackUrl: signOutUrl });
+    } finally {
+      setSigningOut(false);
+    }
+  };
 
   return (
     <SidebarMenu>
       <SidebarMenuItem>
-        <div className="flex w-full min-w-0 flex-col gap-2 p-1 group-data-[collapsible=icon]:items-center">
-          <div className="flex min-w-0 items-center gap-3">
-            <div className="flex size-8 shrink-0 items-center justify-center rounded-md bg-sidebar-accent text-xs font-semibold text-sidebar-accent-foreground">
-              {ready ? name.slice(0, 1).toUpperCase() : "…"}
-            </div>
-            <div className="min-w-0 flex-1 group-data-[collapsible=icon]:hidden">
-              <p className="truncate text-sm font-medium text-sidebar-foreground">
-                {ready ? name : t("loading")}
-              </p>
-              <p className="truncate text-xs text-sidebar-foreground">{email}</p>
-            </div>
-          </div>
-          <LogoutButton
-            callbackUrl={signOutUrl}
-            variant="ghost"
-            className="h-11 w-full justify-start text-sidebar-foreground transition-colors duration-200 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground group-data-[collapsible=icon]:size-11 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-0"
-          />
-        </div>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <SidebarMenuButton
+              size="lg"
+              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+            >
+              <Avatar className="size-8 rounded-lg grayscale">
+                <AvatarFallback className="rounded-lg bg-sidebar-accent text-sidebar-accent-foreground">
+                  {initials}
+                </AvatarFallback>
+              </Avatar>
+              <div className="grid flex-1 text-start text-sm leading-tight">
+                <span className="truncate font-medium text-sidebar-foreground">
+                  {name}
+                </span>
+                <span className="truncate text-xs text-sidebar-foreground/70">
+                  {email}
+                </span>
+              </div>
+              <EllipsisVertical className="ms-auto text-sidebar-foreground/70" />
+            </SidebarMenuButton>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent
+            className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"
+            side={isMobile ? "bottom" : "right"}
+            align="end"
+            sideOffset={4}
+          >
+            <DropdownMenuLabel className="p-0 font-normal">
+              <div className="flex items-center gap-2 px-1 py-1.5 text-start text-sm">
+                <Avatar className="size-8 rounded-lg">
+                  <AvatarFallback className="rounded-lg">{initials}</AvatarFallback>
+                </Avatar>
+                <div className="grid flex-1 text-start text-sm leading-tight">
+                  <span className="truncate font-medium">{name}</span>
+                  <span className="truncate text-xs text-muted-foreground">
+                    {email}
+                  </span>
+                </div>
+              </div>
+            </DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuGroup>
+              <DropdownMenuItem
+                variant="destructive"
+                disabled={signingOut}
+                onSelect={(event) => {
+                  event.preventDefault();
+                  void handleSignOut();
+                }}
+              >
+                <LogOut />
+                {signingOut ? t("signing_out") : t("log_out")}
+              </DropdownMenuItem>
+            </DropdownMenuGroup>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </SidebarMenuItem>
     </SidebarMenu>
   );

@@ -107,6 +107,32 @@ export async function finalizePaidBooking(
 
   if (existingBooking) {
     const baseUrl = input.baseUrl || process.env.NEXT_PUBLIC_BASE_URL || '';
+
+    if (existingBooking.status === 'awaiting_payment') {
+      const { finalizeQuoteBooking } = await import(
+        '@/features/payments/lib/finalize-quote-booking'
+      );
+      return finalizeQuoteBooking({
+        booking: existingBooking,
+        provider: input.provider,
+        paidAmount,
+        currency,
+        baseUrl,
+        ...paymentIds,
+      });
+    }
+
+    // Do not treat unpaid appointment requests or declined quotes as paid bookings
+    if (
+      existingBooking.status === 'requested' ||
+      existingBooking.status === 'canceled'
+    ) {
+      return {
+        success: false,
+        message: 'Booking is not payable in its current state',
+      };
+    }
+
     await PendingBooking.deleteOne({ orderId });
 
     const emailData = buildBookingEmailDataFromBooking(existingBooking, {

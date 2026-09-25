@@ -5,37 +5,47 @@
 export class ApiError extends Error {
   status: number;
   code: string;
+  /** Optional human-readable detail from the API body (never Zod dumps). */
+  detail?: string;
 
-  constructor(code: string, status: number) {
-    super(code);
+  constructor(code: string, status: number, detail?: string) {
+    super(detail || code);
     this.name = "ApiError";
     this.code = code;
     this.status = status;
+    this.detail = detail;
   }
 }
 
 type ErrorEnvelope = {
   error?: unknown;
+  message?: unknown;
   success?: unknown;
 };
 
-function codeFromBody(text: string): string {
+function parseErrorBody(text: string): { code: string; detail?: string } {
   try {
     const body = JSON.parse(text) as ErrorEnvelope;
-    if (typeof body.error === "string" && body.error.length > 0) {
-      return body.error;
-    }
+    const code =
+      typeof body.error === "string" && body.error.length > 0
+        ? body.error
+        : "request_failed";
+    const detail =
+      typeof body.message === "string" && body.message.length > 0
+        ? body.message
+        : undefined;
+    return { code, detail };
   } catch {
-    // Non-JSON error pages still map to a stable code.
+    return { code: "request_failed" };
   }
-  return "request_failed";
 }
 
 export async function apiFetch<T>(url: string, options?: RequestInit): Promise<T> {
   const response = await fetch(url, options);
   if (!response.ok) {
     const errorText = await response.text();
-    throw new ApiError(codeFromBody(errorText), response.status);
+    const { code, detail } = parseErrorBody(errorText);
+    throw new ApiError(code, response.status, detail);
   }
   return response.json() as Promise<T>;
 }

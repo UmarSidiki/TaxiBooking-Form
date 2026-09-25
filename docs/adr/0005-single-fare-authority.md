@@ -1,0 +1,3 @@
+# One fare authority
+
+Three calculators disagreed: the wizard preview applied discount and tax but ignored price tiers, the cash and appointment server path applied tiers but no discount and no tax, and only the payments path applied all three — so the same trip had two different prices depending on the route, and the cash path stored the client's figure. `calculateBookingPrice` is now the single authority for both preview and storage, called with a server-fetched distance. Unifying it also closed a payment hole: the MultiSafepay order route charged a client-supplied amount verbatim while reconciling against a client-supplied total, so a fare could be paid at an arbitrary fraction.

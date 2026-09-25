@@ -1,6 +1,5 @@
 "use client";
 
-import { Badge } from "@/shared/ui/badge";
 import { useLocale } from "next-intl";
 import { useCurrency } from "@/shared/context/currency-context";
 import { useAdminHome } from "@/features/dashboard/hooks/useAdminHome";
@@ -20,7 +19,6 @@ export default function DashboardPage() {
   const { currency } = useCurrency();
   const { stats, isLoading, error, t } = useAdminHome();
   const locale = useLocale();
-  const updatedAt = new Intl.DateTimeFormat(locale).format(new Date());
 
   if (isLoading) {
     return <AdminHomeLoading t={t} />;
@@ -35,36 +33,23 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="flex flex-col gap-6">
-      <AdminHomeHeader t={t}>
-        <div className="flex items-center gap-3">
-          <Badge variant="outline" className="hidden sm:flex">
-            <span suppressHydrationWarning>
-              {t("Dashboard.Home.last-updated")} {updatedAt}
-            </span>
-          </Badge>
-        </div>
-      </AdminHomeHeader>
-
+    <div className="flex flex-col gap-5">
+      <AdminHomeHeader t={t} />
+      <AdminHomeQuickActions t={t} />
+      <AdminHomeBookingStats t={t} stats={stats} />
       <AdminHomeRecentBookings
         t={t}
         stats={stats}
         currency={currency}
         locale={locale}
       />
-
-      <AdminHomeBookingStats t={t} stats={stats} />
-
       <AdminHomeRevenue
         t={t}
         stats={stats}
         currency={currency}
         locale={locale}
       />
-
       <AdminHomeDestinations t={t} stats={stats} />
-
-      <AdminHomeQuickActions t={t} />
     </div>
   );
 }

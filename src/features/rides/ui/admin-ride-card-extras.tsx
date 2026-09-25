@@ -1,7 +1,7 @@
 "use client";
 
 import type { IBooking } from "@/features/booking/model";
-import { Baby, Info, Plane, Users } from "lucide-react";
+import { Baby, Plane } from "lucide-react";
 import type { useTranslations } from "next-intl";
 
 type TFn = ReturnType<typeof useTranslations>;
@@ -13,67 +13,55 @@ export function AdminRideCardExtras({
   booking: IBooking;
   t: TFn;
 }) {
+  const chips: { key: string; icon: typeof Plane; label: string }[] = [];
+
+  if (booking.flightNumber) {
+    chips.push({
+      key: "flight",
+      icon: Plane,
+      label: `${t("Dashboard.Rides.flight-number")} ${booking.flightNumber}`,
+    });
+  }
+  if (booking.childSeats > 0) {
+    chips.push({
+      key: "child",
+      icon: Baby,
+      label: `${t("Dashboard.Rides.child-seats")} ${booking.childSeats}`,
+    });
+  }
+  if (booking.babySeats > 0) {
+    chips.push({
+      key: "baby",
+      icon: Baby,
+      label: `${t("Dashboard.Rides.baby-seats")} ${booking.babySeats}`,
+    });
+  }
+
+  if (chips.length === 0 && !booking.notes) return null;
+
   return (
-            <div className="space-y-2 pt-2 border-t border-border">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
-                <div className="flex items-center gap-2">
-                  <Users className="w-3 h-3 text-muted-foreground" />
-                  <span className="text-muted-foreground">
-                    {t("Dashboard.Rides.passengers")}
-                  </span>
-                  <span className="font-medium text-foreground">
-                    {booking.passengers}
-                  </span>
-                </div>
-                {booking.childSeats > 0 && (
-                  <div className="flex items-center gap-2">
-                    <Baby className="w-3 h-3 text-muted-foreground" />
-                    <span className="text-muted-foreground">
-                      {t("Dashboard.Rides.child-seats")}
-                    </span>
-                    <span className="font-medium text-foreground">
-                      {booking.childSeats}
-                    </span>
-                  </div>
-                )}
-                {booking.babySeats > 0 && (
-                  <div className="flex items-center gap-2">
-                    <Baby className="w-3 h-3 text-muted-foreground" />
-                    <span className="text-muted-foreground">
-                      {t("Dashboard.Rides.baby-seats")}
-                    </span>
-                    <span className="font-medium text-foreground">
-                      {booking.babySeats}
-                    </span>
-                  </div>
-                )}
-                {booking.flightNumber && (
-                  <div className="flex items-center gap-2">
-                    <Plane className="w-3 h-3 text-muted-foreground" />
-                    <span className="text-muted-foreground">
-                      {t("Dashboard.Rides.flight-number")}
-                    </span>
-                    <span className="font-medium text-foreground">
-                      {booking.flightNumber}
-                    </span>
-                  </div>
-                )}
-              </div>
-              {booking.notes && (
-                <div className="bg-secondary/10 border border-secondary/20 rounded-lg p-2">
-                  <div className="flex items-start gap-2">
-                    <Info className="w-3 h-3 text-secondary-foreground flex-shrink-0 mt-0.5" />
-                    <div>
-                      <span className="text-xs font-medium text-secondary-foreground">
-                        {t("Dashboard.Rides.special-requests")}{" "}
-                      </span>
-                      <p className="text-xs text-secondary-foreground mt-1">
-                        {booking.notes}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
+    <div className="flex flex-col gap-2">
+      {chips.length > 0 ? (
+        <div className="flex flex-wrap gap-1.5">
+          {chips.map(({ key, icon: Icon, label }) => (
+            <span
+              key={key}
+              className="inline-flex items-center gap-1 rounded-md bg-muted px-2 py-1 text-xs text-muted-foreground"
+            >
+              <Icon className="size-3" aria-hidden="true" />
+              {label}
+            </span>
+          ))}
+        </div>
+      ) : null}
+      {booking.notes ? (
+        <p className="rounded-lg bg-muted/50 px-2.5 py-2 text-xs text-muted-foreground">
+          <span className="font-medium text-foreground">
+            {t("Dashboard.Rides.special-requests")}{" "}
+          </span>
+          {booking.notes}
+        </p>
+      ) : null}
+    </div>
   );
 }

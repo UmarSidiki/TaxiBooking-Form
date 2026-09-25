@@ -10,6 +10,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/shared/ui/dialog";
+import { DeskPageMeta } from "@/features/dashboard/ui/desk-page-chrome";
 import { LayoutManager } from "@/features/form-builder/ui/layout-manager";
 import type { useFormBuilder } from "@/features/form-builder/hooks/useFormBuilder";
 import { Check, LayoutTemplate, Loader2, Pencil, Save } from "lucide-react";
@@ -62,6 +63,7 @@ export function FormBuilderHeader({
 >) {
   return (
       <>
+      <DeskPageMeta title={t("title")} description={t("description")} />
       {/* ── Header ── */}
       <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
         <div className="flex items-center gap-4">
@@ -74,7 +76,7 @@ export function FormBuilderHeader({
                   value={layoutName}
                   onChange={(e) => setLayoutName(e.target.value)}
                   placeholder={t("ui.layout_name_placeholder")}
-                  className="text-2xl font-bold h-auto py-1 px-2 w-64"
+                  className="h-11 w-64 px-2 text-base font-semibold"
                   autoFocus
                   onKeyDown={(e) => {
                     if (e.key === "Enter") setEditingName(false);
@@ -91,14 +93,14 @@ export function FormBuilderHeader({
                 className="flex min-h-11 items-center gap-2 rounded-sm text-start focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
                 onClick={() => setEditingName(true)}
               >
-                <h1 className="text-2xl font-semibold tracking-tight text-foreground">
+                <span className="text-base font-semibold tracking-tight text-foreground">
                   {layoutName || t("ui.untitled_layout")}
-                </h1>
+                </span>
                 <Pencil className="size-4 text-muted-foreground" aria-hidden="true" />
               </button>
             )}
-            <div className="flex items-center gap-3 mt-1">
-              <p className="text-muted-foreground text-sm">
+            <div className="mt-1 flex items-center gap-3">
+              <p className="text-sm text-muted-foreground">
                 {t("ui.fields_enabled", { enabled: fields.filter((f) => f.enabled).length, total: fields.length })}
               </p>
               {lastSaved && (

@@ -98,8 +98,15 @@ export function AdminRideAssignPartnerDialog({
                 onClick={async () => {
                   try {
                     // First approve for partners marketplace if not already assigned
-                    if (!booking.assignedPartner && booking.paymentMethod !== "cash") {
-                      const approved = await handleApprovePartnerReview(bookingId, assignPartnerMargin);
+                    if (
+                      !booking.assignedPartner &&
+                      booking.partnerReviewStatus !== "approved"
+                    ) {
+                      const approved = await handleApprovePartnerReview(
+                        bookingId,
+                        assignPartnerMargin,
+                        { notifyPartners: false }
+                      );
                       if (!approved) {
                         return; // Don't proceed if approval failed
                       }
@@ -118,7 +125,9 @@ export function AdminRideAssignPartnerDialog({
                   !selectedPartner ||
                   assigningId === booking._id?.toString() ||
                   approvingPartnerId === bookingId ||
-                  (booking.assignedPartner && selectedPartner === booking.assignedPartner._id) ||
+                  (booking.assignedPartner &&
+                    selectedPartner ===
+                      String(booking.assignedPartner._id)) ||
                   assignPartnerMargin < 0 ||
                   assignPartnerMargin > 100
                 }

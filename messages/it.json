@@ -6,7 +6,8 @@
     "trip-details": "Dettagli Viaggio",
     "select-vehicle": "Seleziona Veicolo",
     "payment-and-details": "Pagamento e Dettagli",
-    "booking": "Prenotazione"
+    "booking": "Prenotazione",
+    "your-details": "I suoi dati"
   },
   "Footer": {
     "Copyright": "© 2025 {websiteName} Tutti i diritti riservati.",
@@ -196,7 +197,13 @@
     "flight-number-optional": "Numero Volo (Opzionale)",
     "pay-online": "Paga Online",
     "via-multisafepay": "(via MultiSafepay)",
-    "ideal-bancontact-paypal-and-more": "iDEAL, Bancontact, PayPal e altro"
+    "ideal-bancontact-paypal-and-more": "iDEAL, Bancontact, PayPal e altro",
+    "appointment-request-title": "I suoi dati",
+    "appointment-request-help": "Lavoriamo su appuntamento. Inviate una richiesta: confermiamo la disponibilità prima del pagamento. Nessun addebito ora.",
+    "indicative-rate-label": "Tariffa indicativa — confermata dopo verifica disponibilità:",
+    "request-this-appointment": "Richiedi questo appuntamento",
+    "submitting-request": "Invio…",
+    "whatsapp_confirmation-note": "La conferma della prenotazione ti verrà inviata anche su WhatsApp."
   },
   "booking-failed-data-message": "Prenotazione fallita: {0}",
   "embeddable": {
@@ -434,7 +441,47 @@
       "choose-driver": "Scegli un autista…",
       "select-new-driver": "Seleziona un nuovo autista",
       "current-status": "Stato attuale",
-      "margin-helper": "Imposta il margine da trattenere sul totale della prenotazione."
+      "margin-helper": "Imposta il margine da trattenere sul totale della prenotazione.",
+      "Requests": "Richieste",
+      "NoRequests": "Nessuna richiesta",
+      "NoRequestsDescription": "Le nuove richieste compaiono qui finché non quotate, confermate in contanti o rifiutate.",
+      "status-requested": "Richiesto",
+      "status-awaiting-payment": "In attesa di pagamento",
+      "review-request": "Esamina richiesta",
+      "request-actions-title": "Richiesta appuntamento",
+      "request-actions-help": "Richiesta #{tripId}",
+      "quoted-amount-label": "Prezzo quotato",
+      "estimated-amount-hint": "Stima indicativa: {amount}",
+      "decline-reason-label": "Nota al cliente (opzionale)",
+      "confirm-send-pay-link": "Conferma e invia link di pagamento",
+      "confirm-as-cash": "Conferma in contanti / paga il giorno",
+      "not-available": "Non disponibile",
+      "quote-sent": "Link di pagamento inviato.",
+      "quote-failed": "Impossibile inviare il link.",
+      "cash-confirmed": "Confermato in contanti.",
+      "cash-confirm-failed": "Impossibile confermare in contanti.",
+      "request-declined": "Richiesta segnata non disponibile.",
+      "decline-failed": "Impossibile rifiutare.",
+      "new-booking": "Nuova prenotazione",
+      "new-booking-title": "Nuova prenotazione",
+      "new-booking-help": "Crea una prenotazione per un cliente che ha chiamato o si è presentato.",
+      "section-outcome": "Esito e prezzo",
+      "trip-type": "Tipo di tragitto",
+      "select-vehicle": "Seleziona veicolo",
+      "customer-language": "Lingua del cliente",
+      "outcome": "Esito",
+      "outcome-confirmed": "Corsa confermata",
+      "outcome-confirmed-help": "Prenotata subito e pronta per l'assegnazione. Indica come ha pagato il cliente.",
+      "outcome-quote": "Invia link di pagamento",
+      "outcome-quote-help": "La corsa attende il pagamento; al cliente viene inviato un link di pagamento via e-mail.",
+      "computed-fare": "Tariffa calcolata",
+      "manual-price": "Prezzo manuale (definitivo)",
+      "manual-price-help": "Lascia vuoto per usare la tariffa calcolata. Un prezzo manuale è definitivo e l'imposta non viene ricalcolata.",
+      "manual-price-invalid": "Inserisci un importo maggiore di zero",
+      "payment-collected": "Pagamento incassato",
+      "notify-customer": "Invia e-mail al cliente",
+      "create-booking": "Crea prenotazione",
+      "booking-created": "Prenotazione {tripId} creata"
     },
     "Home": {
       "failed-to-fetch-dashboard-stats": "Impossibile recuperare statistiche dashboard",
@@ -717,6 +764,10 @@
         "documents": "Documenti",
         "uploaded": "Caricati",
         "partner-details": "Dettagli Partner",
+        "tab-profile": "Profilo",
+        "tab-billing": "Fatturazione",
+        "tab-documents": "Documenti",
+        "tab-fleet": "Flotta",
         "review-partner-info": "Revisiona informazioni e documenti partner",
         "status": "Stato",
         "personal-information": "Informazioni Personali",
@@ -800,7 +851,19 @@
         "vehicle-requested": "Veicolo richiesto",
         "recalculate-payout": "Ricalcola il pagamento",
         "load-error": "Impossibile caricare i partner. Riprova.",
-        "retry": "Riprova"
+        "retry": "Riprova",
+        "remittance-balance-label": "Rimessa in sospeso",
+        "last-remittance-label": "Ultima rimessa: {date}",
+        "mark-remittance-received": "Segna rimessa ricevuta",
+        "marking-remittance": "Salvataggio…",
+        "settlement-ledger": "Libro di regolamento",
+        "loading-ledger": "Caricamento libro…",
+        "empty-ledger": "Nessuna voce ancora",
+        "settlement-type-payout_credit": "Credito pagamento",
+        "settlement-type-payout_paid": "Pagamento effettuato",
+        "settlement-type-remittance_credit": "Rimessa dovuta",
+        "settlement-type-remittance_received": "Rimessa ricevuta",
+        "settlement-type-clawback": "Storno"
       }
     },
     "Features": {
@@ -820,7 +883,23 @@
       "embeddable-form-module": "Modulo di prenotazione incorporabile",
       "enable-embeddable-booking-form": "Abilita il modulo di prenotazione incorporabile che può essere integrato su siti Web esterni. \nSe disabilitato, gli utenti non possono accedere a questa pagina di supporto.",
       "enable-form-builder": "Abilita lo strumento di creazione moduli per personalizzare i campi e il layout del modulo di prenotazione. \nSe disabilitata, la pagina del generatore di moduli sarà inaccessibile.",
-      "form-builder-module": "Generatore di moduli"
+      "form-builder-module": "Generatore di moduli",
+      "dispatch-settlement-title": "Dispatch e regolamento",
+      "dispatch-settlement-description": "Come i partner sono pagati sulle corse in contanti e se una corsa può avere sia autista che partner.",
+      "cash-settlement-label": "Regolamento contanti",
+      "cash-settlement-keep-cash": "Il partner tiene i contanti (nessuna rimessa)",
+      "cash-settlement-operator-margin": "L’operatore prende il margine (il partner versa)",
+      "cash-settlement-help": "Le corse online usano sempre la revisione del margine. Questo cambia solo l’overflow in contanti.",
+      "dispatch-mode-label": "Modalità assegnazione",
+      "dispatch-mode-exclusive": "Esclusiva (un assegnatario)",
+      "dispatch-mode-allow-both": "Consenti autista e partner insieme",
+      "dispatch-mode-help": "L’esclusiva cancella l’altra parte all’assegnazione o all’accettazione.",
+      "default-margin-label": "Margine partner predefinito (%)",
+      "default-margin-help": "Margine suggerito quando si approva una corsa per i partner.",
+      "appointment-request-module": "Prima appuntamento",
+      "enable-appointment-request": "I clienti inviano una richiesta di appuntamento. Confermate disponibilità e prezzo prima del pagamento. L’email di conferma parte solo dopo.",
+      "desk-booking-module": "Prenotazione operatore",
+      "enable-desk-booking": "Il personale può creare prenotazioni per conto di un cliente, con un prezzo manuale opzionale."
     },
     "Fleet": {
       "failed-to-fetch-vehicles": "Impossibile recuperare veicoli",
@@ -1181,7 +1260,13 @@
       "gateways_help": "Segreti e webhook Stripe o MultiSafepay, più dati bancari.",
       "save": "Salva",
       "retry": "Riprova",
-      "multisafepay": "MultiSafepay"
+      "multisafepay": "MultiSafepay",
+      "booking-countries-title": "Paesi di prenotazione",
+      "booking-countries-help": "Limita le prenotazioni ai paesi selezionati. Lascia vuoto per accettare prenotazioni da ovunque.",
+      "booking-countries-search": "Cerca paesi",
+      "booking-countries-all-allowed": "Tutti i paesi consentiti",
+      "booking-countries-selected-count": "{count, plural, one {# paese selezionato} other {# paesi selezionati}}",
+      "booking-countries-no-results": "Nessun paese corrisponde alla ricerca"
     }
   },
   "Sidebar": {
@@ -1551,7 +1636,9 @@
     "or": "o",
     "redirecting-in": "Reindirizzamento in",
     "return-to-home": "Torna alla Home",
-    "seconds": "secondi"
+    "seconds": "secondi",
+    "request-received-title": "Richiesta ricevuta",
+    "request-received-body": "Lavoriamo su appuntamento. Confermeremo la disponibilità e vi invieremo i passi successivi. Non è ancora una conferma di prenotazione."
   },
   "Driver": {
     "failed-to-fetch-drivers": "Impossibile recuperare autisti",
@@ -1580,7 +1667,10 @@
     "driver-saved": "Autista salvato.",
     "driver-deleted": "Autista eliminato.",
     "loading": "Caricamento autisti…",
-    "delete": "Elimina"
+    "delete": "Elimina",
+    "search-drivers": "Cerca per nome o email…",
+    "no-drivers-match": "Nessun autista trovato",
+    "try-another-search": "Prova un altro nome o cancella la ricerca."
   },
   "Drivers": {
     "driver-dashboard": "Dashboard Autista",
@@ -1849,6 +1939,26 @@
     "payment_failed": "Impossibile completare il pagamento. Riprova.",
     "payment_not_configured": "I pagamenti con carta non sono ancora configurati.",
     "price_changed": "La tariffa è cambiata. Aggiorna e riprova.",
-    "distance_failed": "Impossibile calcolare il percorso. Controlla gli indirizzi."
+    "distance_failed": "Impossibile calcolare il percorso. Controlla gli indirizzi.",
+    "country_blocked": "Le prenotazioni non sono disponibili dalla tua posizione."
+  },
+  "Pay": {
+    "by-appointment": "Su appuntamento",
+    "pay-to-confirm": "Paga per confermare",
+    "quote-summary": "Richiesta #{tripId}",
+    "pay-with-card": "Paga con carta",
+    "pay-with-multisafepay": "Paga con MultiSafepay",
+    "no-payment-methods": "Il pagamento online non è configurato.",
+    "payment-init-failed": "Impossibile avviare il pagamento.",
+    "link-invalid-title": "Link non trovato",
+    "link-invalid-body": "Questo link di pagamento non è valido o è scaduto.",
+    "declined-title": "Richiesta non disponibile",
+    "declined-body": "Questa richiesta è stata segnata non disponibile.",
+    "already-paid-title": "Già confermato",
+    "already-paid-body": "Il viaggio #{tripId} è già pagato e confermato."
+  },
+  "CountryBlocked": {
+    "title": "Non serviamo ancora la tua regione",
+    "body": "Le prenotazioni non sono disponibili dalla tua posizione attuale. Se pensi sia un errore, contattaci e ti aiuteremo."
   }
 }

@@ -4,6 +4,8 @@ import { useEffect } from "react";
 import { Loader2, Save } from "lucide-react";
 import { useTranslations } from "next-intl";
 
+import { DeskPageMeta } from "@/features/dashboard/ui/desk-page-chrome";
+import { DeskNotice } from "@/features/dashboard/ui/desk-notice";
 import { useSettingsDesk } from "@/features/settings/ui/settings-desk-context";
 import { Button } from "@/shared/ui/button";
 
@@ -21,16 +23,9 @@ export function SettingsDeskSave({
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-        <div className="flex flex-col gap-1">
-          <h1 className="text-balance text-2xl font-semibold tracking-tight text-foreground">
-            {title}
-          </h1>
-          {help ? (
-            <p className="max-w-xl text-pretty text-sm text-muted-foreground">{help}</p>
-          ) : null}
-        </div>
-        <Button type="button" onClick={save} disabled={isLoading} className="h-11">
+      <DeskPageMeta title={title} description={help} />
+      <div className="flex justify-end">
+        <Button type="button" onClick={save} disabled={isLoading} className="h-10 rounded-xl px-4 font-semibold">
           {isLoading ? (
             <Loader2 className="size-4 animate-spin" aria-hidden="true" />
           ) : (
@@ -42,12 +37,7 @@ export function SettingsDeskSave({
         </Button>
       </div>
       {notice ? (
-        <p
-          className="rounded-md border border-border bg-card px-4 py-3 text-sm"
-          role="status"
-        >
-          {notice}
-        </p>
+        <DeskNotice>{notice}</DeskNotice>
       ) : null}
     </div>
   );

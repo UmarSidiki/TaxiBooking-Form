@@ -6,6 +6,7 @@ import { Button } from "@/shared/ui/button";
 import { useStep3 } from "@/features/booking/hooks/form-steps/useStep3";
 import { useTranslations } from "next-intl";
 import { useCurrency } from "@/shared/context/currency-context";
+import { Step3AppointmentRequestPanel } from "@/features/booking/ui/steps/step3-appointment-request-panel";
 import { Step3BookingSummary } from "@/features/booking/ui/steps/step3-booking-summary";
 import { Step3Extras } from "@/features/booking/ui/steps/step3-extras";
 import { Step3PaymentMethods } from "@/features/booking/ui/steps/step3-payment-methods";
@@ -25,8 +26,10 @@ function Step3Payment() {
 
   const { currencySymbol } = useCurrency();
   const t = useTranslations();
+  const appointFirst = Boolean(paymentSettings?.enableAppointmentRequest);
 
   useEffect(() => {
+    if (appointFirst) return;
     if (paymentSettings?.acceptedPaymentMethods && !selectedPaymentMethod) {
       if (paymentSettings.acceptedPaymentMethods.includes("card") && stripeConfig.enabled) {
         setSelectedPaymentMethod("card");
@@ -36,7 +39,13 @@ function Step3Payment() {
         setSelectedPaymentMethod("bank_transfer");
       }
     }
-  }, [paymentSettings, selectedPaymentMethod, setSelectedPaymentMethod, stripeConfig]);
+  }, [
+    appointFirst,
+    paymentSettings,
+    selectedPaymentMethod,
+    setSelectedPaymentMethod,
+    stripeConfig,
+  ]);
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -56,31 +65,41 @@ function Step3Payment() {
           setFormData={step.setFormData}
           errors={step.errors}
         />
-        <Step3PaymentMethods
-          t={t}
-          currencySymbol={currencySymbol}
-          stripeConfig={step.stripeConfig}
-          paymentSettings={step.paymentSettings}
-          selectedPaymentMethod={step.selectedPaymentMethod}
-          setSelectedPaymentMethod={step.setSelectedPaymentMethod}
-          clientSecret={step.clientSecret}
-          stripeOrderId={step.stripeOrderId}
-          creatingPaymentIntent={step.creatingPaymentIntent}
-          paymentError={step.paymentError}
-          retryStripePayment={step.retryStripePayment}
-          totalPrice={step.totalPrice}
-          handleStripePaymentSuccess={step.handleStripePaymentSuccess}
-          handleStripePaymentError={step.handleStripePaymentError}
-          handleCashBooking={step.handleCashBooking}
-          handleBankTransferBooking={step.handleBankTransferBooking}
-          handleMultisafepayBooking={step.handleMultisafepayBooking}
-          isLoading={step.isLoading}
-          formData={step.formData}
-          displaySubtotalAmount={step.displaySubtotalAmount}
-          taxAmount={step.taxAmount}
-          enableTax={step.enableTax}
-          taxPercentage={step.taxPercentage}
-        />
+        {appointFirst ? (
+          <Step3AppointmentRequestPanel
+            t={t}
+            currencySymbol={currencySymbol}
+            totalPrice={step.totalPrice}
+            isLoading={isLoading}
+            onSubmit={step.handleAppointmentRequest}
+          />
+        ) : (
+          <Step3PaymentMethods
+            t={t}
+            currencySymbol={currencySymbol}
+            stripeConfig={step.stripeConfig}
+            paymentSettings={step.paymentSettings}
+            selectedPaymentMethod={step.selectedPaymentMethod}
+            setSelectedPaymentMethod={step.setSelectedPaymentMethod}
+            clientSecret={step.clientSecret}
+            stripeOrderId={step.stripeOrderId}
+            creatingPaymentIntent={step.creatingPaymentIntent}
+            paymentError={step.paymentError}
+            retryStripePayment={step.retryStripePayment}
+            totalPrice={step.totalPrice}
+            handleStripePaymentSuccess={step.handleStripePaymentSuccess}
+            handleStripePaymentError={step.handleStripePaymentError}
+            handleCashBooking={step.handleCashBooking}
+            handleBankTransferBooking={step.handleBankTransferBooking}
+            handleMultisafepayBooking={step.handleMultisafepayBooking}
+            isLoading={step.isLoading}
+            formData={step.formData}
+            displaySubtotalAmount={step.displaySubtotalAmount}
+            taxAmount={step.taxAmount}
+            enableTax={step.enableTax}
+            taxPercentage={step.taxPercentage}
+          />
+        )}
         <div className="flex flex-col sm:flex-row gap-3">
           <Button
             onClick={handleBack}

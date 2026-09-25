@@ -2,6 +2,7 @@
 
 import { PartnerHistoryCard } from "@/features/partners/ui/partner-history-card";
 import { usePartnerHistory } from "@/features/partners/hooks/usePartnerHistory";
+import { DeskPageMeta } from "@/features/dashboard/ui/desk-page-chrome";
 import { Button } from "@/shared/ui/button";
 import { Car, Loader2 } from "lucide-react";
 
@@ -26,13 +27,11 @@ export default function PartnerHistoryPage() {
   }
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-semibold tracking-tight">{t("history")}</h1>
-        <p className="mt-1 text-sm text-muted-foreground">
-          {t("view-your-completed-and-canceled-rides")}
-        </p>
-      </div>
+    <div className="flex flex-col gap-6">
+      <DeskPageMeta
+        title={t("history")}
+        description={t("view-your-completed-and-canceled-rides")}
+      />
       {loadError ? (
         <p className="rounded-md border border-border bg-card px-4 py-3 text-sm" role="alert">
           {loadError}

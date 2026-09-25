@@ -34,7 +34,7 @@ export function AdminHomeRevenue({
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-3xl font-semibold tracking-tight tabular-nums text-foreground">
+          <p className="text-2xl font-semibold tracking-tight tabular-nums text-foreground">
             {money.format(stats.totalRevenue)}
           </p>
           <ChangeRow
@@ -58,7 +58,7 @@ export function AdminHomeRevenue({
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-3xl font-semibold tracking-tight tabular-nums text-foreground">
+          <p className="text-2xl font-semibold tracking-tight tabular-nums text-foreground">
             {stats.monthlyBookings}
           </p>
           <ChangeRow

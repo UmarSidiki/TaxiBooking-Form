@@ -4,12 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useBookingForm } from "@/features/booking/context/booking-form-context";
 import { importLibrary, setOptions } from "@googlemaps/js-api-loader";
 import { useTheme } from "@/features/settings/context/theme-context";
-import { buildStopCostBreakdown } from "@/features/booking/lib/build-stop-cost-breakdown";
-import {
-  DEFAULT_VEHICLE_MINIMUM_HOURS,
-  DEFAULT_VEHICLE_PRICE_PER_HOUR,
-  DEFAULT_VEHICLE_RETURN_PRICE_PERCENTAGE,
-} from "@/features/fleet/lib/vehicle-form-defaults";
+import { calculateBookingPrice } from "@/features/payments/lib/fare/calculate-booking-price";
 
 export function useStep2() {
   const [mapLoaded, setMapLoaded] = useState(false);
@@ -193,86 +188,33 @@ export function useStep2() {
     fetchVehicles();
   }, [setVehicles]);
 
-  const calculatePrice = (vehicle: (typeof vehicles)[0]) => {
-    let totalPrice = 0;
+  const priceFor = (vehicle: (typeof vehicles)[0]) =>
+    calculateBookingPrice(
+      vehicle,
+      {
+        bookingType: formData.bookingType,
+        tripType: formData.tripType,
+        duration: formData.duration,
+        pickup: formData.pickup,
+        dropoff: formData.dropoff,
+        stops: formData.stops,
+        childSeats: formData.childSeats,
+        babySeats: formData.babySeats,
+      },
+      {
+        enableTax: settings?.enableTax ?? false,
+        taxPercentage: settings?.taxPercentage ?? 0,
+        taxIncluded: settings?.taxIncluded ?? false,
+      },
+      distanceData?.distance.km
+    );
 
-    // Hourly booking calculation
-    if (formData.bookingType === "hourly") {
-      const pricePerHour = vehicle.pricePerHour || DEFAULT_VEHICLE_PRICE_PER_HOUR;
-      const minimumHours = vehicle.minimumHours || DEFAULT_VEHICLE_MINIMUM_HOURS;
-      const hours = Math.max(formData.duration, minimumHours);
-      totalPrice = pricePerHour * hours;
-    }
-    // Destination-based booking calculation
-    else {
-      if (!distanceData) {
-        return vehicle.price;
-      }
-      const distancePrice = vehicle.pricePerKm * distanceData.distance.km;
-      let oneWayPrice = vehicle.price + distancePrice;
-      oneWayPrice = Math.max(oneWayPrice, vehicle.minimumFare);
-
-      totalPrice = oneWayPrice;
-      if (formData.tripType === "roundtrip") {
-        const returnPercentage =
-          vehicle.returnPricePercentage === undefined
-            ? DEFAULT_VEHICLE_RETURN_PRICE_PERCENTAGE
-            : vehicle.returnPricePercentage;
-        totalPrice = oneWayPrice + oneWayPrice * (returnPercentage / 100);
-      }
-    }
-
-    // Add stop costs
-    totalPrice += buildStopCostBreakdown(
-      formData.stops,
-      vehicle.stopPrice || 0,
-      vehicle.stopPricePerHour || 0
-    ).stopCosts;
-
-    // Apply discount after all other calculations
-    const discount = vehicle.discount === undefined ? 0 : vehicle.discount;
-    if (discount > 0) {
-      totalPrice = totalPrice * (1 - discount / 100);
-    }
-
-    return totalPrice;
-  };
+  const calculatePrice = (vehicle: (typeof vehicles)[0]) =>
+    priceFor(vehicle).total;
 
   const calculateOriginalPrice = (vehicle: (typeof vehicles)[0]) => {
-    let totalPrice = 0;
-    
-    // Hourly booking - show price without discount
-    if (formData.bookingType === "hourly") {
-      const pricePerHour = vehicle.pricePerHour || DEFAULT_VEHICLE_PRICE_PER_HOUR;
-      const minimumHours = vehicle.minimumHours || DEFAULT_VEHICLE_MINIMUM_HOURS;
-      const hours = Math.max(formData.duration, minimumHours);
-      totalPrice = pricePerHour * hours;
-    } else {
-      // Destination-based booking
-      if (!distanceData) {
-        totalPrice = vehicle.price;
-      } else {
-        // Calculate without minimum fare applied - just base + distance
-        const distancePrice = vehicle.pricePerKm * distanceData.distance.km;
-        const oneWayPrice = vehicle.price + distancePrice;
-
-        if (formData.tripType === "roundtrip") {
-          // For round trip, show what it would cost at full price (200% of one-way)
-          totalPrice = oneWayPrice * 2;
-        } else {
-          totalPrice = oneWayPrice;
-        }
-      }
-    }
-
-    // Add stop costs (same as in calculatePrice)
-    totalPrice += buildStopCostBreakdown(
-      formData.stops,
-      vehicle.stopPrice || 0,
-      vehicle.stopPricePerHour || 0
-    ).stopCosts;
-
-    return totalPrice;
+    const { vehiclePrice, extrasPrice } = priceFor(vehicle).breakdown;
+    return vehiclePrice + extrasPrice;
   };
 
   const handleVehicleSelect = (vehicleId: string) => {

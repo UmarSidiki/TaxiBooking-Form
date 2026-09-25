@@ -35,6 +35,11 @@ export async function notifyEligiblePartners(
     $or: [
       { currentFleet: partnerVehicleId },
       { fleetStatus: "approved", requestedFleet: partnerVehicleId },
+      {
+        fleetRequests: {
+          $elemMatch: { vehicleId: partnerVehicleId, status: "approved" },
+        },
+      },
     ],
   });
 
@@ -49,14 +54,17 @@ export async function notifyEligiblePartners(
     return { eligibleCount: 0, notifiedCount: 0 };
   }
 
+  if (typeof booking.partnerPayoutAmount !== "number") {
+    console.error(
+      "notifyEligiblePartners: partnerPayoutAmount missing; refusing notify",
+      booking._id
+    );
+    return { eligibleCount: 0, notifiedCount: 0 };
+  }
+
   const settings = await Setting.findOne();
   const currencySymbol = resolveCurrencySymbol(settings?.stripeCurrency);
-  const partnerAmount =
-    typeof booking.partnerPayoutAmount === "number"
-      ? booking.partnerPayoutAmount
-      : typeof booking.totalAmount === "number"
-      ? booking.totalAmount
-      : 0;
+  const partnerAmount = booking.partnerPayoutAmount;
 
   const notificationResults = await Promise.all(
     eligiblePartners.map((partner) =>

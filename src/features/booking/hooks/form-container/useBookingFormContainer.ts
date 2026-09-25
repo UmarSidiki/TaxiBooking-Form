@@ -5,10 +5,12 @@ import { useBookingForm } from "@/features/booking/context/booking-form-context"
 import { useSearchParams } from "next/navigation";
 import type { FormData } from "@/features/booking/context/booking-form-context";
 import { useTranslations } from "next-intl";
+import { useTheme } from "@/features/settings/context/theme-context";
 
 export function useBookingFormContainer() {
   const { currentStep, setCurrentStep, setFormData } = useBookingForm();
   const t = useTranslations();
+  const { settings } = useTheme();
 
   // Prevent flash of default step when deep linking
   const [initialized, setInitialized] = useState(false);
@@ -76,7 +78,9 @@ export function useBookingFormContainer() {
       case 2:
         return t("FormContainer.select-vehicle");
       case 3:
-        return t("FormContainer.payment-and-details");
+        return settings?.enableAppointmentRequest
+          ? t("FormContainer.your-details")
+          : t("FormContainer.payment-and-details");
       default:
         return t("FormContainer.booking");
     }

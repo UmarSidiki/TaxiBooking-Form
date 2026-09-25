@@ -33,7 +33,11 @@ export type AdminRideCardDialogsProps = {
   partners: IPartner[];
   assigningId: string | null;
   approvingPartnerId: string | null;
-  handleApprovePartnerReview: (bookingId: string, margin: number) => Promise<boolean>;
+  handleApprovePartnerReview: (
+    bookingId: string,
+    margin: number,
+    options?: { notifyPartners?: boolean }
+  ) => Promise<boolean>;
   handleAssignDriver: (bookingId: string, driverId: string) => Promise<void>;
   handleAssignPartner: (bookingId: string, partnerId: string) => Promise<void>;
 };

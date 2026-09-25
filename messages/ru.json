@@ -6,7 +6,8 @@
     "trip-details": "Детали поездки",
     "select-vehicle": "Выбор автомобиля",
     "payment-and-details": "Оплата и детали",
-    "booking": "Бронирование"
+    "booking": "Бронирование",
+    "your-details": "Ваши данные"
   },
   "Footer": {
     "Copyright": "© 2025 {websiteName} Все права защищены.",
@@ -196,7 +197,13 @@
     "flight-number-optional": "Номер рейса (Необязательно)",
     "pay-online": "Оплатить онлайн",
     "via-multisafepay": "(через MultiSafepay)",
-    "ideal-bancontact-paypal-and-more": "iDEAL, Bancontact, PayPal и др."
+    "ideal-bancontact-paypal-and-more": "iDEAL, Bancontact, PayPal и др.",
+    "appointment-request-title": "Ваши данные",
+    "appointment-request-help": "Мы работаем по записи. Отправьте запрос — мы подтвердим доступность до оплаты. Сейчас списания нет.",
+    "indicative-rate-label": "Ориентировочная цена — подтвердим после проверки доступности:",
+    "request-this-appointment": "Запросить эту запись",
+    "submitting-request": "Отправка…",
+    "whatsapp_confirmation-note": "Подтверждение бронирования также будет отправлено вам в WhatsApp."
   },
   "booking-failed-data-message": "Бронирование не удалось: {0}",
   "embeddable": {
@@ -434,7 +441,47 @@
       "choose-driver": "Выберите водителя…",
       "select-new-driver": "Выбрать другого водителя",
       "current-status": "Текущий статус",
-      "margin-helper": "Укажите маржу, которую нужно удержать из суммы бронирования."
+      "margin-helper": "Укажите маржу, которую нужно удержать из суммы бронирования.",
+      "Requests": "Запросы",
+      "NoRequests": "Нет запросов",
+      "NoRequestsDescription": "Новые запросы появляются здесь, пока вы не выставите цену, не подтвердите наличные или не отклоните.",
+      "status-requested": "Запрошено",
+      "status-awaiting-payment": "Ожидает оплаты",
+      "review-request": "Проверить запрос",
+      "request-actions-title": "Запрос записи",
+      "request-actions-help": "Запрос #{tripId}",
+      "quoted-amount-label": "Цена предложения",
+      "estimated-amount-hint": "Ориентир: {amount}",
+      "decline-reason-label": "Заметка клиенту (необязательно)",
+      "confirm-send-pay-link": "Подтвердить и отправить ссылку на оплату",
+      "confirm-as-cash": "Подтвердить наличными / оплата в день поездки",
+      "not-available": "Недоступно",
+      "quote-sent": "Ссылка на оплату отправлена.",
+      "quote-failed": "Не удалось отправить ссылку.",
+      "cash-confirmed": "Подтверждено наличными.",
+      "cash-confirm-failed": "Не удалось подтвердить наличными.",
+      "request-declined": "Запрос отмечен как недоступный.",
+      "decline-failed": "Не удалось отклонить.",
+      "new-booking": "Новое бронирование",
+      "new-booking-title": "Новое бронирование",
+      "new-booking-help": "Создайте бронирование для клиента, который позвонил или пришёл.",
+      "section-outcome": "Результат и цена",
+      "trip-type": "Тип поездки",
+      "select-vehicle": "Выберите автомобиль",
+      "customer-language": "Язык клиента",
+      "outcome": "Результат",
+      "outcome-confirmed": "Подтверждённая поездка",
+      "outcome-confirmed-help": "Забронировано сразу и готово к назначению. Укажите, как клиент оплатил.",
+      "outcome-quote": "Отправить ссылку на оплату",
+      "outcome-quote-help": "Поездка ожидает оплаты; клиенту отправляется ссылка на оплату по электронной почте.",
+      "computed-fare": "Расчётный тариф",
+      "manual-price": "Цена вручную (итоговая)",
+      "manual-price-help": "Оставьте пустым, чтобы использовать расчётный тариф. Ручная цена является итоговой, налог не пересчитывается.",
+      "manual-price-invalid": "Введите сумму больше нуля",
+      "payment-collected": "Оплата получена",
+      "notify-customer": "Отправить письмо клиенту",
+      "create-booking": "Создать бронирование",
+      "booking-created": "Бронирование {tripId} создано"
     },
     "Home": {
       "failed-to-fetch-dashboard-stats": "Не удалось получить статистику дашборда",
@@ -717,6 +764,10 @@
         "documents": "Документы",
         "uploaded": "Загружено",
         "partner-details": "Детали партнера",
+        "tab-profile": "Профиль",
+        "tab-billing": "Оплата",
+        "tab-documents": "Документы",
+        "tab-fleet": "Автопарк",
         "review-partner-info": "Проверка информации и документов партнера",
         "status": "Статус",
         "personal-information": "Личная информация",
@@ -800,7 +851,19 @@
         "vehicle-requested": "Запрошен автомобиль",
         "recalculate-payout": "Пересчитать выплату",
         "load-error": "Не удалось загрузить партнёров. Попробуйте снова.",
-        "retry": "Повторить"
+        "retry": "Повторить",
+        "remittance-balance-label": "Задолженность партнёра",
+        "last-remittance-label": "Последний перевод: {date}",
+        "mark-remittance-received": "Отметить перевод полученным",
+        "marking-remittance": "Сохранение…",
+        "settlement-ledger": "Журнал расчётов",
+        "loading-ledger": "Загрузка журнала…",
+        "empty-ledger": "Записей пока нет",
+        "settlement-type-payout_credit": "Начисление выплаты",
+        "settlement-type-payout_paid": "Выплата оплачена",
+        "settlement-type-remittance_credit": "Долг партнёра",
+        "settlement-type-remittance_received": "Перевод получен",
+        "settlement-type-clawback": "Сторно"
       }
     },
     "Features": {
@@ -820,7 +883,23 @@
       "embeddable-form-module": "Встраиваемая форма бронирования",
       "enable-embeddable-booking-form": "Включите встраиваемую форму бронирования, которую можно интегрировать на внешние веб-сайты. \nЕсли этот параметр отключен, пользователи не смогут получить доступ к этой вспомогательной странице.",
       "enable-form-builder": "Включите инструмент создания форм, чтобы настроить поля и макет формы бронирования. \nЕсли этот параметр отключен, страница конструктора форм будет недоступна.",
-      "form-builder-module": "Конструктор форм"
+      "form-builder-module": "Конструктор форм",
+      "dispatch-settlement-title": "Диспетчеризация и расчёты",
+      "dispatch-settlement-description": "Как партнёры получают оплату за наличные поездки и может ли у поездки быть и водитель, и партнёр.",
+      "cash-settlement-label": "Расчёт наличными",
+      "cash-settlement-keep-cash": "Партнёр оставляет наличные (без перевода оператору)",
+      "cash-settlement-operator-margin": "Оператор берёт маржу (партнёр переводит)",
+      "cash-settlement-help": "Онлайн-поездки всегда проходят проверку маржи. Это меняет только наличный overflow.",
+      "dispatch-mode-label": "Режим назначения",
+      "dispatch-mode-exclusive": "Исключительный (один исполнитель)",
+      "dispatch-mode-allow-both": "Разрешить водителя и партнёра вместе",
+      "dispatch-mode-help": "Исключительный режим снимает другую сторону при назначении или принятии.",
+      "default-margin-label": "Маржа партнёра по умолчанию (%)",
+      "default-margin-help": "Предлагаемая маржа при одобрении поездки для партнёров.",
+      "appointment-request-module": "Сначала запись",
+      "enable-appointment-request": "Клиенты отправляют запрос на запись. Вы подтверждаете доступность и цену до оплаты. Письмо с подтверждением уходит только после этого.",
+      "desk-booking-module": "Бронирование оператором",
+      "enable-desk-booking": "Сотрудники могут создавать бронирования от имени клиента, с необязательной ручной ценой."
     },
     "Fleet": {
       "failed-to-fetch-vehicles": "Не удалось получить автомобили",
@@ -1181,7 +1260,13 @@
       "gateways_help": "Секреты и вебхуки Stripe или MultiSafepay, плюс банковские реквизиты.",
       "save": "Сохранить",
       "retry": "Повторить",
-      "multisafepay": "MultiSafepay"
+      "multisafepay": "MultiSafepay",
+      "booking-countries-title": "Страны бронирования",
+      "booking-countries-help": "Ограничьте бронирование выбранными странами. Оставьте пустым, чтобы принимать бронирования отовсюду.",
+      "booking-countries-search": "Поиск стран",
+      "booking-countries-all-allowed": "Разрешены все страны",
+      "booking-countries-selected-count": "{count, plural, one {# страна выбрана} few {# страны выбраны} many {# стран выбрано} other {# стран выбрано}}",
+      "booking-countries-no-results": "Нет стран, соответствующих поиску"
     }
   },
   "Sidebar": {
@@ -1551,7 +1636,9 @@
     "or": "или",
     "redirecting-in": "Перенаправление через",
     "return-to-home": "Вернуться на главную",
-    "seconds": "секунд"
+    "seconds": "секунд",
+    "request-received-title": "Запрос получен",
+    "request-received-body": "Мы работаем по записи. Подтвердим доступность и напишем о следующих шагах. Это ещё не подтверждение бронирования."
   },
   "Driver": {
     "failed-to-fetch-drivers": "Не удалось загрузить водителей",
@@ -1580,7 +1667,10 @@
     "driver-saved": "Водитель сохранён.",
     "driver-deleted": "Водитель удалён.",
     "loading": "Загрузка водителей…",
-    "delete": "Удалить"
+    "delete": "Удалить",
+    "search-drivers": "Поиск по имени или email…",
+    "no-drivers-match": "Водители не найдены",
+    "try-another-search": "Попробуйте другое имя или очистите поиск."
   },
   "Drivers": {
     "driver-dashboard": "Дашборд водителя",
@@ -1849,6 +1939,26 @@
     "payment_failed": "Не удалось завершить оплату. Попробуйте снова.",
     "payment_not_configured": "Оплата картой ещё не настроена.",
     "price_changed": "Стоимость изменилась. Обновите страницу и попробуйте снова.",
-    "distance_failed": "Не удалось рассчитать маршрут. Проверьте адреса."
+    "distance_failed": "Не удалось рассчитать маршрут. Проверьте адреса.",
+    "country_blocked": "Бронирование недоступно из вашего местоположения."
+  },
+  "Pay": {
+    "by-appointment": "По записи",
+    "pay-to-confirm": "Оплатить для подтверждения",
+    "quote-summary": "Запрос #{tripId}",
+    "pay-with-card": "Оплатить картой",
+    "pay-with-multisafepay": "Оплатить через MultiSafepay",
+    "no-payment-methods": "Онлайн-оплата не настроена.",
+    "payment-init-failed": "Не удалось начать оплату.",
+    "link-invalid-title": "Ссылка не найдена",
+    "link-invalid-body": "Эта ссылка на оплату недействительна или устарела.",
+    "declined-title": "Запрос недоступен",
+    "declined-body": "Этот запрос отмечен как недоступный.",
+    "already-paid-title": "Уже подтверждено",
+    "already-paid-body": "Поездка #{tripId} уже оплачена и подтверждена."
+  },
+  "CountryBlocked": {
+    "title": "Мы пока не обслуживаем ваш регион",
+    "body": "Бронирование недоступно из вашего текущего местоположения. Если это ошибка, свяжитесь с нами."
   }
 }

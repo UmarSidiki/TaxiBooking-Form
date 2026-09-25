@@ -20,6 +20,7 @@ export function AppSidebar({ locale }: { locale: string }) {
       locale={locale}
       subtitleKey="Auth.Desk.operations"
       logoutCallbackUrl={`/${locale}/dashboard/signin`}
+      homeHref={`/${locale}/dashboard/home`}
     >
       <DeskSidebarNav
         locale={locale}

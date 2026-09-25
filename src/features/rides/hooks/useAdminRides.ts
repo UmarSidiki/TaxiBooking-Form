@@ -6,7 +6,7 @@ import type { IBooking } from "@/features/booking/model";
 import type { IDriver } from "@/features/drivers/model";
 import type { IPartner } from "@/features/partners/model";
 import type { ISetting } from "@/features/settings/model";
-import { apiGet, apiPatch } from "@/shared/http/api";
+import { apiGet, apiPatch, ApiError } from "@/shared/http/api";
 import { DateRange } from "react-day-picker";
 import { useCurrency } from "@/shared/context/currency-context";
 import { isBookingPassed as isBookingPassedAt } from "@/features/rides/lib/is-booking-passed";
@@ -46,6 +46,15 @@ export function useAdminRides() {
   const [sortBy, setSortBy] = useState("date-asc");
   const [enableDrivers, setEnableDrivers] = useState(false);
   const [enablePartners, setEnablePartners] = useState(false);
+  const [enableAppointmentRequest, setEnableAppointmentRequest] =
+    useState(false);
+  const [partnerCashSettlement, setPartnerCashSettlement] = useState<
+    "keep_cash" | "operator_margin"
+  >("keep_cash");
+  const [dispatchAssigneeMode, setDispatchAssigneeMode] = useState<
+    "exclusive" | "allow_both"
+  >("exclusive");
+  const [defaultPartnerMargin, setDefaultPartnerMargin] = useState(20);
   const [timezone, setTimezone] = useState<string>(DEFAULT_BOOKING_TIMEZONE);
 
   const [bookingReviews, setBookingReviews] = useState<
@@ -105,6 +114,21 @@ export function useAdminRides() {
       if (data.success) {
         setEnableDrivers(data.data.enableDrivers ?? false);
         setEnablePartners(data.data.enablePartners ?? false);
+        setEnableAppointmentRequest(
+          data.data.enableAppointmentRequest ?? false
+        );
+        if (data.data.enableAppointmentRequest) {
+          setActiveTab((tab) => (tab === "upcoming" ? "requests" : tab));
+        }
+        setPartnerCashSettlement(
+          data.data.partnerCashSettlement ?? "keep_cash"
+        );
+        setDispatchAssigneeMode(
+          data.data.dispatchAssigneeMode ?? "exclusive"
+        );
+        setDefaultPartnerMargin(
+          data.data.defaultPartnerMarginPercentage ?? 20
+        );
         if (data.data.timezone) {
           setTimezone(data.data.timezone);
         }
@@ -270,7 +294,8 @@ export function useAdminRides() {
 
   const handleApprovePartnerReview = async (
     bookingId: string,
-    marginPercentage: number
+    marginPercentage: number,
+    options?: { notifyPartners?: boolean }
   ): Promise<boolean> => {
     setApprovingPartnerId(bookingId);
     try {
@@ -281,6 +306,7 @@ export function useAdminRides() {
       }>(`/api/bookings/${bookingId}`, {
         action: "approvepartner",
         marginPercentage,
+        notifyPartners: options?.notifyPartners,
       });
 
       if (data.success) {
@@ -305,6 +331,92 @@ export function useAdminRides() {
       return false;
     } finally {
       setApprovingPartnerId(null);
+    }
+  };
+
+  const handleQuoteRequest = async (
+    bookingId: string,
+    quotedAmount: number
+  ): Promise<boolean> => {
+    try {
+      const data = await apiPatch<{
+        success: boolean;
+        message: string;
+        data: IBooking;
+      }>(`/api/bookings/${bookingId}`, {
+        action: "quote",
+        quotedAmount,
+      });
+      if (data.success) {
+        setBookings((prev) =>
+          prev.map((b) => (b._id?.toString() === bookingId ? data.data : b))
+        );
+        setNotice(t("Dashboard.Rides.quote-sent"));
+        return true;
+      }
+      setNotice(data.message || t("Dashboard.Rides.quote-failed"));
+      return false;
+    } catch (error) {
+      const detail =
+        error instanceof ApiError ? error.detail : undefined;
+      setNotice(detail || t("Dashboard.Rides.quote-failed"));
+      return false;
+    }
+  };
+
+  const handleConfirmCashRequest = async (
+    bookingId: string
+  ): Promise<boolean> => {
+    try {
+      const data = await apiPatch<{
+        success: boolean;
+        message: string;
+        data: IBooking;
+      }>(`/api/bookings/${bookingId}`, { action: "confirmcash" });
+      if (data.success) {
+        setBookings((prev) =>
+          prev.map((b) => (b._id?.toString() === bookingId ? data.data : b))
+        );
+        setNotice(t("Dashboard.Rides.cash-confirmed"));
+        return true;
+      }
+      setNotice(data.message || t("Dashboard.Rides.cash-confirm-failed"));
+      return false;
+    } catch (error) {
+      const detail =
+        error instanceof ApiError ? error.detail : undefined;
+      setNotice(detail || t("Dashboard.Rides.cash-confirm-failed"));
+      return false;
+    }
+  };
+
+  const handleDeclineRequest = async (
+    bookingId: string,
+    declineReason?: string
+  ): Promise<boolean> => {
+    try {
+      const data = await apiPatch<{
+        success: boolean;
+        message: string;
+        data: IBooking;
+      }>(`/api/bookings/${bookingId}`, {
+        action: "decline",
+        declineReason,
+      });
+      if (data.success) {
+        setBookings((prev) =>
+          prev.map((b) => (b._id?.toString() === bookingId ? data.data : b))
+        );
+        setNotice(t("Dashboard.Rides.request-declined"));
+        return true;
+      }
+      setNotice(data.message || t("Dashboard.Rides.decline-failed"));
+      return false;
+    } catch (error) {
+      const detail =
+        error instanceof ApiError ? error.detail : undefined;
+      setNotice(detail || t("Dashboard.Rides.decline-failed"));
+      return false;
     }
   };
 
@@ -350,6 +462,10 @@ export function useAdminRides() {
     setSortBy,
     enableDrivers,
     enablePartners,
+    enableAppointmentRequest,
+    partnerCashSettlement,
+    dispatchAssigneeMode,
+    defaultPartnerMargin,
     timezone,
     bookingReviews,
     setBookingReviews,
@@ -362,6 +478,9 @@ export function useAdminRides() {
     handleAssignDriver,
     handleAssignPartner,
     handleApprovePartnerReview,
+    handleQuoteRequest,
+    handleConfirmCashRequest,
+    handleDeclineRequest,
     canRefund,
   };
 }

@@ -9,10 +9,12 @@ import {
   findRecentDuplicateBooking,
   updateBookingFields,
 } from '@/features/booking/lib/booking.repo';
-import { calculateCashBookingTotal } from '@/features/booking/lib/calculate-cash-booking-total';
 import { createCashBookingEmailData } from '@/features/booking/lib/create-cash-booking-email-data';
 import { getSettingsCurrency } from '@/features/booking/lib/get-settings-currency';
 import { initCashBookingPartners } from '@/features/booking/lib/init-cash-booking-partners';
+import { calculateBookingPrice } from '@/features/payments/lib/fare/calculate-booking-price';
+import { fetchRouteDistanceKm } from '@/features/payments/lib/fare/route-distance';
+import { loadPaymentSettings } from '@/features/payments/lib/load-payment-settings';
 import type { CashBookingInput } from '@/features/booking/schema/cash-booking.schema';
 import { Vehicle } from '@/features/fleet/model';
 import { sendBookingWhatsApp } from '@/features/settings/lib/send-booking-whatsapp';
@@ -28,7 +30,6 @@ export type CreateCashBookingResult =
 
 export async function createCashBooking(
   formData: CashBookingInput,
-  origin: string,
   baseUrl?: string
 ): Promise<CreateCashBookingResult> {
   await connectDB();
@@ -58,12 +59,28 @@ export async function createCashBooking(
     return {
       ok: true,
       tripId: existingBooking.tripId,
-      totalAmount: existingBooking.totalAmount,
+      totalAmount: existingBooking.totalAmount ?? 0,
       message: 'Booking already confirmed',
     };
   }
 
-  const totalAmount = await calculateCashBookingTotal(formData, vehicle, origin);
+  const { settings } = await loadPaymentSettings();
+  const distanceKm =
+    formData.bookingType === 'hourly'
+      ? undefined
+      : await fetchRouteDistanceKm({
+          pickup: formData.pickup,
+          dropoff: formData.dropoff || '',
+          stops: formData.stops,
+        });
+
+  const priced = calculateBookingPrice(
+    vehicle,
+    formData,
+    settings ?? {},
+    distanceKm
+  );
+
   const tripId = generateTripId();
   const currency = await getSettingsCurrency();
   const currencySymbol = getCurrencySymbol(currency);
@@ -71,6 +88,8 @@ export async function createCashBooking(
   const sanitizedFlightNumber = formData.flightNumber
     ? sanitizeInput(formData.flightNumber)
     : undefined;
+
+  const paymentMethod = formData.paymentMethod || 'stripe';
 
   const bookingData = {
     tripId,
@@ -101,7 +120,7 @@ export async function createCashBooking(
     phone: formData.phone,
     whatsappOptIn: formData.whatsappOptIn ?? false,
     locale: formData.locale,
-    paymentMethod: formData.paymentMethod || 'stripe',
+    paymentMethod,
     paymentStatus:
       (formData.paymentStatus as
         | 'pending'
@@ -110,26 +129,32 @@ export async function createCashBooking(
         | 'refunded') || 'completed',
     stripePaymentIntentId: formData.stripePaymentIntentId,
     status: 'upcoming',
-    totalAmount: formData.totalAmount || totalAmount,
-    subtotalAmount: formData.subtotalAmount,
-    taxAmount: formData.taxAmount,
-    taxPercentage: formData.taxPercentage,
+    totalAmount: priced.total,
+    subtotalAmount: priced.subtotal,
+    taxAmount: priced.taxAmount,
+    taxPercentage: priced.taxPercentage,
   };
 
   const savedBooking = await createBookingDocument(bookingData);
 
   await initCashBookingPartners(
     savedBooking._id.toString(),
-    bookingData.paymentMethod,
-    bookingData.totalAmount,
+    paymentMethod,
+    priced.total,
     baseUrl
   );
 
   const emailData = await createCashBookingEmailData(
-    formData,
+    {
+      ...formData,
+      totalAmount: priced.total,
+      subtotalAmount: priced.subtotal,
+      taxAmount: priced.taxAmount,
+      taxPercentage: priced.taxPercentage,
+    },
     vehicle,
     tripId,
-    totalAmount,
+    priced.total,
     baseUrl,
     savedBooking._id.toString()
   );
@@ -153,7 +178,7 @@ export async function createCashBooking(
   return {
     ok: true,
     tripId,
-    totalAmount,
+    totalAmount: priced.total,
     message: 'Booking confirmed',
   };
 }

@@ -1,7 +1,9 @@
 "use client";
 
+import { useEffect, useRef } from "react";
 import { Input } from "@/shared/ui/input";
 import { Card } from "@/shared/ui/card";
+import { useGeo } from "@/features/geo/context/geo-context";
 import type { useStep3 } from "@/features/booking/hooks/form-steps/useStep3";
 import type { useTranslations } from "next-intl";
 
@@ -15,6 +17,18 @@ export function Step3PersonalDetails({
 }: Pick<Step, "formData" | "setFormData" | "errors"> & {
   t: ReturnType<typeof useTranslations>;
 }) {
+  const { geo } = useGeo();
+  const prefilledRef = useRef(false);
+
+  // Seed the visitor's dial code once, and never overwrite what they typed.
+  useEffect(() => {
+    if (prefilledRef.current || !geo.dialCode) return;
+    prefilledRef.current = true;
+    setFormData((prev) =>
+      prev.phone.trim() ? prev : { ...prev, phone: `+${geo.dialCode} ` }
+    );
+  }, [geo.dialCode, setFormData]);
+
   return (
     <>
         {/* Personal Details */}
@@ -87,6 +101,8 @@ export function Step3PersonalDetails({
               <label className="text-sm font-medium block mb-2">
                 {t('Step3.phone-number')} </label>
               <Input
+                type="tel"
+                autoComplete="tel"
                 placeholder="+41 76 123 4567"
                 className={errors.phone ? "border-red-500" : ""}
                 value={formData.phone}
@@ -100,18 +116,9 @@ export function Step3PersonalDetails({
                 <p id="phone-error" className="text-red-500 text-xs mt-1">{errors.phone}</p>
               )}
             </div>
-            <label className="flex min-h-11 items-center gap-3 text-sm">
-              <input
-                type="checkbox"
-                name="whatsappOptIn"
-                className="size-4 accent-primary focus-visible:ring-2 focus-visible:ring-ring"
-                checked={formData.whatsappOptIn}
-                onChange={(event) => {
-                  setFormData((prev) => ({ ...prev, whatsappOptIn: event.target.checked }));
-                }}
-              />
-              {t("Step3.whatsapp_opt_in")}
-            </label>
+            <p className="text-sm text-muted-foreground">
+              {t("Step3.whatsapp_confirmation-note")}
+            </p>
           </div>
         </Card>
     </>

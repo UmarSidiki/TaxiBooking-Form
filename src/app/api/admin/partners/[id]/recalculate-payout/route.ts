@@ -1,14 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { connectDB } from "@/shared/db";
 import { Partner } from "@/features/partners/model";
-import { Booking } from "@/features/booking/model";
+import PartnerSettlementEntry from "@/features/partners/model/PartnerSettlementEntry";
 import { requireAdmin } from "@/features/auth/lib/require-role";
 import { jsonError } from "@/shared/http/json-error";
 
-/**
- * Recalculate a partner's payout balance based on completed bookings
- * This endpoint accounts for bookings where the date has passed (even if status != "completed")
- */
+/** Rebuild Partner running balances from the settlement ledger. */
 export async function POST(
   _request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -21,144 +18,78 @@ export async function POST(
     await connectDB();
 
     const partner = await Partner.findById(id);
-
     if (!partner) return jsonError("not_found", 404);
 
-    console.log(`🔄 Recalculating payout for partner: ${partner.name} (${partner.email})`);
+    const entries = await PartnerSettlementEntry.find({ partnerId: id })
+      .sort({ createdAt: 1 })
+      .lean();
 
-    // Find all completed bookings assigned to this partner
-    const now = new Date();
-    const completedBookings = await Booking.find({
-      $and: [
-        {
-          $or: [
-            { "assignedPartner._id": partner._id },
-            { "assignedPartner._id": partner._id.toString() },
-          ],
-        },
-        {
-          $or: [
-            { status: "completed" },
-            {
-              // Also include bookings where date has passed and payment is complete
-              date: { $lt: now.toISOString().split("T")[0] },
-              status: { $ne: "canceled" },
-            },
-          ],
-        },
-      ],
-    });
-
-    console.log(`📦 Found ${completedBookings.length} completed bookings for partner`);
-
-    // Calculate earnings
     let totalEarnings = 0;
     let onlineEarnings = 0;
     let cashEarnings = 0;
     let payoutBalance = 0;
+    let remittanceBalance = 0;
 
-    for (const booking of completedBookings) {
-      const amount =
-        typeof booking.partnerPayoutAmount === "number"
-          ? booking.partnerPayoutAmount
-          : typeof booking.totalAmount === "number"
-          ? booking.totalAmount
-          : 0;
+    for (const entry of entries) {
+      const amount = entry.amount;
+      if (!(amount > 0)) continue;
 
-      if (amount <= 0) continue;
-
-      const isCashBooking = booking.paymentMethod === "cash";
-      const isPaymentComplete =
-        isCashBooking || booking.paymentStatus === "completed";
-
-      if (isPaymentComplete) {
-        totalEarnings += amount;
-
-        if (isCashBooking) {
-          cashEarnings += amount;
-        } else {
-          onlineEarnings += amount;
-          // Only online earnings contribute to payout balance (initially)
-          payoutBalance += amount;
-        }
+      switch (entry.type) {
+        case "payout_credit":
+          totalEarnings += amount;
+          if (entry.channel === "cash") {
+            cashEarnings += amount;
+          } else {
+            onlineEarnings += amount;
+            payoutBalance += amount;
+          }
+          break;
+        case "payout_paid":
+          payoutBalance -= amount;
+          break;
+        case "remittance_credit":
+          remittanceBalance += amount;
+          break;
+        case "remittance_received":
+          remittanceBalance -= amount;
+          break;
+        case "clawback":
+          if (/remittance_credit/i.test(entry.note ?? "")) {
+            remittanceBalance -= amount;
+          } else if (entry.channel === "cash") {
+            totalEarnings -= amount;
+            cashEarnings -= amount;
+          } else {
+            totalEarnings -= amount;
+            onlineEarnings -= amount;
+            payoutBalance -= amount;
+          }
+          break;
+        default:
+          break;
       }
     }
 
-    // Round to 2 decimal places
-    totalEarnings = Math.round(totalEarnings * 100) / 100;
-    onlineEarnings = Math.round(onlineEarnings * 100) / 100;
-    cashEarnings = Math.round(cashEarnings * 100) / 100;
-    payoutBalance = Math.round(payoutBalance * 100) / 100;
+    const round2 = (n: number) => Math.round(n * 100) / 100;
 
-    console.log(`💰 Calculated earnings:`, {
-      totalEarnings,
-      onlineEarnings,
-      cashEarnings,
-      payoutBalance: "before lastPayoutAt adjustment",
-    });
-
-    // Check if partner was already paid
-    if (partner.lastPayoutAt) {
-      console.log(`ℹ️  Partner has payout history (last: ${partner.lastPayoutAt.toISOString()})`);
-      console.log(`     Checking for bookings completed after last payout...`);
-
-      // Only count bookings completed after the last payout
-      payoutBalance = 0;
-
-      for (const booking of completedBookings) {
-        const bookingCompletedAt = booking.updatedAt || booking.createdAt;
-        if (bookingCompletedAt <= partner.lastPayoutAt) {
-          continue; // Skip bookings completed before last payout
-        }
-
-        const amount =
-          typeof booking.partnerPayoutAmount === "number"
-            ? booking.partnerPayoutAmount
-            : typeof booking.totalAmount === "number"
-            ? booking.totalAmount
-            : 0;
-
-        if (amount <= 0) continue;
-
-        const isCashBooking = booking.paymentMethod === "cash";
-        const isPaymentComplete =
-          isCashBooking || booking.paymentStatus === "completed";
-
-        if (isPaymentComplete && !isCashBooking) {
-          payoutBalance += amount;
-        }
-      }
-
-      payoutBalance = Math.round(payoutBalance * 100) / 100;
-      console.log(`     Outstanding Payout (after last payout): €${payoutBalance.toFixed(2)}`);
-    }
-
-    // Update partner
-    partner.totalEarnings = totalEarnings;
-    partner.onlineEarnings = onlineEarnings;
-    partner.cashEarnings = cashEarnings;
-    partner.payoutBalance = payoutBalance;
-
+    partner.totalEarnings = round2(Math.max(0, totalEarnings));
+    partner.onlineEarnings = round2(Math.max(0, onlineEarnings));
+    partner.cashEarnings = round2(Math.max(0, cashEarnings));
+    partner.payoutBalance = round2(Math.max(0, payoutBalance));
+    partner.remittanceBalance = round2(Math.max(0, remittanceBalance));
     await partner.save();
-
-    console.log(`✅ Partner payout recalculated successfully`, {
-      partnerId: partner._id,
-      totalEarnings,
-      onlineEarnings,
-      cashEarnings,
-      payoutBalance,
-    });
 
     return NextResponse.json(
       {
         success: true,
         partner,
         summary: {
-          totalEarnings,
-          onlineEarnings,
-          cashEarnings,
-          payoutBalance,
-          bookingsProcessed: completedBookings.length,
+          totalEarnings: partner.totalEarnings,
+          onlineEarnings: partner.onlineEarnings,
+          cashEarnings: partner.cashEarnings,
+          payoutBalance: partner.payoutBalance,
+          remittanceBalance: partner.remittanceBalance,
+          entriesProcessed: entries.length,
         },
       },
       { status: 200 }

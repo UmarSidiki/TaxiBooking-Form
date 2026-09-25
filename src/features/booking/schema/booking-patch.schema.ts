@@ -7,6 +7,9 @@ export const BOOKING_PATCH_ACTIONS = [
   "assign",
   "assignpartner",
   "approvepartner",
+  "quote",
+  "confirmcash",
+  "decline",
 ] as const;
 
 export const bookingPatchActionSchema = z.enum(BOOKING_PATCH_ACTIONS);
@@ -19,6 +22,10 @@ export const bookingPatchBodySchema = z.object({
   driverId: mongoIdSchema.optional(),
   partnerId: mongoIdSchema.optional(),
   marginPercentage: z.coerce.number().optional(),
+  /** When approving for partners: open overflow marketplace (default true). */
+  notifyPartners: z.boolean().optional(),
+  quotedAmount: z.coerce.number().min(0).optional(),
+  declineReason: z.string().max(500).optional(),
 });
 
 export type BookingPatchBody = z.infer<typeof bookingPatchBodySchema> & {

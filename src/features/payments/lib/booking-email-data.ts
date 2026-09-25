@@ -107,7 +107,7 @@ export function buildBookingEmailDataFromBooking(
 
   return {
     tripId: booking.tripId,
-    bookingId: booking._id.toString(),
+    bookingId: booking._id ? String(booking._id) : undefined,
     pickup: booking.pickup,
     dropoff: booking.dropoff || 'N/A (Hourly booking)',
     stops: booking.stops || [],

@@ -1,13 +1,14 @@
+"use client";
+
 import {
-  DEFAULT_VEHICLE_MINIMUM_HOURS,
-  DEFAULT_VEHICLE_PRICE_PER_HOUR,
-  DEFAULT_VEHICLE_RETURN_PRICE_PERCENTAGE,
+  DEFAULT_BABY_SEAT_PRICE,
+  DEFAULT_CHILD_SEAT_PRICE,
 } from "@/features/fleet/lib/vehicle-form-defaults";
-import { buildStopCostBreakdown } from "@/features/booking/lib/build-stop-cost-breakdown";
+import { calculateBookingPrice } from "@/features/payments/lib/fare/calculate-booking-price";
 import type { DistanceData, FormData } from "@/features/booking/context/booking-form-context";
 import type { ISetting } from "@/features/settings/model";
 import type { IVehicle } from "@/features/fleet/model";
-import { useCallback } from "react";
+import { useMemo } from "react";
 
 export function useStep3Pricing({
   selectedVehicle,
@@ -20,94 +21,65 @@ export function useStep3Pricing({
   distanceData: DistanceData | null;
   paymentSettings: ISetting | null;
 }) {
-  const calculateVehiclePrice = useCallback(() => {
-    if (!selectedVehicle) return 0;
-
-    // Hourly booking calculation
-    if (formData.bookingType === "hourly") {
-      const pricePerHour = selectedVehicle.pricePerHour || DEFAULT_VEHICLE_PRICE_PER_HOUR;
-      const minimumHours = selectedVehicle.minimumHours || DEFAULT_VEHICLE_MINIMUM_HOURS;
-      const hours = Math.max(formData.duration, minimumHours);
-      return pricePerHour * hours;
-    }
-    // Destination-based booking calculation
-    else {
-      if (!distanceData) {
-        return selectedVehicle.price;
-      }
-      const distancePrice =
-        selectedVehicle.pricePerKm * distanceData.distance.km;
-      let oneWayPrice = selectedVehicle.price + distancePrice;
-      oneWayPrice = Math.max(oneWayPrice, selectedVehicle.minimumFare);
-
-      let totalPrice = oneWayPrice;
-      if (formData.tripType === "roundtrip") {
-        const returnPercentage =
-          selectedVehicle.returnPricePercentage === undefined
-            ? DEFAULT_VEHICLE_RETURN_PRICE_PERCENTAGE
-            : selectedVehicle.returnPricePercentage;
-        totalPrice = oneWayPrice + oneWayPrice * (returnPercentage / 100);
-      }
-      return totalPrice;
-    }
-  }, [selectedVehicle, formData.bookingType, formData.duration, formData.tripType, distanceData]);
-
-  const vehiclePrice = calculateVehiclePrice();
-
-  // Apply discount
-  const discount = selectedVehicle?.discount || 0;
-  const discountedVehiclePrice =
-    discount > 0 ? vehiclePrice * (1 - discount / 100) : vehiclePrice;
-
-  const childSeatPrice = selectedVehicle?.childSeatPrice || 0;
-  const babySeatPrice = selectedVehicle?.babySeatPrice || 0;
-  
-  // Calculate stop costs
-  const stopBasePrice = selectedVehicle?.stopPrice || 0;
-  const stopPricePerHour = selectedVehicle?.stopPricePerHour || 0;
-  const stopsTotalPrice = buildStopCostBreakdown(
-    formData.stops,
-    stopBasePrice,
-    stopPricePerHour
-  ).stopCosts;
-  
-  const extrasPrice =
-    formData.childSeats * childSeatPrice + formData.babySeats * babySeatPrice + stopsTotalPrice;
-  const subtotalPrice = discountedVehiclePrice + extrasPrice;
-  
-  // Tax calculation
   const enableTax = paymentSettings?.enableTax ?? false;
   const taxPercentage = paymentSettings?.taxPercentage ?? 0;
   const taxIncluded = paymentSettings?.taxIncluded ?? false;
-  
-  // If tax is included, calculate the tax portion from the subtotal (tax is already in the price)
-  // If tax is not included, add tax on top of the subtotal
-  const taxAmount = enableTax && taxPercentage > 0 
-    ? (taxIncluded 
-        ? subtotalPrice - (subtotalPrice / (1 + taxPercentage / 100)) // Extract tax from price
-        : subtotalPrice * (taxPercentage / 100)) // Add tax to price
+
+  const priced = useMemo(() => {
+    if (!selectedVehicle) return null;
+
+    return calculateBookingPrice(
+      selectedVehicle,
+      {
+        bookingType: formData.bookingType,
+        tripType: formData.tripType,
+        duration: formData.duration,
+        pickup: formData.pickup,
+        dropoff: formData.dropoff,
+        stops: formData.stops,
+        childSeats: formData.childSeats,
+        babySeats: formData.babySeats,
+      },
+      { enableTax, taxPercentage, taxIncluded },
+      distanceData?.distance.km
+    );
+  }, [
+    selectedVehicle,
+    formData.bookingType,
+    formData.tripType,
+    formData.duration,
+    formData.pickup,
+    formData.dropoff,
+    formData.stops,
+    formData.childSeats,
+    formData.babySeats,
+    distanceData,
+    enableTax,
+    taxPercentage,
+    taxIncluded,
+  ]);
+
+  const breakdown = priced?.breakdown;
+  const subtotalPrice = breakdown
+    ? breakdown.discountedVehiclePrice + breakdown.extrasPrice
     : 0;
-  const totalPrice = taxIncluded ? subtotalPrice : subtotalPrice + taxAmount;
-  
-  // For display/storage: when tax is included, subtotalAmount should be the pre-tax amount
-  const displaySubtotalAmount = taxIncluded ? (subtotalPrice - taxAmount) : subtotalPrice;
 
   return {
-    vehiclePrice,
-    discount,
-    discountedVehiclePrice,
-    childSeatPrice,
-    babySeatPrice,
-    stopBasePrice,
-    stopPricePerHour,
-    stopsTotalPrice,
-    extrasPrice,
+    vehiclePrice: breakdown?.vehiclePrice ?? 0,
+    discount: breakdown?.discountPercentage ?? 0,
+    discountedVehiclePrice: breakdown?.discountedVehiclePrice ?? 0,
+    childSeatPrice: selectedVehicle?.childSeatPrice ?? DEFAULT_CHILD_SEAT_PRICE,
+    babySeatPrice: selectedVehicle?.babySeatPrice ?? DEFAULT_BABY_SEAT_PRICE,
+    stopBasePrice: selectedVehicle?.stopPrice ?? 0,
+    stopPricePerHour: selectedVehicle?.stopPricePerHour ?? 0,
+    stopsTotalPrice: breakdown?.stopsTotalPrice ?? 0,
+    extrasPrice: breakdown?.extrasPrice ?? 0,
     subtotalPrice,
     enableTax,
     taxPercentage,
     taxIncluded,
-    taxAmount,
-    totalPrice,
-    displaySubtotalAmount,
+    taxAmount: priced?.taxAmount ?? 0,
+    totalPrice: priced?.total ?? 0,
+    displaySubtotalAmount: priced?.subtotal ?? 0,
   };
 }

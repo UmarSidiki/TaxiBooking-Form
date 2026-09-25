@@ -1,6 +1,6 @@
-import { Booking } from '@/features/booking/model';
-import { Setting } from '@/features/settings/model';
-import { notifyEligiblePartners } from '@/features/partners/lib/notify-eligible-partners';
+import { Booking } from "@/features/booking/model";
+import { notifyEligiblePartners } from "@/features/partners/lib/notify-eligible-partners";
+import { getPartnerDispatchSettings } from "@/features/partners/lib/get-partner-dispatch-settings";
 
 export async function initCashBookingPartners(
   savedBookingId: string,
@@ -8,31 +8,37 @@ export async function initCashBookingPartners(
   totalAmount: number,
   baseUrl?: string
 ) {
-  const settings = await Setting.findOne();
+  const { enablePartners, partnerCashSettlement } =
+    await getPartnerDispatchSettings();
 
-  if (!settings?.enablePartners) {
+  if (!enablePartners) {
     return;
   }
 
   try {
-    const requiresPartnerReview = paymentMethod !== 'cash';
+    const isCash = paymentMethod === "cash";
+    const autoApprove = isCash && partnerCashSettlement === "keep_cash";
 
     await Booking.findByIdAndUpdate(savedBookingId, {
-      $set: {
-        partnerReviewStatus: requiresPartnerReview ? 'pending' : 'approved',
-        partnerMarginPercentage: 0,
-        partnerMarginAmount: 0,
-        partnerPayoutAmount: totalAmount,
-      },
+      $set: autoApprove
+        ? {
+            partnerReviewStatus: "approved",
+            partnerMarginPercentage: 0,
+            partnerMarginAmount: 0,
+            partnerPayoutAmount: totalAmount,
+          }
+        : {
+            partnerReviewStatus: "pending",
+          },
     });
 
-    if (!requiresPartnerReview) {
+    if (autoApprove) {
       const bookingForNotification = await Booking.findById(savedBookingId);
       if (bookingForNotification) {
         await notifyEligiblePartners(bookingForNotification, baseUrl);
       }
     }
   } catch {
-    // Log error silently, don't expose details to user
+    // keep booking create resilient
   }
 }

@@ -18,6 +18,8 @@ export interface ISetting {
     west: number;
   } | null;
   mapPolygonPoints?: Array<{ lat: number; lng: number }>;
+  /** ISO 3166-1 alpha-2 codes allowed to book. Empty = every country. */
+  allowedBookingCountries?: string[];
   stripePublishableKey?: string;
   stripeSecretKey?: string;
   stripeWebhookSecret?: string;
@@ -43,11 +45,20 @@ export interface ISetting {
   smtpSenderName?: string;
   enablePartners?: boolean;
   enableDrivers?: boolean;
+  /** When true: customer submits appointment request; pay after operator quote. */
+  enableAppointmentRequest?: boolean;
   enableEmbeddableForm?: boolean;
   enableFormBuilder?: boolean;
+  /** When true: the desk can create bookings on a Customer's behalf. */
+  enableDeskBooking?: boolean;
   enableTax?: boolean;
   taxPercentage?: number;
   taxIncluded?: boolean;
+  /** Cash overflow: partner keeps cash vs operator takes margin (remittance). */
+  partnerCashSettlement?: "keep_cash" | "operator_margin";
+  /** Exclusive assignee vs allow driver and partner together. */
+  dispatchAssigneeMode?: "exclusive" | "allow_both";
+  defaultPartnerMarginPercentage?: number;
   adminEmail?: string;
   timezone?: string;
   createdAt?: Date;
@@ -103,6 +114,10 @@ const SettingSchema = new Schema<ISetting>(
         lat: { type: Number },
         lng: { type: Number },
       }],
+      default: [],
+    },
+    allowedBookingCountries: {
+      type: [String],
       default: [],
     },
     stripePublishableKey: {
@@ -206,11 +221,35 @@ const SettingSchema = new Schema<ISetting>(
       type: Boolean,
       default: false,
     },
+    enableAppointmentRequest: {
+      type: Boolean,
+      default: false,
+    },
+    partnerCashSettlement: {
+      type: String,
+      enum: ["keep_cash", "operator_margin"],
+      default: "keep_cash",
+    },
+    dispatchAssigneeMode: {
+      type: String,
+      enum: ["exclusive", "allow_both"],
+      default: "exclusive",
+    },
+    defaultPartnerMarginPercentage: {
+      type: Number,
+      default: 20,
+      min: 0,
+      max: 100,
+    },
     enableEmbeddableForm: {
       type: Boolean,
       default: false,
     },
     enableFormBuilder: {
+      type: Boolean,
+      default: false,
+    },
+    enableDeskBooking: {
       type: Boolean,
       default: false,
     },

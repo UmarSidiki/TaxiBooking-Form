@@ -6,7 +6,8 @@
     "trip-details": "Ritdetails",
     "select-vehicle": "Kies Voertuig",
     "payment-and-details": "Betaling & Gegevens",
-    "booking": "Boeking"
+    "booking": "Boeking",
+    "your-details": "Uw gegevens"
   },
   "Footer": {
     "Copyright": "© 2025 {websiteName} Alle rechten voorbehouden.",
@@ -196,7 +197,13 @@
     "flight-number-optional": "Vluchtnummer (Optioneel)",
     "pay-online": "Betaal Online",
     "via-multisafepay": "(via MultiSafepay)",
-    "ideal-bancontact-paypal-and-more": "iDEAL, Bancontact, PayPal & meer"
+    "ideal-bancontact-paypal-and-more": "iDEAL, Bancontact, PayPal & meer",
+    "appointment-request-title": "Uw gegevens",
+    "appointment-request-help": "Wij werken op afspraak. Stuur een verzoek — wij bevestigen beschikbaarheid vóór betaling. Nu geen afschrijving.",
+    "indicative-rate-label": "Indicatief tarief — bevestigd na controle van beschikbaarheid:",
+    "request-this-appointment": "Deze afspraak aanvragen",
+    "submitting-request": "Verzenden…",
+    "whatsapp_confirmation-note": "Uw boekingsbevestiging wordt ook via WhatsApp verzonden."
   },
   "booking-failed-data-message": "Boeking mislukt: {0}",
   "embeddable": {
@@ -434,7 +441,47 @@
       "choose-driver": "Kies een chauffeur…",
       "select-new-driver": "Nieuwe chauffeur kiezen",
       "current-status": "Huidige status",
-      "margin-helper": "Stel de marge in die u van het boekingsbedrag houdt."
+      "margin-helper": "Stel de marge in die u van het boekingsbedrag houdt.",
+      "Requests": "Verzoeken",
+      "NoRequests": "Geen verzoeken",
+      "NoRequestsDescription": "Nieuwe verzoeken verschijnen hier tot u quoteert, contant bevestigt of weigert.",
+      "status-requested": "Aangevraagd",
+      "status-awaiting-payment": "Wacht op betaling",
+      "review-request": "Verzoek beoordelen",
+      "request-actions-title": "Afspraakverzoek",
+      "request-actions-help": "Verzoek #{tripId}",
+      "quoted-amount-label": "Offerteprijs",
+      "estimated-amount-hint": "Indicatieve schatting: {amount}",
+      "decline-reason-label": "Opmerking voor klant (optioneel)",
+      "confirm-send-pay-link": "Bevestigen en betaallink sturen",
+      "confirm-as-cash": "Bevestigen als contant / betalen op de dag",
+      "not-available": "Niet beschikbaar",
+      "quote-sent": "Betaallink verzonden.",
+      "quote-failed": "Kon betaallink niet versturen.",
+      "cash-confirmed": "Bevestigd als contant.",
+      "cash-confirm-failed": "Kon niet als contant bevestigen.",
+      "request-declined": "Verzoek als niet beschikbaar gemarkeerd.",
+      "decline-failed": "Kon verzoek niet weigeren.",
+      "new-booking": "Nieuwe boeking",
+      "new-booking-title": "Nieuwe boeking",
+      "new-booking-help": "Maak een boeking voor een klant die belde of langskwam.",
+      "section-outcome": "Uitkomst en prijs",
+      "trip-type": "Soort rit",
+      "select-vehicle": "Voertuig selecteren",
+      "customer-language": "Taal van de klant",
+      "outcome": "Uitkomst",
+      "outcome-confirmed": "Bevestigde rit",
+      "outcome-confirmed-help": "Direct geboekt en klaar voor toewijzing. Leg vast hoe de klant heeft betaald.",
+      "outcome-quote": "Betaallink versturen",
+      "outcome-quote-help": "De rit wacht op betaling; de klant ontvangt een betaallink per e-mail.",
+      "computed-fare": "Berekend tarief",
+      "manual-price": "Handmatige prijs (definitief)",
+      "manual-price-help": "Laat leeg om het berekende tarief te gebruiken. Een handmatige prijs is definitief en de belasting wordt niet herberekend.",
+      "manual-price-invalid": "Voer een bedrag groter dan nul in",
+      "payment-collected": "Betaling ontvangen",
+      "notify-customer": "E-mail de klant",
+      "create-booking": "Boeking aanmaken",
+      "booking-created": "Boeking {tripId} aangemaakt"
     },
     "Home": {
       "failed-to-fetch-dashboard-stats": "Ophalen dashboardstatistieken mislukt",
@@ -717,6 +764,10 @@
         "documents": "Documenten",
         "uploaded": "Geüpload",
         "partner-details": "Partnerdetails",
+        "tab-profile": "Profiel",
+        "tab-billing": "Facturatie",
+        "tab-documents": "Documenten",
+        "tab-fleet": "Vloot",
         "review-partner-info": "Beoordeel partnerinformatie en documenten",
         "status": "Status",
         "personal-information": "Persoonlijke Informatie",
@@ -800,7 +851,19 @@
         "vehicle-requested": "Voertuig aangevraagd",
         "recalculate-payout": "Uitbetaling herberekenen",
         "load-error": "Partners konden niet worden geladen. Probeer opnieuw.",
-        "retry": "Opnieuw proberen"
+        "retry": "Opnieuw proberen",
+        "remittance-balance-label": "Openstaande afdracht",
+        "last-remittance-label": "Laatste afdracht: {date}",
+        "mark-remittance-received": "Afdracht als ontvangen markeren",
+        "marking-remittance": "Opslaan…",
+        "settlement-ledger": "Verrekengrootboek",
+        "loading-ledger": "Grootboek laden…",
+        "empty-ledger": "Nog geen boekingen",
+        "settlement-type-payout_credit": "Uitbetalingskrediet",
+        "settlement-type-payout_paid": "Uitbetaling betaald",
+        "settlement-type-remittance_credit": "Afdracht verschuldigd",
+        "settlement-type-remittance_received": "Afdracht ontvangen",
+        "settlement-type-clawback": "Terugboeking"
       }
     },
     "Features": {
@@ -820,7 +883,23 @@
       "embeddable-form-module": "Insluitbaar boekingsformulier",
       "enable-embeddable-booking-form": "Schakel het insluitbare boekingsformulier in dat op externe websites kan worden geïntegreerd. \nIndien uitgeschakeld, hebben gebruikers geen toegang tot deze helppagina.",
       "enable-form-builder": "Schakel de tool voor het maken van formulieren in om de velden en lay-out van boekingsformulieren aan te passen. \nIndien uitgeschakeld, is de pagina voor het maken van formulieren niet toegankelijk.",
-      "form-builder-module": "Formulierbouwer"
+      "form-builder-module": "Formulierbouwer",
+      "dispatch-settlement-title": "Dispatch & verrekening",
+      "dispatch-settlement-description": "Hoe partners bij contante ritten worden betaald en of een rit zowel een chauffeur als een partner mag hebben.",
+      "cash-settlement-label": "Contante verrekening",
+      "cash-settlement-keep-cash": "Partner houdt contant (geen afdracht)",
+      "cash-settlement-operator-margin": "Exploitant neemt marge (partner draagt af)",
+      "cash-settlement-help": "Online ritten gebruiken altijd margecontrole. Dit wijzigt alleen contante overflow.",
+      "dispatch-mode-label": "Toewijzingsmodus",
+      "dispatch-mode-exclusive": "Exclusief (één toegewezen)",
+      "dispatch-mode-allow-both": "Chauffeur en partner samen toestaan",
+      "dispatch-mode-help": "Exclusief wist de andere partij bij toewijzen of accepteren.",
+      "default-margin-label": "Standaard partnermarge (%)",
+      "default-margin-help": "Voorgestelde marge bij goedkeuren van een rit voor partners.",
+      "appointment-request-module": "Eerst afspraak",
+      "enable-appointment-request": "Klanten sturen een afspraakverzoek. U bevestigt beschikbaarheid en prijs vóór betaling. Bevestigingsmails gaan pas daarna uit.",
+      "desk-booking-module": "Operatorboeking",
+      "enable-desk-booking": "Medewerkers kunnen boekingen voor een klant aanmaken, met een optionele handmatige prijs."
     },
     "Fleet": {
       "failed-to-fetch-vehicles": "Ophalen voertuigen mislukt",
@@ -1181,7 +1260,13 @@
       "gateways_help": "Geheimkeys en webhooks voor Stripe of MultiSafepay, plus bankgegevens.",
       "save": "Opslaan",
       "retry": "Opnieuw proberen",
-      "multisafepay": "MultiSafepay"
+      "multisafepay": "MultiSafepay",
+      "booking-countries-title": "Boekingslanden",
+      "booking-countries-help": "Beperk boekingen tot de geselecteerde landen. Laat leeg om boekingen van overal te accepteren.",
+      "booking-countries-search": "Landen zoeken",
+      "booking-countries-all-allowed": "Alle landen toegestaan",
+      "booking-countries-selected-count": "{count, plural, one {# land geselecteerd} other {# landen geselecteerd}}",
+      "booking-countries-no-results": "Geen landen komen overeen met uw zoekopdracht"
     }
   },
   "Sidebar": {
@@ -1551,7 +1636,9 @@
     "or": "of",
     "redirecting-in": "Doorsturen in",
     "return-to-home": "Terug naar Startpagina",
-    "seconds": "seconden"
+    "seconds": "seconden",
+    "request-received-title": "Verzoek ontvangen",
+    "request-received-body": "Wij werken op afspraak. We bevestigen beschikbaarheid en mailen de vervolgstappen. Dit is nog geen boekingsbevestiging."
   },
   "Driver": {
     "failed-to-fetch-drivers": "Ophalen chauffeurs mislukt",
@@ -1580,7 +1667,10 @@
     "driver-saved": "Chauffeur opgeslagen.",
     "driver-deleted": "Chauffeur verwijderd.",
     "loading": "Chauffeurs laden…",
-    "delete": "Verwijderen"
+    "delete": "Verwijderen",
+    "search-drivers": "Zoek op naam of e-mail…",
+    "no-drivers-match": "Geen chauffeurs gevonden",
+    "try-another-search": "Probeer een andere naam of wis de zoekopdracht."
   },
   "Drivers": {
     "driver-dashboard": "Chauffeursdashboard",
@@ -1849,6 +1939,26 @@
     "payment_failed": "Betaling kon niet worden afgerond. Probeer opnieuw.",
     "payment_not_configured": "Kaartbetalingen zijn nog niet geconfigureerd.",
     "price_changed": "Het tarief is gewijzigd. Vernieuw en probeer opnieuw.",
-    "distance_failed": "De route kon niet worden berekend. Controleer de adressen."
+    "distance_failed": "De route kon niet worden berekend. Controleer de adressen.",
+    "country_blocked": "Boekingen zijn niet beschikbaar vanaf uw locatie."
+  },
+  "Pay": {
+    "by-appointment": "Op afspraak",
+    "pay-to-confirm": "Betalen om te bevestigen",
+    "quote-summary": "Verzoek #{tripId}",
+    "pay-with-card": "Betalen met kaart",
+    "pay-with-multisafepay": "Betalen met MultiSafepay",
+    "no-payment-methods": "Online betalen is niet geconfigureerd.",
+    "payment-init-failed": "Betaling kon niet worden gestart.",
+    "link-invalid-title": "Link niet gevonden",
+    "link-invalid-body": "Deze betaallink is ongeldig of verlopen.",
+    "declined-title": "Verzoek niet beschikbaar",
+    "declined-body": "Dit verzoek is als niet beschikbaar gemarkeerd.",
+    "already-paid-title": "Al bevestigd",
+    "already-paid-body": "Rit #{tripId} is al betaald en bevestigd."
+  },
+  "CountryBlocked": {
+    "title": "Wij bedienen uw regio nog niet",
+    "body": "Boekingen zijn niet beschikbaar vanaf uw huidige locatie. Denkt u dat dit een fout is, neem dan contact met ons op."
   }
 }

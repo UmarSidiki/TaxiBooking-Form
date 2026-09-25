@@ -3,6 +3,7 @@
 import { PartnerBillingForm } from "@/features/partners/ui/partner-billing-form";
 import { PartnerBillingSummary } from "@/features/partners/ui/partner-billing-summary";
 import { usePartnerBilling } from "@/features/partners/hooks/usePartnerBilling";
+import { DeskPageMeta } from "@/features/dashboard/ui/desk-page-chrome";
 import { Loader2 } from "lucide-react";
 
 export default function PartnerBillingPage() {
@@ -19,11 +20,8 @@ export default function PartnerBillingPage() {
   }
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-semibold tracking-tight">{t("title")}</h1>
-        <p className="mt-1 max-w-2xl text-sm text-muted-foreground">{t("description")}</p>
-      </div>
+    <div className="flex flex-col gap-6">
+      <DeskPageMeta title={t("title")} description={t("description")} />
       <PartnerBillingSummary
         t={t}
         formattedBalance={billing.formattedBalance}

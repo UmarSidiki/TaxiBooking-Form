@@ -45,7 +45,15 @@ export async function PATCH(
       parsed.data,
       resolveBookingRequestBaseUrl(request)
     );
-    if (!result.ok) return jsonErrorFromStatus(result.status);
+    if (!result.ok) {
+      if (result.message && result.message !== "invalid_body") {
+        return NextResponse.json(
+          { success: false, error: "invalid_body", message: result.message },
+          { status: result.status }
+        );
+      }
+      return jsonErrorFromStatus(result.status);
+    }
 
     return NextResponse.json({
       success: true,

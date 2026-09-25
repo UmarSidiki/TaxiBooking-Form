@@ -2,45 +2,35 @@ import { connectDB } from "@/shared/db";
 import { Booking } from "@/features/booking/model";
 import { Setting } from "@/features/settings/model";
 import { sendOrderThankYouEmail } from "@/features/booking/email/order-thank-you";
+import { patchBooking } from "@/features/booking/lib/patch-booking.service";
 
 export async function sendThankYouEmails() {
   try {
     await connectDB();
 
-    // Fetch settings to get configured timezone
     const settings = await Setting.findOne();
-    
-    // Calculate the cutoff time in target timezone
-    // Use stored timezone or fallback to ENV or Zurich
-    const timeZone = settings?.timezone || process.env.NEXT_PUBLIC_APP_TIMEZONE || 'Europe/Zurich';
-    
-    // Get current time in the target timezone
-    // We format it to a string, then parse it back to a "floating" Date object
-    // This floating object represents the time in Zurich, but acts as if it's local/UTC 
-    // for consistent comparison with the booking date strings.
-    const nowInTargetTzStr = new Date().toLocaleString('en-US', { timeZone, hour12: false });
+    const timeZone =
+      settings?.timezone ||
+      process.env.NEXT_PUBLIC_APP_TIMEZONE ||
+      "Europe/Zurich";
+
+    const nowInTargetTzStr = new Date().toLocaleString("en-US", {
+      timeZone,
+      hour12: false,
+    });
     const nowInTargetTz = new Date(nowInTargetTzStr);
-    
+
     const threeHoursAgo = new Date(nowInTargetTz);
     threeHoursAgo.setHours(threeHoursAgo.getHours() - 3);
 
-    // Find completed bookings that:
-    // - Are not canceled
-    // - Haven't had thank you email sent yet
-    // - Have a valid email
     const potentialBookings = await Booking.find({
-      status: { $ne: "canceled" },
+      status: { $in: ["upcoming", "completed"] },
       thankYouEmailSent: { $ne: true },
       email: { $exists: true, $ne: "" },
-    });
+    }).limit(100);
 
-    // Filter to check if the booking date/time is more than 3 hours ago
     const completedBookings = potentialBookings.filter((booking) => {
-      // Create date object from booking strings (Floating time)
-      // "2023-10-27" + "T" + "18:00" -> 2023-10-27T18:00:00 (Floating)
       const bookingDateTime = new Date(`${booking.date}T${booking.time}:00`);
-      
-      // Compare Floating Booking Time vs Floating Current Time (both in Zurich context)
       return bookingDateTime < threeHoursAgo;
     });
 
@@ -50,10 +40,11 @@ export async function sendThankYouEmails() {
 
     let sentCount = 0;
     let failedCount = 0;
+    const baseUrl =
+      process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
 
     for (const booking of completedBookings) {
       try {
-        // Prepare email data
         const emailData = {
           tripId: booking.tripId,
           pickup: booking.pickup,
@@ -86,42 +77,29 @@ export async function sendThankYouEmails() {
           locale: booking.locale,
           bookingType: booking.bookingType,
           duration: booking.duration,
-          baseUrl: process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000',
+          baseUrl,
         };
 
-        // Send the email
         const emailSent = await sendOrderThankYouEmail(emailData);
 
         if (emailSent) {
           try {
-            // Mark that thank-you email was sent
             await Booking.findByIdAndUpdate(booking._id, {
               thankYouEmailSent: true,
               updatedAt: new Date(),
             });
 
-            // If the booking is not yet completed, call the same
-            // PATCH /api/bookings/[id] complete logic used by the dashboard
             if (booking.status !== "completed") {
-              const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
-
-              const response = await fetch(
-                `${baseUrl}/api/bookings/${booking._id.toString()}`,
-                {
-                  method: "PATCH",
-                  headers: {
-                    "Content-Type": "application/json",
-                  },
-                  body: JSON.stringify({ action: "complete" }),
-                }
+              const result = await patchBooking(
+                booking._id.toString(),
+                { action: "complete" },
+                baseUrl
               );
-
-              if (!response.ok) {
-                const data = await response.json().catch(() => null);
+              if (!result.ok) {
                 console.error(
-                  "Failed to mark booking as completed via API",
-                  response.status,
-                  data
+                  "Failed to mark booking as completed via patchBooking",
+                  result.status,
+                  result.message
                 );
                 failedCount++;
                 continue;
@@ -130,7 +108,7 @@ export async function sendThankYouEmails() {
 
             sentCount++;
             console.log(
-              `✅ Thank you email sent and booking completed (if needed) via API: ${booking.tripId}`
+              `✅ Thank you email sent and booking completed (if needed): ${booking.tripId}`
             );
           } catch (completionError) {
             console.error(

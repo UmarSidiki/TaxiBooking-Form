@@ -2,9 +2,8 @@
 
 import type { IBooking } from "@/features/booking/model";
 import { SHORT_DATE } from "@/features/rides/lib/ride-format";
-import { CalendarDays, Clock, DollarSign, Users } from "lucide-react";
+import { Users } from "lucide-react";
 import { useLocale, type useTranslations } from "next-intl";
-import type { ReactNode } from "react";
 
 type TFn = ReturnType<typeof useTranslations>;
 
@@ -18,90 +17,41 @@ export function AdminRideCardSchedule({
   currencySymbol: string;
 }) {
   const locale = useLocale();
-  const dateLabel =
-    booking.tripType === "roundtrip"
-      ? t("Dashboard.Rides.DepartureDate")
-      : t("Dashboard.Rides.Date");
-  const timeLabel =
-    booking.tripType === "roundtrip"
-      ? t("Dashboard.Rides.DepartureTime")
-      : t("Dashboard.Rides.Time");
+  const date = new Date(booking.date).toLocaleDateString(locale, SHORT_DATE);
   const roundtrip = booking.tripType === "roundtrip" && booking.returnDate;
+  const price = `${currencySymbol}${booking.totalAmount?.toFixed(2) ?? "0.00"}`;
 
   return (
-    <>
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <Stat
-          icon={<CalendarDays className="size-3" />}
-          label={dateLabel}
-          value={new Date(booking.date).toLocaleDateString(locale, SHORT_DATE)}
-        />
-        <Stat icon={<Clock className="size-3" />} label={timeLabel} value={booking.time} />
-        {roundtrip ? (
-          <>
-            <Stat
-              icon={<CalendarDays className="size-3" />}
-              label={t("Dashboard.Rides.ReturnDate")}
-              value={new Date(booking.returnDate as string).toLocaleDateString(
-                locale,
-                SHORT_DATE
-              )}
-            />
-            <Stat
-              icon={<Clock className="size-3" />}
-              label={t("Dashboard.Rides.ReturnTime")}
-              value={booking.returnTime ?? ""}
-            />
-          </>
-        ) : (
-          <>
-            <Stat
-              icon={<Users className="size-3" />}
-              label={t("Dashboard.Rides.Passengers")}
-              value={String(booking.passengers)}
-            />
-            <Stat
-              icon={<DollarSign className="size-3" />}
-              label={t("Dashboard.Rides.Price")}
-              value={`${currencySymbol}${booking.totalAmount?.toFixed(2)}`}
-            />
-          </>
-        )}
-      </div>
+    <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm">
+      <p className="font-medium tabular-nums text-foreground">
+        <span className="text-muted-foreground">{date}</span>
+        <span className="mx-1.5 text-muted-foreground/50" aria-hidden="true">
+          ·
+        </span>
+        <span>{booking.time}</span>
+      </p>
       {roundtrip ? (
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <Stat
-            icon={<Users className="size-3" />}
-            label={t("Dashboard.Rides.Passengers")}
-            value={String(booking.passengers)}
-          />
-          <Stat
-            icon={<DollarSign className="size-3" />}
-            label={t("Dashboard.Rides.Price")}
-            value={`${currencySymbol}${booking.totalAmount?.toFixed(2)}`}
-          />
-        </div>
+        <p className="text-xs text-muted-foreground">
+          {t("Dashboard.Rides.ReturnDate")}{" "}
+          <span className="font-medium text-foreground">
+            {new Date(booking.returnDate as string).toLocaleDateString(
+              locale,
+              SHORT_DATE
+            )}{" "}
+            {booking.returnTime}
+          </span>
+        </p>
       ) : null}
-    </>
-  );
-}
-
-function Stat({
-  icon,
-  label,
-  value,
-}: {
-  icon: ReactNode;
-  label: string;
-  value: string;
-}) {
-  return (
-    <div className="flex flex-col gap-1">
-      <div className="flex items-center gap-2 text-xs text-muted-foreground">
-        {icon}
-        {label}
-      </div>
-      <p className="text-sm font-medium text-foreground">{value}</p>
+      <p className="ms-auto text-sm font-semibold tabular-nums text-foreground">
+        {price}
+      </p>
+      <p
+        className="inline-flex items-center gap-1 text-xs text-muted-foreground"
+        title={t("Dashboard.Rides.Passengers")}
+      >
+        <Users className="size-3" aria-hidden="true" />
+        <span className="tabular-nums">{booking.passengers}</span>
+      </p>
     </div>
   );
 }

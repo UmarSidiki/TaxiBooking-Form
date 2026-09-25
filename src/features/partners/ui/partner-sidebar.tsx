@@ -27,6 +27,7 @@ export function PartnerSidebar({ locale }: { locale: string }) {
       locale={locale}
       subtitleKey="Dashboard.Partners.Sidebar.partner-portal"
       logoutCallbackUrl={`/${locale}/partners/login`}
+      homeHref={`/${locale}/partners/dashboard`}
     >
       <DeskSidebarNav locale={locale} groups={partnerNavGroups} approved={approved} />
     </DeskPlaqueSidebar>

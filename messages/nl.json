@@ -954,7 +954,7 @@
       "minimum-hours": "Minimum Uren *",
       "minimum-hours-for-bookings": "Minimum uren voor boekingen",
       "return-trip-price": "Retourrit Prijs (%)",
-      "percentage-for-return-trips": "Percentage voor retourritten",
+      "percentage-for-return-trips": "100 = retourrit tegen 100% van de heenrit (totaal ×2). 0 = gratis retour.",
       "discount": "Korting (%)",
       "discount-percentage": "Kortingspercentage",
       "capacity-and-features": "Capaciteit & Kenmerken",

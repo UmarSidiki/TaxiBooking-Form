@@ -9,7 +9,14 @@ import type { AppRouterInstance } from "next/dist/shared/lib/app-router-context.
 import type { useTranslations } from "next-intl";
 import { apiErrorMessage } from "@/shared/lib/api-error-copy";
 import { ApiError } from "@/shared/http/api";
-import { useCallback, useEffect, type Dispatch, type MutableRefObject, type SetStateAction } from "react";
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  type Dispatch,
+  type MutableRefObject,
+  type SetStateAction,
+} from "react";
 
 export function useStep3Payments({
   formData,
@@ -69,6 +76,9 @@ export function useStep3Payments({
   taxPercentage: number;
   taxIncluded: boolean;
 }) {
+  /** Total baked into the current PaymentIntent — used to detect stale intents. */
+  const intentTotalRef = useRef<number | null>(null);
+
   // Create payment intent function
   const createPaymentIntent = useCallback(async () => {
     if (!stripeConfig.publishableKey || creatingPaymentIntent || totalPrice <= 0) return;
@@ -114,7 +124,6 @@ export function useStep3Payments({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           amount: totalPrice,
-          currency: paymentSettings?.stripeCurrency || DEFAULT_STRIPE_CURRENCY,
           customerEmail: formData.email,
           customerName: `${formData.firstName} ${formData.lastName}`.trim(),
           description: `Booking from ${formData.pickup || "pickup"} to ${formData.dropoff || "dropoff"}`,
@@ -125,6 +134,7 @@ export function useStep3Payments({
       const data = await response.json();
 
       if (data.success && data.clientSecret) {
+        intentTotalRef.current = totalPrice;
         setClientSecret(data.clientSecret);
         setStripeOrderId(data.orderId || null);
         setPaymentError(null);
@@ -148,11 +158,25 @@ export function useStep3Payments({
     taxAmount,
     enableTax,
     taxPercentage,
-    paymentSettings?.stripeCurrency,
     formData,
     locale,
     t,
+    setClientSecret,
+    setStripeOrderId,
+    setPaymentError,
+    setPaymentInitialized,
+    setCreatingPaymentIntent,
   ]);
+
+  // Invalidate a stale PaymentIntent when seats/extras change the total on step 3
+  useEffect(() => {
+    if (intentTotalRef.current === null) return;
+    if (intentTotalRef.current === totalPrice) return;
+    intentTotalRef.current = null;
+    setClientSecret(null);
+    setPaymentInitialized(false);
+    setStripeOrderId(null);
+  }, [totalPrice, setClientSecret, setPaymentInitialized, setStripeOrderId]);
 
   // Auto-initiate Stripe payment intent when 'card' is selected
   useEffect(() => {
@@ -181,10 +205,11 @@ export function useStep3Payments({
   // Reset payment initialization when payment method changes
   useEffect(() => {
     if (selectedPaymentMethod !== "card") {
+      intentTotalRef.current = null;
       setPaymentInitialized(false);
       setClientSecret(null);
     }
-  }, [selectedPaymentMethod]);
+  }, [selectedPaymentMethod, setPaymentInitialized, setClientSecret]);
 
   const handleStripePaymentSuccess = async (paymentIntentId: string) => {
     setIsLoading(true);
@@ -224,6 +249,7 @@ export function useStep3Payments({
   };
 
   const retryStripePayment = () => {
+    intentTotalRef.current = null;
     setPaymentError(null);
     setPaymentInitialized(false);
     setClientSecret(null);

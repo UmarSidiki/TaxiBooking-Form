@@ -2,7 +2,7 @@ import { Schema, model, models } from "mongoose";
 
 /** One band in a distance-based tiered pricing table */
 export interface IPriceTier {
-  /** Upper km boundary of this band (inclusive). Use a very large number for the last band. */
+  /** Upper km boundary of this band (inclusive). Distances beyond all bands use base + per-km. */
   upToKm: number;
   /** "flat" → fixed total for the trip; "per_km" → rate × distance */
   type: "flat" | "per_km";
@@ -31,8 +31,9 @@ export interface IVehicle {
   stopPricePerHour: number;
   /**
    * Optional sorted array of distance bands.
-   * When present and non-empty, the pricing engine uses this table instead of
-   * `price + pricePerKm × km`. Bands must be ordered upToKm ascending.
+   * When a trip distance falls within a band, that band replaces
+   * `price + pricePerKm × km`. Distances beyond every band fall back to base + per-km.
+   * Bands must be ordered upToKm ascending.
    */
   priceTiers?: IPriceTier[];
   isActive: boolean;

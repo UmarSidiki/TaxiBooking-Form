@@ -25,11 +25,9 @@ export async function POST(request: NextRequest) {
     }
     const {
       amount,
-      currency,
       customerEmail,
       customerName,
       description,
-      orderId,
       locale,
       bookingData,
     } = parsed.data;
@@ -88,8 +86,8 @@ export async function POST(request: NextRequest) {
       : 'https://api.multisafepay.com/v1/json/orders';
 
     const userLocale = locale || 'en';
-    const generatedOrderId = orderId || generateShortId(5);
-    const orderCurrency = (currency || settings?.stripeCurrency || 'EUR').toUpperCase();
+    const generatedOrderId = generateShortId(5);
+    const orderCurrency = (settings?.stripeCurrency || 'EUR').toUpperCase();
 
     await PendingBooking.findOneAndUpdate(
       { orderId: generatedOrderId },

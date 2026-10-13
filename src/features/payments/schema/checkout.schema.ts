@@ -3,6 +3,7 @@ import { checkoutBookingDataSchema } from "@/features/booking/schema/checkout.sc
 
 export const paymentIntentBodySchema = z.object({
   amount: z.number().optional(),
+  /** Ignored — charge currency comes from Settings only. */
   currency: z.string().optional(),
   customerEmail: z.string().optional(),
   customerName: z.string().optional(),
@@ -25,10 +26,12 @@ export const completePaymentBodySchema = z
 export const multisafepayOrderBodySchema = z.object({
   /** Advisory only - the server recomputes and charges the authoritative fare. */
   amount: z.number().optional(),
+  /** Ignored — charge currency comes from Settings only. */
   currency: z.string().optional(),
   customerEmail: z.string().optional(),
   customerName: z.string().optional(),
   description: z.string().optional(),
+  /** Ignored — orderId is always generated server-side. */
   orderId: z.string().optional(),
   locale: z.string().optional(),
   bookingData: checkoutBookingDataSchema,

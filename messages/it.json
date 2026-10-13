@@ -954,7 +954,7 @@
       "minimum-hours": "Ore Minime *",
       "minimum-hours-for-bookings": "Ore minime per le prenotazioni",
       "return-trip-price": "Prezzo Ritorno (%)",
-      "percentage-for-return-trips": "Percentuale per viaggi di ritorno",
+      "percentage-for-return-trips": "100 = ritorno al 100% della tratta di andata (totale ×2). 0 = ritorno gratuito.",
       "discount": "Sconto (%)",
       "discount-percentage": "Percentuale di sconto",
       "capacity-and-features": "Capacità e Caratteristiche",

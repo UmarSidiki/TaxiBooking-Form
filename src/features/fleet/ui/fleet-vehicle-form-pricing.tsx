@@ -1,5 +1,6 @@
 "use client";
 
+import { DEFAULT_VEHICLE_RETURN_PRICE_PERCENTAGE } from "@/features/fleet/lib/vehicle-form-defaults";
 import type { FleetVehicleFormFieldsProps } from "@/features/fleet/ui/fleet-vehicle-form-fields";
 import { Input } from "@/shared/ui/input";
 import { useCurrency } from "@/shared/context/currency-context";
@@ -151,12 +152,17 @@ export function FleetVehicleFormPricing({
           min="0"
           placeholder="100"
           value={formData.returnPricePercentage}
-          onChange={(e) =>
+          onChange={(e) => {
+            const raw = e.target.value.trim();
+            const parsed = parseInt(raw, 10);
             setFormData({
               ...formData,
-              returnPricePercentage: parseInt(e.target.value) || 0,
-            })
-          }
+              returnPricePercentage:
+                raw === "" || Number.isNaN(parsed)
+                  ? DEFAULT_VEHICLE_RETURN_PRICE_PERCENTAGE
+                  : parsed,
+            });
+          }}
         />
         <p className="text-xs text-muted-foreground mt-1">
           {t("Dashboard.Fleet.percentage-for-return-trips")}{" "}

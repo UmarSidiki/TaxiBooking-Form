@@ -62,6 +62,14 @@ function vehiclePriceFor(
 
   const minimumFare = vehicle.minimumFare ?? 0;
 
+  const applyRoundTrip = (oneWayPrice: number): number => {
+    if (input.tripType !== "roundtrip") return oneWayPrice;
+    const returnPercentage =
+      vehicle.returnPricePercentage ??
+      DEFAULT_VEHICLE_RETURN_PRICE_PERCENTAGE;
+    return oneWayPrice + oneWayPrice * (returnPercentage / 100);
+  };
+
   if (typeof distanceKm === "number" && Number.isFinite(distanceKm)) {
     const tieredOneWay = applyPriceTiers(vehicle.priceTiers, distanceKm);
 
@@ -74,17 +82,10 @@ function vehiclePriceFor(
             minimumFare
           );
 
-    if (input.tripType === "roundtrip") {
-      const returnPercentage =
-        vehicle.returnPricePercentage ??
-        DEFAULT_VEHICLE_RETURN_PRICE_PERCENTAGE;
-      return oneWayPrice + oneWayPrice * (returnPercentage / 100);
-    }
-
-    return oneWayPrice;
+    return applyRoundTrip(oneWayPrice);
   }
 
-  return vehicle.price ?? 0;
+  return applyRoundTrip(vehicle.price ?? 0);
 }
 
 function stopsTotal(vehicle: IVehicle, input: BookingPriceInput): number {

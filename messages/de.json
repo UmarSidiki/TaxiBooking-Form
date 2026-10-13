@@ -954,7 +954,7 @@
       "minimum-hours": "Mindeststunden *",
       "minimum-hours-for-bookings": "Mindeststunden für Buchungen",
       "return-trip-price": "Preis für Rückfahrt (%)",
-      "percentage-for-return-trips": "Prozentsatz für Rückfahrten",
+      "percentage-for-return-trips": "100 = Rückfahrt zu 100 % der Hinfahrt (gesamt ×2). 0 = kostenlose Rückfahrt.",
       "discount": "Rabatt (%)",
       "discount-percentage": "Rabattprozentsatz",
       "capacity-and-features": "Kapazität & Merkmale",

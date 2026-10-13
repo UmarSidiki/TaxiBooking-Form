@@ -14,8 +14,6 @@ export const DESK_PAYMENT_METHODS = ["cash", "card", "bank_transfer"] as const;
 export const deskBookingInputSchema = cashBookingBaseSchema
   .omit({
     paymentMethod: true,
-    paymentStatus: true,
-    stripePaymentIntentId: true,
     totalAmount: true,
     subtotalAmount: true,
     taxAmount: true,

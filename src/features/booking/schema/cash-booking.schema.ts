@@ -36,9 +36,8 @@ export const cashBookingBaseSchema = z.object({
   phone: z.string().trim().refine(isValidPhone),
   whatsappOptIn: z.boolean().optional().default(false),
   locale: z.string().trim().max(8).optional(),
-  paymentMethod: z.string().optional(),
-  paymentStatus: z.string().optional(),
-  stripePaymentIntentId: z.string().optional(),
+  /** Public cash/bank path only — provider fields are ignored by the service. */
+  paymentMethod: z.enum(["cash", "bank_transfer"]).optional(),
   totalAmount: z.number().optional(),
   subtotalAmount: z.number().optional(),
   taxAmount: z.number().optional(),

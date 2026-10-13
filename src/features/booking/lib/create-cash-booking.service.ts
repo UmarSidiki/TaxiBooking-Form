@@ -103,7 +103,8 @@ export async function createCashBooking(
     ? sanitizeInput(formData.flightNumber)
     : undefined;
 
-  const paymentMethod = formData.paymentMethod || 'stripe';
+  const paymentMethod =
+    formData.paymentMethod === 'bank_transfer' ? 'bank_transfer' : 'cash';
 
   const bookingData = {
     tripId,
@@ -135,13 +136,7 @@ export async function createCashBooking(
     whatsappOptIn: formData.whatsappOptIn ?? false,
     locale: formData.locale,
     paymentMethod,
-    paymentStatus:
-      (formData.paymentStatus as
-        | 'pending'
-        | 'completed'
-        | 'failed'
-        | 'refunded') || 'completed',
-    stripePaymentIntentId: formData.stripePaymentIntentId,
+    paymentStatus: 'pending' as const,
     status: 'upcoming',
     totalAmount: priced.total,
     subtotalAmount: priced.subtotal,

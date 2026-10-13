@@ -47,8 +47,8 @@ export async function createCashBookingEmailData(
     subtotalAmount: formData.subtotalAmount,
     taxAmount: formData.taxAmount,
     taxPercentage: formData.taxPercentage,
-    paymentMethod: formData.paymentMethod,
-    paymentStatus: formData.paymentStatus,
+    paymentMethod: formData.paymentMethod ?? "cash",
+    paymentStatus: "pending",
     baseUrl,
   };
 }

@@ -954,7 +954,7 @@
       "minimum-hours": "الحد الأدنى للساعات *",
       "minimum-hours-for-bookings": "الحد الأدنى لساعات الحجز",
       "return-trip-price": "سعر رحلة العودة (%)",
-      "percentage-for-return-trips": "النسبة المئوية لرحلات العودة",
+      "percentage-for-return-trips": "100 = تُحسب رحلة العودة بنسبة 100٪ من الذهاب (الإجمالي ×2). 0 = عودة مجانية.",
       "discount": "الخصم (%)",
       "discount-percentage": "نسبة الخصم",
       "capacity-and-features": "السعة والميزات",

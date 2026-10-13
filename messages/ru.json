@@ -954,7 +954,7 @@
       "minimum-hours": "Минимальное кол-во часов *",
       "minimum-hours-for-bookings": "Минимальное время бронирования",
       "return-trip-price": "Цена обратной поездки (%)",
-      "percentage-for-return-trips": "Процент для обратных поездок",
+      "percentage-for-return-trips": "100 = обратный путь по 100% тарифа туда (итого ×2). 0 = бесплатный возврат.",
       "discount": "Скидка (%)",
       "discount-percentage": "Процент скидки",
       "capacity-and-features": "Вместимость и Особенности",

@@ -9,7 +9,8 @@ import type { IPriceTier } from "@/features/fleet/model/Vehicle";
  * - The first tier whose upToKm >= distanceKm is used.
  * - type "flat"   → the tier's price IS the total trip price.
  * - type "per_km" → price × distanceKm.
- * - If distanceKm exceeds all tier boundaries the last tier is used.
+ * - If distanceKm exceeds all tier boundaries, returns undefined so the
+ *   caller falls back to the legacy base + pricePerKm formula.
  *
  * Returns undefined when tiers is empty / undefined (caller falls back to
  * the legacy base+pricePerKm formula).
@@ -23,8 +24,8 @@ export function applyPriceTiers(
   // Sort defensively in case tiers arrive unsorted from DB
   const sorted = [...tiers].sort((a, b) => a.upToKm - b.upToKm);
 
-  // Find the first tier that covers this distance
-  const tier = sorted.find((t) => distanceKm <= t.upToKm) ?? sorted[sorted.length - 1];
+  const tier = sorted.find((t) => distanceKm <= t.upToKm);
+  if (!tier) return undefined;
 
   if (tier.type === "flat") {
     return tier.price;

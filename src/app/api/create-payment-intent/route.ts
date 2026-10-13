@@ -27,12 +27,14 @@ export async function POST(request: NextRequest) {
     if (!country.ok) {
       return jsonError("country_blocked", 403);
     }
-    const { amount, currency, customerEmail, customerName, description, bookingData } =
+    const { amount, customerEmail, customerName, description, bookingData } =
       parsed.data;
 
     await connectDB();
     const settings = await Setting.findOne();
-    const stripeCurrency = (currency || settings?.stripeCurrency || DEFAULT_STRIPE_CURRENCY).toLowerCase();
+    const stripeCurrency = (
+      settings?.stripeCurrency || DEFAULT_STRIPE_CURRENCY
+    ).toLowerCase();
     const statementDescriptor = settings?.stripeStatementDescriptor || 'BOOKING';
     const stripe = await getStripeClient();
 

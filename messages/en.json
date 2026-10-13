@@ -954,7 +954,7 @@
       "minimum-hours": "Minimum Hours *",
       "minimum-hours-for-bookings": "Minimum hours for bookings",
       "return-trip-price": "Return Trip Price (%)",
-      "percentage-for-return-trips": "Percentage for return trips",
+      "percentage-for-return-trips": "100 = return leg charged at 100% of the outbound fare (total 2×). 0 = free return leg.",
       "discount": "Discount (%)",
       "discount-percentage": "Discount percentage",
       "capacity-and-features": "Capacity & Features",

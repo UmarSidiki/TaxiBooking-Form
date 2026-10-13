@@ -1,6 +1,8 @@
 import { z } from "zod";
 import { cashBookingStopSchema } from "@/features/booking/schema/cash-booking.schema";
 
+const MAX_SEATS = 10;
+
 export const pendingBookingDataSchema = z.object({
   firstName: z.string().optional(),
   lastName: z.string().optional(),
@@ -30,8 +32,8 @@ export const checkoutBookingDataSchema = z.object({
   returnTime: z.string().optional(),
   passengers: z.coerce.number().optional(),
   selectedVehicle: z.string().min(1),
-  childSeats: z.coerce.number().optional(),
-  babySeats: z.coerce.number().optional(),
+  childSeats: z.coerce.number().int().min(0).max(MAX_SEATS).optional(),
+  babySeats: z.coerce.number().int().min(0).max(MAX_SEATS).optional(),
   notes: z.string().optional(),
   flightNumber: z.string().optional(),
   firstName: z.string().optional(),

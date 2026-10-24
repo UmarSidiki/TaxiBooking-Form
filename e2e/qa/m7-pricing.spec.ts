@@ -32,7 +32,7 @@ test("M7 pricing desk, quote, and axe", async ({ page, browser }) => {
   page.setDefaultTimeout(20_000);
   await signIn(page, "/en/dashboard/signin", ADMIN.email, ADMIN.password);
   await gotoPath(page, "/en/dashboard/pricing");
-  await expect(page.getByRole("heading", { name: "Pricing" })).toBeVisible();
+  await expect(page.locator("main").getByRole("heading", { name: "Pricing" })).toBeVisible();
   await page.locator("#night-start").fill("22:00");
   await page.getByLabel("Night ends").fill("06:00");
   await page.getByLabel("Night percent").fill("10");
@@ -113,7 +113,7 @@ async function reviewPricing(browser: Browser) {
     page.setDefaultTimeout(20_000);
     await signIn(page, "/en/dashboard/signin", ADMIN.email, ADMIN.password);
     await gotoPath(page, "/en/dashboard/pricing");
-    await expect(page.getByRole("heading", { name: "Pricing" })).toBeVisible();
+    await expect(page.locator("main").getByRole("heading", { name: "Pricing" })).toBeVisible();
     await shot(page, `m7-pricing-${view.name}`);
     await axeSerious(page);
     await context.close();

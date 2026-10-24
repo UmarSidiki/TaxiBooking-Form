@@ -33,6 +33,8 @@ Required in `.env.local`:
 | `NEXTAUTH_URL` | App origin (local: `http://localhost:3000`) |
 | `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` | Maps / Places / Distance Matrix |
 | `CRON_SECRET` | Shared secret for `/api/cron`. Required before the job will run. |
+| `UPSTASH_REDIS_REST_URL` / `UPSTASH_REDIS_REST_TOKEN` | Optional. When both are set, sensitive-route counters use Upstash before Mongo. |
+| `TURNSTILE_SECRET_KEY` | Optional. When set, public booking create requires a Cloudflare Turnstile token. |
 
 Stripe, MultiSafepay, and SMTP are configured in the **admin Settings** UI (MongoDB), not only in env. See `.env.example` for optional public site copy (`NEXT_PUBLIC_WEBSITE_NAME`, support phone/email).
 

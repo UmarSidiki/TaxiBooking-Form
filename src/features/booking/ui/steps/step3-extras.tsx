@@ -103,6 +103,16 @@ export function Step3Extras({
                 )}
               </div>
             </div>
+            <input
+              type="text"
+              name="companyWebsite"
+              value={formData.companyWebsite}
+              onChange={(event) => setFormData((prev) => ({ ...prev, companyWebsite: event.target.value }))}
+              className="absolute h-0 w-0 overflow-hidden"
+              tabIndex={-1}
+              autoComplete="off"
+              aria-hidden="true"
+            />
             <label className="flex min-h-11 items-center gap-3 text-sm">
               <input
                 type="checkbox"

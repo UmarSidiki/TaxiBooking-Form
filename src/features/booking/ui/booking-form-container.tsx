@@ -1,10 +1,11 @@
 "use client";
 
-import React, { lazy, Suspense } from "react";
+import React, { lazy, Suspense, useEffect } from "react";
 import { Loader2 } from "lucide-react";
 // import { useTranslations } from "next-intl";
 import { LanguageSwitcher } from "@/shared/chrome/language-switcher";
 import { useBookingFormContainer } from "@/features/booking/hooks/form-container/useBookingFormContainer";
+import { useBookingForm } from "@/features/booking/context/booking-form-context";
 import { useGeo } from "@/features/geo/context/geo-context";
 import { useTheme } from "@/features/settings/context/theme-context";
 import Image from "next/image";
@@ -23,11 +24,17 @@ const StepLoader = () => (
 
 export default function BookingFormContainer() {
   const { initialized, currentStep } = useBookingFormContainer();
+  const { formData, setFormData } = useBookingForm();
   const { isLoading } = useGeo();
   const { settings } = useTheme();
   // const t = useTranslations();
 
   // Wait until URL params are processed
+  useEffect(() => {
+    if (formData.formStartedAt) return;
+    setFormData((prev) => (prev.formStartedAt ? prev : { ...prev, formStartedAt: Date.now() }));
+  }, [formData.formStartedAt, setFormData]);
+
   if (!initialized) return null;
 
   // Hold only while a configured restriction is still resolving. The block

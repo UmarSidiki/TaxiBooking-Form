@@ -13,6 +13,7 @@ import { createCashBookingEmailData } from '@/features/booking/lib/create-cash-b
 import { getSettingsCurrency } from '@/features/booking/lib/get-settings-currency';
 import { initCashBookingPartners } from '@/features/booking/lib/init-cash-booking-partners';
 import { priceServerBooking } from '@/features/pricing/lib/price-server-booking';
+import { bookingAbuseReason, turnstileOk } from '@/shared/http/booking-abuse';
 import { fetchRouteDistanceKm } from '@/features/payments/lib/fare/route-distance';
 import { loadPaymentSettings } from '@/features/payments/lib/load-payment-settings';
 import type { CashBookingInput } from '@/features/booking/schema/cash-booking.schema';
@@ -32,6 +33,11 @@ export async function createCashBooking(
   formData: CashBookingInput,
   baseUrl?: string
 ): Promise<CreateCashBookingResult> {
+  const abuse = bookingAbuseReason(formData);
+  if (abuse) return { ok: false, status: 400, message: abuse };
+  if (!(await turnstileOk(formData.turnstileToken, "unknown"))) {
+    return { ok: false, status: 400, message: "turnstile" };
+  }
   await connectDB();
   const vehicle = await Vehicle.findById(formData.selectedVehicle);
 

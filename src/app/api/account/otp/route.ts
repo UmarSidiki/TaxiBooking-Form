@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { sendCustomerOtp, verifyCustomerOtp } from "@/features/customers/lib/customer-otp";
 import { signCustomerToken } from "@/features/customers/lib/customer-token";
+import { limitSensitive } from "@/shared/http/sensitive-limit";
 
 const emailSchema = z.string().trim().regex(/^[^\s@]+@[^\s@]+\.[^\s@]+$/);
 
@@ -16,6 +17,8 @@ const verifySchema = z.object({
 });
 
 export async function POST(request: Request) {
+  const limited = await limitSensitive(request, "otp");
+  if (limited) return limited;
   const body = await request.json().catch(() => null);
   const verify = verifySchema.safeParse(body);
   if (verify.success) {

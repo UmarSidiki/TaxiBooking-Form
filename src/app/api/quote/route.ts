@@ -5,8 +5,11 @@ import { quoteRequestSchema } from "@/features/pricing/schema/quote-request.sche
 import { fetchRouteDistanceKm } from "@/features/payments/lib/fare/route-distance";
 import { loadPaymentSettings } from "@/features/payments/lib/load-payment-settings";
 import { connectDB } from "@/shared/db";
+import { limitSensitive } from "@/shared/http/sensitive-limit";
 
 export async function POST(request: Request) {
+  const limited = await limitSensitive(request, "quote");
+  if (limited) return limited;
   const parsed = quoteRequestSchema.safeParse(await request.json().catch(() => null));
   if (!parsed.success) {
     return NextResponse.json({ error: "invalid_body" }, { status: 400 });

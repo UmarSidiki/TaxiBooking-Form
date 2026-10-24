@@ -52,6 +52,7 @@ export function EmbeddableV3LocationFields({
                 </div>
                 <Input
                   ref={pickupInputRef}
+                  aria-label={t("embeddable.pickup-location")}
                   placeholder={t("embeddable.pickup-location")}
                   value={formData.pickup}
                   onChange={(e) => {
@@ -143,7 +144,7 @@ export function EmbeddableV3LocationFields({
                   <button
                     type="button"
                     onClick={handleAddStop}
-                    className="flex items-center gap-1 text-xs text-primary hover:text-primary/80 transition-colors"
+                    className="inline-flex min-h-11 items-center gap-1 text-sm text-foreground underline-offset-4 hover:underline"
                   >
                     <Plus className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
                     <span className="hidden sm:inline">{t('embeddable.add-a-stop')}</span>
@@ -156,6 +157,7 @@ export function EmbeddableV3LocationFields({
                   </div>
                   <Input
                     ref={dropoffInputRef}
+                    aria-label={t("embeddable.destination")}
                     placeholder={t("embeddable.destination")}
                     value={formData.dropoff}
                     onChange={(e) => {

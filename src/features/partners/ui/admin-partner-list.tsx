@@ -88,7 +88,7 @@ export function AdminPartnerList({
                     <div className="text-left sm:text-right">
                           <p className="text-sm text-muted-foreground">{t("documents")}</p>
                           <p className="text-sm font-medium">
-                            {partner.documents.length} {t("uploaded")}
+                            {partner.documents?.length ?? 0} {t("uploaded")}
                           </p>
                           {partner.fleetStatus === "pending" && (
                             <div className="mt-1">

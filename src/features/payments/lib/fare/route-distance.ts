@@ -1,3 +1,5 @@
+import { mockRouteKm } from "@/features/booking/lib/mock-distance";
+
 /**
  * Server-only: calls the Google Directions API. Never import this from a
  * client component - it belongs to the server fare pipeline.
@@ -7,10 +9,10 @@ export async function fetchRouteDistanceKm(input: {
   dropoff: string;
   stops?: Array<{ location: string }>;
 }): Promise<number | undefined> {
+  if (!input.pickup || !input.dropoff) return undefined;
+  if (process.env.DISTANCE_MOCK === "1") return mockRouteKm();
   const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
-  if (!apiKey || !input.pickup || !input.dropoff) {
-    return undefined;
-  }
+  if (!apiKey) return undefined;
 
   const validStops = (input.stops || [])
     .map((stop) => stop.location?.trim())

@@ -487,7 +487,31 @@
       "create-booking": "Boeking aanmaken",
       "booking-created": "Boeking {tripId} aangemaakt",
       "NoAwaitingPayment": "Geen offertes in afwachting van betaling",
-      "NoAwaitingPaymentDescription": "Geoffreerde aanvragen blijven hier tot de klant betaalt."
+      "NoAwaitingPaymentDescription": "Geoffreerde aanvragen blijven hier tot de klant betaalt.",
+      "overlap-notice": "Toegewezen. Dit overlapt {trip} om {time}.",
+      "partner-overlap-notice": "Partner toegewezen. Dit overlapt {trip} om {time}.",
+      "driver-time-off": "Deze chauffeur is vrij tijdens die ophaaltijd. Kies een andere.",
+      "edit-ride": "Rit bewerken",
+      "edit-saved": "Rit bijgewerkt.",
+      "edit-failed": "De rit kon niet worden bijgewerkt. Controleer de velden en probeer opnieuw.",
+      "activity": "Ritactiviteit",
+      "activity-empty": "Nog geen activiteit.",
+      "activity-loading": "Activiteit laden…",
+      "save-ride": "Rit opslaan",
+      "ride-notes": "Notities",
+      "quote-link-ready": "Betaallink klaar: {url}",
+      "quote-link-email-failed": "Offerte opgeslagen. E-mail mislukt, kopieer deze link: {url}",
+      "activity-assigned": "Toegewezen",
+      "activity-claimed": "Geclaimd",
+      "activity-started": "Gestart",
+      "activity-completed": "Voltooid",
+      "activity-no_show": "Niet verschenen",
+      "activity-cancelled": "Geannuleerd",
+      "activity-edited": "Bewerkt",
+      "activity-approved": "Goedgekeurd voor partners",
+      "activity-quoted": "Geoffreerd",
+      "activity-confirmed": "Bevestigd als contant",
+      "activity-declined": "Geweigerd"
     },
     "Home": {
       "failed-to-fetch-dashboard-stats": "Ophalen dashboardstatistieken mislukt",
@@ -637,7 +661,10 @@
         "your-payout": "Uw Uitbetaling",
         "retry": "Opnieuw proberen",
         "load-error": "Ritten konden niet worden geladen. Probeer het opnieuw.",
-        "customer-review": "Klantbeoordeling"
+        "customer-review": "Klantbeoordeling",
+        "mark-completed": "Markeer als voltooid",
+        "completing": "Afronden…",
+        "complete-failed": "Deze rit kon niet worden afgerond. Probeer opnieuw."
       },
       "Sidebar": {
         "partner-portal": "Partner Portaal",
@@ -661,7 +688,7 @@
       "Billing": {
         "title": "Facturatie & Bankgegevens",
         "description": "Geef uw uitbetalingsgegevens op zodat beheerders weten waar ze uw verdiensten naartoe moeten sturen.",
-        "payout-summary-title": "Openstaande uitbetaling",
+        "payout-summary-title": "Saldo",
         "payout-summary-description": "Bedrag dat momenteel aan u verschuldigd is uit online of kaartbetalingen.",
         "last-paid": "Laatst betaald: {date}",
         "never": "Nooit",
@@ -703,7 +730,10 @@
         "entry-ride_credit": "Rit",
         "entry-settlement": "Afrekening",
         "entry-opening_balance": "Beginsaldo",
-        "entry-clawback": "Terugboeking"
+        "entry-clawback": "Terugboeking",
+        "payout-summary-owed": "De operator is u dit bedrag schuldig.",
+        "payout-summary-due": "U bent de operator dit bedrag schuldig.",
+        "payout-summary-even": "Er staat niets open."
       },
       "Fleet": {
         "fleet-management": "Wagenparkbeheer",
@@ -1681,8 +1711,8 @@
     "trip-id": "Rit-ID:",
     "amount": "Bedrag:",
     "payment-method": "Betaalmethode:",
-    "confirmation-email-sent": "Bevestigingsmail Verzonden",
-    "we-and-apos-ve-sent-a-confirmation-email-with-all-your-booking-details-please-check-your-inbox-and-spam-folder": "We hebben een bevestigingsmail gestuurd met al uw boekingsdetails. Controleer uw inbox en spamfolder.",
+    "confirmation-email-sent": "Controleer de bevestigingsmail",
+    "we-and-apos-ve-sent-a-confirmation-email-with-all-your-booking-details-please-check-your-inbox-and-spam-folder": "Een bevestiging gaat weg wanneer e-mail aanstaat. Controleer inbox en spam.",
     "need-help": "Hulp Nodig?",
     "contact-our-24-7-support-team-at": "Neem 24/7 contact op met ons supportteam via",
     "or": "of",
@@ -1690,7 +1720,8 @@
     "return-to-home": "Terug naar Startpagina",
     "seconds": "seconden",
     "request-received-title": "Verzoek ontvangen",
-    "request-received-body": "Wij werken op afspraak. We bevestigen beschikbaarheid en mailen de vervolgstappen. Dit is nog geen boekingsbevestiging."
+    "request-received-body": "Wij werken op afspraak. We bevestigen beschikbaarheid en mailen de vervolgstappen. Dit is nog geen boekingsbevestiging.",
+    "contact-operator": "Neem contact op met de operator als u deze rit wilt wijzigen."
   },
   "Driver": {
     "failed-to-fetch-drivers": "Ophalen chauffeurs mislukt",
@@ -1791,7 +1822,15 @@
     "action-completed": "Voltooid",
     "action-no_show": "Niet verschenen",
     "call": "Bellen",
-    "apple-maps": "Apple Kaarten"
+    "apple-maps": "Apple Kaarten",
+    "time-off-title": "Vrij",
+    "time-off-start": "Start",
+    "time-off-end": "Einde",
+    "time-off-note": "Notitie",
+    "time-off-save": "Deze uren blokkeren",
+    "time-off-saved": "Vrij opgeslagen.",
+    "time-off-invalid": "Het einde moet na de start liggen.",
+    "time-off-help": "In deze periode krijgt u geen ritten toegewezen."
   },
   "Stripe": {
     "payment-system-not-ready-please-refresh-the-page": "Betaalsysteem niet gereed. Vernieuw de pagina.",
@@ -2001,7 +2040,8 @@
       "cover_kicker": "Opdrachten",
       "cover_title": "Sluit u aan bij de chauffeurs van deze operator.",
       "cover_body": "Maak een account en wacht op een toegewezen rit.",
-      "phone": "Mobiel nummer"
+      "phone": "Mobiel nummer",
+      "phone_invalid": "Vul een mobiel nummer met landcode in, bijvoorbeeld +14155552671."
     },
     "PartnerSignIn": {
       "title": "Partner aanmelden",
@@ -2035,7 +2075,8 @@
       "hide_password": "Wachtwoord verbergen",
       "cover_kicker": "Affiliate-balie",
       "cover_title": "Sluit aan bij de overflow van deze exploitant.",
-      "cover_body": "Eén bedrijf, gedeelde vlootcategorieën — geen marktplaats."
+      "cover_body": "Eén bedrijf, gedeelde vlootcategorieën — geen marktplaats.",
+      "phone_invalid": "Vul een mobiel nummer met landcode in, bijvoorbeeld +14155552671."
     }
   },
   "AppError": {
@@ -2098,7 +2139,12 @@
     "load-error": "De kalender kon niet worden geladen. Probeer opnieuw.",
     "empty": "Niets gepland in deze periode.",
     "time-off": "Vrij",
-    "unassigned": "Niet toegewezen"
+    "unassigned": "Niet toegewezen",
+    "feed-create": "Privéfeed maken",
+    "feed-revoke": "Feed intrekken",
+    "feed-ready": "Privéfeed klaar",
+    "feed-revoked": "Feed ingetrokken.",
+    "feed-error": "Feed kon niet worden bijgewerkt. Probeer opnieuw."
   },
   "Phone": {
     "missing": "Voeg een mobiel nummer in internationaal formaat toe voordat u ritten aanneemt.",

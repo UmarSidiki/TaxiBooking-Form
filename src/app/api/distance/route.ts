@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { parseJsonBody } from "@/shared/http/parse-json-body";
 import { jsonError } from "@/shared/http/json-error";
+import { mockDistancePayload } from "@/features/booking/lib/mock-distance";
 import { distanceRequestSchema } from "@/features/booking/schema/checkout.schema";
 
 export const dynamic = "force-dynamic";
@@ -22,6 +23,11 @@ export async function POST(request: NextRequest) {
 
     const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
     if (!apiKey) {
+      if (process.env.DISTANCE_MOCK === "1") {
+        return NextResponse.json(
+          mockDistancePayload({ origin, destination, stops, isRoundTrip: Boolean(isRoundTrip) }),
+        );
+      }
       return jsonError("maps_not_configured", 500);
     }
 

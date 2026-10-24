@@ -58,7 +58,7 @@ function LanguageSwitcherComponent() {
         >
           <Globe className="h-5 w-5 text-primary" />
           <span className="font-medium">{languages[locale]}</span>
-          <div className="ml-auto text-xs text-muted-foreground bg-muted px-2 py-1 rounded">
+          <div className="ml-auto rounded bg-muted px-2 py-1 text-sm text-foreground">
             {locale.toUpperCase()}
           </div>
         </Button>

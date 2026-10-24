@@ -29,28 +29,36 @@ export function CalendarMonthGrid({ rides, label }: { rides: Ride[]; label: stri
   const pad = (first.getDay() + 6) % 7;
   const count = new Date(year, month + 1, 0).getDate();
   const cells = [...Array(pad).fill(null), ...Array.from({ length: count }, (_, index) => index + 1)];
+  const weeks: Array<Array<number | null>> = [];
+  for (let index = 0; index < cells.length; index += 7) weeks.push(cells.slice(index, index + 7));
 
   return (
     <div role="grid" aria-label={label} className="grid grid-cols-7 gap-px overflow-hidden rounded-md border border-border bg-border">
-      {WEEKDAYS.map((day) => (
-        <div key={day} role="columnheader" className="bg-muted px-2 py-2 text-xs font-medium">
-          {day}
+      <div role="row" className="contents">
+        {WEEKDAYS.map((day) => (
+          <div key={day} role="columnheader" className="bg-muted px-2 py-2 text-sm font-medium text-foreground">
+            {day}
+          </div>
+        ))}
+      </div>
+      {weeks.map((week, weekIndex) => (
+        <div key={weekIndex} role="row" className="contents">
+          {week.map((day, index) => {
+            const stamp = typeof day === "number" ? localStamp(year, month, day) : "";
+            const items = rides.filter((ride) => ride.date === stamp);
+            return (
+              <div key={stamp || `empty-${weekIndex}-${index}`} role="gridcell" className="min-h-24 bg-card p-1">
+                <p className="text-sm text-foreground">{day ?? ""}</p>
+                {items.map((ride) => (
+                  <p key={ride._id} className="truncate text-sm font-medium">
+                    {ride.time} {ride.pickup}
+                  </p>
+                ))}
+              </div>
+            );
+          })}
         </div>
       ))}
-      {cells.map((day, index) => {
-        const stamp = typeof day === "number" ? localStamp(year, month, day) : "";
-        const items = rides.filter((ride) => ride.date === stamp);
-        return (
-          <div key={stamp || `empty-${index}`} role="gridcell" className="min-h-24 bg-card p-1">
-            <p className="text-xs text-muted-foreground">{day ?? ""}</p>
-            {items.map((ride) => (
-              <p key={ride._id} className="truncate text-xs font-medium">
-                {ride.time} {ride.pickup}
-              </p>
-            ))}
-          </div>
-        );
-      })}
     </div>
   );
 }
@@ -76,12 +84,14 @@ export function CalendarTimeGrid({
         className="grid min-w-[40rem]"
         style={{ gridTemplateColumns: `4rem repeat(${days}, minmax(0, 1fr))` }}
       >
-        <div className="bg-muted" />
-        {columns.map((stamp) => (
-          <div key={stamp} role="columnheader" className="border-s border-border bg-muted px-2 py-2 text-xs font-medium">
-            {stamp.slice(5)}
-          </div>
-        ))}
+        <div role="row" className="contents">
+          <div className="bg-muted" />
+          {columns.map((stamp) => (
+            <div key={stamp} role="columnheader" className="border-s border-border bg-muted px-2 py-2 text-sm font-medium text-foreground">
+              {stamp.slice(5)}
+            </div>
+          ))}
+        </div>
         {HOURS.map((hour) => (
           <HourRow key={hour} hour={hour} columns={columns} rides={rides} />
         ))}
@@ -101,20 +111,20 @@ function HourRow({
 }) {
   const label = `${String(hour).padStart(2, "0")}:00`;
   return (
-    <>
-      <div className="border-t border-border px-2 py-2 text-xs text-muted-foreground">{label}</div>
+    <div role="row" className="contents">
+      <div className="border-t border-border px-2 py-2 text-sm text-foreground">{label}</div>
       {columns.map((stamp) => {
         const items = rides.filter((ride) => ride.date === stamp && Number(ride.time.slice(0, 2)) === hour);
         return (
           <div key={`${stamp}-${hour}`} role="gridcell" className="min-h-11 border-s border-t border-border p-1">
             {items.map((ride) => (
-              <p key={ride._id} className="truncate text-xs font-medium">
+              <p key={ride._id} className="truncate text-sm font-medium">
                 {ride.time} {ride.pickup}
               </p>
             ))}
           </div>
         );
       })}
-    </>
+    </div>
   );
 }

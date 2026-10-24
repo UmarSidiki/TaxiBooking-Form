@@ -60,7 +60,7 @@ export function EmbeddableV1RouteFields({
                     key={type}
                     type="button"
                     onClick={() => setBookingType(type)}
-                    className={`flex-1 rounded-md px-2 py-1.5 md:px-3 md:py-2 transition-all duration-300 flex items-center justify-center gap-1.5 ${
+                    className={`flex min-h-11 flex-1 items-center justify-center gap-1.5 rounded-md px-2 transition-colors duration-300 md:px-3 ${
                       formData.bookingType === type
                         ? "bg-gradient-to-r from-primary/80 to-primary text-white shadow-sm"
                         : "text-slate-600 hover:text-slate-800 hover:bg-slate-100"
@@ -246,7 +246,7 @@ export function EmbeddableV1RouteFields({
                     <button
                       type="button"
                       onClick={() => setTripType("oneway")}
-                      className={`flex-1 rounded-md px-2 py-1.5 md:px-3 md:py-2 transition-all duration-300 flex items-center justify-center gap-1.5 ${
+                      className={`flex min-h-11 flex-1 items-center justify-center gap-1.5 rounded-md px-2 transition-colors duration-300 md:px-3 ${
                         formData.tripType === "oneway"
                           ? "bg-white shadow-sm text-slate-800"
                           : "text-slate-600 hover:text-slate-800 hover:bg-slate-100"
@@ -258,7 +258,7 @@ export function EmbeddableV1RouteFields({
                     <button
                       type="button"
                       onClick={() => setTripType("roundtrip")}
-                      className={`flex-1 rounded-md px-2 py-1.5 md:px-3 md:py-2 transition-all duration-300 flex items-center justify-center gap-1.5 ${
+                      className={`flex min-h-11 flex-1 items-center justify-center gap-1.5 rounded-md px-2 transition-colors duration-300 md:px-3 ${
                         formData.tripType === "roundtrip"
                           ? "bg-white shadow-sm text-slate-800"
                           : "text-slate-600 hover:text-slate-800 hover:bg-slate-100"

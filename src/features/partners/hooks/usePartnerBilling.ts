@@ -117,6 +117,7 @@ export function usePartnerBilling() {
     t,
     currency,
     formState,
+    payoutBalance,
     formattedBalance,
     formattedLastPaid,
     statement,

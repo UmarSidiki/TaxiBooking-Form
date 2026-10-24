@@ -42,22 +42,22 @@ export function AdminHomeBookingStats({
   stats: DashboardStats;
 }) {
   return (
-    <dl className="grid grid-cols-2 gap-3 xl:grid-cols-4">
+    <div className="grid grid-cols-2 gap-3 xl:grid-cols-4">
       {STATS.map((item) => (
         <Card key={item.key} className="desk-card border-border/60">
           <CardContent className="flex items-center justify-between gap-3 p-3.5">
             <div className="min-w-0">
-              <dt className="truncate text-xs font-medium text-muted-foreground">
+              <p className="truncate text-sm font-medium text-foreground">
                 {item.label(t)}
-              </dt>
-              <dd className="text-xl font-semibold tabular-nums text-foreground">
+              </p>
+              <p className="text-xl font-semibold tabular-nums text-foreground">
                 {item.value(stats)}
-              </dd>
+              </p>
             </div>
             <item.icon className="size-5 shrink-0 text-primary" aria-hidden="true" />
           </CardContent>
         </Card>
       ))}
-    </dl>
+    </div>
   );
 }

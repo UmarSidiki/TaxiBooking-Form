@@ -8,13 +8,21 @@ type TFn = ReturnType<typeof useTranslations<"Dashboard.Partners.Billing">>;
 
 export function PartnerBillingSummary({
   t,
+  balance,
   formattedBalance,
   formattedLastPaid,
 }: {
   t: TFn;
+  balance: number;
   formattedBalance: string;
   formattedLastPaid: string;
 }) {
+  const description =
+    balance > 0
+      ? t("payout-summary-owed")
+      : balance < 0
+        ? t("payout-summary-due")
+        : t("payout-summary-even");
   return (
     <div className="grid gap-6 md:grid-cols-2">
       <Card className="desk-card border-border">
@@ -24,7 +32,7 @@ export function PartnerBillingSummary({
         </CardHeader>
         <CardContent>
           <div className="text-3xl font-semibold tracking-tight">{formattedBalance}</div>
-          <p className="mt-1 text-xs text-muted-foreground">{t("payout-summary-description")}</p>
+          <p className="mt-1 text-sm text-muted-foreground">{description}</p>
           <p className="mt-4 text-sm text-muted-foreground">{t("last-paid", { date: formattedLastPaid })}</p>
         </CardContent>
       </Card>

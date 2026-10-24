@@ -3,6 +3,7 @@
 import { PartnerDashboardAvailable } from "@/features/partners/ui/partner-dashboard-available";
 import { PartnerDashboardNotices } from "@/features/partners/ui/partner-dashboard-notices";
 import { PartnerDashboardStats } from "@/features/partners/ui/partner-dashboard-stats";
+import { partnerDeskOpen } from "@/features/partners/lib/partner-desk-open";
 import { usePartnerDashboard } from "@/features/partners/hooks/usePartnerDashboard";
 import { DeskPageMeta } from "@/features/dashboard/ui/desk-page-chrome";
 import { PhoneRequiredNotice } from "@/features/auth/ui/phone-required-notice";
@@ -46,7 +47,7 @@ export function PartnerDashboard() {
     );
   }
 
-  const isApproved = partner.status === "approved";
+  const isApproved = partnerDeskOpen(partner.status);
 
   return (
     <div className="flex flex-col gap-6">
@@ -71,7 +72,7 @@ export function PartnerDashboard() {
         <PartnerDashboardStats t={t} stats={stats} currencySymbol={currencySymbol} />
       ) : null}
       <PartnerDashboardNotices t={t} isApproved={isApproved} fleetInfo={fleetInfo} />
-      {isApproved && fleetInfo?.fleetStatus === "approved" ? (
+      {isApproved ? (
         <PartnerDashboardAvailable
           t={t}
           rides={availableRides}

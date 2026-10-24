@@ -52,6 +52,16 @@ async function run(input: { action: BookingPatchAction; before: IBooking; after:
     }
   }
 
+  if (input.action === "edit") {
+    const people = await phonesForAssignees({
+      driverId: idOf(input.after.assignedDriver),
+      partnerId: idOf(input.after.assignedPartner),
+    });
+    const recipients = [people.driver, people.partner].filter(Boolean) as NoticeRecipient[];
+    queueAssigneeNotice({ kind: "changed", recipients, ride });
+    return;
+  }
+
   if (input.action === "assignpartner" && input.after.assignedPartner) {
     const nextId = idOf(input.after.assignedPartner);
     const prevId = idOf(input.before.assignedPartner);

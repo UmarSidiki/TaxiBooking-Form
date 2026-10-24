@@ -10,6 +10,7 @@ export const BOOKING_PATCH_ACTIONS = [
   "quote",
   "confirmcash",
   "decline",
+  "edit",
 ] as const;
 
 export const bookingPatchActionSchema = z.enum(BOOKING_PATCH_ACTIONS);
@@ -26,6 +27,15 @@ export const bookingPatchBodySchema = z.object({
   notifyPartners: z.boolean().optional(),
   quotedAmount: z.coerce.number().min(0).optional(),
   declineReason: z.string().max(500).optional(),
+  edit: z
+    .object({
+      pickup: z.string().trim().min(1).max(300).optional(),
+      dropoff: z.string().trim().max(300).optional(),
+      date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
+      time: z.string().regex(/^\d{2}:\d{2}$/).optional(),
+      notes: z.string().max(1000).optional(),
+    })
+    .optional(),
 });
 
 export type BookingPatchBody = z.infer<typeof bookingPatchBodySchema> & {

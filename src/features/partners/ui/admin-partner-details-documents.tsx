@@ -52,7 +52,7 @@ export function AdminPartnerDetailsDocuments({
   return (
     <div className="space-y-3">
       <h3 className="font-semibold">
-        {t("documents-count", { 0: selectedPartner.documents.length })}
+        {t("documents-count", { 0: selectedPartner.documents?.length ?? 0 })}
       </h3>
       {openingId ? (
         <p className="text-sm text-muted-foreground" role="status">
@@ -64,11 +64,11 @@ export function AdminPartnerDetailsDocuments({
           {openError}
         </p>
       ) : null}
-      {selectedPartner.documents.length === 0 ? (
+      {(selectedPartner.documents?.length ?? 0) === 0 ? (
         <p className="text-sm text-muted-foreground">{t("no-documents-uploaded")}</p>
       ) : (
         <div className="space-y-2">
-          {selectedPartner.documents.map((doc, index) => (
+          {(selectedPartner.documents ?? []).map((doc, index) => (
             <div
               key={doc._id ?? index}
               className="flex flex-col gap-3 rounded-md border border-border p-3 sm:flex-row sm:items-center"

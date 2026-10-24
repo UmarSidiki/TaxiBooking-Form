@@ -192,7 +192,7 @@ function AssignChip({
       <Button
         size="sm"
         variant={assigned ? "outline" : "default"}
-        className="h-9 shrink-0 rounded-lg"
+        className="h-11 shrink-0 rounded-lg"
         onClick={onClick}
       >
         <Icon className="size-4" aria-hidden="true" />

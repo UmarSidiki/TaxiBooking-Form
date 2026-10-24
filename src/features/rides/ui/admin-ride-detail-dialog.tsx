@@ -8,6 +8,10 @@ import type { IBooking } from "@/features/booking/model";
 import type { AdminRideReview } from "@/features/rides/hooks/useAdminRides";
 import type { useTranslations } from "next-intl";
 import { Info } from "lucide-react";
+import { useState } from "react";
+import { Button } from "@/shared/ui/button";
+import { AdminRideActivity } from "./admin-ride-activity";
+import { AdminRideEditDialog } from "./admin-ride-edit-dialog";
 import { AdminRideDetailAssignment } from "./admin-ride-detail-assignment";
 import { AdminRideDetailBilling } from "./admin-ride-detail-billing";
 import { AdminRideDetailCustomer } from "./admin-ride-detail-customer";
@@ -22,6 +26,7 @@ export function AdminRideDetailDialog({
   setDetailBooking,
   isBookingPassed,
   bookingReviews,
+  onUpdated,
 }: {
   t: ReturnType<typeof useTranslations>;
   currencySymbol: string;
@@ -29,7 +34,9 @@ export function AdminRideDetailDialog({
   setDetailBooking: (booking: IBooking | null) => void;
   isBookingPassed: (dateStr: string, timeStr: string) => boolean;
   bookingReviews: Record<string, AdminRideReview | null>;
+  onUpdated?: (notice: string) => void;
 }) {
+  const [editing, setEditing] = useState(false);
   return (
     <>
       {/* Detail Dialog */}
@@ -45,6 +52,18 @@ export function AdminRideDetailDialog({
           {detailBooking ? (
             <div className="space-y-6">
               <AdminRideDetailHeader booking={detailBooking} t={t} />
+              <Button type="button" variant="outline" className="h-11" onClick={() => setEditing(true)}>
+                {t("Dashboard.Rides.edit-ride")}
+              </Button>
+              {detailBooking._id ? (
+                <AdminRideActivity key={String(detailBooking._id)} bookingId={String(detailBooking._id)} />
+              ) : null}
+              <AdminRideEditDialog
+                booking={detailBooking}
+                open={editing}
+                onOpenChange={setEditing}
+                onSaved={(notice) => onUpdated?.(notice)}
+              />
 
               <div className="grid gap-6 md:grid-cols-2">
                 {/* Journey Details */}

@@ -487,7 +487,31 @@
       "create-booking": "إنشاء الحجز",
       "booking-created": "تم إنشاء الحجز {tripId}",
       "NoAwaitingPayment": "لا توجد عروض بانتظار الدفع",
-      "NoAwaitingPaymentDescription": "تبقى الطلبات المسعّرة هنا حتى يدفع العميل."
+      "NoAwaitingPaymentDescription": "تبقى الطلبات المسعّرة هنا حتى يدفع العميل.",
+      "overlap-notice": "تم التعيين. يتداخل مع {trip} عند {time}.",
+      "partner-overlap-notice": "تم تعيين الشريك. يتداخل مع {trip} عند {time}.",
+      "driver-time-off": "هذا السائق في إجازة في وقت الالتقاط. اختر سائقًا آخر.",
+      "edit-ride": "تعديل الرحلة",
+      "edit-saved": "تم تحديث الرحلة.",
+      "edit-failed": "تعذر تحديث الرحلة. راجع الحقول ثم أعد المحاولة.",
+      "activity": "نشاط الرحلة",
+      "activity-empty": "لا نشاط بعد.",
+      "activity-loading": "جارٍ تحميل النشاط…",
+      "save-ride": "حفظ الرحلة",
+      "ride-notes": "ملاحظات",
+      "quote-link-ready": "رابط الدفع جاهز: {url}",
+      "quote-link-email-failed": "تم حفظ العرض. فشل البريد، انسخ هذا الرابط: {url}",
+      "activity-assigned": "تم التعيين",
+      "activity-claimed": "تم القبول",
+      "activity-started": "بدأت",
+      "activity-completed": "اكتملت",
+      "activity-no_show": "لم يحضر",
+      "activity-cancelled": "أُلغيت",
+      "activity-edited": "عُدّلت",
+      "activity-approved": "وُوفق عليها للشركاء",
+      "activity-quoted": "تم التسعير",
+      "activity-confirmed": "أُكدت نقدًا",
+      "activity-declined": "رُفضت"
     },
     "Home": {
       "failed-to-fetch-dashboard-stats": "فشل جلب إحصائيات لوحة التحكم",
@@ -637,7 +661,10 @@
         "your-payout": "مستحقاتك",
         "retry": "إعادة المحاولة",
         "load-error": "تعذر تحميل الرحلات. حاول مرة أخرى.",
-        "customer-review": "تقييم العميل"
+        "customer-review": "تقييم العميل",
+        "mark-completed": "تعليم كمكتملة",
+        "completing": "جارٍ الإكمال…",
+        "complete-failed": "تعذر إكمال هذه الرحلة. أعد المحاولة."
       },
       "Sidebar": {
         "partner-portal": "بوابة الشركاء",
@@ -661,7 +688,7 @@
       "Billing": {
         "title": "الفواتير والتفاصيل البنكية",
         "description": "قدم تفاصيل الدفع الخاصة بك ليعرف المسؤولون أين يرسلون أرباحك.",
-        "payout-summary-title": "الدفعات المستحقة",
+        "payout-summary-title": "الرصيد",
         "payout-summary-description": "المبلغ المستحق لك حاليًا من المدفوعات عبر الإنترنت أو البطاقات.",
         "last-paid": "آخر دفعة: {date}",
         "never": "أبداً",
@@ -703,7 +730,10 @@
         "entry-ride_credit": "رحلة",
         "entry-settlement": "تسوية",
         "entry-opening_balance": "رصيد افتتاحي",
-        "entry-clawback": "عكس"
+        "entry-clawback": "عكس",
+        "payout-summary-owed": "المشغّل مدين لك بهذا المبلغ.",
+        "payout-summary-due": "أنت مدين للمشغّل بهذا المبلغ.",
+        "payout-summary-even": "لا يوجد مبلغ مستحق."
       },
       "Fleet": {
         "fleet-management": "إدارة الأسطول",
@@ -1681,8 +1711,8 @@
     "trip-id": "رقم الرحلة:",
     "amount": "المبلغ:",
     "payment-method": "طريقة الدفع:",
-    "confirmation-email-sent": "تم إرسال بريد التأكيد",
-    "we-and-apos-ve-sent-a-confirmation-email-with-all-your-booking-details-please-check-your-inbox-and-spam-folder": "لقد أرسلنا بريدًا إلكترونيًا لتأكيد الحجز بجميع التفاصيل. يرجى التحقق من صندوق الوارد ومجلد الرسائل غير المرغوب فيها (Spam).",
+    "confirmation-email-sent": "ابحث عن رسالة التأكيد",
+    "we-and-apos-ve-sent-a-confirmation-email-with-all-your-booking-details-please-check-your-inbox-and-spam-folder": "يُرسل التأكيد عند تفعيل البريد. راجع الوارد والبريد غير المرغوب.",
     "need-help": "تحتاج مساعدة؟",
     "contact-our-24-7-support-team-at": "اتصل بفريق الدعم 24/7 على",
     "or": "أو",
@@ -1690,7 +1720,8 @@
     "return-to-home": "العودة للصفحة الرئيسية",
     "seconds": "ثوانٍ",
     "request-received-title": "تم استلام الطلب",
-    "request-received-body": "نعمل بالمواعيد. سنؤكد التوفر ونرسل لك الخطوات التالية. هذا ليس تأكيد حجز بعد."
+    "request-received-body": "نعمل بالمواعيد. سنؤكد التوفر ونرسل لك الخطوات التالية. هذا ليس تأكيد حجز بعد.",
+    "contact-operator": "تواصل مع المشغّل إذا احتجت لتغيير هذه الرحلة."
   },
   "Driver": {
     "failed-to-fetch-drivers": "فشل جلب السائقين",
@@ -1791,7 +1822,15 @@
     "action-completed": "اكتملت",
     "action-no_show": "لم يحضر",
     "call": "اتصال",
-    "apple-maps": "خرائط آبل"
+    "apple-maps": "خرائط آبل",
+    "time-off-title": "إجازة",
+    "time-off-start": "تبدأ",
+    "time-off-end": "تنتهي",
+    "time-off-note": "ملاحظة",
+    "time-off-save": "حظر هذه الساعات",
+    "time-off-saved": "تم حفظ الإجازة.",
+    "time-off-invalid": "يجب أن تكون النهاية بعد البداية.",
+    "time-off-help": "لن تُسند إليك رحلات خلال هذه المدة."
   },
   "Stripe": {
     "payment-system-not-ready-please-refresh-the-page": "نظام الدفع غير جاهز. يرجى تحديث الصفحة.",
@@ -2001,7 +2040,8 @@
       "cover_kicker": "التعيينات",
       "cover_title": "انضم إلى سائقي هذا المشغّل.",
       "cover_body": "أنشئ حسابًا ثم انتظر رحلة معيّنة.",
-      "phone": "رقم الجوال"
+      "phone": "رقم الجوال",
+      "phone_invalid": "أدخل رقم جوال مع رمز الدولة، مثل +14155552671."
     },
     "PartnerSignIn": {
       "title": "دخول الشريك",
@@ -2035,7 +2075,8 @@
       "hide_password": "إخفاء كلمة المرور",
       "cover_kicker": "مكتب الشريك",
       "cover_title": "انضم إلى فائض هذا المشغّل.",
-      "cover_body": "شركة واحدة وفئات أسطول مشتركة — وليست سوقًا لعلامات متعددة."
+      "cover_body": "شركة واحدة وفئات أسطول مشتركة — وليست سوقًا لعلامات متعددة.",
+      "phone_invalid": "أدخل رقم جوال مع رمز الدولة، مثل +14155552671."
     }
   },
   "AppError": {
@@ -2098,7 +2139,12 @@
     "load-error": "تعذر تحميل التقويم. حاول مرة أخرى.",
     "empty": "لا شيء مجدول في هذه الفترة.",
     "time-off": "إجازة",
-    "unassigned": "غير معيّن"
+    "unassigned": "غير معيّن",
+    "feed-create": "إنشاء موجز خاص",
+    "feed-revoke": "إلغاء الموجز",
+    "feed-ready": "الموجز الخاص جاهز",
+    "feed-revoked": "تم إلغاء الموجز.",
+    "feed-error": "تعذر تحديث الموجز. أعد المحاولة."
   },
   "Phone": {
     "missing": "أضف رقم جوال بالصيغة الدولية قبل قبول الرحلات.",

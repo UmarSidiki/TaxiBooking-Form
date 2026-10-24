@@ -1,8 +1,12 @@
 import { readWhatsAppLinked } from "@/features/settings/lib/whatsapp-mongo-auth";
+import { qaWhatsAppMockEnabled } from "@/features/settings/lib/whatsapp-outbox";
 import { openWhatsAppSocket, waitForOpen } from "@/features/settings/lib/whatsapp-socket";
 
 /** If WhatsApp is not linked, the phone is still valid and stays unverified. */
 export async function checkWhatsAppNumber(e164: string) {
+  if (qaWhatsAppMockEnabled()) {
+    return { connected: true as const, onWhatsApp: true };
+  }
   const linked = await readWhatsAppLinked();
   if (!linked) return { connected: false as const, onWhatsApp: null };
 

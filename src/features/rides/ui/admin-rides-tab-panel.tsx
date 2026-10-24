@@ -61,7 +61,7 @@ export function AdminRidesTabPanel({
           <Button
             onClick={fetchBookings}
             variant="outline"
-            className="mt-1 h-10 rounded-xl"
+            className="mt-1 h-11 rounded-xl"
           >
             <RefreshCw className="size-4" aria-hidden="true" />
             {t("Dashboard.Rides.Refresh")}

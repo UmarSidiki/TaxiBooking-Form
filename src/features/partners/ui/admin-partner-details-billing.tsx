@@ -76,6 +76,7 @@ export function AdminPartnerDetailsBilling({
         <PartnerBillingStatement
           lines={lines}
           emptyLabel={t("empty-ledger")}
+          regionLabel={t("tab-billing")}
           columns={[t("col-when"), t("col-fare"), t("col-margin"), t("col-share"), t("col-change"), t("col-balance")]}
           entryLabel={(type) => settlementLabel(t, type)}
           formatMoney={(amount) => (typeof amount === "number" ? formatCurrency(amount) : "—")}

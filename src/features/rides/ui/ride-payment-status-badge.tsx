@@ -11,35 +11,31 @@ export function RidePaymentStatusBadge({ status }: { status: string }) {
   switch (status) {
     case 'completed':
       return (
-        <Badge className={`${BADGE_CLASSES} bg-primary text-primary-foreground hover:bg-primary/90`}>
+        <Badge variant="default" className={BADGE_CLASSES}>
           <CheckCircle className="w-3 h-3" /> {t('Dashboard.Rides.Paid')}
         </Badge>
       );
     case 'pending':
       return (
-        <Badge className={`${BADGE_CLASSES} bg-secondary hover:bg-secondary/90`}>
+        <Badge variant="secondary" className={BADGE_CLASSES}>
           <Clock className="w-3 h-3" /> {t('Dashboard.Rides.Pending')}
         </Badge>
       );
     case 'refunded':
       return (
-        <Badge className={`${BADGE_CLASSES} bg-primary text-primary-foreground hover:bg-primary/90`}>
+        <Badge variant="default" className={BADGE_CLASSES}>
           <RefreshCw className="w-3 h-3" /> {t('Dashboard.Rides.Refunded')}
         </Badge>
       );
     case 'failed':
       return (
-        <Badge
-          className={`${BADGE_CLASSES} bg-destructive hover:bg-destructive/90`}
-        >
+        <Badge variant="destructive" className={BADGE_CLASSES}>
           <X className="w-3 h-3" /> {t('Dashboard.Rides.Failed')}
         </Badge>
       );
     default:
       return (
-        <Badge
-          className={`${BADGE_CLASSES} bg-muted hover:bg-muted/90 text-muted-foreground`}
-        >
+        <Badge variant="outline" className={`${BADGE_CLASSES} bg-muted text-foreground`}>
           {status}
         </Badge>
       );

@@ -13,6 +13,8 @@ import { queueBookingWhatsApp } from '@/features/settings/lib/queue-booking-what
 import { sendReassignmentEmails } from '@/features/booking/lib/send-reassignment-emails';
 import { sendAppointmentPatchEmails } from '@/features/booking/lib/send-appointment-patch-emails';
 import { absoluteHttpBase } from '@/features/booking/lib/booking-mail-url';
+import { quotePayUrl } from '@/features/booking/lib/quote-pay-url';
+import { notePatchActivity } from '@/features/booking/lib/note-patch-activity';
 import {
   parseBookingPatchBody,
   type BookingPatchAction,
@@ -26,13 +28,15 @@ export type PatchBookingResult =
       action: BookingPatchAction;
       /** Set when the booking was updated but a follow-up notification failed. */
       warn?: string;
+      payUrl?: string;
     }
   | { ok: false; status: number; message: string };
 
 export async function patchBooking(
   id: string,
   body: unknown,
-  baseUrl?: string
+  baseUrl?: string,
+  actor?: { id: string; role: "admin" | "driver" | "partner" | "system" },
 ): Promise<PatchBookingResult> {
   await connectDB();
 
@@ -134,6 +138,8 @@ export async function patchBooking(
     console.error('Booking updated but notification failed:', id, warn);
   }
 
+  await notePatchActivity(parsed.data.action, id, actor);
+
   if (parsed.data.action === 'approvepartner') {
     const shouldNotify = parsed.data.notifyPartners !== false;
     if (shouldNotify) {
@@ -164,5 +170,10 @@ export async function patchBooking(
     await clawbackPartnerSettlementsForBooking(booking);
   }
 
-  return { ok: true, booking: updatedBooking, action: parsed.data.action, warn };
+  const payUrl =
+    parsed.data.action === "quote"
+      ? quotePayUrl(baseUrl, updatedBooking.locale, applied.paymentToken)
+      : undefined;
+
+  return { ok: true, booking: updatedBooking, action: parsed.data.action, warn, payUrl };
 }

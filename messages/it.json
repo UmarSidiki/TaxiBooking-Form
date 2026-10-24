@@ -487,7 +487,31 @@
       "create-booking": "Crea prenotazione",
       "booking-created": "Prenotazione {tripId} creata",
       "NoAwaitingPayment": "Nessun preventivo in attesa di pagamento",
-      "NoAwaitingPaymentDescription": "Le richieste preventivate restano qui finché il cliente non paga."
+      "NoAwaitingPaymentDescription": "Le richieste preventivate restano qui finché il cliente non paga.",
+      "overlap-notice": "Assegnata. Si sovrappone a {trip} alle {time}.",
+      "partner-overlap-notice": "Partner assegnato. Si sovrappone a {trip} alle {time}.",
+      "driver-time-off": "Questo autista è in ferie per quel prelievo. Scegline un altro.",
+      "edit-ride": "Modifica corsa",
+      "edit-saved": "Corsa aggiornata.",
+      "edit-failed": "Impossibile aggiornare la corsa. Controlla i campi e riprova.",
+      "activity": "Attività della corsa",
+      "activity-empty": "Nessuna attività ancora.",
+      "activity-loading": "Caricamento attività…",
+      "save-ride": "Salva corsa",
+      "ride-notes": "Note",
+      "quote-link-ready": "Link di pagamento pronto: {url}",
+      "quote-link-email-failed": "Preventivo salvato. Email non inviata, copia questo link: {url}",
+      "activity-assigned": "Assegnata",
+      "activity-claimed": "Presa in carico",
+      "activity-started": "Avviata",
+      "activity-completed": "Completata",
+      "activity-no_show": "Assente",
+      "activity-cancelled": "Annullata",
+      "activity-edited": "Modificata",
+      "activity-approved": "Approvata per i partner",
+      "activity-quoted": "Preventivata",
+      "activity-confirmed": "Confermata in contanti",
+      "activity-declined": "Rifiutata"
     },
     "Home": {
       "failed-to-fetch-dashboard-stats": "Impossibile recuperare statistiche dashboard",
@@ -637,7 +661,10 @@
         "your-payout": "Il Tuo Compenso",
         "retry": "Riprova",
         "load-error": "Impossibile caricare le corse. Riprova.",
-        "customer-review": "Recensione del cliente"
+        "customer-review": "Recensione del cliente",
+        "mark-completed": "Segna completata",
+        "completing": "Completamento…",
+        "complete-failed": "Impossibile completare questa corsa. Riprova."
       },
       "Sidebar": {
         "partner-portal": "Portale Partner",
@@ -661,7 +688,7 @@
       "Billing": {
         "title": "Fatturazione e Dettagli Bancari",
         "description": "Fornisci i dettagli per i pagamenti affinché gli admin sappiano dove inviare i tuoi guadagni.",
-        "payout-summary-title": "Pagamento in sospeso",
+        "payout-summary-title": "Saldo",
         "payout-summary-description": "Importo attualmente dovuto a te da pagamenti online o con carta.",
         "last-paid": "Ultimo pagamento: {date}",
         "never": "Mai",
@@ -703,7 +730,10 @@
         "entry-ride_credit": "Corsa",
         "entry-settlement": "Regolamento",
         "entry-opening_balance": "Saldo iniziale",
-        "entry-clawback": "Storno"
+        "entry-clawback": "Storno",
+        "payout-summary-owed": "L’operatore ti deve questo importo.",
+        "payout-summary-due": "Devi questo importo all’operatore.",
+        "payout-summary-even": "Non c’è nulla da saldare."
       },
       "Fleet": {
         "fleet-management": "Gestione Flotta",
@@ -1681,8 +1711,8 @@
     "trip-id": "ID Viaggio:",
     "amount": "Importo:",
     "payment-method": "Metodo di Pagamento:",
-    "confirmation-email-sent": "Email di Conferma Inviata",
-    "we-and-apos-ve-sent-a-confirmation-email-with-all-your-booking-details-please-check-your-inbox-and-spam-folder": "Abbiamo inviato un'email di conferma con tutti i dettagli della prenotazione. Controlla la tua casella di posta e la cartella spam.",
+    "confirmation-email-sent": "Controlla l’email di conferma",
+    "we-and-apos-ve-sent-a-confirmation-email-with-all-your-booking-details-please-check-your-inbox-and-spam-folder": "La conferma parte quando l’email è attiva. Controlla posta in arrivo e spam.",
     "need-help": "Serve Aiuto?",
     "contact-our-24-7-support-team-at": "Contatta il nostro team di supporto 24/7 a",
     "or": "o",
@@ -1690,7 +1720,8 @@
     "return-to-home": "Torna alla Home",
     "seconds": "secondi",
     "request-received-title": "Richiesta ricevuta",
-    "request-received-body": "Lavoriamo su appuntamento. Confermeremo la disponibilità e vi invieremo i passi successivi. Non è ancora una conferma di prenotazione."
+    "request-received-body": "Lavoriamo su appuntamento. Confermeremo la disponibilità e vi invieremo i passi successivi. Non è ancora una conferma di prenotazione.",
+    "contact-operator": "Contatta l’operatore se devi modificare questa corsa."
   },
   "Driver": {
     "failed-to-fetch-drivers": "Impossibile recuperare autisti",
@@ -1791,7 +1822,15 @@
     "action-completed": "Completata",
     "action-no_show": "Assente",
     "call": "Chiama",
-    "apple-maps": "Mappe"
+    "apple-maps": "Mappe",
+    "time-off-title": "Ferie",
+    "time-off-start": "Inizio",
+    "time-off-end": "Fine",
+    "time-off-note": "Nota",
+    "time-off-save": "Blocca queste ore",
+    "time-off-saved": "Ferie salvate.",
+    "time-off-invalid": "La fine deve essere dopo l’inizio.",
+    "time-off-help": "Non ti verranno assegnate corse in questo intervallo."
   },
   "Stripe": {
     "payment-system-not-ready-please-refresh-the-page": "Sistema di pagamento non pronto. Aggiorna la pagina.",
@@ -2001,7 +2040,8 @@
       "cover_kicker": "Incarichi",
       "cover_title": "Unisciti agli autisti di questo operatore.",
       "cover_body": "Crea un account, poi attendi una corsa assegnata.",
-      "phone": "Cellulare"
+      "phone": "Cellulare",
+      "phone_invalid": "Inserisci un cellulare con prefisso, ad esempio +14155552671."
     },
     "PartnerSignIn": {
       "title": "Accesso partner",
@@ -2035,7 +2075,8 @@
       "hide_password": "Nascondi password",
       "cover_kicker": "Sportello affiliato",
       "cover_title": "Entra nell’overflow di questo operatore.",
-      "cover_body": "Un’azienda, categorie di flotta condivise — non un marketplace."
+      "cover_body": "Un’azienda, categorie di flotta condivise — non un marketplace.",
+      "phone_invalid": "Inserisci un cellulare con prefisso, ad esempio +14155552671."
     }
   },
   "AppError": {
@@ -2098,7 +2139,12 @@
     "load-error": "Impossibile caricare il calendario. Riprova.",
     "empty": "Niente in programma in questo periodo.",
     "time-off": "Libero",
-    "unassigned": "Non assegnato"
+    "unassigned": "Non assegnato",
+    "feed-create": "Crea feed privato",
+    "feed-revoke": "Revoca feed",
+    "feed-ready": "Feed privato pronto",
+    "feed-revoked": "Feed revocato.",
+    "feed-error": "Impossibile aggiornare il feed. Riprova."
   },
   "Phone": {
     "missing": "Aggiungi un cellulare in formato internazionale prima di prendere corse.",

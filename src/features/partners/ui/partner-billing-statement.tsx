@@ -17,12 +17,14 @@ export function PartnerBillingStatement({
   lines,
   formatMoney,
   emptyLabel,
+  regionLabel,
   columns,
   entryLabel,
 }: {
   lines: StatementLine[];
   formatMoney: (amount: number | undefined) => string;
   emptyLabel: string;
+  regionLabel: string;
   columns: [string, string, string, string, string, string];
   entryLabel: (type: string) => string;
 }) {
@@ -31,7 +33,7 @@ export function PartnerBillingStatement({
   }
 
   return (
-    <div className="overflow-x-auto rounded-md border border-border">
+    <div tabIndex={0} aria-label={regionLabel} className="overflow-x-auto rounded-md border border-border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
       <table className="w-full min-w-[40rem] text-sm">
         <thead className="bg-muted/60">
           <tr>

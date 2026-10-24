@@ -8,7 +8,7 @@ import { jsonError } from "@/shared/http/json-error";
 
 const partnerListQuerySchema = z.object({
   status: z
-    .enum(["pending", "approved", "rejected", "suspended"])
+    .enum(["pending", "active", "approved", "rejected", "suspended"])
     .optional(),
 });
 

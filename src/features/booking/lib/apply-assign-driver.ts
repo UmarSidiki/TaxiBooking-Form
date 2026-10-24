@@ -1,4 +1,5 @@
 import { Driver } from "@/features/drivers/model";
+import { driverTimeOffBlocks } from "@/features/drivers/lib/driver-time-off-block";
 import { driverWorks } from "@/features/drivers/lib/driver-approval";
 import type { IBooking } from "@/features/booking/model";
 import type { BookingPatchApplyResult } from "@/features/booking/lib/booking-patch-result";
@@ -8,6 +9,13 @@ export async function applyAssignDriver(
   driverId: unknown,
   updateData: Partial<IBooking>,
   vehicleId?: string,
+  booking?: {
+    date: string;
+    time: string;
+    bookingType?: string | null;
+    duration?: number | null;
+    tripType?: string | null;
+  },
 ): Promise<BookingPatchApplyResult> {
   if (!driverId) {
     return {
@@ -26,6 +34,9 @@ export async function applyAssignDriver(
   }
   if (driver.assignedVehicle && vehicleId && String(driver.assignedVehicle) !== String(vehicleId)) {
     return { ok: false, status: 400, message: "Driver is not approved for this vehicle" };
+  }
+  if (booking && (await driverTimeOffBlocks(String(driver._id), booking))) {
+    return { ok: false, status: 409, message: "driver_time_off" };
   }
 
   updateData.assignedDriver = {

@@ -487,7 +487,31 @@
       "create-booking": "Crear reserva",
       "booking-created": "Reserva {tripId} creada",
       "NoAwaitingPayment": "No hay presupuestos pendientes de pago",
-      "NoAwaitingPaymentDescription": "Las solicitudes presupuestadas permanecen aquí hasta que el cliente pague."
+      "NoAwaitingPaymentDescription": "Las solicitudes presupuestadas permanecen aquí hasta que el cliente pague.",
+      "overlap-notice": "Asignado. Esto se solapa con {trip} a las {time}.",
+      "partner-overlap-notice": "Socio asignado. Esto se solapa con {trip} a las {time}.",
+      "driver-time-off": "Este conductor está de descanso en esa recogida. Elija otro.",
+      "edit-ride": "Editar viaje",
+      "edit-saved": "Viaje actualizado.",
+      "edit-failed": "No se pudo actualizar el viaje. Revise los campos e inténtelo de nuevo.",
+      "activity": "Actividad del viaje",
+      "activity-empty": "Aún no hay actividad.",
+      "activity-loading": "Cargando actividad…",
+      "save-ride": "Guardar viaje",
+      "ride-notes": "Notas",
+      "quote-link-ready": "Enlace de pago listo: {url}",
+      "quote-link-email-failed": "Presupuesto guardado. El correo falló; copie este enlace: {url}",
+      "activity-assigned": "Asignado",
+      "activity-claimed": "Reclamado",
+      "activity-started": "Iniciado",
+      "activity-completed": "Completado",
+      "activity-no_show": "No presentado",
+      "activity-cancelled": "Cancelado",
+      "activity-edited": "Editado",
+      "activity-approved": "Aprobado para socios",
+      "activity-quoted": "Presupuestado",
+      "activity-confirmed": "Confirmado en efectivo",
+      "activity-declined": "Rechazado"
     },
     "Home": {
       "failed-to-fetch-dashboard-stats": "Error al obtener estadísticas del tablero",
@@ -637,7 +661,10 @@
         "your-payout": "Su Pago",
         "retry": "Reintentar",
         "load-error": "No se pudieron cargar los viajes. Inténtelo de nuevo.",
-        "customer-review": "Reseña del cliente"
+        "customer-review": "Reseña del cliente",
+        "mark-completed": "Marcar completado",
+        "completing": "Completando…",
+        "complete-failed": "No se pudo completar este viaje. Inténtelo de nuevo."
       },
       "Sidebar": {
         "partner-portal": "Portal de Socios",
@@ -661,7 +688,7 @@
       "Billing": {
         "title": "Facturación y Datos Bancarios",
         "description": "Proporcione sus datos de pago para que los administradores sepan dónde enviar sus ganancias.",
-        "payout-summary-title": "Pago pendiente",
+        "payout-summary-title": "Saldo",
         "payout-summary-description": "Cantidad debida actualmente por pagos online o con tarjeta.",
         "last-paid": "Último pago: {date}",
         "never": "Nunca",
@@ -703,7 +730,10 @@
         "entry-ride_credit": "Viaje",
         "entry-settlement": "Liquidación",
         "entry-opening_balance": "Saldo inicial",
-        "entry-clawback": "Reversión"
+        "entry-clawback": "Reversión",
+        "payout-summary-owed": "El operador le debe este importe.",
+        "payout-summary-due": "Usted debe este importe al operador.",
+        "payout-summary-even": "Nadie debe nada."
       },
       "Fleet": {
         "fleet-management": "Gestión de Flota",
@@ -1681,8 +1711,8 @@
     "trip-id": "ID de Viaje:",
     "amount": "Importe:",
     "payment-method": "Método de Pago:",
-    "confirmation-email-sent": "Email de Confirmación Enviado",
-    "we-and-apos-ve-sent-a-confirmation-email-with-all-your-booking-details-please-check-your-inbox-and-spam-folder": "Hemos enviado un email de confirmación con todos los detalles de su reserva. Por favor revise su bandeja de entrada y spam.",
+    "confirmation-email-sent": "Busque el correo de confirmación",
+    "we-and-apos-ve-sent-a-confirmation-email-with-all-your-booking-details-please-check-your-inbox-and-spam-folder": "La confirmación se envía cuando el correo está activado. Revise su bandeja y el spam.",
     "need-help": "¿Necesita Ayuda?",
     "contact-our-24-7-support-team-at": "Contacte a nuestro equipo de soporte 24/7 en",
     "or": "o",
@@ -1690,7 +1720,8 @@
     "return-to-home": "Volver a Inicio",
     "seconds": "segundos",
     "request-received-title": "Solicitud recibida",
-    "request-received-body": "Trabajamos con cita. Confirmaremos disponibilidad y le enviaremos los siguientes pasos. Esto aún no es una confirmación de reserva."
+    "request-received-body": "Trabajamos con cita. Confirmaremos disponibilidad y le enviaremos los siguientes pasos. Esto aún no es una confirmación de reserva.",
+    "contact-operator": "Contacte al operador si necesita cambiar este viaje."
   },
   "Driver": {
     "failed-to-fetch-drivers": "Error al obtener conductores",
@@ -1791,7 +1822,15 @@
     "action-completed": "Completado",
     "action-no_show": "No presentado",
     "call": "Llamar",
-    "apple-maps": "Mapas"
+    "apple-maps": "Mapas",
+    "time-off-title": "Descanso",
+    "time-off-start": "Empieza",
+    "time-off-end": "Termina",
+    "time-off-note": "Nota",
+    "time-off-save": "Bloquear estas horas",
+    "time-off-saved": "Descanso guardado.",
+    "time-off-invalid": "El final debe ser posterior al inicio.",
+    "time-off-help": "No se le asignarán viajes en este intervalo."
   },
   "Stripe": {
     "payment-system-not-ready-please-refresh-the-page": "Sistema de pago no listo. Por favor actualice la página.",
@@ -2001,7 +2040,8 @@
       "cover_kicker": "Asignaciones",
       "cover_title": "Únase a los conductores de este operador.",
       "cover_body": "Cree una cuenta y espere un viaje asignado.",
-      "phone": "Móvil"
+      "phone": "Móvil",
+      "phone_invalid": "Escriba un móvil con prefijo, por ejemplo +14155552671."
     },
     "PartnerSignIn": {
       "title": "Acceso de socio",
@@ -2035,7 +2075,8 @@
       "hide_password": "Ocultar contraseña",
       "cover_kicker": "Mostrador afiliado",
       "cover_title": "Únase al desbordamiento de este operador.",
-      "cover_body": "Una empresa, categorías de flota compartidas — no un mercado de marcas."
+      "cover_body": "Una empresa, categorías de flota compartidas — no un mercado de marcas.",
+      "phone_invalid": "Escriba un móvil con prefijo, por ejemplo +14155552671."
     }
   },
   "AppError": {
@@ -2098,7 +2139,12 @@
     "load-error": "No se pudo cargar el calendario. Inténtalo de nuevo.",
     "empty": "Nada programado en este periodo.",
     "time-off": "Libre",
-    "unassigned": "Sin asignar"
+    "unassigned": "Sin asignar",
+    "feed-create": "Crear feed privado",
+    "feed-revoke": "Revocar feed",
+    "feed-ready": "Feed privado listo",
+    "feed-revoked": "Feed revocado.",
+    "feed-error": "No se pudo actualizar el feed. Inténtelo de nuevo."
   },
   "Phone": {
     "missing": "Añada un móvil en formato internacional antes de aceptar viajes.",

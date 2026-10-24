@@ -73,7 +73,7 @@ const SettingSchema = new Schema<ISetting>(
   {
     primaryColor: {
       type: String,
-      default: "#EAB308", // Default: yellow-500
+      default: "#B45309",
     },
     secondaryColor: {
       type: String,

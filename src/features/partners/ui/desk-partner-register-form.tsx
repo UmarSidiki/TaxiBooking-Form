@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { Link } from "@/shared/i18n/navigation";
 
+import { toE164 } from "@/shared/schema/e164-phone";
 import { Button } from "@/shared/ui/button";
 import { DeskAuthBrand } from "@/features/auth/ui/desk-auth-brand";
 import { DeskAuthCover } from "@/features/auth/ui/desk-auth-cover";
@@ -48,6 +49,10 @@ export function DeskPartnerRegisterForm() {
     }
     if (values.password.length < 8) {
       setError(t("too_short"));
+      return;
+    }
+    if (!toE164(values.phone)) {
+      setError(t("phone_invalid"));
       return;
     }
     setLoading(true);

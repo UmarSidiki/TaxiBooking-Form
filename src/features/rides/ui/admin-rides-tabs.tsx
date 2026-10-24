@@ -13,7 +13,6 @@ type Rides = ReturnType<typeof useAdminRides>;
 export function AdminRidesTabs({ rides }: { rides: Rides }) {
   const { t, activeTab, filteredBookings, enableAppointmentRequest } = rides;
   const count = filteredBookings.length;
-  const cols = enableAppointmentRequest ? "grid-cols-5" : "grid-cols-3";
 
   return (
     <Tabs
@@ -22,10 +21,7 @@ export function AdminRidesTabs({ rides }: { rides: Rides }) {
       className="flex w-full flex-col gap-4"
     >
       <TabsList
-        className={cn(
-          "grid h-auto w-full gap-1 rounded-xl border border-border/60 bg-muted/40 p-1",
-          cols
-        )}
+        className="flex h-auto w-full justify-start gap-1 overflow-x-auto rounded-xl border border-border/60 bg-muted/40 p-1"
       >
         {enableAppointmentRequest ? (
           <>
@@ -121,12 +117,12 @@ function RideTab({
     <TabsTrigger
       value={value}
       className={cn(
-        "min-h-11 min-w-0 gap-1.5 rounded-lg px-2 py-2 text-xs text-muted-foreground transition-colors duration-200 sm:text-sm",
+        "h-11 min-h-11 w-auto shrink-0 flex-none gap-1.5 rounded-lg px-3 text-sm text-foreground transition-colors duration-200",
         "data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm"
       )}
     >
       <Icon className="size-4 shrink-0" aria-hidden="true" />
-      <span className="truncate font-medium">{label}</span>
+      <span className="font-medium">{label}</span>
       {count > 0 ? (
         <Badge
           variant="secondary"

@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { CalendarAgenda } from "@/features/calendar/ui/calendar-agenda";
+import { CalendarFeedPanel } from "@/features/calendar/ui/calendar-feed-panel";
 import { CalendarMonthGrid, CalendarTimeGrid } from "@/features/calendar/ui/calendar-grids";
 
 type Ride = {
@@ -61,6 +62,7 @@ export function CalendarBoard() {
 
   return (
     <div className="flex flex-col gap-4">
+      <CalendarFeedPanel />
       <div role="tablist" aria-label={t("views")} className="hidden flex-wrap gap-2 md:flex">
         {(["month", "week", "day", "agenda"] as const).map((item) => (
           <button
@@ -68,7 +70,7 @@ export function CalendarBoard() {
             type="button"
             role="tab"
             aria-selected={view === item}
-            className={`h-11 rounded-md border px-4 text-sm ${view === item ? "border-primary bg-primary text-primary-foreground" : "border-border bg-card"}`}
+            className={`h-11 rounded-md border px-4 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${view === item ? "border-primary bg-primary text-primary-foreground" : "border-border bg-card text-foreground"}`}
             onClick={() => setView(item)}
           >
             {t(item)}

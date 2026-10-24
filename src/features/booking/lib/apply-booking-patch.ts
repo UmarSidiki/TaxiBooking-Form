@@ -1,6 +1,7 @@
 import type { IBooking } from '@/features/booking/model';
 import type { BookingPatchBody } from '@/features/booking/schema/booking-patch.schema';
 import { applyApprovePartner } from '@/features/booking/lib/apply-approve-partner';
+import { applyEditBooking } from '@/features/booking/lib/apply-edit-booking';
 import { applyAssignDriver } from '@/features/booking/lib/apply-assign-driver';
 import { findAssigneeConflict } from '@/features/calendar/lib/find-assignee-conflict';
 import { applyAssignPartner } from '@/features/booking/lib/apply-assign-partner';
@@ -48,7 +49,12 @@ export async function applyBookingPatch(
         message: 'Confirm the appointment request before assigning',
       };
     }
-    const assigned = await applyAssignDriver(patch.driverId, updateData, String(booking.selectedVehicle ?? ""));
+    const assigned = await applyAssignDriver(
+      patch.driverId,
+      updateData,
+      String(booking.selectedVehicle ?? ""),
+      booking,
+    );
     if (!assigned.ok || !patch.driverId) return assigned;
     const conflict = await findAssigneeConflict({
       field: "assignedDriver._id",
@@ -74,6 +80,10 @@ export async function applyBookingPatch(
       booking,
     });
     return conflict ? { ...assignedPartner, warn: conflict } : assignedPartner;
+  }
+
+  if (patch.action === 'edit') {
+    return applyEditBooking(booking, patch.edit, updateData);
   }
 
   if (patch.action === 'quote') {

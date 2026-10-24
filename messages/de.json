@@ -487,7 +487,31 @@
       "create-booking": "Buchung erstellen",
       "booking-created": "Buchung {tripId} erstellt",
       "NoAwaitingPayment": "Keine Angebote warten auf Zahlung",
-      "NoAwaitingPaymentDescription": "Angebotene Anfragen bleiben hier, bis der Kunde bezahlt."
+      "NoAwaitingPaymentDescription": "Angebotene Anfragen bleiben hier, bis der Kunde bezahlt.",
+      "overlap-notice": "Zugewiesen. Das überschneidet sich mit {trip} um {time}.",
+      "partner-overlap-notice": "Partner zugewiesen. Das überschneidet sich mit {trip} um {time}.",
+      "driver-time-off": "Dieser Fahrer hat zu dieser Abholung frei. Wählen Sie einen anderen.",
+      "edit-ride": "Fahrt bearbeiten",
+      "edit-saved": "Fahrt aktualisiert.",
+      "edit-failed": "Fahrt konnte nicht aktualisiert werden. Prüfen Sie die Felder und versuchen Sie es erneut.",
+      "activity": "Fahrtaktivität",
+      "activity-empty": "Noch keine Aktivität.",
+      "activity-loading": "Aktivität wird geladen…",
+      "save-ride": "Fahrt speichern",
+      "ride-notes": "Notizen",
+      "quote-link-ready": "Zahlungslink bereit: {url}",
+      "quote-link-email-failed": "Angebot gespeichert. E-Mail fehlgeschlagen, kopieren Sie diesen Link: {url}",
+      "activity-assigned": "Zugewiesen",
+      "activity-claimed": "Übernommen",
+      "activity-started": "Gestartet",
+      "activity-completed": "Abgeschlossen",
+      "activity-no_show": "Nicht erschienen",
+      "activity-cancelled": "Storniert",
+      "activity-edited": "Bearbeitet",
+      "activity-approved": "Für Partner freigegeben",
+      "activity-quoted": "Angeboten",
+      "activity-confirmed": "Als bar bestätigt",
+      "activity-declined": "Abgelehnt"
     },
     "Home": {
       "failed-to-fetch-dashboard-stats": "Dashboard-Statistiken konnten nicht abgerufen werden",
@@ -637,7 +661,10 @@
         "your-payout": "Ihre Auszahlung",
         "retry": "Erneut versuchen",
         "load-error": "Fahrten konnten nicht geladen werden. Bitte erneut versuchen.",
-        "customer-review": "Kundenbewertung"
+        "customer-review": "Kundenbewertung",
+        "mark-completed": "Als abgeschlossen markieren",
+        "completing": "Wird abgeschlossen…",
+        "complete-failed": "Fahrt konnte nicht abgeschlossen werden. Versuchen Sie es erneut."
       },
       "Sidebar": {
         "partner-portal": "Partner-Portal",
@@ -661,7 +688,7 @@
       "Billing": {
         "title": "Abrechnung & Bankdaten",
         "description": "Geben Sie Ihre Auszahlungsdaten an, damit Admins wissen, wohin Ihre Einnahmen gesendet werden sollen.",
-        "payout-summary-title": "Ausstehende Auszahlung",
+        "payout-summary-title": "Saldo",
         "payout-summary-description": "Aktuell geschuldeter Betrag aus Online- oder Kartenzahlungen.",
         "last-paid": "Zuletzt bezahlt: {date}",
         "never": "Nie",
@@ -703,7 +730,10 @@
         "entry-ride_credit": "Fahrt",
         "entry-settlement": "Ausgleich",
         "entry-opening_balance": "Anfangssaldo",
-        "entry-clawback": "Rückbuchung"
+        "entry-clawback": "Rückbuchung",
+        "payout-summary-owed": "Der Betreiber schuldet Ihnen diesen Betrag.",
+        "payout-summary-due": "Sie schulden dem Betreiber diesen Betrag.",
+        "payout-summary-even": "Es ist nichts offen."
       },
       "Fleet": {
         "fleet-management": "Flottenmanagement",
@@ -1681,8 +1711,8 @@
     "trip-id": "Reise-ID:",
     "amount": "Betrag:",
     "payment-method": "Zahlungsmethode:",
-    "confirmation-email-sent": "Bestätigungs-E-Mail gesendet",
-    "we-and-apos-ve-sent-a-confirmation-email-with-all-your-booking-details-please-check-your-inbox-and-spam-folder": "Wir haben eine Bestätigungs-E-Mail mit allen Buchungsdetails gesendet. Bitte prüfen Sie Ihren Posteingang und Spam-Ordner.",
+    "confirmation-email-sent": "Nach der Bestätigungs-E-Mail sehen",
+    "we-and-apos-ve-sent-a-confirmation-email-with-all-your-booking-details-please-check-your-inbox-and-spam-folder": "Eine Bestätigung geht raus, wenn E-Mail aktiv ist. Prüfen Sie Posteingang und Spam.",
     "need-help": "Brauchen Sie Hilfe?",
     "contact-our-24-7-support-team-at": "Kontaktieren Sie unser 24/7 Support-Team unter",
     "or": "oder",
@@ -1690,7 +1720,8 @@
     "return-to-home": "Zurück zur Startseite",
     "seconds": "Sekunden",
     "request-received-title": "Anfrage erhalten",
-    "request-received-body": "Wir arbeiten nach Termin. Wir prüfen die Verfügbarkeit und mailen die nächsten Schritte. Das ist noch keine Buchungsbestätigung."
+    "request-received-body": "Wir arbeiten nach Termin. Wir prüfen die Verfügbarkeit und mailen die nächsten Schritte. Das ist noch keine Buchungsbestätigung.",
+    "contact-operator": "Kontaktieren Sie den Betreiber, wenn Sie diese Fahrt ändern müssen."
   },
   "Driver": {
     "failed-to-fetch-drivers": "Fahrer konnten nicht abgerufen werden",
@@ -1791,7 +1822,15 @@
     "action-completed": "Abgeschlossen",
     "action-no_show": "Nicht erschienen",
     "call": "Anrufen",
-    "apple-maps": "Apple Karten"
+    "apple-maps": "Apple Karten",
+    "time-off-title": "Frei",
+    "time-off-start": "Beginn",
+    "time-off-end": "Ende",
+    "time-off-note": "Notiz",
+    "time-off-save": "Diese Stunden sperren",
+    "time-off-saved": "Frei gespeichert.",
+    "time-off-invalid": "Das Ende muss nach dem Beginn liegen.",
+    "time-off-help": "In diesem Zeitraum werden Ihnen keine Fahrten zugewiesen."
   },
   "Stripe": {
     "payment-system-not-ready-please-refresh-the-page": "Zahlungssystem nicht bereit. Bitte aktualisieren Sie die Seite.",
@@ -2001,7 +2040,8 @@
       "cover_kicker": "Aufträge",
       "cover_title": "Werden Sie Fahrer dieses Betreibers.",
       "cover_body": "Legen Sie ein Konto an und warten Sie auf eine zugewiesene Fahrt.",
-      "phone": "Mobilnummer"
+      "phone": "Mobilnummer",
+      "phone_invalid": "Geben Sie eine Mobilnummer mit Ländervorwahl ein, z. B. +14155552671."
     },
     "PartnerSignIn": {
       "title": "Partner-Anmeldung",
@@ -2035,7 +2075,8 @@
       "hide_password": "Passwort verbergen",
       "cover_kicker": "Partner-Schalter",
       "cover_title": "Treten Sie dem Überlauf dieses Betreibers bei.",
-      "cover_body": "Ein Unternehmen, gemeinsame Flottenkategorien — kein Marktplatz."
+      "cover_body": "Ein Unternehmen, gemeinsame Flottenkategorien — kein Marktplatz.",
+      "phone_invalid": "Geben Sie eine Mobilnummer mit Ländervorwahl ein, z. B. +14155552671."
     }
   },
   "AppError": {
@@ -2098,7 +2139,12 @@
     "load-error": "Kalender konnte nicht geladen werden. Erneut versuchen.",
     "empty": "In diesem Zeitraum ist nichts geplant.",
     "time-off": "Frei",
-    "unassigned": "Nicht zugewiesen"
+    "unassigned": "Nicht zugewiesen",
+    "feed-create": "Privaten Feed erstellen",
+    "feed-revoke": "Feed widerrufen",
+    "feed-ready": "Privater Feed bereit",
+    "feed-revoked": "Feed widerrufen.",
+    "feed-error": "Feed konnte nicht aktualisiert werden. Versuchen Sie es erneut."
   },
   "Phone": {
     "missing": "Fügen Sie eine Mobilnummer im internationalen Format hinzu, bevor Sie Fahrten annehmen.",

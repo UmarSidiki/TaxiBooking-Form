@@ -35,6 +35,7 @@ export default function PartnerBillingPage() {
       <PartnerBillingStatement
         lines={billing.statement}
         emptyLabel={billing.t("statement-empty")}
+        regionLabel={billing.t("statement-title")}
         columns={[
           billing.t("col-when"),
           billing.t("col-fare"),
@@ -58,6 +59,7 @@ export default function PartnerBillingPage() {
       />
       <PartnerBillingSummary
         t={t}
+        balance={billing.payoutBalance}
         formattedBalance={billing.formattedBalance}
         formattedLastPaid={billing.formattedLastPaid}
       />

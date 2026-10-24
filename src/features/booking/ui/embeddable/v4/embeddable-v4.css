@@ -1,5 +1,5 @@
 .embeddable-v4-card {
-  --v4-panel: var(--primary-color, #eab308);
+  --v4-panel: var(--primary-color, #b45309);
   --v4-button: var(--secondary-color, #111827);
   --v4-card-radius: var(--border-radius, 0.625rem);
   --v4-field-radius: var(--border-radius, 0.625rem);
@@ -71,7 +71,7 @@
   margin-inline-start: calc(var(--v4-route-track) + var(--v4-route-gap));
   padding: 0.2rem;
   border-radius: var(--v4-field-radius);
-  background: color-mix(in oklab, var(--v4-paper) 28%, transparent);
+  background: var(--v4-paper);
 }
 
 .v4-modes button {

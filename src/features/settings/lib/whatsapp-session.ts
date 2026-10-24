@@ -8,6 +8,7 @@ import { withWhatsAppLock } from "@/features/settings/lib/whatsapp-lock";
 import { clearWhatsAppAuth, readWhatsAppLinked } from "@/features/settings/lib/whatsapp-mongo-auth";
 import { pairWhatsApp } from "@/features/settings/lib/whatsapp-pair";
 import { isLoggedOut, openWhatsAppSocket, waitForOpen } from "@/features/settings/lib/whatsapp-socket";
+import { pushWhatsAppOutbox, qaWhatsAppMockEnabled } from "@/features/settings/lib/whatsapp-outbox";
 
 export type WhatsAppLinkView = {
   status: "needs_scan" | "waiting" | "linked" | "failed";
@@ -78,6 +79,13 @@ export async function startWhatsAppPairing() {
 }
 
 export function sendWhatsAppTexts(messages: WhatsAppOutbound[]) {
+  if (qaWhatsAppMockEnabled()) {
+    pushWhatsAppOutbox(messages);
+    return Promise.resolve({
+      ok: true as const,
+      results: messages.map((message) => ({ jid: message.jid, ok: true })),
+    });
+  }
   return withWhatsAppLock(async (): Promise<SendResult> => {
     const { sock, linked } = await openWhatsAppSocket();
     if (!linked) {

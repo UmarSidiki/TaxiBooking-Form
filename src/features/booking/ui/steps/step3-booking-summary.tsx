@@ -358,21 +358,28 @@ export function Step3BookingSummary({
               <CreditCard className="h-4 w-4 text-blue-600" />
               <span>{t('Step3.24-7-customer-support')}</span>
             </div>
-            <div className="flex items-center gap-2 text-gray-700">
-              <Mail className="h-4 w-4 text-gray-500" />
-              <a
-                href={`mailto:${process.env.NEXT_PUBLIC_SUPPORT_EMAIL}`}
-                className="hover:text-primary"
-              >
-                {process.env.NEXT_PUBLIC_SUPPORT_EMAIL}
-              </a>
-            </div>
-            <div className="flex items-center gap-2 text-gray-700">
-              <Phone className="h-4 w-4 text-gray-500" />
-              <a href={`tel:${process.env.NEXT_PUBLIC_PHONE_NUMBER}`} className="hover:text-primary">
-                {process.env.NEXT_PUBLIC_PHONE_NUMBER}
-              </a>
-            </div>
+            {process.env.NEXT_PUBLIC_SUPPORT_EMAIL ? (
+              <div className="flex items-center gap-2 text-foreground">
+                <Mail className="h-4 w-4 text-muted-foreground" />
+                <a
+                  href={`mailto:${process.env.NEXT_PUBLIC_SUPPORT_EMAIL}`}
+                  className="inline-flex min-h-11 items-center hover:text-primary"
+                >
+                  {process.env.NEXT_PUBLIC_SUPPORT_EMAIL}
+                </a>
+              </div>
+            ) : null}
+            {process.env.NEXT_PUBLIC_PHONE_NUMBER ? (
+              <div className="flex items-center gap-2 text-foreground">
+                <Phone className="h-4 w-4 text-muted-foreground" />
+                <a
+                  href={`tel:${process.env.NEXT_PUBLIC_PHONE_NUMBER}`}
+                  className="inline-flex min-h-11 items-center hover:text-primary"
+                >
+                  {process.env.NEXT_PUBLIC_PHONE_NUMBER}
+                </a>
+              </div>
+            ) : null}
           </div>
         </Card>
       </div>

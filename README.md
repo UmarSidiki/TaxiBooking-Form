@@ -95,6 +95,18 @@ Reminders and thank-you mail run on every call and are idempotent. Cleanup, old-
 
 Leave the Vercel cron on its daily schedule. It uses the same route and the same secret, so it will not double-send.
 
+## Partner booking API
+
+An admin creates a key at `POST /api/admin/api-keys` with `{ "name": "Agency" }`. The response includes the raw token once (`tbk_…`). Only the SHA-256 hash is stored. Revoke with `{ "name": "Agency", "revokeId": "<id>" }`.
+
+```http
+POST /api/agent/bookings
+Authorization: Bearer tbk_…
+Content-Type: application/json
+```
+
+The body is the same cash booking payload the public form sends. The server prices it. Each key allows 60 requests per minute; the 61st returns `429` and `Retry-After: 60`.
+
 ## Layout (short)
 
 ```

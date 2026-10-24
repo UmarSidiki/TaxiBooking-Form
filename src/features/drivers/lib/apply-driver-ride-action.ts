@@ -32,6 +32,12 @@ export async function applyDriverRideAction(
         mod.sendInvoiceNotice(updated.tripId),
       );
     }
+    const rideEvent = action.action === "started" ? "on_the_way" : action.action === "arrived" ? "arrived" : action.action === "completed" ? "completed" : null;
+    if (rideEvent) {
+      void import("@/features/customers/lib/send-customer-ride-update").then((mod) =>
+        mod.sendCustomerRideUpdate(String(updated._id), rideEvent),
+      );
+    }
     await recordRideActivity({
       bookingId: rideId,
       actorId: driverId,

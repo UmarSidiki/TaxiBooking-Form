@@ -209,7 +209,7 @@ const BookingSchema: Schema = new Schema({
   partnerPayoutAmount: { type: Number },
   partnerApprovedAt: { type: Date },
   responsibleAssignee: { type: String, enum: ["driver", "partner"] },
-  driverRideStatus: { type: String, enum: ["assigned", "started", "completed", "no_show"] },
+  driverRideStatus: { type: String, enum: ["assigned", "started", "arrived", "completed", "no_show"] },
   cashCollected: { type: Number, min: 0 },
   pickupReminderSent: { type: Boolean, default: false },
 }, {

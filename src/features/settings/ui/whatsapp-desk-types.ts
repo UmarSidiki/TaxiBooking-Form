@@ -8,6 +8,7 @@ export type WhatsAppDeskConfig = {
 
 export type WhatsAppDeskTemplate = {
   _id: string;
+  event?: string;
   audience: "customer" | "desk";
   locale: string;
   body: string;

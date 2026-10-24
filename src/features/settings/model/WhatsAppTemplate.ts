@@ -2,7 +2,12 @@ import { Schema, model, models } from "mongoose";
 
 export interface IWhatsAppTemplate {
   _id?: string;
-  event: "booking_confirmed";
+  event:
+    | "booking_confirmed"
+    | "driver_assigned"
+    | "on_the_way"
+    | "arrived"
+    | "completed";
   audience: "customer" | "desk";
   locale: string;
   body: string;
@@ -11,7 +16,11 @@ export interface IWhatsAppTemplate {
 
 const WhatsAppTemplateSchema = new Schema<IWhatsAppTemplate>(
   {
-    event: { type: String, enum: ["booking_confirmed"], required: true },
+    event: {
+      type: String,
+      enum: ["booking_confirmed", "driver_assigned", "on_the_way", "arrived", "completed"],
+      required: true,
+    },
     audience: { type: String, enum: ["customer", "desk"], required: true },
     locale: { type: String, required: true },
     body: { type: String, required: true },

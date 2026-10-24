@@ -3,7 +3,7 @@
 import { useRef, type Dispatch, type SetStateAction } from "react";
 import { useTranslations } from "next-intl";
 
-import { whatsappVariables } from "@/features/settings/schema/whatsapp.schema";
+import { customerWhatsAppEvents, whatsappVariables } from "@/features/settings/schema/whatsapp.schema";
 import {
   renderWhatsAppTemplate,
   whatsappSampleValues,
@@ -47,6 +47,17 @@ export function WhatsAppTemplateFields({
 
   return (
     <div className="flex flex-col gap-4">
+      <label className="text-sm" htmlFor="wa-event">Event</label>
+      <select
+        id="wa-event"
+        className="h-11 rounded-md border border-border bg-background px-3"
+        value={draft.event || "booking_confirmed"}
+        onChange={(event) => setDraft((prev) => ({ ...prev, event: event.target.value }))}
+      >
+        {customerWhatsAppEvents.map((event) => (
+          <option key={event} value={event}>{event}</option>
+        ))}
+      </select>
       <label className="flex min-h-11 items-center gap-3 text-sm">
         <input
           type="checkbox"

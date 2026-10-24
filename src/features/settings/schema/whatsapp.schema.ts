@@ -24,11 +24,20 @@ export const whatsappConfigWriteSchema = z.object({
   defaultLocale: z.enum(whatsappLocales),
 });
 
+export const customerWhatsAppEvents = [
+  "booking_confirmed",
+  "driver_assigned",
+  "on_the_way",
+  "arrived",
+  "completed",
+] as const;
+
 export const whatsappTemplateWriteSchema = z.object({
   audience: z.enum(["customer", "desk"]),
   locale: z.enum(whatsappLocales),
   body: z.string().trim().min(1).max(1000),
   enabled: z.boolean(),
+  event: z.enum(customerWhatsAppEvents).default("booking_confirmed"),
 });
 
 export const whatsappTestSendSchema = z.object({

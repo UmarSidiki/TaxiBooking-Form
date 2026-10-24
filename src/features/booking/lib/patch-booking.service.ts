@@ -139,6 +139,11 @@ export async function patchBooking(
   }
 
   await notePatchActivity(parsed.data.action, id, actor);
+  if (parsed.data.action === "assign") {
+    void import("@/features/customers/lib/send-customer-ride-update").then((mod) =>
+      mod.sendCustomerRideUpdate(id, "driver_assigned"),
+    );
+  }
 
   if (parsed.data.action === 'approvepartner') {
     const shouldNotify = parsed.data.notifyPartners !== false;

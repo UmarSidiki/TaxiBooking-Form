@@ -1,6 +1,6 @@
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test, type Browser, type Page } from "@playwright/test";
-import { ADMIN, gotoPath, shot, signIn } from "./support";
+import { ADMIN, ALPINE, NIA, gotoPath, shot, signIn } from "./support";
 
 const VIEWS = [
   { name: "desktop", viewport: { width: 1280, height: 800 }, mobile: false },
@@ -24,7 +24,7 @@ async function axeOk(page: Page) {
     .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"])
     .analyze();
   const bad = result.violations.filter((item) => item.impact === "serious" || item.impact === "critical");
-  expect(bad.map((item) => `${item.id}: ${item.help}`)).toEqual([]);
+  expect(bad.map((item) => `${item.id}: ${item.nodes[0]?.target.join(" ")} :: ${item.nodes[0]?.html.slice(0, 160)}`)).toEqual([]);
 }
 
 test("milestones and portals", async ({ page, browser }) => {
@@ -47,8 +47,16 @@ test("milestones and portals", async ({ page, browser }) => {
     "/en/dashboard/settings/checkout",
     "/en/dashboard/settings/modules",
     "/en/dashboard/settings/whatsapp",
+    "/en/dashboard/settings/email",
+    "/en/dashboard/settings/appearance",
+    "/en/dashboard/settings/gateways",
+    "/en/dashboard/settings/map",
     "/en/dashboard/today",
     "/en/dashboard/rides",
+    "/en/dashboard/calendar",
+    "/en/dashboard/fleet",
+    "/en/dashboard/drivers",
+    "/en/dashboard/partners",
   ]) {
     await gotoPath(page, path);
     await shot(page, `pass-${path.split("/").filter(Boolean).slice(-1)[0]}-desktop`);
@@ -78,6 +86,15 @@ test("milestones and portals", async ({ page, browser }) => {
   await page.getByRole("button", { name: "Continue" }).click();
   await expect(page.getByRole("button", { name: "Select" }).first()).toBeVisible();
   await shot(page, "return-vehicles-desktop");
+
+  await signIn(page, "/en/partners/login", ALPINE.email, ALPINE.password);
+  await gotoPath(page, "/en/partners/dashboard");
+  await shot(page, "partner-dashboard-desktop");
+  await axeOk(page);
+  await signIn(page, "/en/drivers/login", NIA.email, NIA.password);
+  await gotoPath(page, "/en/drivers/dashboard");
+  await shot(page, "driver-dashboard-desktop");
+  await axeOk(page);
 
   await reviewAccount(browser);
 });

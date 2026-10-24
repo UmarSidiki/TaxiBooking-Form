@@ -1786,7 +1786,12 @@
     "load_error": "Impossible de charger vos courses. Réessayez.",
     "load_more": "Charger plus de courses",
     "retry": "Réessayer",
-    "passengers": "Passagers"
+    "passengers": "Passagers",
+    "action-started": "Démarrée",
+    "action-completed": "Terminée",
+    "action-no_show": "Absent",
+    "call": "Appeler",
+    "apple-maps": "Plans"
   },
   "Stripe": {
     "payment-system-not-ready-please-refresh-the-page": "Système de paiement non prêt. Veuillez actualiser la page.",

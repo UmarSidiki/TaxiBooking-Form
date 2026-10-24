@@ -1786,7 +1786,12 @@
     "load_error": "Не удалось загрузить поездки. Попробуйте снова.",
     "load_more": "Загрузить ещё поездки",
     "retry": "Повторить",
-    "passengers": "Пассажиры"
+    "passengers": "Пассажиры",
+    "action-started": "Начата",
+    "action-completed": "Завершена",
+    "action-no_show": "Неявка",
+    "call": "Позвонить",
+    "apple-maps": "Карты Apple"
   },
   "Stripe": {
     "payment-system-not-ready-please-refresh-the-page": "Платежная система не готова. Пожалуйста, обновите страницу.",

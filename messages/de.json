@@ -1786,7 +1786,12 @@
     "load_error": "Fahrten konnten nicht geladen werden. Erneut versuchen.",
     "load_more": "Weitere Fahrten laden",
     "retry": "Erneut versuchen",
-    "passengers": "Passagiere"
+    "passengers": "Passagiere",
+    "action-started": "Gestartet",
+    "action-completed": "Abgeschlossen",
+    "action-no_show": "Nicht erschienen",
+    "call": "Anrufen",
+    "apple-maps": "Apple Karten"
   },
   "Stripe": {
     "payment-system-not-ready-please-refresh-the-page": "Zahlungssystem nicht bereit. Bitte aktualisieren Sie die Seite.",

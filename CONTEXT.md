@@ -11,8 +11,12 @@ The person who books and pays for a transfer. Captured per transfer; the operato
 _Avoid_: Client, account, user (when meaning the passenger)
 
 **Driver**:
-Operator staff who is push-assigned to a ride. No in-app pay.
+Operator staff who is push-assigned to a ride. No in-app pay. A driver marks a ride started, completed, or no-show, and can record cash collected.
 _Avoid_: Chauffeur account, employee (in product copy)
+
+**Time off**:
+A private span when a driver is not available. The calendar shows it and assignment can warn on overlap.
+_Avoid_: Vacation mode, PTO system
 
 **Partner**:
 Affiliate overflow company that may accept or be assigned a ride.

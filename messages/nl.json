@@ -1786,7 +1786,12 @@
     "load_error": "We konden uw ritten niet laden. Probeer opnieuw.",
     "load_more": "Meer ritten laden",
     "retry": "Opnieuw proberen",
-    "passengers": "Passagiers"
+    "passengers": "Passagiers",
+    "action-started": "Gestart",
+    "action-completed": "Voltooid",
+    "action-no_show": "Niet verschenen",
+    "call": "Bellen",
+    "apple-maps": "Apple Kaarten"
   },
   "Stripe": {
     "payment-system-not-ready-please-refresh-the-page": "Betaalsysteem niet gereed. Vernieuw de pagina.",

@@ -112,6 +112,7 @@ export default function DriverDashboard() {
                 currencySymbol={currencySymbol}
                 isBookingPassed={isBookingPassed}
                 setDetailBooking={setDetailBooking}
+                onChanged={() => void fetchAssignedRides()}
               />
             ))}
           </AdminRidesTabPanel>

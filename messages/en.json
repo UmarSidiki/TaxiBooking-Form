@@ -1786,7 +1786,12 @@
     "load_error": "We could not load your trips. Try again.",
     "load_more": "Load more rides",
     "retry": "Try again",
-    "passengers": "Passengers"
+    "passengers": "Passengers",
+    "action-started": "Started",
+    "action-completed": "Completed",
+    "action-no_show": "No-show",
+    "call": "Call",
+    "apple-maps": "Apple Maps"
   },
   "Stripe": {
     "payment-system-not-ready-please-refresh-the-page": "Payment system not ready. Please refresh the page.",

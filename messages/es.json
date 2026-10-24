@@ -1786,7 +1786,12 @@
     "load_error": "No pudimos cargar sus viajes. Inténtelo de nuevo.",
     "load_more": "Cargar más viajes",
     "retry": "Reintentar",
-    "passengers": "Pasajeros"
+    "passengers": "Pasajeros",
+    "action-started": "Iniciado",
+    "action-completed": "Completado",
+    "action-no_show": "No presentado",
+    "call": "Llamar",
+    "apple-maps": "Mapas"
   },
   "Stripe": {
     "payment-system-not-ready-please-refresh-the-page": "Sistema de pago no listo. Por favor actualice la página.",

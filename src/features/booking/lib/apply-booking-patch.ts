@@ -47,7 +47,7 @@ export async function applyBookingPatch(
         message: 'Confirm the appointment request before assigning',
       };
     }
-    return applyAssignDriver(patch.driverId, updateData);
+    return applyAssignDriver(patch.driverId, updateData, String(booking.selectedVehicle ?? ""));
   }
 
   if (patch.action === 'assignpartner') {

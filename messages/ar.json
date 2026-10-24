@@ -1786,7 +1786,12 @@
     "load_error": "تعذر تحميل رحلاتك. حاول مرة أخرى.",
     "load_more": "تحميل المزيد من الرحلات",
     "retry": "إعادة المحاولة",
-    "passengers": "الركاب"
+    "passengers": "الركاب",
+    "action-started": "بدأت",
+    "action-completed": "اكتملت",
+    "action-no_show": "لم يحضر",
+    "call": "اتصال",
+    "apple-maps": "خرائط آبل"
   },
   "Stripe": {
     "payment-system-not-ready-please-refresh-the-page": "نظام الدفع غير جاهز. يرجى تحديث الصفحة.",

@@ -1,4 +1,4 @@
-import { mkdirSync, writeFileSync } from "node:fs";
+import { copyFileSync, mkdirSync, writeFileSync } from "node:fs";
 import { expect, test, type Page } from "@playwright/test";
 
 const ARTIFACTS = "/opt/cursor/artifacts/screenshots";
@@ -118,6 +118,20 @@ test("partner dashboard loads one marketplace poll and batches history reviews",
       2,
     ),
   );
+});
+
+test("driver ride card offers navigate and call", async ({ page }, testInfo) => {
+  await signIn(page, "/en/drivers/login", "driver@e2e.example", "e2e-password");
+  await openPath(page, "/en/drivers/dashboard");
+  await expect(page.getByText("Lugano Station")).toBeVisible();
+  await expect(page.getByRole("link", { name: "Call" })).toHaveAttribute("href", "tel:+41790000000");
+  await expect(page.getByRole("link", { name: "Apple Maps" })).toBeVisible();
+  const shotDir = "/tmp/screenshots";
+  mkdirSync(shotDir, { recursive: true });
+  mkdirSync(ARTIFACTS, { recursive: true });
+  const shotName = `driver-ride-${testInfo.project.name}.png`;
+  await page.screenshot({ path: `${shotDir}/${shotName}`, fullPage: true });
+  copyFileSync(`${shotDir}/${shotName}`, `${ARTIFACTS}/${shotName}`);
 });
 
 test("partner dashboard does not poll while the tab is hidden", async ({ page }, testInfo) => {

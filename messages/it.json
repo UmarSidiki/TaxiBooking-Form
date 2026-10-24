@@ -1786,7 +1786,12 @@
     "load_error": "Impossibile caricare le corse. Riprova.",
     "load_more": "Carica altre corse",
     "retry": "Riprova",
-    "passengers": "Passeggeri"
+    "passengers": "Passeggeri",
+    "action-started": "Iniziata",
+    "action-completed": "Completata",
+    "action-no_show": "Assente",
+    "call": "Chiama",
+    "apple-maps": "Mappe"
   },
   "Stripe": {
     "payment-system-not-ready-please-refresh-the-page": "Sistema di pagamento non pronto. Aggiorna la pagina.",

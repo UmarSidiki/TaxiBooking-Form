@@ -10,6 +10,7 @@ import PricingRule from "@/features/pricing/model/PricingRule";
 import PromoCode from "@/features/pricing/model/PromoCode";
 import PromoRedemption from "@/features/pricing/model/PromoRedemption";
 import ZonePrice from "@/features/pricing/model/ZonePrice";
+import CustomerOtp from "@/features/customers/model/CustomerOtp";
 import { Setting } from "@/features/settings/model";
 
 export async function resetTestDb() {
@@ -28,5 +29,6 @@ export async function resetTestDb() {
     PromoCode.deleteMany({}),
     PromoRedemption.deleteMany({}),
     ZonePrice.deleteMany({}),
+    CustomerOtp.deleteMany({}),
   ]);
 }

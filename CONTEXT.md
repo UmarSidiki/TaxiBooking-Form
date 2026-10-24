@@ -23,8 +23,12 @@ The operator’s decision that a self-registered Driver or Partner may work. Pen
 _Avoid_: Active, Partner review (that is the margin step before a ride is offered)
 
 **Active**:
-The person may sign in to the working desk. Account approval sets a self-registered person active. Switching an approved person off later is deactivation.
-_Avoid_: Approved (that is account approval)
+The partner or driver may sign in and take rides. Account approval moves a pending person to active. Suspending them later blocks sign-in work. Rejected persons do not work. There is no separate on/off flag.
+_Avoid_: Approved plus active as two switches
+
+**Vehicle access**:
+The vehicles a partner may fulfil, each pending, approved, or rejected. One list replaces fleet requests, current fleet, and the older fleet fields.
+_Avoid_: Fleet request, current fleet (in new copy)
 
 **Assignee**:
 The party responsible for fulfilling the ride under exclusive dispatch.

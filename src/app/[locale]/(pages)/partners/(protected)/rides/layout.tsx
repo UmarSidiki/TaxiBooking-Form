@@ -4,6 +4,7 @@ import { getServerSession } from "next-auth";
 import { connectDB } from "@/shared/db";
 import { Partner } from "@/features/partners/model";
 import { authOptions } from "@/features/auth";
+import { partnerMayWork } from "@/features/partners/lib/partner-access";
 
 type RidesLayoutProps = {
   children: ReactNode;
@@ -23,7 +24,7 @@ export default async function PartnerRidesLayout({
   const partner = await Partner.findOne({ email: session.user.email });
 
   // If partner is not approved, redirect to account page
-  if (partner && partner.status !== "approved") {
+  if (partner && !partnerMayWork(partner)) {
     redirect(`/partners/account`);
   }
 

@@ -654,7 +654,9 @@
         "overview": "Обзор",
         "operations": "Операции",
         "fleet_management": "Управление автопарком",
-        "account_settings": "Аккаунт и настройки"
+        "account_settings": "Аккаунт и настройки",
+        "available-rides": "Доступные поездки",
+        "vehicles": "Автомобили"
       },
       "Billing": {
         "title": "Счета и банковские реквизиты",
@@ -911,7 +913,12 @@
         "col-balance": "Баланс",
         "settlement-type-ride_credit": "Поездка",
         "settlement-type-settlement": "Расчёт",
-        "settlement-type-opening_balance": "Начальный баланс"
+        "settlement-type-opening_balance": "Начальный баланс",
+        "tab-applications": "Заявки",
+        "tab-active": "Активные",
+        "tab-balances": "Балансы",
+        "tab-all": "Все",
+        "active": "Активен"
       }
     },
     "Features": {

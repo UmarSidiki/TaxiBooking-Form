@@ -647,14 +647,16 @@
         "rides": "Rides",
         "history": "History",
         "fleet": "Fleet",
-        "my-rides": "My Rides",
+        "my-rides": "My rides",
         "upcoming-rides": "Upcoming Rides",
         "preferences": "Preferences",
         "billing": "Billing",
         "overview": "Overview",
         "operations": "Operations",
         "fleet_management": "Fleet Management",
-        "account_settings": "Account & Settings"
+        "account_settings": "Account & Settings",
+        "available-rides": "Available rides",
+        "vehicles": "Vehicles"
       },
       "Billing": {
         "title": "Billing & Bank Details",
@@ -911,7 +913,12 @@
         "col-balance": "Balance",
         "settlement-type-ride_credit": "Ride",
         "settlement-type-settlement": "Settlement",
-        "settlement-type-opening_balance": "Opening balance"
+        "settlement-type-opening_balance": "Opening balance",
+        "tab-applications": "Applications",
+        "tab-active": "Active",
+        "tab-balances": "Balances",
+        "tab-all": "All",
+        "active": "Active"
       }
     },
     "Features": {

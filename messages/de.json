@@ -654,7 +654,9 @@
         "overview": "Übersicht",
         "operations": "Betrieb",
         "fleet_management": "Flottenmanagement",
-        "account_settings": "Konto & Einstellungen"
+        "account_settings": "Konto & Einstellungen",
+        "available-rides": "Verfügbare Fahrten",
+        "vehicles": "Fahrzeuge"
       },
       "Billing": {
         "title": "Abrechnung & Bankdaten",
@@ -911,7 +913,12 @@
         "col-balance": "Saldo",
         "settlement-type-ride_credit": "Fahrt",
         "settlement-type-settlement": "Ausgleich",
-        "settlement-type-opening_balance": "Anfangssaldo"
+        "settlement-type-opening_balance": "Anfangssaldo",
+        "tab-applications": "Anträge",
+        "tab-active": "Aktiv",
+        "tab-balances": "Salden",
+        "tab-all": "Alle",
+        "active": "Aktiv"
       }
     },
     "Features": {

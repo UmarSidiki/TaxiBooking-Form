@@ -5,6 +5,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/features/auth";
 import { Partner } from "@/features/partners/model";
 import { connectDB } from "@/shared/db";
+import { partnerMayWork } from "@/features/partners/lib/partner-access";
 
 export default async function PartnerBillingLayout({
   children,
@@ -16,7 +17,7 @@ export default async function PartnerBillingLayout({
 
   await connectDB();
   const partner = await Partner.findOne({ email: session.user.email }).select("status");
-  if (partner && partner.status !== "approved") {
+  if (partner && !partnerMayWork(partner)) {
     redirect("/partners/account");
   }
 

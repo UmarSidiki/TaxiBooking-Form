@@ -6,7 +6,7 @@ export interface PartnerDashboardProfile {
   address?: string;
   city?: string;
   country?: string;
-  status: "pending" | "approved" | "rejected" | "suspended";
+  status: "pending" | "active" | "approved" | "rejected" | "suspended";
   rejectionReason?: string;
 }
 

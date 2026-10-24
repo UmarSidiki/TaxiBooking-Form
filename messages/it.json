@@ -647,14 +647,16 @@
         "rides": "Corse",
         "history": "Cronologia",
         "fleet": "Flotta",
-        "my-rides": "Le Mie Corse",
+        "my-rides": "Le mie corse",
         "upcoming-rides": "Prossime Corse",
         "preferences": "Preferenze",
         "billing": "Fatturazione",
         "overview": "Panoramica",
         "operations": "Operazioni",
         "fleet_management": "Gestione Flotta",
-        "account_settings": "Account e Impostazioni"
+        "account_settings": "Account e Impostazioni",
+        "available-rides": "Corse disponibili",
+        "vehicles": "Veicoli"
       },
       "Billing": {
         "title": "Fatturazione e Dettagli Bancari",
@@ -911,7 +913,12 @@
         "col-balance": "Saldo",
         "settlement-type-ride_credit": "Corsa",
         "settlement-type-settlement": "Regolamento",
-        "settlement-type-opening_balance": "Saldo iniziale"
+        "settlement-type-opening_balance": "Saldo iniziale",
+        "tab-applications": "Domande",
+        "tab-active": "Attivi",
+        "tab-balances": "Saldi",
+        "tab-all": "Tutti",
+        "active": "Attivo"
       }
     },
     "Features": {

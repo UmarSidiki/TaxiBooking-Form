@@ -647,14 +647,16 @@
         "rides": "Ritten",
         "history": "Geschiedenis",
         "fleet": "Wagenpark",
-        "my-rides": "Mijn Ritten",
+        "my-rides": "Mijn ritten",
         "upcoming-rides": "Aankomende Ritten",
         "preferences": "Voorkeuren",
         "billing": "Facturatie",
         "overview": "Overzicht",
         "operations": "Operationeel",
         "fleet_management": "Wagenparkbeheer",
-        "account_settings": "Account & Instellingen"
+        "account_settings": "Account & Instellingen",
+        "available-rides": "Beschikbare ritten",
+        "vehicles": "Voertuigen"
       },
       "Billing": {
         "title": "Facturatie & Bankgegevens",
@@ -911,7 +913,12 @@
         "col-balance": "Saldo",
         "settlement-type-ride_credit": "Rit",
         "settlement-type-settlement": "Afrekening",
-        "settlement-type-opening_balance": "Beginsaldo"
+        "settlement-type-opening_balance": "Beginsaldo",
+        "tab-applications": "Aanvragen",
+        "tab-active": "Actief",
+        "tab-balances": "Saldi",
+        "tab-all": "Alles",
+        "active": "Actief"
       }
     },
     "Features": {

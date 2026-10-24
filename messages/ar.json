@@ -654,7 +654,9 @@
         "overview": "نظرة عامة",
         "operations": "العمليات",
         "fleet_management": "إدارة الأسطول",
-        "account_settings": "الحساب والإعدادات"
+        "account_settings": "الحساب والإعدادات",
+        "available-rides": "الرحلات المتاحة",
+        "vehicles": "المركبات"
       },
       "Billing": {
         "title": "الفواتير والتفاصيل البنكية",
@@ -911,7 +913,12 @@
         "col-balance": "الرصيد",
         "settlement-type-ride_credit": "رحلة",
         "settlement-type-settlement": "تسوية",
-        "settlement-type-opening_balance": "رصيد افتتاحي"
+        "settlement-type-opening_balance": "رصيد افتتاحي",
+        "tab-applications": "الطلبات",
+        "tab-active": "نشط",
+        "tab-balances": "الأرصدة",
+        "tab-all": "الكل",
+        "active": "نشط"
       }
     },
     "Features": {

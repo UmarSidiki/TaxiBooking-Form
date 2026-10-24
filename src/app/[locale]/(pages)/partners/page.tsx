@@ -4,6 +4,7 @@ import { authOptions } from "@/features/auth";
 import { connectDB } from "@/shared/db";
 import { Setting } from "@/features/settings/model";
 import { Partner } from "@/features/partners/model";
+import { partnerMayWork } from "@/features/partners/lib/partner-access";
 
 export default async function PartnersPage() {
   // Check if partners module is enabled
@@ -20,7 +21,7 @@ export default async function PartnersPage() {
     const partner = await Partner.findOne({ email: session.user.email });
     
     // Redirect based on approval status
-    if (partner && partner.status !== "approved") {
+    if (partner && !partnerMayWork(partner)) {
       redirect(`/partners/account`);
     } else {
       redirect(`/partners/dashboard`);

@@ -654,7 +654,9 @@
         "overview": "Vue d'ensemble",
         "operations": "Opérations",
         "fleet_management": "Gestion de flotte",
-        "account_settings": "Paramètres du compte"
+        "account_settings": "Paramètres du compte",
+        "available-rides": "Courses disponibles",
+        "vehicles": "Véhicules"
       },
       "Billing": {
         "title": "Facturation & Coordonnées bancaires",
@@ -911,7 +913,12 @@
         "col-balance": "Solde",
         "settlement-type-ride_credit": "Course",
         "settlement-type-settlement": "Règlement",
-        "settlement-type-opening_balance": "Solde d'ouverture"
+        "settlement-type-opening_balance": "Solde d'ouverture",
+        "tab-applications": "Demandes",
+        "tab-active": "Actifs",
+        "tab-balances": "Soldes",
+        "tab-all": "Tous",
+        "active": "Actif"
       }
     },
     "Features": {

@@ -647,14 +647,16 @@
         "rides": "Viajes",
         "history": "Historial",
         "fleet": "Flota",
-        "my-rides": "Mis Viajes",
+        "my-rides": "Mis viajes",
         "upcoming-rides": "Viajes Próximos",
         "preferences": "Preferencias",
         "billing": "Facturación",
         "overview": "Resumen",
         "operations": "Operaciones",
         "fleet_management": "Gestión de Flota",
-        "account_settings": "Cuenta y Ajustes"
+        "account_settings": "Cuenta y Ajustes",
+        "available-rides": "Viajes disponibles",
+        "vehicles": "Vehículos"
       },
       "Billing": {
         "title": "Facturación y Datos Bancarios",
@@ -911,7 +913,12 @@
         "col-balance": "Saldo",
         "settlement-type-ride_credit": "Viaje",
         "settlement-type-settlement": "Liquidación",
-        "settlement-type-opening_balance": "Saldo inicial"
+        "settlement-type-opening_balance": "Saldo inicial",
+        "tab-applications": "Solicitudes",
+        "tab-active": "Activos",
+        "tab-balances": "Saldos",
+        "tab-all": "Todos",
+        "active": "Activo"
       }
     },
     "Features": {

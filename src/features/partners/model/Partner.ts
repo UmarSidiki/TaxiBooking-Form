@@ -1,6 +1,6 @@
 import { Schema, model, models } from "mongoose";
 
-export type PartnerStatus = "pending" | "approved" | "rejected" | "suspended";
+export type PartnerStatus = "pending" | "active" | "approved" | "rejected" | "suspended";
 export type DocumentStatus = "pending" | "approved" | "rejected";
 
 export interface IPartnerDocument {
@@ -58,6 +58,8 @@ export interface IPartner {
   notes?: string;
   // Fleet assignment fields - now supports multiple requests
   fleetRequests: IFleetRequest[];
+  /** Unified vehicle access. Legacy fleetRequests/currentFleet are migrated into this list. */
+  vehicles?: Array<{ vehicleId: string; status: FleetStatus }>;
   // Keep backward compatibility - current approved fleet
   currentFleet?: string; // Vehicle ID of currently approved fleet
   // Backward compatibility fields for old fleet system
@@ -155,10 +157,14 @@ const PartnerSchema = new Schema<IPartner>(
     },
     status: {
       type: String,
-      enum: ["pending", "approved", "rejected", "suspended"],
+      enum: ["pending", "active", "approved", "rejected", "suspended"],
       default: "pending",
     },
     documents: [PartnerDocumentSchema],
+    vehicles: [{
+      vehicleId: { type: Schema.Types.ObjectId, ref: "Vehicle", required: true },
+      status: { type: String, enum: ["none", "pending", "approved", "rejected"], default: "pending" },
+    }],
     isActive: {
       type: Boolean,
       default: true,

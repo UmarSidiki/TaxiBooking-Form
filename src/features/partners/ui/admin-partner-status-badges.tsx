@@ -13,11 +13,12 @@ export function AdminPartnerStatusBadge({
   t: TPartners;
 }) {
   switch (status) {
+    case "active":
     case "approved":
       return (
         <span className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
           <CheckCircle2 className="w-3 h-3" />
-          {t("approved")}
+          {status === "active" ? t("active") : t("approved")}
         </span>
       );
     case "rejected":
@@ -52,6 +53,7 @@ export function AdminPartnerDocumentStatusBadge({
   t: TPartners;
 }) {
   switch (status) {
+    case "active":
     case "approved":
       return (
         <span className="text-xs text-primary">

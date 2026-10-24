@@ -785,6 +785,8 @@
         "documents-count": "Документы ({0})",
         "no-documents-uploaded": "Документы не загружены",
         "view-document": "Просмотр документа",
+        "loading-document": "Загрузка документа…",
+        "document-load-error": "Не удалось открыть документ. Попробуйте снова.",
         "rejection-reason": "Причина отклонения",
         "partner-rejection-reason": "Причина отклонения партнера",
         "reject": "Отклонить",
@@ -1735,6 +1737,7 @@
     "all-rights-reserved": "Все права защищены.",
     "navigate": "Открыть навигацию",
     "load_error": "Не удалось загрузить поездки. Попробуйте снова.",
+    "load_more": "Загрузить ещё поездки",
     "retry": "Повторить",
     "passengers": "Пассажиры"
   },

@@ -20,8 +20,11 @@ export async function GET() {
       "assignedPartner._id": access.session.user.id,
     })
       .sort({ date: 1, time: 1 })
-      .select("-__v")
-      .limit(500);
+      .select(
+        "tripId pickup dropoff stops date time returnDate returnTime tripType passengers childSeats babySeats flightNumber notes firstName lastName email phone vehicleDetails selectedVehicle totalAmount partnerPayoutAmount status paymentStatus paymentMethod refundAmount refundPercentage canceledAt",
+      )
+      .limit(500)
+      .lean();
 
     return NextResponse.json({
       success: true,

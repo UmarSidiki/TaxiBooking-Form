@@ -1,4 +1,5 @@
 import mongoose, { Schema, Document } from "mongoose";
+import { registerBookingIndexes } from "./booking-indexes";
 
 export interface IBooking extends Document {
   tripId: string;
@@ -197,10 +198,7 @@ const BookingSchema: Schema = new Schema({
   timestamps: true,
 });
 
-// Create indexes for better performance
-BookingSchema.index({ createdAt: -1 });
-BookingSchema.index({ status: 1 });
-// Note: tripId index is already created by unique: true in schema definition
+registerBookingIndexes(BookingSchema);
 
 const Booking = mongoose.models.Booking || mongoose.model<IBooking>("Booking", BookingSchema);
 

@@ -65,6 +65,7 @@ export function PartnerAccountDocuments({
                     variant="outline"
                     className="h-11"
                     onClick={() => {
+                      if (!doc.fileData) return;
                       const link = document.createElement("a");
                       link.href = doc.fileData;
                       link.download = doc.fileName;

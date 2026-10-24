@@ -1,9 +1,11 @@
 import mongoose from "mongoose";
 
-const MONGODB_URI = process.env.MONGODB_URI;
-
-if (!MONGODB_URI) {
-  throw new Error("Please define MONGODB_URI in your environment variables");
+function readMongoUri() {
+  const uri = process.env.MONGODB_URI;
+  if (!uri) {
+    throw new Error("Please define MONGODB_URI in your environment variables");
+  }
+  return uri;
 }
 
 interface MongooseCache {
@@ -15,6 +17,7 @@ declare global {
   var mongoose: MongooseCache | undefined;
 }
 
+// One cached connection per warm serverless instance (global survives module reloads).
 const cached: MongooseCache = global.mongoose || { conn: null, promise: null };
 
 if (!global.mongoose) {
@@ -35,7 +38,7 @@ export async function connectDB() {
       maxIdleTimeMS: 10000,
     };
 
-    cached.promise = mongoose.connect(MONGODB_URI!, opts);
+    cached.promise = mongoose.connect(readMongoUri(), opts);
   }
 
   try {

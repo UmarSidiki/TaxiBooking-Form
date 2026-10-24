@@ -6,6 +6,7 @@ import { DriverRidesToolbar } from "@/features/rides/ui/driver-rides-toolbar";
 import { AdminRidesTabPanel } from "@/features/rides/ui/admin-rides-tab-panel";
 import { DeskNotice } from "@/features/dashboard/ui/desk-notice";
 import { Badge } from "@/shared/ui/badge";
+import { Button } from "@/shared/ui/button";
 import { Tabs, TabsList, TabsTrigger } from "@/shared/ui/tabs";
 import { useDriverDashboard } from "@/features/drivers/hooks/useDriverDashboard";
 import { Ban, CalendarDays, CheckCircle, Loader2 } from "lucide-react";
@@ -116,6 +117,16 @@ export default function DriverDashboard() {
           </AdminRidesTabPanel>
         ))}
       </Tabs>
+      {rides.hasMore ? (
+        <Button
+          variant="outline"
+          className="h-11"
+          disabled={rides.loadingMore}
+          onClick={() => void rides.loadMore()}
+        >
+          {rides.loadingMore ? `${t("Drivers.load_more")}…` : t("Drivers.load_more")}
+        </Button>
+      ) : null}
       <DriverRideDetailDialog
         t={rides.t}
         currencySymbol={rides.currencySymbol}

@@ -3,46 +3,41 @@ import { sendThankYouEmails } from "@/features/booking/lib/send-thank-you-emails
 import { cleanupAbandonedBookings } from "@/features/booking/lib/cleanup-abandoned-bookings";
 import { deleteSuspendedPartners } from "@/features/partners/lib/delete-suspended-partners";
 import { deleteOldCompletedRides } from "@/features/rides/lib/delete-old-completed-rides";
+import { isCronAuthorized } from "@/shared/http/is-cron-authorized";
 
 export async function GET(req: Request) {
-  const authHeader = req.headers.get("authorization");
   const cronSecret = process.env.CRON_SECRET;
-
-  if (cronSecret && authHeader !== `Bearer ${cronSecret}`) {
+  if (!isCronAuthorized(req.headers.get("authorization"), cronSecret)) {
     return new NextResponse("Unauthorized", { status: 401 });
   }
 
-  console.log('🕒 Cron job triggered');
+  console.log("🕒 Cron job triggered");
 
-  // Send thank you emails
-  console.log('📧 Sending thank you emails...');
-  const emailResult = await sendThankYouEmails();
-  
-  // Cleanup abandoned bookings
-  console.log('🧹 Cleaning up abandoned bookings...');
-  const cleanupResult = await cleanupAbandonedBookings();
-
-  // Delete suspended partners (30 days after suspension)
-  console.log('🗑️ Deleting suspended partners...');
-  const partnerDeletionResult = await deleteSuspendedPartners();
-
-  // Delete old completed rides (90+ days old)
-  console.log('🗑️ Deleting old completed rides...');
-  const oldRidesDeletionResult = await deleteOldCompletedRides();
+  const [emailResult, cleanupResult, partnerDeletionResult, oldRidesDeletionResult] =
+    await Promise.all([
+      sendThankYouEmails(),
+      cleanupAbandonedBookings(),
+      deleteSuspendedPartners(),
+      deleteOldCompletedRides(),
+    ]);
 
   const results = {
-    success: emailResult.success && cleanupResult.success && partnerDeletionResult.success && oldRidesDeletionResult.success,
+    success:
+      emailResult.success &&
+      cleanupResult.success &&
+      partnerDeletionResult.success &&
+      oldRidesDeletionResult.success,
     emails: emailResult,
     cleanup: cleanupResult,
     partnerDeletion: partnerDeletionResult,
-    oldRidesDeletion: oldRidesDeletionResult
+    oldRidesDeletion: oldRidesDeletionResult,
   };
 
   if (results.success) {
-    console.log('✅ Cron job completed successfully');
+    console.log("✅ Cron job completed successfully");
     return NextResponse.json(results);
-  } else {
-    console.error('❌ Cron job completed with errors');
-    return NextResponse.json(results, { status: 500 });
   }
+
+  console.error("❌ Cron job completed with errors");
+  return NextResponse.json(results, { status: 500 });
 }

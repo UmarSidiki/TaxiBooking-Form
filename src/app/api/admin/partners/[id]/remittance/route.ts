@@ -5,6 +5,7 @@ import { requireAdmin } from "@/features/auth/lib/require-role";
 import { jsonError } from "@/shared/http/json-error";
 import { getPartnerDispatchSettings } from "@/features/partners/lib/get-partner-dispatch-settings";
 import { recordPartnerSettlement } from "@/features/partners/lib/record-partner-settlement";
+import { omitPartnerDocumentFileData } from "@/features/partners/lib/to-admin-partner";
 
 export async function PATCH(
   _request: Request,
@@ -22,7 +23,10 @@ export async function PATCH(
 
     const amount = partner.remittanceBalance ?? 0;
     if (!(amount > 0)) {
-      return NextResponse.json({ success: true, partner }, { status: 200 });
+      return NextResponse.json(
+        { success: true, partner: omitPartnerDocumentFileData(partner) },
+        { status: 200 },
+      );
     }
 
     const { currency } = await getPartnerDispatchSettings();
@@ -39,7 +43,7 @@ export async function PATCH(
 
     const refreshed = await Partner.findById(id);
     return NextResponse.json(
-      { success: true, partner: refreshed },
+      { success: true, partner: omitPartnerDocumentFileData(refreshed) },
       { status: 200 }
     );
   } catch (error) {

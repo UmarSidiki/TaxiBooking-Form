@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { connectDB } from "@/shared/db";
 import { Partner } from "@/features/partners/model";
 import PartnerSettlementEntry from "@/features/partners/model/PartnerSettlementEntry";
+import { omitPartnerDocumentFileData } from "@/features/partners/lib/to-admin-partner";
 import { requireAdmin } from "@/features/auth/lib/require-role";
 import { jsonError } from "@/shared/http/json-error";
 
@@ -82,7 +83,7 @@ export async function POST(
     return NextResponse.json(
       {
         success: true,
-        partner,
+        partner: omitPartnerDocumentFileData(partner),
         summary: {
           totalEarnings: partner.totalEarnings,
           onlineEarnings: partner.onlineEarnings,

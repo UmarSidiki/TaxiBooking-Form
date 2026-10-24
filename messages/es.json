@@ -785,6 +785,8 @@
         "documents-count": "Documentos ({0})",
         "no-documents-uploaded": "No hay documentos subidos",
         "view-document": "Ver Documento",
+        "loading-document": "Cargando documento…",
+        "document-load-error": "No se pudo abrir el documento. Inténtalo de nuevo.",
         "rejection-reason": "Razón del Rechazo",
         "partner-rejection-reason": "Razón del Rechazo del Socio",
         "reject": "Rechazar",
@@ -1735,6 +1737,7 @@
     "all-rights-reserved": "Todos los derechos reservados.",
     "navigate": "Abrir navegación",
     "load_error": "No pudimos cargar sus viajes. Inténtelo de nuevo.",
+    "load_more": "Cargar más viajes",
     "retry": "Reintentar",
     "passengers": "Pasajeros"
   },

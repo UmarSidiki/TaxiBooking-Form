@@ -600,7 +600,8 @@
         "failed-to-accept-ride": "Rit accepteren mislukt",
         "partner-earnings-label": "Uw uitbetaling",
         "retry": "Opnieuw proberen",
-        "dismiss": "Sluiten"
+        "dismiss": "Sluiten",
+        "balance": "Saldo"
       },
       "Rides": {
         "my-rides": "Mijn Ritten",
@@ -687,7 +688,20 @@
         "save-button": "Bankgegevens opslaan",
         "save-success": "Bankgegevens succesvol bijgewerkt.",
         "save-error": "Opslaan bankgegevens mislukt. Probeer het opnieuw.",
-        "load-error": "Kan facturatiegegevens niet laden. Vernieuw de pagina en probeer het opnieuw."
+        "load-error": "Kan facturatiegegevens niet laden. Vernieuw de pagina en probeer het opnieuw.",
+        "statement-title": "Afschrift",
+        "statement-empty": "Nog geen regels.",
+        "download-statement": "Afschrift downloaden",
+        "col-when": "Wanneer",
+        "col-fare": "Tarief",
+        "col-margin": "Marge",
+        "col-share": "Partnerdeel",
+        "col-change": "Mutatie",
+        "col-balance": "Saldo",
+        "entry-ride_credit": "Rit",
+        "entry-settlement": "Afrekening",
+        "entry-opening_balance": "Beginsaldo",
+        "entry-clawback": "Terugboeking"
       },
       "Fleet": {
         "fleet-management": "Wagenparkbeheer",
@@ -871,7 +885,33 @@
         "settlement-type-payout_paid": "Uitbetaling betaald",
         "settlement-type-remittance_credit": "Afdracht verschuldigd",
         "settlement-type-remittance_received": "Afdracht ontvangen",
-        "settlement-type-clawback": "Terugboeking"
+        "settlement-type-clawback": "Terugboeking",
+        "balance-label": "Saldo",
+        "balance-hint": "Positief: u bent de partner verschuldigd. Negatief: de partner is u verschuldigd.",
+        "settle-open": "Afrekening vastleggen",
+        "settle-title": "Afrekening vastleggen",
+        "settle-description": "Een deelbedrag mag. Het grootboek bewaart wie het vastlegde.",
+        "settle-amount": "Bedrag",
+        "settle-direction": "Richting",
+        "settle-pay-partner": "Partner betalen",
+        "settle-receive": "Ontvangen van partner",
+        "settle-method": "Manier",
+        "settle-bank": "Bank",
+        "settle-cash": "Contant",
+        "settle-other": "Anders",
+        "settle-reference": "Referentie",
+        "settle-save": "Afrekening opslaan",
+        "settle-saving": "Opslaan…",
+        "settle-error": "De afrekening kon niet worden opgeslagen. Probeer opnieuw.",
+        "col-when": "Wanneer",
+        "col-fare": "Tarief",
+        "col-margin": "Marge",
+        "col-share": "Partnerdeel",
+        "col-change": "Mutatie",
+        "col-balance": "Saldo",
+        "settlement-type-ride_credit": "Rit",
+        "settlement-type-settlement": "Afrekening",
+        "settlement-type-opening_balance": "Beginsaldo"
       }
     },
     "Features": {

@@ -15,11 +15,6 @@ export function PartnerDetailsTabContent({
   selectedPartner,
   vehicles,
   formatCurrency,
-  formatDate,
-  payoutProcessingId,
-  handleMarkPayoutPaid,
-  handleMarkRemittanceReceived,
-  handleRecalculatePayout,
   setSelectedDocument,
   setShowDocumentDialog,
   processing,
@@ -36,11 +31,6 @@ export function PartnerDetailsTabContent({
   | "selectedPartner"
   | "vehicles"
   | "formatCurrency"
-  | "formatDate"
-  | "payoutProcessingId"
-  | "handleMarkPayoutPaid"
-  | "handleMarkRemittanceReceived"
-  | "handleRecalculatePayout"
   | "setSelectedDocument"
   | "setShowDocumentDialog"
   | "processing"
@@ -66,11 +56,6 @@ export function PartnerDetailsTabContent({
           t={t}
           selectedPartner={selectedPartner}
           formatCurrency={formatCurrency}
-          formatDate={formatDate}
-          payoutProcessingId={payoutProcessingId}
-          handleMarkPayoutPaid={handleMarkPayoutPaid}
-          handleMarkRemittanceReceived={handleMarkRemittanceReceived}
-          handleRecalculatePayout={handleRecalculatePayout}
         />
       ) : null}
       {activeTab === "documents" ? (

@@ -27,6 +27,7 @@ export async function applyAssignDriver(
   };
   updateData.assignmentEmailSent = false;
   updateData.availableForPartners = false;
+  updateData.responsibleAssignee = "driver";
 
   const { dispatchAssigneeMode } = await getPartnerDispatchSettings();
   const unsetFields: string[] = ["partnerAcceptanceDeadline"];

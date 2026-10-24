@@ -50,6 +50,7 @@ export interface Partner {
   cashEarnings?: number;
   payoutBalance?: number;
   remittanceBalance?: number;
+  balance?: number;
   lastPayoutAt?: string;
   lastRemittanceAt?: string;
   billingDetails?: {

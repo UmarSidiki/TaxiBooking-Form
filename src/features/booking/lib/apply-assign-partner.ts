@@ -47,6 +47,7 @@ export async function applyAssignPartner(
   };
   updateData.assignmentEmailSent = false;
   updateData.availableForPartners = false;
+  updateData.responsibleAssignee = "partner";
 
   const { dispatchAssigneeMode } = await getPartnerDispatchSettings();
   const unsetFields: string[] = ["partnerAcceptanceDeadline"];

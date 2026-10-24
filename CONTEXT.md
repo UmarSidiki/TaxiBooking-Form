@@ -80,16 +80,20 @@ _Avoid_: Commission, fee (when meaning this cut)
 The Partner’s portion of the fare after operator margin (`partnerPayoutAmount`).
 _Avoid_: Earnings (ambiguous with counters), payout amount alone
 
-**Payout balance**:
-What the operator still owes the Partner for completed online rides.
-_Avoid_: Wallet, lodge
+**Partner balance**:
+One signed figure per Partner. Positive means the operator owes the Partner. Negative means the Partner owes the operator. It is the sum of the ledger.
+_Avoid_: Payout balance, remittance balance, wallet, lodge
 
-**Remittance balance**:
-What the Partner still owes the operator (cash settlement with margin).
-_Avoid_: Debt, lodge
+**Responsible assignee**:
+The party who is paid for a ride. In exclusive dispatch that is the only assignee. In allow-both dispatch it is the latest assignment; only a Partner receives a ledger credit.
+_Avoid_: Owner, both parties
+
+**Settlement**:
+A partial or full payment recorded against the Partner balance, with method (cash, bank, or other), reference, note, and who recorded it.
+_Avoid_: Payout button, remittance button, recalculate
 
 **Settlement entry**:
-An immutable ledger row that explains a balance change.
+An immutable ledger row that explains a balance change, including ride credits, clawbacks, and settlements.
 _Avoid_: Lodge, transaction (generic), log
 
 **Cash settlement mode**:

@@ -600,7 +600,8 @@
         "failed-to-accept-ride": "Error al aceptar viaje",
         "partner-earnings-label": "Su pago",
         "retry": "Reintentar",
-        "dismiss": "Cerrar"
+        "dismiss": "Cerrar",
+        "balance": "Saldo"
       },
       "Rides": {
         "my-rides": "Mis Viajes",
@@ -687,7 +688,20 @@
         "save-button": "Guardar datos bancarios",
         "save-success": "Datos bancarios actualizados con éxito.",
         "save-error": "Error al guardar datos bancarios. Por favor, inténtelo de nuevo.",
-        "load-error": "No se pudo cargar la información de facturación. Actualice e inténtelo de nuevo."
+        "load-error": "No se pudo cargar la información de facturación. Actualice e inténtelo de nuevo.",
+        "statement-title": "Extracto",
+        "statement-empty": "Todavía no hay líneas.",
+        "download-statement": "Descargar extracto",
+        "col-when": "Fecha",
+        "col-fare": "Tarifa",
+        "col-margin": "Margen",
+        "col-share": "Parte del socio",
+        "col-change": "Cambio",
+        "col-balance": "Saldo",
+        "entry-ride_credit": "Viaje",
+        "entry-settlement": "Liquidación",
+        "entry-opening_balance": "Saldo inicial",
+        "entry-clawback": "Reversión"
       },
       "Fleet": {
         "fleet-management": "Gestión de Flota",
@@ -871,7 +885,33 @@
         "settlement-type-payout_paid": "Pago realizado",
         "settlement-type-remittance_credit": "Remesa debida",
         "settlement-type-remittance_received": "Remesa recibida",
-        "settlement-type-clawback": "Reversión"
+        "settlement-type-clawback": "Reversión",
+        "balance-label": "Saldo",
+        "balance-hint": "Positivo: usted debe al socio. Negativo: el socio le debe.",
+        "settle-open": "Registrar liquidación",
+        "settle-title": "Registrar una liquidación",
+        "settle-description": "Se permite un importe parcial. El libro indica quién lo registró.",
+        "settle-amount": "Importe",
+        "settle-direction": "Dirección",
+        "settle-pay-partner": "Pagar al socio",
+        "settle-receive": "Recibir del socio",
+        "settle-method": "Método",
+        "settle-bank": "Banco",
+        "settle-cash": "Efectivo",
+        "settle-other": "Otro",
+        "settle-reference": "Referencia",
+        "settle-save": "Guardar liquidación",
+        "settle-saving": "Guardando…",
+        "settle-error": "No se pudo registrar la liquidación. Inténtalo de nuevo.",
+        "col-when": "Fecha",
+        "col-fare": "Tarifa",
+        "col-margin": "Margen",
+        "col-share": "Parte del socio",
+        "col-change": "Cambio",
+        "col-balance": "Saldo",
+        "settlement-type-ride_credit": "Viaje",
+        "settlement-type-settlement": "Liquidación",
+        "settlement-type-opening_balance": "Saldo inicial"
       }
     },
     "Features": {

@@ -74,6 +74,8 @@ export interface IPartner {
   payoutBalance?: number;
   /** Partner still owes operator (cash + margin mode). */
   remittanceBalance?: number;
+  /** Signed ledger balance. Positive: operator owes partner. Negative: partner owes operator. */
+  balance?: number;
   lastPayoutAt?: Date;
   lastRemittanceAt?: Date;
   createdAt?: Date;
@@ -261,6 +263,9 @@ const PartnerSchema = new Schema<IPartner>(
     remittanceBalance: {
       type: Number,
       default: 0,
+    },
+    balance: {
+      type: Number,
     },
     lastPayoutAt: {
       type: Date,

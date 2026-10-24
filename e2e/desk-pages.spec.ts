@@ -84,6 +84,13 @@ test("partner dashboard loads one marketplace poll and batches history reviews",
     fullPage: true,
   });
 
+  await openPath(page, "/en/partners/billing");
+  await expect(page.getByRole("heading", { name: "Statement" })).toBeVisible();
+  await page.screenshot({
+    path: `${ARTIFACTS}/partner-billing-${testInfo.project.name}.png`,
+    fullPage: true,
+  });
+
   if (testInfo.project.name !== "desktop") return;
 
   requests.length = 0;

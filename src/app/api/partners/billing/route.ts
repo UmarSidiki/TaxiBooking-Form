@@ -5,6 +5,8 @@ import { requireRole } from "@/features/auth/lib/require-role";
 import { parseJsonBody } from "@/shared/http/parse-json-body";
 import { jsonError } from "@/shared/http/json-error";
 import { partnerBillingSchema } from "@/features/partners/schema/partner-write.schema";
+import { listPartnerStatement } from "@/features/partners/lib/list-partner-statement";
+import { readPartnerBalance } from "@/features/partners/lib/partner-share-delta";
 
 function clip(value: string | undefined, limit: number) {
   const trimmed = value?.trim();
@@ -23,10 +25,13 @@ export async function GET() {
     );
     if (!partner) return jsonError("not_found", 404);
 
+    const statement = await listPartnerStatement(String(partner._id));
     return NextResponse.json({
       success: true,
       billingDetails: partner.billingDetails || {},
-      payoutBalance: partner.payoutBalance || 0,
+      balance: readPartnerBalance(partner),
+      payoutBalance: readPartnerBalance(partner),
+      statement,
       lastPayoutAt: partner.lastPayoutAt || null,
     });
   } catch (error) {
@@ -63,7 +68,8 @@ export async function PATCH(request: NextRequest) {
     return NextResponse.json({
       success: true,
       billingDetails: updatedPartner.billingDetails || {},
-      payoutBalance: updatedPartner.payoutBalance || 0,
+      balance: readPartnerBalance(updatedPartner),
+      payoutBalance: readPartnerBalance(updatedPartner),
       lastPayoutAt: updatedPartner.lastPayoutAt || null,
     });
   } catch (error) {

@@ -92,6 +92,8 @@ export interface IBooking extends Document {
   partnerMarginAmount?: number;
   partnerPayoutAmount?: number;
   partnerApprovedAt?: Date;
+  /** Who is paid when both a driver and a partner are on the ride. */
+  responsibleAssignee?: "driver" | "partner";
   createdAt: Date;
   updatedAt: Date;
 }
@@ -194,6 +196,7 @@ const BookingSchema: Schema = new Schema({
   partnerMarginAmount: { type: Number },
   partnerPayoutAmount: { type: Number },
   partnerApprovedAt: { type: Date },
+  responsibleAssignee: { type: String, enum: ["driver", "partner"] },
 }, {
   timestamps: true,
 });

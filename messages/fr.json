@@ -600,7 +600,8 @@
         "failed-to-accept-ride": "Échec de l'acceptation de la course",
         "partner-earnings-label": "Votre paiement",
         "retry": "Réessayer",
-        "dismiss": "Fermer"
+        "dismiss": "Fermer",
+        "balance": "Solde"
       },
       "Rides": {
         "my-rides": "Mes courses",
@@ -687,7 +688,20 @@
         "save-button": "Enregistrer les détails bancaires",
         "save-success": "Coordonnées bancaires mises à jour avec succès.",
         "save-error": "Échec de l'enregistrement. Veuillez réessayer.",
-        "load-error": "Impossible de charger les informations de facturation."
+        "load-error": "Impossible de charger les informations de facturation.",
+        "statement-title": "Relevé",
+        "statement-empty": "Aucune ligne pour le moment.",
+        "download-statement": "Télécharger le relevé",
+        "col-when": "Date",
+        "col-fare": "Tarif",
+        "col-margin": "Marge",
+        "col-share": "Part partenaire",
+        "col-change": "Mouvement",
+        "col-balance": "Solde",
+        "entry-ride_credit": "Course",
+        "entry-settlement": "Règlement",
+        "entry-opening_balance": "Solde d'ouverture",
+        "entry-clawback": "Reprise"
       },
       "Fleet": {
         "fleet-management": "Gestion de flotte",
@@ -871,7 +885,33 @@
         "settlement-type-payout_paid": "Paiement effectué",
         "settlement-type-remittance_credit": "Remise due",
         "settlement-type-remittance_received": "Remise reçue",
-        "settlement-type-clawback": "Reprise"
+        "settlement-type-clawback": "Reprise",
+        "balance-label": "Solde",
+        "balance-hint": "Positif : vous devez au partenaire. Négatif : le partenaire vous doit.",
+        "settle-open": "Enregistrer un règlement",
+        "settle-title": "Enregistrer un règlement",
+        "settle-description": "Un montant partiel est accepté. Le grand livre indique qui l'a saisi.",
+        "settle-amount": "Montant",
+        "settle-direction": "Sens",
+        "settle-pay-partner": "Payer le partenaire",
+        "settle-receive": "Recevoir du partenaire",
+        "settle-method": "Moyen",
+        "settle-bank": "Banque",
+        "settle-cash": "Espèces",
+        "settle-other": "Autre",
+        "settle-reference": "Référence",
+        "settle-save": "Enregistrer",
+        "settle-saving": "Enregistrement…",
+        "settle-error": "Impossible d'enregistrer le règlement. Réessayez.",
+        "col-when": "Date",
+        "col-fare": "Tarif",
+        "col-margin": "Marge",
+        "col-share": "Part partenaire",
+        "col-change": "Mouvement",
+        "col-balance": "Solde",
+        "settlement-type-ride_credit": "Course",
+        "settlement-type-settlement": "Règlement",
+        "settlement-type-opening_balance": "Solde d'ouverture"
       }
     },
     "Features": {

@@ -16,6 +16,7 @@ export interface PartnerRideStats {
   completedRides: number;
   canceledRides: number;
   totalEarnings: number;
+  balance?: number;
 }
 
 export interface PartnerAvailableRide {

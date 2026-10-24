@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { useCurrency } from "@/shared/context/currency-context";
+import type { StatementLine } from "@/features/partners/ui/partner-billing-statement";
 
 export interface PartnerBillingFormState {
   accountHolder: string;
@@ -28,6 +29,7 @@ export function usePartnerBilling() {
   const { currency } = useCurrency();
   const [formState, setFormState] = useState<PartnerBillingFormState>(emptyForm);
   const [payoutBalance, setPayoutBalance] = useState(0);
+  const [statement, setStatement] = useState<StatementLine[]>([]);
   const [lastPayoutAt, setLastPayoutAt] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -64,7 +66,8 @@ export function usePartnerBilling() {
         swift: data.billingDetails.swift || "",
         notes: data.billingDetails.notes || "",
       });
-      setPayoutBalance(data.payoutBalance || 0);
+      setPayoutBalance(typeof data.balance === "number" ? data.balance : data.payoutBalance || 0);
+      setStatement(Array.isArray(data.statement) ? data.statement : []);
       setLastPayoutAt(data.lastPayoutAt || null);
       setError(null);
     } catch {
@@ -112,9 +115,11 @@ export function usePartnerBilling() {
 
   return {
     t,
+    currency,
     formState,
     formattedBalance,
     formattedLastPaid,
+    statement,
     loading,
     saving,
     error,

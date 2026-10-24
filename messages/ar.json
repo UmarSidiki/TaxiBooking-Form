@@ -600,7 +600,8 @@
         "failed-to-accept-ride": "فشل قبول الرحلة",
         "partner-earnings-label": "مستحقاتك",
         "retry": "إعادة المحاولة",
-        "dismiss": "إغلاق"
+        "dismiss": "إغلاق",
+        "balance": "الرصيد"
       },
       "Rides": {
         "my-rides": "رحلاتي",
@@ -687,7 +688,20 @@
         "save-button": "حفظ التفاصيل البنكية",
         "save-success": "تم تحديث التفاصيل البنكية بنجاح.",
         "save-error": "فشل حفظ التفاصيل البنكية. يرجى المحاولة مرة أخرى.",
-        "load-error": "تعذر تحميل معلومات الفواتير. يرجى التحديث والمحاولة مرة أخرى."
+        "load-error": "تعذر تحميل معلومات الفواتير. يرجى التحديث والمحاولة مرة أخرى.",
+        "statement-title": "كشف الحساب",
+        "statement-empty": "لا توجد قيود بعد.",
+        "download-statement": "تنزيل الكشف",
+        "col-when": "الوقت",
+        "col-fare": "الأجرة",
+        "col-margin": "الهامش",
+        "col-share": "حصة الشريك",
+        "col-change": "الحركة",
+        "col-balance": "الرصيد",
+        "entry-ride_credit": "رحلة",
+        "entry-settlement": "تسوية",
+        "entry-opening_balance": "رصيد افتتاحي",
+        "entry-clawback": "عكس"
       },
       "Fleet": {
         "fleet-management": "إدارة الأسطول",
@@ -871,7 +885,33 @@
         "settlement-type-payout_paid": "تم الدفع",
         "settlement-type-remittance_credit": "تحويل مستحق",
         "settlement-type-remittance_received": "تم استلام التحويل",
-        "settlement-type-clawback": "استرداد"
+        "settlement-type-clawback": "استرداد",
+        "balance-label": "الرصيد",
+        "balance-hint": "موجب: أنت مدين للشريك. سالب: الشريك مدين لك.",
+        "settle-open": "تسجيل تسوية",
+        "settle-title": "تسجيل تسوية",
+        "settle-description": "يُسمح بمبلغ جزئي. يحفظ الدفتر من سجّلها.",
+        "settle-amount": "المبلغ",
+        "settle-direction": "الاتجاه",
+        "settle-pay-partner": "ادفع للشريك",
+        "settle-receive": "استلم من الشريك",
+        "settle-method": "الطريقة",
+        "settle-bank": "بنك",
+        "settle-cash": "نقد",
+        "settle-other": "أخرى",
+        "settle-reference": "المرجع",
+        "settle-save": "حفظ التسوية",
+        "settle-saving": "جارٍ الحفظ…",
+        "settle-error": "تعذر تسجيل التسوية. حاول مرة أخرى.",
+        "col-when": "الوقت",
+        "col-fare": "الأجرة",
+        "col-margin": "الهامش",
+        "col-share": "حصة الشريك",
+        "col-change": "الحركة",
+        "col-balance": "الرصيد",
+        "settlement-type-ride_credit": "رحلة",
+        "settlement-type-settlement": "تسوية",
+        "settlement-type-opening_balance": "رصيد افتتاحي"
       }
     },
     "Features": {

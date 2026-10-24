@@ -72,6 +72,7 @@ await db.collection("partners").insertOne({
   ],
   totalEarnings: 40,
   payoutBalance: 40,
+  balance: 40,
   createdAt: now,
   updatedAt: now,
 });
@@ -180,6 +181,22 @@ await db.collection("bookings").insertMany([
     updatedAt: now,
   },
 ]);
+
+await db.collection("partnersettlemententries").insertOne({
+  partnerId,
+  bookingId: pastBookingId,
+  type: "ride_credit",
+  amount: 40,
+  balanceDelta: 40,
+  currency: "eur",
+  channel: "online",
+  fare: 50,
+  margin: 10,
+  partnerShare: 40,
+  note: "Online ride paid and complete",
+  createdAt: now,
+  updatedAt: now,
+});
 
 await db.collection("reviews").insertOne({
   bookingId: pastBookingId,

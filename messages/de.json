@@ -600,7 +600,8 @@
         "failed-to-accept-ride": "Fahrt konnte nicht angenommen werden",
         "partner-earnings-label": "Ihre Auszahlung",
         "retry": "Erneut versuchen",
-        "dismiss": "Schließen"
+        "dismiss": "Schließen",
+        "balance": "Saldo"
       },
       "Rides": {
         "my-rides": "Meine Fahrten",
@@ -687,7 +688,20 @@
         "save-button": "Bankdaten speichern",
         "save-success": "Bankdaten erfolgreich aktualisiert.",
         "save-error": "Fehler beim Speichern der Bankdaten. Bitte versuchen Sie es erneut.",
-        "load-error": "Abrechnungsinformationen konnten nicht geladen werden. Bitte aktualisieren Sie und versuchen Sie es erneut."
+        "load-error": "Abrechnungsinformationen konnten nicht geladen werden. Bitte aktualisieren Sie und versuchen Sie es erneut.",
+        "statement-title": "Kontoauszug",
+        "statement-empty": "Noch keine Buchungen.",
+        "download-statement": "Auszug herunterladen",
+        "col-when": "Wann",
+        "col-fare": "Fahrpreis",
+        "col-margin": "Marge",
+        "col-share": "Partneranteil",
+        "col-change": "Änderung",
+        "col-balance": "Saldo",
+        "entry-ride_credit": "Fahrt",
+        "entry-settlement": "Ausgleich",
+        "entry-opening_balance": "Anfangssaldo",
+        "entry-clawback": "Rückbuchung"
       },
       "Fleet": {
         "fleet-management": "Flottenmanagement",
@@ -871,7 +885,33 @@
         "settlement-type-payout_paid": "Auszahlung bezahlt",
         "settlement-type-remittance_credit": "Abführung fällig",
         "settlement-type-remittance_received": "Abführung erhalten",
-        "settlement-type-clawback": "Rückbuchung"
+        "settlement-type-clawback": "Rückbuchung",
+        "balance-label": "Saldo",
+        "balance-hint": "Positiv: Sie schulden dem Partner. Negativ: der Partner schuldet Ihnen.",
+        "settle-open": "Ausgleich buchen",
+        "settle-title": "Ausgleich buchen",
+        "settle-description": "Ein Teilbetrag ist erlaubt. Das Buch hält fest, wer gebucht hat.",
+        "settle-amount": "Betrag",
+        "settle-direction": "Richtung",
+        "settle-pay-partner": "Partner zahlen",
+        "settle-receive": "Vom Partner erhalten",
+        "settle-method": "Weg",
+        "settle-bank": "Bank",
+        "settle-cash": "Bar",
+        "settle-other": "Andere",
+        "settle-reference": "Referenz",
+        "settle-save": "Ausgleich speichern",
+        "settle-saving": "Speichern…",
+        "settle-error": "Der Ausgleich konnte nicht gespeichert werden. Erneut versuchen.",
+        "col-when": "Wann",
+        "col-fare": "Fahrpreis",
+        "col-margin": "Marge",
+        "col-share": "Partneranteil",
+        "col-change": "Änderung",
+        "col-balance": "Saldo",
+        "settlement-type-ride_credit": "Fahrt",
+        "settlement-type-settlement": "Ausgleich",
+        "settlement-type-opening_balance": "Anfangssaldo"
       }
     },
     "Features": {

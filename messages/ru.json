@@ -600,7 +600,8 @@
         "failed-to-accept-ride": "Не удалось принять поездку",
         "partner-earnings-label": "Ваша выплата",
         "retry": "Повторить",
-        "dismiss": "Закрыть"
+        "dismiss": "Закрыть",
+        "balance": "Баланс"
       },
       "Rides": {
         "my-rides": "Мои поездки",
@@ -687,7 +688,20 @@
         "save-button": "Сохранить реквизиты",
         "save-success": "Банковские реквизиты успешно обновлены.",
         "save-error": "Не удалось сохранить реквизиты. Попробуйте снова.",
-        "load-error": "Не удалось загрузить платежную информацию. Пожалуйста, обновите и попробуйте снова."
+        "load-error": "Не удалось загрузить платежную информацию. Пожалуйста, обновите и попробуйте снова.",
+        "statement-title": "Выписка",
+        "statement-empty": "Пока нет строк.",
+        "download-statement": "Скачать выписку",
+        "col-when": "Когда",
+        "col-fare": "Тариф",
+        "col-margin": "Маржа",
+        "col-share": "Доля партнёра",
+        "col-change": "Изменение",
+        "col-balance": "Баланс",
+        "entry-ride_credit": "Поездка",
+        "entry-settlement": "Расчёт",
+        "entry-opening_balance": "Начальный баланс",
+        "entry-clawback": "Сторно"
       },
       "Fleet": {
         "fleet-management": "Управление автопарком",
@@ -871,7 +885,33 @@
         "settlement-type-payout_paid": "Выплата оплачена",
         "settlement-type-remittance_credit": "Долг партнёра",
         "settlement-type-remittance_received": "Перевод получен",
-        "settlement-type-clawback": "Сторно"
+        "settlement-type-clawback": "Сторно",
+        "balance-label": "Баланс",
+        "balance-hint": "Плюс: вы должны партнёру. Минус: партнёр должен вам.",
+        "settle-open": "Записать расчёт",
+        "settle-title": "Записать расчёт",
+        "settle-description": "Можно указать часть суммы. В книге хранится, кто записал.",
+        "settle-amount": "Сумма",
+        "settle-direction": "Направление",
+        "settle-pay-partner": "Заплатить партнёру",
+        "settle-receive": "Получить от партнёра",
+        "settle-method": "Способ",
+        "settle-bank": "Банк",
+        "settle-cash": "Наличные",
+        "settle-other": "Другое",
+        "settle-reference": "Ссылка",
+        "settle-save": "Сохранить расчёт",
+        "settle-saving": "Сохранение…",
+        "settle-error": "Не удалось записать расчёт. Попробуйте снова.",
+        "col-when": "Когда",
+        "col-fare": "Тариф",
+        "col-margin": "Маржа",
+        "col-share": "Доля партнёра",
+        "col-change": "Изменение",
+        "col-balance": "Баланс",
+        "settlement-type-ride_credit": "Поездка",
+        "settlement-type-settlement": "Расчёт",
+        "settlement-type-opening_balance": "Начальный баланс"
       }
     },
     "Features": {

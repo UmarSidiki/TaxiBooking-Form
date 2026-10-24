@@ -1,4 +1,5 @@
 import { Booking, PendingBooking } from '@/features/booking/model';
+import { creditPartnerAfterPayment } from '@/features/payments/lib/credit-partner-after-payment';
 import type {
   FinalizePaidBookingInput,
   FinalizePaidBookingResult,
@@ -39,6 +40,7 @@ export async function tryFastPathFinalized(
   if (existing.tripId) {
     await PendingBooking.deleteOne({ orderId: existing.tripId });
   }
+  await creditPartnerAfterPayment(existing);
 
   return {
     success: true,

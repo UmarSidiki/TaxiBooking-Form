@@ -600,7 +600,8 @@
         "failed-to-accept-ride": "Impossibile accettare la corsa",
         "partner-earnings-label": "Il tuo compenso",
         "retry": "Riprova",
-        "dismiss": "Chiudi"
+        "dismiss": "Chiudi",
+        "balance": "Saldo"
       },
       "Rides": {
         "my-rides": "Le Mie Corse",
@@ -687,7 +688,20 @@
         "save-button": "Salva dettagli bancari",
         "save-success": "Dettagli bancari aggiornati con successo.",
         "save-error": "Impossibile salvare i dettagli bancari. Riprova.",
-        "load-error": "Impossibile caricare le informazioni di fatturazione. Aggiorna e riprova."
+        "load-error": "Impossibile caricare le informazioni di fatturazione. Aggiorna e riprova.",
+        "statement-title": "Estratto",
+        "statement-empty": "Nessuna riga per ora.",
+        "download-statement": "Scarica estratto",
+        "col-when": "Quando",
+        "col-fare": "Tariffa",
+        "col-margin": "Margine",
+        "col-share": "Quota partner",
+        "col-change": "Variazione",
+        "col-balance": "Saldo",
+        "entry-ride_credit": "Corsa",
+        "entry-settlement": "Regolamento",
+        "entry-opening_balance": "Saldo iniziale",
+        "entry-clawback": "Storno"
       },
       "Fleet": {
         "fleet-management": "Gestione Flotta",
@@ -871,7 +885,33 @@
         "settlement-type-payout_paid": "Pagamento effettuato",
         "settlement-type-remittance_credit": "Rimessa dovuta",
         "settlement-type-remittance_received": "Rimessa ricevuta",
-        "settlement-type-clawback": "Storno"
+        "settlement-type-clawback": "Storno",
+        "balance-label": "Saldo",
+        "balance-hint": "Positivo: devi al partner. Negativo: il partner deve a te.",
+        "settle-open": "Registra regolamento",
+        "settle-title": "Registra un regolamento",
+        "settle-description": "È ammesso un importo parziale. Il libro indica chi lo ha registrato.",
+        "settle-amount": "Importo",
+        "settle-direction": "Direzione",
+        "settle-pay-partner": "Paga il partner",
+        "settle-receive": "Ricevi dal partner",
+        "settle-method": "Metodo",
+        "settle-bank": "Banca",
+        "settle-cash": "Contanti",
+        "settle-other": "Altro",
+        "settle-reference": "Riferimento",
+        "settle-save": "Salva regolamento",
+        "settle-saving": "Salvataggio…",
+        "settle-error": "Impossibile registrare il regolamento. Riprova.",
+        "col-when": "Quando",
+        "col-fare": "Tariffa",
+        "col-margin": "Margine",
+        "col-share": "Quota partner",
+        "col-change": "Variazione",
+        "col-balance": "Saldo",
+        "settlement-type-ride_credit": "Corsa",
+        "settlement-type-settlement": "Regolamento",
+        "settlement-type-opening_balance": "Saldo iniziale"
       }
     },
     "Features": {

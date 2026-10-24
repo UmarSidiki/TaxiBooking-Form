@@ -27,6 +27,11 @@ const nextConfig: NextConfig = {
         optimizePackageImports: ['lucide-react', '@radix-ui/react-dialog', '@radix-ui/react-dropdown-menu'],
     },
     serverExternalPackages: ['@whiskeysockets/baileys', 'qrcode', 'pino', '@react-pdf/renderer'],
+    async rewrites() {
+        return [
+            { source: "/api/calendar/:token.ics", destination: "/api/calendar/:token" },
+        ];
+    },
 };
  
 const withNextIntl = createNextIntlPlugin('./src/shared/i18n/request.ts');

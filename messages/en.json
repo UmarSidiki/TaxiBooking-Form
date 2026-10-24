@@ -2084,5 +2084,19 @@
   "CountryBlocked": {
     "title": "We don't serve your region yet",
     "body": "Bookings aren't available from your current location. If you think this is a mistake, contact us and we'll help."
+  },
+  "Calendar": {
+    "title": "Calendar",
+    "admin-description": "All rides, colored by who is assigned.",
+    "views": "Calendar views",
+    "agenda": "Agenda",
+    "day": "Day",
+    "week": "Week",
+    "month": "Month",
+    "loading": "Loading…",
+    "load-error": "Could not load the calendar. Try again.",
+    "empty": "Nothing scheduled in this range.",
+    "time-off": "Time off",
+    "unassigned": "Unassigned"
   }
 }

@@ -46,6 +46,13 @@ test("admin partners page hides document file data", async ({ page }, testInfo) 
   await expect(page.getByRole("heading", { name: "Partner Management" })).toBeVisible();
   await expect(page.getByText("Alpine Transfers")).toBeVisible();
 
+  await openPath(page, "/en/dashboard/calendar");
+  await expect(page.getByRole("tab", { name: "Agenda" })).toBeVisible();
+  await page.screenshot({
+    path: `${ARTIFACTS}/calendar-${testInfo.project.name}.png`,
+    fullPage: true,
+  });
+
   expect(listBody).not.toContain("E2EFILEDATA");
   expect(listBytes).toBeGreaterThan(0);
   expect(listBytes).toBeLessThan(20_000);

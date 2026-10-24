@@ -120,7 +120,10 @@ export async function patchBooking(
   // notification is a warning, not a failure. Returning 502 here made the desk
   // report an error while the ride had silently moved, so operators saw no
   // change at all.
-  const warn = emailResult.ok ? undefined : emailResult.message;
+  const assignmentWarn = "warn" in applied && applied.ok ? applied.warn : undefined;
+  const warn = [assignmentWarn, emailResult.ok ? undefined : emailResult.message]
+    .filter(Boolean)
+    .join(" ") || undefined;
   if (warn) {
     console.error('Booking updated but notification failed:', id, warn);
   }

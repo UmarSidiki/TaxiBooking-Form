@@ -15,8 +15,12 @@ Operator staff who is push-assigned to a ride. No in-app pay. A driver marks a r
 _Avoid_: Chauffeur account, employee (in product copy)
 
 **Time off**:
-A private span when a driver is not available. The calendar shows it and assignment can warn on overlap.
+A private span when a driver is not available. The calendar shows it and assignment warns when a new ride overlaps.
 _Avoid_: Vacation mode, PTO system
+
+**Calendar feed**:
+A private iCal link for one person. Revoking the token stops the feed. It lists only that person's rides and omits passenger contact details.
+_Avoid_: Public calendar, shared ICS
 
 **Partner**:
 Affiliate overflow company that may accept or be assigned a ride.

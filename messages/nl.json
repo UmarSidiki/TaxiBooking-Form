@@ -2084,5 +2084,19 @@
   "CountryBlocked": {
     "title": "Wij bedienen uw regio nog niet",
     "body": "Boekingen zijn niet beschikbaar vanaf uw huidige locatie. Denkt u dat dit een fout is, neem dan contact met ons op."
+  },
+  "Calendar": {
+    "title": "Kalender",
+    "admin-description": "Alle ritten, per toegewezen persoon.",
+    "views": "Kalenderweergaven",
+    "agenda": "Agenda",
+    "day": "Dag",
+    "week": "Week",
+    "month": "Maand",
+    "loading": "Laden…",
+    "load-error": "De kalender kon niet worden geladen. Probeer opnieuw.",
+    "empty": "Niets gepland in deze periode.",
+    "time-off": "Vrij",
+    "unassigned": "Niet toegewezen"
   }
 }

@@ -2084,5 +2084,19 @@
   "CountryBlocked": {
     "title": "Nous ne desservons pas encore votre région",
     "body": "Les réservations ne sont pas disponibles depuis votre position actuelle. Si vous pensez qu'il s'agit d'une erreur, contactez-nous et nous vous aiderons."
+  },
+  "Calendar": {
+    "title": "Calendrier",
+    "admin-description": "Toutes les courses, selon l'assigné.",
+    "views": "Vues du calendrier",
+    "agenda": "Agenda",
+    "day": "Jour",
+    "week": "Semaine",
+    "month": "Mois",
+    "loading": "Chargement…",
+    "load-error": "Impossible de charger le calendrier. Réessayez.",
+    "empty": "Rien de prévu sur cette période.",
+    "time-off": "Indisponible",
+    "unassigned": "Non assigné"
   }
 }

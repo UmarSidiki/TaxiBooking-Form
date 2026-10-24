@@ -2084,5 +2084,19 @@
   "CountryBlocked": {
     "title": "Todavía no operamos en tu región",
     "body": "Las reservas no están disponibles desde tu ubicación actual. Si crees que es un error, contáctanos y te ayudaremos."
+  },
+  "Calendar": {
+    "title": "Calendario",
+    "admin-description": "Todos los viajes, según quién está asignado.",
+    "views": "Vistas",
+    "agenda": "Agenda",
+    "day": "Día",
+    "week": "Semana",
+    "month": "Mes",
+    "loading": "Cargando…",
+    "load-error": "No se pudo cargar el calendario. Inténtalo de nuevo.",
+    "empty": "Nada programado en este periodo.",
+    "time-off": "Libre",
+    "unassigned": "Sin asignar"
   }
 }

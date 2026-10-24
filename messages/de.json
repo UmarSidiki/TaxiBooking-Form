@@ -2084,5 +2084,19 @@
   "CountryBlocked": {
     "title": "Wir bedienen Ihre Region noch nicht",
     "body": "Buchungen sind von Ihrem aktuellen Standort aus nicht möglich. Wenn Sie glauben, dass das ein Fehler ist, kontaktieren Sie uns."
+  },
+  "Calendar": {
+    "title": "Kalender",
+    "admin-description": "Alle Fahrten, nach Zuständigkeit.",
+    "views": "Kalenderansichten",
+    "agenda": "Agenda",
+    "day": "Tag",
+    "week": "Woche",
+    "month": "Monat",
+    "loading": "Laden…",
+    "load-error": "Kalender konnte nicht geladen werden. Erneut versuchen.",
+    "empty": "In diesem Zeitraum ist nichts geplant.",
+    "time-off": "Frei",
+    "unassigned": "Nicht zugewiesen"
   }
 }

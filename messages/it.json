@@ -2084,5 +2084,19 @@
   "CountryBlocked": {
     "title": "Non serviamo ancora la tua regione",
     "body": "Le prenotazioni non sono disponibili dalla tua posizione attuale. Se pensi sia un errore, contattaci e ti aiuteremo."
+  },
+  "Calendar": {
+    "title": "Calendario",
+    "admin-description": "Tutte le corse, per assegnatario.",
+    "views": "Viste",
+    "agenda": "Agenda",
+    "day": "Giorno",
+    "week": "Settimana",
+    "month": "Mese",
+    "loading": "Caricamento…",
+    "load-error": "Impossibile caricare il calendario. Riprova.",
+    "empty": "Niente in programma in questo periodo.",
+    "time-off": "Libero",
+    "unassigned": "Non assegnato"
   }
 }

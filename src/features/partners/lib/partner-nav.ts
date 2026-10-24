@@ -65,6 +65,7 @@ export const partnerNavGroups: DeskNavGroup[] = [
         titleKey: "Dashboard.Partners.Sidebar.billing",
         href: (locale) => `/${locale}/partners/billing`,
         icon: CreditCard,
+        showWhen: "approved",
       },
     ],
   },

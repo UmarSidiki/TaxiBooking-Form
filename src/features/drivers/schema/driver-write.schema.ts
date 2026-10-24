@@ -14,4 +14,12 @@ export const driverCreateSchema = driverWriteSchema.extend({
   password: z.string().min(8),
 });
 
-export const driverPatchSchema = driverWriteSchema.partial();
+export const driverRegisterSchema = z.object({
+  name: z.string().trim().min(1),
+  email: z.string().trim().refine(isValidEmail),
+  password: z.string().min(8),
+});
+
+export const driverPatchSchema = driverWriteSchema.partial().extend({
+  password: z.union([z.string().min(8), z.literal("")]).optional(),
+});

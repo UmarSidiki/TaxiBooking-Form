@@ -1,5 +1,6 @@
 "use client";
 
+import { PickupCurrentLocationButton } from "@/features/booking/ui/steps/pickup-current-location-button";
 import { Input } from "@/shared/ui/input";
 import type { FormData, FormErrors } from "@/features/booking/context/booking-form-context";
 import { STOP_WAIT_OPTIONS_10_MIN } from "@/features/booking/lib/stop-wait-duration-options";
@@ -105,7 +106,7 @@ export function EmbeddableV2RouteFields({
                     }}
                     onBlur={() => handleInputBlur("pickup")}
                     onFocus={() => setFocusedField("pickup")}
-                    className={`rounded-lg border bg-white pl-7 sm:pl-9 md:pl-10 pr-2 sm:pr-3 py-2 sm:py-2.5 text-xs sm:text-sm transition-all duration-200 ${
+                    className={`rounded-lg border bg-white ps-7 sm:ps-9 md:ps-10 pe-12 py-2 sm:py-2.5 text-xs sm:text-sm transition-all duration-200 ${
                       errors.pickup
                         ? "border-red-400 focus:border-red-500 focus:ring-red-100"
                         : focusedField === "pickup"
@@ -113,6 +114,7 @@ export function EmbeddableV2RouteFields({
                         : "border-slate-200 focus:border-primary focus:ring-primary/20"
                     }`}
                   />
+                  <PickupCurrentLocationButton />
                   {errors.pickup && (
                     <div className="flex items-center gap-1 mt-1 text-xs text-red-500">
                       <AlertCircle className="h-3 w-3" />

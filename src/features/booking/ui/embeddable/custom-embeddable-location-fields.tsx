@@ -12,6 +12,7 @@ import {
   X,
   Timer,
 } from "lucide-react";
+import { PickupCurrentLocationButton } from "@/features/booking/ui/steps/pickup-current-location-button";
 import { Button } from "@/shared/ui/button";
 import { Input } from "@/shared/ui/input";
 import type { IFormField } from "@/features/form-builder/model";
@@ -58,9 +59,10 @@ export function createLocationFieldRenderers(ctx: Ctx) {
           value={formData.pickup}
           onChange={(e) => handleInputChange("pickup", e.target.value)}
           onBlur={() => handleInputBlur("pickup")}
-          className={`w-full ${getInputClass("pickup")}`}
+          className={`w-full pe-12! ${getInputClass("pickup")}`}
           style={inputStyle}
         />
+        <PickupCurrentLocationButton />
       </div>
       {errors.pickup && (
         <div className="flex items-center gap-1 mt-1 text-xs text-red-500">

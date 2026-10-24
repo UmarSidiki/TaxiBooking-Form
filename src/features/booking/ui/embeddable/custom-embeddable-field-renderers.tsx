@@ -9,6 +9,7 @@ import type {
   CustomEmbeddableFieldRendererProps,
 } from "@/features/booking/ui/embeddable/custom-embeddable-field-context";
 import { Button } from "@/shared/ui/button";
+import { LinkifiedText } from "@/shared/ui/linkified-text";
 import type { IFormField } from "@/features/form-builder/model";
 import { ArrowRight } from "lucide-react";
 
@@ -25,7 +26,7 @@ export function useCustomEmbeddableFieldRenderers(
     if (!style.showLabels) return null;
     return (
       <label className="mb-0.5 block text-xs font-medium sm:mb-1" style={{ color: style.labelColor }}>
-        {field.label}
+        <LinkifiedText text={field.label} />
         {field.required && <span className="text-red-500 ml-0.5">*</span>}
       </label>
     );

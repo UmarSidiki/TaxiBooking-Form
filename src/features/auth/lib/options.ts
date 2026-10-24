@@ -5,8 +5,7 @@ import { compare, hash } from "bcryptjs"
 
 import clientPromise from "@/shared/db/mongodb"
 import { connectDB } from "@/shared/db"
-import { Driver } from "@/features/drivers/model"
-import { Partner } from "@/features/partners/model"
+import { authorizeDeskAccount } from "@/features/auth/lib/authorize-desk-account"
 import { User } from "@/features/auth/model"
 
 const DEFAULT_ROLE = "admin"
@@ -78,113 +77,33 @@ export const authOptions: NextAuthOptions = {
             throw new Error("Invalid email or password")
           }
         } else {
-          // No existing user found - check partners collection
-          const existingPartner = await Partner.findOne({ email }).select('+password');
-          console.log("Partner lookup result:", existingPartner ? { id: existingPartner._id, name: existingPartner.name, status: existingPartner.status, isActive: existingPartner.isActive } : "No partner found");
+          const deskUser = await authorizeDeskAccount(email, credentials.password)
+          if (deskUser) return deskUser
 
-          if (existingPartner) {
-            // Partner found - validate credentials
-            if (!existingPartner.isActive) {
-              console.log("Partner account is deactivated");
-              throw new Error("Account is deactivated")
-            }
+          if (adminCount === 0) {
+            console.log("No admins exist - creating first admin user");
 
-            if (existingPartner.status === "rejected") {
-              console.log("Partner account is rejected");
-              throw new Error("Your account has been rejected. Please contact support.")
-            }
+            const hashedPassword = await hash(credentials.password, 10);
 
-            if (existingPartner.status === "suspended") {
-              console.log("Partner account is suspended");
-              throw new Error("Your account has been suspended. Please contact support.")
-            }
+            const newAdmin = await User.create({
+              email,
+              password: hashedPassword,
+              name: "Administrator",
+              role: "admin",
+              isActive: true,
+            });
 
-            if (!existingPartner.password) {
-              console.log("Partner has no password set");
-              throw new Error("Account does not have a password set")
-            }
-
-            const passwordMatches = await compare(credentials.password, existingPartner.password)
-            console.log("Partner password match:", passwordMatches);
-
-            if (passwordMatches) {
-              await Partner.updateOne({ _id: existingPartner._id }, { $set: { updatedAt: new Date() } })
-
-              console.log("Partner authentication successful");
-              return {
-                id: existingPartner._id?.toString() ?? "",
-                email,
-                name: existingPartner.name || "Partner",
-                role: "partner",
-              }
-            } else {
-              console.log("Partner password does not match");
-              throw new Error("Invalid email or password")
-            }
-          } else {
-            // No existing user or partner found - check drivers collection (legacy support)
-            const existingDriver = await Driver.findOne({ email }).select('+password');
-            console.log("Driver lookup result:", existingDriver ? { id: existingDriver._id, name: existingDriver.name, isActive: existingDriver.isActive } : "No driver found");
-
-            if (existingDriver) {
-              // Driver found - validate credentials
-              if (!existingDriver.isActive) {
-                console.log("Driver account is deactivated");
-                throw new Error("Account is deactivated")
-              }
-
-              if (!existingDriver.password) {
-                console.log("Driver has no password set");
-                throw new Error("Account does not have a password set")
-              }
-
-              const passwordMatches = await compare(credentials.password, existingDriver.password)
-              console.log("Driver password match:", passwordMatches);
-
-              if (passwordMatches) {
-                await Driver.updateOne({ _id: existingDriver._id }, { $set: { updatedAt: new Date() } })
-
-                console.log("Driver authentication successful");
-                return {
-                  id: existingDriver._id?.toString() ?? "",
-                  email,
-                  name: existingDriver.name || "Driver",
-                  role: "driver",
-                }
-              } else {
-                console.log("Driver password does not match");
-                throw new Error("Invalid email or password")
-              }
-            } else {
-            // No user or driver found - check if this should be the first admin
-            if (adminCount === 0) {
-              console.log("No admins exist - creating first admin user");
-
-              // Hash the password
-              const hashedPassword = await hash(credentials.password, 10);
-
-              // Create the first admin user
-              const newAdmin = await User.create({
-                email,
-                password: hashedPassword,
-                name: "Administrator", // Default name for first admin
-                role: "admin",
-                isActive: true,
-              });
-
-              console.log("First admin user created successfully");
-              return {
-                id: newAdmin._id?.toString() ?? "",
-                email,
-                name: newAdmin.name,
-                role: newAdmin.role,
-              }
-              } else {
-                console.log("Admins exist but user/partner/driver not found - cannot auto-register");
-                throw new Error("Invalid email or password")
-              }
+            console.log("First admin user created successfully");
+            return {
+              id: newAdmin._id?.toString() ?? "",
+              email,
+              name: newAdmin.name,
+              role: newAdmin.role,
             }
           }
+
+          console.log("Admins exist but user/partner/driver not found - cannot auto-register");
+          throw new Error("Invalid email or password")
         }
       },
     }),

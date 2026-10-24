@@ -1,32 +1,43 @@
 "use client";
 
 import type { IDriver } from "@/features/drivers/model";
-import { Badge } from "@/shared/ui/badge";
+import { AdminDriverActions } from "@/features/drivers/ui/admin-driver-actions";
+import { AdminDriverDocuments } from "@/features/drivers/ui/admin-driver-documents";
+import { AdminDriverStatus } from "@/features/drivers/ui/admin-driver-status";
 import { Button } from "@/shared/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/shared/ui/card";
 import { Separator } from "@/shared/ui/separator";
-import { CheckCircle, Edit, Trash2, XCircle } from "lucide-react";
+import { Edit, Trash2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 
 export function AdminDriverCard({
   driver,
+  pending,
   onEdit,
   onDelete,
+  onApprove,
+  onReject,
+  onSetActive,
 }: {
   driver: IDriver;
+  pending?: boolean;
   onEdit: (driver: IDriver) => void;
   onDelete: (id: string) => void;
+  onApprove: (id: string) => void;
+  onReject: (id: string) => void;
+  onSetActive: (id: string, active: boolean) => void;
 }) {
   const t = useTranslations();
+  const status = driver.status ?? "approved";
+  const turnedOff = status === "approved" && !driver.isActive;
+  const driverId = driver._id ?? "";
 
   return (
-    <Card className={`desk-card border-border ${driver.isActive ? "" : "opacity-60"}`}>
+    <Card className={`desk-card border-border ${turnedOff ? "opacity-60" : ""}`}>
       <CardHeader className="pb-3">
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0 flex-1">
-            <CardTitle className="truncate text-base text-foreground">
-              {driver.name}
-            </CardTitle>
+            <CardTitle className="truncate text-base text-foreground">{driver.name}</CardTitle>
             <p className="truncate text-sm text-muted-foreground">{driver.email}</p>
           </div>
           <div className="flex gap-1">
@@ -42,7 +53,7 @@ export function AdminDriverCard({
             <Button
               size="sm"
               variant="destructive"
-              onClick={() => onDelete(driver._id!)}
+              onClick={() => onDelete(driverId)}
               className="size-11"
               aria-label={`${t("Driver.delete")}: ${driver.name}`}
             >
@@ -53,19 +64,16 @@ export function AdminDriverCard({
       </CardHeader>
       <CardContent>
         <Separator className="mb-3" />
-        <Badge variant={driver.isActive ? "default" : "secondary"}>
-          {driver.isActive ? (
-            <>
-              <CheckCircle className="me-1 size-3" aria-hidden="true" />
-              {t("Driver.active")}
-            </>
-          ) : (
-            <>
-              <XCircle className="me-1 size-3" aria-hidden="true" />
-              {t("Driver.inactive")}
-            </>
-          )}
-        </Badge>
+        <AdminDriverStatus status={status} isActive={driver.isActive} />
+        <AdminDriverDocuments driverId={driverId} documents={driver.documents ?? []} />
+        <AdminDriverActions
+          status={status}
+          isActive={driver.isActive}
+          pending={pending}
+          onApprove={() => onApprove(driverId)}
+          onReject={() => onReject(driverId)}
+          onSetActive={(active) => onSetActive(driverId, active)}
+        />
       </CardContent>
     </Card>
   );

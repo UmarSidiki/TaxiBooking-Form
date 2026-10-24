@@ -18,6 +18,14 @@ _Avoid_: Chauffeur account, employee (in product copy)
 Affiliate overflow company that may accept or be assigned a ride.
 _Avoid_: Vendor, marketplace seller, account
 
+**Account approval**:
+The operator’s decision that a self-registered Driver or Partner may work. Pending until their documents are accepted.
+_Avoid_: Active, Partner review (that is the margin step before a ride is offered)
+
+**Active**:
+The person may sign in to the working desk. Account approval sets a self-registered person active. Switching an approved person off later is deactivation.
+_Avoid_: Approved (that is account approval)
+
 **Assignee**:
 The party responsible for fulfilling the ride under exclusive dispatch.
 _Avoid_: Owner, handler

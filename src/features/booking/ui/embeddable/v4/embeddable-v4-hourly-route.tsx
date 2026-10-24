@@ -37,6 +37,7 @@ export function EmbeddableV4HourlyRoute({
           marker="start"
           error={pickupError}
           inputRef={pickupInputRef}
+          locate
           onChange={(value) => onInput("pickup", value)}
           onBlur={() => onBlur("pickup")}
         />

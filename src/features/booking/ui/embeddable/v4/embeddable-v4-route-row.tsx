@@ -1,6 +1,7 @@
 import { X } from "lucide-react";
 import type { Ref } from "react";
 
+import { PickupCurrentLocationButton } from "@/features/booking/ui/steps/pickup-current-location-button";
 import { EmbeddableV4FieldError } from "@/features/booking/ui/embeddable/v4/embeddable-v4-field-error";
 
 type Marker = "start" | "via" | "end" | "none";
@@ -13,6 +14,7 @@ export function EmbeddableV4RouteRow({
   marker,
   error,
   inputRef,
+  locate,
   removeLabel,
   onChange,
   onBlur,
@@ -25,6 +27,7 @@ export function EmbeddableV4RouteRow({
   marker: Marker;
   error?: string;
   inputRef?: Ref<HTMLInputElement>;
+  locate?: boolean;
   removeLabel?: string;
   onChange: (value: string) => void;
   onBlur?: () => void;
@@ -38,7 +41,7 @@ export function EmbeddableV4RouteRow({
         <RouteMark marker={marker} />
       </span>
       <div className="min-w-0">
-        <div className="v4-field">
+        <div className={locate ? "v4-field v4-has-locate" : "v4-field"}>
           <label className="v4-prefix" htmlFor={id}>
             {prefix}
           </label>
@@ -55,6 +58,7 @@ export function EmbeddableV4RouteRow({
             onChange={(event) => onChange(event.target.value)}
             onBlur={onBlur}
           />
+          {locate ? <PickupCurrentLocationButton /> : null}
           {onRemove && removeLabel ? (
             <button type="button" className="v4-remove" aria-label={removeLabel} onClick={onRemove}>
               <X className="size-4" aria-hidden="true" />

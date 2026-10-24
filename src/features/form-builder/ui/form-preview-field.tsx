@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import type { useTranslations } from "next-intl";
 import type { CSSProperties, Dispatch, ReactNode, SetStateAction } from "react";
+import { LinkifiedText } from "@/shared/ui/linkified-text";
 
 export function FormPreviewField({
   field,
@@ -98,7 +99,7 @@ export function FormPreviewField({
           <div className="h-full flex flex-col justify-end">
             {style.showLabels && (
               <label className="block text-xs font-medium mb-1" style={{ color: style.labelColor }}>
-                {field.label}
+                <LinkifiedText text={field.label} />
                 {field.required && <span className="text-red-500 ml-0.5">*</span>}
               </label>
             )}

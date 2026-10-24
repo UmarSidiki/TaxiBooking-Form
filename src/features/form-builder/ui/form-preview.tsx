@@ -22,6 +22,7 @@ import {
   Users,
   X,
 } from "lucide-react";
+import { LinkifiedText } from "@/shared/ui/linkified-text";
 import { useTranslations } from "next-intl";
 
 export function FormPreview({
@@ -157,10 +158,10 @@ export function FormPreview({
                 textAlign: style.headingAlignment,
               }}
             >
-              {style.headingText}
+              <LinkifiedText text={style.headingText} />
             </h2>
             <p className="text-xs mt-0.5" style={{ color: style.textColor, textAlign: style.subHeadingAlignment }}>
-              {style.subHeadingText || t("ui.default_subheading")}
+              <LinkifiedText text={style.subHeadingText || t("ui.default_subheading")} />
             </p>
           </header>
         )}
@@ -281,7 +282,7 @@ export function FormPreview({
             className="mt-4 text-xs opacity-80 px-2 relative z-10"
             style={{ color: style.textColor, textAlign: style.footerTextAlignment }}
           >
-            {style.footerText}
+            <LinkifiedText text={style.footerText} />
           </div>
         )}
 

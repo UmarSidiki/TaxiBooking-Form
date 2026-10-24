@@ -32,7 +32,7 @@ export function Step1ScheduleFields({
     <>
           {/* Date & Time */}
           <div className="grid grid-cols-2 gap-3">
-            <div>
+            <div className="min-w-0">
               <label className="block text-sm font-medium mb-1.5 text-gray-700">
                 <CalendarDays className="inline h-4 w-4 mr-1" />
                 {formData.tripType === "roundtrip"
@@ -55,7 +55,7 @@ export function Step1ScheduleFields({
                 <p className="text-red-500 text-xs mt-1">{errors.date}</p>
               )}
             </div>
-            <div>
+            <div className="min-w-0">
               <label className="block text-sm font-medium mb-1.5 text-gray-700">
                 <Clock className="inline h-4 w-4 mr-1" />
                 {formData.tripType === "roundtrip"
@@ -82,7 +82,7 @@ export function Step1ScheduleFields({
           {/* Return Date & Time - Only for roundtrip */}
           {formData.tripType === "roundtrip" && (
             <div className="grid grid-cols-2 gap-3">
-              <div>
+              <div className="min-w-0">
                 <label className="block text-sm font-medium mb-1.5 text-gray-700">
                   <CalendarDays className="inline h-4 w-4 mr-1" />
                   {t("Step1.ReturnDate")} *
@@ -104,7 +104,7 @@ export function Step1ScheduleFields({
                   </p>
                 )}
               </div>
-              <div>
+              <div className="min-w-0">
                 <label className="block text-sm font-medium mb-1.5 text-gray-700">
                   <Clock className="inline h-4 w-4 mr-1" />
                   {t("Step1.ReturnTime")} *

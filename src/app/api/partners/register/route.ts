@@ -32,7 +32,7 @@ export async function POST(request: NextRequest) {
       country: country ? sanitizeInput(country.trim()) : undefined,
       status: "pending",
       documents: [],
-      isActive: true,
+      isActive: false,
     });
 
     const baseUrl =

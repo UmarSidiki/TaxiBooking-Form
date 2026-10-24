@@ -18,7 +18,7 @@ export async function GET(request: NextRequest) {
     const filter = isActive !== null ? { isActive: isActive === "true" } : {};
     const drivers = await Driver.find(filter)
       .sort({ createdAt: -1 })
-      .select("-password");
+      .select("-password -documents.fileData");
 
     return NextResponse.json({ success: true, data: drivers });
   } catch (error) {

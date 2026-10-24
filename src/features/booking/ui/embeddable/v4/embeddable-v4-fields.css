@@ -73,6 +73,14 @@
   box-shadow: none;
 }
 
+.v4-field.v4-has-locate {
+  position: relative;
+}
+
+.embeddable-v4-card .v4-field.v4-has-locate input {
+  padding-inline-end: 2.75rem;
+}
+
 .v4-datetime {
   display: grid;
   grid-template-columns: auto minmax(0, 1.25fr) minmax(0, 0.85fr);

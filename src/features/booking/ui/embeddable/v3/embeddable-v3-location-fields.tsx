@@ -1,5 +1,6 @@
 "use client";
 
+import { PickupCurrentLocationButton } from "@/features/booking/ui/steps/pickup-current-location-button";
 import { Input } from "@/shared/ui/input";
 import type { FormData, FormErrors } from "@/features/booking/context/booking-form-context";
 import { STOP_WAIT_OPTIONS_10_MIN } from "@/features/booking/lib/stop-wait-duration-options";
@@ -57,12 +58,13 @@ export function EmbeddableV3LocationFields({
                     handleInputChange("pickup", e.target.value);
                   }}
                   onBlur={() => handleInputBlur("pickup")}
-                  className={`rounded-lg border bg-white pl-8 sm:pl-10 pr-2 sm:pr-3 py-2 sm:py-2.5 text-xs sm:text-sm transition-all duration-200 ${
+                  className={`rounded-lg border bg-white ps-8 sm:ps-10 pe-12 py-2 sm:py-2.5 text-xs sm:text-sm transition-all duration-200 ${
                     errors.pickup
                       ? "border-red-400 focus:border-red-500 focus:ring-red-100"
                       : "border-gray-300 focus:border-primary focus:ring-primary/20"
                   }`}
                 />
+                <PickupCurrentLocationButton />
               </div>
               {errors.pickup && (
                 <div className="flex items-center gap-1 mt-1 text-xs text-red-500">

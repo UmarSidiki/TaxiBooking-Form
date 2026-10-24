@@ -80,7 +80,12 @@ export function useAdminDrivers() {
   };
 
   const handleEdit = (driver: IDriver) => {
-    setFormData({ ...driver, password: "" });
+    setFormData({
+      name: driver.name,
+      email: driver.email,
+      password: "",
+      isActive: driver.isActive,
+    });
     setEditingId(driver._id!);
     setShowForm(true);
   };
@@ -90,6 +95,41 @@ export function useAdminDrivers() {
   const handleDelete = (id: string) => {
     setPendingDeleteId(id);
   };
+
+  const runAccountAction = async (
+    request: () => Promise<{ success: boolean }>,
+    noticeKey: "approved-notice" | "reject-notice" | "turned-off-notice" | "turned-on-notice",
+  ) => {
+    try {
+      setIsLoading(true);
+      const data = await request();
+      setNotice(data.success ? t(`Driver.${noticeKey}`) : t("Driver.operation-failed"));
+      if (data.success) await fetchDrivers();
+    } catch (error) {
+      console.error("Error updating driver account:", error);
+      setNotice(t("Driver.operation-failed"));
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const approve = (id: string) =>
+    runAccountAction(
+      () => apiPatch<{ success: boolean }>(`/api/admin/drivers/${id}/approve`, {}),
+      "approved-notice",
+    );
+
+  const reject = (id: string) =>
+    runAccountAction(
+      () => apiPatch<{ success: boolean }>(`/api/admin/drivers/${id}/reject`, {}),
+      "reject-notice",
+    );
+
+  const setActive = (id: string, active: boolean) =>
+    runAccountAction(
+      () => apiPatch<{ success: boolean }>(`/api/drivers/${id}`, { isActive: active }),
+      active ? "turned-on-notice" : "turned-off-notice",
+    );
 
   const confirmDelete = async () => {
     if (!pendingDeleteId) return;
@@ -128,6 +168,9 @@ export function useAdminDrivers() {
     handleSubmit,
     handleEdit,
     handleDelete,
+    approve,
+    reject,
+    setActive,
     pendingDeleteId,
     setPendingDeleteId,
     confirmDelete,

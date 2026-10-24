@@ -2,7 +2,6 @@
 
 import { useRef, useState, type FormEvent, type ReactNode } from "react";
 import { signIn } from "next-auth/react";
-import { useRouter } from "next/navigation";
 import { Eye, EyeOff } from "lucide-react";
 import { useTranslations } from "next-intl";
 
@@ -28,7 +27,6 @@ export function DeskCredentialsForm({
   footer?: ReactNode;
   formWidthClass?: string;
 }) {
-  const router = useRouter();
   const t = useTranslations("Auth.SignIn");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -52,12 +50,20 @@ export function DeskCredentialsForm({
     setLoading(false);
 
     if (result?.error) {
-      setError(t("invalid"));
+      const key =
+        result.error === "account_turned_off"
+          ? "turned_off"
+          : result.error === "account_rejected"
+            ? "rejected"
+            : result.error === "account_suspended"
+              ? "suspended"
+              : "invalid";
+      setError(t(key));
       emailRef.current?.focus();
       return;
     }
 
-    router.push(result?.url ?? callbackUrl);
+    window.location.assign(result?.url ?? callbackUrl);
   };
 
   return (

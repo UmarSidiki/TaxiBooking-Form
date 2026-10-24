@@ -76,6 +76,7 @@ export function EmbeddableV4RouteFields(props: Props) {
             marker="start"
             error={errors.pickup}
             inputRef={props.pickupInputRef}
+            locate
             onChange={(value) => props.onInput("pickup", value)}
             onBlur={() => props.onBlur("pickup")}
           />

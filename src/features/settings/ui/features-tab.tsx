@@ -9,7 +9,9 @@ import {
   CalendarPlus,
   type LucideIcon,
 } from "lucide-react";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
+
+import { ModuleAccessLinks } from "@/features/settings/ui/module-access-links";
 
 import { Input } from "@/shared/ui/input";
 import { Label } from "@/shared/ui/label";
@@ -33,7 +35,9 @@ export default function FeaturesTab({
   onSettingsChange: SettingsDeskPatch;
 }) {
   const t = useTranslations("Dashboard.Features");
+  const locale = useLocale();
   const partnersOn = settings.enablePartners ?? false;
+  const driversOn = settings.enableDrivers ?? false;
 
   return (
     <div className="flex flex-col gap-3">
@@ -47,6 +51,12 @@ export default function FeaturesTab({
           onSettingsChange("enablePartners", checked)
         }
       />
+      {partnersOn ? (
+        <ModuleAccessLinks
+          loginPath={`/${locale}/partners/login`}
+          signupPath={`/${locale}/partners/register`}
+        />
+      ) : null}
       {partnersOn ? (
         <div className="flex flex-col gap-4 rounded-md border border-border p-4">
           <div>
@@ -186,6 +196,12 @@ export default function FeaturesTab({
           onSettingsChange("enableDrivers", checked)
         }
       />
+      {driversOn ? (
+        <ModuleAccessLinks
+          loginPath={`/${locale}/drivers/login`}
+          signupPath={`/${locale}/drivers/register`}
+        />
+      ) : null}
       <ModuleRow
         id="enableEmbeddableForm"
         icon={Code}

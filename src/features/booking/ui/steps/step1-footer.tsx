@@ -18,6 +18,11 @@ export function Step1Footer({
   calculatingDistance: boolean;
   handleNext: () => void;
 }) {
+  const phone = process.env.NEXT_PUBLIC_PHONE_NUMBER;
+  const email = process.env.NEXT_PUBLIC_SUPPORT_EMAIL;
+  const linkClass =
+    "inline-flex min-h-11 items-center rounded-sm hover:text-primary hover:underline focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50";
+
   return (
     <>
           {/* Next Button */}
@@ -49,9 +54,17 @@ export function Step1Footer({
           <div className="text-center text-xs text-gray-500 space-y-1 pt-2">
             <p>{t("Footer.Support2")}</p>
             <p className="flex items-center justify-center gap-2 flex-wrap">
-              <span>{process.env.NEXT_PUBLIC_PHONE_NUMBER}</span>
-              <span>•</span>
-              <span>{process.env.NEXT_PUBLIC_SUPPORT_EMAIL}</span>
+              {phone ? (
+                <a href={`tel:${phone.replace(/[^\d+]/g, "")}`} className={linkClass}>
+                  {phone}
+                </a>
+              ) : null}
+              {phone && email ? <span aria-hidden="true">•</span> : null}
+              {email ? (
+                <a href={`mailto:${email}`} className={linkClass}>
+                  {email}
+                </a>
+              ) : null}
             </p>
           </div>
     </>

@@ -157,8 +157,12 @@ export function AdminDriversPage() {
             <AdminDriverCard
               key={driver._id}
               driver={driver}
+              pending={drivers.isLoading}
               onEdit={drivers.handleEdit}
               onDelete={drivers.handleDelete}
+              onApprove={drivers.approve}
+              onReject={drivers.reject}
+              onSetActive={drivers.setActive}
             />
           ))}
         </div>

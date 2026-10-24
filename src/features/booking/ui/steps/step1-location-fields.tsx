@@ -6,6 +6,7 @@ import type { FormData, FormErrors } from "@/features/booking/context/booking-fo
 import { STOP_WAIT_OPTIONS_15_MIN } from "@/features/booking/lib/stop-wait-duration-options";
 import type { useTranslations } from "next-intl";
 import { Clock, Flag, Loader2, MapPin, X } from "lucide-react";
+import { PickupCurrentLocationButton } from "@/features/booking/ui/steps/pickup-current-location-button";
 import type { Dispatch, RefObject, SetStateAction } from "react";
 
 type TFn = ReturnType<typeof useTranslations>;
@@ -47,22 +48,25 @@ export function Step1LocationFields({
               <MapPin className="inline h-4 w-4 mr-1 text-primary" />
               {t("Step1.PickupLocation")} *
             </label>
-            <Input
-              ref={pickupInputRef}
-              placeholder={t("Step1.PickupPlaceholder")}
-              className={`${
-                errors.pickup ? "border-red-500" : "border-gray-300"
-              } focus:border-primary-500 focus:ring-primary-500`}
-              value={formData.pickup}
-              onChange={(e) => {
-                setFormData((prev) => ({ ...prev, pickup: e.target.value }));
-              }}
-              onBlur={() => {
-                if (formData.pickup && formData.dropoff) {
-                  handleInputBlur("pickup");
-                }
-              }}
-            />
+            <div className="relative">
+              <Input
+                ref={pickupInputRef}
+                placeholder={t("Step1.PickupPlaceholder")}
+                className={`h-11 pe-12 ${
+                  errors.pickup ? "border-red-500" : "border-gray-300"
+                } focus:border-primary-500 focus:ring-primary-500`}
+                value={formData.pickup}
+                onChange={(e) => {
+                  setFormData((prev) => ({ ...prev, pickup: e.target.value }));
+                }}
+                onBlur={() => {
+                  if (formData.pickup && formData.dropoff) {
+                    handleInputBlur("pickup");
+                  }
+                }}
+              />
+              <PickupCurrentLocationButton />
+            </div>
             {errors.pickup && (
               <p className="text-red-500 text-xs mt-1">{errors.pickup}</p>
             )}

@@ -4,6 +4,7 @@ import React from "react";
 import Image from "next/image";
 import { AlertCircle, Car, CheckCircle, MapPin } from "lucide-react";
 import { Card } from "@/shared/ui/card";
+import { LinkifiedText } from "@/shared/ui/linkified-text";
 import type { IFormField, IFormStyle } from "@/features/form-builder/model";
 import type { CSSProperties, FormEvent, RefObject } from "react";
 import type { useTranslations } from "next-intl";
@@ -67,7 +68,7 @@ export function CustomEmbeddableFormShell({
                 <Icon className="h-3 w-3 md:h-3.5 md:w-3.5" />
               </div>
               <span
-                className={`mt-1 text-[10px] sm:text-xs font-medium ${
+                className={`mt-1 text-xs font-medium ${
                   index === 0 ? "font-bold" : "text-neutral-500"
                 }`}
                 style={index === 0 ? { color: style.primaryColor } : {}}
@@ -101,13 +102,13 @@ export function CustomEmbeddableFormShell({
                 textAlign: style.headingAlignment,
               }}
             >
-              {style.headingText}
+              <LinkifiedText text={style.headingText} />
             </h1>
             <p
               className="text-xs sm:text-sm mt-1"
               style={{ color: style.textColor }}
             >
-              {style.subHeadingText || t("book-your-ride-in-seconds")}
+              <LinkifiedText text={style.subHeadingText || t("book-your-ride-in-seconds")} />
             </p>
           </header>
         )}
@@ -147,7 +148,7 @@ export function CustomEmbeddableFormShell({
                 className="text-xs text-center mt-3 opacity-80 px-2"
                 style={{ color: style.textColor }}
               >
-                {style.footerText}
+                <LinkifiedText text={style.footerText} />
               </p>
             )}
 

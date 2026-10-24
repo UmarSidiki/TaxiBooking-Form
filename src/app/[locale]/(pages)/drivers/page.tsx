@@ -5,6 +5,8 @@ import { authOptions } from "@/features/auth";
 import { connectDB } from "@/shared/db";
 import { Setting } from "@/features/settings/model";
 import { DeskDriverSignIn } from "@/features/drivers/ui/desk-driver-sign-in";
+import { Driver } from "@/features/drivers/model";
+import { driverWorks } from "@/features/drivers/lib/driver-approval";
 
 export default async function DriversPage() {
   await connectDB();
@@ -16,7 +18,10 @@ export default async function DriversPage() {
   const session = await getServerSession(authOptions);
 
   if (session?.user?.role === "driver") {
-    redirect(`/drivers/dashboard`);
+    const driver = await Driver.findById(session.user.id).select("status");
+    redirect(
+      driverWorks(driver?.status) ? "/drivers/dashboard" : "/drivers/account",
+    );
   }
 
   if (session?.user?.role === "admin" || session?.user?.role === "superadmin") {

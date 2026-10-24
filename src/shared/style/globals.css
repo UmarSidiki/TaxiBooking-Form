@@ -130,6 +130,32 @@
   z-index: 100000;
 }
 
+/* iOS Safari sizes date and time controls from their inner UI and ignores
+   width: 100% when padding is set (WebKit bug 301648). appearance: none
+   lets the declared width apply; the native picker still opens on tap.
+   The inner value also carries an auto margin that adds space only on iPhone. */
+input[type="date"],
+input[type="time"] {
+  box-sizing: border-box;
+  display: block;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  -webkit-min-logical-width: 0;
+  overflow: hidden;
+  line-height: 1.25;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+input[type="date"]::-webkit-date-and-time-value,
+input[type="time"]::-webkit-date-and-time-value {
+  margin: 0;
+  padding: 0;
+  min-height: 1.5em;
+  text-align: start;
+}
+
 [data-surface="desk"] {
   --radius: 0.375rem;
   --background: oklch(0.968 0.007 250);

@@ -5,6 +5,7 @@ import { DriverRideDetailDialog } from "@/features/rides/ui/driver-ride-detail-d
 import { DriverRidesToolbar } from "@/features/rides/ui/driver-rides-toolbar";
 import { AdminRidesTabPanel } from "@/features/rides/ui/admin-rides-tab-panel";
 import { DeskNotice } from "@/features/dashboard/ui/desk-notice";
+import { PhoneRequiredNotice } from "@/features/auth/ui/phone-required-notice";
 import { Badge } from "@/shared/ui/badge";
 import { Button } from "@/shared/ui/button";
 import { Tabs, TabsList, TabsTrigger } from "@/shared/ui/tabs";
@@ -37,6 +38,7 @@ export default function DriverDashboard() {
 
   return (
     <div className="flex flex-col gap-5">
+      <PhoneRequiredNotice href="/drivers/account" />
       <DriverRidesToolbar
         t={rides.t}
         isLoading={rides.isLoading}

@@ -6,6 +6,7 @@ import { useTranslations } from "next-intl";
 import { WhatsAppConfigForm } from "@/features/settings/ui/whatsapp-config-form";
 import { WhatsAppDeliveryList } from "@/features/settings/ui/whatsapp-delivery-list";
 import { WhatsAppLinkPanel } from "@/features/settings/ui/whatsapp-link-panel";
+import { WhatsAppNotifyToggles } from "@/features/settings/ui/whatsapp-notify-toggles";
 import { WhatsAppTemplates } from "@/features/settings/ui/whatsapp-templates";
 import type { WhatsAppDeskConfig, WhatsAppDeskData } from "@/features/settings/ui/whatsapp-desk-types";
 import { SettingsSection } from "@/features/settings/ui/settings-section";
@@ -62,6 +63,7 @@ export function SettingsPageWhatsapp() {
       <DeskPageMeta title={t("nav_whatsapp")} description={t("whatsapp_help")} />
       <SettingsSection title={t("whatsapp_connection")} description={t("whatsapp_unofficial")}>
         <WhatsAppLinkPanel />
+        <WhatsAppNotifyToggles />
       </SettingsSection>
       <SettingsSection title={t("whatsapp_settings")}>
         <WhatsAppConfigForm config={data.config} onSaved={onConfig} />

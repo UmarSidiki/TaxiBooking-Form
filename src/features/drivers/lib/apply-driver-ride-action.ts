@@ -1,4 +1,5 @@
 import { Booking } from "@/features/booking/model";
+import { recordRideActivity } from "@/features/rides/lib/record-ride-activity";
 import type { DriverRideAction } from "@/features/drivers/schema/driver-ride-action.schema";
 
 export async function applyDriverRideAction(
@@ -16,7 +17,7 @@ export async function applyDriverRideAction(
     update.cashCollected = action.cashCollected;
   }
 
-  return Booking.findOneAndUpdate(
+  const updated = await Booking.findOneAndUpdate(
     {
       _id: rideId,
       "assignedDriver._id": driverId,
@@ -25,4 +26,13 @@ export async function applyDriverRideAction(
     { $set: update },
     { returnDocument: "after" },
   );
+  if (updated) {
+    await recordRideActivity({
+      bookingId: rideId,
+      actorId: driverId,
+      actorRole: "driver",
+      action: action.action,
+    });
+  }
+  return updated;
 }

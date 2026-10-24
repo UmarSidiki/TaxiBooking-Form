@@ -2000,7 +2000,8 @@
       "hide_password": "Masquer le mot de passe",
       "cover_kicker": "Missions",
       "cover_title": "Rejoignez les chauffeurs de cet opérateur.",
-      "cover_body": "Créez un compte, puis attendez une course assignée."
+      "cover_body": "Créez un compte, puis attendez une course assignée.",
+      "phone": "Numéro mobile"
     },
     "PartnerSignIn": {
       "title": "Connexion partenaire",
@@ -2098,5 +2099,30 @@
     "empty": "Rien de prévu sur cette période.",
     "time-off": "Indisponible",
     "unassigned": "Non assigné"
+  },
+  "Phone": {
+    "missing": "Ajoutez un numéro mobile au format international avant de prendre des courses.",
+    "add": "Ajouter le numéro"
+  },
+  "Today": {
+    "title": "Aujourd'hui",
+    "description": "Courses non assignées, échéances de prise, soldes dus.",
+    "unassigned": "Non assignées aujourd'hui",
+    "deadlines": "Échéances",
+    "balances": "Soldes dus",
+    "empty": "Rien ici.",
+    "loading": "Chargement…",
+    "load-error": "Impossible de charger aujourd'hui. Réessayez."
+  },
+  "WhatsAppNotify": {
+    "title": "Messages aux assignés",
+    "loading": "Chargement…",
+    "load-error": "Impossible de charger les messages.",
+    "save-error": "Enregistrement impossible. Réessayez.",
+    "whatsappTplAssigned": "Course assignée",
+    "whatsappTplAvailable": "Course à prendre",
+    "whatsappTplChanged": "Course modifiée ou annulée",
+    "whatsappTplReminder": "Rappel de prise en charge",
+    "whatsappTplSettlement": "Règlement enregistré"
   }
 }

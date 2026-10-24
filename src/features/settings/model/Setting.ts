@@ -60,6 +60,11 @@ export interface ISetting {
   defaultPartnerMarginPercentage?: number;
   adminEmail?: string;
   timezone?: string;
+  whatsappTplAssigned?: boolean;
+  whatsappTplAvailable?: boolean;
+  whatsappTplChanged?: boolean;
+  whatsappTplReminder?: boolean;
+  whatsappTplSettlement?: boolean;
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -268,6 +273,11 @@ const SettingSchema = new Schema<ISetting>(
       type: String,
       default: "Europe/Zurich",
     },
+    whatsappTplAssigned: { type: Boolean, default: false },
+    whatsappTplAvailable: { type: Boolean, default: false },
+    whatsappTplChanged: { type: Boolean, default: false },
+    whatsappTplReminder: { type: Boolean, default: false },
+    whatsappTplSettlement: { type: Boolean, default: false },
   },
   {
     timestamps: true,

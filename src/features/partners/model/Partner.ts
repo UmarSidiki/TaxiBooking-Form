@@ -42,6 +42,7 @@ export interface IPartner {
   email: string;
   password: string;
   phone?: string;
+  whatsappVerified?: boolean;
   address?: string;
   city?: string;
   country?: string;
@@ -143,6 +144,7 @@ const PartnerSchema = new Schema<IPartner>(
       type: String,
       trim: true,
     },
+    whatsappVerified: { type: Boolean, default: false },
     address: {
       type: String,
       trim: true,

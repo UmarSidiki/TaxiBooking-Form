@@ -2000,7 +2000,8 @@
       "hide_password": "إخفاء كلمة المرور",
       "cover_kicker": "التعيينات",
       "cover_title": "انضم إلى سائقي هذا المشغّل.",
-      "cover_body": "أنشئ حسابًا ثم انتظر رحلة معيّنة."
+      "cover_body": "أنشئ حسابًا ثم انتظر رحلة معيّنة.",
+      "phone": "رقم الجوال"
     },
     "PartnerSignIn": {
       "title": "دخول الشريك",
@@ -2098,5 +2099,30 @@
     "empty": "لا شيء مجدول في هذه الفترة.",
     "time-off": "إجازة",
     "unassigned": "غير معيّن"
+  },
+  "Phone": {
+    "missing": "أضف رقم جوال بالصيغة الدولية قبل قبول الرحلات.",
+    "add": "إضافة الرقم"
+  },
+  "Today": {
+    "title": "اليوم",
+    "description": "رحلات غير معيّنة ومواعيد وأرصدة.",
+    "unassigned": "غير معيّنة اليوم",
+    "deadlines": "مواعيد القبول",
+    "balances": "أرصدة مستحقة",
+    "empty": "لا شيء هنا.",
+    "loading": "جارٍ التحميل…",
+    "load-error": "تعذر تحميل اليوم. حاول مرة أخرى."
+  },
+  "WhatsAppNotify": {
+    "title": "رسائل المعيّنين",
+    "loading": "جارٍ التحميل…",
+    "load-error": "تعذر تحميل الرسائل.",
+    "save-error": "تعذر الحفظ. حاول مرة أخرى.",
+    "whatsappTplAssigned": "تم تعيين الرحلة",
+    "whatsappTplAvailable": "رحلة متاحة للقبول",
+    "whatsappTplChanged": "رحلة تغيّرت أو أُلغيت",
+    "whatsappTplReminder": "تذكير بالالتقاط",
+    "whatsappTplSettlement": "تم تسجيل التسوية"
   }
 }

@@ -3,6 +3,7 @@ import { sendThankYouEmails } from "@/features/booking/lib/send-thank-you-emails
 import { cleanupAbandonedBookings } from "@/features/booking/lib/cleanup-abandoned-bookings";
 import { deleteSuspendedPartners } from "@/features/partners/lib/delete-suspended-partners";
 import { deleteOldCompletedRides } from "@/features/rides/lib/delete-old-completed-rides";
+import { sendPickupReminders } from "@/features/booking/lib/send-pickup-reminders";
 import { isCronAuthorized } from "@/shared/http/is-cron-authorized";
 
 export async function GET(req: Request) {
@@ -13,12 +14,13 @@ export async function GET(req: Request) {
 
   console.log("🕒 Cron job triggered");
 
-  const [emailResult, cleanupResult, partnerDeletionResult, oldRidesDeletionResult] =
+  const [emailResult, cleanupResult, partnerDeletionResult, oldRidesDeletionResult, reminderResult] =
     await Promise.all([
       sendThankYouEmails(),
       cleanupAbandonedBookings(),
       deleteSuspendedPartners(),
       deleteOldCompletedRides(),
+      sendPickupReminders(),
     ]);
 
   const results = {
@@ -26,8 +28,10 @@ export async function GET(req: Request) {
       emailResult.success &&
       cleanupResult.success &&
       partnerDeletionResult.success &&
-      oldRidesDeletionResult.success,
+      oldRidesDeletionResult.success &&
+      reminderResult.success,
     emails: emailResult,
+    reminders: reminderResult,
     cleanup: cleanupResult,
     partnerDeletion: partnerDeletionResult,
     oldRidesDeletion: oldRidesDeletionResult,

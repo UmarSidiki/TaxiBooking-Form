@@ -1,16 +1,13 @@
 import { z } from "zod";
-import { isValidEmail, isValidPhone } from "@/shared/lib/validation";
+import { isValidEmail } from "@/shared/lib/validation";
+import { e164PhoneSchema } from "@/shared/schema/e164-phone";
 import { mongoIdSchema } from "@/shared/schema/mongo-id";
 
 export const partnerRegisterSchema = z.object({
   name: z.string().trim().min(1),
   email: z.string().trim().refine(isValidEmail),
   password: z.string().min(8),
-  phone: z
-    .string()
-    .trim()
-    .optional()
-    .refine((value) => !value || isValidPhone(value)),
+  phone: e164PhoneSchema,
   address: z.string().optional(),
   city: z.string().optional(),
   country: z.string().optional(),

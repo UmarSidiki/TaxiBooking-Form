@@ -11,6 +11,7 @@ export type DriverRegisterInput = {
   name: string;
   email: string;
   password: string;
+  phone: string;
 };
 
 export type DriverRegisterFailure = "module-off" | "conflict";
@@ -37,6 +38,7 @@ export async function registerDriver(
       name: sanitizeInput(input.name.trim()),
       email,
       password: await hash(input.password, 12),
+      phone: input.phone,
       status: "pending",
       isActive: false,
       documents: [],

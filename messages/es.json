@@ -2000,7 +2000,8 @@
       "hide_password": "Ocultar contraseña",
       "cover_kicker": "Asignaciones",
       "cover_title": "Únase a los conductores de este operador.",
-      "cover_body": "Cree una cuenta y espere un viaje asignado."
+      "cover_body": "Cree una cuenta y espere un viaje asignado.",
+      "phone": "Móvil"
     },
     "PartnerSignIn": {
       "title": "Acceso de socio",
@@ -2098,5 +2099,30 @@
     "empty": "Nada programado en este periodo.",
     "time-off": "Libre",
     "unassigned": "Sin asignar"
+  },
+  "Phone": {
+    "missing": "Añada un móvil en formato internacional antes de aceptar viajes.",
+    "add": "Añadir número"
+  },
+  "Today": {
+    "title": "Hoy",
+    "description": "Viajes sin asignar, plazos y saldos.",
+    "unassigned": "Sin asignar hoy",
+    "deadlines": "Plazos",
+    "balances": "Saldos pendientes",
+    "empty": "Nada aquí.",
+    "loading": "Cargando…",
+    "load-error": "No se pudo cargar hoy. Inténtalo de nuevo."
+  },
+  "WhatsAppNotify": {
+    "title": "Mensajes a asignados",
+    "loading": "Cargando…",
+    "load-error": "No se pudieron cargar los mensajes.",
+    "save-error": "No se pudo guardar. Inténtalo de nuevo.",
+    "whatsappTplAssigned": "Viaje asignado",
+    "whatsappTplAvailable": "Viaje disponible",
+    "whatsappTplChanged": "Viaje cambiado o cancelado",
+    "whatsappTplReminder": "Recordatorio de recogida",
+    "whatsappTplSettlement": "Liquidación registrada"
   }
 }

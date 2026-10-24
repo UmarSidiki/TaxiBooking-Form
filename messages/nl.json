@@ -2000,7 +2000,8 @@
       "hide_password": "Wachtwoord verbergen",
       "cover_kicker": "Opdrachten",
       "cover_title": "Sluit u aan bij de chauffeurs van deze operator.",
-      "cover_body": "Maak een account en wacht op een toegewezen rit."
+      "cover_body": "Maak een account en wacht op een toegewezen rit.",
+      "phone": "Mobiel nummer"
     },
     "PartnerSignIn": {
       "title": "Partner aanmelden",
@@ -2098,5 +2099,30 @@
     "empty": "Niets gepland in deze periode.",
     "time-off": "Vrij",
     "unassigned": "Niet toegewezen"
+  },
+  "Phone": {
+    "missing": "Voeg een mobiel nummer in internationaal formaat toe voordat u ritten aanneemt.",
+    "add": "Nummer toevoegen"
+  },
+  "Today": {
+    "title": "Vandaag",
+    "description": "Niet-toegewezen ritten, deadlines en saldi.",
+    "unassigned": "Vandaag niet toegewezen",
+    "deadlines": "Deadlines",
+    "balances": "Openstaande saldi",
+    "empty": "Niets hier.",
+    "loading": "Laden…",
+    "load-error": "Vandaag kon niet worden geladen. Probeer opnieuw."
+  },
+  "WhatsAppNotify": {
+    "title": "Berichten aan toegewezenen",
+    "loading": "Laden…",
+    "load-error": "Berichten konden niet worden geladen.",
+    "save-error": "Opslaan mislukt. Probeer opnieuw.",
+    "whatsappTplAssigned": "Rit toegewezen",
+    "whatsappTplAvailable": "Rit te claimen",
+    "whatsappTplChanged": "Rit gewijzigd of geannuleerd",
+    "whatsappTplReminder": "Ophaalherinnering",
+    "whatsappTplSettlement": "Afrekening vastgelegd"
   }
 }

@@ -2000,7 +2000,8 @@
       "hide_password": "Passwort verbergen",
       "cover_kicker": "Aufträge",
       "cover_title": "Werden Sie Fahrer dieses Betreibers.",
-      "cover_body": "Legen Sie ein Konto an und warten Sie auf eine zugewiesene Fahrt."
+      "cover_body": "Legen Sie ein Konto an und warten Sie auf eine zugewiesene Fahrt.",
+      "phone": "Mobilnummer"
     },
     "PartnerSignIn": {
       "title": "Partner-Anmeldung",
@@ -2098,5 +2099,30 @@
     "empty": "In diesem Zeitraum ist nichts geplant.",
     "time-off": "Frei",
     "unassigned": "Nicht zugewiesen"
+  },
+  "Phone": {
+    "missing": "Fügen Sie eine Mobilnummer im internationalen Format hinzu, bevor Sie Fahrten annehmen.",
+    "add": "Nummer hinzufügen"
+  },
+  "Today": {
+    "title": "Heute",
+    "description": "Nicht zugewiesene Fahrten, Fristen und Salden.",
+    "unassigned": "Heute ohne Zuweisung",
+    "deadlines": "Fristen",
+    "balances": "Offene Salden",
+    "empty": "Nichts hier.",
+    "loading": "Laden…",
+    "load-error": "Heute konnte nicht geladen werden. Erneut versuchen."
+  },
+  "WhatsAppNotify": {
+    "title": "Nachrichten an Zugewiesene",
+    "loading": "Laden…",
+    "load-error": "Nachrichten konnten nicht geladen werden.",
+    "save-error": "Speichern fehlgeschlagen. Erneut versuchen.",
+    "whatsappTplAssigned": "Fahrt zugewiesen",
+    "whatsappTplAvailable": "Fahrt zu übernehmen",
+    "whatsappTplChanged": "Fahrt geändert oder storniert",
+    "whatsappTplReminder": "Abholerinnerung",
+    "whatsappTplSettlement": "Ausgleich gebucht"
   }
 }

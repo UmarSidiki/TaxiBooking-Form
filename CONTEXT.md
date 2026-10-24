@@ -18,6 +18,14 @@ _Avoid_: Chauffeur account, employee (in product copy)
 A private span when a driver is not available. The calendar shows it and assignment warns when a new ride overlaps.
 _Avoid_: Vacation mode, PTO system
 
+**Ride activity**:
+An append-only note of who claimed, assigned, started, completed, or marked a ride no-show, with a time.
+_Avoid_: Audit log as a product name
+
+**WhatsApp badge**:
+A phone is stored as E.164. If the operator's WhatsApp is linked, the desk checks `onWhatsApp` and can show a verified badge. If WhatsApp is not linked, the phone is still saved.
+_Avoid_: SMS verification
+
 **Calendar feed**:
 A private iCal link for one person. Revoking the token stops the feed. It lists only that person's rides and omits passenger contact details.
 _Avoid_: Public calendar, shared ICS

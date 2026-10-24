@@ -46,6 +46,20 @@ test("admin partners page hides document file data", async ({ page }, testInfo) 
   await expect(page.getByRole("heading", { name: "Partner Management" })).toBeVisible();
   await expect(page.getByText("Alpine Transfers")).toBeVisible();
 
+  await openPath(page, "/en/dashboard/settings/whatsapp");
+  await expect(page.getByText("Assignee messages")).toBeVisible();
+  await page.screenshot({
+    path: `${ARTIFACTS}/whatsapp-settings-${testInfo.project.name}.png`,
+    fullPage: true,
+  });
+
+  await openPath(page, "/en/dashboard/today");
+  await expect(page.getByRole("heading", { name: "Unassigned today" })).toBeVisible();
+  await page.screenshot({
+    path: `${ARTIFACTS}/admin-today-${testInfo.project.name}.png`,
+    fullPage: true,
+  });
+
   await openPath(page, "/en/dashboard/calendar");
   await expect(page.getByRole("tab", { name: "Agenda" })).toBeVisible();
   await page.screenshot({

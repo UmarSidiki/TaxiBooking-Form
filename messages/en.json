@@ -2000,7 +2000,8 @@
       "hide_password": "Hide password",
       "cover_kicker": "Assignments",
       "cover_title": "Join this operator’s drivers.",
-      "cover_body": "Create an account, then wait for an assigned trip."
+      "cover_body": "Create an account, then wait for an assigned trip.",
+      "phone": "Mobile number"
     },
     "PartnerSignIn": {
       "title": "Partner sign in",
@@ -2098,5 +2099,30 @@
     "empty": "Nothing scheduled in this range.",
     "time-off": "Time off",
     "unassigned": "Unassigned"
+  },
+  "Phone": {
+    "missing": "Add a mobile number in international format before you take rides.",
+    "add": "Add number"
+  },
+  "Today": {
+    "title": "Today",
+    "description": "Unassigned rides, claim deadlines, and balances due.",
+    "unassigned": "Unassigned today",
+    "deadlines": "Claim deadlines",
+    "balances": "Balances due",
+    "empty": "Nothing here.",
+    "loading": "Loading…",
+    "load-error": "Could not load today. Try again."
+  },
+  "WhatsAppNotify": {
+    "title": "Assignee messages",
+    "loading": "Loading…",
+    "load-error": "Could not load message settings.",
+    "save-error": "Could not save. Try again.",
+    "whatsappTplAssigned": "Ride assigned",
+    "whatsappTplAvailable": "Ride available to claim",
+    "whatsappTplChanged": "Ride changed or cancelled",
+    "whatsappTplReminder": "Pickup reminder",
+    "whatsappTplSettlement": "Settlement recorded"
   }
 }

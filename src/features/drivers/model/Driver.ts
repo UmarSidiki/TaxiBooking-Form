@@ -21,6 +21,8 @@ export interface IDriver {
   _id?: string;
   name: string;
   email: string;
+  phone?: string;
+  whatsappVerified?: boolean;
   password: string;
   isActive: boolean;
   /** Missing on drivers created before account approval. Treat as approved. */
@@ -47,6 +49,8 @@ const DriverSchema = new Schema<IDriver>(
       trim: true,
       lowercase: true,
     },
+    phone: { type: String, trim: true },
+    whatsappVerified: { type: Boolean, default: false },
     password: {
       type: String,
       required: [true, "Password is required"],

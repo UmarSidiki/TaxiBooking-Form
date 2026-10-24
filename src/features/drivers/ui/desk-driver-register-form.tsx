@@ -18,6 +18,7 @@ const empty: DriverRegisterValues = {
   email: "",
   password: "",
   confirmPassword: "",
+  phone: "",
 };
 
 export function DeskDriverRegisterForm() {
@@ -54,6 +55,7 @@ export function DeskDriverRegisterForm() {
           name: values.name,
           email: values.email,
           password: values.password,
+          phone: values.phone,
         }),
       });
       if (response.status === 409) {

@@ -5,6 +5,7 @@ import { PartnerDashboardNotices } from "@/features/partners/ui/partner-dashboar
 import { PartnerDashboardStats } from "@/features/partners/ui/partner-dashboard-stats";
 import { usePartnerDashboard } from "@/features/partners/hooks/usePartnerDashboard";
 import { DeskPageMeta } from "@/features/dashboard/ui/desk-page-chrome";
+import { PhoneRequiredNotice } from "@/features/auth/ui/phone-required-notice";
 import { Button } from "@/shared/ui/button";
 import { Loader2 } from "lucide-react";
 
@@ -53,6 +54,7 @@ export function PartnerDashboard() {
         title={t("dashboard")}
         description={t("your-partner-account-details")}
       />
+      <PhoneRequiredNotice href="/partners/account" />
       {notice ? (
         <p className="rounded-md border border-border bg-card px-4 py-3 text-sm" role="status">
           {notice}

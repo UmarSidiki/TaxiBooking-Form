@@ -2000,7 +2000,8 @@
       "hide_password": "Nascondi password",
       "cover_kicker": "Incarichi",
       "cover_title": "Unisciti agli autisti di questo operatore.",
-      "cover_body": "Crea un account, poi attendi una corsa assegnata."
+      "cover_body": "Crea un account, poi attendi una corsa assegnata.",
+      "phone": "Cellulare"
     },
     "PartnerSignIn": {
       "title": "Accesso partner",
@@ -2098,5 +2099,30 @@
     "empty": "Niente in programma in questo periodo.",
     "time-off": "Libero",
     "unassigned": "Non assegnato"
+  },
+  "Phone": {
+    "missing": "Aggiungi un cellulare in formato internazionale prima di prendere corse.",
+    "add": "Aggiungi numero"
+  },
+  "Today": {
+    "title": "Oggi",
+    "description": "Corse non assegnate, scadenze e saldi.",
+    "unassigned": "Non assegnate oggi",
+    "deadlines": "Scadenze",
+    "balances": "Saldi dovuti",
+    "empty": "Niente qui.",
+    "loading": "Caricamento…",
+    "load-error": "Impossibile caricare oggi. Riprova."
+  },
+  "WhatsAppNotify": {
+    "title": "Messaggi agli assegnatari",
+    "loading": "Caricamento…",
+    "load-error": "Impossibile caricare i messaggi.",
+    "save-error": "Salvataggio non riuscito. Riprova.",
+    "whatsappTplAssigned": "Corsa assegnata",
+    "whatsappTplAvailable": "Corsa da prendere",
+    "whatsappTplChanged": "Corsa modificata o annullata",
+    "whatsappTplReminder": "Promemoria ritiro",
+    "whatsappTplSettlement": "Regolamento registrato"
   }
 }

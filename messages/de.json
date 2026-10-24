@@ -2124,7 +2124,8 @@
     "declined-title": "Anfrage nicht verfügbar",
     "declined-body": "Diese Anfrage wurde als nicht verfügbar markiert.",
     "already-paid-title": "Bereits bestätigt",
-    "already-paid-body": "Fahrt #{tripId} ist bereits bezahlt und bestätigt."
+    "already-paid-body": "Fahrt #{tripId} ist bereits bezahlt und bestätigt.",
+    "pay-cash": "Dem Fahrer bar zahlen"
   },
   "CountryBlocked": {
     "title": "Wir bedienen Ihre Region noch nicht",

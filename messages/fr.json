@@ -2124,7 +2124,8 @@
     "declined-title": "Demande indisponible",
     "declined-body": "Cette demande a été marquée indisponible.",
     "already-paid-title": "Déjà confirmé",
-    "already-paid-body": "Le trajet #{tripId} est déjà payé et confirmé."
+    "already-paid-body": "Le trajet #{tripId} est déjà payé et confirmé.",
+    "pay-cash": "Payer le chauffeur en espèces"
   },
   "CountryBlocked": {
     "title": "Nous ne desservons pas encore votre région",

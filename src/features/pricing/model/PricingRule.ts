@@ -8,6 +8,7 @@ export interface IPricingRule {
   meetGreetPrice: number;
   operatorMinimumFare: number;
   customerCutoffHours?: number;
+  depositPercent?: number;
 }
 
 const PricingRuleSchema = new Schema<IPricingRule>(
@@ -19,6 +20,7 @@ const PricingRuleSchema = new Schema<IPricingRule>(
     meetGreetPrice: { type: Number, default: 0 },
     operatorMinimumFare: { type: Number, default: 0 },
     customerCutoffHours: { type: Number, default: 2 },
+    depositPercent: { type: Number, default: 0 },
   },
   { timestamps: true },
 );

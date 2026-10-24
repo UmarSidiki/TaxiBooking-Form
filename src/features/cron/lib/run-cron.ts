@@ -20,12 +20,18 @@ async function runDaily() {
       import("@/features/partners/lib/delete-suspended-partners"),
       import("@/features/rides/lib/delete-old-completed-rides"),
     ]);
-  const [cleanup, partners, oldRides] = await Promise.all([
+  const [{ generateDueRecurring }, { sendQuoteFollowUps }] = await Promise.all([
+    import("@/features/corporate/lib/generate-recurring"),
+    import("@/features/corporate/lib/quote-follow-up"),
+  ]);
+  const [cleanup, partners, oldRides, recurring, followUps] = await Promise.all([
     cleanupAbandonedBookings(),
     deleteSuspendedPartners(),
     deleteOldCompletedRides(),
+    generateDueRecurring(),
+    sendQuoteFollowUps(),
   ]);
-  if (!cleanup.success || !partners.success || !oldRides.success) {
+  if (!cleanup.success || !partners.success || !oldRides.success || !recurring.success || !followUps.success) {
     await unclaimDailyRun(stamp);
     return "failed" as const;
   }

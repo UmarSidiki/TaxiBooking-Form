@@ -2124,7 +2124,8 @@
     "declined-title": "الطلب غير متاح",
     "declined-body": "تم تعليم طلب الموعد هذا كغير متاح.",
     "already-paid-title": "مؤكد مسبقاً",
-    "already-paid-body": "الرحلة #{tripId} مدفوعة ومؤكدة مسبقاً."
+    "already-paid-body": "الرحلة #{tripId} مدفوعة ومؤكدة مسبقاً.",
+    "pay-cash": "ادفع للسائق نقداً"
   },
   "CountryBlocked": {
     "title": "لا نخدم منطقتك حتى الآن",

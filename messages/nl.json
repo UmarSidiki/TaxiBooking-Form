@@ -2124,7 +2124,8 @@
     "declined-title": "Verzoek niet beschikbaar",
     "declined-body": "Dit verzoek is als niet beschikbaar gemarkeerd.",
     "already-paid-title": "Al bevestigd",
-    "already-paid-body": "Rit #{tripId} is al betaald en bevestigd."
+    "already-paid-body": "Rit #{tripId} is al betaald en bevestigd.",
+    "pay-cash": "Contant aan de chauffeur betalen"
   },
   "CountryBlocked": {
     "title": "Wij bedienen uw regio nog niet",

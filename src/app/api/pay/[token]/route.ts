@@ -3,6 +3,23 @@ import { connectDB } from "@/shared/db";
 import { findBookingByPaymentToken } from "@/features/booking/lib/find-booking-by-payment-token";
 import { jsonError } from "@/shared/http/json-error";
 
+export async function POST(
+  _request: NextRequest,
+  { params }: { params: Promise<{ token: string }> },
+) {
+  const { token } = await params;
+  await connectDB();
+  const booking = await findBookingByPaymentToken(token);
+  if (!booking || booking.status !== "awaiting_payment") {
+    return NextResponse.json({ success: false, state: "not_found" }, { status: 404 });
+  }
+  booking.paymentMethod = "cash";
+  booking.paymentStatus = "pending";
+  booking.status = "upcoming";
+  await booking.save();
+  return NextResponse.json({ success: true, state: "cash", tripId: booking.tripId });
+}
+
 export async function GET(
   _request: NextRequest,
   { params }: { params: Promise<{ token: string }> }

@@ -2124,7 +2124,8 @@
     "declined-title": "Request not available",
     "declined-body": "This appointment request was marked unavailable.",
     "already-paid-title": "Already confirmed",
-    "already-paid-body": "Trip #{tripId} is already paid and confirmed."
+    "already-paid-body": "Trip #{tripId} is already paid and confirmed.",
+    "pay-cash": "Pay the driver in cash"
   },
   "CountryBlocked": {
     "title": "We don't serve your region yet",

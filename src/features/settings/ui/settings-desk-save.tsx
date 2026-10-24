@@ -17,7 +17,7 @@ export function SettingsDeskSave({
   help?: string;
 }) {
   const t = useTranslations();
-  const { save, isLoading, notice, dismissNotice } = useSettingsDesk();
+  const { save, isLoading, isFetching, notice, dismissNotice } = useSettingsDesk();
 
   useEffect(() => () => dismissNotice(), [dismissNotice]);
 
@@ -25,7 +25,7 @@ export function SettingsDeskSave({
     <div className="flex flex-col gap-4">
       <DeskPageMeta title={title} description={help} />
       <div className="flex justify-end">
-        <Button type="button" onClick={save} disabled={isLoading} className="h-11 rounded-xl px-4 font-semibold">
+        <Button type="button" onClick={save} disabled={isLoading || isFetching} className="h-11 rounded-xl px-4 font-semibold">
           {isLoading ? (
             <Loader2 className="size-4 animate-spin" aria-hidden="true" />
           ) : (

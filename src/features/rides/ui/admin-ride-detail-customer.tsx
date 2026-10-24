@@ -20,13 +20,13 @@ export function AdminRideDetailCustomer({
           {booking.firstName} {booking.lastName}
         </p>
         <a
-          className="block text-primary underline-offset-4 hover:underline"
+          className="inline-flex min-h-11 items-center text-primary underline-offset-4 hover:underline"
           href={`mailto:${booking.email}`}
         >
           {booking.email}
         </a>
         <a
-          className="block text-primary underline-offset-4 hover:underline"
+          className="inline-flex min-h-11 items-center text-primary underline-offset-4 hover:underline"
           href={`tel:${booking.phone}`}
         >
           {booking.phone}

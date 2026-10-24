@@ -3,13 +3,6 @@
 import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { Button } from "@/shared/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/shared/ui/dialog";
 import { Input } from "@/shared/ui/input";
 import { Label } from "@/shared/ui/label";
 import type { IBooking } from "@/features/booking/model";
@@ -63,13 +56,18 @@ export function AdminRideEditDialog({
     }
   };
 
+  if (!open) return null;
+
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md">
-        <DialogHeader>
-          <DialogTitle>{t("Dashboard.Rides.edit-ride")}</DialogTitle>
-        </DialogHeader>
-        <div className="flex flex-col gap-3">
+    <form
+      className="flex flex-col gap-3 rounded-md border border-border bg-card p-4"
+      onSubmit={(event) => {
+        event.preventDefault();
+        void save();
+      }}
+    >
+      <h3 className="text-base font-semibold text-foreground">{t("Dashboard.Rides.edit-ride")}</h3>
+      <div className="flex flex-col gap-3">
           <div>
             <Label htmlFor="edit-pickup">{t("Dashboard.Rides.PickupLocation")}</Label>
             <Input id="edit-pickup" className="h-11" value={pickup} onChange={(event) => setPickup(event.target.value)} />
@@ -90,12 +88,9 @@ export function AdminRideEditDialog({
           </div>
           {error ? <p role="alert" className="text-sm text-destructive">{error}</p> : null}
         </div>
-        <DialogFooter>
-          <Button className="h-11" disabled={busy} onClick={() => void save()}>
-            {busy ? t("Dashboard.Rides.activity-loading") : t("Dashboard.Rides.save-ride")}
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+        <Button type="submit" className="h-11" disabled={busy}>
+          {busy ? t("Dashboard.Rides.activity-loading") : t("Dashboard.Rides.save-ride")}
+        </Button>
+    </form>
   );
 }

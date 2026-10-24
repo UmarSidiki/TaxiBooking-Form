@@ -25,6 +25,21 @@ async function showUpcoming(page: Page) {
   await page.getByRole("tab", { name: "Upcoming" }).click();
 }
 
+async function showCalendar(page: Page, name: "Month" | "Week" | "Day") {
+  const grid = page.getByRole("grid", { name });
+  for (let attempt = 0; attempt < 3; attempt += 1) {
+    if (await grid.isVisible().catch(() => false)) return;
+    await page.getByRole("tab", { name }).click();
+    try {
+      await expect(grid).toBeVisible({ timeout: 5_000 });
+      return;
+    } catch {
+      // A dev refresh can remount the board on its month view.
+    }
+  }
+  await expect(grid).toBeVisible();
+}
+
 async function fillWhen(page: Page, roundTrip: boolean) {
   await page.locator('input[type="date"]').first().fill(DEPART);
   await page.locator('input[type="time"]').first().fill("09:30");
@@ -36,10 +51,18 @@ async function fillWhen(page: Page, roundTrip: boolean) {
 }
 
 async function reachVehicles(page: Page, pickup: string, dropoff: string, roundTrip: boolean) {
-  await page.getByPlaceholder(pickup).fill("Geneva Airport");
-  await page.getByPlaceholder(dropoff).fill("Lausanne Station");
+  const pickupField = page.getByPlaceholder(pickup).first();
+  const dropoffField = page.getByPlaceholder(dropoff).first();
+  await expect(async () => {
+    await pickupField.fill("Geneva Airport");
+    await dropoffField.fill("Lausanne Station");
+    await expect(pickupField).toHaveValue("Geneva Airport");
+    await expect(dropoffField).toHaveValue("Lausanne Station");
+  }).toPass();
   await fillWhen(page, roundTrip);
-  await page.getByPlaceholder(pickup).blur();
+  if ((await pickupField.inputValue()) !== "Geneva Airport") await pickupField.fill("Geneva Airport");
+  if ((await dropoffField.inputValue()) !== "Lausanne Station") await dropoffField.fill("Lausanne Station");
+  await pickupField.blur();
   await page.waitForTimeout(400);
 }
 
@@ -199,17 +222,25 @@ test("manual QA pass", async ({ page, browser }) => {
     await gotoPath(page, "/en/dashboard/rides");
     await showUpcoming(page);
     const ride = card(page, "qaedit01");
-    await ride.getByRole("button", { name: "View Details" }).click({ force: true });
-    await page.getByRole("button", { name: "Edit ride" }).click({ force: true });
+    await ride.scrollIntoViewIfNeeded();
+    await ride.getByRole("button", { name: "View Details" }).click();
+    const dialog = page.getByRole("dialog").filter({ hasText: "Edit Lane" });
+    await dialog.getByRole("button", { name: "Edit ride" }).click();
     await page.locator("#edit-notes").fill("Gate 4");
+    const refreshed = page.waitForResponse(
+      (response) => response.request().method() === "GET" && /\/api\/bookings(\?|$)/.test(response.url()),
+    );
     await page.getByRole("button", { name: "Save ride" }).click();
+    expect((await refreshed).ok()).toBeTruthy();
     await expect(page.getByText("Ride updated")).toBeVisible();
-    await ride.getByRole("button", { name: "View Details" }).click({ force: true });
-    const dialog = page.getByRole("dialog");
     await expect(dialog.getByText("Edited")).toBeVisible();
     await shot(page, "admin-activity");
     await page.keyboard.press("Escape");
-    await ride.getByRole("button", { name: "Cancel" }).click({ force: true });
+    await expect(page.getByRole("dialog")).toHaveCount(0);
+    await ride.getByRole("button", { name: "View Details" }).click();
+    await expect(page.getByRole("dialog").getByText("Gate 4")).toBeVisible();
+    await page.keyboard.press("Escape");
+    await ride.getByRole("button", { name: "Cancel" }).click();
     await page.getByRole("button", { name: "Confirm Cancellation" }).click();
     await shot(page, "admin-cancel");
   });
@@ -249,19 +280,30 @@ test("manual QA pass", async ({ page, browser }) => {
     await signIn(page, "/en/dashboard/signin", ADMIN.email, ADMIN.password);
     await gotoPath(page, "/en/dashboard/partners");
     await page.getByRole("tab", { name: "Applications" }).click();
-    await page.getByText("New Partner").click();
-    await page.getByRole("button", { name: "Approve Partner" }).click();
+    await page.getByRole("button", { name: /New Partner/ }).click();
+    const sheet = page.locator("[data-slot=sheet-content]");
+    const approve = sheet.getByRole("button", { name: "Approve Partner" });
+    await expect(approve).toBeInViewport();
+    await approve.click();
+    await expect(approve).toBeHidden();
     await shot(page, "admin-approve-partner");
     await page.keyboard.press("Escape");
     await signIn(page, "/en/partners/login", ALPINE.email, ALPINE.password);
     await gotoPath(page, "/en/partners/fleet");
-    await page.getByRole("button", { name: /Request/ }).first().click();
+    await page.getByRole("button", { name: "Request Fleet" }).nth(1).click();
+    const requested = page.waitForResponse(
+      (response) => response.url().includes("/api/partners/fleet/request") && response.request().method() === "POST",
+    );
+    await page.getByRole("dialog").getByRole("button", { name: "Request Fleet" }).click();
+    expect((await requested).ok()).toBeTruthy();
     await shot(page, "partner-vehicle-request");
     await signIn(page, "/en/dashboard/signin", ADMIN.email, ADMIN.password);
     await gotoPath(page, "/en/dashboard/partners");
+    await page.getByRole("tab", { name: "Active" }).click();
     await page.getByText("Alpine Transfers").first().click();
-    await page.getByRole("tab", { name: /Fleet|Vehicles/ }).click();
-    await page.getByRole("button", { name: "Approve Fleet Request" }).click();
+    const fleetSheet = page.locator("[data-slot=sheet-content]");
+    await fleetSheet.getByRole("button", { name: "Fleet" }).click();
+    await fleetSheet.getByRole("button", { name: "Approve Fleet Request" }).click();
     await shot(page, "admin-approve-vehicle");
   });
 
@@ -277,14 +319,20 @@ test("manual QA pass", async ({ page, browser }) => {
     await expect(a.getByText("Sion Market")).toBeVisible();
     await shot(a, "partner-available");
     const accept = (target: Page) =>
-      target.getByRole("button", { name: "Accept Ride" }).last().click();
-    await Promise.all([accept(a), accept(b)]);
-    await a.waitForTimeout(1000);
+      target.locator(".desk-card").filter({ hasText: "Sion Market" }).getByRole("button", { name: "Accept Ride" }).click();
+    const [firstResponse, secondResponse] = await Promise.all([
+      a.waitForResponse((response) => response.url().includes("/accept") && response.request().method() === "POST"),
+      b.waitForResponse((response) => response.url().includes("/accept") && response.request().method() === "POST"),
+      accept(a),
+      accept(b),
+    ]);
+    const statuses = [firstResponse.status(), secondResponse.status()].sort();
+    expect(statuses, `claim statuses ${statuses.join(",")}`).toEqual([200, 409]);
     await gotoPath(a, "/en/partners/rides");
     await gotoPath(b, "/en/partners/rides");
-    const aWon = await a.getByText("Sion Market").count();
-    const bWon = await b.getByText("Sion Market").count();
-    expect(aWon + bWon).toBeGreaterThan(0);
+    await expect.poll(async () => (await a.getByText("qaclaim1").count()) + (await b.getByText("qaclaim1").count())).toBeGreaterThan(0);
+    const aWon = await a.getByText("qaclaim1").count();
+    const bWon = await b.getByText("qaclaim1").count();
     expect(aWon === 0 || bWon === 0).toBeTruthy();
     await shot(a, "partner-claim-a");
     await shot(b, "partner-claim-b");
@@ -296,34 +344,45 @@ test("manual QA pass", async ({ page, browser }) => {
     await signIn(page, "/en/partners/login", ALPINE.email, ALPINE.password);
     await gotoPath(page, "/en/partners/billing");
     await expect(page.getByText("€55.00").first()).toBeVisible();
+    await expect(page.getByText("The operator owes you this amount.")).toBeVisible();
     await shot(page, "partner-billing-before");
     const pdf = await page.request.get("/api/partners/statement?month=2024-01");
     expect(pdf.ok()).toBeTruthy();
     expect((await pdf.body()).subarray(0, 4).toString()).toBe("%PDF");
     await gotoPath(page, "/en/partners/rides");
     const cash = page.locator(".desk-card").filter({ hasText: "Cash Margin Stop" });
+    const completed = page.waitForResponse((response) => response.url().includes("/complete") && response.request().method() === "POST");
     await cash.getByRole("button", { name: "Mark completed" }).click();
+    const completedResponse = await completed;
+    expect(completedResponse.ok(), `complete ${completedResponse.status()}`).toBeTruthy();
     await gotoPath(page, "/en/partners/billing");
-    await expect(page.getByText("45.00")).toBeVisible();
+    await expect(page.getByText("€45.00").first()).toBeVisible();
+    await expect(page.getByText(/[-−]€10\.00|€[-−]10\.00/)).toBeVisible();
     await shot(page, "partner-billing-after-cash");
     await signIn(page, "/en/dashboard/signin", ADMIN.email, ADMIN.password);
     await gotoPath(page, "/en/dashboard/partners");
+    await page.getByRole("tab", { name: "Active" }).click();
     await page.getByText("Alpine Transfers").first().click();
-    await page.getByRole("tab", { name: /Billing|Balance/ }).click();
-    await page.getByRole("button", { name: /Settle/ }).click();
-    await page.locator("#settle-amount").fill("10");
-    await page.locator("#settle-direction").selectOption("pay_partner");
-    await page.getByRole("button", { name: /Record|Save|Settle/ }).last().click();
+    const sheet = page.locator("[data-slot=sheet-content]");
+    await sheet.getByRole("button", { name: "Billing" }).click();
+    await sheet.getByRole("button", { name: "Record settlement" }).click();
+    const settle = page.getByRole("dialog").filter({ has: page.locator("#settle-amount") });
+    await settle.locator("#settle-amount").fill("10");
+    await settle.locator("#settle-direction").selectOption("pay_partner");
+    await settle.getByRole("button", { name: "Save settlement" }).click();
+    await expect(sheet.getByText("€35.00").first()).toBeVisible();
     await shot(page, "admin-partial-settlement");
+    await page.keyboard.press("Escape");
     await gotoPath(page, "/en/dashboard/rides");
-    await showUpcoming(page);
+    await page.getByRole("tab", { name: "Completed" }).click();
     const claw = card(page, "qaclaw01");
     await claw.getByRole("button", { name: "Cancel" }).click();
     await page.getByRole("button", { name: "Confirm Cancellation" }).click();
     await signIn(page, "/en/partners/login", ALPINE.email, ALPINE.password);
     await gotoPath(page, "/en/partners/billing");
+    await expect(page.getByText("Clawback")).toBeVisible();
+    await expect(page.getByText("€20.00").first()).toBeVisible();
     await shot(page, "partner-billing-after-clawback");
-    await expect(page.getByText(/clawback|reversed|20\.00|35\.00/i)).toBeVisible();
   });
 
   await step(page, results, "driver-register-and-rides", async () => {
@@ -384,11 +443,9 @@ test("manual QA pass", async ({ page, browser }) => {
 
   await step(page, results, "calendar-feeds", async () => {
     await gotoPath(page, "/en/dashboard/calendar");
-    await expect(page.getByRole("grid", { name: "Month" })).toBeVisible();
-    await page.getByRole("tab", { name: "Week" }).click();
-    await expect(page.getByRole("grid", { name: "Week" })).toBeVisible();
-    await page.getByRole("tab", { name: "Day" }).click();
-    await expect(page.getByRole("grid", { name: "Day" })).toBeVisible();
+    await showCalendar(page, "Month");
+    await showCalendar(page, "Week");
+    await showCalendar(page, "Day");
     await shot(page, "admin-calendar-desktop");
     await page.getByRole("button", { name: "Create private feed" }).click();
     const adminLink = page.locator("a[href*='/api/calendar/']");

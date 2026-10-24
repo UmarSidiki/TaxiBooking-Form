@@ -44,11 +44,13 @@ export async function openFresh(page: Page, path: string) {
 export async function signIn(page: Page, path: string, email: string, password: string) {
   await page.context().clearCookies();
   await gotoPath(page, path);
+  await page.locator("form[data-ready=true]").waitFor();
   const emailField = page.locator("#email");
-  await emailField.waitFor();
+  const passwordField = page.locator("#password");
   await emailField.fill(email);
-  await page.locator("#password").fill(password);
-  if ((await emailField.inputValue()) !== email) await emailField.fill(email);
+  await passwordField.fill(password);
+  await expect(emailField).toHaveValue(email);
+  await expect(passwordField).toHaveValue(password);
   await page.getByRole("button", { name: "Sign in" }).click();
   await page.waitForURL((url) => !url.pathname.includes("signin") && !url.pathname.includes("login"));
   await page.waitForLoadState("domcontentloaded");

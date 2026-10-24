@@ -187,7 +187,7 @@ export function EmbeddableV1RouteFields({
                       <button
                         type="button"
                         onClick={handleAddStop}
-                        className="text-xs text-primary hover:text-primary/80 underline"
+                        className="inline-flex min-h-11 items-center text-sm text-primary underline hover:text-primary/80"
                       >
                         {t("embeddable.add-a-stop")}{" "}
                       </button>

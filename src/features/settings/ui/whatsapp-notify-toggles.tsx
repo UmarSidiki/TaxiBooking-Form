@@ -53,7 +53,7 @@ export function WhatsAppNotifyToggles() {
             type="checkbox"
             checked={flags[key]}
             onChange={() => void toggle(key)}
-            className="size-5"
+            className="size-11 shrink-0 accent-primary"
           />
         </label>
       ))}

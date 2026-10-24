@@ -1,14 +1,9 @@
-import {
-  Document,
-  Page,
-  StyleSheet,
-  Text,
-  View,
-  renderToBuffer,
-} from "@react-pdf/renderer";
+import { Document, Image, Page, StyleSheet, Text, View, renderToBuffer } from "@react-pdf/renderer";
+import { invoiceCopy, invoiceLineLabel } from "@/features/invoices/lib/invoice-labels";
 
 export type InvoiceSource = {
   tripId: string;
+  locale?: string;
   firstName: string;
   lastName: string;
   email: string;
@@ -16,9 +11,12 @@ export type InvoiceSource = {
   pickup: string;
   dropoff?: string;
   bookingType?: string;
+  tripType?: string;
   duration?: number;
   date: string;
   time: string;
+  returnDate?: string;
+  returnTime?: string;
   passengers: number;
   flightNumber?: string;
   totalAmount?: number;
@@ -28,16 +26,22 @@ export type InvoiceSource = {
   taxIncluded?: boolean;
   paymentStatus?: string;
   notes?: string;
+  fareLines?: { code: string; amount: number }[];
+};
+
+export type InvoicePdfOptions = {
+  invoiceNumber?: string;
+  qrDataUrl?: string;
+  payUrl?: string;
 };
 
 const styles = StyleSheet.create({
-  page: { padding: 32, fontSize: 10 },
+  page: { padding: 36, fontSize: 10, color: "#1c1917" },
   title: { fontSize: 22, marginBottom: 4 },
-  line: { fontSize: 9, marginBottom: 3 },
-  section: { marginTop: 16 },
-  row: { flexDirection: "row", justifyContent: "space-between", marginBottom: 4 },
-  label: { width: 160 },
-  totals: { marginTop: 12, borderTopWidth: 1, paddingTop: 8 },
+  muted: { fontSize: 9, color: "#57534e", marginBottom: 2 },
+  section: { marginTop: 14 },
+  row: { flexDirection: "row", justifyContent: "space-between", borderBottomWidth: 0.4, borderBottomColor: "#e7e5e4", paddingVertical: 4 },
+  qr: { width: 72, height: 72, marginTop: 8 },
 });
 
 function money(symbol: string, amount: number) {
@@ -48,92 +52,75 @@ function InvoiceDocument({
   booking,
   currencySymbol,
   companyName,
+  options,
 }: {
   booking: InvoiceSource;
   currencySymbol: string;
   companyName: string;
+  options: InvoicePdfOptions;
 }) {
+  const copy = invoiceCopy(booking.locale);
   const total = booking.totalAmount ?? 0;
-  const tax = booking.taxAmount ?? 0;
-  const subtotal = booking.subtotalAmount ?? total;
-  const paid = booking.paymentStatus === "completed" ? total : 0;
+  const paid = booking.paymentStatus === "completed";
+  const lines = (booking.fareLines ?? []).filter((line) => line.code !== "tax" && line.amount !== 0);
   const hourly = booking.bookingType === "hourly";
-  const issued = new Date().toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
 
   return (
     <Document>
       <Page size="A4" style={styles.page}>
-        <Text style={styles.title}>Invoice</Text>
-        <Text style={styles.line}>{companyName}</Text>
-        <Text style={styles.line}>Invoice #{booking.tripId}</Text>
-        <Text style={styles.line}>{issued}</Text>
-
+        <Text style={styles.title}>{copy.invoice}</Text>
+        <Text style={styles.muted}>{companyName}</Text>
+        <Text style={styles.muted}>{copy.number}: {options.invoiceNumber || booking.tripId}</Text>
+        <Text style={paid ? styles.muted : { ...styles.muted, color: "#9a3412" }}>{paid ? copy.paid : copy.unpaid}</Text>
         <View style={styles.section}>
-          <Text>Bill to</Text>
-          <Text style={styles.line}>
-            {booking.firstName} {booking.lastName}
-          </Text>
-          <Text style={styles.line}>{booking.email}</Text>
-          <Text style={styles.line}>{booking.phone}</Text>
+          <Text>{copy.billTo}</Text>
+          <Text style={styles.muted}>{booking.firstName} {booking.lastName}</Text>
+          <Text style={styles.muted}>{booking.email}</Text>
+          <Text style={styles.muted}>{booking.phone}</Text>
         </View>
-
         <View style={styles.section}>
-          <Text>Trip</Text>
-          <Text style={styles.line}>From: {booking.pickup}</Text>
+          <Text>{copy.trip}</Text>
+          <Text style={styles.muted}>{copy.from}: {booking.pickup}</Text>
           {hourly ? (
-            <Text style={styles.line}>
-              Duration: {booking.duration ? `${booking.duration} hours` : "Hourly"}
-            </Text>
+            <Text style={styles.muted}>{copy.hours}: {booking.duration ?? "—"}</Text>
           ) : (
-            <Text style={styles.line}>To: {booking.dropoff || "—"}</Text>
+            <Text style={styles.muted}>{copy.to}: {booking.dropoff || "—"}</Text>
           )}
-          <Text style={styles.line}>
-            {booking.date} at {booking.time}
-          </Text>
-          <Text style={styles.line}>Passengers: {booking.passengers}</Text>
-          {booking.flightNumber ? (
-            <Text style={styles.line}>Flight: {booking.flightNumber}</Text>
+          <Text style={styles.muted}>{copy.when}: {booking.date} {booking.time}</Text>
+          {booking.tripType === "roundtrip" && booking.returnDate ? (
+            <Text style={styles.muted}>{copy.return}: {booking.returnDate} {booking.returnTime || ""}</Text>
           ) : null}
+          <Text style={styles.muted}>{copy.passengers}: {booking.passengers}</Text>
         </View>
-
-        <View style={styles.totals}>
-          <View style={styles.row}>
-            <Text style={styles.label}>Transportation</Text>
-            <Text>{money(currencySymbol, subtotal)}</Text>
-          </View>
-          {tax > 0 ? (
+        <View style={styles.section}>
+          {lines.length > 0 ? lines.map((line) => (
+            <View key={line.code} style={styles.row}>
+              <Text>{invoiceLineLabel(line.code, booking.locale)}</Text>
+              <Text>{money(currencySymbol, line.amount)}</Text>
+            </View>
+          )) : (
             <View style={styles.row}>
-              <Text style={styles.label}>
-                Tax ({booking.taxPercentage || 0}%)
-                {booking.taxIncluded ? " included" : ""}
-              </Text>
-              <Text>{money(currencySymbol, tax)}</Text>
+              <Text>{invoiceLineLabel("vehicle", booking.locale)}</Text>
+              <Text>{money(currencySymbol, booking.subtotalAmount ?? total)}</Text>
+            </View>
+          )}
+          {(booking.taxAmount ?? 0) > 0 ? (
+            <View style={styles.row}>
+              <Text>{copy.tax} ({booking.taxPercentage || 0}%)</Text>
+              <Text>{money(currencySymbol, booking.taxAmount ?? 0)}</Text>
             </View>
           ) : null}
           <View style={styles.row}>
-            <Text style={styles.label}>Total</Text>
+            <Text>{copy.total}</Text>
             <Text>{money(currencySymbol, total)}</Text>
           </View>
           <View style={styles.row}>
-            <Text style={styles.label}>Amount paid</Text>
-            <Text>{money(currencySymbol, paid)}</Text>
-          </View>
-          <View style={styles.row}>
-            <Text style={styles.label}>Balance due</Text>
-            <Text>{money(currencySymbol, total - paid)}</Text>
+            <Text>{copy.due}</Text>
+            <Text>{money(currencySymbol, paid ? 0 : total)}</Text>
           </View>
         </View>
-
-        {booking.notes ? (
-          <View style={styles.section}>
-            <Text>Notes</Text>
-            <Text style={styles.line}>{booking.notes}</Text>
-          </View>
-        ) : null}
+        {options.qrDataUrl ? <Image src={options.qrDataUrl} style={styles.qr} /> : null}
+        {options.payUrl ? <Text style={styles.muted}>{copy.pay}: {options.payUrl}</Text> : null}
       </Page>
     </Document>
   );
@@ -142,13 +129,10 @@ function InvoiceDocument({
 export function renderInvoicePdf(
   booking: InvoiceSource,
   currencySymbol: string,
-  companyName: string
+  companyName: string,
+  options: InvoicePdfOptions = {},
 ) {
   return renderToBuffer(
-    <InvoiceDocument
-      booking={booking}
-      currencySymbol={currencySymbol}
-      companyName={companyName}
-    />
+    <InvoiceDocument booking={booking} currencySymbol={currencySymbol} companyName={companyName} options={options} />,
   );
 }

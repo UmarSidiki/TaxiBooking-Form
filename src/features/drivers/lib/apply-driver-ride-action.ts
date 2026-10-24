@@ -27,6 +27,11 @@ export async function applyDriverRideAction(
     { returnDocument: "after" },
   );
   if (updated) {
+    if (action.action === "completed") {
+      void import("@/features/invoices/lib/send-invoice-notice").then((mod) =>
+        mod.sendInvoiceNotice(updated.tripId),
+      );
+    }
     await recordRideActivity({
       bookingId: rideId,
       actorId: driverId,

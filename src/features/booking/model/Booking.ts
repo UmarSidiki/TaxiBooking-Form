@@ -29,6 +29,7 @@ export interface IBooking extends Document {
   meetAndGreet?: boolean;
   promoCode?: string;
   fareLines?: { code: string; amount: number }[];
+  invoiceNumber?: string;
   notes: string;
   flightNumber?: string;
   firstName: string;
@@ -131,6 +132,8 @@ const BookingSchema: Schema = new Schema({
   meetAndGreet: { type: Boolean, default: false },
   promoCode: { type: String },
   fareLines: { type: [{ code: String, amount: Number }], default: undefined },
+  invoiceNumber: { type: String, unique: true, sparse: true },
+  invoiceNotifiedAt: { type: Date },
   babySeats: { type: Number, default: 0 },
   notes: { type: String, default: "" },
   flightNumber: { type: String },

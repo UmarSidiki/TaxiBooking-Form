@@ -67,8 +67,6 @@ describe("hourly and return fares", () => {
         dropoff: "Lausanne Station",
         date: "2026-12-16",
         time: "09:30",
-        returnDate: "2026-12-17",
-        returnTime: "18:00",
       },
       { enableTax: true, taxPercentage: 10 },
       25,

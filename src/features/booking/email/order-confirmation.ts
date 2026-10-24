@@ -4,7 +4,7 @@ import { Setting } from "@/features/settings/model";
 import { getCurrencySymbol } from "@/shared/lib/utils";
 import { confirmationEmailHtml } from "@/features/booking/email/order-confirmation-html";
 import { invoiceDownloadUrl } from "@/features/booking/lib/booking-mail-url";
-import { renderInvoicePdf } from "@/features/booking/lib/render-invoice-pdf";
+import { buildInvoicePdf } from "@/features/invoices/lib/build-invoice-pdf";
 import type { BookingEmailData } from "@/features/payments/lib/booking-email-data";
 
 function isValidEmail(email: string): boolean {
@@ -32,11 +32,7 @@ export async function sendOrderConfirmationEmail(bookingData: BookingEmailData) 
     let invoiceAttached = false;
     let pdf: Buffer | null = null;
     try {
-      pdf = await renderInvoicePdf(
-        bookingData,
-        currencySymbol,
-        settings?.smtpSenderName || "Booking Service"
-      );
+      pdf = (await buildInvoicePdf(bookingData.tripId))?.pdf ?? null;
       invoiceAttached = true;
     } catch (error) {
       console.error("Invoice PDF failed for", bookingData.tripId, error);

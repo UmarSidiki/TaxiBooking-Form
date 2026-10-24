@@ -18,6 +18,7 @@ export type WhatsAppLinkView = {
 export type WhatsAppOutbound = {
   jid: string;
   text: string;
+  document?: { base64: string; fileName: string };
 };
 
 type SendResult =
@@ -99,7 +100,17 @@ export function sendWhatsAppTexts(messages: WhatsAppOutbound[]) {
       const results = await Promise.all(
         messages.map(async (message) => {
           try {
-            await sock.sendMessage(message.jid, { text: message.text });
+            await sock.sendMessage(
+              message.jid,
+              message.document
+                ? {
+                    document: Buffer.from(message.document.base64, "base64"),
+                    mimetype: "application/pdf",
+                    fileName: message.document.fileName,
+                    caption: message.text,
+                  }
+                : { text: message.text },
+            );
             return { jid: message.jid, ok: true };
           } catch {
             return { jid: message.jid, ok: false };

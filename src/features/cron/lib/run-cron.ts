@@ -1,0 +1,58 @@
+import { claimDailyRun, unclaimDailyRun } from "@/features/cron/lib/daily-gate";
+import { withCronLock } from "@/features/cron/lib/cron-lock";
+
+type Counted = { success?: boolean; sent?: number };
+
+export type CronBody =
+  | { ok: true; skipped: "locked" }
+  | {
+      ok: boolean;
+      hourly: { reminders: number; notifications: number };
+      daily: "skipped" | "ran" | "failed";
+    };
+
+async function runDaily() {
+  const stamp = await claimDailyRun();
+  if (!stamp) return "skipped" as const;
+  const [{ cleanupAbandonedBookings }, { deleteSuspendedPartners }, { deleteOldCompletedRides }] =
+    await Promise.all([
+      import("@/features/booking/lib/cleanup-abandoned-bookings"),
+      import("@/features/partners/lib/delete-suspended-partners"),
+      import("@/features/rides/lib/delete-old-completed-rides"),
+    ]);
+  const [cleanup, partners, oldRides] = await Promise.all([
+    cleanupAbandonedBookings(),
+    deleteSuspendedPartners(),
+    deleteOldCompletedRides(),
+  ]);
+  if (!cleanup.success || !partners.success || !oldRides.success) {
+    await unclaimDailyRun(stamp);
+    return "failed" as const;
+  }
+  return "ran" as const;
+}
+
+/** Hourly reminders and notifications. Cleanup, deletions, and later daily jobs run once per UTC day. */
+export async function runCron(): Promise<CronBody> {
+  const held = await withCronLock(async () => {
+    const [{ sendPickupReminders }, { sendThankYouEmails }] = await Promise.all([
+      import("@/features/booking/lib/send-pickup-reminders"),
+      import("@/features/booking/lib/send-thank-you-emails"),
+    ]);
+    const [reminders, notifications] = await Promise.all([
+      sendPickupReminders() as Promise<Counted>,
+      sendThankYouEmails() as Promise<Counted>,
+    ]);
+    const daily = await runDaily();
+    return {
+      ok: reminders.success !== false && notifications.success !== false && daily !== "failed",
+      hourly: {
+        reminders: reminders.sent ?? 0,
+        notifications: notifications.sent ?? 0,
+      },
+      daily,
+    };
+  });
+  if (!held.locked) return { ok: true, skipped: "locked" };
+  return held.value;
+}

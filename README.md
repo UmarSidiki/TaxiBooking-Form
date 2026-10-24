@@ -32,6 +32,7 @@ Required in `.env.local`:
 | `NEXTAUTH_SECRET` | NextAuth JWT secret |
 | `NEXTAUTH_URL` | App origin (local: `http://localhost:3000`) |
 | `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` | Maps / Places / Distance Matrix |
+| `CRON_SECRET` | Shared secret for `/api/cron`. Required before the job will run. |
 
 Stripe, MultiSafepay, and SMTP are configured in the **admin Settings** UI (MongoDB), not only in env. See `.env.example` for optional public site copy (`NEXT_PUBLIC_WEBSITE_NAME`, support phone/email).
 
@@ -70,8 +71,29 @@ Any Node host that can run `npm run build` and `npm start` (or a Next.js platfor
 
 1. Set the same env vars as `.env.example` on the host (`MONGODB_URI`, `NEXTAUTH_SECRET`, `NEXTAUTH_URL` must match the public URL).
 2. Configure Stripe / MultiSafepay webhook URLs to `/api/stripe-webhook` and `/api/multisafepay-webhook`.
-3. Point cron at `/api/cron/*` if you use abandoned-booking cleanup.
+3. Schedule `/api/cron` (see below). Vercel’s free plan only allows the daily trigger in `vercel.json`.
 4. After first deploy, sign in as admin and fill Settings (SMTP, payment keys, maps bounds, tax).
+
+## Hourly cron (cron-job.org)
+
+`/api/cron` is not behind the locale middleware. Call that path, not `/en/api/cron`.
+
+The route accepts **GET and POST**. It fails closed when `CRON_SECRET` is empty. Send the secret in one of these ways (constant-time compare):
+
+- `Authorization: Bearer <CRON_SECRET>` (this is what Vercel Cron sends)
+- `x-cron-secret: <CRON_SECRET>`
+- `?key=<CRON_SECRET>` (works, but the secret can land in access logs; prefer a header)
+
+On [cron-job.org](https://cron-job.org):
+
+1. Create a job. URL: `https://<your-domain>/api/cron`. Schedule: every hour.
+2. Method: GET (or POST).
+3. Add a header `x-cron-secret` with the same value as `CRON_SECRET`.
+4. Save. A success response is small JSON: `{ "ok": true, "hourly": { "reminders": 0, "notifications": 0 }, "daily": "skipped" }`.
+
+Reminders and thank-you mail run on every call and are idempotent. Cleanup, old-ride deletion, and later daily work (document expiry, recurring rides) run at most once per UTC day. A second overlapping call returns `{ "ok": true, "skipped": "locked" }` and does not send again.
+
+Leave the Vercel cron on its daily schedule. It uses the same route and the same secret, so it will not double-send.
 
 ## Layout (short)
 

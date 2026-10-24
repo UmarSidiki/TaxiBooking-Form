@@ -4,6 +4,7 @@ import type { Schema } from "mongoose";
 export function registerBookingIndexes(schema: Schema) {
   schema.index({ createdAt: -1 });
   schema.index({ status: 1, date: 1 });
+  schema.index({ status: 1, pickupReminderSent: 1, date: 1 });
   schema.index({ "assignedDriver._id": 1, status: 1, date: 1, time: 1 });
   schema.index({ "assignedPartner._id": 1, date: 1, time: 1 });
   schema.index(

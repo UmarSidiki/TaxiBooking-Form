@@ -25,6 +25,7 @@ describe("booking indexes", () => {
     expect(keys).toContain("assignedDriver._id,status,date,time");
     expect(keys).toContain("assignedPartner._id,date,time");
     expect(keys).toContain("status,date");
+    expect(keys).toContain("status,pickupReminderSent,date");
     const marketplace = indexes.find(
       (index) =>
         index.options?.partialFilterExpression?.availableForPartners === true,
@@ -39,13 +40,28 @@ describe("booking indexes", () => {
 });
 
 describe("cron authorization", () => {
-  it("fails closed when the secret is missing and checks the bearer token", () => {
-    expect(isCronAuthorized("Bearer secret", undefined)).toBe(false);
-    expect(isCronAuthorized("Bearer secret", "")).toBe(false);
-    expect(isCronAuthorized(null, "secret")).toBe(false);
-    expect(isCronAuthorized("Bearer wrong", "secret")).toBe(false);
-    expect(isCronAuthorized("secret", "secret")).toBe(false);
-    expect(isCronAuthorized("Bearer secret", "secret")).toBe(true);
+  const secret = "secret";
+
+  function request(input: { authorization?: string; cronHeader?: string; key?: string }) {
+    const url = new URL("http://127.0.0.1/api/cron");
+    if (input.key) url.searchParams.set("key", input.key);
+    const headers = new Headers();
+    if (input.authorization) headers.set("authorization", input.authorization);
+    if (input.cronHeader) headers.set("x-cron-secret", input.cronHeader);
+    return new Request(url, { headers });
+  }
+
+  it("fails closed and accepts bearer, x-cron-secret, or key", () => {
+    expect(isCronAuthorized(request({ authorization: "Bearer secret" }), undefined)).toBe(false);
+    expect(isCronAuthorized(request({ authorization: "Bearer secret" }), "")).toBe(false);
+    expect(isCronAuthorized(request({}), secret)).toBe(false);
+    expect(isCronAuthorized(request({ authorization: "Bearer wrong" }), secret)).toBe(false);
+    expect(isCronAuthorized(request({ authorization: "secret" }), secret)).toBe(false);
+    expect(isCronAuthorized(request({ authorization: "Bearer secret" }), secret)).toBe(true);
+    expect(isCronAuthorized(request({ authorization: "bearer secret" }), secret)).toBe(true);
+    expect(isCronAuthorized(request({ cronHeader: secret }), secret)).toBe(true);
+    expect(isCronAuthorized(request({ key: secret }), secret)).toBe(true);
+    expect(isCronAuthorized(request({ key: "nope" }), secret)).toBe(false);
   });
 });
 

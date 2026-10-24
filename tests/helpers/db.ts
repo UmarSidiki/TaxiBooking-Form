@@ -5,6 +5,7 @@ import { Vehicle } from "@/features/fleet/model";
 import { Partner, PartnerSettlementEntry } from "@/features/partners/model";
 import { clearPartnerDispatchSettingsCache } from "@/features/partners/lib/get-partner-dispatch-settings";
 import { Review } from "@/features/reviews/model";
+import CronMarker from "@/features/cron/model/CronMarker";
 import { Setting } from "@/features/settings/model";
 
 export async function resetTestDb() {
@@ -18,5 +19,6 @@ export async function resetTestDb() {
     PartnerSettlementEntry.deleteMany({}),
     Review.deleteMany({}),
     Setting.deleteMany({}),
+    CronMarker.deleteMany({}),
   ]);
 }

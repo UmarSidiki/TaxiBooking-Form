@@ -61,7 +61,20 @@ test("admin partners page hides document file data", async ({ page }, testInfo) 
   });
 
   await openPath(page, "/en/dashboard/calendar");
-  await expect(page.getByRole("tab", { name: "Agenda" })).toBeVisible();
+  if (testInfo.project.name === "desktop") {
+    await expect(page.getByRole("grid", { name: "Month" }).getByText("Today Square")).toBeVisible();
+    await expect(page.getByRole("tab", { name: "Month" })).toBeVisible();
+    await expect(page.getByRole("grid", { name: "Month" })).toBeVisible();
+    await page.getByRole("tab", { name: "Week" }).click();
+    await expect(page.getByRole("grid", { name: "Week" })).toBeVisible();
+    await page.getByRole("tab", { name: "Day" }).click();
+    await expect(page.getByRole("grid", { name: "Day" })).toBeVisible();
+    await page.getByRole("tab", { name: "Month" }).click();
+  } else {
+    await expect(page.getByRole("list", { name: "Agenda" })).toBeVisible();
+    await expect(page.getByRole("list", { name: "Agenda" }).getByText("Today Square")).toBeVisible();
+    await expect(page.getByRole("grid", { name: "Month" })).toBeHidden();
+  }
   await page.screenshot({
     path: `${ARTIFACTS}/calendar-${testInfo.project.name}.png`,
     fullPage: true,

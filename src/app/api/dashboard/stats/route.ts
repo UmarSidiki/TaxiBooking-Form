@@ -1,8 +1,7 @@
 import { NextResponse } from "next/server";
 import { connectDB } from "@/shared/db";
-import { Booking } from "@/features/booking/model";
 import { Setting } from "@/features/settings/model";
-import { DASHBOARD_PREVIEW_LIMIT } from "@/features/dashboard/lib/dashboard-preview-limit";
+import { aggregateDashboardStats } from "@/features/dashboard/lib/aggregate-dashboard-stats";
 import { DEFAULT_BOOKING_TIMEZONE } from "@/features/rides/lib/ride-constants";
 import { requireAdmin } from "@/features/auth/lib/require-role";
 import { jsonError } from "@/shared/http/json-error";
@@ -13,147 +12,13 @@ export async function GET() {
     if (!access.ok) return access.response;
 
     await connectDB();
+    const setting = await Setting.findOne().select("timezone").lean();
+    const data = await aggregateDashboardStats(
+      new Date(),
+      setting?.timezone || DEFAULT_BOOKING_TIMEZONE,
+    );
 
-    // Get Timezone
-    const setting = await Setting.findOne();
-    const timezone = setting?.timezone || DEFAULT_BOOKING_TIMEZONE;
-
-    // Get current date relative to Timezone
-    const nowInTzStr = new Date().toLocaleString('en-US', { timeZone: timezone, hour12: false });
-    const nowInTz = new Date(nowInTzStr);
-
-    // Get current date and last month date (approximate for stats)
-    const now = new Date();
-    const lastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
-    const currentMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-
-    // Fetch all bookings
-    const allBookings = await Booking.find({}).sort({ createdAt: -1 });
-
-    const isConfirmedRide = (b: (typeof allBookings)[number]) =>
-      b.status === "upcoming" || b.status === "completed";
-
-    // Filter bookings for current month (exclude cancelled and unconfirmed requests)
-    const currentMonthBookings = allBookings.filter((booking) => {
-      const bookingDate = new Date(booking.date);
-      return (
-        bookingDate >= currentMonth &&
-        bookingDate <= now &&
-        isConfirmedRide(booking)
-      );
-    });
-
-    // Filter bookings for last month (exclude cancelled and unconfirmed requests)
-    const lastMonthBookings = allBookings.filter((booking) => {
-      const bookingDate = new Date(booking.date);
-      return (
-        bookingDate >= lastMonth &&
-        bookingDate < currentMonth &&
-        isConfirmedRide(booking)
-      );
-    });
-
-    // Calculate stats
-    const totalBookings = allBookings.filter(isConfirmedRide).length;
-    
-    const completedBookings = allBookings.filter((b) => {
-      const bookingDateTime = new Date(`${b.date}T${b.time}:00`);
-      const isPassed = bookingDateTime < nowInTz;
-
-      return b.status === "completed" || ((b.paymentStatus === "completed" || b.paymentMethod === "cash") && isPassed && isConfirmedRide(b));
-    }).length;
-
-    const upcomingBookings = allBookings.filter((b) => {
-      const bookingDateTime = new Date(`${b.date}T${b.time}:00`);
-      const isPassed = bookingDateTime < nowInTz;
-
-      return !isPassed && b.status === "upcoming";
-    }).length;
-    
-    const canceledBookings = allBookings.filter(
-      (b) => b.status === "canceled"
-    ).length;
-
-    // Calculate revenue (completed payments and cash bookings, exclude requests)
-    const totalRevenue = allBookings
-      .filter((b) => (b.paymentStatus === "completed" || b.paymentMethod === "cash") && isConfirmedRide(b))
-      .reduce((sum, booking) => {
-        const amount = typeof booking.totalAmount === 'number' ? booking.totalAmount : parseFloat(String(booking.totalAmount || 0));
-        return sum + (isNaN(amount) ? 0 : amount);
-      }, 0);
-
-    const monthlyRevenue = currentMonthBookings
-      .filter((b) => (b.paymentStatus === "completed" || b.paymentMethod === "cash") && isConfirmedRide(b))
-      .reduce((sum, booking) => {
-        const amount = typeof booking.totalAmount === 'number' ? booking.totalAmount : parseFloat(String(booking.totalAmount || 0));
-        return sum + (isNaN(amount) ? 0 : amount);
-      }, 0);
-
-    const lastMonthRevenue = lastMonthBookings
-      .filter((b) => (b.paymentStatus === "completed" || b.paymentMethod === "cash") && isConfirmedRide(b))
-      .reduce((sum, booking) => {
-        const amount = typeof booking.totalAmount === 'number' ? booking.totalAmount : parseFloat(String(booking.totalAmount || 0));
-        return sum + (isNaN(amount) ? 0 : amount);
-      }, 0);
-
-    // Calculate percentage changes
-    const monthlyChange =
-      lastMonthRevenue > 0
-        ? Math.round(
-            ((monthlyRevenue - lastMonthRevenue) / lastMonthRevenue) * 100
-          )
-        : 0;
-
-    const monthlyBookingsChange =
-      lastMonthBookings.length > 0
-        ? Math.round(
-            ((currentMonthBookings.length - lastMonthBookings.length) /
-              lastMonthBookings.length) *
-              100
-          )
-        : 0;
-
-    // Fetch recent bookings (last 5)
-    const recentBookings = allBookings.slice(0, DASHBOARD_PREVIEW_LIMIT).map((booking) => ({
-      id: booking._id.toString(),
-      customer: `${booking.firstName} ${booking.lastName}`,
-      date: new Date(booking.date).toLocaleDateString(),
-      status: booking.status || 'upcoming',
-      amount: booking.totalAmount || 0,
-    }));
-
-    // Calculate top destinations (aggregate by dropoff)
-    const destinationCounts: { [key: string]: number } = {};
-    allBookings.forEach((booking) => {
-      const dest = booking.dropoff || "Unknown";
-      destinationCounts[dest] = (destinationCounts[dest] || 0) + 1;
-    });
-    const totalDestinations = Object.values(destinationCounts).reduce((a, b) => a + b, 0);
-    const topDestinations = Object.entries(destinationCounts)
-      .sort(([, a], [, b]) => b - a)
-      .slice(0, DASHBOARD_PREVIEW_LIMIT)
-      .map(([name, count]) => ({
-        name,
-        count,
-        percentage: totalDestinations > 0 ? Math.round((count / totalDestinations) * 100) : 0,
-      }));
-
-    return NextResponse.json({
-      success: true,
-      data: {
-        totalBookings,
-        completedBookings,
-        upcomingBookings,
-        canceledBookings,
-        totalRevenue,
-        monthlyRevenue,
-        monthlyChange,
-        monthlyBookings: currentMonthBookings.length,
-        monthlyBookingsChange,
-        recentBookings,
-        topDestinations,
-      },
-    });
+    return NextResponse.json({ success: true, data });
   } catch (error) {
     console.error("Error fetching dashboard stats:", error);
     return jsonError("internal_error", 500);

@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
+import { CalendarAgenda } from "@/features/calendar/ui/calendar-agenda";
+import { CalendarMonthGrid, CalendarTimeGrid } from "@/features/calendar/ui/calendar-grids";
 
 type Ride = {
   _id: string;
@@ -16,9 +18,13 @@ type Ride = {
 
 type TimeOff = { _id: string; startsAt: string; endsAt: string; note?: string };
 
+function localStamp(date: Date) {
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
+}
+
 export function CalendarBoard() {
   const t = useTranslations("Calendar");
-  const [view, setView] = useState<"agenda" | "day" | "week" | "month">("agenda");
+  const [view, setView] = useState<"agenda" | "day" | "week" | "month">("month");
   const [rides, setRides] = useState<Ride[]>([]);
   const [timeOff, setTimeOff] = useState<TimeOff[]>([]);
   const [error, setError] = useState<string | null>(null);
@@ -27,9 +33,9 @@ export function CalendarBoard() {
   useEffect(() => {
     const today = new Date();
     const from = new Date(today.getFullYear(), today.getMonth(), 1);
-    const to = new Date(today.getFullYear(), today.getMonth() + 1, 0);
-    const stamp = (date: Date) => date.toISOString().slice(0, 10);
-    void fetch(`/api/calendar/events?from=${stamp(from)}&to=${stamp(to)}`)
+    from.setDate(from.getDate() - 7);
+    const to = new Date(today.getFullYear(), today.getMonth() + 1, 7);
+    void fetch(`/api/calendar/events?from=${localStamp(from)}&to=${localStamp(to)}`)
       .then((response) => response.json())
       .then((data) => {
         if (!data.success) {
@@ -43,10 +49,20 @@ export function CalendarBoard() {
       .finally(() => setLoading(false));
   }, [t]);
 
+  const agenda = (
+    <CalendarAgenda
+      rides={rides}
+      timeOff={timeOff}
+      emptyLabel={t("empty")}
+      timeOffLabel={t("time-off")}
+      unassignedLabel={t("unassigned")}
+    />
+  );
+
   return (
     <div className="flex flex-col gap-4">
-      <div role="tablist" aria-label={t("views")} className="flex flex-wrap gap-2">
-        {(["agenda", "day", "week", "month"] as const).map((item) => (
+      <div role="tablist" aria-label={t("views")} className="hidden flex-wrap gap-2 md:flex">
+        {(["month", "week", "day", "agenda"] as const).map((item) => (
           <button
             key={item}
             type="button"
@@ -61,28 +77,13 @@ export function CalendarBoard() {
       </div>
       {loading ? <p role="status">{t("loading")}</p> : null}
       {error ? <p role="alert">{error}</p> : null}
-      {!loading && rides.length === 0 && timeOff.length === 0 ? (
-        <p className="text-sm text-muted-foreground">{t("empty")}</p>
-      ) : null}
-      <ul className="flex flex-col gap-3">
-        {timeOff.map((off) => (
-          <li key={off._id} className="rounded-md border border-border bg-muted p-4">
-            <p className="font-medium">{t("time-off")}</p>
-            <p className="text-sm text-muted-foreground">
-              {new Date(off.startsAt).toLocaleString()} – {new Date(off.endsAt).toLocaleString()}
-            </p>
-          </li>
-        ))}
-        {(view === "month" ? rides : rides.slice(0, view === "day" ? 8 : rides.length)).map((ride) => (
-          <li key={ride._id} className="rounded-md border border-border bg-card p-4">
-            <p className="font-medium">{ride.date} {ride.time}</p>
-            <p className="text-sm">{ride.pickup}{ride.dropoff ? ` → ${ride.dropoff}` : ""}</p>
-            <p className="text-sm text-muted-foreground">
-              {ride.assignedDriver?.name || ride.assignedPartner?.name || t("unassigned")}
-            </p>
-          </li>
-        ))}
-      </ul>
+      <div className="md:hidden">{agenda}</div>
+      <div className="hidden md:block">
+        {view === "month" ? <CalendarMonthGrid rides={rides} label={t("month")} /> : null}
+        {view === "week" ? <CalendarTimeGrid rides={rides} label={t("week")} days={7} /> : null}
+        {view === "day" ? <CalendarTimeGrid rides={rides} label={t("day")} days={1} /> : null}
+        {view === "agenda" ? agenda : null}
+      </div>
     </div>
   );
 }

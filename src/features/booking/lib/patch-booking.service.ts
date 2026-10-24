@@ -9,6 +9,7 @@ import { creditPartnerOnComplete } from '@/features/booking/lib/credit-partner-o
 import { clawbackPartnerSettlementsForBooking } from '@/features/partners/lib/clawback-partner-settlements';
 import { sendAssignmentEmails } from '@/features/booking/lib/send-assignment-emails';
 import { sendCancelCustomerEmail } from '@/features/booking/lib/send-cancel-customer-email';
+import { queueBookingWhatsApp } from '@/features/settings/lib/queue-booking-whatsapp';
 import { sendReassignmentEmails } from '@/features/booking/lib/send-reassignment-emails';
 import { sendAppointmentPatchEmails } from '@/features/booking/lib/send-appointment-patch-emails';
 import { absoluteHttpBase } from '@/features/booking/lib/booking-mail-url';
@@ -91,6 +92,11 @@ export async function patchBooking(
     return { ok: false, status: 500, message: 'Failed to update booking' };
   }
 
+  queueBookingWhatsApp({
+    action: parsed.data.action,
+    before: booking,
+    after: updatedBooking,
+  });
   await sendCancelCustomerEmail(
     parsed.data.action,
     updatedBooking,

@@ -102,7 +102,32 @@ await db.collection("settings").insertOne({
 });
 
 const pastBookingId = new mongoose.Types.ObjectId();
+const todayStamp = new Date().toISOString().slice(0, 10);
 await db.collection("bookings").insertMany([
+  {
+    tripId: "e2e-today",
+    pickup: "Today Square",
+    dropoff: "Old Town",
+    tripType: "oneway",
+    date: todayStamp,
+    time: "16:00",
+    passengers: 1,
+    selectedVehicle: vehicleId,
+    vehicleDetails: { name: "Sedan", price: "40", seats: "4" },
+    childSeats: 0,
+    babySeats: 0,
+    notes: "",
+    firstName: "Nora",
+    lastName: "Keller",
+    email: "nora@example.com",
+    phone: "+14155552671",
+    paymentMethod: "cash",
+    paymentStatus: "pending",
+    status: "upcoming",
+    totalAmount: 40,
+    createdAt: now,
+    updatedAt: now,
+  },
   {
     tripId: "e2e-driver",
     pickup: "Lugano Station",

@@ -3,6 +3,7 @@ import { getPartnerDispatchSettings } from "@/features/partners/lib/get-partner-
 import { postPartnerLedger } from "@/features/partners/lib/post-partner-ledger";
 import { readPartnerBalance } from "@/features/partners/lib/partner-share-delta";
 import type { PartnerSettlementInput } from "@/features/partners/schema/partner-settlement.schema";
+import { queueAssigneeNotice } from "@/features/settings/lib/assignee-whatsapp";
 
 export async function settlePartner(
   partnerId: string,
@@ -26,7 +27,13 @@ export async function settlePartner(
     createdBy,
   });
 
-  const refreshed = await Partner.findById(partnerId);
+  const refreshed = await Partner.findById(partnerId).select("phone name balance payoutBalance remittanceBalance");
+  queueAssigneeNotice({
+    kind: "settlement",
+    recipients: [{ phone: refreshed?.phone, name: refreshed?.name }],
+    amount: input.amount,
+    currency,
+  });
   return {
     ok: true as const,
     balance: readPartnerBalance(refreshed),

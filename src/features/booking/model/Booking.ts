@@ -96,6 +96,7 @@ export interface IBooking extends Document {
   responsibleAssignee?: "driver" | "partner";
   driverRideStatus?: "assigned" | "started" | "completed" | "no_show";
   cashCollected?: number;
+  pickupReminderSent?: boolean;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -201,6 +202,7 @@ const BookingSchema: Schema = new Schema({
   responsibleAssignee: { type: String, enum: ["driver", "partner"] },
   driverRideStatus: { type: String, enum: ["assigned", "started", "completed", "no_show"] },
   cashCollected: { type: Number, min: 0 },
+  pickupReminderSent: { type: Boolean, default: false },
 }, {
   timestamps: true,
 });

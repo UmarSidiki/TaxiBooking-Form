@@ -2204,5 +2204,29 @@
     "percent": "Pourcentage",
     "fixed": "Montant fixe",
     "save-promo": "Enregistrer le code"
+  },
+  "Account": {
+    "title": "Vos trajets",
+    "sign-in": "Connexion",
+    "sign-in-help": "Nous envoyons un code par WhatsApp, puis par e-mail.",
+    "email": "E-mail",
+    "phone": "Téléphone",
+    "code": "Code",
+    "send-code": "Envoyer le code",
+    "verify": "Vérifier",
+    "code-sent": "Code envoyé.",
+    "send-failed": "Envoi impossible.",
+    "code-invalid": "Code invalide.",
+    "upcoming": "À venir",
+    "past": "Passés",
+    "empty-upcoming": "Aucun trajet à venir.",
+    "empty-past": "Aucun trajet passé.",
+    "change": "Modifier",
+    "cancel": "Annuler",
+    "invoice": "Facture",
+    "rebook": "Réserver à nouveau",
+    "hourly": "À l'heure",
+    "updated": "Mis à jour.",
+    "cutoff": "Trop proche du départ pour modifier."
   }
 }

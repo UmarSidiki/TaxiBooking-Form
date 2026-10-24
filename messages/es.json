@@ -2204,5 +2204,29 @@
     "percent": "Porcentaje",
     "fixed": "Importe fijo",
     "save-promo": "Guardar código"
+  },
+  "Account": {
+    "title": "Tus viajes",
+    "sign-in": "Entrar",
+    "sign-in-help": "Enviamos un código por WhatsApp y luego por correo.",
+    "email": "Correo",
+    "phone": "Teléfono",
+    "code": "Código",
+    "send-code": "Enviar código",
+    "verify": "Verificar",
+    "code-sent": "Código enviado.",
+    "send-failed": "No se pudo enviar.",
+    "code-invalid": "Código no válido.",
+    "upcoming": "Próximos",
+    "past": "Pasados",
+    "empty-upcoming": "No hay viajes próximos.",
+    "empty-past": "No hay viajes pasados.",
+    "change": "Cambiar",
+    "cancel": "Cancelar",
+    "invoice": "Factura",
+    "rebook": "Reservar de nuevo",
+    "hourly": "Por horas",
+    "updated": "Actualizado.",
+    "cutoff": "Demasiado cerca de la salida para cambiar."
   }
 }

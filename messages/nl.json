@@ -2204,5 +2204,29 @@
     "percent": "Percentage",
     "fixed": "Vast bedrag",
     "save-promo": "Code opslaan"
+  },
+  "Account": {
+    "title": "Uw ritten",
+    "sign-in": "Inloggen",
+    "sign-in-help": "We sturen een code via WhatsApp, daarna per e-mail.",
+    "email": "E-mail",
+    "phone": "Telefoon",
+    "code": "Code",
+    "send-code": "Code sturen",
+    "verify": "Controleren",
+    "code-sent": "Code verzonden.",
+    "send-failed": "Verzenden mislukt.",
+    "code-invalid": "Code ongeldig.",
+    "upcoming": "Aankomend",
+    "past": "Verleden",
+    "empty-upcoming": "Geen aankomende ritten.",
+    "empty-past": "Geen eerdere ritten.",
+    "change": "Wijzigen",
+    "cancel": "Annuleren",
+    "invoice": "Factuur",
+    "rebook": "Opnieuw boeken",
+    "hourly": "Per uur",
+    "updated": "Bijgewerkt.",
+    "cutoff": "Te dicht bij vertrek om te wijzigen."
   }
 }

@@ -13,6 +13,7 @@ export const whatsappVariables = [
   "total",
   "passengers",
   "companyPhone",
+  "portal",
 ] as const;
 
 export const whatsappConfigWriteSchema = z.object({

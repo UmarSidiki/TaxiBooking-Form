@@ -2204,5 +2204,29 @@
     "percent": "Prozent",
     "fixed": "Fester Betrag",
     "save-promo": "Code speichern"
+  },
+  "Account": {
+    "title": "Ihre Fahrten",
+    "sign-in": "Anmelden",
+    "sign-in-help": "Wir senden einen Code per WhatsApp, dann per E-Mail.",
+    "email": "E-Mail",
+    "phone": "Telefon",
+    "code": "Code",
+    "send-code": "Code senden",
+    "verify": "Prüfen",
+    "code-sent": "Code gesendet.",
+    "send-failed": "Senden fehlgeschlagen.",
+    "code-invalid": "Code ungültig.",
+    "upcoming": "Kommend",
+    "past": "Vergangen",
+    "empty-upcoming": "Keine kommenden Fahrten.",
+    "empty-past": "Keine vergangenen Fahrten.",
+    "change": "Ändern",
+    "cancel": "Stornieren",
+    "invoice": "Rechnung",
+    "rebook": "Erneut buchen",
+    "hourly": "Stunden",
+    "updated": "Aktualisiert.",
+    "cutoff": "Zu knapp vor Abfahrt zum Ändern."
   }
 }

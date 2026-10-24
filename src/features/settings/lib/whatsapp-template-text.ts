@@ -11,6 +11,7 @@ export const whatsappSampleValues: Record<(typeof whatsappVariables)[number], st
   total: "149.00",
   passengers: "2",
   companyPhone: "+41 22 000 00 00",
+  portal: "https://example.com/en/account",
 };
 
 const EMPTY = "—";

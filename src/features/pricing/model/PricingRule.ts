@@ -7,6 +7,7 @@ export interface IPricingRule {
   holidays: { date: string; percent: number }[];
   meetGreetPrice: number;
   operatorMinimumFare: number;
+  customerCutoffHours?: number;
 }
 
 const PricingRuleSchema = new Schema<IPricingRule>(
@@ -17,6 +18,7 @@ const PricingRuleSchema = new Schema<IPricingRule>(
     holidays: { type: [{ date: String, percent: Number }], default: [] },
     meetGreetPrice: { type: Number, default: 0 },
     operatorMinimumFare: { type: Number, default: 0 },
+    customerCutoffHours: { type: Number, default: 2 },
   },
   { timestamps: true },
 );

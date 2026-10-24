@@ -2204,5 +2204,29 @@
     "percent": "Percent",
     "fixed": "Fixed amount",
     "save-promo": "Save promo"
+  },
+  "Account": {
+    "title": "Your trips",
+    "sign-in": "Sign in",
+    "sign-in-help": "We send a code on WhatsApp, then email.",
+    "email": "Email",
+    "phone": "Phone",
+    "code": "Code",
+    "send-code": "Send code",
+    "verify": "Verify",
+    "code-sent": "Code sent.",
+    "send-failed": "Could not send the code.",
+    "code-invalid": "That code is not valid.",
+    "upcoming": "Upcoming",
+    "past": "Past",
+    "empty-upcoming": "No upcoming trips.",
+    "empty-past": "No past trips.",
+    "change": "Change",
+    "cancel": "Cancel",
+    "invoice": "Invoice",
+    "rebook": "Book again",
+    "hourly": "Hourly",
+    "updated": "Updated.",
+    "cutoff": "Too close to pickup to change this trip."
   }
 }

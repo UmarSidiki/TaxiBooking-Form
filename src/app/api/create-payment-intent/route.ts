@@ -7,7 +7,7 @@ import { Vehicle } from '@/features/fleet/model';
 import { generateShortId } from '@/shared/lib/generate-id';
 import { DEFAULT_STRIPE_CURRENCY } from '@/features/payments/lib/stripe-currency';
 import { getStripeClient } from '@/features/payments/lib/stripe-client';
-import { calculateBookingPrice } from '@/features/payments/lib/fare/calculate-booking-price';
+import { priceServerBooking } from '@/features/pricing/lib/price-server-booking';
 import { fetchRouteDistanceKm } from '@/features/payments/lib/fare/route-distance';
 import { isValidEmail } from '@/shared/lib/validation';
 import { parseJsonBody } from '@/shared/http/parse-json-body';
@@ -64,7 +64,15 @@ export async function POST(request: NextRequest) {
       return jsonError("distance_failed", 400);
     }
 
-    const priced = calculateBookingPrice(vehicle, bookingData, settings || {}, distanceKm);
+    const serverPrice = await priceServerBooking({
+      vehicle,
+      booking: bookingData,
+      distanceKm,
+      tax: settings || {},
+      redeem: true,
+    });
+    if (!serverPrice.ok) return jsonError(serverPrice.error, 400);
+    const priced = serverPrice.quote;
     if (!priced.total || priced.total <= 0) {
       return jsonError("invalid_body", 400);
     }

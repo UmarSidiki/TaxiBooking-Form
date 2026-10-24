@@ -105,6 +105,8 @@ export function useStep3Payments({
         selectedVehicle: formData.selectedVehicle,
         childSeats: Number(formData.childSeats) || 0,
         babySeats: Number(formData.babySeats) || 0,
+        meetAndGreet: formData.meetAndGreet,
+        promoCode: formData.promoCode,
         notes: formData.notes,
         flightNumber: formData.flightNumber,
         firstName: formData.firstName,

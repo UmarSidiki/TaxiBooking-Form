@@ -12,7 +12,7 @@ import type {
   DeskBookingInput,
   DeskBookingOutcome,
 } from "@/features/desk-booking/schema/desk-booking.schema";
-import { calculateBookingPrice } from "@/features/payments/lib/fare/calculate-booking-price";
+import { priceServerBooking } from "@/features/pricing/lib/price-server-booking";
 import { fetchRouteDistanceKm } from "@/features/payments/lib/fare/route-distance";
 import { loadPaymentSettings } from "@/features/payments/lib/load-payment-settings";
 import { buildBookingEmailDataFromBooking } from "@/features/payments/lib/booking-email-data";
@@ -73,12 +73,16 @@ export async function createDeskBooking(
     };
   }
 
-  const priced = calculateBookingPrice(
+  const serverPrice = await priceServerBooking({
     vehicle,
-    formData,
-    settings ?? {},
-    distanceKm
-  );
+    booking: formData,
+    distanceKm,
+    tax: settings ?? {},
+  });
+  if (!serverPrice.ok) {
+    return { ok: false, status: 400, message: serverPrice.error };
+  }
+  const priced = serverPrice.quote;
 
   const isManualPrice = formData.manualPrice !== undefined;
   if (!isManualPrice && priced.total <= 0) {

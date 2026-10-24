@@ -207,7 +207,9 @@
     "indicative-rate-label": "Richtpreis — bestätigt nach Verfügbarkeitsprüfung:",
     "request-this-appointment": "Termin anfragen",
     "submitting-request": "Wird gesendet…",
-    "whatsapp_confirmation-note": "Ihre Buchungsbestätigung wird Ihnen zusätzlich per WhatsApp gesendet."
+    "whatsapp_confirmation-note": "Ihre Buchungsbestätigung wird Ihnen zusätzlich per WhatsApp gesendet.",
+    "meet-greet": "Meet & Greet",
+    "promo-code": "Aktionscode"
   },
   "booking-failed-data-message": "Buchung fehlgeschlagen: {0}",
   "embeddable": {
@@ -1384,7 +1386,8 @@
     "capacity": "Kapazität",
     "network": "Netzwerk",
     "booking_site": "Buchungsseite",
-    "desk": "Schalter"
+    "desk": "Schalter",
+    "pricing": "Preise"
   },
   "FormBuilder": {
     "title": "Formular-Builder",
@@ -2170,5 +2173,36 @@
     "whatsappTplChanged": "Fahrt geändert oder storniert",
     "whatsappTplReminder": "Abholerinnerung",
     "whatsappTplSettlement": "Ausgleich gebucht"
+  },
+  "Pricing": {
+    "title": "Preise",
+    "loading": "Wird geladen…",
+    "load-failed": "Preise konnten nicht geladen werden.",
+    "saved": "Gespeichert.",
+    "save-failed": "Speichern fehlgeschlagen. Prüfen Sie die Werte.",
+    "rules": "Nacht, Feiertage, Minimum",
+    "night": "Nachtfenster und Prozent",
+    "night-end": "Nacht endet",
+    "night-percent": "Nachtprozent",
+    "meet": "Meet-&-Greet-Preis",
+    "minimum": "Mindestpreis des Betreibers",
+    "holiday": "Feiertag",
+    "holiday-percent": "Feiertagsprozent",
+    "add-holiday": "Feiertag hinzufügen",
+    "save": "Speichern",
+    "zone": "Zonenpreis",
+    "from": "Von-Zone",
+    "to": "Nach-Zone",
+    "price": "Festpreis",
+    "save-zone": "Zone speichern",
+    "promo": "Aktionscode",
+    "code": "Code",
+    "kind": "Art",
+    "amount": "Betrag",
+    "max-uses": "Gesamtnutzungen",
+    "per-customer": "Nutzungen pro Kunde",
+    "percent": "Prozent",
+    "fixed": "Fester Betrag",
+    "save-promo": "Code speichern"
   }
 }

@@ -207,7 +207,9 @@
     "indicative-rate-label": "Tariffa indicativa — confermata dopo verifica disponibilità:",
     "request-this-appointment": "Richiedi questo appuntamento",
     "submitting-request": "Invio…",
-    "whatsapp_confirmation-note": "La conferma della prenotazione ti verrà inviata anche su WhatsApp."
+    "whatsapp_confirmation-note": "La conferma della prenotazione ti verrà inviata anche su WhatsApp.",
+    "meet-greet": "Accoglienza",
+    "promo-code": "Codice promo"
   },
   "booking-failed-data-message": "Prenotazione fallita: {0}",
   "embeddable": {
@@ -1384,7 +1386,8 @@
     "capacity": "Capacità",
     "network": "Rete",
     "booking_site": "Sito prenotazioni",
-    "desk": "Banco"
+    "desk": "Banco",
+    "pricing": "Tariffe"
   },
   "FormBuilder": {
     "title": "Costruttore Moduli",
@@ -2170,5 +2173,36 @@
     "whatsappTplChanged": "Corsa modificata o annullata",
     "whatsappTplReminder": "Promemoria ritiro",
     "whatsappTplSettlement": "Regolamento registrato"
+  },
+  "Pricing": {
+    "title": "Tariffe",
+    "loading": "Caricamento…",
+    "load-failed": "Impossibile caricare le tariffe.",
+    "saved": "Salvato.",
+    "save-failed": "Salvataggio non riuscito. Controlla i valori.",
+    "rules": "Notte, festivi, minimo",
+    "night": "Fascia notturna e percentuale",
+    "night-end": "Fine notte",
+    "night-percent": "Percentuale notturna",
+    "meet": "Prezzo accoglienza",
+    "minimum": "Tariffa minima operatore",
+    "holiday": "Giorno festivo",
+    "holiday-percent": "Percentuale festiva",
+    "add-holiday": "Aggiungi festivo",
+    "save": "Salva",
+    "zone": "Prezzo di zona",
+    "from": "Zona di partenza",
+    "to": "Zona di arrivo",
+    "price": "Prezzo fisso",
+    "save-zone": "Salva zona",
+    "promo": "Codice promo",
+    "code": "Codice",
+    "kind": "Tipo",
+    "amount": "Importo",
+    "max-uses": "Utilizzi totali",
+    "per-customer": "Utilizzi per cliente",
+    "percent": "Percentuale",
+    "fixed": "Importo fisso",
+    "save-promo": "Salva codice"
   }
 }

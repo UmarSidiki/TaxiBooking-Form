@@ -207,7 +207,9 @@
     "indicative-rate-label": "Indicative rate — confirmed after we check availability:",
     "request-this-appointment": "Request this appointment",
     "submitting-request": "Submitting…",
-    "whatsapp_confirmation-note": "Your booking confirmation will also be sent to you on WhatsApp."
+    "whatsapp_confirmation-note": "Your booking confirmation will also be sent to you on WhatsApp.",
+    "meet-greet": "Meet & greet",
+    "promo-code": "Promo code"
   },
   "booking-failed-data-message": "Booking failed: {0}",
   "embeddable": {
@@ -1384,7 +1386,8 @@
     "capacity": "Capacity",
     "network": "Network",
     "booking_site": "Booking site",
-    "desk": "Desk"
+    "desk": "Desk",
+    "pricing": "Pricing"
   },
   "FormBuilder": {
     "title": "Form Builder",
@@ -2170,5 +2173,36 @@
     "whatsappTplChanged": "Ride changed or cancelled",
     "whatsappTplReminder": "Pickup reminder",
     "whatsappTplSettlement": "Settlement recorded"
+  },
+  "Pricing": {
+    "title": "Pricing",
+    "loading": "Loading…",
+    "load-failed": "Could not load pricing.",
+    "saved": "Saved.",
+    "save-failed": "Could not save. Check the values.",
+    "rules": "Night, holidays, minimum",
+    "night": "Night window and percent",
+    "night-end": "Night ends",
+    "night-percent": "Night percent",
+    "meet": "Meet & greet price",
+    "minimum": "Operator minimum fare",
+    "holiday": "Holiday date",
+    "holiday-percent": "Holiday percent",
+    "add-holiday": "Add holiday",
+    "save": "Save rules",
+    "zone": "Zone price",
+    "from": "From zone",
+    "to": "To zone",
+    "price": "Fixed price",
+    "save-zone": "Save zone",
+    "promo": "Promo code",
+    "code": "Code",
+    "kind": "Kind",
+    "amount": "Amount",
+    "max-uses": "Total uses",
+    "per-customer": "Uses per customer",
+    "percent": "Percent",
+    "fixed": "Fixed amount",
+    "save-promo": "Save promo"
   }
 }

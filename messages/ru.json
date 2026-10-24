@@ -207,7 +207,9 @@
     "indicative-rate-label": "Ориентировочная цена — подтвердим после проверки доступности:",
     "request-this-appointment": "Запросить эту запись",
     "submitting-request": "Отправка…",
-    "whatsapp_confirmation-note": "Подтверждение бронирования также будет отправлено вам в WhatsApp."
+    "whatsapp_confirmation-note": "Подтверждение бронирования также будет отправлено вам в WhatsApp.",
+    "meet-greet": "Встреча с табличкой",
+    "promo-code": "Промокод"
   },
   "booking-failed-data-message": "Бронирование не удалось: {0}",
   "embeddable": {
@@ -1384,7 +1386,8 @@
     "capacity": "Парк",
     "network": "Сеть",
     "booking_site": "Форма брони",
-    "desk": "Стойка"
+    "desk": "Стойка",
+    "pricing": "Тарифы"
   },
   "FormBuilder": {
     "title": "Конструктор форм",
@@ -2170,5 +2173,36 @@
     "whatsappTplChanged": "Поездка изменена или отменена",
     "whatsappTplReminder": "Напоминание о подаче",
     "whatsappTplSettlement": "Расчёт записан"
+  },
+  "Pricing": {
+    "title": "Тарифы",
+    "loading": "Загрузка…",
+    "load-failed": "Не удалось загрузить тарифы.",
+    "saved": "Сохранено.",
+    "save-failed": "Не удалось сохранить. Проверьте значения.",
+    "rules": "Ночь, праздники, минимум",
+    "night": "Ночное окно и процент",
+    "night-end": "Конец ночи",
+    "night-percent": "Ночной процент",
+    "meet": "Цена встречи",
+    "minimum": "Минимальный тариф оператора",
+    "holiday": "Праздник",
+    "holiday-percent": "Праздничный процент",
+    "add-holiday": "Добавить праздник",
+    "save": "Сохранить",
+    "zone": "Цена зоны",
+    "from": "Зона отправления",
+    "to": "Зона назначения",
+    "price": "Фиксированная цена",
+    "save-zone": "Сохранить зону",
+    "promo": "Промокод",
+    "code": "Код",
+    "kind": "Тип",
+    "amount": "Сумма",
+    "max-uses": "Всего использований",
+    "per-customer": "На клиента",
+    "percent": "Процент",
+    "fixed": "Фиксированная сумма",
+    "save-promo": "Сохранить код"
   }
 }

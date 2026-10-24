@@ -103,6 +103,24 @@ export function Step3Extras({
                 )}
               </div>
             </div>
+            <label className="flex min-h-11 items-center gap-3 text-sm">
+              <input
+                type="checkbox"
+                className="size-11 shrink-0 accent-primary"
+                checked={formData.meetAndGreet}
+                onChange={(event) => setFormData((prev) => ({ ...prev, meetAndGreet: event.target.checked }))}
+              />
+              {t("Step3.meet-greet")}
+            </label>
+            <div>
+              <label className="mb-2 block text-sm font-medium" htmlFor="promo-code">{t("Step3.promo-code")}</label>
+              <Input
+                id="promo-code"
+                className="h-11"
+                value={formData.promoCode}
+                onChange={(event) => setFormData((prev) => ({ ...prev, promoCode: event.target.value }))}
+              />
+            </div>
             <div>
               <label className="text-sm font-medium block mb-2">
                 {t('Step3.special-requests-optional')} </label>

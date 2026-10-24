@@ -26,6 +26,9 @@ export interface IBooking extends Document {
   };
   childSeats: number;
   babySeats: number;
+  meetAndGreet?: boolean;
+  promoCode?: string;
+  fareLines?: { code: string; amount: number }[];
   notes: string;
   flightNumber?: string;
   firstName: string;
@@ -125,6 +128,9 @@ const BookingSchema: Schema = new Schema({
     seats: { type: String },
   },
   childSeats: { type: Number, default: 0 },
+  meetAndGreet: { type: Boolean, default: false },
+  promoCode: { type: String },
+  fareLines: { type: [{ code: String, amount: Number }], default: undefined },
   babySeats: { type: Number, default: 0 },
   notes: { type: String, default: "" },
   flightNumber: { type: String },

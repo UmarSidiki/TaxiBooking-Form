@@ -207,7 +207,9 @@
     "indicative-rate-label": "Indicatief tarief — bevestigd na controle van beschikbaarheid:",
     "request-this-appointment": "Deze afspraak aanvragen",
     "submitting-request": "Verzenden…",
-    "whatsapp_confirmation-note": "Uw boekingsbevestiging wordt ook via WhatsApp verzonden."
+    "whatsapp_confirmation-note": "Uw boekingsbevestiging wordt ook via WhatsApp verzonden.",
+    "meet-greet": "Meet & greet",
+    "promo-code": "Promocode"
   },
   "booking-failed-data-message": "Boeking mislukt: {0}",
   "embeddable": {
@@ -1384,7 +1386,8 @@
     "capacity": "Capaciteit",
     "network": "Netwerk",
     "booking_site": "Boekingssite",
-    "desk": "Balie"
+    "desk": "Balie",
+    "pricing": "Tarieven"
   },
   "FormBuilder": {
     "title": "Formulierbouwer",
@@ -2170,5 +2173,36 @@
     "whatsappTplChanged": "Rit gewijzigd of geannuleerd",
     "whatsappTplReminder": "Ophaalherinnering",
     "whatsappTplSettlement": "Afrekening vastgelegd"
+  },
+  "Pricing": {
+    "title": "Tarieven",
+    "loading": "Laden…",
+    "load-failed": "Tarieven laden mislukt.",
+    "saved": "Opgeslagen.",
+    "save-failed": "Opslaan mislukt. Controleer de waarden.",
+    "rules": "Nacht, feestdagen, minimum",
+    "night": "Nachtvenster en percentage",
+    "night-end": "Nacht eindigt",
+    "night-percent": "Nachtpercentage",
+    "meet": "Prijs meet & greet",
+    "minimum": "Minimumtarief exploitant",
+    "holiday": "Feestdag",
+    "holiday-percent": "Feestdagpercentage",
+    "add-holiday": "Feestdag toevoegen",
+    "save": "Opslaan",
+    "zone": "Zoneprijs",
+    "from": "Van-zone",
+    "to": "Naar-zone",
+    "price": "Vaste prijs",
+    "save-zone": "Zone opslaan",
+    "promo": "Promocode",
+    "code": "Code",
+    "kind": "Soort",
+    "amount": "Bedrag",
+    "max-uses": "Totaal gebruik",
+    "per-customer": "Gebruik per klant",
+    "percent": "Percentage",
+    "fixed": "Vast bedrag",
+    "save-promo": "Code opslaan"
   }
 }

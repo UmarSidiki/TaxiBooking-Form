@@ -207,7 +207,9 @@
     "indicative-rate-label": "سعر إرشادي — يُؤكد بعد التحقق من التوفر:",
     "request-this-appointment": "اطلب هذا الموعد",
     "submitting-request": "جارٍ الإرسال…",
-    "whatsapp_confirmation-note": "سيتم إرسال تأكيد الحجز إليك أيضًا على واتساب."
+    "whatsapp_confirmation-note": "سيتم إرسال تأكيد الحجز إليك أيضًا على واتساب.",
+    "meet-greet": "استقبال باللافتة",
+    "promo-code": "رمز ترويجي"
   },
   "booking-failed-data-message": "فشل الحجز: {0}",
   "embeddable": {
@@ -1384,7 +1386,8 @@
     "capacity": "السعة",
     "network": "الشبكة",
     "booking_site": "موقع الحجز",
-    "desk": "المكتب"
+    "desk": "المكتب",
+    "pricing": "التسعير"
   },
   "FormBuilder": {
     "title": "منشئ النماذج",
@@ -2170,5 +2173,36 @@
     "whatsappTplChanged": "رحلة تغيّرت أو أُلغيت",
     "whatsappTplReminder": "تذكير بالالتقاط",
     "whatsappTplSettlement": "تم تسجيل التسوية"
+  },
+  "Pricing": {
+    "title": "التسعير",
+    "loading": "جارٍ التحميل…",
+    "load-failed": "تعذر تحميل التسعير.",
+    "saved": "تم الحفظ.",
+    "save-failed": "تعذر الحفظ. تحقق من القيم.",
+    "rules": "الليل والعطل والحد الأدنى",
+    "night": "فترة الليل والنسبة",
+    "night-end": "نهاية الليل",
+    "night-percent": "نسبة الليل",
+    "meet": "سعر الاستقبال",
+    "minimum": "الحد الأدنى للمشغّل",
+    "holiday": "تاريخ العطلة",
+    "holiday-percent": "نسبة العطلة",
+    "add-holiday": "إضافة عطلة",
+    "save": "حفظ",
+    "zone": "سعر المنطقة",
+    "from": "منطقة الانطلاق",
+    "to": "منطقة الوصول",
+    "price": "سعر ثابت",
+    "save-zone": "حفظ المنطقة",
+    "promo": "رمز ترويجي",
+    "code": "الرمز",
+    "kind": "النوع",
+    "amount": "المبلغ",
+    "max-uses": "إجمالي الاستخدام",
+    "per-customer": "لكل عميل",
+    "percent": "نسبة",
+    "fixed": "مبلغ ثابت",
+    "save-promo": "حفظ الرمز"
   }
 }

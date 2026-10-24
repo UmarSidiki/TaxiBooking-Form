@@ -207,7 +207,9 @@
     "indicative-rate-label": "Tarif indicatif — confirmé après vérification de disponibilité :",
     "request-this-appointment": "Demander ce rendez-vous",
     "submitting-request": "Envoi…",
-    "whatsapp_confirmation-note": "Votre confirmation de réservation vous sera également envoyée sur WhatsApp."
+    "whatsapp_confirmation-note": "Votre confirmation de réservation vous sera également envoyée sur WhatsApp.",
+    "meet-greet": "Accueil avec pancarte",
+    "promo-code": "Code promo"
   },
   "booking-failed-data-message": "La réservation a échoué : {0}",
   "embeddable": {
@@ -1384,7 +1386,8 @@
     "capacity": "Capacité",
     "network": "Réseau",
     "booking_site": "Site de réservation",
-    "desk": "Bureau"
+    "desk": "Bureau",
+    "pricing": "Tarifs"
   },
   "FormBuilder": {
     "title": "Éditeur de Formulaire",
@@ -2170,5 +2173,36 @@
     "whatsappTplChanged": "Course modifiée ou annulée",
     "whatsappTplReminder": "Rappel de prise en charge",
     "whatsappTplSettlement": "Règlement enregistré"
+  },
+  "Pricing": {
+    "title": "Tarifs",
+    "loading": "Chargement…",
+    "load-failed": "Impossible de charger les tarifs.",
+    "saved": "Enregistré.",
+    "save-failed": "Enregistrement impossible. Vérifiez les valeurs.",
+    "rules": "Nuit, jours fériés, minimum",
+    "night": "Plage de nuit et pourcentage",
+    "night-end": "Fin de nuit",
+    "night-percent": "Pourcentage de nuit",
+    "meet": "Prix de l'accueil",
+    "minimum": "Tarif minimum opérateur",
+    "holiday": "Date fériée",
+    "holiday-percent": "Pourcentage férié",
+    "add-holiday": "Ajouter un jour férié",
+    "save": "Enregistrer",
+    "zone": "Prix de zone",
+    "from": "Zone de départ",
+    "to": "Zone d'arrivée",
+    "price": "Prix fixe",
+    "save-zone": "Enregistrer la zone",
+    "promo": "Code promo",
+    "code": "Code",
+    "kind": "Type",
+    "amount": "Montant",
+    "max-uses": "Utilisations totales",
+    "per-customer": "Utilisations par client",
+    "percent": "Pourcentage",
+    "fixed": "Montant fixe",
+    "save-promo": "Enregistrer le code"
   }
 }

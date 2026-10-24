@@ -207,7 +207,9 @@
     "indicative-rate-label": "Tarifa orientativa — se confirma tras comprobar disponibilidad:",
     "request-this-appointment": "Solicitar esta cita",
     "submitting-request": "Enviando…",
-    "whatsapp_confirmation-note": "Tu confirmación de reserva también se enviará por WhatsApp."
+    "whatsapp_confirmation-note": "Tu confirmación de reserva también se enviará por WhatsApp.",
+    "meet-greet": "Recibimiento",
+    "promo-code": "Código promocional"
   },
   "booking-failed-data-message": "Reserva fallida: {0}",
   "embeddable": {
@@ -1384,7 +1386,8 @@
     "capacity": "Capacidad",
     "network": "Red",
     "booking_site": "Sitio de reservas",
-    "desk": "Escritorio"
+    "desk": "Escritorio",
+    "pricing": "Tarifas"
   },
   "FormBuilder": {
     "title": "Constructor de Formularios",
@@ -2170,5 +2173,36 @@
     "whatsappTplChanged": "Viaje cambiado o cancelado",
     "whatsappTplReminder": "Recordatorio de recogida",
     "whatsappTplSettlement": "Liquidación registrada"
+  },
+  "Pricing": {
+    "title": "Tarifas",
+    "loading": "Cargando…",
+    "load-failed": "No se pudieron cargar las tarifas.",
+    "saved": "Guardado.",
+    "save-failed": "No se pudo guardar. Revise los valores.",
+    "rules": "Noche, festivos, mínimo",
+    "night": "Franja nocturna y porcentaje",
+    "night-end": "Fin de noche",
+    "night-percent": "Porcentaje nocturno",
+    "meet": "Precio del recibimiento",
+    "minimum": "Tarifa mínima del operador",
+    "holiday": "Fecha festiva",
+    "holiday-percent": "Porcentaje festivo",
+    "add-holiday": "Añadir festivo",
+    "save": "Guardar",
+    "zone": "Precio por zona",
+    "from": "Zona de origen",
+    "to": "Zona de destino",
+    "price": "Precio fijo",
+    "save-zone": "Guardar zona",
+    "promo": "Código promocional",
+    "code": "Código",
+    "kind": "Tipo",
+    "amount": "Importe",
+    "max-uses": "Usos totales",
+    "per-customer": "Usos por cliente",
+    "percent": "Porcentaje",
+    "fixed": "Importe fijo",
+    "save-promo": "Guardar código"
   }
 }

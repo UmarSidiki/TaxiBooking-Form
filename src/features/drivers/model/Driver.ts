@@ -15,6 +15,7 @@ export interface IDriverDocument {
   reviewedAt?: Date;
   reviewedBy?: string;
   rejectionReason?: string;
+  expiresAt?: Date;
 }
 
 export interface IDriver {
@@ -85,6 +86,7 @@ const DriverSchema = new Schema<IDriver>(
         reviewedAt: Date,
         reviewedBy: String,
         rejectionReason: String,
+        expiresAt: Date,
       },
     ],
     approvedAt: Date,

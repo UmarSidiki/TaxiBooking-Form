@@ -24,14 +24,16 @@ async function runDaily() {
     import("@/features/corporate/lib/generate-recurring"),
     import("@/features/corporate/lib/quote-follow-up"),
   ]);
-  const [cleanup, partners, oldRides, recurring, followUps] = await Promise.all([
+  const expiry = await import("@/features/reports/lib/expiring-documents");
+  const [cleanup, partners, oldRides, recurring, followUps, documents] = await Promise.all([
     cleanupAbandonedBookings(),
     deleteSuspendedPartners(),
     deleteOldCompletedRides(),
     generateDueRecurring(),
     sendQuoteFollowUps(),
+    expiry.alertExpiringDocuments(),
   ]);
-  if (!cleanup.success || !partners.success || !oldRides.success || !recurring.success || !followUps.success) {
+  if (!cleanup.success || !partners.success || !oldRides.success || !recurring.success || !followUps.success || !documents.success) {
     await unclaimDailyRun(stamp);
     return "failed" as const;
   }

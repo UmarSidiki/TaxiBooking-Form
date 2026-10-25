@@ -34,8 +34,6 @@ export interface PartnerAvailableRide {
   notes: string;
   firstName: string;
   lastName: string;
-  email: string;
-  phone: string;
 }
 
 export interface PartnerDashboardFleetInfo {

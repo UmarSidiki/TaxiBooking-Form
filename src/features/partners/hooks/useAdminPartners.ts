@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { useTranslations } from "next-intl";
+import { omitPartnerDocumentFileData } from "@/features/partners/lib/to-admin-partner";
 import type { Partner, PartnerDocument, Vehicle } from "@/features/partners/ui/admin-partner.types";
 import { useAdminPartnerFormat } from "@/features/partners/hooks/use-admin-partner-format";
 
@@ -45,7 +46,8 @@ export function useAdminPartners() {
       const vehiclesData = await vehiclesResponse.json();
 
       if (partnersResponse.ok) {
-        setPartners(partnersData.partners);
+        const rows = (partnersData.partners ?? []) as Partner[];
+        setPartners(rows.map((partner) => omitPartnerDocumentFileData(partner)));
       } else {
         setLoadError(t("load-error"));
       }
@@ -79,14 +81,15 @@ export function useAdminPartners() {
   }, [partners, statusFilter, searchQuery]);
 
   const updatePartnerCollections = useCallback((updated: Partner) => {
+    const safe = omitPartnerDocumentFileData(updated);
     setPartners((prev) =>
-      prev.map((partner) => (partner._id === updated._id ? { ...partner, ...updated } : partner))
+      prev.map((partner) => (partner._id === safe._id ? { ...partner, ...safe } : partner))
     );
     setFilteredPartners((prev) =>
-      prev.map((partner) => (partner._id === updated._id ? { ...partner, ...updated } : partner))
+      prev.map((partner) => (partner._id === safe._id ? { ...partner, ...safe } : partner))
     );
     setSelectedPartner((prev) =>
-      prev && prev._id === updated._id ? { ...prev, ...updated } : prev
+      prev && prev._id === safe._id ? { ...prev, ...safe } : prev
     );
   }, []);
 

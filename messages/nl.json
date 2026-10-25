@@ -785,6 +785,8 @@
         "documents-count": "Documenten ({0})",
         "no-documents-uploaded": "Geen documenten geüpload",
         "view-document": "Bekijk Document",
+        "loading-document": "Document laden…",
+        "document-load-error": "Het document kon niet worden geopend. Probeer het opnieuw.",
         "rejection-reason": "Reden van Afwijzing",
         "partner-rejection-reason": "Partner Afwijzingsreden",
         "reject": "Afwijzen",
@@ -1735,6 +1737,7 @@
     "all-rights-reserved": "Alle rechten voorbehouden.",
     "navigate": "Navigatie openen",
     "load_error": "We konden uw ritten niet laden. Probeer opnieuw.",
+    "load_more": "Meer ritten laden",
     "retry": "Opnieuw proberen",
     "passengers": "Passagiers"
   },

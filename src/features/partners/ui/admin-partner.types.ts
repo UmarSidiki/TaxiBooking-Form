@@ -1,7 +1,8 @@
 export interface PartnerDocument {
+  _id?: string;
   type: string;
   fileName: string;
-  fileData: string;
+  fileData?: string;
   mimeType: string;
   fileSize: number;
   status: "pending" | "approved" | "rejected";

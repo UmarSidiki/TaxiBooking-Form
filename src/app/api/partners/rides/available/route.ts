@@ -49,7 +49,11 @@ export async function GET() {
 
     const availableRides = await Booking.find(filter)
       .sort({ createdAt: -1 })
-      .limit(50);
+      .limit(50)
+      .select(
+        "tripId pickup dropoff date time passengers vehicleDetails totalAmount partnerPayoutAmount notes firstName lastName",
+      )
+      .lean();
 
     return NextResponse.json({
       success: true,

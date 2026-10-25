@@ -785,6 +785,8 @@
         "documents-count": "Dokumente ({0})",
         "no-documents-uploaded": "Keine Dokumente hochgeladen",
         "view-document": "Dokument ansehen",
+        "loading-document": "Dokument wird geladen…",
+        "document-load-error": "Dokument konnte nicht geöffnet werden. Versuchen Sie es erneut.",
         "rejection-reason": "Ablehnungsgrund",
         "partner-rejection-reason": "Partner-Ablehnungsgrund",
         "reject": "Ablehnen",
@@ -1735,6 +1737,7 @@
     "all-rights-reserved": "Alle Rechte vorbehalten.",
     "navigate": "Navigation öffnen",
     "load_error": "Fahrten konnten nicht geladen werden. Erneut versuchen.",
+    "load_more": "Weitere Fahrten laden",
     "retry": "Erneut versuchen",
     "passengers": "Passagiere"
   },

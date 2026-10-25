@@ -785,6 +785,8 @@
         "documents-count": "المستندات ({0})",
         "no-documents-uploaded": "لا توجد مستندات محملة",
         "view-document": "عرض المستند",
+        "loading-document": "جارٍ تحميل المستند…",
+        "document-load-error": "تعذر فتح المستند. حاول مرة أخرى.",
         "rejection-reason": "سبب الرفض",
         "partner-rejection-reason": "سبب رفض الشريك",
         "reject": "رفض",
@@ -1735,6 +1737,7 @@
     "all-rights-reserved": "جميع الحقوق محفوظة.",
     "navigate": "فتح التنقل",
     "load_error": "تعذر تحميل رحلاتك. حاول مرة أخرى.",
+    "load_more": "تحميل المزيد من الرحلات",
     "retry": "إعادة المحاولة",
     "passengers": "الركاب"
   },

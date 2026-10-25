@@ -785,6 +785,8 @@
         "documents-count": "Documents ({0})",
         "no-documents-uploaded": "Aucun document téléchargé",
         "view-document": "Voir le document",
+        "loading-document": "Chargement du document…",
+        "document-load-error": "Impossible d'ouvrir le document. Réessayez.",
         "rejection-reason": "Raison du rejet",
         "partner-rejection-reason": "Raison du rejet du partenaire",
         "reject": "Rejeter",
@@ -1735,6 +1737,7 @@
     "all-rights-reserved": "Tous droits réservés.",
     "navigate": "Ouvrir la navigation",
     "load_error": "Impossible de charger vos courses. Réessayez.",
+    "load_more": "Charger plus de courses",
     "retry": "Réessayer",
     "passengers": "Passagers"
   },

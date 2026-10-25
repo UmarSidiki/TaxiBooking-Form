@@ -785,6 +785,8 @@
         "documents-count": "Documents ({0})",
         "no-documents-uploaded": "No documents uploaded",
         "view-document": "View Document",
+        "loading-document": "Loading document…",
+        "document-load-error": "Could not open the document. Try again.",
         "rejection-reason": "Rejection Reason",
         "partner-rejection-reason": "Partner Rejection Reason",
         "reject": "Reject",
@@ -1735,6 +1737,7 @@
     "all-rights-reserved": "All rights reserved.",
     "navigate": "Open navigation",
     "load_error": "We could not load your trips. Try again.",
+    "load_more": "Load more rides",
     "retry": "Try again",
     "passengers": "Passengers"
   },

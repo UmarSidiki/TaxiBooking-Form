@@ -35,8 +35,8 @@ export default function AppearanceTab({
         <ColorField
           id="appearance-primary-color"
           label={t("Dashboard.Settings.primary-color")}
-          value={settings.primaryColor || "#EAB308"}
-          fallback="#EAB308"
+          value={settings.primaryColor || "#B45309"}
+          fallback="#B45309"
           help={t("Dashboard.Settings.used-for-buttons-highlights-and-main-actions")}
           onChange={(value) => handleColorChange("primaryColor", value)}
         />

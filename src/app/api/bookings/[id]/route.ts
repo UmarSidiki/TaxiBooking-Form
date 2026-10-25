@@ -43,7 +43,8 @@ export async function PATCH(
     const result = await patchBooking(
       id,
       parsed.data,
-      resolveBookingRequestBaseUrl(request)
+      resolveBookingRequestBaseUrl(request),
+      { id: access.session.user.id, role: "admin" },
     );
     if (!result.ok) {
       if (result.message && result.message !== "invalid_body") {
@@ -60,6 +61,7 @@ export async function PATCH(
       message: bookingPatchSuccessMessage(result.action),
       // Set when the booking was updated but a follow-up notification failed.
       warning: result.warn,
+      payUrl: result.payUrl,
       data: result.booking,
     });
   } catch (error) {

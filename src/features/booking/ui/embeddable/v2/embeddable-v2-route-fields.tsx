@@ -67,7 +67,7 @@ export function EmbeddableV2RouteFields({
                     key={type}
                     type="button"
                     onClick={() => setBookingType(type)}
-                    className={`flex-1 rounded-md px-2 py-1.5 sm:px-3 sm:py-2 transition-all duration-300 flex items-center justify-center gap-1.5 ${
+                    className={`flex min-h-11 flex-1 items-center justify-center gap-1.5 rounded-md px-2 transition-colors duration-300 sm:px-3 ${
                       formData.bookingType === type
                         ? "bg-gradient-to-r from-primary/80 to-primary text-white shadow-sm"
                         : "text-slate-600 hover:text-slate-800 hover:bg-slate-100"
@@ -99,6 +99,7 @@ export function EmbeddableV2RouteFields({
                   </div>
                   <Input
                     ref={pickupInputRef}
+                    aria-label={t("embeddable.pickup-location")}
                     placeholder={t("embeddable.pickup-location")}
                     value={formData.pickup}
                     onChange={(e) => {
@@ -189,7 +190,7 @@ export function EmbeddableV2RouteFields({
                       <button
                         type="button"
                         onClick={handleAddStop}
-                        className="text-xs text-primary hover:text-primary/80 underline"
+                        className="inline-flex min-h-11 items-center text-sm text-primary underline hover:text-primary/80"
                       >
                         {t('embeddable.add-a-stop')} </button>
                     </div>
@@ -199,6 +200,7 @@ export function EmbeddableV2RouteFields({
                       </div>
                       <Input
                         ref={dropoffInputRef}
+                        aria-label={t("embeddable.destination")}
                         placeholder={t("embeddable.destination")}
                         value={formData.dropoff}
                         onChange={(e) => {
@@ -247,7 +249,7 @@ export function EmbeddableV2RouteFields({
                     <button
                       type="button"
                       onClick={() => setTripType("oneway")}
-                      className={`flex-1 rounded-md px-2 py-1.5 sm:px-3 sm:py-2 transition-all duration-300 flex items-center justify-center gap-1.5 ${
+                      className={`flex min-h-11 flex-1 items-center justify-center gap-1.5 rounded-md px-2 transition-colors duration-300 sm:px-3 ${
                         formData.tripType === "oneway"
                           ? "bg-white shadow-sm text-slate-800"
                           : "text-slate-600 hover:text-slate-800 hover:bg-slate-100"
@@ -260,7 +262,7 @@ export function EmbeddableV2RouteFields({
                     <button
                       type="button"
                       onClick={() => setTripType("roundtrip")}
-                      className={`flex-1 rounded-md px-2 py-1.5 sm:px-3 sm:py-2 transition-all duration-300 flex items-center justify-center gap-1.5 ${
+                      className={`flex min-h-11 flex-1 items-center justify-center gap-1.5 rounded-md px-2 transition-colors duration-300 sm:px-3 ${
                         formData.tripType === "roundtrip"
                           ? "bg-white shadow-sm text-slate-800"
                           : "text-slate-600 hover:text-slate-800 hover:bg-slate-100"

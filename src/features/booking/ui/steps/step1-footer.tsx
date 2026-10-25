@@ -51,7 +51,7 @@ export function Step1Footer({
           />
 
           {/* Support Info */}
-          <div className="text-center text-xs text-gray-500 space-y-1 pt-2">
+          <div className="space-y-1 pt-2 text-center text-sm text-foreground/80">
             <p>{t("Footer.Support2")}</p>
             <p className="flex items-center justify-center gap-2 flex-wrap">
               {phone ? (

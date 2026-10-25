@@ -79,7 +79,7 @@ export function AdminPartnerDetailsDialog(
     >
       <SheetContent
         side="right"
-        className="flex w-full flex-col overflow-hidden p-0 sm:max-w-[54rem] [&>button]:hidden"
+        className="flex h-dvh max-h-dvh w-full max-w-[min(100vw,54rem)] flex-col overflow-hidden p-0 [&>button]:hidden"
       >
         <SheetHeader className="flex-none border-b border-border/60 px-4 py-3 sm:px-6 sm:py-4">
           <div className="flex items-center justify-between gap-3">

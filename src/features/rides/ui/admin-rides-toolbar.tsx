@@ -125,7 +125,7 @@ export function AdminRidesToolbar({
           {deskBookingEnabled ? (
             <Button
               onClick={onNewBooking}
-              className="h-10 w-full rounded-xl px-4 font-semibold sm:w-auto"
+              className="h-11 w-full rounded-xl px-4 font-semibold sm:w-auto"
             >
               <Plus className="size-4" aria-hidden="true" />
               {t("Dashboard.Rides.new-booking")}
@@ -135,7 +135,7 @@ export function AdminRidesToolbar({
             onClick={fetchBookings}
             variant="outline"
             disabled={isLoading}
-            className="h-10 w-full rounded-xl px-4 font-semibold sm:w-auto"
+            className="h-11 w-full rounded-xl px-4 font-semibold sm:w-auto"
           >
             <RefreshCw
               className={cn("size-4", isLoading && "animate-spin")}

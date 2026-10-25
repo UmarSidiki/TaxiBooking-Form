@@ -12,7 +12,7 @@ import {
 import { createCashBookingEmailData } from "@/features/booking/lib/create-cash-booking-email-data";
 import { getSettingsCurrency } from "@/features/booking/lib/get-settings-currency";
 import { isAppointmentRequestEnabled } from "@/features/booking/lib/is-appointment-request-enabled";
-import { calculateBookingPrice } from "@/features/payments/lib/fare/calculate-booking-price";
+import { priceServerBooking } from "@/features/pricing/lib/price-server-booking";
 import { fetchRouteDistanceKm } from "@/features/payments/lib/fare/route-distance";
 import { loadPaymentSettings } from "@/features/payments/lib/load-payment-settings";
 import type { CashBookingInput } from "@/features/booking/schema/cash-booking.schema";
@@ -65,12 +65,17 @@ export async function createAppointmentRequest(
           stops: formData.stops,
         });
 
-  const priced = calculateBookingPrice(
+  const serverPrice = await priceServerBooking({
     vehicle,
-    formData,
-    settings ?? {},
-    distanceKm
-  );
+    booking: formData,
+    distanceKm,
+    tax: settings ?? {},
+    redeem: true,
+  });
+  if (!serverPrice.ok) {
+    return { ok: false, status: 400, message: serverPrice.error };
+  }
+  const priced = serverPrice.quote;
 
   // Never store a destination fare that silently ignored the route distance.
   if (
@@ -128,6 +133,10 @@ export async function createAppointmentRequest(
     subtotalAmount: priced.subtotal,
     taxAmount: priced.taxAmount,
     taxPercentage: priced.taxPercentage,
+    depositDue: priced.depositDue,
+    balanceDue: priced.balanceDue,
+    fareLines: priced.lines,
+    promoCode: priced.promoCode,
   };
 
   const saved = await createBookingDocument(bookingData);

@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { useTranslations } from "next-intl";
+import { omitPartnerDocumentFileData } from "@/features/partners/lib/to-admin-partner";
 import type { Partner, PartnerDocument, Vehicle } from "@/features/partners/ui/admin-partner.types";
 import { useAdminPartnerFormat } from "@/features/partners/hooks/use-admin-partner-format";
 
@@ -26,7 +27,7 @@ export function useAdminPartners() {
   const [fleetRejectionReason, setFleetRejectionReason] = useState("");
   const [selectedVehicleId, setSelectedVehicleId] = useState<string | null>(null);
   const [processing, setProcessing] = useState(false);
-  const [statusFilter, setStatusFilter] = useState<string>("all");
+  const [statusFilter, setStatusFilter] = useState<string>("active");
   const [searchQuery, setSearchQuery] = useState("");
   const [payoutProcessingId, setPayoutProcessingId] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
@@ -45,7 +46,8 @@ export function useAdminPartners() {
       const vehiclesData = await vehiclesResponse.json();
 
       if (partnersResponse.ok) {
-        setPartners(partnersData.partners);
+        const rows = (partnersData.partners ?? []) as Partner[];
+        setPartners(rows.map((partner) => omitPartnerDocumentFileData(partner)));
       } else {
         setLoadError(t("load-error"));
       }
@@ -63,7 +65,13 @@ export function useAdminPartners() {
   const filterPartners = useCallback(() => {
     let filtered = partners;
 
-    if (statusFilter !== "all") {
+    if (statusFilter === "applications") {
+      filtered = filtered.filter((p) => p.status === "pending");
+    } else if (statusFilter === "active") {
+      filtered = filtered.filter((p) => p.status === "active" || p.status === "approved");
+    } else if (statusFilter === "balances") {
+      filtered = filtered.filter((p) => typeof p.balance === "number" && p.balance !== 0);
+    } else if (statusFilter !== "all") {
       filtered = filtered.filter((p) => p.status === statusFilter);
     }
 
@@ -79,14 +87,15 @@ export function useAdminPartners() {
   }, [partners, statusFilter, searchQuery]);
 
   const updatePartnerCollections = useCallback((updated: Partner) => {
+    const safe = omitPartnerDocumentFileData(updated);
     setPartners((prev) =>
-      prev.map((partner) => (partner._id === updated._id ? { ...partner, ...updated } : partner))
+      prev.map((partner) => (partner._id === safe._id ? { ...partner, ...safe } : partner))
     );
     setFilteredPartners((prev) =>
-      prev.map((partner) => (partner._id === updated._id ? { ...partner, ...updated } : partner))
+      prev.map((partner) => (partner._id === safe._id ? { ...partner, ...safe } : partner))
     );
     setSelectedPartner((prev) =>
-      prev && prev._id === updated._id ? { ...prev, ...updated } : prev
+      prev && prev._id === safe._id ? { ...prev, ...safe } : prev
     );
   }, []);
 

@@ -26,6 +26,10 @@ export interface FormData {
   selectedVehicle: string;
   childSeats: number;
   babySeats: number;
+  meetAndGreet: boolean;
+  promoCode: string;
+  companyWebsite: string;
+  formStartedAt: number;
   notes: string;
   flightNumber: string;
   firstName: string;
@@ -117,6 +121,10 @@ const defaultFormData: FormData = {
   selectedVehicle: "",
   childSeats: 0,
   babySeats: 0,
+  meetAndGreet: false,
+  promoCode: "",
+  companyWebsite: "",
+  formStartedAt: 0,
   notes: "",
   flightNumber: "",
   firstName: "",

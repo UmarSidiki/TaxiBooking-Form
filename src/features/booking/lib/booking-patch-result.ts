@@ -4,6 +4,7 @@ export type BookingPatchApplyOk = {
   ok: true;
   updateData: Partial<IBooking>;
   unsetFields?: string[];
+  warn?: string;
   /** Plaintext pay token — only returned from quote; never persisted. */
   paymentToken?: string;
 };

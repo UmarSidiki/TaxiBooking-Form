@@ -207,7 +207,11 @@
     "indicative-rate-label": "سعر إرشادي — يُؤكد بعد التحقق من التوفر:",
     "request-this-appointment": "اطلب هذا الموعد",
     "submitting-request": "جارٍ الإرسال…",
-    "whatsapp_confirmation-note": "سيتم إرسال تأكيد الحجز إليك أيضًا على واتساب."
+    "whatsapp_confirmation-note": "سيتم إرسال تأكيد الحجز إليك أيضًا على واتساب.",
+    "meet-greet": "استقبال باللافتة",
+    "promo-code": "رمز ترويجي",
+    "due-now": "المستحق الآن",
+    "balance-due": "المتبقي"
   },
   "booking-failed-data-message": "فشل الحجز: {0}",
   "embeddable": {
@@ -487,7 +491,31 @@
       "create-booking": "إنشاء الحجز",
       "booking-created": "تم إنشاء الحجز {tripId}",
       "NoAwaitingPayment": "لا توجد عروض بانتظار الدفع",
-      "NoAwaitingPaymentDescription": "تبقى الطلبات المسعّرة هنا حتى يدفع العميل."
+      "NoAwaitingPaymentDescription": "تبقى الطلبات المسعّرة هنا حتى يدفع العميل.",
+      "overlap-notice": "تم التعيين. يتداخل مع {trip} عند {time}.",
+      "partner-overlap-notice": "تم تعيين الشريك. يتداخل مع {trip} عند {time}.",
+      "driver-time-off": "هذا السائق في إجازة في وقت الالتقاط. اختر سائقًا آخر.",
+      "edit-ride": "تعديل الرحلة",
+      "edit-saved": "تم تحديث الرحلة.",
+      "edit-failed": "تعذر تحديث الرحلة. راجع الحقول ثم أعد المحاولة.",
+      "activity": "نشاط الرحلة",
+      "activity-empty": "لا نشاط بعد.",
+      "activity-loading": "جارٍ تحميل النشاط…",
+      "save-ride": "حفظ الرحلة",
+      "ride-notes": "ملاحظات",
+      "quote-link-ready": "رابط الدفع جاهز: {url}",
+      "quote-link-email-failed": "تم حفظ العرض. فشل البريد، انسخ هذا الرابط: {url}",
+      "activity-assigned": "تم التعيين",
+      "activity-claimed": "تم القبول",
+      "activity-started": "بدأت",
+      "activity-completed": "اكتملت",
+      "activity-no_show": "لم يحضر",
+      "activity-cancelled": "أُلغيت",
+      "activity-edited": "عُدّلت",
+      "activity-approved": "وُوفق عليها للشركاء",
+      "activity-quoted": "تم التسعير",
+      "activity-confirmed": "أُكدت نقدًا",
+      "activity-declined": "رُفضت"
     },
     "Home": {
       "failed-to-fetch-dashboard-stats": "فشل جلب إحصائيات لوحة التحكم",
@@ -600,7 +628,8 @@
         "failed-to-accept-ride": "فشل قبول الرحلة",
         "partner-earnings-label": "مستحقاتك",
         "retry": "إعادة المحاولة",
-        "dismiss": "إغلاق"
+        "dismiss": "إغلاق",
+        "balance": "الرصيد"
       },
       "Rides": {
         "my-rides": "رحلاتي",
@@ -636,7 +665,10 @@
         "your-payout": "مستحقاتك",
         "retry": "إعادة المحاولة",
         "load-error": "تعذر تحميل الرحلات. حاول مرة أخرى.",
-        "customer-review": "تقييم العميل"
+        "customer-review": "تقييم العميل",
+        "mark-completed": "تعليم كمكتملة",
+        "completing": "جارٍ الإكمال…",
+        "complete-failed": "تعذر إكمال هذه الرحلة. أعد المحاولة."
       },
       "Sidebar": {
         "partner-portal": "بوابة الشركاء",
@@ -653,12 +685,14 @@
         "overview": "نظرة عامة",
         "operations": "العمليات",
         "fleet_management": "إدارة الأسطول",
-        "account_settings": "الحساب والإعدادات"
+        "account_settings": "الحساب والإعدادات",
+        "available-rides": "الرحلات المتاحة",
+        "vehicles": "المركبات"
       },
       "Billing": {
         "title": "الفواتير والتفاصيل البنكية",
         "description": "قدم تفاصيل الدفع الخاصة بك ليعرف المسؤولون أين يرسلون أرباحك.",
-        "payout-summary-title": "الدفعات المستحقة",
+        "payout-summary-title": "الرصيد",
         "payout-summary-description": "المبلغ المستحق لك حاليًا من المدفوعات عبر الإنترنت أو البطاقات.",
         "last-paid": "آخر دفعة: {date}",
         "never": "أبداً",
@@ -687,7 +721,23 @@
         "save-button": "حفظ التفاصيل البنكية",
         "save-success": "تم تحديث التفاصيل البنكية بنجاح.",
         "save-error": "فشل حفظ التفاصيل البنكية. يرجى المحاولة مرة أخرى.",
-        "load-error": "تعذر تحميل معلومات الفواتير. يرجى التحديث والمحاولة مرة أخرى."
+        "load-error": "تعذر تحميل معلومات الفواتير. يرجى التحديث والمحاولة مرة أخرى.",
+        "statement-title": "كشف الحساب",
+        "statement-empty": "لا توجد قيود بعد.",
+        "download-statement": "تنزيل الكشف",
+        "col-when": "الوقت",
+        "col-fare": "الأجرة",
+        "col-margin": "الهامش",
+        "col-share": "حصة الشريك",
+        "col-change": "الحركة",
+        "col-balance": "الرصيد",
+        "entry-ride_credit": "رحلة",
+        "entry-settlement": "تسوية",
+        "entry-opening_balance": "رصيد افتتاحي",
+        "entry-clawback": "عكس",
+        "payout-summary-owed": "المشغّل مدين لك بهذا المبلغ.",
+        "payout-summary-due": "أنت مدين للمشغّل بهذا المبلغ.",
+        "payout-summary-even": "لا يوجد مبلغ مستحق."
       },
       "Fleet": {
         "fleet-management": "إدارة الأسطول",
@@ -785,6 +835,8 @@
         "documents-count": "المستندات ({0})",
         "no-documents-uploaded": "لا توجد مستندات محملة",
         "view-document": "عرض المستند",
+        "loading-document": "جارٍ تحميل المستند…",
+        "document-load-error": "تعذر فتح المستند. حاول مرة أخرى.",
         "rejection-reason": "سبب الرفض",
         "partner-rejection-reason": "سبب رفض الشريك",
         "reject": "رفض",
@@ -869,7 +921,38 @@
         "settlement-type-payout_paid": "تم الدفع",
         "settlement-type-remittance_credit": "تحويل مستحق",
         "settlement-type-remittance_received": "تم استلام التحويل",
-        "settlement-type-clawback": "استرداد"
+        "settlement-type-clawback": "استرداد",
+        "balance-label": "الرصيد",
+        "balance-hint": "موجب: أنت مدين للشريك. سالب: الشريك مدين لك.",
+        "settle-open": "تسجيل تسوية",
+        "settle-title": "تسجيل تسوية",
+        "settle-description": "يُسمح بمبلغ جزئي. يحفظ الدفتر من سجّلها.",
+        "settle-amount": "المبلغ",
+        "settle-direction": "الاتجاه",
+        "settle-pay-partner": "ادفع للشريك",
+        "settle-receive": "استلم من الشريك",
+        "settle-method": "الطريقة",
+        "settle-bank": "بنك",
+        "settle-cash": "نقد",
+        "settle-other": "أخرى",
+        "settle-reference": "المرجع",
+        "settle-save": "حفظ التسوية",
+        "settle-saving": "جارٍ الحفظ…",
+        "settle-error": "تعذر تسجيل التسوية. حاول مرة أخرى.",
+        "col-when": "الوقت",
+        "col-fare": "الأجرة",
+        "col-margin": "الهامش",
+        "col-share": "حصة الشريك",
+        "col-change": "الحركة",
+        "col-balance": "الرصيد",
+        "settlement-type-ride_credit": "رحلة",
+        "settlement-type-settlement": "تسوية",
+        "settlement-type-opening_balance": "رصيد افتتاحي",
+        "tab-applications": "الطلبات",
+        "tab-active": "نشط",
+        "tab-balances": "الأرصدة",
+        "tab-all": "الكل",
+        "active": "نشط"
       }
     },
     "Features": {
@@ -1305,7 +1388,8 @@
     "capacity": "السعة",
     "network": "الشبكة",
     "booking_site": "موقع الحجز",
-    "desk": "المكتب"
+    "desk": "المكتب",
+    "pricing": "التسعير"
   },
   "FormBuilder": {
     "title": "منشئ النماذج",
@@ -1632,8 +1716,8 @@
     "trip-id": "رقم الرحلة:",
     "amount": "المبلغ:",
     "payment-method": "طريقة الدفع:",
-    "confirmation-email-sent": "تم إرسال بريد التأكيد",
-    "we-and-apos-ve-sent-a-confirmation-email-with-all-your-booking-details-please-check-your-inbox-and-spam-folder": "لقد أرسلنا بريدًا إلكترونيًا لتأكيد الحجز بجميع التفاصيل. يرجى التحقق من صندوق الوارد ومجلد الرسائل غير المرغوب فيها (Spam).",
+    "confirmation-email-sent": "ابحث عن رسالة التأكيد",
+    "we-and-apos-ve-sent-a-confirmation-email-with-all-your-booking-details-please-check-your-inbox-and-spam-folder": "يُرسل التأكيد عند تفعيل البريد. راجع الوارد والبريد غير المرغوب.",
     "need-help": "تحتاج مساعدة؟",
     "contact-our-24-7-support-team-at": "اتصل بفريق الدعم 24/7 على",
     "or": "أو",
@@ -1641,7 +1725,8 @@
     "return-to-home": "العودة للصفحة الرئيسية",
     "seconds": "ثوانٍ",
     "request-received-title": "تم استلام الطلب",
-    "request-received-body": "نعمل بالمواعيد. سنؤكد التوفر ونرسل لك الخطوات التالية. هذا ليس تأكيد حجز بعد."
+    "request-received-body": "نعمل بالمواعيد. سنؤكد التوفر ونرسل لك الخطوات التالية. هذا ليس تأكيد حجز بعد.",
+    "contact-operator": "تواصل مع المشغّل إذا احتجت لتغيير هذه الرحلة."
   },
   "Driver": {
     "failed-to-fetch-drivers": "فشل جلب السائقين",
@@ -1735,8 +1820,22 @@
     "all-rights-reserved": "جميع الحقوق محفوظة.",
     "navigate": "فتح التنقل",
     "load_error": "تعذر تحميل رحلاتك. حاول مرة أخرى.",
+    "load_more": "تحميل المزيد من الرحلات",
     "retry": "إعادة المحاولة",
-    "passengers": "الركاب"
+    "passengers": "الركاب",
+    "action-started": "بدأت",
+    "action-completed": "اكتملت",
+    "action-no_show": "لم يحضر",
+    "call": "اتصال",
+    "apple-maps": "خرائط آبل",
+    "time-off-title": "إجازة",
+    "time-off-start": "تبدأ",
+    "time-off-end": "تنتهي",
+    "time-off-note": "ملاحظة",
+    "time-off-save": "حظر هذه الساعات",
+    "time-off-saved": "تم حفظ الإجازة.",
+    "time-off-invalid": "يجب أن تكون النهاية بعد البداية.",
+    "time-off-help": "لن تُسند إليك رحلات خلال هذه المدة."
   },
   "Stripe": {
     "payment-system-not-ready-please-refresh-the-page": "نظام الدفع غير جاهز. يرجى تحديث الصفحة.",
@@ -1945,7 +2044,9 @@
       "hide_password": "إخفاء كلمة المرور",
       "cover_kicker": "التعيينات",
       "cover_title": "انضم إلى سائقي هذا المشغّل.",
-      "cover_body": "أنشئ حسابًا ثم انتظر رحلة معيّنة."
+      "cover_body": "أنشئ حسابًا ثم انتظر رحلة معيّنة.",
+      "phone": "رقم الجوال",
+      "phone_invalid": "أدخل رقم جوال مع رمز الدولة، مثل +14155552671."
     },
     "PartnerSignIn": {
       "title": "دخول الشريك",
@@ -1979,7 +2080,8 @@
       "hide_password": "إخفاء كلمة المرور",
       "cover_kicker": "مكتب الشريك",
       "cover_title": "انضم إلى فائض هذا المشغّل.",
-      "cover_body": "شركة واحدة وفئات أسطول مشتركة — وليست سوقًا لعلامات متعددة."
+      "cover_body": "شركة واحدة وفئات أسطول مشتركة — وليست سوقًا لعلامات متعددة.",
+      "phone_invalid": "أدخل رقم جوال مع رمز الدولة، مثل +14155552671."
     }
   },
   "AppError": {
@@ -2024,10 +2126,118 @@
     "declined-title": "الطلب غير متاح",
     "declined-body": "تم تعليم طلب الموعد هذا كغير متاح.",
     "already-paid-title": "مؤكد مسبقاً",
-    "already-paid-body": "الرحلة #{tripId} مدفوعة ومؤكدة مسبقاً."
+    "already-paid-body": "الرحلة #{tripId} مدفوعة ومؤكدة مسبقاً.",
+    "pay-cash": "ادفع للسائق نقداً",
+    "due-now": "المستحق الآن",
+    "balance-due": "المتبقي",
+    "loading": "جارٍ التحميل…",
+    "paid-in-full": "هذه الرحلة مدفوعة بالكامل.",
+    "trip-total": "إجمالي الرحلة",
+    "cash-instructions": "ادفع للسائق نقدًا، أو حوّل المبلغ المستحق إلى الحساب أدناه.",
+    "bank-details": "بيانات البنك"
   },
   "CountryBlocked": {
     "title": "لا نخدم منطقتك حتى الآن",
     "body": "الحجوزات غير متاحة من موقعك الحالي. إذا كنت تعتقد أن هذا خطأ، فاتصل بنا وسنساعدك."
+  },
+  "Calendar": {
+    "title": "التقويم",
+    "admin-description": "كل الرحلات حسب المسؤول.",
+    "views": "عروض التقويم",
+    "agenda": "جدول",
+    "day": "يوم",
+    "week": "أسبوع",
+    "month": "شهر",
+    "loading": "جارٍ التحميل…",
+    "load-error": "تعذر تحميل التقويم. حاول مرة أخرى.",
+    "empty": "لا شيء مجدول في هذه الفترة.",
+    "time-off": "إجازة",
+    "unassigned": "غير معيّن",
+    "feed-create": "إنشاء موجز خاص",
+    "feed-revoke": "إلغاء الموجز",
+    "feed-ready": "الموجز الخاص جاهز",
+    "feed-revoked": "تم إلغاء الموجز.",
+    "feed-error": "تعذر تحديث الموجز. أعد المحاولة."
+  },
+  "Phone": {
+    "missing": "أضف رقم جوال بالصيغة الدولية قبل قبول الرحلات.",
+    "add": "إضافة الرقم"
+  },
+  "Today": {
+    "title": "اليوم",
+    "description": "رحلات غير معيّنة ومواعيد وأرصدة.",
+    "unassigned": "غير معيّنة اليوم",
+    "deadlines": "مواعيد القبول",
+    "balances": "أرصدة مستحقة",
+    "empty": "لا شيء هنا.",
+    "loading": "جارٍ التحميل…",
+    "load-error": "تعذر تحميل اليوم. حاول مرة أخرى."
+  },
+  "WhatsAppNotify": {
+    "title": "رسائل المعيّنين",
+    "loading": "جارٍ التحميل…",
+    "load-error": "تعذر تحميل الرسائل.",
+    "save-error": "تعذر الحفظ. حاول مرة أخرى.",
+    "whatsappTplAssigned": "تم تعيين الرحلة",
+    "whatsappTplAvailable": "رحلة متاحة للقبول",
+    "whatsappTplChanged": "رحلة تغيّرت أو أُلغيت",
+    "whatsappTplReminder": "تذكير بالالتقاط",
+    "whatsappTplSettlement": "تم تسجيل التسوية"
+  },
+  "Pricing": {
+    "title": "التسعير",
+    "loading": "جارٍ التحميل…",
+    "load-failed": "تعذر تحميل التسعير.",
+    "saved": "تم الحفظ.",
+    "save-failed": "تعذر الحفظ. تحقق من القيم.",
+    "rules": "الليل والعطل والحد الأدنى",
+    "night": "فترة الليل والنسبة",
+    "night-end": "نهاية الليل",
+    "night-percent": "نسبة الليل",
+    "meet": "سعر الاستقبال",
+    "minimum": "الحد الأدنى للمشغّل",
+    "holiday": "تاريخ العطلة",
+    "holiday-percent": "نسبة العطلة",
+    "add-holiday": "إضافة عطلة",
+    "save": "حفظ",
+    "zone": "سعر المنطقة",
+    "from": "منطقة الانطلاق",
+    "to": "منطقة الوصول",
+    "price": "سعر ثابت",
+    "save-zone": "حفظ المنطقة",
+    "promo": "رمز ترويجي",
+    "code": "الرمز",
+    "kind": "النوع",
+    "amount": "المبلغ",
+    "max-uses": "إجمالي الاستخدام",
+    "per-customer": "لكل عميل",
+    "percent": "نسبة",
+    "fixed": "مبلغ ثابت",
+    "save-promo": "حفظ الرمز",
+    "deposit": "نسبة العربون"
+  },
+  "Account": {
+    "title": "رحلاتك",
+    "sign-in": "تسجيل الدخول",
+    "sign-in-help": "نرسل رمزاً عبر واتساب ثم البريد.",
+    "email": "البريد",
+    "phone": "الهاتف",
+    "code": "الرمز",
+    "send-code": "إرسال الرمز",
+    "verify": "تحقق",
+    "code-sent": "تم إرسال الرمز.",
+    "send-failed": "تعذر الإرسال.",
+    "code-invalid": "الرمز غير صحيح.",
+    "upcoming": "القادمة",
+    "past": "السابقة",
+    "empty-upcoming": "لا رحلات قادمة.",
+    "empty-past": "لا رحلات سابقة.",
+    "change": "تغيير",
+    "cancel": "إلغاء",
+    "invoice": "فاتورة",
+    "rebook": "احجز مجدداً",
+    "hourly": "بالساعة",
+    "updated": "تم التحديث.",
+    "cutoff": "قريب جداً من الموعد ولا يمكن التغيير."
   }
 }

@@ -21,7 +21,7 @@ export async function PATCH(
     if (!partner) return jsonError("not_found", 404);
 
     partner.isActive = true;
-    partner.status = "approved";
+    partner.status = "active";
     partner.approvedAt = new Date();
     partner.approvedBy = access.session.user.id;
     partner.rejectionReason = undefined;

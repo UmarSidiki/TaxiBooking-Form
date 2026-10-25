@@ -11,8 +11,24 @@ The person who books and pays for a transfer. Captured per transfer; the operato
 _Avoid_: Client, account, user (when meaning the passenger)
 
 **Driver**:
-Operator staff who is push-assigned to a ride. No in-app pay.
+Operator staff who is push-assigned to a ride. No in-app pay. A driver marks a ride started, completed, or no-show, and can record cash collected.
 _Avoid_: Chauffeur account, employee (in product copy)
+
+**Time off**:
+A private span when a driver is not available. The calendar shows it and assignment is blocked when a new ride overlaps.
+_Avoid_: Vacation mode, PTO system
+
+**Ride activity**:
+An append-only note of who claimed, assigned, started, completed, or marked a ride no-show, with a time.
+_Avoid_: Audit log as a product name
+
+**WhatsApp badge**:
+A phone is stored as E.164. If the operator's WhatsApp is linked, the desk checks `onWhatsApp` and can show a verified badge. If WhatsApp is not linked, the phone is still saved.
+_Avoid_: SMS verification
+
+**Calendar feed**:
+A private iCal link for one person. Revoking the token stops the feed. It lists only that person's rides and omits passenger contact details.
+_Avoid_: Public calendar, shared ICS
 
 **Partner**:
 Affiliate overflow company that may accept or be assigned a ride.
@@ -23,8 +39,12 @@ The operator’s decision that a self-registered Driver or Partner may work. Pen
 _Avoid_: Active, Partner review (that is the margin step before a ride is offered)
 
 **Active**:
-The person may sign in to the working desk. Account approval sets a self-registered person active. Switching an approved person off later is deactivation.
-_Avoid_: Approved (that is account approval)
+The partner or driver may sign in and take rides. Account approval moves a pending person to active. Suspending them later blocks sign-in work. Rejected persons do not work. There is no separate on/off flag.
+_Avoid_: Approved plus active as two switches
+
+**Vehicle access**:
+The vehicles a partner may fulfil, each pending, approved, or rejected. One list replaces fleet requests, current fleet, and the older fleet fields.
+_Avoid_: Fleet request, current fleet (in new copy)
 
 **Assignee**:
 The party responsible for fulfilling the ride under exclusive dispatch.
@@ -80,16 +100,20 @@ _Avoid_: Commission, fee (when meaning this cut)
 The Partner’s portion of the fare after operator margin (`partnerPayoutAmount`).
 _Avoid_: Earnings (ambiguous with counters), payout amount alone
 
-**Payout balance**:
-What the operator still owes the Partner for completed online rides.
-_Avoid_: Wallet, lodge
+**Partner balance**:
+One signed figure per Partner. Positive means the operator owes the Partner. Negative means the Partner owes the operator. It is the sum of the ledger.
+_Avoid_: Payout balance, remittance balance, wallet, lodge
 
-**Remittance balance**:
-What the Partner still owes the operator (cash settlement with margin).
-_Avoid_: Debt, lodge
+**Responsible assignee**:
+The party who is paid for a ride. In exclusive dispatch that is the only assignee. In allow-both dispatch it is the latest assignment; only a Partner receives a ledger credit.
+_Avoid_: Owner, both parties
+
+**Settlement**:
+A partial or full payment recorded against the Partner balance, with method (cash, bank, or other), reference, note, and who recorded it.
+_Avoid_: Payout button, remittance button, recalculate
 
 **Settlement entry**:
-An immutable ledger row that explains a balance change.
+An immutable ledger row that explains a balance change, including ride credits, clawbacks, and settlements.
 _Avoid_: Lodge, transaction (generic), log
 
 **Cash settlement mode**:

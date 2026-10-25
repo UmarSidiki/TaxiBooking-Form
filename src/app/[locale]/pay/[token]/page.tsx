@@ -57,6 +57,24 @@ export default function PayQuotePage() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const payCash = async () => {
+    setBusy(true);
+    setError(null);
+    try {
+      const res = await fetch(`/api/pay/${encodeURIComponent(token)}`, { method: "POST" });
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        setError(t("no-payment-methods"));
+        return;
+      }
+      setState("already_paid");
+    } catch {
+      setError(t("no-payment-methods"));
+    } finally {
+      setBusy(false);
+    }
+  };
+
   const load = useCallback(async () => {
     setState("loading");
     try {
@@ -258,9 +276,12 @@ export default function PayQuotePage() {
               </Button>
             ) : null}
             {!stripeOk && !mspOk ? (
-              <p className="text-sm text-muted-foreground">
-                {t("no-payment-methods")}
-              </p>
+              <div className="flex flex-col gap-2">
+                <p className="text-sm text-muted-foreground">{t("no-payment-methods")}</p>
+                <Button className="min-h-11 w-full" disabled={busy} onClick={() => void payCash()}>
+                  {t("pay-cash")}
+                </Button>
+              </div>
             ) : null}
           </div>
         ) : publishableKey && clientSecret ? (

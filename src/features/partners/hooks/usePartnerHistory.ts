@@ -7,12 +7,49 @@ import { isBookingPassed as isBookingPassedAt } from "@/features/rides/lib/is-bo
 import type { ISetting } from "@/features/settings/model";
 import type { PartnerRideBooking } from "@/features/partners/ui/partner-ride.types";
 import { DEFAULT_BOOKING_TIMEZONE } from "@/features/rides/lib/ride-constants";
+import { REVIEW_ID_BATCH_LIMIT } from "@/features/reviews/lib/review-batch-limit";
 import { useCurrency } from "@/shared/context/currency-context";
 
 export type PartnerHistoryReview = {
   rating: number;
   comment: string;
 };
+
+type ReviewBatchRow = {
+  bookingId: string;
+  rating: number;
+  comment: string;
+};
+
+async function loadHistoryReviews(bookingIds: string[]) {
+  const reviews: Record<string, PartnerHistoryReview | null> = {};
+  if (bookingIds.length === 0) return reviews;
+
+  const chunks: string[][] = [];
+  for (let index = 0; index < bookingIds.length; index += REVIEW_ID_BATCH_LIMIT) {
+    chunks.push(bookingIds.slice(index, index + REVIEW_ID_BATCH_LIMIT));
+  }
+
+  const pages = await Promise.all(
+    chunks.map(async (chunk) => {
+      const response = await fetch(`/api/reviews?bookingIds=${chunk.join(",")}`);
+      const body = (await response.json()) as {
+        success?: boolean;
+        reviews?: ReviewBatchRow[];
+      };
+      return body.success ? body.reviews ?? [] : [];
+    }),
+  );
+
+  const byId = new Map(
+    pages.flat().map((review) => [String(review.bookingId), review]),
+  );
+  for (const id of bookingIds) {
+    const review = byId.get(id);
+    reviews[id] = review ? { rating: review.rating, comment: review.comment } : null;
+  }
+  return reviews;
+}
 
 export function usePartnerHistory() {
   const t = useTranslations("Dashboard.Partners.Rides");
@@ -54,14 +91,7 @@ export function usePartnerHistory() {
       const completed = all.filter(
         (b) => b.status === "canceled" || isBookingPassedAt(b.date, b.time, tz)
       );
-      const reviews = await Promise.all(
-        completed.map(async (booking) => {
-          const reviewResponse = await fetch(`/api/reviews?bookingId=${booking._id}`);
-          const reviewData = await reviewResponse.json();
-          return [booking._id, reviewData.success ? reviewData.review : null] as const;
-        })
-      );
-      setBookingReviews(Object.fromEntries(reviews));
+      setBookingReviews(await loadHistoryReviews(completed.map((booking) => booking._id)));
     } catch {
       setLoadError(t("load-error"));
     } finally {

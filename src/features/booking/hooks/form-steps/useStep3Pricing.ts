@@ -9,6 +9,7 @@ import type { DistanceData, FormData } from "@/features/booking/context/booking-
 import type { ISetting } from "@/features/settings/model";
 import type { IVehicle } from "@/features/fleet/model";
 import { useMemo } from "react";
+import { useQuotedTotal } from "@/features/pricing/lib/use-quoted-total";
 
 export function useStep3Pricing({
   selectedVehicle,
@@ -59,6 +60,8 @@ export function useStep3Pricing({
     taxIncluded,
   ]);
 
+  const quoted = useQuotedTotal(formData, distanceData?.distance.km, priced?.total ?? 0);
+
   const breakdown = priced?.breakdown;
   const subtotalPrice = breakdown
     ? breakdown.discountedVehiclePrice + breakdown.extrasPrice
@@ -79,7 +82,11 @@ export function useStep3Pricing({
     taxPercentage,
     taxIncluded,
     taxAmount: priced?.taxAmount ?? 0,
-    totalPrice: priced?.total ?? 0,
+    totalPrice: quoted.total,
+    chargeAmount: quoted.chargeAmount,
+    depositDue: quoted.depositDue,
+    balanceDue: quoted.balanceDue,
+    quoteReady: quoted.ready,
     displaySubtotalAmount: priced?.subtotal ?? 0,
   };
 }

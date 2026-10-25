@@ -65,7 +65,7 @@ export function PartnerAccountBanners({
       />
     );
   }
-  if (partner.status === "approved") {
+  if (partner.status === "approved" || partner.status === "active") {
     return (
       <Banner
         icon={CheckCircle2}

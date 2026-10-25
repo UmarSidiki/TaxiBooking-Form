@@ -1,7 +1,8 @@
 export interface PartnerDocument {
+  _id?: string;
   type: string;
   fileName: string;
-  fileData: string;
+  fileData?: string;
   mimeType: string;
   fileSize: number;
   status: "pending" | "approved" | "rejected";
@@ -24,7 +25,7 @@ export interface Partner {
   address?: string;
   city?: string;
   country?: string;
-  status: "pending" | "approved" | "rejected" | "suspended";
+  status: "pending" | "active" | "approved" | "rejected" | "suspended";
   documents: PartnerDocument[];
   registeredAt: string;
   approvedAt?: string;
@@ -49,6 +50,7 @@ export interface Partner {
   cashEarnings?: number;
   payoutBalance?: number;
   remittanceBalance?: number;
+  balance?: number;
   lastPayoutAt?: string;
   lastRemittanceAt?: string;
   billingDetails?: {

@@ -1,48 +1,19 @@
 import { NextResponse } from "next/server";
-import { sendThankYouEmails } from "@/features/booking/lib/send-thank-you-emails";
-import { cleanupAbandonedBookings } from "@/features/booking/lib/cleanup-abandoned-bookings";
-import { deleteSuspendedPartners } from "@/features/partners/lib/delete-suspended-partners";
-import { deleteOldCompletedRides } from "@/features/rides/lib/delete-old-completed-rides";
+import { isCronAuthorized } from "@/shared/http/is-cron-authorized";
+import { limitSensitive } from "@/shared/http/sensitive-limit";
 
-export async function GET(req: Request) {
-  const authHeader = req.headers.get("authorization");
-  const cronSecret = process.env.CRON_SECRET;
+export const dynamic = "force-dynamic";
 
-  if (cronSecret && authHeader !== `Bearer ${cronSecret}`) {
-    return new NextResponse("Unauthorized", { status: 401 });
+async function handle(req: Request) {
+  if (!isCronAuthorized(req)) {
+    const limited = await limitSensitive(req, "cronfail");
+    if (limited) return limited;
+    return NextResponse.json({ ok: false }, { status: 401 });
   }
-
-  console.log('🕒 Cron job triggered');
-
-  // Send thank you emails
-  console.log('📧 Sending thank you emails...');
-  const emailResult = await sendThankYouEmails();
-  
-  // Cleanup abandoned bookings
-  console.log('🧹 Cleaning up abandoned bookings...');
-  const cleanupResult = await cleanupAbandonedBookings();
-
-  // Delete suspended partners (30 days after suspension)
-  console.log('🗑️ Deleting suspended partners...');
-  const partnerDeletionResult = await deleteSuspendedPartners();
-
-  // Delete old completed rides (90+ days old)
-  console.log('🗑️ Deleting old completed rides...');
-  const oldRidesDeletionResult = await deleteOldCompletedRides();
-
-  const results = {
-    success: emailResult.success && cleanupResult.success && partnerDeletionResult.success && oldRidesDeletionResult.success,
-    emails: emailResult,
-    cleanup: cleanupResult,
-    partnerDeletion: partnerDeletionResult,
-    oldRidesDeletion: oldRidesDeletionResult
-  };
-
-  if (results.success) {
-    console.log('✅ Cron job completed successfully');
-    return NextResponse.json(results);
-  } else {
-    console.error('❌ Cron job completed with errors');
-    return NextResponse.json(results, { status: 500 });
-  }
+  const { runCron } = await import("@/features/cron/lib/run-cron");
+  const body = await runCron();
+  return NextResponse.json(body, { status: body.ok ? 200 : 500 });
 }
+
+export const GET = handle;
+export const POST = handle;

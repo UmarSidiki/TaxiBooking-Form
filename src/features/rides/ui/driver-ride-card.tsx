@@ -5,11 +5,16 @@ import { Card, CardContent } from "@/shared/ui/card";
 import type { IBooking } from "@/features/booking/model";
 import { RideMapLine } from "@/features/rides/ui/ride-map-line";
 import { RideStatusBadge } from "@/features/rides/ui/ride-status-badge";
-import { MapPin } from "lucide-react";
+import { MapPin, Phone } from "lucide-react";
 import { useLocale, type useTranslations } from "next-intl";
 
 function mapsUrl(address: string) {
-  return `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(address)}`;
+  const destination = encodeURIComponent(address);
+  return `https://www.google.com/maps/dir/?api=1&destination=${destination}`;
+}
+
+function appleMapsUrl(address: string) {
+  return `https://maps.apple.com/?daddr=${encodeURIComponent(address)}`;
 }
 
 export function DriverRideCard({
@@ -18,12 +23,14 @@ export function DriverRideCard({
   currencySymbol,
   isBookingPassed,
   setDetailBooking,
+  onChanged,
 }: {
   booking: IBooking;
   t: ReturnType<typeof useTranslations>;
   currencySymbol: string;
   isBookingPassed: (dateStr: string, timeStr: string) => boolean;
   setDetailBooking: (booking: IBooking) => void;
+  onChanged?: () => void;
 }) {
   const locale = useLocale();
   const dateLabel = new Date(booking.date).toLocaleDateString(locale, {
@@ -80,6 +87,40 @@ export function DriverRideCard({
               {t("Drivers.navigate")}
             </a>
           </Button>
+          <Button className="h-11 flex-1" variant="outline" asChild>
+            <a href={appleMapsUrl(booking.pickup)} target="_blank" rel="noreferrer">
+              {t("Drivers.apple-maps")}
+            </a>
+          </Button>
+          {booking.phone ? (
+            <Button className="h-11 flex-1" variant="outline" asChild>
+              <a href={`tel:${booking.phone}`}>
+                <Phone className="size-4" />
+                {t("Drivers.call")}
+              </a>
+            </Button>
+          ) : null}
+        </div>
+        <div className="flex flex-col gap-2 sm:flex-row">
+          {(["started", "completed", "no_show"] as const).map((action) => (
+            <Button
+              key={action}
+              variant="secondary"
+              className="h-11 flex-1"
+              onClick={() => {
+                void fetch(`/api/drivers/rides/${booking._id}`, {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({
+                    action,
+                    cashCollected: action === "completed" && booking.paymentMethod === "cash" ? booking.totalAmount : undefined,
+                  }),
+                }).then(() => onChanged?.());
+              }}
+            >
+              {t(`Drivers.action-${action}`)}
+            </Button>
+          ))}
         </div>
       </CardContent>
     </Card>

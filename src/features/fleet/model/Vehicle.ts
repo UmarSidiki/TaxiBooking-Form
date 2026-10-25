@@ -13,6 +13,8 @@ export interface IPriceTier {
 export interface IVehicle {
   _id?: string;
   name: string;
+  plate?: string;
+  insuranceExpiresAt?: Date;
   description: string;
   image: string;
   persons: number;
@@ -57,6 +59,8 @@ const VehicleSchema = new Schema<IVehicle>(
       required: [true, "Vehicle name is required"],
       trim: true,
     },
+    plate: { type: String, trim: true },
+    insuranceExpiresAt: { type: Date },
     description: {
       type: String,
       required: [true, "Description is required"],

@@ -33,7 +33,7 @@ export function PartnerDrawerTabButton({
         "flex items-center rounded-lg text-left text-sm font-medium transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
         mobile
           ? "min-h-11 shrink-0 gap-1.5 px-3 py-2 text-xs"
-          : "w-full gap-2.5 px-2.5 py-2",
+          : "min-h-11 w-full gap-2.5 px-2.5 py-2",
         active
           ? "bg-background text-foreground shadow-sm"
           : "text-muted-foreground hover:bg-background/60 hover:text-foreground"

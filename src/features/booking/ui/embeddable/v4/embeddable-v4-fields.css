@@ -33,8 +33,8 @@
 .v4-field-quiet {
   gap: 0.6rem;
   border-color: transparent;
-  background: color-mix(in oklab, var(--v4-paper) 38%, var(--v4-panel));
-  color: color-mix(in oklab, var(--v4-ink) 62%, var(--v4-panel));
+  background: var(--v4-paper);
+  color: var(--v4-ink);
   box-shadow: none;
   font-size: 1rem;
   font-weight: 600;
@@ -51,7 +51,7 @@
 .embeddable-v4-card .v4-field input {
   min-width: 0;
   width: 100%;
-  height: 2.6rem;
+  height: 2.75rem;
   padding: 0;
   border: 0;
   outline: none;
@@ -85,6 +85,7 @@
   display: grid;
   grid-template-columns: auto minmax(0, 1.25fr) minmax(0, 0.85fr);
   column-gap: 0.45rem;
+  min-height: 2.75rem;
 }
 
 .v4-icon {

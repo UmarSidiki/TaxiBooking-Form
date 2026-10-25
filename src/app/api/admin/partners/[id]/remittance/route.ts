@@ -3,44 +3,38 @@ import { connectDB } from "@/shared/db";
 import { Partner } from "@/features/partners/model";
 import { requireAdmin } from "@/features/auth/lib/require-role";
 import { jsonError } from "@/shared/http/json-error";
-import { getPartnerDispatchSettings } from "@/features/partners/lib/get-partner-dispatch-settings";
-import { recordPartnerSettlement } from "@/features/partners/lib/record-partner-settlement";
+import { settlePartner } from "@/features/partners/lib/settle-partner";
+import { readPartnerBalance } from "@/features/partners/lib/partner-share-delta";
+import { omitPartnerDocumentFileData } from "@/features/partners/lib/to-admin-partner";
 
+/** Collects the full amount the partner owes. Prefer the settle dialog for a partial amount. */
 export async function PATCH(
   _request: Request,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
     const access = await requireAdmin();
     if (!access.ok) return access.response;
-
     const { id } = await params;
     await connectDB();
-
-    const partner = await Partner.findById(id);
+    const partner = await Partner.findById(id).select("balance payoutBalance remittanceBalance");
     if (!partner) return jsonError("not_found", 404);
-
-    const amount = partner.remittanceBalance ?? 0;
-    if (!(amount > 0)) {
-      return NextResponse.json({ success: true, partner }, { status: 200 });
+    const balance = readPartnerBalance(partner);
+    if (!(balance < 0)) {
+      return NextResponse.json(
+        { success: true, partner: omitPartnerDocumentFileData(partner), balance },
+        { status: 200 },
+      );
     }
-
-    const { currency } = await getPartnerDispatchSettings();
-    await recordPartnerSettlement({
-      partnerId: id,
-      type: "remittance_received",
-      amount,
-      currency,
-      createdBy: access.session.user.id,
-      note: "Marked remittance as received",
-      balanceInc: { remittanceBalance: -amount },
-      extraSet: { lastRemittanceAt: new Date() },
-    });
-
-    const refreshed = await Partner.findById(id);
+    const result = await settlePartner(
+      id,
+      { amount: Math.abs(balance), direction: "receive_from_partner", method: "cash", note: "Balance received" },
+      access.session.user.id,
+    );
+    if (!result.ok || !result.partner) return jsonError("not_found", 404);
     return NextResponse.json(
-      { success: true, partner: refreshed },
-      { status: 200 }
+      { success: true, partner: omitPartnerDocumentFileData(result.partner), balance: result.balance },
+      { status: 200 },
     );
   } catch (error) {
     console.error("Error clearing partner remittance balance:", error);

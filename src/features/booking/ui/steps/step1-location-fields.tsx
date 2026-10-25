@@ -44,12 +44,13 @@ export function Step1LocationFields({
     <>
           {/* Pickup Location */}
           <div>
-            <label className="block text-sm font-medium mb-1.5 text-gray-700">
+            <label htmlFor="booking-pickup" className="mb-1.5 block text-sm font-medium text-foreground">
               <MapPin className="inline h-4 w-4 mr-1 text-primary" />
               {t("Step1.PickupLocation")} *
             </label>
             <div className="relative">
               <Input
+                id="booking-pickup"
                 ref={pickupInputRef}
                 placeholder={t("Step1.PickupPlaceholder")}
                 className={`h-11 pe-12 ${
@@ -136,19 +137,20 @@ export function Step1LocationFields({
           {formData.bookingType === "destination" && (
             <div>
               <div className="flex items-center justify-between mb-1.5">
-                <label className="text-sm font-medium text-gray-700">
+                <label htmlFor="booking-dropoff" className="text-sm font-medium text-foreground">
                   <Flag className="inline h-4 w-4 mr-1 text-primary" />
                   {t("Step1.DropoffLocation")} *
                 </label>
                 <button
                   type="button"
                   onClick={handleAddStop}
-                  className="text-sm text-primary hover:text-primary/80 underline"
+                  className="inline-flex min-h-11 items-center text-sm text-primary underline hover:text-primary/80"
                 >
                   {t("embeddable.add-a-stop")}
                 </button>
               </div>
               <Input
+                id="booking-dropoff"
                 ref={dropoffInputRef}
                 placeholder={t("Step1.DropoffPlaceholder")}
                 className={`${

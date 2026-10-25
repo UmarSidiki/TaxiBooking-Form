@@ -1,11 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { connectDB } from "@/shared/db";
-import { Booking } from "@/features/booking/model";
 import { Partner } from "@/features/partners/model";
 import { sendRideAssignmentEmail } from "@/features/rides/email/ride-assignment";
 import { requireRole } from "@/features/auth/lib/require-role";
 import { jsonError } from "@/shared/http/json-error";
-import { getPartnerDispatchSettings } from "@/features/partners/lib/get-partner-dispatch-settings";
+import { claimPartnerRide } from "@/features/partners/lib/claim-partner-ride";
+import { recordRideActivity } from "@/features/rides/lib/record-ride-activity";
+import { queueAssigneeNotice } from "@/features/settings/lib/assignee-whatsapp";
 import {
   partnerApprovedVehicleIds,
   partnerHasApprovedFleet,
@@ -31,60 +32,27 @@ export async function POST(
     }
 
     const vehicleIds = partnerApprovedVehicleIds(partner);
-    const { dispatchAssigneeMode } = await getPartnerDispatchSettings();
-
-    const update: Record<string, unknown> = {
-      $set: {
-        assignedPartner: {
-          _id: String(partner._id),
-          name: partner.name,
-          email: partner.email,
-        },
-        availableForPartners: false,
-        assignmentEmailSent: false,
-      },
-      $unset: {
-        partnerAcceptanceDeadline: 1,
-      } as Record<string, 1>,
-    };
-
-    if (dispatchAssigneeMode === "exclusive") {
-      (update.$unset as Record<string, 1>).assignedDriver = 1;
-    }
-
-    const filter: Record<string, unknown> = {
-      _id: rideId,
-      selectedVehicle: { $in: vehicleIds },
-      availableForPartners: true,
-      status: "upcoming",
-      partnerReviewStatus: "approved",
-      partnerAcceptanceDeadline: { $gt: new Date() },
-      $or: [
-        { assignedPartner: { $exists: false } },
-        { assignedPartner: null },
-      ],
-    };
-
-    // Exclusive: do not steal a ride already assigned to a Driver
-    if (dispatchAssigneeMode === "exclusive") {
-      filter.$and = [
-        {
-          $or: [
-            { assignedDriver: { $exists: false } },
-            { assignedDriver: null },
-          ],
-        },
-      ];
-    }
-
-    const updatedRide = await Booking.findOneAndUpdate(filter, update, {
-      returnDocument: "after",
-      runValidators: true,
-    });
+    const updatedRide = await claimPartnerRide(rideId, partner, vehicleIds);
 
     if (!updatedRide) {
       return jsonError("conflict", 409);
     }
+    queueAssigneeNotice({
+      kind: "assigned",
+      recipients: [{ phone: partner.phone, name: partner.name }],
+      ride: {
+        tripId: updatedRide.tripId,
+        pickup: updatedRide.pickup,
+        date: updatedRide.date,
+        time: updatedRide.time,
+      },
+    });
+    await recordRideActivity({
+      bookingId: String(updatedRide._id),
+      actorId: access.session.user.id,
+      actorRole: "partner",
+      action: "claimed",
+    });
 
     try {
       await sendRideAssignmentEmail({

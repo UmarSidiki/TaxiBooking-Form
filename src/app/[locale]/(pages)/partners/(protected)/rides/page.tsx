@@ -59,6 +59,7 @@ export default function PartnerRidesPage() {
               currencySymbol={currencySymbol}
               isBookingPassed={isBookingPassed}
               setDetailBooking={setDetailBooking}
+              onCompleted={() => void fetchRides()}
             />
           ))}
         </div>

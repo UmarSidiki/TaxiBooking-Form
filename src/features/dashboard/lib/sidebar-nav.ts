@@ -5,6 +5,7 @@ import {
   Code,
   LayoutDashboard,
   Settings,
+  Tag,
   Users,
   UsersRound,
   type LucideIcon,
@@ -94,6 +95,11 @@ export const deskNavGroups: DeskNavGroup[] = [
     id: "desk",
     labelKey: "Sidebar.desk",
     items: [
+      {
+        titleKey: "Sidebar.pricing",
+        href: (locale) => `/${locale}/dashboard/pricing`,
+        icon: Tag,
+      },
       {
         titleKey: "Sidebar.settings",
         href: (locale) => `/${locale}/dashboard/settings`,

@@ -1,6 +1,6 @@
 import { Schema, model, models } from "mongoose";
 
-export type PartnerStatus = "pending" | "approved" | "rejected" | "suspended";
+export type PartnerStatus = "pending" | "active" | "approved" | "rejected" | "suspended";
 export type DocumentStatus = "pending" | "approved" | "rejected";
 
 export interface IPartnerDocument {
@@ -42,6 +42,7 @@ export interface IPartner {
   email: string;
   password: string;
   phone?: string;
+  whatsappVerified?: boolean;
   address?: string;
   city?: string;
   country?: string;
@@ -58,6 +59,8 @@ export interface IPartner {
   notes?: string;
   // Fleet assignment fields - now supports multiple requests
   fleetRequests: IFleetRequest[];
+  /** Unified vehicle access. Legacy fleetRequests/currentFleet are migrated into this list. */
+  vehicles?: Array<{ vehicleId: string; status: FleetStatus }>;
   // Keep backward compatibility - current approved fleet
   currentFleet?: string; // Vehicle ID of currently approved fleet
   // Backward compatibility fields for old fleet system
@@ -74,6 +77,8 @@ export interface IPartner {
   payoutBalance?: number;
   /** Partner still owes operator (cash + margin mode). */
   remittanceBalance?: number;
+  /** Signed ledger balance. Positive: operator owes partner. Negative: partner owes operator. */
+  balance?: number;
   lastPayoutAt?: Date;
   lastRemittanceAt?: Date;
   createdAt?: Date;
@@ -139,6 +144,7 @@ const PartnerSchema = new Schema<IPartner>(
       type: String,
       trim: true,
     },
+    whatsappVerified: { type: Boolean, default: false },
     address: {
       type: String,
       trim: true,
@@ -153,10 +159,14 @@ const PartnerSchema = new Schema<IPartner>(
     },
     status: {
       type: String,
-      enum: ["pending", "approved", "rejected", "suspended"],
+      enum: ["pending", "active", "approved", "rejected", "suspended"],
       default: "pending",
     },
     documents: [PartnerDocumentSchema],
+    vehicles: [{
+      vehicleId: { type: Schema.Types.ObjectId, ref: "Vehicle", required: true },
+      status: { type: String, enum: ["none", "pending", "approved", "rejected"], default: "pending" },
+    }],
     isActive: {
       type: Boolean,
       default: true,
@@ -261,6 +271,9 @@ const PartnerSchema = new Schema<IPartner>(
     remittanceBalance: {
       type: Number,
       default: 0,
+    },
+    balance: {
+      type: Number,
     },
     lastPayoutAt: {
       type: Date,

@@ -12,7 +12,8 @@ import type {
   DeskBookingInput,
   DeskBookingOutcome,
 } from "@/features/desk-booking/schema/desk-booking.schema";
-import { calculateBookingPrice } from "@/features/payments/lib/fare/calculate-booking-price";
+import { priceServerBooking } from "@/features/pricing/lib/price-server-booking";
+import { splitDeposit } from "@/features/pricing/lib/deposit-charge";
 import { fetchRouteDistanceKm } from "@/features/payments/lib/fare/route-distance";
 import { loadPaymentSettings } from "@/features/payments/lib/load-payment-settings";
 import { buildBookingEmailDataFromBooking } from "@/features/payments/lib/booking-email-data";
@@ -73,12 +74,16 @@ export async function createDeskBooking(
     };
   }
 
-  const priced = calculateBookingPrice(
+  const serverPrice = await priceServerBooking({
     vehicle,
-    formData,
-    settings ?? {},
-    distanceKm
-  );
+    booking: formData,
+    distanceKm,
+    tax: settings ?? {},
+  });
+  if (!serverPrice.ok) {
+    return { ok: false, status: 400, message: serverPrice.error };
+  }
+  const priced = serverPrice.quote;
 
   const isManualPrice = formData.manualPrice !== undefined;
   if (!isManualPrice && priced.total <= 0) {
@@ -89,6 +94,10 @@ export async function createDeskBooking(
     ? Number(formData.manualPrice!.toFixed(2))
     : priced.total;
   const isQuote = formData.outcome === "quote";
+  const collected = !isQuote && formData.paymentCollected;
+  const split = collected
+    ? { depositDue: 0, balanceDue: 0 }
+    : splitDeposit(total, priced.depositPercent);
 
   if (isQuote && !absoluteHttpBase(baseUrl)) {
     return {
@@ -151,6 +160,9 @@ export async function createDeskBooking(
       name: placedBy.name,
     },
     totalAmount: total,
+    depositDue: split.depositDue,
+    balanceDue: split.balanceDue,
+    fareLines: isManualPrice ? undefined : priced.lines,
     subtotalAmount: isManualPrice ? total : priced.subtotal,
     taxAmount: isManualPrice ? 0 : priced.taxAmount,
     taxPercentage: isManualPrice ? 0 : priced.taxPercentage,

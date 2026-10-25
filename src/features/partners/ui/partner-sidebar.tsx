@@ -14,7 +14,10 @@ export function PartnerSidebar({ locale }: { locale: string }) {
       try {
         const response = await fetch("/api/partners/profile");
         const data = await response.json();
-        if (response.ok) setApproved(data.partner.status === "approved");
+        if (response.ok) {
+          const status = data.partner.status;
+          setApproved(status === "active" || status === "approved");
+        }
       } catch (error) {
         console.error("Error fetching partner status:", error);
       }

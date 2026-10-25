@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { connectDB } from '@/shared/db';
 import { Setting } from '@/features/settings/model';
 import { finalizePaidBooking } from '@/features/payments/lib/finalize-paid-booking';
+import { settleRideCharge } from '@/features/invoices/lib/settle-ride-charge';
 import { resolvePublicBaseUrl } from '@/features/payments/lib/resolve-base-url';
 
 export const dynamic = 'force-dynamic';
@@ -67,6 +68,17 @@ async function handleWebhook(request: NextRequest) {
     }
 
     const baseUrl = resolvePublicBaseUrl(request) || undefined;
+
+    if (order_id?.startsWith("due_")) {
+      const settled = await settleRideCharge({ orderId: order_id });
+      if (!settled.ok && settled.retryable) {
+        return NextResponse.json({ success: true, message: "Ride charge not ready" });
+      }
+      if (!settled.ok) {
+        return NextResponse.json({ success: false, message: "Ride charge failed" }, { status: 400 });
+      }
+      return new NextResponse("OK", { status: 200 });
+    }
 
     const result = await finalizePaidBooking({
       provider: 'multisafepay',

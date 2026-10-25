@@ -34,6 +34,9 @@ export function DeskCredentialsForm({
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const emailRef = useRef<HTMLInputElement>(null);
+  const markReady = (form: HTMLFormElement | null) => {
+    form?.setAttribute("data-ready", "true");
+  };
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -79,7 +82,7 @@ export function DeskCredentialsForm({
             {title}
           </h1>
           <p className="mt-2 text-pretty text-sm text-muted-foreground">{subtitle}</p>
-          <form className="mt-8 space-y-5" onSubmit={handleSubmit}>
+          <form ref={markReady} className="mt-8 space-y-5" onSubmit={handleSubmit}>
             <div className="space-y-2">
               <Label htmlFor="email">{t("email")}</Label>
               <Input

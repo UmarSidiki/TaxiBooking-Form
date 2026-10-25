@@ -5,6 +5,10 @@ import { Booking } from "@/features/booking/model";
 import { parseJsonBody } from "@/shared/http/parse-json-body";
 import { jsonError } from "@/shared/http/json-error";
 import { reviewCreateSchema } from "@/features/reviews/schema/review-create.schema";
+import {
+  parseReviewBookingIds,
+  reviewListQuerySchema,
+} from "@/features/reviews/schema/review-list-query.schema";
 
 export async function POST(request: NextRequest) {
   try {
@@ -50,15 +54,29 @@ export async function POST(request: NextRequest) {
 export async function GET(request: NextRequest) {
   try {
     await connectDB();
-    const { searchParams } = new URL(request.url);
-    const bookingId = searchParams.get("bookingId");
+    const parsed = reviewListQuerySchema.safeParse({
+      bookingId: request.nextUrl.searchParams.get("bookingId") ?? undefined,
+      bookingIds: request.nextUrl.searchParams.get("bookingIds") ?? undefined,
+    });
+    if (!parsed.success) return jsonError("invalid_body", 400);
+
+    const { bookingId, bookingIds } = parsed.data;
 
     if (bookingId) {
       const review = await Review.findOne({ bookingId }).lean();
       return NextResponse.json({ success: true, review });
     }
 
-    const reviews = await Review.find().sort({ createdAt: -1 }).lean();
+    if (bookingIds) {
+      const ids = parseReviewBookingIds(bookingIds);
+      if (!ids) return jsonError("invalid_body", 400);
+      const reviews = await Review.find({ bookingId: { $in: ids } })
+        .select("bookingId rating comment")
+        .lean();
+      return NextResponse.json({ success: true, reviews });
+    }
+
+    const reviews = await Review.find().sort({ createdAt: -1 }).limit(200).lean();
     return NextResponse.json({ success: true, reviews });
   } catch (error) {
     console.error("Error fetching reviews:", error);

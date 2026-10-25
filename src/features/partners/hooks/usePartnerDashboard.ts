@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import { useCurrency } from "@/shared/context/currency-context";
 import type {
@@ -21,6 +21,7 @@ export function usePartnerDashboard() {
   const [availableRides, setAvailableRides] = useState<PartnerAvailableRide[]>([]);
   const [acceptingRide, setAcceptingRide] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
+  const lastVisibleRefresh = useRef(0);
 
   const fetchPartnerData = useCallback(async () => {
     setLoadError(null);
@@ -69,11 +70,33 @@ export function usePartnerDashboard() {
   }, [fetchPartnerData]);
 
   useEffect(() => {
-    if (partner?.status !== "approved") return;
+    if (partner?.status !== "approved" && partner?.status !== "active") return;
     void fetchStats();
     void fetchAvailableRides();
-    const interval = setInterval(fetchAvailableRides, 30000);
-    return () => clearInterval(interval);
+    lastVisibleRefresh.current = Date.now();
+
+    const refreshIfVisible = () => {
+      if (document.visibilityState !== "visible") return;
+      const now = Date.now();
+      if (now - lastVisibleRefresh.current < 1500) return;
+      lastVisibleRefresh.current = now;
+      void fetchAvailableRides();
+      void fetchStats();
+    };
+
+    const interval = window.setInterval(() => {
+      if (document.visibilityState !== "visible") return;
+      lastVisibleRefresh.current = Date.now();
+      void fetchAvailableRides();
+    }, 30_000);
+
+    document.addEventListener("visibilitychange", refreshIfVisible);
+    window.addEventListener("focus", refreshIfVisible);
+    return () => {
+      window.clearInterval(interval);
+      document.removeEventListener("visibilitychange", refreshIfVisible);
+      window.removeEventListener("focus", refreshIfVisible);
+    };
   }, [partner?.status, fetchStats, fetchAvailableRides]);
 
   const acceptRide = async (rideId: string) => {

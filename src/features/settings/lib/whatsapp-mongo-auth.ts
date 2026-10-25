@@ -5,6 +5,7 @@ import type {
   SignalDataTypeMap,
 } from "@whiskeysockets/baileys";
 
+import { qaWhatsAppMockEnabled } from "@/features/settings/lib/whatsapp-outbox";
 import { connectDB } from "@/shared/db";
 import WhatsAppAuth from "@/features/settings/model/WhatsAppAuth";
 
@@ -32,6 +33,7 @@ export function whatsAppCredsLinked(creds: StoredCreds) {
 }
 
 export async function readWhatsAppLinked() {
+  if (qaWhatsAppMockEnabled()) return true;
   const payload = await readPayload(CREDS);
   if (!payload) return false;
   try {

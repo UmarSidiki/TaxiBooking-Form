@@ -5,7 +5,8 @@ import { PendingBooking } from '@/features/booking/model';
 import { Vehicle } from '@/features/fleet/model';
 import { generateShortId } from '@/shared/lib/generate-id';
 import { resolvePublicBaseUrl } from '@/features/payments/lib/resolve-base-url';
-import { calculateBookingPrice } from '@/features/payments/lib/fare/calculate-booking-price';
+import { priceServerBooking } from '@/features/pricing/lib/price-server-booking';
+import { chargeDrift } from '@/features/pricing/lib/deposit-charge';
 import { fetchRouteDistanceKm } from '@/features/payments/lib/fare/route-distance';
 import { parseJsonBody } from '@/shared/http/parse-json-body';
 import { jsonError } from '@/shared/http/json-error';
@@ -68,17 +69,22 @@ export async function POST(request: NextRequest) {
       return jsonError("distance_failed", 400);
     }
 
-    const priced = calculateBookingPrice(vehicle, bookingData, settings || {}, distanceKm);
+    const serverPrice = await priceServerBooking({
+      vehicle,
+      booking: bookingData,
+      distanceKm,
+      tax: settings || {},
+      redeem: true,
+    });
+    if (!serverPrice.ok) return jsonError(serverPrice.error, 400);
+    const priced = serverPrice.quote;
     if (!priced.total || priced.total <= 0) {
       return jsonError("invalid_body", 400);
     }
 
     // The client amount is advisory only: it may drift, but it can never set the charge.
-    if (typeof amount === 'number' && amount > 0) {
-      const delta = Math.abs(amount - priced.total);
-      if (delta > Math.max(5, priced.total * 0.15)) {
-        return jsonError("price_changed", 409);
-      }
+    if (chargeDrift(amount, priced.chargeAmount)) {
+      return jsonError("price_changed", 409);
     }
 
     const apiUrl = multisafepayTestMode
@@ -100,9 +106,13 @@ export async function POST(request: NextRequest) {
             subtotalAmount: priced.subtotal,
             taxAmount: priced.taxAmount,
             taxPercentage: priced.taxPercentage,
+            depositDue: priced.depositDue,
+            balanceDue: priced.balanceDue,
+            fareLines: priced.lines,
+            promoCode: priced.promoCode,
           },
           paymentMethod: 'multisafepay',
-          expectedAmount: priced.total,
+          expectedAmount: priced.chargeAmount,
           expiresAt: new Date(Date.now() + 30 * 60 * 1000),
         },
       },
@@ -113,7 +123,7 @@ export async function POST(request: NextRequest) {
       type: 'redirect',
       order_id: generatedOrderId,
       currency: orderCurrency,
-      amount: Math.round(priced.total * 100),
+      amount: Math.round(priced.chargeAmount * 100),
       description: description || 'Booking payment',
       payment_options: {
         notification_url: `${baseUrl}/api/multisafepay-webhook`,

@@ -4,6 +4,7 @@ import { buildBookingEmailDataFromBooking } from '@/features/payments/lib/bookin
 import { createBookingFromPending } from '@/features/payments/lib/create-booking-from-pending';
 import { sendBookingEmails } from '@/features/payments/lib/send-booking-emails';
 import { tryFastPathFinalized } from '@/features/payments/lib/try-fast-path-finalized';
+import { creditPartnerAfterPayment } from '@/features/payments/lib/credit-partner-after-payment';
 import { verifyMultisafepayPayment } from '@/features/payments/lib/verify-multisafepay-payment';
 import { verifyStripePayment } from '@/features/payments/lib/verify-stripe-payment';
 import type {
@@ -153,6 +154,22 @@ export async function finalizePaidBooking(
     }
 
     await PendingBooking.deleteOne({ orderId });
+
+    if (existingBooking.paymentStatus !== 'completed') {
+      existingBooking.paymentStatus = 'completed';
+      existingBooking.paymentMethod = input.provider;
+      if (paymentIds.stripePaymentIntentId) {
+        existingBooking.stripePaymentIntentId = paymentIds.stripePaymentIntentId;
+      }
+      if (paymentIds.multisafepayOrderId) {
+        existingBooking.multisafepayOrderId = paymentIds.multisafepayOrderId;
+      }
+      if (paymentIds.multisafepayTransactionId) {
+        existingBooking.multisafepayTransactionId = paymentIds.multisafepayTransactionId;
+      }
+      await existingBooking.save();
+    }
+    await creditPartnerAfterPayment(existingBooking);
 
     const emailData = buildBookingEmailDataFromBooking(existingBooking, {
       paymentMethod: input.provider,

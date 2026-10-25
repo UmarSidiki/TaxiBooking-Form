@@ -15,6 +15,8 @@ export function bookingPatchSuccessMessage(action: BookingPatchAction): string {
     case 'assign':
     case 'assignpartner':
       return 'Assignment updated';
+    case 'edit':
+      return 'Ride updated';
     default:
       return 'Booking completed successfully';
   }

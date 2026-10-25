@@ -8,6 +8,10 @@ import type { IBooking } from "@/features/booking/model";
 import type { AdminRideReview } from "@/features/rides/hooks/useAdminRides";
 import type { useTranslations } from "next-intl";
 import { Info } from "lucide-react";
+import { useState } from "react";
+import { Button } from "@/shared/ui/button";
+import { AdminRideActivity } from "./admin-ride-activity";
+import { AdminRideEditDialog } from "./admin-ride-edit-dialog";
 import { AdminRideDetailAssignment } from "./admin-ride-detail-assignment";
 import { AdminRideDetailBilling } from "./admin-ride-detail-billing";
 import { AdminRideDetailCustomer } from "./admin-ride-detail-customer";
@@ -22,6 +26,7 @@ export function AdminRideDetailDialog({
   setDetailBooking,
   isBookingPassed,
   bookingReviews,
+  onUpdated,
 }: {
   t: ReturnType<typeof useTranslations>;
   currencySymbol: string;
@@ -29,7 +34,10 @@ export function AdminRideDetailDialog({
   setDetailBooking: (booking: IBooking | null) => void;
   isBookingPassed: (dateStr: string, timeStr: string) => boolean;
   bookingReviews: Record<string, AdminRideReview | null>;
+  onUpdated?: (notice: string) => void;
 }) {
+  const [editing, setEditing] = useState(false);
+  const [activityKey, setActivityKey] = useState(0);
   return (
     <>
       {/* Detail Dialog */}
@@ -37,14 +45,36 @@ export function AdminRideDetailDialog({
         open={Boolean(detailBooking)}
         onOpenChange={(open) => {
           if (!open) {
+            setEditing(false);
             setDetailBooking(null);
           }
         }}
       >
-        <DialogContent className="w-[95vw] sm:w-full sm:max-w-4xl max-h-[90vh] overflow-y-auto">
+        <DialogContent className="flex max-h-[90vh] w-[95vw] flex-col gap-0 overflow-hidden p-0 sm:max-w-4xl">
           {detailBooking ? (
-            <div className="space-y-6">
-              <AdminRideDetailHeader booking={detailBooking} t={t} />
+            <div className="flex min-h-0 flex-1 flex-col">
+              <div className="flex flex-none items-start justify-between gap-3 border-b border-border bg-background px-6 py-4 pe-14">
+                <AdminRideDetailHeader booking={detailBooking} t={t} />
+                <Button type="button" variant="outline" className="h-11 shrink-0" onClick={() => setEditing(true)}>
+                  {t("Dashboard.Rides.edit-ride")}
+                </Button>
+              </div>
+              <div className="min-h-0 flex-1 space-y-6 overflow-y-auto px-6 py-4">
+              <AdminRideEditDialog
+                booking={detailBooking}
+                open={editing}
+                onOpenChange={setEditing}
+                onSaved={(notice) => {
+                  onUpdated?.(notice);
+                  setActivityKey((key) => key + 1);
+                }}
+              />
+              {detailBooking._id ? (
+                <AdminRideActivity
+                  key={`${String(detailBooking._id)}-${activityKey}`}
+                  bookingId={String(detailBooking._id)}
+                />
+              ) : null}
 
               <div className="grid gap-6 md:grid-cols-2">
                 {/* Journey Details */}
@@ -88,6 +118,7 @@ export function AdminRideDetailDialog({
                 t={t}
                 bookingReviews={bookingReviews}
               />
+              </div>
             </div>
           ) : null}
         </DialogContent>

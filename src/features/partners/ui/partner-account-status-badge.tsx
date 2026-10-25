@@ -13,7 +13,7 @@ export function PartnerAccountStatusBadge({
   status: string;
   t: TFn;
 }) {
-  if (status === "approved") {
+  if (status === "approved" || status === "active") {
     return (
       <Badge className="gap-1">
         <CheckCircle2 className="size-3" />

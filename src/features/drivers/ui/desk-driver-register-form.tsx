@@ -11,6 +11,7 @@ import {
   type DriverRegisterValues,
 } from "@/features/drivers/ui/desk-driver-register-fields";
 import { Link, useRouter } from "@/shared/i18n/navigation";
+import { toE164 } from "@/shared/schema/e164-phone";
 import { Button } from "@/shared/ui/button";
 
 const empty: DriverRegisterValues = {
@@ -18,6 +19,7 @@ const empty: DriverRegisterValues = {
   email: "",
   password: "",
   confirmPassword: "",
+  phone: "",
 };
 
 export function DeskDriverRegisterForm() {
@@ -45,6 +47,10 @@ export function DeskDriverRegisterForm() {
       setError(t("too_short"));
       return;
     }
+    if (!toE164(values.phone)) {
+      setError(t("phone_invalid"));
+      return;
+    }
     setLoading(true);
     try {
       const response = await fetch("/api/drivers/register", {
@@ -54,6 +60,7 @@ export function DeskDriverRegisterForm() {
           name: values.name,
           email: values.email,
           password: values.password,
+          phone: values.phone,
         }),
       });
       if (response.status === 409) {

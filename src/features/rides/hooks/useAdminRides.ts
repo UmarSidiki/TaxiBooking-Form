@@ -6,6 +6,8 @@ import type { IBooking } from "@/features/booking/model";
 import type { IDriver } from "@/features/drivers/model";
 import type { IPartner } from "@/features/partners/model";
 import type { ISetting } from "@/features/settings/model";
+import { isAssignablePartner } from "@/features/partners/lib/partner-desk-open";
+import { describeAssignment } from "@/features/rides/lib/assignment-notice";
 import { apiGet, apiPatch, ApiError } from "@/shared/http/api";
 import { DateRange } from "react-day-picker";
 import { useCurrency } from "@/shared/context/currency-context";
@@ -95,11 +97,9 @@ export function useAdminRides() {
 
   const fetchPartners = useCallback(async () => {
     try {
-      const data = await apiGet<{ partners: IPartner[] }>(
-        "/api/admin/partners?status=approved"
-      );
+      const data = await apiGet<{ partners: IPartner[] }>("/api/admin/partners");
       if (data.partners) {
-        setPartners(data.partners);
+        setPartners(data.partners.filter((partner) => isAssignablePartner(partner)));
       }
     } catch (error) {
       console.error("Error fetching partners:", error);
@@ -219,6 +219,7 @@ export function useAdminRides() {
       const data = await apiPatch<{
         success: boolean;
         message: string;
+        warning?: string;
         data: IBooking;
       }>(`/api/bookings/${bookingId}`, {
         action: "assign",
@@ -226,16 +227,24 @@ export function useAdminRides() {
       });
 
       if (data.success) {
-        // Update local state
         setBookings((prev) =>
           prev.map((b) => (b._id?.toString() === bookingId ? data.data : b))
         );
-        // Reset edit mode
         setSelectedBooking(null);
-        setNotice(
+        const successLabel =
           data.data.assignedDriver && bookingId !== data.data.assignedDriver._id
             ? t("Dashboard.Rides.driver-reassigned-successfully")
-            : t("Dashboard.Rides.driver-assigned-successfully")
+            : t("Dashboard.Rides.driver-assigned-successfully");
+        setNotice(
+          describeAssignment({
+            success: true,
+            warning: data.warning,
+            successLabel,
+            failedLabel: t("Dashboard.Rides.failed-to-assign-driver"),
+            timeOffLabel: t("Dashboard.Rides.driver-time-off"),
+            overlapLabel: (trip, time) =>
+              t("Dashboard.Rides.overlap-notice", { trip, time }),
+          }),
         );
       } else {
         setNotice(
@@ -246,7 +255,17 @@ export function useAdminRides() {
       }
     } catch (error) {
       console.error("Error assigning driver:", error);
-      setNotice(t("Dashboard.Rides.failed-to-assign-driver"));
+      setNotice(
+        describeAssignment({
+          success: false,
+          error,
+          successLabel: "",
+          failedLabel: t("Dashboard.Rides.failed-to-assign-driver"),
+          timeOffLabel: t("Dashboard.Rides.driver-time-off"),
+          overlapLabel: (trip, time) =>
+            t("Dashboard.Rides.overlap-notice", { trip, time }),
+        }),
+      );
     } finally {
       setAssigningId(null);
     }
@@ -258,6 +277,7 @@ export function useAdminRides() {
       const data = await apiPatch<{
         success: boolean;
         message: string;
+        warning?: string;
         data: IBooking;
       }>(`/api/bookings/${bookingId}`, {
         action: "assignpartner",
@@ -265,17 +285,24 @@ export function useAdminRides() {
       });
 
       if (data.success) {
-        // Update local state
         setBookings((prev) =>
           prev.map((b) => (b._id?.toString() === bookingId ? data.data : b))
         );
-        // Reset edit mode
         setSelectedBooking(null);
-        setNotice(
-          data.data.assignedPartner &&
-            bookingId !== data.data.assignedPartner._id
+        const successLabel =
+          data.data.assignedPartner && bookingId !== data.data.assignedPartner._id
             ? t("Dashboard.Rides.partner-reassigned-successfully")
-            : t("Dashboard.Rides.partner-assigned-successfully")
+            : t("Dashboard.Rides.partner-assigned-successfully");
+        setNotice(
+          describeAssignment({
+            success: true,
+            warning: data.warning,
+            successLabel,
+            failedLabel: t("Dashboard.Rides.failed-to-assign-partner"),
+            timeOffLabel: t("Dashboard.Rides.driver-time-off"),
+            overlapLabel: (trip, time) =>
+              t("Dashboard.Rides.partner-overlap-notice", { trip, time }),
+          }),
         );
       } else {
         setNotice(
@@ -343,6 +370,7 @@ export function useAdminRides() {
         success: boolean;
         message: string;
         warning?: string;
+        payUrl?: string;
         data: IBooking;
       }>(`/api/bookings/${bookingId}`, {
         action: "quote",
@@ -353,9 +381,13 @@ export function useAdminRides() {
           prev.map((b) => (b._id?.toString() === bookingId ? data.data : b))
         );
         setNotice(
-          data.warning
-            ? t("Dashboard.Rides.quote-failed")
-            : t("Dashboard.Rides.quote-sent")
+          data.payUrl && data.warning
+            ? t("Dashboard.Rides.quote-link-email-failed", { url: data.payUrl })
+            : data.payUrl
+              ? t("Dashboard.Rides.quote-link-ready", { url: data.payUrl })
+              : data.warning
+                ? t("Dashboard.Rides.quote-failed")
+                : t("Dashboard.Rides.quote-sent"),
         );
         return true;
       }

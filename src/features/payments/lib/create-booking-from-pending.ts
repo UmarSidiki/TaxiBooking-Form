@@ -38,7 +38,9 @@ export async function createBookingFromPending(
     return { success: false, message: 'Vehicle not found for pending booking' };
   }
 
-  const expectedAmount = Number(pendingBooking.bookingData.totalAmount);
+  const expectedAmount = Number(
+    pendingBooking.expectedAmount ?? pendingBooking.bookingData.totalAmount,
+  );
   if (Number.isFinite(expectedAmount) && paidAmount + PAID_AMOUNT_TOLERANCE < expectedAmount) {
     return {
       success: false,

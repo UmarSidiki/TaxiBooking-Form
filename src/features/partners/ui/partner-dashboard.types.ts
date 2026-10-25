@@ -6,7 +6,7 @@ export interface PartnerDashboardProfile {
   address?: string;
   city?: string;
   country?: string;
-  status: "pending" | "approved" | "rejected" | "suspended";
+  status: "pending" | "active" | "approved" | "rejected" | "suspended";
   rejectionReason?: string;
 }
 
@@ -16,6 +16,7 @@ export interface PartnerRideStats {
   completedRides: number;
   canceledRides: number;
   totalEarnings: number;
+  balance?: number;
 }
 
 export interface PartnerAvailableRide {
@@ -34,8 +35,6 @@ export interface PartnerAvailableRide {
   notes: string;
   firstName: string;
   lastName: string;
-  email: string;
-  phone: string;
 }
 
 export interface PartnerDashboardFleetInfo {

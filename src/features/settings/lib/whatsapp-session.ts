@@ -8,6 +8,7 @@ import { withWhatsAppLock } from "@/features/settings/lib/whatsapp-lock";
 import { clearWhatsAppAuth, readWhatsAppLinked } from "@/features/settings/lib/whatsapp-mongo-auth";
 import { pairWhatsApp } from "@/features/settings/lib/whatsapp-pair";
 import { isLoggedOut, openWhatsAppSocket, waitForOpen } from "@/features/settings/lib/whatsapp-socket";
+import { pushWhatsAppOutbox, qaWhatsAppMockEnabled } from "@/features/settings/lib/whatsapp-outbox";
 
 export type WhatsAppLinkView = {
   status: "needs_scan" | "waiting" | "linked" | "failed";
@@ -17,6 +18,7 @@ export type WhatsAppLinkView = {
 export type WhatsAppOutbound = {
   jid: string;
   text: string;
+  document?: { base64: string; fileName: string };
 };
 
 type SendResult =
@@ -78,6 +80,13 @@ export async function startWhatsAppPairing() {
 }
 
 export function sendWhatsAppTexts(messages: WhatsAppOutbound[]) {
+  if (qaWhatsAppMockEnabled()) {
+    pushWhatsAppOutbox(messages);
+    return Promise.resolve({
+      ok: true as const,
+      results: messages.map((message) => ({ jid: message.jid, ok: true })),
+    });
+  }
   return withWhatsAppLock(async (): Promise<SendResult> => {
     const { sock, linked } = await openWhatsAppSocket();
     if (!linked) {
@@ -91,7 +100,17 @@ export function sendWhatsAppTexts(messages: WhatsAppOutbound[]) {
       const results = await Promise.all(
         messages.map(async (message) => {
           try {
-            await sock.sendMessage(message.jid, { text: message.text });
+            await sock.sendMessage(
+              message.jid,
+              message.document
+                ? {
+                    document: Buffer.from(message.document.base64, "base64"),
+                    mimetype: "application/pdf",
+                    fileName: message.document.fileName,
+                    caption: message.text,
+                  }
+                : { text: message.text },
+            );
             return { jid: message.jid, ok: true };
           } catch {
             return { jid: message.jid, ok: false };

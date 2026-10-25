@@ -38,6 +38,7 @@ export async function priceServerBooking(input: {
       holidays: rule?.holidays ?? [],
       meetGreetPrice: rule?.meetGreetPrice ?? 0,
       operatorMinimumFare: rule?.operatorMinimumFare ?? 0,
+      depositPercent: rule?.depositPercent ?? 0,
     },
     promo.promo,
   );

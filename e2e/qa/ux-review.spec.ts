@@ -29,6 +29,8 @@ const VIEWS = process.env.UX_DESKTOP === "1" ? ALL_VIEWS.filter((view) => view.n
 
 const PUBLIC_PATHS = [
   "/en",
+  "/en/account",
+  "/en/ride-status",
   "/en/embeddable/v1",
   "/en/embeddable/v2",
   "/en/embeddable/v3",
@@ -42,13 +44,23 @@ const PUBLIC_PATHS = [
 
 const ADMIN_PATHS = [
   "/en/dashboard",
+  "/en/dashboard/home",
   "/en/dashboard/today",
   "/en/dashboard/rides",
   "/en/dashboard/calendar",
+  "/en/dashboard/pricing",
+  "/en/dashboard/fleet",
+  "/en/dashboard/form-builder",
   "/en/dashboard/partners",
   "/en/dashboard/drivers",
-  "/en/dashboard/settings/whatsapp",
+  "/en/dashboard/settings",
+  "/en/dashboard/settings/checkout",
   "/en/dashboard/settings/modules",
+  "/en/dashboard/settings/whatsapp",
+  "/en/dashboard/settings/email",
+  "/en/dashboard/settings/appearance",
+  "/en/dashboard/settings/gateways",
+  "/en/dashboard/settings/map",
 ];
 
 const PARTNER_PATHS = [
@@ -67,6 +79,7 @@ async function review(page: Page, view: string, path: string, mobile: boolean): 
   const slug = `${view}-${path.replace(/[^\w]+/g, "-").replace(/^-|-$/g, "")}`;
   await shot(page, `ux-${slug}`);
   const axe = await new AxeBuilder({ page })
+    .exclude("nextjs-portal")
     .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"])
     .analyze();
   const smallTargets = mobile
@@ -115,7 +128,8 @@ test("UX review with axe on desktop, Pixel 7, and iPhone 13", async ({ browser }
     page.setDefaultTimeout(20_000);
     page.setDefaultNavigationTimeout(60_000);
     const only = process.env.UX_PATHS?.split(",").filter(Boolean);
-    const keep = (path: string) => !only || only.some((item) => path.startsWith(item));
+    const keep = (path: string) =>
+      !only || only.some((item) => path === item || path.startsWith(item.endsWith("/") ? item : `${item}/`));
     for (const path of PUBLIC_PATHS.filter(keep)) reports.push(await review(page, view.name, path, view.mobile));
     await signIn(page, "/en/dashboard/signin", ADMIN.email, ADMIN.password);
     for (const path of ADMIN_PATHS.filter(keep)) reports.push(await review(page, view.name, path, view.mobile));

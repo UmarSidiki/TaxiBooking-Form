@@ -60,7 +60,7 @@ export function useStep3Pricing({
     taxIncluded,
   ]);
 
-  const quotedTotal = useQuotedTotal(formData, distanceData?.distance.km, priced?.total ?? 0);
+  const quoted = useQuotedTotal(formData, distanceData?.distance.km, priced?.total ?? 0);
 
   const breakdown = priced?.breakdown;
   const subtotalPrice = breakdown
@@ -82,7 +82,11 @@ export function useStep3Pricing({
     taxPercentage,
     taxIncluded,
     taxAmount: priced?.taxAmount ?? 0,
-    totalPrice: quotedTotal,
+    totalPrice: quoted.total,
+    chargeAmount: quoted.chargeAmount,
+    depositDue: quoted.depositDue,
+    balanceDue: quoted.balanceDue,
+    quoteReady: quoted.ready,
     displaySubtotalAmount: priced?.subtotal ?? 0,
   };
 }

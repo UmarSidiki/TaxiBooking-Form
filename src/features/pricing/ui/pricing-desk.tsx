@@ -11,6 +11,7 @@ type Rule = {
   nightPercent: number;
   meetGreetPrice: number;
   operatorMinimumFare: number;
+  depositPercent: number;
   holidays: { date: string; percent: number }[];
 };
 
@@ -20,6 +21,7 @@ const emptyRule: Rule = {
   nightPercent: 0,
   meetGreetPrice: 0,
   operatorMinimumFare: 0,
+  depositPercent: 0,
   holidays: [],
 };
 
@@ -37,7 +39,7 @@ export function PricingDesk() {
     void fetch("/api/admin/pricing")
       .then((response) => response.json())
       .then((data) => {
-        if (data.rule) setRule({ ...emptyRule, ...data.rule, holidays: data.rule.holidays ?? [] });
+        if (data.rule) setRule({ ...emptyRule, ...data.rule, holidays: data.rule.holidays ?? [], depositPercent: data.rule.depositPercent ?? 0 });
         setStatus("ready");
       })
       .catch(() => setStatus("error"));
@@ -71,6 +73,8 @@ export function PricingDesk() {
         <Input id="meet" className="h-11" value={String(rule.meetGreetPrice)} onChange={(event) => setRule({ ...rule, meetGreetPrice: Number(event.target.value) || 0 })} />
         <label className="text-sm" htmlFor="minimum">{t("minimum")}</label>
         <Input id="minimum" className="h-11" value={String(rule.operatorMinimumFare)} onChange={(event) => setRule({ ...rule, operatorMinimumFare: Number(event.target.value) || 0 })} />
+        <label className="text-sm" htmlFor="deposit">{t("deposit")}</label>
+        <Input id="deposit" className="h-11" value={String(rule.depositPercent)} onChange={(event) => setRule({ ...rule, depositPercent: Number(event.target.value) || 0 })} />
         <div className="grid grid-cols-[1fr_8rem_auto] gap-2">
           <Input className="h-11" type="date" aria-label={t("holiday")} value={holidayDate} onChange={(event) => setHolidayDate(event.target.value)} />
           <Input className="h-11" aria-label={t("holiday-percent")} value={holidayPercent} onChange={(event) => setHolidayPercent(event.target.value)} />

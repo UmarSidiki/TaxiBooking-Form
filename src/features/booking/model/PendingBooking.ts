@@ -34,6 +34,11 @@ export interface IPendingBooking {
     subtotalAmount?: number;
     taxAmount?: number;
     taxPercentage?: number;
+    depositDue?: number;
+    balanceDue?: number;
+    fareLines?: { code: string; amount: number }[];
+    promoCode?: string;
+    meetAndGreet?: boolean;
   };
   paymentMethod: string;
   paymentIntentId?: string;

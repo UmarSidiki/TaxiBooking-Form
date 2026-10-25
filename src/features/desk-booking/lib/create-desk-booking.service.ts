@@ -13,6 +13,7 @@ import type {
   DeskBookingOutcome,
 } from "@/features/desk-booking/schema/desk-booking.schema";
 import { priceServerBooking } from "@/features/pricing/lib/price-server-booking";
+import { splitDeposit } from "@/features/pricing/lib/deposit-charge";
 import { fetchRouteDistanceKm } from "@/features/payments/lib/fare/route-distance";
 import { loadPaymentSettings } from "@/features/payments/lib/load-payment-settings";
 import { buildBookingEmailDataFromBooking } from "@/features/payments/lib/booking-email-data";
@@ -93,6 +94,10 @@ export async function createDeskBooking(
     ? Number(formData.manualPrice!.toFixed(2))
     : priced.total;
   const isQuote = formData.outcome === "quote";
+  const collected = !isQuote && formData.paymentCollected;
+  const split = collected
+    ? { depositDue: 0, balanceDue: 0 }
+    : splitDeposit(total, priced.depositPercent);
 
   if (isQuote && !absoluteHttpBase(baseUrl)) {
     return {
@@ -155,6 +160,9 @@ export async function createDeskBooking(
       name: placedBy.name,
     },
     totalAmount: total,
+    depositDue: split.depositDue,
+    balanceDue: split.balanceDue,
+    fareLines: isManualPrice ? undefined : priced.lines,
     subtotalAmount: isManualPrice ? total : priced.subtotal,
     taxAmount: isManualPrice ? 0 : priced.taxAmount,
     taxPercentage: isManualPrice ? 0 : priced.taxPercentage,

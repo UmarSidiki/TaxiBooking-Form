@@ -13,6 +13,7 @@ import {
   Shield,
   Users,
 } from "lucide-react";
+import { FareDueRows } from "@/features/booking/ui/steps/fare-due-rows";
 import type { useStep3 } from "@/features/booking/hooks/form-steps/useStep3";
 import type { useTranslations } from "next-intl";
 
@@ -38,6 +39,8 @@ export function Step3BookingSummary({
   taxIncluded,
   taxAmount,
   totalPrice,
+  chargeAmount,
+  balanceDue,
   displaySubtotalAmount,
 }: Pick<
   Step,
@@ -58,6 +61,8 @@ export function Step3BookingSummary({
   | "taxIncluded"
   | "taxAmount"
   | "totalPrice"
+  | "chargeAmount"
+  | "balanceDue"
   | "displaySubtotalAmount"
 > & {
   t: ReturnType<typeof useTranslations>;
@@ -323,6 +328,14 @@ export function Step3BookingSummary({
                 </span>
               </div>
             )}
+            <FareDueRows
+              currencySymbol={currencySymbol}
+              totalPrice={totalPrice}
+              chargeAmount={chargeAmount}
+              balanceDue={balanceDue}
+              dueNowLabel={t("Step3.due-now")}
+              balanceLabel={t("Step3.balance-due")}
+            />
           </div>
 
           {/* Benefits */}

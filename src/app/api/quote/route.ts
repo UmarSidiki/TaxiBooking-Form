@@ -41,5 +41,9 @@ export async function POST(request: Request) {
     subtotal: priced.quote.subtotal,
     taxAmount: priced.quote.taxAmount,
     lines: priced.quote.lines,
+    chargeAmount: priced.quote.chargeAmount,
+    depositDue: priced.quote.depositDue,
+    balanceDue: priced.quote.balanceDue,
+    depositPercent: priced.quote.depositPercent,
   });
 }

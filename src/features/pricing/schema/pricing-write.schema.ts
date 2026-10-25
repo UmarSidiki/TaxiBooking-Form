@@ -10,6 +10,7 @@ export const pricingRuleWriteSchema = z.object({
   })).max(60),
   meetGreetPrice: z.coerce.number().min(0),
   operatorMinimumFare: z.coerce.number().min(0),
+  depositPercent: z.coerce.number().min(0).max(100).optional(),
 });
 
 export const zonePriceWriteSchema = z.object({

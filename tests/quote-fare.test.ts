@@ -73,6 +73,42 @@ describe("quoteFare", () => {
     );
     expect(quote.lines.find((line) => line.code === "minimum")?.amount).toBeGreaterThan(0);
     expect(quote.total).toBe(80);
+    expect(quote.chargeAmount).toBe(80);
+    expect(quote.balanceDue).toBe(0);
+  });
+
+  it("keeps the return percentage stored on a mongoose document when a zone matches", () => {
+    const doc = {
+      toObject() {
+        return {
+          price: 10,
+          pricePerKm: 2,
+          minimumFare: 20,
+          returnPricePercentage: 80,
+          priceTiers: [],
+          childSeatPrice: 0,
+          babySeatPrice: 0,
+          stopPrice: 0,
+          stopPricePerHour: 0,
+        };
+      },
+    } as unknown as IVehicle;
+    const quote = quoteFare(
+      doc,
+      { ...trip, time: "12:00", childSeats: 0, tripType: "roundtrip" },
+      {},
+      25,
+      { zones: [{ fromLabel: "Geneva Airport", toLabel: "Lausanne", price: 40 }] },
+    );
+    expect(quote.total).toBe(72);
+  });
+
+  it("charges the deposit online and keeps the balance", () => {
+    const quote = quoteFare(vehicle, { ...trip, time: "12:00", childSeats: 0 }, {}, 25, { depositPercent: 25 });
+    expect(quote.chargeAmount).toBeCloseTo(quote.total * 0.25, 2);
+    expect(quote.depositDue).toBe(quote.chargeAmount);
+    expect(quote.balanceDue).toBeCloseTo(quote.total - quote.chargeAmount, 2);
+    expect(quote.chargeAmount).toBeLessThan(quote.total);
   });
 });
 

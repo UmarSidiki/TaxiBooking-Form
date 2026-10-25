@@ -209,7 +209,9 @@
     "submitting-request": "Enviando…",
     "whatsapp_confirmation-note": "Tu confirmación de reserva también se enviará por WhatsApp.",
     "meet-greet": "Recibimiento",
-    "promo-code": "Código promocional"
+    "promo-code": "Código promocional",
+    "due-now": "A pagar ahora",
+    "balance-due": "Saldo pendiente"
   },
   "booking-failed-data-message": "Reserva fallida: {0}",
   "embeddable": {
@@ -2125,7 +2127,14 @@
     "declined-body": "Esta solicitud se marcó como no disponible.",
     "already-paid-title": "Ya confirmado",
     "already-paid-body": "El viaje #{tripId} ya está pagado y confirmado.",
-    "pay-cash": "Pagar al conductor en efectivo"
+    "pay-cash": "Pagar al conductor en efectivo",
+    "due-now": "A pagar ahora",
+    "balance-due": "Saldo pendiente",
+    "loading": "Cargando…",
+    "paid-in-full": "Este viaje está pagado por completo.",
+    "trip-total": "Total del viaje",
+    "cash-instructions": "Pague al conductor en efectivo o transfiera el importe a la cuenta de abajo.",
+    "bank-details": "Datos bancarios"
   },
   "CountryBlocked": {
     "title": "Todavía no operamos en tu región",
@@ -2204,7 +2213,8 @@
     "per-customer": "Usos por cliente",
     "percent": "Porcentaje",
     "fixed": "Importe fijo",
-    "save-promo": "Guardar código"
+    "save-promo": "Guardar código",
+    "deposit": "Porcentaje de depósito"
   },
   "Account": {
     "title": "Tus viajes",

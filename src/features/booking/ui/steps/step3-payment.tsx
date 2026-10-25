@@ -137,6 +137,8 @@ function Step3Payment() {
         taxIncluded={step.taxIncluded}
         taxAmount={step.taxAmount}
         totalPrice={step.totalPrice}
+        chargeAmount={step.chargeAmount}
+        balanceDue={step.balanceDue}
         displaySubtotalAmount={step.displaySubtotalAmount}
       />
     </div>

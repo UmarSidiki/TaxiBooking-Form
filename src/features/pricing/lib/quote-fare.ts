@@ -4,6 +4,7 @@ import {
   type BookingPriceInput,
   type TaxSettings,
 } from "@/features/payments/lib/fare/calculate-booking-price";
+import { splitDeposit } from "@/features/pricing/lib/deposit-charge";
 
 export type FareLine = { code: string; amount: number };
 
@@ -17,6 +18,7 @@ export type OperatorFareRules = {
   holidays?: { date: string; percent: number }[];
   meetGreetPrice?: number;
   operatorMinimumFare?: number;
+  depositPercent?: number;
 };
 
 export type QuoteInput = BookingPriceInput & {
@@ -33,6 +35,10 @@ export type FareQuote = {
   taxIncluded: boolean;
   lines: FareLine[];
   promoCode?: string;
+  chargeAmount: number;
+  depositDue: number;
+  balanceDue: number;
+  depositPercent: number;
 };
 
 function roundMoney(value: number) {
@@ -110,11 +116,12 @@ export function quoteFare(
     input.bookingType === "hourly" || !input.pickup || !input.dropoff
       ? undefined
       : matchZonePrice(input.pickup, input.dropoff, rules.zones ?? []);
+  const source = "toObject" in vehicle && typeof vehicle.toObject === "function" ? vehicle.toObject() : vehicle;
   const pricedVehicle =
     zonePrice == null
       ? vehicle
       : ({
-          ...vehicle,
+          ...source,
           price: zonePrice,
           pricePerKm: 0,
           priceTiers: [],
@@ -157,5 +164,6 @@ export function quoteFare(
     ...taxed,
     lines,
     promoCode: discount > 0 ? promo?.code : undefined,
+    ...splitDeposit(taxed.total, rules.depositPercent ?? 0),
   };
 }

@@ -1,10 +1,15 @@
 import nodemailer from "nodemailer";
 import { connectDB } from "@/shared/db";
 import { Setting } from "@/features/settings/model";
+import { pushQaMail, qaEmailMockEnabled } from "@/features/settings/lib/email-outbox";
 
 export async function sendEmail(
   mailOptions: nodemailer.SendMailOptions
 ): Promise<boolean> {
+  if (qaEmailMockEnabled()) {
+    pushQaMail(mailOptions);
+    return true;
+  }
   try {
     console.log("📧 Attempting to send email to:", mailOptions.to);
     console.log("📧 Email subject:", mailOptions.subject);

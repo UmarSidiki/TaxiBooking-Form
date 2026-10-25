@@ -209,7 +209,9 @@
     "submitting-request": "Verzenden…",
     "whatsapp_confirmation-note": "Uw boekingsbevestiging wordt ook via WhatsApp verzonden.",
     "meet-greet": "Meet & greet",
-    "promo-code": "Promocode"
+    "promo-code": "Promocode",
+    "due-now": "Nu te betalen",
+    "balance-due": "Nog te betalen"
   },
   "booking-failed-data-message": "Boeking mislukt: {0}",
   "embeddable": {
@@ -2125,7 +2127,14 @@
     "declined-body": "Dit verzoek is als niet beschikbaar gemarkeerd.",
     "already-paid-title": "Al bevestigd",
     "already-paid-body": "Rit #{tripId} is al betaald en bevestigd.",
-    "pay-cash": "Contant aan de chauffeur betalen"
+    "pay-cash": "Contant aan de chauffeur betalen",
+    "due-now": "Nu te betalen",
+    "balance-due": "Nog te betalen",
+    "loading": "Laden…",
+    "paid-in-full": "Deze rit is volledig betaald.",
+    "trip-total": "Rittotaal",
+    "cash-instructions": "Betaal de chauffeur contant of maak het bedrag over naar de rekening hieronder.",
+    "bank-details": "Bankgegevens"
   },
   "CountryBlocked": {
     "title": "Wij bedienen uw regio nog niet",
@@ -2204,7 +2213,8 @@
     "per-customer": "Gebruik per klant",
     "percent": "Percentage",
     "fixed": "Vast bedrag",
-    "save-promo": "Code opslaan"
+    "save-promo": "Code opslaan",
+    "deposit": "Aanbetalingspercentage"
   },
   "Account": {
     "title": "Uw ritten",

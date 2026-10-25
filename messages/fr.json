@@ -209,7 +209,9 @@
     "submitting-request": "Envoi…",
     "whatsapp_confirmation-note": "Votre confirmation de réservation vous sera également envoyée sur WhatsApp.",
     "meet-greet": "Accueil avec pancarte",
-    "promo-code": "Code promo"
+    "promo-code": "Code promo",
+    "due-now": "À payer maintenant",
+    "balance-due": "Solde restant"
   },
   "booking-failed-data-message": "La réservation a échoué : {0}",
   "embeddable": {
@@ -2125,7 +2127,14 @@
     "declined-body": "Cette demande a été marquée indisponible.",
     "already-paid-title": "Déjà confirmé",
     "already-paid-body": "Le trajet #{tripId} est déjà payé et confirmé.",
-    "pay-cash": "Payer le chauffeur en espèces"
+    "pay-cash": "Payer le chauffeur en espèces",
+    "due-now": "À payer maintenant",
+    "balance-due": "Solde restant",
+    "loading": "Chargement…",
+    "paid-in-full": "Cette course est entièrement payée.",
+    "trip-total": "Total du trajet",
+    "cash-instructions": "Payez le chauffeur en espèces, ou virez le montant dû sur le compte ci-dessous.",
+    "bank-details": "Coordonnées bancaires"
   },
   "CountryBlocked": {
     "title": "Nous ne desservons pas encore votre région",
@@ -2204,7 +2213,8 @@
     "per-customer": "Utilisations par client",
     "percent": "Pourcentage",
     "fixed": "Montant fixe",
-    "save-promo": "Enregistrer le code"
+    "save-promo": "Enregistrer le code",
+    "deposit": "Acompte (%)"
   },
   "Account": {
     "title": "Vos trajets",

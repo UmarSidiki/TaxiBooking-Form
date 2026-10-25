@@ -41,6 +41,8 @@ export function useStep3Payments({
   setPaymentInitialized,
   isSubmittingRef,
   totalPrice,
+  chargeAmount,
+  quoteReady,
   displaySubtotalAmount,
   taxAmount,
   enableTax,
@@ -70,6 +72,8 @@ export function useStep3Payments({
   setPaymentInitialized: Dispatch<SetStateAction<boolean>>;
   isSubmittingRef: MutableRefObject<boolean>;
   totalPrice: number;
+  chargeAmount: number;
+  quoteReady: boolean;
   displaySubtotalAmount: number;
   taxAmount: number;
   enableTax: boolean;
@@ -78,10 +82,11 @@ export function useStep3Payments({
 }) {
   /** Total baked into the current PaymentIntent — used to detect stale intents. */
   const intentTotalRef = useRef<number | null>(null);
+  const dueNow = chargeAmount > 0 ? chargeAmount : totalPrice;
 
   // Create payment intent function
   const createPaymentIntent = useCallback(async () => {
-    if (!stripeConfig.publishableKey || creatingPaymentIntent || totalPrice <= 0) return;
+    if (!stripeConfig.publishableKey || creatingPaymentIntent || !quoteReady || dueNow <= 0) return;
     
     setCreatingPaymentIntent(true);
     setPaymentError(null);
@@ -125,7 +130,7 @@ export function useStep3Payments({
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          amount: totalPrice,
+          amount: dueNow,
           customerEmail: formData.email,
           customerName: `${formData.firstName} ${formData.lastName}`.trim(),
           description: `Booking from ${formData.pickup || "pickup"} to ${formData.dropoff || "dropoff"}`,
@@ -136,7 +141,7 @@ export function useStep3Payments({
       const data = await response.json();
 
       if (data.success && data.clientSecret) {
-        intentTotalRef.current = totalPrice;
+        intentTotalRef.current = dueNow;
         setClientSecret(data.clientSecret);
         setStripeOrderId(data.orderId || null);
         setPaymentError(null);
@@ -155,6 +160,8 @@ export function useStep3Payments({
   }, [
     stripeConfig.publishableKey,
     creatingPaymentIntent,
+    dueNow,
+    quoteReady,
     totalPrice,
     displaySubtotalAmount,
     taxAmount,
@@ -173,12 +180,12 @@ export function useStep3Payments({
   // Invalidate a stale PaymentIntent when seats/extras change the total on step 3
   useEffect(() => {
     if (intentTotalRef.current === null) return;
-    if (intentTotalRef.current === totalPrice) return;
+    if (intentTotalRef.current === dueNow) return;
     intentTotalRef.current = null;
     setClientSecret(null);
     setPaymentInitialized(false);
     setStripeOrderId(null);
-  }, [totalPrice, setClientSecret, setPaymentInitialized, setStripeOrderId]);
+  }, [dueNow, setClientSecret, setPaymentInitialized, setStripeOrderId]);
 
   // Auto-initiate Stripe payment intent when 'card' is selected
   useEffect(() => {
@@ -186,7 +193,8 @@ export function useStep3Payments({
     if (
       selectedPaymentMethod === "card" &&
       stripeConfig.enabled &&
-      totalPrice > 0 &&
+      quoteReady &&
+      dueNow > 0 &&
       !clientSecret &&
       !creatingPaymentIntent &&
       !paymentInitialized
@@ -197,7 +205,8 @@ export function useStep3Payments({
     settings?.enableAppointmentRequest,
     selectedPaymentMethod,
     stripeConfig.enabled,
-    totalPrice,
+    dueNow,
+    quoteReady,
     clientSecret,
     creatingPaymentIntent,
     paymentInitialized,
@@ -333,7 +342,7 @@ export function useStep3Payments({
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          amount: totalPrice,
+          amount: dueNow,
           currency: paymentSettings?.stripeCurrency || DEFAULT_STRIPE_CURRENCY,
           customerEmail: formData.email,
           customerName: `${formData.firstName} ${formData.lastName}`,

@@ -20,6 +20,9 @@ export default function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const rule = SENSITIVE.find((item) => pathname === item.prefix || pathname.startsWith(`${item.prefix}/`));
   if (rule) {
+    if (pathname.startsWith("/api/auth") && request.method === "GET") {
+      return NextResponse.next();
+    }
     const hit = memoryLimit(`${rule.bucket}:${clientIp(request)}`, rule.limit, 60_000);
     if (!hit.ok) {
       return NextResponse.json(

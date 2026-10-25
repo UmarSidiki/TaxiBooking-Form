@@ -2,14 +2,70 @@ const LOCALES = ["en", "fr", "es", "de", "nl", "it", "ru", "ar"] as const;
 export type InvoiceLocale = (typeof LOCALES)[number];
 
 const COPY: Record<InvoiceLocale, Record<string, string>> = {
-  en: { invoice: "Invoice", billTo: "Bill to", trip: "Trip", from: "From", to: "To", when: "When", return: "Return", hours: "Hours", passengers: "Passengers", paid: "Paid", unpaid: "Unpaid", tax: "Tax", total: "Total", due: "Balance due", number: "Invoice number", pay: "Pay or download" },
-  fr: { invoice: "Facture", billTo: "Facturer à", trip: "Trajet", from: "Départ", to: "Arrivée", when: "Quand", return: "Retour", hours: "Heures", passengers: "Passagers", paid: "Payée", unpaid: "Impayée", tax: "Taxe", total: "Total", due: "Reste à payer", number: "Numéro de facture", pay: "Payer ou télécharger" },
-  es: { invoice: "Factura", billTo: "Facturar a", trip: "Viaje", from: "Origen", to: "Destino", when: "Cuándo", return: "Regreso", hours: "Horas", passengers: "Pasajeros", paid: "Pagada", unpaid: "Impagada", tax: "Impuesto", total: "Total", due: "Saldo pendiente", number: "Número de factura", pay: "Pagar o descargar" },
-  de: { invoice: "Rechnung", billTo: "Rechnung an", trip: "Fahrt", from: "Von", to: "Nach", when: "Wann", return: "Rückfahrt", hours: "Stunden", passengers: "Fahrgäste", paid: "Bezahlt", unpaid: "Offen", tax: "Steuer", total: "Summe", due: "Restbetrag", number: "Rechnungsnummer", pay: "Zahlen oder herunterladen" },
-  nl: { invoice: "Factuur", billTo: "Factuur aan", trip: "Rit", from: "Van", to: "Naar", when: "Wanneer", return: "Terug", hours: "Uren", passengers: "Passagiers", paid: "Betaald", unpaid: "Onbetaald", tax: "Btw", total: "Totaal", due: "Nog te betalen", number: "Factuurnummer", pay: "Betalen of downloaden" },
-  it: { invoice: "Fattura", billTo: "Fatturare a", trip: "Corsa", from: "Da", to: "A", when: "Quando", return: "Ritorno", hours: "Ore", passengers: "Passeggeri", paid: "Pagata", unpaid: "Non pagata", tax: "Imposta", total: "Totale", due: "Saldo", number: "Numero fattura", pay: "Paga o scarica" },
-  ru: { invoice: "Счёт", billTo: "Плательщик", trip: "Поездка", from: "Откуда", to: "Куда", when: "Когда", return: "Обратно", hours: "Часы", passengers: "Пассажиры", paid: "Оплачен", unpaid: "Не оплачен", tax: "Налог", total: "Итого", due: "К оплате", number: "Номер счёта", pay: "Оплатить или скачать" },
-  ar: { invoice: "فاتورة", billTo: "الفاتورة إلى", trip: "الرحلة", from: "من", to: "إلى", when: "الموعد", return: "العودة", hours: "الساعات", passengers: "الركاب", paid: "مدفوعة", unpaid: "غير مدفوعة", tax: "الضريبة", total: "المجموع", due: "المتبقي", number: "رقم الفاتورة", pay: "ادفع أو نزّل" },
+  en: {
+    invoice: "Invoice", billTo: "Bill to", trip: "Trip", from: "From", to: "To", when: "When",
+    return: "Return", hours: "Hours", passengers: "Passengers", paid: "Paid", unpaid: "Unpaid",
+    partial: "Deposit paid", tax: "Tax", total: "Total", due: "Balance due", dueNow: "Due now",
+    deposit: "Deposit", number: "Invoice", pay: "Pay this invoice", footer: "Thank you for riding with us.",
+    description: "Description", amount: "Amount", subtotal: "Subtotal",
+    cashNote: "Pay the driver in cash, or open the pay page for bank details.",
+  },
+  fr: {
+    invoice: "Facture", billTo: "Facturer à", trip: "Trajet", from: "Départ", to: "Arrivée", when: "Quand",
+    return: "Retour", hours: "Heures", passengers: "Passagers", paid: "Payée", unpaid: "Impayée",
+    partial: "Acompte reçu", tax: "Taxe", total: "Total", due: "Reste à payer", dueNow: "À payer maintenant",
+    deposit: "Acompte", number: "Facture", pay: "Payer cette facture", footer: "Merci d'avoir voyagé avec nous.",
+    description: "Description", amount: "Montant", subtotal: "Sous-total",
+    cashNote: "Payez le chauffeur en espèces, ou ouvrez la page de paiement pour le virement.",
+  },
+  es: {
+    invoice: "Factura", billTo: "Facturar a", trip: "Viaje", from: "Origen", to: "Destino", when: "Cuándo",
+    return: "Regreso", hours: "Horas", passengers: "Pasajeros", paid: "Pagada", unpaid: "Impagada",
+    partial: "Depósito pagado", tax: "Impuesto", total: "Total", due: "Saldo pendiente", dueNow: "A pagar ahora",
+    deposit: "Depósito", number: "Factura", pay: "Pagar esta factura", footer: "Gracias por viajar con nosotros.",
+    description: "Descripción", amount: "Importe", subtotal: "Subtotal",
+    cashNote: "Pague al conductor en efectivo, o abra la página de pago para la transferencia.",
+  },
+  de: {
+    invoice: "Rechnung", billTo: "Rechnung an", trip: "Fahrt", from: "Von", to: "Nach", when: "Wann",
+    return: "Rückfahrt", hours: "Stunden", passengers: "Fahrgäste", paid: "Bezahlt", unpaid: "Offen",
+    partial: "Anzahlung erhalten", tax: "Steuer", total: "Summe", due: "Restbetrag", dueNow: "Jetzt fällig",
+    deposit: "Anzahlung", number: "Rechnung", pay: "Diese Rechnung zahlen", footer: "Danke für Ihre Fahrt.",
+    description: "Beschreibung", amount: "Betrag", subtotal: "Zwischensumme",
+    cashNote: "Zahlen Sie bar beim Fahrer oder öffnen Sie die Zahlseite für die Bankdaten.",
+  },
+  nl: {
+    invoice: "Factuur", billTo: "Factuur aan", trip: "Rit", from: "Van", to: "Naar", when: "Wanneer",
+    return: "Terug", hours: "Uren", passengers: "Passagiers", paid: "Betaald", unpaid: "Onbetaald",
+    partial: "Aanbetaling ontvangen", tax: "Btw", total: "Totaal", due: "Nog te betalen", dueNow: "Nu te betalen",
+    deposit: "Aanbetaling", number: "Factuur", pay: "Betaal deze factuur", footer: "Bedankt voor het meerijden.",
+    description: "Omschrijving", amount: "Bedrag", subtotal: "Subtotaal",
+    cashNote: "Betaal de chauffeur contant, of open de betaalpagina voor de bankgegevens.",
+  },
+  it: {
+    invoice: "Fattura", billTo: "Fatturare a", trip: "Corsa", from: "Da", to: "A", when: "Quando",
+    return: "Ritorno", hours: "Ore", passengers: "Passeggeri", paid: "Pagata", unpaid: "Non pagata",
+    partial: "Acconto ricevuto", tax: "Imposta", total: "Totale", due: "Saldo", dueNow: "Da pagare ora",
+    deposit: "Acconto", number: "Fattura", pay: "Paga questa fattura", footer: "Grazie per aver viaggiato con noi.",
+    description: "Descrizione", amount: "Importo", subtotal: "Imponibile",
+    cashNote: "Paga il conducente in contanti, oppure apri la pagina di pagamento per il bonifico.",
+  },
+  ru: {
+    invoice: "Счёт", billTo: "Плательщик", trip: "Поездка", from: "Откуда", to: "Куда", when: "Когда",
+    return: "Обратно", hours: "Часы", passengers: "Пассажиры", paid: "Оплачен", unpaid: "Не оплачен",
+    partial: "Предоплата получена", tax: "Налог", total: "Итого", due: "Остаток", dueNow: "К оплате сейчас",
+    deposit: "Предоплата", number: "Счёт", pay: "Оплатить счёт", footer: "Спасибо, что поехали с нами.",
+    description: "Описание", amount: "Сумма", subtotal: "Подытог",
+    cashNote: "Оплатите водителю наличными или откройте страницу оплаты для банковских реквизитов.",
+  },
+  ar: {
+    invoice: "فاتورة", billTo: "الفاتورة إلى", trip: "الرحلة", from: "من", to: "إلى", when: "الموعد",
+    return: "العودة", hours: "الساعات", passengers: "الركاب", paid: "مدفوعة", unpaid: "غير مدفوعة",
+    partial: "العربون مدفوع", tax: "الضريبة", total: "المجموع", due: "المتبقي", dueNow: "المستحق الآن",
+    deposit: "العربون", number: "فاتورة", pay: "ادفع هذه الفاتورة", footer: "شكرًا لركوبك معنا.",
+    description: "الوصف", amount: "المبلغ", subtotal: "المجموع الفرعي",
+    cashNote: "ادفع للسائق نقدًا، أو افتح صفحة الدفع لتحويل المبلغ.",
+  },
 };
 
 const LINES: Record<string, Record<InvoiceLocale, string>> = {

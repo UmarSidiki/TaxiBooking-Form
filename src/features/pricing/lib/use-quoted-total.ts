@@ -3,13 +3,24 @@
 import { useEffect, useState } from "react";
 import type { FormData } from "@/features/booking/context/booking-form-context";
 
+export type QuotedFare = {
+  total: number;
+  chargeAmount: number;
+  depositDue: number;
+  balanceDue: number;
+};
+
+type QuoteResponse = QuotedFare & { total?: number; chargeAmount?: number };
+
 export function useQuotedTotal(formData: FormData, distanceKm: number | undefined, fallback: number) {
-  const [total, setTotal] = useState<number | null>(null);
+  const [quote, setQuote] = useState<QuotedFare | null>(null);
+  const [ready, setReady] = useState(false);
 
   useEffect(() => {
     if (!formData.selectedVehicle) return;
     const controller = new AbortController();
     const timer = setTimeout(() => {
+      setReady(false);
       void fetch("/api/quote", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -17,10 +28,23 @@ export function useQuotedTotal(formData: FormData, distanceKm: number | undefine
         signal: controller.signal,
       })
         .then((response) => response.json())
-        .then((data: { total?: number }) => {
-          if (typeof data.total === "number") setTotal(data.total);
+        .then((data: QuoteResponse) => {
+          if (typeof data.total !== "number") {
+            setQuote(null);
+            return;
+          }
+          const chargeAmount = typeof data.chargeAmount === "number" ? data.chargeAmount : data.total;
+          setQuote({
+            total: data.total,
+            chargeAmount,
+            depositDue: data.depositDue ?? 0,
+            balanceDue: data.balanceDue ?? 0,
+          });
         })
-        .catch(() => undefined);
+        .catch(() => setQuote(null))
+        .finally(() => {
+          if (!controller.signal.aborted) setReady(true);
+        });
     }, 350);
     return () => {
       clearTimeout(timer);
@@ -43,5 +67,11 @@ export function useQuotedTotal(formData: FormData, distanceKm: number | undefine
     distanceKm,
   ]);
 
-  return total ?? fallback;
+  return {
+    total: quote?.total ?? fallback,
+    chargeAmount: quote?.chargeAmount ?? fallback,
+    depositDue: quote?.depositDue ?? 0,
+    balanceDue: quote?.balanceDue ?? 0,
+    ready,
+  };
 }

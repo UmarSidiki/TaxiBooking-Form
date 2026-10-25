@@ -209,7 +209,9 @@
     "submitting-request": "جارٍ الإرسال…",
     "whatsapp_confirmation-note": "سيتم إرسال تأكيد الحجز إليك أيضًا على واتساب.",
     "meet-greet": "استقبال باللافتة",
-    "promo-code": "رمز ترويجي"
+    "promo-code": "رمز ترويجي",
+    "due-now": "المستحق الآن",
+    "balance-due": "المتبقي"
   },
   "booking-failed-data-message": "فشل الحجز: {0}",
   "embeddable": {
@@ -2125,7 +2127,14 @@
     "declined-body": "تم تعليم طلب الموعد هذا كغير متاح.",
     "already-paid-title": "مؤكد مسبقاً",
     "already-paid-body": "الرحلة #{tripId} مدفوعة ومؤكدة مسبقاً.",
-    "pay-cash": "ادفع للسائق نقداً"
+    "pay-cash": "ادفع للسائق نقداً",
+    "due-now": "المستحق الآن",
+    "balance-due": "المتبقي",
+    "loading": "جارٍ التحميل…",
+    "paid-in-full": "هذه الرحلة مدفوعة بالكامل.",
+    "trip-total": "إجمالي الرحلة",
+    "cash-instructions": "ادفع للسائق نقدًا، أو حوّل المبلغ المستحق إلى الحساب أدناه.",
+    "bank-details": "بيانات البنك"
   },
   "CountryBlocked": {
     "title": "لا نخدم منطقتك حتى الآن",
@@ -2204,7 +2213,8 @@
     "per-customer": "لكل عميل",
     "percent": "نسبة",
     "fixed": "مبلغ ثابت",
-    "save-promo": "حفظ الرمز"
+    "save-promo": "حفظ الرمز",
+    "deposit": "نسبة العربون"
   },
   "Account": {
     "title": "رحلاتك",

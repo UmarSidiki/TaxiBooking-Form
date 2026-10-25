@@ -209,7 +209,9 @@
     "submitting-request": "Wird gesendet…",
     "whatsapp_confirmation-note": "Ihre Buchungsbestätigung wird Ihnen zusätzlich per WhatsApp gesendet.",
     "meet-greet": "Meet & Greet",
-    "promo-code": "Aktionscode"
+    "promo-code": "Aktionscode",
+    "due-now": "Jetzt fällig",
+    "balance-due": "Restbetrag"
   },
   "booking-failed-data-message": "Buchung fehlgeschlagen: {0}",
   "embeddable": {
@@ -2125,7 +2127,14 @@
     "declined-body": "Diese Anfrage wurde als nicht verfügbar markiert.",
     "already-paid-title": "Bereits bestätigt",
     "already-paid-body": "Fahrt #{tripId} ist bereits bezahlt und bestätigt.",
-    "pay-cash": "Dem Fahrer bar zahlen"
+    "pay-cash": "Dem Fahrer bar zahlen",
+    "due-now": "Jetzt fällig",
+    "balance-due": "Restbetrag",
+    "loading": "Wird geladen…",
+    "paid-in-full": "Diese Fahrt ist vollständig bezahlt.",
+    "trip-total": "Fahrpreis",
+    "cash-instructions": "Zahlen Sie bar beim Fahrer oder überweisen Sie den Betrag auf das Konto unten.",
+    "bank-details": "Bankverbindung"
   },
   "CountryBlocked": {
     "title": "Wir bedienen Ihre Region noch nicht",
@@ -2204,7 +2213,8 @@
     "per-customer": "Nutzungen pro Kunde",
     "percent": "Prozent",
     "fixed": "Fester Betrag",
-    "save-promo": "Code speichern"
+    "save-promo": "Code speichern",
+    "deposit": "Anzahlung in Prozent"
   },
   "Account": {
     "title": "Ihre Fahrten",

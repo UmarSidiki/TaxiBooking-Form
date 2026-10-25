@@ -209,7 +209,9 @@
     "submitting-request": "Submitting…",
     "whatsapp_confirmation-note": "Your booking confirmation will also be sent to you on WhatsApp.",
     "meet-greet": "Meet & greet",
-    "promo-code": "Promo code"
+    "promo-code": "Promo code",
+    "due-now": "Due now",
+    "balance-due": "Balance due"
   },
   "booking-failed-data-message": "Booking failed: {0}",
   "embeddable": {
@@ -2125,7 +2127,14 @@
     "declined-body": "This appointment request was marked unavailable.",
     "already-paid-title": "Already confirmed",
     "already-paid-body": "Trip #{tripId} is already paid and confirmed.",
-    "pay-cash": "Pay the driver in cash"
+    "pay-cash": "Pay the driver in cash",
+    "due-now": "Due now",
+    "balance-due": "Balance due",
+    "loading": "Loading…",
+    "paid-in-full": "This ride is paid in full.",
+    "trip-total": "Trip total",
+    "cash-instructions": "Pay the driver in cash, or transfer the amount due to the account below.",
+    "bank-details": "Bank details"
   },
   "CountryBlocked": {
     "title": "We don't serve your region yet",
@@ -2204,7 +2213,8 @@
     "per-customer": "Uses per customer",
     "percent": "Percent",
     "fixed": "Fixed amount",
-    "save-promo": "Save promo"
+    "save-promo": "Save promo",
+    "deposit": "Deposit percent"
   },
   "Account": {
     "title": "Your trips",

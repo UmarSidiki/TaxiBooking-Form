@@ -209,7 +209,9 @@
     "submitting-request": "Invio…",
     "whatsapp_confirmation-note": "La conferma della prenotazione ti verrà inviata anche su WhatsApp.",
     "meet-greet": "Accoglienza",
-    "promo-code": "Codice promo"
+    "promo-code": "Codice promo",
+    "due-now": "Da pagare ora",
+    "balance-due": "Saldo"
   },
   "booking-failed-data-message": "Prenotazione fallita: {0}",
   "embeddable": {
@@ -2125,7 +2127,14 @@
     "declined-body": "Questa richiesta è stata segnata non disponibile.",
     "already-paid-title": "Già confermato",
     "already-paid-body": "Il viaggio #{tripId} è già pagato e confermato.",
-    "pay-cash": "Paga l'autista in contanti"
+    "pay-cash": "Paga l'autista in contanti",
+    "due-now": "Da pagare ora",
+    "balance-due": "Saldo",
+    "loading": "Caricamento…",
+    "paid-in-full": "Questa corsa è pagata per intero.",
+    "trip-total": "Totale corsa",
+    "cash-instructions": "Paga il conducente in contanti oppure bonifica l'importo sul conto qui sotto.",
+    "bank-details": "Dati bancari"
   },
   "CountryBlocked": {
     "title": "Non serviamo ancora la tua regione",
@@ -2204,7 +2213,8 @@
     "per-customer": "Utilizzi per cliente",
     "percent": "Percentuale",
     "fixed": "Importo fisso",
-    "save-promo": "Salva codice"
+    "save-promo": "Salva codice",
+    "deposit": "Percentuale di acconto"
   },
   "Account": {
     "title": "I tuoi viaggi",

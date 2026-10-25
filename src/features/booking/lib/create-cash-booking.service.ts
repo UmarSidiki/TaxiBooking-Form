@@ -156,6 +156,8 @@ export async function createCashBooking(
     subtotalAmount: priced.subtotal,
     taxAmount: priced.taxAmount,
     taxPercentage: priced.taxPercentage,
+    depositDue: priced.depositDue,
+    balanceDue: priced.balanceDue,
   };
 
   const savedBooking = await createBookingDocument(bookingData);

@@ -133,6 +133,10 @@ export async function createAppointmentRequest(
     subtotalAmount: priced.subtotal,
     taxAmount: priced.taxAmount,
     taxPercentage: priced.taxPercentage,
+    depositDue: priced.depositDue,
+    balanceDue: priced.balanceDue,
+    fareLines: priced.lines,
+    promoCode: priced.promoCode,
   };
 
   const saved = await createBookingDocument(bookingData);

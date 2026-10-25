@@ -39,7 +39,7 @@ export function PartnerDrawerFooter({
               variant="destructive"
               onClick={() => setShowRejectDialog(true)}
               disabled={processing}
-              className="h-11 w-full rounded-xl sm:h-10 sm:w-auto"
+              className="h-11 w-full rounded-xl sm:w-auto"
             >
               <XCircle className="size-4" aria-hidden="true" />
               {t("reject")}
@@ -49,7 +49,7 @@ export function PartnerDrawerFooter({
                 selectedPartner && handleApprove(selectedPartner._id)
               }
               disabled={processing}
-              className="h-11 w-full rounded-xl font-semibold sm:h-10 sm:w-auto"
+              className="h-11 w-full rounded-xl font-semibold sm:w-auto"
             >
               {processing ? (
                 <>
@@ -73,7 +73,7 @@ export function PartnerDrawerFooter({
             variant="destructive"
             onClick={() => setShowSuspendDialog(true)}
             disabled={processing}
-            className="h-11 w-full rounded-xl sm:h-10 sm:w-auto"
+            className="h-11 w-full rounded-xl sm:w-auto"
           >
             <XCircle className="size-4" aria-hidden="true" />
             {t("suspend-partner")}

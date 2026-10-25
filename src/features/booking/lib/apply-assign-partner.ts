@@ -2,6 +2,7 @@ import { Partner } from "@/features/partners/model";
 import type { IBooking } from "@/features/booking/model";
 import type { BookingPatchApplyResult } from "@/features/booking/lib/booking-patch-result";
 import { getPartnerDispatchSettings } from "@/features/partners/lib/get-partner-dispatch-settings";
+import { partnerCanTakeRide } from "@/features/partners/lib/partner-access";
 
 export async function applyAssignPartner(
   booking: IBooking,
@@ -22,11 +23,11 @@ export async function applyAssignPartner(
     return { ok: false, status: 404, message: "Partner not found" };
   }
 
-  if (partner.status !== "approved") {
+  if (!partnerCanTakeRide(partner, String(booking.selectedVehicle ?? ""))) {
     return {
       ok: false,
       status: 400,
-      message: "Partner must be approved to receive assignments",
+      message: "Partner must be active and approved for this vehicle",
     };
   }
 
@@ -47,6 +48,7 @@ export async function applyAssignPartner(
   };
   updateData.assignmentEmailSent = false;
   updateData.availableForPartners = false;
+  updateData.responsibleAssignee = "partner";
 
   const { dispatchAssigneeMode } = await getPartnerDispatchSettings();
   const unsetFields: string[] = ["partnerAcceptanceDeadline"];

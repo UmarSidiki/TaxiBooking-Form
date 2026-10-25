@@ -5,6 +5,7 @@ import { PasswordReset } from "@/features/auth/model";
 import { sendPasswordResetOTP } from "@/features/auth/email/password-reset-otp";
 import { parseJsonBody } from "@/shared/http/parse-json-body";
 import { jsonError } from "@/shared/http/json-error";
+import { limitSensitive } from "@/shared/http/sensitive-limit";
 import { requestResetSchema } from "@/features/auth/schema/password-reset.schema";
 
 function generateOTP(): string {
@@ -12,6 +13,8 @@ function generateOTP(): string {
 }
 
 export async function POST(request: NextRequest) {
+  const limited = await limitSensitive(request, "login");
+  if (limited) return limited;
   try {
     const parsed = await parseJsonBody(request, requestResetSchema);
     if (!parsed.ok) return parsed.response;

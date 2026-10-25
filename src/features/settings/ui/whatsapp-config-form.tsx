@@ -65,7 +65,7 @@ export function WhatsAppConfigForm({
         <input
           type="checkbox"
           name="whatsapp-enabled"
-          className="mt-1 size-4 accent-primary focus-visible:ring-2 focus-visible:ring-ring"
+          className="size-11 shrink-0 accent-primary focus-visible:ring-2 focus-visible:ring-ring"
           checked={draft.enabled}
           onChange={(event) => setDraft((prev) => ({ ...prev, enabled: event.target.checked }))}
         />

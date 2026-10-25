@@ -47,4 +47,6 @@ export const DRIVER_RIDE_FIELDS = [
   "refundAmount",
   "refundPercentage",
   "canceledAt",
+  "driverRideStatus",
+  "cashCollected",
 ].join(" ");

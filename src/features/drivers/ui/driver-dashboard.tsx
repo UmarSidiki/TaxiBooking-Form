@@ -5,6 +5,8 @@ import { DriverRideDetailDialog } from "@/features/rides/ui/driver-ride-detail-d
 import { DriverRidesToolbar } from "@/features/rides/ui/driver-rides-toolbar";
 import { AdminRidesTabPanel } from "@/features/rides/ui/admin-rides-tab-panel";
 import { DeskNotice } from "@/features/dashboard/ui/desk-notice";
+import { PhoneRequiredNotice } from "@/features/auth/ui/phone-required-notice";
+import { DriverTimeOffForm } from "@/features/drivers/ui/driver-time-off-form";
 import { Badge } from "@/shared/ui/badge";
 import { Button } from "@/shared/ui/button";
 import { Tabs, TabsList, TabsTrigger } from "@/shared/ui/tabs";
@@ -37,6 +39,8 @@ export default function DriverDashboard() {
 
   return (
     <div className="flex flex-col gap-5">
+      <PhoneRequiredNotice href="/drivers/account" />
+      <DriverTimeOffForm />
       <DriverRidesToolbar
         t={rides.t}
         isLoading={rides.isLoading}
@@ -56,19 +60,19 @@ export default function DriverDashboard() {
         </DeskNotice>
       ) : null}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid h-auto w-full grid-cols-3 gap-1 bg-muted p-1">
-          <TabsTrigger value="upcoming" className="min-h-11 gap-2 text-xs sm:text-sm">
+        <TabsList className="flex h-auto w-full justify-start gap-1 overflow-x-auto bg-muted p-1">
+          <TabsTrigger value="upcoming" className="h-11 min-h-11 flex-none shrink-0 gap-2 px-3 text-sm text-foreground">
             <CalendarDays className="size-4" />
             {t("Dashboard.Rides.UpcomingRides")}
             {filteredBookings.length > 0 && activeTab === "upcoming" ? (
               <Badge variant="secondary">{filteredBookings.length}</Badge>
             ) : null}
           </TabsTrigger>
-          <TabsTrigger value="passed" className="min-h-11 gap-2 text-xs sm:text-sm">
+          <TabsTrigger value="passed" className="h-11 min-h-11 flex-none shrink-0 gap-2 px-3 text-sm text-foreground">
             <CheckCircle className="size-4" />
             {t("Dashboard.Rides.CompletedRides")}
           </TabsTrigger>
-          <TabsTrigger value="canceled" className="min-h-11 gap-2 text-xs sm:text-sm">
+          <TabsTrigger value="canceled" className="h-11 min-h-11 flex-none shrink-0 gap-2 px-3 text-sm text-foreground">
             <Ban className="size-4" />
             {t("Dashboard.Rides.CanceledRides")}
           </TabsTrigger>
@@ -112,6 +116,7 @@ export default function DriverDashboard() {
                 currencySymbol={currencySymbol}
                 isBookingPassed={isBookingPassed}
                 setDetailBooking={setDetailBooking}
+                onChanged={() => void fetchAssignedRides()}
               />
             ))}
           </AdminRidesTabPanel>

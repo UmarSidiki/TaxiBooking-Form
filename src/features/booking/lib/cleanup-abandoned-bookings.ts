@@ -21,7 +21,7 @@ export async function cleanupAbandonedBookings() {
       paymentStatus: 'pending',
       status: { $ne: 'canceled' },
       createdAt: { $lt: thirtyMinutesAgo }
-    });
+    }).limit(50);
 
     if (abandonedBookings.length === 0) {
       console.log('No abandoned MultiSafepay bookings found');

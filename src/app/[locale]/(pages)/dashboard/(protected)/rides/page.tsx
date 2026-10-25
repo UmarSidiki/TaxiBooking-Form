@@ -60,6 +60,10 @@ export default function RidesPage() {
         setDetailBooking={rides.setDetailBooking}
         isBookingPassed={rides.isBookingPassed}
         bookingReviews={rides.bookingReviews}
+        onUpdated={(notice) => {
+          rides.setNotice(notice);
+          void rides.fetchBookings();
+        }}
       />
 
       <NewDeskBookingDrawer

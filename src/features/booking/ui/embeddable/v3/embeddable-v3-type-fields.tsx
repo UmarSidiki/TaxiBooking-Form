@@ -19,7 +19,7 @@ export function EmbeddableV3TypeFields({
             <button
               type="button"
               onClick={() => setBookingType("destination")}
-              className={`flex-1 rounded-md px-2 sm:px-4 py-1.5 sm:py-2 transition-all duration-300 ${
+              className={`flex min-h-11 flex-1 items-center justify-center rounded-md px-2 transition-colors duration-300 sm:px-4 ${
                 !isHourly
                   ? "bg-white shadow-sm text-gray-900"
                   : "text-gray-600 hover:text-gray-800"
@@ -30,7 +30,7 @@ export function EmbeddableV3TypeFields({
             <button
               type="button"
               onClick={() => setBookingType("hourly")}
-              className={`flex-1 rounded-md px-2 sm:px-4 py-1.5 sm:py-2 transition-all duration-300 ${
+              className={`flex min-h-11 flex-1 items-center justify-center rounded-md px-2 transition-colors duration-300 sm:px-4 ${
                 isHourly
                   ? "bg-white shadow-sm text-gray-900"
                   : "text-gray-600 hover:text-gray-800"

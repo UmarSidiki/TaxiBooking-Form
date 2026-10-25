@@ -6,8 +6,11 @@ import { resolveBookingRequestBaseUrl } from "@/features/booking/lib/resolve-boo
 import { parseCashBookingInput } from "@/features/booking/schema/cash-booking.schema";
 import { blockIfCountryNotAllowed } from "@/features/geo/lib/booking-country-policy";
 import { jsonError, jsonErrorFromStatus } from "@/shared/http/json-error";
+import { limitSensitive } from "@/shared/http/sensitive-limit";
 
 export async function POST(request: NextRequest) {
+  const limited = await limitSensitive(request, "booking");
+  if (limited) return limited;
   try {
     let raw: unknown;
     try {

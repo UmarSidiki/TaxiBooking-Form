@@ -5,6 +5,8 @@ import { sendRideAssignmentEmail } from "@/features/rides/email/ride-assignment"
 import { requireRole } from "@/features/auth/lib/require-role";
 import { jsonError } from "@/shared/http/json-error";
 import { claimPartnerRide } from "@/features/partners/lib/claim-partner-ride";
+import { recordRideActivity } from "@/features/rides/lib/record-ride-activity";
+import { queueAssigneeNotice } from "@/features/settings/lib/assignee-whatsapp";
 import {
   partnerApprovedVehicleIds,
   partnerHasApprovedFleet,
@@ -35,6 +37,22 @@ export async function POST(
     if (!updatedRide) {
       return jsonError("conflict", 409);
     }
+    queueAssigneeNotice({
+      kind: "assigned",
+      recipients: [{ phone: partner.phone, name: partner.name }],
+      ride: {
+        tripId: updatedRide.tripId,
+        pickup: updatedRide.pickup,
+        date: updatedRide.date,
+        time: updatedRide.time,
+      },
+    });
+    await recordRideActivity({
+      bookingId: String(updatedRide._id),
+      actorId: access.session.user.id,
+      actorRole: "partner",
+      action: "claimed",
+    });
 
     try {
       await sendRideAssignmentEmail({

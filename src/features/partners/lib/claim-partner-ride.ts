@@ -57,6 +57,7 @@ export async function claimPartnerRide(
         },
         availableForPartners: false,
         assignmentEmailSent: false,
+        responsibleAssignee: "partner",
       },
       $unset: unset,
     },

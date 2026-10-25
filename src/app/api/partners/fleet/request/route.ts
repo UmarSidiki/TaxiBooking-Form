@@ -9,6 +9,7 @@ import { jsonError } from "@/shared/http/json-error";
 import { vehicleIdBodySchema } from "@/features/partners/schema/partner-write.schema";
 import { sendFleetRequestNotificationEmail } from "@/features/partners/email/fleet-notification";
 import { getBaseUrl } from "@/shared/lib/get-base-url";
+import { partnerMayWork } from "@/features/partners/lib/partner-access";
 
 export async function POST(request: NextRequest) {
   try {
@@ -32,7 +33,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Check if partner is approved
-    if (partner.status !== "approved") {
+    if (!partnerMayWork(partner)) {
       return jsonError("forbidden", 403);
     }
 

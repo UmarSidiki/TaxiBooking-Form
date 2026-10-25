@@ -2,204 +2,101 @@
 
 import { useEffect, useState } from "react";
 import type { Partner } from "@/features/partners/ui/admin-partner.types";
+import { AdminPartnerSettleDialog } from "@/features/partners/ui/admin-partner-settle-dialog";
+import { PartnerBillingStatement, type StatementLine } from "@/features/partners/ui/partner-billing-statement";
 import { Button } from "@/shared/ui/button";
 import type { useAdminPartners } from "@/features/partners/hooks/useAdminPartners";
-import { CreditCard, PiggyBank } from "lucide-react";
+import { PiggyBank } from "lucide-react";
+import { readPartnerBalance } from "@/features/partners/lib/partner-share-delta";
 
 type AdminPartnersState = ReturnType<typeof useAdminPartners>;
-type TFn = AdminPartnersState["t"];
 
-type SettlementEntry = {
-  _id: string;
-  type: string;
-  amount: number;
-  currency: string;
-  note?: string;
-  createdAt?: string;
-  bookingId?: string;
-};
+function settlementLabel(t: AdminPartnersState["t"], type: string) {
+  if (type === "ride_credit") return t("settlement-type-ride_credit");
+  if (type === "settlement") return t("settlement-type-settlement");
+  if (type === "opening_balance") return t("settlement-type-opening_balance");
+  if (type === "clawback") return t("settlement-type-clawback");
+  if (type === "payout_credit") return t("settlement-type-payout_credit");
+  if (type === "payout_paid") return t("settlement-type-payout_paid");
+  if (type === "remittance_credit") return t("settlement-type-remittance_credit");
+  if (type === "remittance_received") return t("settlement-type-remittance_received");
+  return type;
+}
 
 export function AdminPartnerDetailsBilling({
   t,
   selectedPartner,
   formatCurrency,
-  formatDate,
-  payoutProcessingId,
-  handleMarkPayoutPaid,
-  handleMarkRemittanceReceived,
-  handleRecalculatePayout,
 }: {
-  t: TFn;
+  t: AdminPartnersState["t"];
   selectedPartner: Partner;
   formatCurrency: AdminPartnersState["formatCurrency"];
-  formatDate: AdminPartnersState["formatDate"];
-  payoutProcessingId: AdminPartnersState["payoutProcessingId"];
-  handleMarkPayoutPaid: AdminPartnersState["handleMarkPayoutPaid"];
-  handleMarkRemittanceReceived: AdminPartnersState["handleMarkRemittanceReceived"];
-  handleRecalculatePayout: AdminPartnersState["handleRecalculatePayout"];
 }) {
-  const details = selectedPartner.billingDetails || {};
-  const hasDetails = Object.values(details).some(
-    (value) => typeof value === "string" && value.trim().length > 0
-  );
-  const busy = payoutProcessingId === selectedPartner._id;
-  const [entries, setEntries] = useState<SettlementEntry[]>([]);
-  const [ledgerLoading, setLedgerLoading] = useState(false);
+  const [lines, setLines] = useState<StatementLine[]>([]);
+  const [balance, setBalance] = useState(readPartnerBalance(selectedPartner));
+  const [loading, setLoading] = useState(true);
+  const [open, setOpen] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
-    setLedgerLoading(true);
+    setLoading(true);
     void fetch(`/api/admin/partners/${selectedPartner._id}/settlements`)
-      .then((res) => res.json())
+      .then((response) => response.json())
       .then((data) => {
-        if (!cancelled && data.success && Array.isArray(data.entries)) {
-          setEntries(data.entries);
+        if (cancelled) return;
+        if (data.success) {
+          setLines(Array.isArray(data.entries) ? data.entries : []);
+          if (typeof data.balance === "number") setBalance(data.balance);
         }
       })
-      .catch(() => {
-        if (!cancelled) setEntries([]);
-      })
       .finally(() => {
-        if (!cancelled) setLedgerLoading(false);
+        if (!cancelled) setLoading(false);
       });
     return () => {
       cancelled = true;
     };
-  }, [
-    selectedPartner._id,
-    selectedPartner.payoutBalance,
-    selectedPartner.remittanceBalance,
-  ]);
+  }, [selectedPartner._id]);
 
   return (
-    <div className="flex flex-col gap-3">
-      <h3 className="flex items-center gap-2 font-semibold">
-        <PiggyBank className="size-5" aria-hidden="true" />
-        {t("billing-information")}
-      </h3>
-      <div className="grid gap-4 md:grid-cols-2">
-        <div className="flex flex-col gap-3 rounded-md border border-border p-4">
-          <div>
-            <p className="text-sm text-muted-foreground">
-              {t("payout-balance-label")}
-            </p>
-            <p className="mt-1 text-2xl font-semibold tabular-nums">
-              {formatCurrency(selectedPartner.payoutBalance)}
-            </p>
-            <p className="mt-2 text-xs text-muted-foreground">
-              {t("last-payout-label", {
-                date: formatDate(selectedPartner.lastPayoutAt),
-              })}
-            </p>
-          </div>
-          <div>
-            <p className="text-sm text-muted-foreground">
-              {t("remittance-balance-label")}
-            </p>
-            <p className="mt-1 text-xl font-semibold tabular-nums">
-              {formatCurrency(selectedPartner.remittanceBalance)}
-            </p>
-            <p className="mt-2 text-xs text-muted-foreground">
-              {t("last-remittance-label", {
-                date: formatDate(selectedPartner.lastRemittanceAt),
-              })}
-            </p>
-          </div>
-          <div className="flex flex-col gap-2">
-            <Button
-              className="h-11 w-full"
-              disabled={(selectedPartner.payoutBalance ?? 0) <= 0 || busy}
-              onClick={() => handleMarkPayoutPaid(selectedPartner._id)}
-            >
-              {busy ? t("marking-payout") : t("mark-payout-paid")}
-            </Button>
-            <Button
-              className="h-11 w-full"
-              variant="secondary"
-              disabled={(selectedPartner.remittanceBalance ?? 0) <= 0 || busy}
-              onClick={() =>
-                handleMarkRemittanceReceived(selectedPartner._id)
-              }
-            >
-              {busy ? t("marking-remittance") : t("mark-remittance-received")}
-            </Button>
-            <Button
-              variant="outline"
-              className="h-11 w-full"
-              disabled={busy}
-              onClick={() => handleRecalculatePayout(selectedPartner._id)}
-            >
-              {busy ? t("marking-payout") : t("recalculate-payout")}
-            </Button>
-          </div>
+    <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-3 rounded-md border border-border p-4 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h3 className="flex items-center gap-2 font-semibold">
+            <PiggyBank className="size-5" aria-hidden="true" />
+            {t("balance-label")}
+          </h3>
+          <p className="mt-1 text-2xl font-semibold tabular-nums">{formatCurrency(balance)}</p>
+          <p className="text-xs text-muted-foreground">{t("balance-hint")}</p>
         </div>
-        <div className="rounded-md border border-border p-4">
-          <p className="mb-2 flex items-center gap-2 text-sm font-medium">
-            <CreditCard className="size-4" aria-hidden="true" />
-            {t("bank-details")}
-          </p>
-          {!hasDetails ? (
-            <p className="text-sm text-muted-foreground">
-              {t("missing-billing-details")}
-            </p>
-          ) : (
-            <dl className="flex flex-col gap-2 text-sm">
-              {[
-                { label: t("account-holder-label"), value: details.accountHolder },
-                { label: t("bank-name-label"), value: details.bankName },
-                { label: t("account-number-label"), value: details.accountNumber },
-                { label: t("iban-label"), value: details.iban },
-                { label: t("swift-label"), value: details.swift },
-                { label: t("notes-label"), value: details.notes },
-              ].map((entry) => (
-                <div key={entry.label} className="grid grid-cols-3 gap-2">
-                  <dt className="text-muted-foreground">{entry.label}</dt>
-                  <dd className="col-span-2 break-words font-medium">
-                    {entry.value?.trim() ? entry.value : "—"}
-                  </dd>
-                </div>
-              ))}
-            </dl>
-          )}
-        </div>
+        <Button className="h-11" onClick={() => setOpen(true)}>{t("settle-open")}</Button>
       </div>
-
-      <div className="rounded-md border border-border p-4">
-        <h4 className="mb-3 text-sm font-semibold">{t("settlement-ledger")}</h4>
-        {ledgerLoading ? (
-          <p className="text-sm text-muted-foreground">{t("loading-ledger")}</p>
-        ) : entries.length === 0 ? (
-          <p className="text-sm text-muted-foreground">{t("empty-ledger")}</p>
-        ) : (
-          <ul className="flex max-h-64 flex-col gap-2 overflow-y-auto">
-            {entries.map((entry) => (
-              <li
-                key={entry._id}
-                className="flex items-start justify-between gap-3 border-b border-border/60 pb-2 text-sm last:border-0"
-              >
-                <div className="min-w-0">
-                  <p className="font-medium text-foreground">
-                    {t(`settlement-type-${entry.type}` as "settlement-type-payout_credit")}
-                  </p>
-                  {entry.note ? (
-                    <p className="truncate text-xs text-muted-foreground">
-                      {entry.note}
-                    </p>
-                  ) : null}
-                  <p className="text-xs text-muted-foreground">
-                    {entry.createdAt
-                      ? formatDate(entry.createdAt)
-                      : "—"}
-                  </p>
-                </div>
-                <p className="shrink-0 font-semibold tabular-nums">
-                  {formatCurrency(entry.amount)}
-                </p>
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
+      {loading ? (
+        <p role="status" className="text-sm text-muted-foreground">{t("loading-ledger")}</p>
+      ) : (
+        <PartnerBillingStatement
+          lines={lines}
+          emptyLabel={t("empty-ledger")}
+          regionLabel={t("tab-billing")}
+          columns={[t("col-when"), t("col-fare"), t("col-margin"), t("col-share"), t("col-change"), t("col-balance")]}
+          entryLabel={(type) => settlementLabel(t, type)}
+          formatMoney={(amount) => (typeof amount === "number" ? formatCurrency(amount) : "—")}
+        />
+      )}
+      <AdminPartnerSettleDialog
+        t={t}
+        partnerId={selectedPartner._id}
+        open={open}
+        onOpenChange={setOpen}
+        onSettled={(next) => {
+          setBalance(next);
+          setLines([]);
+          void fetch(`/api/admin/partners/${selectedPartner._id}/settlements`)
+            .then((response) => response.json())
+            .then((data) => {
+              if (data.success && Array.isArray(data.entries)) setLines(data.entries);
+            });
+        }}
+      />
     </div>
   );
 }

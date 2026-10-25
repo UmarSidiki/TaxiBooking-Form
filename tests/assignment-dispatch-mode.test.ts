@@ -9,8 +9,11 @@ import {
   saveDispatchSettings,
 } from "./helpers/fixtures";
 
-function approvedBooking(): IBooking {
-  return { partnerReviewStatus: "approved" } as IBooking;
+function approvedBooking(vehicleId: unknown): IBooking {
+  return {
+    partnerReviewStatus: "approved",
+    selectedVehicle: String(vehicleId),
+  } as IBooking;
 }
 
 describe("dispatch assignee mode", () => {
@@ -35,7 +38,7 @@ describe("dispatch assignee mode", () => {
 
     const partnerUpdate: Partial<IBooking> = {};
     const assignedPartner = await applyAssignPartner(
-      approvedBooking(),
+      approvedBooking(vehicle._id),
       "booking-id",
       String(partner._id),
       partnerUpdate,
@@ -64,7 +67,7 @@ describe("dispatch assignee mode", () => {
 
     const partnerUpdate: Partial<IBooking> = {};
     const assignedPartner = await applyAssignPartner(
-      approvedBooking(),
+      approvedBooking(vehicle._id),
       "booking-id",
       String(partner._id),
       partnerUpdate,
@@ -93,7 +96,7 @@ describe("dispatch assignee mode", () => {
     if (!unknown.ok) expect(unknown.status).toBe(404);
 
     const unapproved = await applyAssignPartner(
-      approvedBooking(),
+      approvedBooking(vehicle._id),
       "booking-id",
       String(partner._id),
       {},

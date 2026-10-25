@@ -65,7 +65,7 @@ export function ThemeProvider({ children, initialSettings = null }: ThemeProvide
   useEffect(() => {
     if (settings) {
       const root = document.documentElement;
-      const primary = settings.primaryColor ?? "#EAB308";
+      const primary = settings.primaryColor ?? "#B45309";
       const secondary = settings.secondaryColor ?? "#111827";
       const radius =
         typeof settings.borderRadius === "number" ? settings.borderRadius : 0.5;

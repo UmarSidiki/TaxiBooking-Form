@@ -1,7 +1,9 @@
 import type { IBooking } from '@/features/booking/model';
 import type { BookingPatchBody } from '@/features/booking/schema/booking-patch.schema';
 import { applyApprovePartner } from '@/features/booking/lib/apply-approve-partner';
+import { applyEditBooking } from '@/features/booking/lib/apply-edit-booking';
 import { applyAssignDriver } from '@/features/booking/lib/apply-assign-driver';
+import { findAssigneeConflict } from '@/features/calendar/lib/find-assignee-conflict';
 import { applyAssignPartner } from '@/features/booking/lib/apply-assign-partner';
 import { applyCancelBooking } from '@/features/booking/lib/apply-cancel-booking';
 import { applyConfirmCashBooking } from '@/features/booking/lib/apply-confirm-cash-booking';
@@ -47,7 +49,19 @@ export async function applyBookingPatch(
         message: 'Confirm the appointment request before assigning',
       };
     }
-    return applyAssignDriver(patch.driverId, updateData);
+    const assigned = await applyAssignDriver(
+      patch.driverId,
+      updateData,
+      String(booking.selectedVehicle ?? ""),
+      booking,
+    );
+    if (!assigned.ok || !patch.driverId) return assigned;
+    const conflict = await findAssigneeConflict({
+      field: "assignedDriver._id",
+      assigneeId: patch.driverId,
+      booking,
+    });
+    return conflict ? { ...assigned, warn: conflict } : assigned;
   }
 
   if (patch.action === 'assignpartner') {
@@ -58,7 +72,18 @@ export async function applyBookingPatch(
         message: 'Confirm the appointment request before assigning',
       };
     }
-    return applyAssignPartner(booking, bookingId, patch.partnerId, updateData);
+    const assignedPartner = await applyAssignPartner(booking, bookingId, patch.partnerId, updateData);
+    if (!assignedPartner.ok || !patch.partnerId) return assignedPartner;
+    const conflict = await findAssigneeConflict({
+      field: "assignedPartner._id",
+      assigneeId: patch.partnerId,
+      booking,
+    });
+    return conflict ? { ...assignedPartner, warn: conflict } : assignedPartner;
+  }
+
+  if (patch.action === 'edit') {
+    return applyEditBooking(booking, patch.edit, updateData);
   }
 
   if (patch.action === 'quote') {

@@ -207,7 +207,11 @@
     "indicative-rate-label": "Tarif indicatif — confirmé après vérification de disponibilité :",
     "request-this-appointment": "Demander ce rendez-vous",
     "submitting-request": "Envoi…",
-    "whatsapp_confirmation-note": "Votre confirmation de réservation vous sera également envoyée sur WhatsApp."
+    "whatsapp_confirmation-note": "Votre confirmation de réservation vous sera également envoyée sur WhatsApp.",
+    "meet-greet": "Accueil avec pancarte",
+    "promo-code": "Code promo",
+    "due-now": "À payer maintenant",
+    "balance-due": "Solde restant"
   },
   "booking-failed-data-message": "La réservation a échoué : {0}",
   "embeddable": {
@@ -487,7 +491,31 @@
       "create-booking": "Créer la réservation",
       "booking-created": "Réservation {tripId} créée",
       "NoAwaitingPayment": "Aucun devis en attente de paiement",
-      "NoAwaitingPaymentDescription": "Les demandes devisées restent ici jusqu'au paiement du client."
+      "NoAwaitingPaymentDescription": "Les demandes devisées restent ici jusqu'au paiement du client.",
+      "overlap-notice": "Assigné. Cela chevauche {trip} à {time}.",
+      "partner-overlap-notice": "Partenaire assigné. Cela chevauche {trip} à {time}.",
+      "driver-time-off": "Ce chauffeur est en congé pour cette prise en charge. Choisissez-en un autre.",
+      "edit-ride": "Modifier la course",
+      "edit-saved": "Course mise à jour.",
+      "edit-failed": "Impossible de mettre à jour la course. Vérifiez les champs et réessayez.",
+      "activity": "Activité de la course",
+      "activity-empty": "Aucune activité pour le moment.",
+      "activity-loading": "Chargement de l’activité…",
+      "save-ride": "Enregistrer la course",
+      "ride-notes": "Notes",
+      "quote-link-ready": "Lien de paiement prêt : {url}",
+      "quote-link-email-failed": "Devis enregistré. L’e-mail a échoué, copiez ce lien : {url}",
+      "activity-assigned": "Assignée",
+      "activity-claimed": "Acceptée",
+      "activity-started": "Démarrée",
+      "activity-completed": "Terminée",
+      "activity-no_show": "Absent",
+      "activity-cancelled": "Annulée",
+      "activity-edited": "Modifiée",
+      "activity-approved": "Approuvée pour les partenaires",
+      "activity-quoted": "Devis envoyé",
+      "activity-confirmed": "Confirmée en espèces",
+      "activity-declined": "Refusée"
     },
     "Home": {
       "failed-to-fetch-dashboard-stats": "Échec de la récupération des stats",
@@ -600,7 +628,8 @@
         "failed-to-accept-ride": "Échec de l'acceptation de la course",
         "partner-earnings-label": "Votre paiement",
         "retry": "Réessayer",
-        "dismiss": "Fermer"
+        "dismiss": "Fermer",
+        "balance": "Solde"
       },
       "Rides": {
         "my-rides": "Mes courses",
@@ -636,7 +665,10 @@
         "your-payout": "Votre paiement",
         "retry": "Réessayer",
         "load-error": "Impossible de charger les courses. Réessayez.",
-        "customer-review": "Avis client"
+        "customer-review": "Avis client",
+        "mark-completed": "Marquer terminée",
+        "completing": "Clôture…",
+        "complete-failed": "Impossible de terminer cette course. Réessayez."
       },
       "Sidebar": {
         "partner-portal": "Portail Partenaire",
@@ -653,12 +685,14 @@
         "overview": "Vue d'ensemble",
         "operations": "Opérations",
         "fleet_management": "Gestion de flotte",
-        "account_settings": "Paramètres du compte"
+        "account_settings": "Paramètres du compte",
+        "available-rides": "Courses disponibles",
+        "vehicles": "Véhicules"
       },
       "Billing": {
         "title": "Facturation & Coordonnées bancaires",
         "description": "Fournissez vos coordonnées bancaires pour recevoir vos paiements.",
-        "payout-summary-title": "Paiement en attente",
+        "payout-summary-title": "Solde",
         "payout-summary-description": "Montant actuellement dû (paiements en ligne/carte).",
         "last-paid": "Dernier paiement : {date}",
         "never": "Jamais",
@@ -687,7 +721,23 @@
         "save-button": "Enregistrer les détails bancaires",
         "save-success": "Coordonnées bancaires mises à jour avec succès.",
         "save-error": "Échec de l'enregistrement. Veuillez réessayer.",
-        "load-error": "Impossible de charger les informations de facturation."
+        "load-error": "Impossible de charger les informations de facturation.",
+        "statement-title": "Relevé",
+        "statement-empty": "Aucune ligne pour le moment.",
+        "download-statement": "Télécharger le relevé",
+        "col-when": "Date",
+        "col-fare": "Tarif",
+        "col-margin": "Marge",
+        "col-share": "Part partenaire",
+        "col-change": "Mouvement",
+        "col-balance": "Solde",
+        "entry-ride_credit": "Course",
+        "entry-settlement": "Règlement",
+        "entry-opening_balance": "Solde d'ouverture",
+        "entry-clawback": "Reprise",
+        "payout-summary-owed": "L’opérateur vous doit ce montant.",
+        "payout-summary-due": "Vous devez ce montant à l’opérateur.",
+        "payout-summary-even": "Personne ne doit rien."
       },
       "Fleet": {
         "fleet-management": "Gestion de flotte",
@@ -871,7 +921,38 @@
         "settlement-type-payout_paid": "Paiement effectué",
         "settlement-type-remittance_credit": "Remise due",
         "settlement-type-remittance_received": "Remise reçue",
-        "settlement-type-clawback": "Reprise"
+        "settlement-type-clawback": "Reprise",
+        "balance-label": "Solde",
+        "balance-hint": "Positif : vous devez au partenaire. Négatif : le partenaire vous doit.",
+        "settle-open": "Enregistrer un règlement",
+        "settle-title": "Enregistrer un règlement",
+        "settle-description": "Un montant partiel est accepté. Le grand livre indique qui l'a saisi.",
+        "settle-amount": "Montant",
+        "settle-direction": "Sens",
+        "settle-pay-partner": "Payer le partenaire",
+        "settle-receive": "Recevoir du partenaire",
+        "settle-method": "Moyen",
+        "settle-bank": "Banque",
+        "settle-cash": "Espèces",
+        "settle-other": "Autre",
+        "settle-reference": "Référence",
+        "settle-save": "Enregistrer",
+        "settle-saving": "Enregistrement…",
+        "settle-error": "Impossible d'enregistrer le règlement. Réessayez.",
+        "col-when": "Date",
+        "col-fare": "Tarif",
+        "col-margin": "Marge",
+        "col-share": "Part partenaire",
+        "col-change": "Mouvement",
+        "col-balance": "Solde",
+        "settlement-type-ride_credit": "Course",
+        "settlement-type-settlement": "Règlement",
+        "settlement-type-opening_balance": "Solde d'ouverture",
+        "tab-applications": "Demandes",
+        "tab-active": "Actifs",
+        "tab-balances": "Soldes",
+        "tab-all": "Tous",
+        "active": "Actif"
       }
     },
     "Features": {
@@ -1307,7 +1388,8 @@
     "capacity": "Capacité",
     "network": "Réseau",
     "booking_site": "Site de réservation",
-    "desk": "Bureau"
+    "desk": "Bureau",
+    "pricing": "Tarifs"
   },
   "FormBuilder": {
     "title": "Éditeur de Formulaire",
@@ -1634,8 +1716,8 @@
     "trip-id": "ID Trajet :",
     "amount": "Montant :",
     "payment-method": "Méthode de paiement :",
-    "confirmation-email-sent": "Email de confirmation envoyé",
-    "we-and-apos-ve-sent-a-confirmation-email-with-all-your-booking-details-please-check-your-inbox-and-spam-folder": "Nous avons envoyé un email de confirmation avec tous les détails. Vérifiez votre boîte de réception et vos spams.",
+    "confirmation-email-sent": "Vérifiez le courriel de confirmation",
+    "we-and-apos-ve-sent-a-confirmation-email-with-all-your-booking-details-please-check-your-inbox-and-spam-folder": "Une confirmation part lorsque l’e-mail est activé. Vérifiez votre boîte de réception et les indésirables.",
     "need-help": "Besoin d'aide ?",
     "contact-our-24-7-support-team-at": "Contactez notre équipe support 24/7 au",
     "or": "ou",
@@ -1643,7 +1725,8 @@
     "return-to-home": "Retour à l'accueil",
     "seconds": "secondes",
     "request-received-title": "Demande reçue",
-    "request-received-body": "Nous travaillons sur rendez-vous. Nous confirmerons la disponibilité et vous enverrons la suite par e-mail. Ce n’est pas encore une confirmation de réservation."
+    "request-received-body": "Nous travaillons sur rendez-vous. Nous confirmerons la disponibilité et vous enverrons la suite par e-mail. Ce n’est pas encore une confirmation de réservation.",
+    "contact-operator": "Contactez l’opérateur si vous devez modifier cette course."
   },
   "Driver": {
     "failed-to-fetch-drivers": "Échec de la récupération des chauffeurs",
@@ -1739,7 +1822,20 @@
     "load_error": "Impossible de charger vos courses. Réessayez.",
     "load_more": "Charger plus de courses",
     "retry": "Réessayer",
-    "passengers": "Passagers"
+    "passengers": "Passagers",
+    "action-started": "Démarrée",
+    "action-completed": "Terminée",
+    "action-no_show": "Absent",
+    "call": "Appeler",
+    "apple-maps": "Plans",
+    "time-off-title": "Congé",
+    "time-off-start": "Début",
+    "time-off-end": "Fin",
+    "time-off-note": "Note",
+    "time-off-save": "Bloquer ces heures",
+    "time-off-saved": "Congé enregistré.",
+    "time-off-invalid": "La fin doit être après le début.",
+    "time-off-help": "Aucune course ne vous sera assignée sur cette période."
   },
   "Stripe": {
     "payment-system-not-ready-please-refresh-the-page": "Système de paiement non prêt. Veuillez actualiser la page.",
@@ -1948,7 +2044,9 @@
       "hide_password": "Masquer le mot de passe",
       "cover_kicker": "Missions",
       "cover_title": "Rejoignez les chauffeurs de cet opérateur.",
-      "cover_body": "Créez un compte, puis attendez une course assignée."
+      "cover_body": "Créez un compte, puis attendez une course assignée.",
+      "phone": "Numéro mobile",
+      "phone_invalid": "Saisissez un mobile avec l’indicatif, par exemple +14155552671."
     },
     "PartnerSignIn": {
       "title": "Connexion partenaire",
@@ -1982,7 +2080,8 @@
       "hide_password": "Masquer le mot de passe",
       "cover_kicker": "Bureau affilié",
       "cover_title": "Rejoignez le trop-plein de cet opérateur.",
-      "cover_body": "Une entreprise, des catégories de flotte partagées — pas une place de marché."
+      "cover_body": "Une entreprise, des catégories de flotte partagées — pas une place de marché.",
+      "phone_invalid": "Saisissez un mobile avec l’indicatif, par exemple +14155552671."
     }
   },
   "AppError": {
@@ -2027,10 +2126,118 @@
     "declined-title": "Demande indisponible",
     "declined-body": "Cette demande a été marquée indisponible.",
     "already-paid-title": "Déjà confirmé",
-    "already-paid-body": "Le trajet #{tripId} est déjà payé et confirmé."
+    "already-paid-body": "Le trajet #{tripId} est déjà payé et confirmé.",
+    "pay-cash": "Payer le chauffeur en espèces",
+    "due-now": "À payer maintenant",
+    "balance-due": "Solde restant",
+    "loading": "Chargement…",
+    "paid-in-full": "Cette course est entièrement payée.",
+    "trip-total": "Total du trajet",
+    "cash-instructions": "Payez le chauffeur en espèces, ou virez le montant dû sur le compte ci-dessous.",
+    "bank-details": "Coordonnées bancaires"
   },
   "CountryBlocked": {
     "title": "Nous ne desservons pas encore votre région",
     "body": "Les réservations ne sont pas disponibles depuis votre position actuelle. Si vous pensez qu'il s'agit d'une erreur, contactez-nous et nous vous aiderons."
+  },
+  "Calendar": {
+    "title": "Calendrier",
+    "admin-description": "Toutes les courses, selon l'assigné.",
+    "views": "Vues du calendrier",
+    "agenda": "Agenda",
+    "day": "Jour",
+    "week": "Semaine",
+    "month": "Mois",
+    "loading": "Chargement…",
+    "load-error": "Impossible de charger le calendrier. Réessayez.",
+    "empty": "Rien de prévu sur cette période.",
+    "time-off": "Indisponible",
+    "unassigned": "Non assigné",
+    "feed-create": "Créer un flux privé",
+    "feed-revoke": "Révoquer le flux",
+    "feed-ready": "Flux privé prêt",
+    "feed-revoked": "Flux révoqué.",
+    "feed-error": "Impossible de mettre à jour le flux. Réessayez."
+  },
+  "Phone": {
+    "missing": "Ajoutez un numéro mobile au format international avant de prendre des courses.",
+    "add": "Ajouter le numéro"
+  },
+  "Today": {
+    "title": "Aujourd'hui",
+    "description": "Courses non assignées, échéances de prise, soldes dus.",
+    "unassigned": "Non assignées aujourd'hui",
+    "deadlines": "Échéances",
+    "balances": "Soldes dus",
+    "empty": "Rien ici.",
+    "loading": "Chargement…",
+    "load-error": "Impossible de charger aujourd'hui. Réessayez."
+  },
+  "WhatsAppNotify": {
+    "title": "Messages aux assignés",
+    "loading": "Chargement…",
+    "load-error": "Impossible de charger les messages.",
+    "save-error": "Enregistrement impossible. Réessayez.",
+    "whatsappTplAssigned": "Course assignée",
+    "whatsappTplAvailable": "Course à prendre",
+    "whatsappTplChanged": "Course modifiée ou annulée",
+    "whatsappTplReminder": "Rappel de prise en charge",
+    "whatsappTplSettlement": "Règlement enregistré"
+  },
+  "Pricing": {
+    "title": "Tarifs",
+    "loading": "Chargement…",
+    "load-failed": "Impossible de charger les tarifs.",
+    "saved": "Enregistré.",
+    "save-failed": "Enregistrement impossible. Vérifiez les valeurs.",
+    "rules": "Nuit, jours fériés, minimum",
+    "night": "Plage de nuit et pourcentage",
+    "night-end": "Fin de nuit",
+    "night-percent": "Pourcentage de nuit",
+    "meet": "Prix de l'accueil",
+    "minimum": "Tarif minimum opérateur",
+    "holiday": "Date fériée",
+    "holiday-percent": "Pourcentage férié",
+    "add-holiday": "Ajouter un jour férié",
+    "save": "Enregistrer",
+    "zone": "Prix de zone",
+    "from": "Zone de départ",
+    "to": "Zone d'arrivée",
+    "price": "Prix fixe",
+    "save-zone": "Enregistrer la zone",
+    "promo": "Code promo",
+    "code": "Code",
+    "kind": "Type",
+    "amount": "Montant",
+    "max-uses": "Utilisations totales",
+    "per-customer": "Utilisations par client",
+    "percent": "Pourcentage",
+    "fixed": "Montant fixe",
+    "save-promo": "Enregistrer le code",
+    "deposit": "Acompte (%)"
+  },
+  "Account": {
+    "title": "Vos trajets",
+    "sign-in": "Connexion",
+    "sign-in-help": "Nous envoyons un code par WhatsApp, puis par e-mail.",
+    "email": "E-mail",
+    "phone": "Téléphone",
+    "code": "Code",
+    "send-code": "Envoyer le code",
+    "verify": "Vérifier",
+    "code-sent": "Code envoyé.",
+    "send-failed": "Envoi impossible.",
+    "code-invalid": "Code invalide.",
+    "upcoming": "À venir",
+    "past": "Passés",
+    "empty-upcoming": "Aucun trajet à venir.",
+    "empty-past": "Aucun trajet passé.",
+    "change": "Modifier",
+    "cancel": "Annuler",
+    "invoice": "Facture",
+    "rebook": "Réserver à nouveau",
+    "hourly": "À l'heure",
+    "updated": "Mis à jour.",
+    "cutoff": "Trop proche du départ pour modifier."
   }
 }

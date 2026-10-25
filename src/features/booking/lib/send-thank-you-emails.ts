@@ -23,11 +23,18 @@ export async function sendThankYouEmails() {
     const threeHoursAgo = new Date(nowInTargetTz);
     threeHoursAgo.setHours(threeHoursAgo.getHours() - 3);
 
+    const today = new Intl.DateTimeFormat("en-CA", {
+      timeZone,
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    }).format(new Date());
     const potentialBookings = await Booking.find({
       status: { $in: ["upcoming", "completed"] },
       thankYouEmailSent: { $ne: true },
+      date: { $lte: today },
       email: { $exists: true, $ne: "" },
-    }).limit(100);
+    }).limit(50);
 
     const completedBookings = potentialBookings.filter((booking) => {
       const bookingDateTime = new Date(`${booking.date}T${booking.time}:00`);

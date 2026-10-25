@@ -37,8 +37,8 @@ export function PartnerDashboardStats({
     },
     {
       key: "earnings",
-      label: t("total-earnings"),
-      value: `${currencySymbol}${stats.totalEarnings.toFixed(2)}`,
+      label: typeof stats.balance === "number" ? t("balance") : t("total-earnings"),
+      value: `${currencySymbol}${(stats.balance ?? stats.totalEarnings).toFixed(2)}`,
       icon: Wallet,
     },
   ];

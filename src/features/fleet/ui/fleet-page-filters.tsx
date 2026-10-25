@@ -77,6 +77,7 @@ export function FleetPageFilters({
         <Select value={categoryFilter} onValueChange={setCategoryFilter}>
           <SelectTrigger
             id="fleet-category-filter"
+            aria-label={t("Dashboard.Fleet.category")}
             className={cn(deskControlClassName, "w-full sm:w-38")}
           >
             <SelectValue placeholder={t("Dashboard.Fleet.category")} />
@@ -95,6 +96,7 @@ export function FleetPageFilters({
         <Select value={statusFilter} onValueChange={setStatusFilter}>
           <SelectTrigger
             id="fleet-status-filter"
+            aria-label={t("Dashboard.Fleet.status")}
             className={cn(deskControlClassName, "w-full sm:w-32")}
           >
             <SelectValue placeholder={t("Dashboard.Fleet.status")} />

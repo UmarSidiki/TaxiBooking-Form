@@ -38,6 +38,7 @@ export function EmbeddableV2ScheduleFields({
                     </div>
                     <Input
                       type="date"
+                      aria-label={t("Step1.Date")}
                       value={formData.date}
                       min={minDate}
                       onChange={(e) =>
@@ -62,6 +63,7 @@ export function EmbeddableV2ScheduleFields({
                     </div>
                     <Input
                       type="time"
+                      aria-label={t("Step1.Time")}
                       value={formData.time}
                       onChange={(e) =>
                         handleInputChange("time", e.target.value)
@@ -88,6 +90,7 @@ export function EmbeddableV2ScheduleFields({
                   </div>
                   <Input
                     type="number"
+                    aria-label={t("embeddable.passengers")}
                     placeholder={t("embeddable.passengers")}
                     value={formData.passengers}
                     max={String(MAX_PASSENGERS)}

@@ -157,7 +157,7 @@ export function createLocationFieldRenderers(ctx: Ctx) {
           <button
             type="button"
             onClick={handleAddStop}
-            className="text-xs underline hover:opacity-80"
+            className="inline-flex min-h-11 items-center px-2 text-sm underline hover:opacity-80"
             style={{ color: iconColor }}
           >
             {t("add-a-stop")}

@@ -13,7 +13,7 @@ const emptyBody =
   "Hello {{name}}, your ride {{tripId}} from {{pickup}} to {{dropoff}} is confirmed for {{date}} {{time}}.";
 
 function blank(audience: "customer" | "desk", locale: string): WhatsAppDeskTemplate {
-  return { _id: "", audience, locale, body: emptyBody, enabled: false };
+  return { _id: "", audience, locale, body: emptyBody, enabled: false, event: "booking_confirmed" };
 }
 
 export function WhatsAppMessageCard({
@@ -51,6 +51,7 @@ export function WhatsAppMessageCard({
         locale,
         body: draft.body,
         enabled: draft.enabled,
+        event: draft.event || "booking_confirmed",
       };
       if (draft._id) {
         await apiPatch("/api/settings/whatsapp/templates", { id: draft._id, ...payload });

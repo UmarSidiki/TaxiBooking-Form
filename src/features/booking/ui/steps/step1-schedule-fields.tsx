@@ -33,7 +33,7 @@ export function Step1ScheduleFields({
           {/* Date & Time */}
           <div className="grid grid-cols-2 gap-3">
             <div className="min-w-0">
-              <label className="block text-sm font-medium mb-1.5 text-gray-700">
+              <label htmlFor="booking-date" className="mb-1.5 block text-sm font-medium text-foreground">
                 <CalendarDays className="inline h-4 w-4 mr-1" />
                 {formData.tripType === "roundtrip"
                   ? t("Step1.DepartureDate")
@@ -41,6 +41,7 @@ export function Step1ScheduleFields({
                 *
               </label>
               <Input
+                id="booking-date"
                 type="date"
                 min={today}
                 className={`${
@@ -56,7 +57,7 @@ export function Step1ScheduleFields({
               )}
             </div>
             <div className="min-w-0">
-              <label className="block text-sm font-medium mb-1.5 text-gray-700">
+              <label htmlFor="booking-time" className="mb-1.5 block text-sm font-medium text-foreground">
                 <Clock className="inline h-4 w-4 mr-1" />
                 {formData.tripType === "roundtrip"
                   ? t("Step1.DepartureTime")
@@ -64,6 +65,7 @@ export function Step1ScheduleFields({
                 *
               </label>
               <Input
+                id="booking-time"
                 type="time"
                 className={`${
                   errors.time ? "border-red-500" : "border-gray-300"

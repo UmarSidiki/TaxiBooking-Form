@@ -12,7 +12,8 @@ import {
 import { createCashBookingEmailData } from '@/features/booking/lib/create-cash-booking-email-data';
 import { getSettingsCurrency } from '@/features/booking/lib/get-settings-currency';
 import { initCashBookingPartners } from '@/features/booking/lib/init-cash-booking-partners';
-import { calculateBookingPrice } from '@/features/payments/lib/fare/calculate-booking-price';
+import { priceServerBooking } from '@/features/pricing/lib/price-server-booking';
+import { bookingAbuseReason, turnstileOk } from '@/shared/http/booking-abuse';
 import { fetchRouteDistanceKm } from '@/features/payments/lib/fare/route-distance';
 import { loadPaymentSettings } from '@/features/payments/lib/load-payment-settings';
 import type { CashBookingInput } from '@/features/booking/schema/cash-booking.schema';
@@ -32,6 +33,11 @@ export async function createCashBooking(
   formData: CashBookingInput,
   baseUrl?: string
 ): Promise<CreateCashBookingResult> {
+  const abuse = bookingAbuseReason(formData);
+  if (abuse) return { ok: false, status: 400, message: abuse };
+  if (!(await turnstileOk(formData.turnstileToken, "unknown"))) {
+    return { ok: false, status: 400, message: "turnstile" };
+  }
   await connectDB();
   const vehicle = await Vehicle.findById(formData.selectedVehicle);
 
@@ -74,12 +80,17 @@ export async function createCashBooking(
           stops: formData.stops,
         });
 
-  const priced = calculateBookingPrice(
+  const serverPrice = await priceServerBooking({
     vehicle,
-    formData,
-    settings ?? {},
-    distanceKm
-  );
+    booking: formData,
+    distanceKm,
+    tax: settings ?? {},
+    redeem: true,
+  });
+  if (!serverPrice.ok) {
+    return { ok: false, status: 400, message: serverPrice.error };
+  }
+  const priced = serverPrice.quote;
 
   // Never store a destination fare that silently ignored the route distance.
   if (
@@ -127,6 +138,9 @@ export async function createCashBooking(
     },
     childSeats: formData.childSeats,
     babySeats: formData.babySeats,
+    meetAndGreet: formData.meetAndGreet,
+    promoCode: priced.promoCode,
+    fareLines: priced.lines,
     notes: sanitizedNotes,
     flightNumber: sanitizedFlightNumber,
     firstName: formData.firstName,
@@ -142,6 +156,8 @@ export async function createCashBooking(
     subtotalAmount: priced.subtotal,
     taxAmount: priced.taxAmount,
     taxPercentage: priced.taxPercentage,
+    depositDue: priced.depositDue,
+    balanceDue: priced.balanceDue,
   };
 
   const savedBooking = await createBookingDocument(bookingData);

@@ -3,8 +3,9 @@ import { connectDB } from "@/shared/db";
 import { Setting } from "@/features/settings/model";
 import { getCurrencySymbol } from "@/shared/lib/utils";
 import { confirmationEmailHtml } from "@/features/booking/email/order-confirmation-html";
-import { invoiceDownloadUrl } from "@/features/booking/lib/booking-mail-url";
-import { renderInvoicePdf } from "@/features/booking/lib/render-invoice-pdf";
+import { absoluteHttpBase, invoiceDownloadUrl } from "@/features/booking/lib/booking-mail-url";
+import { customerPortalUrl } from "@/features/customers/lib/customer-token";
+import { buildInvoicePdf } from "@/features/invoices/lib/build-invoice-pdf";
 import type { BookingEmailData } from "@/features/payments/lib/booking-email-data";
 
 function isValidEmail(email: string): boolean {
@@ -28,15 +29,16 @@ export async function sendOrderConfirmationEmail(bookingData: BookingEmailData) 
     const currencySymbol = getCurrencySymbol(currency);
     const primaryColor = settings?.primaryColor || "#EAB308";
     const invoiceUrl = invoiceDownloadUrl(bookingData.baseUrl, bookingData.tripId);
+    const portalUrl = customerPortalUrl(
+      absoluteHttpBase(bookingData.baseUrl),
+      bookingData.locale || "en",
+      bookingData.email,
+    );
 
     let invoiceAttached = false;
     let pdf: Buffer | null = null;
     try {
-      pdf = await renderInvoicePdf(
-        bookingData,
-        currencySymbol,
-        settings?.smtpSenderName || "Booking Service"
-      );
+      pdf = (await buildInvoicePdf(bookingData.tripId))?.pdf ?? null;
       invoiceAttached = true;
     } catch (error) {
       console.error("Invoice PDF failed for", bookingData.tripId, error);
@@ -55,7 +57,7 @@ export async function sendOrderConfirmationEmail(bookingData: BookingEmailData) 
       to: bookingData.email,
       subject: `Booking Confirmation - Reservation #${bookingData.tripId}`,
       html,
-      text: `Booking Confirmed\n\nReservation ID: ${bookingData.tripId}\nFrom: ${bookingData.pickup}${bookingData.bookingType === "hourly" ? `\nDuration: ${bookingData.duration ? `${bookingData.duration} hours` : "Hourly"}` : `\nTo: ${bookingData.dropoff}`}\nDeparture: ${bookingData.date} at ${bookingData.time}\nVehicle: ${bookingData.vehicleDetails.name}\nTotal: ${currencySymbol}${bookingData.totalAmount.toFixed(2)}${invoiceAttached ? "\n\nYour invoice is attached." : ""}${invoiceUrl ? `\nInvoice: ${invoiceUrl}` : ""}`,
+      text: `Booking Confirmed\n\nReservation ID: ${bookingData.tripId}\nFrom: ${bookingData.pickup}${bookingData.bookingType === "hourly" ? `\nDuration: ${bookingData.duration ? `${bookingData.duration} hours` : "Hourly"}` : `\nTo: ${bookingData.dropoff}`}\nDeparture: ${bookingData.date} at ${bookingData.time}\nVehicle: ${bookingData.vehicleDetails.name}\nTotal: ${currencySymbol}${bookingData.totalAmount.toFixed(2)}${invoiceAttached ? "\n\nYour invoice is attached." : ""}${invoiceUrl ? `\nInvoice: ${invoiceUrl}` : ""}${portalUrl ? `\nYour trips: ${portalUrl}` : ""}`,
       attachments: pdf
         ? [
             {

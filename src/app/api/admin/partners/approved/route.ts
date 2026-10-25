@@ -11,8 +11,8 @@ export async function GET() {
 
     await connectDB();
     const partners = await Partner.find({
-      status: "approved",
-      isActive: true,
+      status: { $in: ["active", "approved"] },
+      isActive: { $ne: false },
     })
       .select("_id name email phone")
       .sort({ name: 1 })

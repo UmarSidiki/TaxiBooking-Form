@@ -1,9 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { connectDB } from "@/shared/db";
-import { Booking } from "@/features/booking/model";
-import { Setting } from "@/features/settings/model";
-import { getCurrencySymbol } from "@/shared/lib/utils";
-import { renderInvoicePdf } from "@/features/booking/lib/render-invoice-pdf";
+import { buildInvoicePdf } from "@/features/invoices/lib/build-invoice-pdf";
 
 export const runtime = "nodejs";
 
@@ -21,21 +18,14 @@ export async function GET(
     }
 
     await connectDB();
-    const booking = await Booking.findOne({ tripId });
-    if (!booking) {
+    const built = await buildInvoicePdf(tripId);
+    if (!built) {
       return NextResponse.json(
         { success: false, message: "Booking not found" },
         { status: 404 }
       );
     }
-
-    const settings = await Setting.findOne();
-    const currency = settings?.stripeCurrency?.toUpperCase() || "EUR";
-    const buffer = await renderInvoicePdf(
-      booking,
-      getCurrencySymbol(currency),
-      settings?.smtpSenderName || "Booking Service"
-    );
+    const buffer = built.pdf;
 
     return new NextResponse(new Uint8Array(buffer), {
       headers: {

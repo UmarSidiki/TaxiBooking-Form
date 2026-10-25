@@ -117,6 +117,8 @@ export function useStep3() {
     setPaymentInitialized,
     isSubmittingRef,
     totalPrice: pricing.totalPrice,
+    chargeAmount: pricing.chargeAmount,
+    quoteReady: pricing.quoteReady,
     displaySubtotalAmount: pricing.displaySubtotalAmount,
     taxAmount: pricing.taxAmount,
     enableTax: pricing.enableTax,

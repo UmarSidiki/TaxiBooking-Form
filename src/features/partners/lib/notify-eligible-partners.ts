@@ -3,6 +3,7 @@ import { Partner } from "@/features/partners/model";
 import { sendRideNotificationEmail } from "@/features/partners/email/notification";
 import { getCurrencySymbol } from "@/shared/lib/utils";
 import { Setting } from "@/features/settings/model";
+import { queueAssigneeNotice } from "@/features/settings/lib/assignee-whatsapp";
 
 interface NotifyEligiblePartnersResult {
   eligibleCount: number;
@@ -30,8 +31,8 @@ export async function notifyEligiblePartners(
   }
 
   const eligiblePartners = await Partner.find({
-    status: "approved",
-    isActive: true,
+    status: { $in: ["approved", "active"] },
+    isActive: { $ne: false },
     $or: [
       { currentFleet: partnerVehicleId },
       { fleetStatus: "approved", requestedFleet: partnerVehicleId },
@@ -93,6 +94,17 @@ export async function notifyEligiblePartners(
       eligiblePartnersCount: eligiblePartners.length,
       availableForPartners: true,
       partnerAcceptanceDeadline: new Date(Date.now() + 30 * 60 * 1000),
+    },
+  });
+
+  queueAssigneeNotice({
+    kind: "available",
+    recipients: eligiblePartners.map((partner) => ({ phone: partner.phone, name: partner.name })),
+    ride: {
+      tripId: booking.tripId,
+      pickup: booking.pickup,
+      date: booking.date,
+      time: booking.time,
     },
   });
 

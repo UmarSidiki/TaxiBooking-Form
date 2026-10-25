@@ -26,6 +26,10 @@ export interface IBooking extends Document {
   };
   childSeats: number;
   babySeats: number;
+  meetAndGreet?: boolean;
+  promoCode?: string;
+  fareLines?: { code: string; amount: number }[];
+  invoiceNumber?: string;
   notes: string;
   flightNumber?: string;
   firstName: string;
@@ -92,6 +96,11 @@ export interface IBooking extends Document {
   partnerMarginAmount?: number;
   partnerPayoutAmount?: number;
   partnerApprovedAt?: Date;
+  /** Who is paid when both a driver and a partner are on the ride. */
+  responsibleAssignee?: "driver" | "partner";
+  driverRideStatus?: "assigned" | "started" | "completed" | "no_show";
+  cashCollected?: number;
+  pickupReminderSent?: boolean;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -120,6 +129,16 @@ const BookingSchema: Schema = new Schema({
     seats: { type: String },
   },
   childSeats: { type: Number, default: 0 },
+  meetAndGreet: { type: Boolean, default: false },
+  promoCode: { type: String },
+  fareLines: { type: [{ code: String, amount: Number }], default: undefined },
+  invoiceNumber: { type: String, unique: true, sparse: true },
+  invoiceNotifiedAt: { type: Date },
+  corporateAccountId: { type: Schema.Types.ObjectId, ref: "CorporateAccount" },
+  recurringId: { type: Schema.Types.ObjectId },
+  quoteFollowUpSent: { type: Boolean, default: false },
+  depositDue: { type: Number },
+  balanceDue: { type: Number },
   babySeats: { type: Number, default: 0 },
   notes: { type: String, default: "" },
   flightNumber: { type: String },
@@ -194,6 +213,10 @@ const BookingSchema: Schema = new Schema({
   partnerMarginAmount: { type: Number },
   partnerPayoutAmount: { type: Number },
   partnerApprovedAt: { type: Date },
+  responsibleAssignee: { type: String, enum: ["driver", "partner"] },
+  driverRideStatus: { type: String, enum: ["assigned", "started", "arrived", "completed", "no_show"] },
+  cashCollected: { type: Number, min: 0 },
+  pickupReminderSent: { type: Boolean, default: false },
 }, {
   timestamps: true,
 });

@@ -207,7 +207,11 @@
     "indicative-rate-label": "Richtpreis — bestätigt nach Verfügbarkeitsprüfung:",
     "request-this-appointment": "Termin anfragen",
     "submitting-request": "Wird gesendet…",
-    "whatsapp_confirmation-note": "Ihre Buchungsbestätigung wird Ihnen zusätzlich per WhatsApp gesendet."
+    "whatsapp_confirmation-note": "Ihre Buchungsbestätigung wird Ihnen zusätzlich per WhatsApp gesendet.",
+    "meet-greet": "Meet & Greet",
+    "promo-code": "Aktionscode",
+    "due-now": "Jetzt fällig",
+    "balance-due": "Restbetrag"
   },
   "booking-failed-data-message": "Buchung fehlgeschlagen: {0}",
   "embeddable": {
@@ -487,7 +491,31 @@
       "create-booking": "Buchung erstellen",
       "booking-created": "Buchung {tripId} erstellt",
       "NoAwaitingPayment": "Keine Angebote warten auf Zahlung",
-      "NoAwaitingPaymentDescription": "Angebotene Anfragen bleiben hier, bis der Kunde bezahlt."
+      "NoAwaitingPaymentDescription": "Angebotene Anfragen bleiben hier, bis der Kunde bezahlt.",
+      "overlap-notice": "Zugewiesen. Das überschneidet sich mit {trip} um {time}.",
+      "partner-overlap-notice": "Partner zugewiesen. Das überschneidet sich mit {trip} um {time}.",
+      "driver-time-off": "Dieser Fahrer hat zu dieser Abholung frei. Wählen Sie einen anderen.",
+      "edit-ride": "Fahrt bearbeiten",
+      "edit-saved": "Fahrt aktualisiert.",
+      "edit-failed": "Fahrt konnte nicht aktualisiert werden. Prüfen Sie die Felder und versuchen Sie es erneut.",
+      "activity": "Fahrtaktivität",
+      "activity-empty": "Noch keine Aktivität.",
+      "activity-loading": "Aktivität wird geladen…",
+      "save-ride": "Fahrt speichern",
+      "ride-notes": "Notizen",
+      "quote-link-ready": "Zahlungslink bereit: {url}",
+      "quote-link-email-failed": "Angebot gespeichert. E-Mail fehlgeschlagen, kopieren Sie diesen Link: {url}",
+      "activity-assigned": "Zugewiesen",
+      "activity-claimed": "Übernommen",
+      "activity-started": "Gestartet",
+      "activity-completed": "Abgeschlossen",
+      "activity-no_show": "Nicht erschienen",
+      "activity-cancelled": "Storniert",
+      "activity-edited": "Bearbeitet",
+      "activity-approved": "Für Partner freigegeben",
+      "activity-quoted": "Angeboten",
+      "activity-confirmed": "Als bar bestätigt",
+      "activity-declined": "Abgelehnt"
     },
     "Home": {
       "failed-to-fetch-dashboard-stats": "Dashboard-Statistiken konnten nicht abgerufen werden",
@@ -600,7 +628,8 @@
         "failed-to-accept-ride": "Fahrt konnte nicht angenommen werden",
         "partner-earnings-label": "Ihre Auszahlung",
         "retry": "Erneut versuchen",
-        "dismiss": "Schließen"
+        "dismiss": "Schließen",
+        "balance": "Saldo"
       },
       "Rides": {
         "my-rides": "Meine Fahrten",
@@ -636,7 +665,10 @@
         "your-payout": "Ihre Auszahlung",
         "retry": "Erneut versuchen",
         "load-error": "Fahrten konnten nicht geladen werden. Bitte erneut versuchen.",
-        "customer-review": "Kundenbewertung"
+        "customer-review": "Kundenbewertung",
+        "mark-completed": "Als abgeschlossen markieren",
+        "completing": "Wird abgeschlossen…",
+        "complete-failed": "Fahrt konnte nicht abgeschlossen werden. Versuchen Sie es erneut."
       },
       "Sidebar": {
         "partner-portal": "Partner-Portal",
@@ -653,12 +685,14 @@
         "overview": "Übersicht",
         "operations": "Betrieb",
         "fleet_management": "Flottenmanagement",
-        "account_settings": "Konto & Einstellungen"
+        "account_settings": "Konto & Einstellungen",
+        "available-rides": "Verfügbare Fahrten",
+        "vehicles": "Fahrzeuge"
       },
       "Billing": {
         "title": "Abrechnung & Bankdaten",
         "description": "Geben Sie Ihre Auszahlungsdaten an, damit Admins wissen, wohin Ihre Einnahmen gesendet werden sollen.",
-        "payout-summary-title": "Ausstehende Auszahlung",
+        "payout-summary-title": "Saldo",
         "payout-summary-description": "Aktuell geschuldeter Betrag aus Online- oder Kartenzahlungen.",
         "last-paid": "Zuletzt bezahlt: {date}",
         "never": "Nie",
@@ -687,7 +721,23 @@
         "save-button": "Bankdaten speichern",
         "save-success": "Bankdaten erfolgreich aktualisiert.",
         "save-error": "Fehler beim Speichern der Bankdaten. Bitte versuchen Sie es erneut.",
-        "load-error": "Abrechnungsinformationen konnten nicht geladen werden. Bitte aktualisieren Sie und versuchen Sie es erneut."
+        "load-error": "Abrechnungsinformationen konnten nicht geladen werden. Bitte aktualisieren Sie und versuchen Sie es erneut.",
+        "statement-title": "Kontoauszug",
+        "statement-empty": "Noch keine Buchungen.",
+        "download-statement": "Auszug herunterladen",
+        "col-when": "Wann",
+        "col-fare": "Fahrpreis",
+        "col-margin": "Marge",
+        "col-share": "Partneranteil",
+        "col-change": "Änderung",
+        "col-balance": "Saldo",
+        "entry-ride_credit": "Fahrt",
+        "entry-settlement": "Ausgleich",
+        "entry-opening_balance": "Anfangssaldo",
+        "entry-clawback": "Rückbuchung",
+        "payout-summary-owed": "Der Betreiber schuldet Ihnen diesen Betrag.",
+        "payout-summary-due": "Sie schulden dem Betreiber diesen Betrag.",
+        "payout-summary-even": "Es ist nichts offen."
       },
       "Fleet": {
         "fleet-management": "Flottenmanagement",
@@ -871,7 +921,38 @@
         "settlement-type-payout_paid": "Auszahlung bezahlt",
         "settlement-type-remittance_credit": "Abführung fällig",
         "settlement-type-remittance_received": "Abführung erhalten",
-        "settlement-type-clawback": "Rückbuchung"
+        "settlement-type-clawback": "Rückbuchung",
+        "balance-label": "Saldo",
+        "balance-hint": "Positiv: Sie schulden dem Partner. Negativ: der Partner schuldet Ihnen.",
+        "settle-open": "Ausgleich buchen",
+        "settle-title": "Ausgleich buchen",
+        "settle-description": "Ein Teilbetrag ist erlaubt. Das Buch hält fest, wer gebucht hat.",
+        "settle-amount": "Betrag",
+        "settle-direction": "Richtung",
+        "settle-pay-partner": "Partner zahlen",
+        "settle-receive": "Vom Partner erhalten",
+        "settle-method": "Weg",
+        "settle-bank": "Bank",
+        "settle-cash": "Bar",
+        "settle-other": "Andere",
+        "settle-reference": "Referenz",
+        "settle-save": "Ausgleich speichern",
+        "settle-saving": "Speichern…",
+        "settle-error": "Der Ausgleich konnte nicht gespeichert werden. Erneut versuchen.",
+        "col-when": "Wann",
+        "col-fare": "Fahrpreis",
+        "col-margin": "Marge",
+        "col-share": "Partneranteil",
+        "col-change": "Änderung",
+        "col-balance": "Saldo",
+        "settlement-type-ride_credit": "Fahrt",
+        "settlement-type-settlement": "Ausgleich",
+        "settlement-type-opening_balance": "Anfangssaldo",
+        "tab-applications": "Anträge",
+        "tab-active": "Aktiv",
+        "tab-balances": "Salden",
+        "tab-all": "Alle",
+        "active": "Aktiv"
       }
     },
     "Features": {
@@ -1307,7 +1388,8 @@
     "capacity": "Kapazität",
     "network": "Netzwerk",
     "booking_site": "Buchungsseite",
-    "desk": "Schalter"
+    "desk": "Schalter",
+    "pricing": "Preise"
   },
   "FormBuilder": {
     "title": "Formular-Builder",
@@ -1634,8 +1716,8 @@
     "trip-id": "Reise-ID:",
     "amount": "Betrag:",
     "payment-method": "Zahlungsmethode:",
-    "confirmation-email-sent": "Bestätigungs-E-Mail gesendet",
-    "we-and-apos-ve-sent-a-confirmation-email-with-all-your-booking-details-please-check-your-inbox-and-spam-folder": "Wir haben eine Bestätigungs-E-Mail mit allen Buchungsdetails gesendet. Bitte prüfen Sie Ihren Posteingang und Spam-Ordner.",
+    "confirmation-email-sent": "Nach der Bestätigungs-E-Mail sehen",
+    "we-and-apos-ve-sent-a-confirmation-email-with-all-your-booking-details-please-check-your-inbox-and-spam-folder": "Eine Bestätigung geht raus, wenn E-Mail aktiv ist. Prüfen Sie Posteingang und Spam.",
     "need-help": "Brauchen Sie Hilfe?",
     "contact-our-24-7-support-team-at": "Kontaktieren Sie unser 24/7 Support-Team unter",
     "or": "oder",
@@ -1643,7 +1725,8 @@
     "return-to-home": "Zurück zur Startseite",
     "seconds": "Sekunden",
     "request-received-title": "Anfrage erhalten",
-    "request-received-body": "Wir arbeiten nach Termin. Wir prüfen die Verfügbarkeit und mailen die nächsten Schritte. Das ist noch keine Buchungsbestätigung."
+    "request-received-body": "Wir arbeiten nach Termin. Wir prüfen die Verfügbarkeit und mailen die nächsten Schritte. Das ist noch keine Buchungsbestätigung.",
+    "contact-operator": "Kontaktieren Sie den Betreiber, wenn Sie diese Fahrt ändern müssen."
   },
   "Driver": {
     "failed-to-fetch-drivers": "Fahrer konnten nicht abgerufen werden",
@@ -1739,7 +1822,20 @@
     "load_error": "Fahrten konnten nicht geladen werden. Erneut versuchen.",
     "load_more": "Weitere Fahrten laden",
     "retry": "Erneut versuchen",
-    "passengers": "Passagiere"
+    "passengers": "Passagiere",
+    "action-started": "Gestartet",
+    "action-completed": "Abgeschlossen",
+    "action-no_show": "Nicht erschienen",
+    "call": "Anrufen",
+    "apple-maps": "Apple Karten",
+    "time-off-title": "Frei",
+    "time-off-start": "Beginn",
+    "time-off-end": "Ende",
+    "time-off-note": "Notiz",
+    "time-off-save": "Diese Stunden sperren",
+    "time-off-saved": "Frei gespeichert.",
+    "time-off-invalid": "Das Ende muss nach dem Beginn liegen.",
+    "time-off-help": "In diesem Zeitraum werden Ihnen keine Fahrten zugewiesen."
   },
   "Stripe": {
     "payment-system-not-ready-please-refresh-the-page": "Zahlungssystem nicht bereit. Bitte aktualisieren Sie die Seite.",
@@ -1948,7 +2044,9 @@
       "hide_password": "Passwort verbergen",
       "cover_kicker": "Aufträge",
       "cover_title": "Werden Sie Fahrer dieses Betreibers.",
-      "cover_body": "Legen Sie ein Konto an und warten Sie auf eine zugewiesene Fahrt."
+      "cover_body": "Legen Sie ein Konto an und warten Sie auf eine zugewiesene Fahrt.",
+      "phone": "Mobilnummer",
+      "phone_invalid": "Geben Sie eine Mobilnummer mit Ländervorwahl ein, z. B. +14155552671."
     },
     "PartnerSignIn": {
       "title": "Partner-Anmeldung",
@@ -1982,7 +2080,8 @@
       "hide_password": "Passwort verbergen",
       "cover_kicker": "Partner-Schalter",
       "cover_title": "Treten Sie dem Überlauf dieses Betreibers bei.",
-      "cover_body": "Ein Unternehmen, gemeinsame Flottenkategorien — kein Marktplatz."
+      "cover_body": "Ein Unternehmen, gemeinsame Flottenkategorien — kein Marktplatz.",
+      "phone_invalid": "Geben Sie eine Mobilnummer mit Ländervorwahl ein, z. B. +14155552671."
     }
   },
   "AppError": {
@@ -2027,10 +2126,118 @@
     "declined-title": "Anfrage nicht verfügbar",
     "declined-body": "Diese Anfrage wurde als nicht verfügbar markiert.",
     "already-paid-title": "Bereits bestätigt",
-    "already-paid-body": "Fahrt #{tripId} ist bereits bezahlt und bestätigt."
+    "already-paid-body": "Fahrt #{tripId} ist bereits bezahlt und bestätigt.",
+    "pay-cash": "Dem Fahrer bar zahlen",
+    "due-now": "Jetzt fällig",
+    "balance-due": "Restbetrag",
+    "loading": "Wird geladen…",
+    "paid-in-full": "Diese Fahrt ist vollständig bezahlt.",
+    "trip-total": "Fahrpreis",
+    "cash-instructions": "Zahlen Sie bar beim Fahrer oder überweisen Sie den Betrag auf das Konto unten.",
+    "bank-details": "Bankverbindung"
   },
   "CountryBlocked": {
     "title": "Wir bedienen Ihre Region noch nicht",
     "body": "Buchungen sind von Ihrem aktuellen Standort aus nicht möglich. Wenn Sie glauben, dass das ein Fehler ist, kontaktieren Sie uns."
+  },
+  "Calendar": {
+    "title": "Kalender",
+    "admin-description": "Alle Fahrten, nach Zuständigkeit.",
+    "views": "Kalenderansichten",
+    "agenda": "Agenda",
+    "day": "Tag",
+    "week": "Woche",
+    "month": "Monat",
+    "loading": "Laden…",
+    "load-error": "Kalender konnte nicht geladen werden. Erneut versuchen.",
+    "empty": "In diesem Zeitraum ist nichts geplant.",
+    "time-off": "Frei",
+    "unassigned": "Nicht zugewiesen",
+    "feed-create": "Privaten Feed erstellen",
+    "feed-revoke": "Feed widerrufen",
+    "feed-ready": "Privater Feed bereit",
+    "feed-revoked": "Feed widerrufen.",
+    "feed-error": "Feed konnte nicht aktualisiert werden. Versuchen Sie es erneut."
+  },
+  "Phone": {
+    "missing": "Fügen Sie eine Mobilnummer im internationalen Format hinzu, bevor Sie Fahrten annehmen.",
+    "add": "Nummer hinzufügen"
+  },
+  "Today": {
+    "title": "Heute",
+    "description": "Nicht zugewiesene Fahrten, Fristen und Salden.",
+    "unassigned": "Heute ohne Zuweisung",
+    "deadlines": "Fristen",
+    "balances": "Offene Salden",
+    "empty": "Nichts hier.",
+    "loading": "Laden…",
+    "load-error": "Heute konnte nicht geladen werden. Erneut versuchen."
+  },
+  "WhatsAppNotify": {
+    "title": "Nachrichten an Zugewiesene",
+    "loading": "Laden…",
+    "load-error": "Nachrichten konnten nicht geladen werden.",
+    "save-error": "Speichern fehlgeschlagen. Erneut versuchen.",
+    "whatsappTplAssigned": "Fahrt zugewiesen",
+    "whatsappTplAvailable": "Fahrt zu übernehmen",
+    "whatsappTplChanged": "Fahrt geändert oder storniert",
+    "whatsappTplReminder": "Abholerinnerung",
+    "whatsappTplSettlement": "Ausgleich gebucht"
+  },
+  "Pricing": {
+    "title": "Preise",
+    "loading": "Wird geladen…",
+    "load-failed": "Preise konnten nicht geladen werden.",
+    "saved": "Gespeichert.",
+    "save-failed": "Speichern fehlgeschlagen. Prüfen Sie die Werte.",
+    "rules": "Nacht, Feiertage, Minimum",
+    "night": "Nachtfenster und Prozent",
+    "night-end": "Nacht endet",
+    "night-percent": "Nachtprozent",
+    "meet": "Meet-&-Greet-Preis",
+    "minimum": "Mindestpreis des Betreibers",
+    "holiday": "Feiertag",
+    "holiday-percent": "Feiertagsprozent",
+    "add-holiday": "Feiertag hinzufügen",
+    "save": "Speichern",
+    "zone": "Zonenpreis",
+    "from": "Von-Zone",
+    "to": "Nach-Zone",
+    "price": "Festpreis",
+    "save-zone": "Zone speichern",
+    "promo": "Aktionscode",
+    "code": "Code",
+    "kind": "Art",
+    "amount": "Betrag",
+    "max-uses": "Gesamtnutzungen",
+    "per-customer": "Nutzungen pro Kunde",
+    "percent": "Prozent",
+    "fixed": "Fester Betrag",
+    "save-promo": "Code speichern",
+    "deposit": "Anzahlung in Prozent"
+  },
+  "Account": {
+    "title": "Ihre Fahrten",
+    "sign-in": "Anmelden",
+    "sign-in-help": "Wir senden einen Code per WhatsApp, dann per E-Mail.",
+    "email": "E-Mail",
+    "phone": "Telefon",
+    "code": "Code",
+    "send-code": "Code senden",
+    "verify": "Prüfen",
+    "code-sent": "Code gesendet.",
+    "send-failed": "Senden fehlgeschlagen.",
+    "code-invalid": "Code ungültig.",
+    "upcoming": "Kommend",
+    "past": "Vergangen",
+    "empty-upcoming": "Keine kommenden Fahrten.",
+    "empty-past": "Keine vergangenen Fahrten.",
+    "change": "Ändern",
+    "cancel": "Stornieren",
+    "invoice": "Rechnung",
+    "rebook": "Erneut buchen",
+    "hourly": "Stunden",
+    "updated": "Aktualisiert.",
+    "cutoff": "Zu knapp vor Abfahrt zum Ändern."
   }
 }

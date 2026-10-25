@@ -16,7 +16,7 @@ export async function loadWhatsAppDesk() {
   await connectDB();
   const [config, templates, deliveries] = await Promise.all([
     WhatsAppConfig.findOne().lean(),
-    WhatsAppTemplate.find({ event: "booking_confirmed" }).sort({ updatedAt: -1 }).limit(40).lean(),
+    WhatsAppTemplate.find({ audience: { $in: ["customer", "desk"] } }).sort({ updatedAt: -1 }).limit(80).lean(),
     WhatsAppDelivery.find().sort({ createdAt: -1 }).limit(20).lean(),
   ]);
   return {
@@ -40,10 +40,10 @@ export async function saveWhatsAppConfig(input: WhatsAppConfigWrite) {
   }).lean();
 }
 
-async function clearOtherEnabled(audience: string, locale: string, keepId?: string) {
+async function clearOtherEnabled(event: string, audience: string, locale: string, keepId?: string) {
   await WhatsAppTemplate.updateMany(
     {
-      event: "booking_confirmed",
+      event,
       audience,
       locale,
       enabled: true,
@@ -55,13 +55,13 @@ async function clearOtherEnabled(audience: string, locale: string, keepId?: stri
 
 export async function createWhatsAppTemplate(input: WhatsAppTemplateWrite) {
   await connectDB();
-  if (input.enabled) await clearOtherEnabled(input.audience, input.locale);
-  return WhatsAppTemplate.create({ ...input, event: "booking_confirmed" });
+  if (input.enabled) await clearOtherEnabled(input.event, input.audience, input.locale);
+  return WhatsAppTemplate.create(input);
 }
 
 export async function updateWhatsAppTemplate(id: string, input: WhatsAppTemplateWrite) {
   await connectDB();
-  if (input.enabled) await clearOtherEnabled(input.audience, input.locale, id);
+  if (input.enabled) await clearOtherEnabled(input.event, input.audience, input.locale, id);
   return WhatsAppTemplate.findByIdAndUpdate(id, input, { returnDocument: "after" }).lean();
 }
 

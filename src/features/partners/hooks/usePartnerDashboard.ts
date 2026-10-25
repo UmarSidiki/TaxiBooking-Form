@@ -70,7 +70,7 @@ export function usePartnerDashboard() {
   }, [fetchPartnerData]);
 
   useEffect(() => {
-    if (partner?.status !== "approved") return;
+    if (partner?.status !== "approved" && partner?.status !== "active") return;
     void fetchStats();
     void fetchAvailableRides();
     lastVisibleRefresh.current = Date.now();

@@ -3,11 +3,12 @@
 import React, { useEffect, useState } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { Card, CardContent } from '@/shared/ui/card';
-import { CheckCircle, Loader2, Mail, Phone, Home } from 'lucide-react';
+import { CheckCircle, Loader2, Mail, Home } from 'lucide-react';
 import { Button } from '@/shared/ui/button';
 import { useTheme } from '@/features/settings/context/theme-context';
 import { useTranslations } from 'next-intl';
 import { useCurrency } from '@/shared/context/currency-context';
+import { ThankYouSupport } from '@/features/booking/ui/thank-you-support';
 export default function ThankYouPage() {
   const t = useTranslations();
   const searchParams = useSearchParams();
@@ -114,43 +115,26 @@ export default function ThankYouPage() {
           )}
 
           {/* Confirmation Email Info */}
-          <div className="bg-blue-50 rounded-lg p-4 sm:p-6 mb-6 sm:mb-8 border border-blue-200">
+          <div className="mb-6 rounded-lg border border-border bg-card p-4 sm:mb-8 sm:p-6">
             <div className="flex items-start gap-3">
-              <Mail className="h-5 w-5 text-blue-600 mt-0.5 flex-shrink-0" />
+              <Mail className="mt-0.5 size-5 shrink-0 text-primary" />
               <div>
-                <h3 className="font-semibold text-gray-900 mb-1 text-sm sm:text-base">{t('ThankYou.confirmation-email-sent')}</h3>
-                <p className="text-xs sm:text-sm text-gray-600">
-                  {t('ThankYou.we-and-apos-ve-sent-a-confirmation-email-with-all-your-booking-details-please-check-your-inbox-and-spam-folder')} </p>
-              </div>
-            </div>
-          </div>
-
-          {/* Support Info */}
-          <div className="bg-gray-50 rounded-lg p-4 sm:p-6 mb-6 sm:mb-8 border border-gray-200">
-            <div className="flex items-start gap-3">
-              <Phone className="h-5 w-5 text-gray-600 mt-0.5 flex-shrink-0" />
-              <div>
-                <h3 className="font-semibold text-gray-900 mb-1 text-sm sm:text-base">{t('ThankYou.need-help')}</h3>
-                <p className="text-xs sm:text-sm text-gray-600">
-                  {t('ThankYou.contact-our-24-7-support-team-at')}{' '}
-                  <a href={"tel:" + process.env.NEXT_PUBLIC_PHONE_NUMBER} className="text-primary font-medium hover:underline break-all">
-                    {process.env.NEXT_PUBLIC_PHONE_NUMBER}
-                  </a>
-                  {' '}{t('ThankYou.or')}{' '}
-                  <a href={"mailto:" + process.env.NEXT_PUBLIC_SUPPORT_EMAIL} className="text-primary font-medium hover:underline break-all">
-                    {process.env.NEXT_PUBLIC_SUPPORT_EMAIL}
-                  </a>
+                <h3 className="mb-1 text-sm font-semibold text-foreground sm:text-base">{t('ThankYou.confirmation-email-sent')}</h3>
+                <p className="text-sm text-muted-foreground">
+                  {t('ThankYou.we-and-apos-ve-sent-a-confirmation-email-with-all-your-booking-details-please-check-your-inbox-and-spam-folder')}
                 </p>
               </div>
             </div>
           </div>
 
+          <ThankYouSupport t={t} />
+
           {/* Redirect Info */}
           <div className="text-center space-y-4">
-            <div className="flex items-center justify-center gap-2 text-gray-600">
-              <Loader2 className="h-4 w-4 animate-spin" />
+            <div className="flex items-center justify-center gap-2 text-muted-foreground">
+              <Loader2 className="size-4 animate-spin motion-reduce:animate-none" />
               <span className="text-sm">
-                {t('ThankYou.redirecting-in')} <strong className="text-primary">{countdown}</strong> {t('ThankYou.seconds')}...
+                {t('ThankYou.redirecting-in')} <strong className="text-foreground">{countdown}</strong> {t('ThankYou.seconds')}...
               </span>
             </div>
             

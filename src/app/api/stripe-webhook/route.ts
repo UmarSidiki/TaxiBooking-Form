@@ -4,6 +4,7 @@ import { connectDB } from '@/shared/db';
 import { Booking, PendingBooking } from '@/features/booking/model';
 import { Setting } from '@/features/settings/model';
 import { finalizePaidBooking } from '@/features/payments/lib/finalize-paid-booking';
+import { settleRideCharge } from '@/features/invoices/lib/settle-ride-charge';
 import { getStripeApiVersion } from '@/features/payments/lib/stripe-client';
 
 export const dynamic = 'force-dynamic';
@@ -56,6 +57,13 @@ export async function POST(request: NextRequest) {
     switch (event.type) {
       case 'payment_intent.succeeded': {
         const paymentIntent = event.data.object as Stripe.PaymentIntent;
+        if (paymentIntent.metadata?.kind === 'ride_due') {
+          const settled = await settleRideCharge({ paymentIntentId: paymentIntent.id });
+          if (!settled.ok && settled.retryable) {
+            return NextResponse.json({ success: false, message: 'Ride charge not ready' }, { status: 500 });
+          }
+          break;
+        }
         const result = await finalizePaidBooking({
           provider: 'stripe',
           paymentIntentId: paymentIntent.id,

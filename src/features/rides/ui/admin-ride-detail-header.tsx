@@ -22,7 +22,7 @@ export function AdminRideDetailHeader({
   const departure = new Date(booking.date).toLocaleDateString(locale, LONG_DATE);
 
   return (
-    <DialogHeader className="border-b border-border pb-4">
+    <DialogHeader className="pb-0">
       <DialogTitle className="text-2xl font-semibold tracking-tight text-foreground">
         {t("Dashboard.Rides.Trip")} #{booking.tripId.slice(0, 8)}
       </DialogTitle>

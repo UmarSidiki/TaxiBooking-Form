@@ -6,9 +6,12 @@ import { sendAdminPartnerRegistrationEmail } from "@/features/partners/email/par
 import { sanitizeInput } from "@/shared/lib/validation";
 import { parseJsonBody } from "@/shared/http/parse-json-body";
 import { jsonError } from "@/shared/http/json-error";
+import { limitSensitive } from "@/shared/http/sensitive-limit";
 import { partnerRegisterSchema } from "@/features/partners/schema/partner-write.schema";
 
 export async function POST(request: NextRequest) {
+  const limited = await limitSensitive(request, "login");
+  if (limited) return limited;
   try {
     const parsed = await parseJsonBody(request, partnerRegisterSchema);
     if (!parsed.ok) return parsed.response;

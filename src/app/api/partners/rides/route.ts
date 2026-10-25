@@ -4,6 +4,7 @@ import { Booking } from "@/features/booking/model";
 import { Partner } from "@/features/partners/model";
 import { requireRole } from "@/features/auth/lib/require-role";
 import { jsonError } from "@/shared/http/json-error";
+import { partnerMayWork } from "@/features/partners/lib/partner-access";
 
 export async function GET() {
   try {
@@ -12,7 +13,7 @@ export async function GET() {
 
     await connectDB();
     const partner = await Partner.findById(access.session.user.id).select("status isActive");
-    if (!partner || partner.status !== "approved" || partner.isActive === false) {
+    if (!partner || !partnerMayWork(partner)) {
       return jsonError("forbidden", 403);
     }
 

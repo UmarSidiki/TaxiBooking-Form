@@ -207,7 +207,11 @@
     "indicative-rate-label": "Ориентировочная цена — подтвердим после проверки доступности:",
     "request-this-appointment": "Запросить эту запись",
     "submitting-request": "Отправка…",
-    "whatsapp_confirmation-note": "Подтверждение бронирования также будет отправлено вам в WhatsApp."
+    "whatsapp_confirmation-note": "Подтверждение бронирования также будет отправлено вам в WhatsApp.",
+    "meet-greet": "Встреча с табличкой",
+    "promo-code": "Промокод",
+    "due-now": "К оплате сейчас",
+    "balance-due": "Остаток"
   },
   "booking-failed-data-message": "Бронирование не удалось: {0}",
   "embeddable": {
@@ -487,7 +491,31 @@
       "create-booking": "Создать бронирование",
       "booking-created": "Бронирование {tripId} создано",
       "NoAwaitingPayment": "Нет предложений, ожидающих оплаты",
-      "NoAwaitingPaymentDescription": "Заявки с ценой остаются здесь до оплаты клиентом."
+      "NoAwaitingPaymentDescription": "Заявки с ценой остаются здесь до оплаты клиентом.",
+      "overlap-notice": "Назначено. Пересекается с {trip} в {time}.",
+      "partner-overlap-notice": "Партнёр назначен. Пересекается с {trip} в {time}.",
+      "driver-time-off": "Этот водитель недоступен на это время. Выберите другого.",
+      "edit-ride": "Изменить поездку",
+      "edit-saved": "Поездка обновлена.",
+      "edit-failed": "Не удалось обновить поездку. Проверьте поля и повторите.",
+      "activity": "Активность поездки",
+      "activity-empty": "Активности пока нет.",
+      "activity-loading": "Загрузка активности…",
+      "save-ride": "Сохранить поездку",
+      "ride-notes": "Заметки",
+      "quote-link-ready": "Ссылка на оплату готова: {url}",
+      "quote-link-email-failed": "Предложение сохранено. Письмо не ушло, скопируйте ссылку: {url}",
+      "activity-assigned": "Назначена",
+      "activity-claimed": "Принята",
+      "activity-started": "Начата",
+      "activity-completed": "Завершена",
+      "activity-no_show": "Неявка",
+      "activity-cancelled": "Отменена",
+      "activity-edited": "Изменена",
+      "activity-approved": "Одобрена для партнёров",
+      "activity-quoted": "Предложение",
+      "activity-confirmed": "Подтверждена наличными",
+      "activity-declined": "Отклонена"
     },
     "Home": {
       "failed-to-fetch-dashboard-stats": "Не удалось получить статистику дашборда",
@@ -600,7 +628,8 @@
         "failed-to-accept-ride": "Не удалось принять поездку",
         "partner-earnings-label": "Ваша выплата",
         "retry": "Повторить",
-        "dismiss": "Закрыть"
+        "dismiss": "Закрыть",
+        "balance": "Баланс"
       },
       "Rides": {
         "my-rides": "Мои поездки",
@@ -636,7 +665,10 @@
         "your-payout": "Ваша выплата",
         "retry": "Повторить",
         "load-error": "Не удалось загрузить поездки. Попробуйте снова.",
-        "customer-review": "Отзыв клиента"
+        "customer-review": "Отзыв клиента",
+        "mark-completed": "Отметить выполненной",
+        "completing": "Завершение…",
+        "complete-failed": "Не удалось завершить поездку. Повторите."
       },
       "Sidebar": {
         "partner-portal": "Портал партнера",
@@ -653,12 +685,14 @@
         "overview": "Обзор",
         "operations": "Операции",
         "fleet_management": "Управление автопарком",
-        "account_settings": "Аккаунт и настройки"
+        "account_settings": "Аккаунт и настройки",
+        "available-rides": "Доступные поездки",
+        "vehicles": "Автомобили"
       },
       "Billing": {
         "title": "Счета и банковские реквизиты",
         "description": "Предоставьте реквизиты для выплат, чтобы администраторы знали, куда отправлять ваш заработок.",
-        "payout-summary-title": "Ожидаемая выплата",
+        "payout-summary-title": "Баланс",
         "payout-summary-description": "Сумма, причитающаяся вам в данный момент от онлайн-платежей или карт.",
         "last-paid": "Последняя выплата: {date}",
         "never": "Никогда",
@@ -687,7 +721,23 @@
         "save-button": "Сохранить реквизиты",
         "save-success": "Банковские реквизиты успешно обновлены.",
         "save-error": "Не удалось сохранить реквизиты. Попробуйте снова.",
-        "load-error": "Не удалось загрузить платежную информацию. Пожалуйста, обновите и попробуйте снова."
+        "load-error": "Не удалось загрузить платежную информацию. Пожалуйста, обновите и попробуйте снова.",
+        "statement-title": "Выписка",
+        "statement-empty": "Пока нет строк.",
+        "download-statement": "Скачать выписку",
+        "col-when": "Когда",
+        "col-fare": "Тариф",
+        "col-margin": "Маржа",
+        "col-share": "Доля партнёра",
+        "col-change": "Изменение",
+        "col-balance": "Баланс",
+        "entry-ride_credit": "Поездка",
+        "entry-settlement": "Расчёт",
+        "entry-opening_balance": "Начальный баланс",
+        "entry-clawback": "Сторно",
+        "payout-summary-owed": "Оператор должен вам эту сумму.",
+        "payout-summary-due": "Вы должны оператору эту сумму.",
+        "payout-summary-even": "Никто никому не должен."
       },
       "Fleet": {
         "fleet-management": "Управление автопарком",
@@ -871,7 +921,38 @@
         "settlement-type-payout_paid": "Выплата оплачена",
         "settlement-type-remittance_credit": "Долг партнёра",
         "settlement-type-remittance_received": "Перевод получен",
-        "settlement-type-clawback": "Сторно"
+        "settlement-type-clawback": "Сторно",
+        "balance-label": "Баланс",
+        "balance-hint": "Плюс: вы должны партнёру. Минус: партнёр должен вам.",
+        "settle-open": "Записать расчёт",
+        "settle-title": "Записать расчёт",
+        "settle-description": "Можно указать часть суммы. В книге хранится, кто записал.",
+        "settle-amount": "Сумма",
+        "settle-direction": "Направление",
+        "settle-pay-partner": "Заплатить партнёру",
+        "settle-receive": "Получить от партнёра",
+        "settle-method": "Способ",
+        "settle-bank": "Банк",
+        "settle-cash": "Наличные",
+        "settle-other": "Другое",
+        "settle-reference": "Ссылка",
+        "settle-save": "Сохранить расчёт",
+        "settle-saving": "Сохранение…",
+        "settle-error": "Не удалось записать расчёт. Попробуйте снова.",
+        "col-when": "Когда",
+        "col-fare": "Тариф",
+        "col-margin": "Маржа",
+        "col-share": "Доля партнёра",
+        "col-change": "Изменение",
+        "col-balance": "Баланс",
+        "settlement-type-ride_credit": "Поездка",
+        "settlement-type-settlement": "Расчёт",
+        "settlement-type-opening_balance": "Начальный баланс",
+        "tab-applications": "Заявки",
+        "tab-active": "Активные",
+        "tab-balances": "Балансы",
+        "tab-all": "Все",
+        "active": "Активен"
       }
     },
     "Features": {
@@ -1307,7 +1388,8 @@
     "capacity": "Парк",
     "network": "Сеть",
     "booking_site": "Форма брони",
-    "desk": "Стойка"
+    "desk": "Стойка",
+    "pricing": "Тарифы"
   },
   "FormBuilder": {
     "title": "Конструктор форм",
@@ -1634,8 +1716,8 @@
     "trip-id": "ID поездки:",
     "amount": "Сумма:",
     "payment-method": "Способ оплаты:",
-    "confirmation-email-sent": "Письмо с подтверждением отправлено",
-    "we-and-apos-ve-sent-a-confirmation-email-with-all-your-booking-details-please-check-your-inbox-and-spam-folder": "Мы отправили письмо с подтверждением и всеми деталями бронирования. Пожалуйста, проверьте папку 'Входящие' и 'Спам'.",
+    "confirmation-email-sent": "Проверьте письмо с подтверждением",
+    "we-and-apos-ve-sent-a-confirmation-email-with-all-your-booking-details-please-check-your-inbox-and-spam-folder": "Подтверждение уходит, когда почта включена. Проверьте входящие и спам.",
     "need-help": "Нужна помощь?",
     "contact-our-24-7-support-team-at": "Свяжитесь с нашей круглосуточной поддержкой по",
     "or": "или",
@@ -1643,7 +1725,8 @@
     "return-to-home": "Вернуться на главную",
     "seconds": "секунд",
     "request-received-title": "Запрос получен",
-    "request-received-body": "Мы работаем по записи. Подтвердим доступность и напишем о следующих шагах. Это ещё не подтверждение бронирования."
+    "request-received-body": "Мы работаем по записи. Подтвердим доступность и напишем о следующих шагах. Это ещё не подтверждение бронирования.",
+    "contact-operator": "Свяжитесь с оператором, если нужно изменить поездку."
   },
   "Driver": {
     "failed-to-fetch-drivers": "Не удалось загрузить водителей",
@@ -1739,7 +1822,20 @@
     "load_error": "Не удалось загрузить поездки. Попробуйте снова.",
     "load_more": "Загрузить ещё поездки",
     "retry": "Повторить",
-    "passengers": "Пассажиры"
+    "passengers": "Пассажиры",
+    "action-started": "Начата",
+    "action-completed": "Завершена",
+    "action-no_show": "Неявка",
+    "call": "Позвонить",
+    "apple-maps": "Карты Apple",
+    "time-off-title": "Выходной",
+    "time-off-start": "Начало",
+    "time-off-end": "Конец",
+    "time-off-note": "Заметка",
+    "time-off-save": "Заблокировать эти часы",
+    "time-off-saved": "Выходной сохранён.",
+    "time-off-invalid": "Конец должен быть позже начала.",
+    "time-off-help": "В этот период поездки вам не назначаются."
   },
   "Stripe": {
     "payment-system-not-ready-please-refresh-the-page": "Платежная система не готова. Пожалуйста, обновите страницу.",
@@ -1948,7 +2044,9 @@
       "hide_password": "Скрыть пароль",
       "cover_kicker": "Назначения",
       "cover_title": "Присоединяйтесь к водителям этого оператора.",
-      "cover_body": "Создайте аккаунт и дождитесь назначенной поездки."
+      "cover_body": "Создайте аккаунт и дождитесь назначенной поездки.",
+      "phone": "Мобильный номер",
+      "phone_invalid": "Введите мобильный номер с кодом страны, например +14155552671."
     },
     "PartnerSignIn": {
       "title": "Вход партнёра",
@@ -1982,7 +2080,8 @@
       "hide_password": "Скрыть пароль",
       "cover_kicker": "Партнёрский стол",
       "cover_title": "Присоединитесь к переполнению этого оператора.",
-      "cover_body": "Одна компания, общие категории парка — не маркетплейс."
+      "cover_body": "Одна компания, общие категории парка — не маркетплейс.",
+      "phone_invalid": "Введите мобильный номер с кодом страны, например +14155552671."
     }
   },
   "AppError": {
@@ -2027,10 +2126,118 @@
     "declined-title": "Запрос недоступен",
     "declined-body": "Этот запрос отмечен как недоступный.",
     "already-paid-title": "Уже подтверждено",
-    "already-paid-body": "Поездка #{tripId} уже оплачена и подтверждена."
+    "already-paid-body": "Поездка #{tripId} уже оплачена и подтверждена.",
+    "pay-cash": "Оплатить водителю наличными",
+    "due-now": "К оплате сейчас",
+    "balance-due": "Остаток",
+    "loading": "Загрузка…",
+    "paid-in-full": "Эта поездка оплачена полностью.",
+    "trip-total": "Сумма поездки",
+    "cash-instructions": "Оплатите водителю наличными или переведите сумму на счёт ниже.",
+    "bank-details": "Банковские реквизиты"
   },
   "CountryBlocked": {
     "title": "Мы пока не обслуживаем ваш регион",
     "body": "Бронирование недоступно из вашего текущего местоположения. Если это ошибка, свяжитесь с нами."
+  },
+  "Calendar": {
+    "title": "Календарь",
+    "admin-description": "Все поездки по ответственному.",
+    "views": "Виды календаря",
+    "agenda": "Повестка",
+    "day": "День",
+    "week": "Неделя",
+    "month": "Месяц",
+    "loading": "Загрузка…",
+    "load-error": "Не удалось загрузить календарь. Попробуйте снова.",
+    "empty": "На этот период ничего не запланировано.",
+    "time-off": "Выходной",
+    "unassigned": "Не назначено",
+    "feed-create": "Создать закрытую ленту",
+    "feed-revoke": "Отозвать ленту",
+    "feed-ready": "Закрытая лента готова",
+    "feed-revoked": "Лента отозвана.",
+    "feed-error": "Не удалось обновить ленту. Повторите."
+  },
+  "Phone": {
+    "missing": "Добавьте мобильный номер в международном формате, прежде чем брать поездки.",
+    "add": "Добавить номер"
+  },
+  "Today": {
+    "title": "Сегодня",
+    "description": "Неназначенные поездки, сроки и балансы.",
+    "unassigned": "Без назначения сегодня",
+    "deadlines": "Сроки",
+    "balances": "К оплате",
+    "empty": "Здесь пусто.",
+    "loading": "Загрузка…",
+    "load-error": "Не удалось загрузить сегодня. Попробуйте снова."
+  },
+  "WhatsAppNotify": {
+    "title": "Сообщения назначенным",
+    "loading": "Загрузка…",
+    "load-error": "Не удалось загрузить сообщения.",
+    "save-error": "Не удалось сохранить. Попробуйте снова.",
+    "whatsappTplAssigned": "Поездка назначена",
+    "whatsappTplAvailable": "Поездку можно взять",
+    "whatsappTplChanged": "Поездка изменена или отменена",
+    "whatsappTplReminder": "Напоминание о подаче",
+    "whatsappTplSettlement": "Расчёт записан"
+  },
+  "Pricing": {
+    "title": "Тарифы",
+    "loading": "Загрузка…",
+    "load-failed": "Не удалось загрузить тарифы.",
+    "saved": "Сохранено.",
+    "save-failed": "Не удалось сохранить. Проверьте значения.",
+    "rules": "Ночь, праздники, минимум",
+    "night": "Ночное окно и процент",
+    "night-end": "Конец ночи",
+    "night-percent": "Ночной процент",
+    "meet": "Цена встречи",
+    "minimum": "Минимальный тариф оператора",
+    "holiday": "Праздник",
+    "holiday-percent": "Праздничный процент",
+    "add-holiday": "Добавить праздник",
+    "save": "Сохранить",
+    "zone": "Цена зоны",
+    "from": "Зона отправления",
+    "to": "Зона назначения",
+    "price": "Фиксированная цена",
+    "save-zone": "Сохранить зону",
+    "promo": "Промокод",
+    "code": "Код",
+    "kind": "Тип",
+    "amount": "Сумма",
+    "max-uses": "Всего использований",
+    "per-customer": "На клиента",
+    "percent": "Процент",
+    "fixed": "Фиксированная сумма",
+    "save-promo": "Сохранить код",
+    "deposit": "Процент предоплаты"
+  },
+  "Account": {
+    "title": "Ваши поездки",
+    "sign-in": "Вход",
+    "sign-in-help": "Код придёт в WhatsApp, затем на почту.",
+    "email": "Почта",
+    "phone": "Телефон",
+    "code": "Код",
+    "send-code": "Отправить код",
+    "verify": "Подтвердить",
+    "code-sent": "Код отправлен.",
+    "send-failed": "Не удалось отправить.",
+    "code-invalid": "Код неверный.",
+    "upcoming": "Предстоящие",
+    "past": "Прошлые",
+    "empty-upcoming": "Нет предстоящих поездок.",
+    "empty-past": "Нет прошлых поездок.",
+    "change": "Изменить",
+    "cancel": "Отменить",
+    "invoice": "Счёт",
+    "rebook": "Заказать снова",
+    "hourly": "Почасово",
+    "updated": "Обновлено.",
+    "cutoff": "Слишком близко к подаче, изменить нельзя."
   }
 }

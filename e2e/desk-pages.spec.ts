@@ -1,4 +1,4 @@
-import { mkdirSync, writeFileSync } from "node:fs";
+import { copyFileSync, mkdirSync, writeFileSync } from "node:fs";
 import { expect, test, type Page } from "@playwright/test";
 
 const ARTIFACTS = "/opt/cursor/artifacts/screenshots";
@@ -46,6 +46,40 @@ test("admin partners page hides document file data", async ({ page }, testInfo) 
   await expect(page.getByRole("heading", { name: "Partner Management" })).toBeVisible();
   await expect(page.getByText("Alpine Transfers")).toBeVisible();
 
+  await openPath(page, "/en/dashboard/settings/whatsapp");
+  await expect(page.getByText("Assignee messages")).toBeVisible();
+  await page.screenshot({
+    path: `${ARTIFACTS}/whatsapp-settings-${testInfo.project.name}.png`,
+    fullPage: true,
+  });
+
+  await openPath(page, "/en/dashboard/today");
+  await expect(page.getByRole("heading", { name: "Unassigned today" })).toBeVisible();
+  await page.screenshot({
+    path: `${ARTIFACTS}/admin-today-${testInfo.project.name}.png`,
+    fullPage: true,
+  });
+
+  await openPath(page, "/en/dashboard/calendar");
+  if (testInfo.project.name === "desktop") {
+    await expect(page.getByRole("grid", { name: "Month" }).getByText("Today Square")).toBeVisible();
+    await expect(page.getByRole("tab", { name: "Month" })).toBeVisible();
+    await expect(page.getByRole("grid", { name: "Month" })).toBeVisible();
+    await page.getByRole("tab", { name: "Week" }).click();
+    await expect(page.getByRole("grid", { name: "Week" })).toBeVisible();
+    await page.getByRole("tab", { name: "Day" }).click();
+    await expect(page.getByRole("grid", { name: "Day" })).toBeVisible();
+    await page.getByRole("tab", { name: "Month" }).click();
+  } else {
+    await expect(page.getByRole("list", { name: "Agenda" })).toBeVisible();
+    await expect(page.getByRole("list", { name: "Agenda" }).getByText("Today Square")).toBeVisible();
+    await expect(page.getByRole("grid", { name: "Month" })).toBeHidden();
+  }
+  await page.screenshot({
+    path: `${ARTIFACTS}/calendar-${testInfo.project.name}.png`,
+    fullPage: true,
+  });
+
   expect(listBody).not.toContain("E2EFILEDATA");
   expect(listBytes).toBeGreaterThan(0);
   expect(listBytes).toBeLessThan(20_000);
@@ -84,6 +118,13 @@ test("partner dashboard loads one marketplace poll and batches history reviews",
     fullPage: true,
   });
 
+  await openPath(page, "/en/partners/billing");
+  await expect(page.getByRole("heading", { name: "Statement" })).toBeVisible();
+  await page.screenshot({
+    path: `${ARTIFACTS}/partner-billing-${testInfo.project.name}.png`,
+    fullPage: true,
+  });
+
   if (testInfo.project.name !== "desktop") return;
 
   requests.length = 0;
@@ -111,6 +152,20 @@ test("partner dashboard loads one marketplace poll and batches history reviews",
       2,
     ),
   );
+});
+
+test("driver ride card offers navigate and call", async ({ page }, testInfo) => {
+  await signIn(page, "/en/drivers/login", "driver@e2e.example", "e2e-password");
+  await openPath(page, "/en/drivers/dashboard");
+  await expect(page.getByText("Lugano Station")).toBeVisible();
+  await expect(page.getByRole("link", { name: "Call" })).toHaveAttribute("href", "tel:+41790000000");
+  await expect(page.getByRole("link", { name: "Apple Maps" })).toBeVisible();
+  const shotDir = "/tmp/screenshots";
+  mkdirSync(shotDir, { recursive: true });
+  mkdirSync(ARTIFACTS, { recursive: true });
+  const shotName = `driver-ride-${testInfo.project.name}.png`;
+  await page.screenshot({ path: `${shotDir}/${shotName}`, fullPage: true });
+  copyFileSync(`${shotDir}/${shotName}`, `${ARTIFACTS}/${shotName}`);
 });
 
 test("partner dashboard does not poll while the tab is hidden", async ({ page }, testInfo) => {

@@ -5,6 +5,15 @@ import { Vehicle } from "@/features/fleet/model";
 import { Partner, PartnerSettlementEntry } from "@/features/partners/model";
 import { clearPartnerDispatchSettingsCache } from "@/features/partners/lib/get-partner-dispatch-settings";
 import { Review } from "@/features/reviews/model";
+import CronMarker from "@/features/cron/model/CronMarker";
+import PricingRule from "@/features/pricing/model/PricingRule";
+import PromoCode from "@/features/pricing/model/PromoCode";
+import PromoRedemption from "@/features/pricing/model/PromoRedemption";
+import ZonePrice from "@/features/pricing/model/ZonePrice";
+import CustomerOtp from "@/features/customers/model/CustomerOtp";
+import CorporateAccount from "@/features/corporate/model/CorporateAccount";
+import RecurringRide from "@/features/corporate/model/RecurringRide";
+import RideCharge from "@/features/invoices/model/RideCharge";
 import { Setting } from "@/features/settings/model";
 
 export async function resetTestDb() {
@@ -18,5 +27,14 @@ export async function resetTestDb() {
     PartnerSettlementEntry.deleteMany({}),
     Review.deleteMany({}),
     Setting.deleteMany({}),
+    CronMarker.deleteMany({}),
+    PricingRule.deleteMany({}),
+    PromoCode.deleteMany({}),
+    PromoRedemption.deleteMany({}),
+    ZonePrice.deleteMany({}),
+    CustomerOtp.deleteMany({}),
+    CorporateAccount.deleteMany({}),
+    RecurringRide.deleteMany({}),
+    RideCharge.deleteMany({}),
   ]);
 }

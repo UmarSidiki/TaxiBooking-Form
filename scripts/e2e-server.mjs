@@ -36,6 +36,18 @@ await db.collection("vehicles").insertOne({
   updatedAt: now,
 });
 
+const driverId = new mongoose.Types.ObjectId();
+await db.collection("drivers").insertOne({
+  _id: driverId,
+  name: "Nia Driver",
+  email: "driver@e2e.example",
+  password,
+  status: "approved",
+  isActive: true,
+  createdAt: now,
+  updatedAt: now,
+});
+
 await db.collection("users").insertOne({
   email: "admin@e2e.example",
   password,
@@ -72,6 +84,7 @@ await db.collection("partners").insertOne({
   ],
   totalEarnings: 40,
   payoutBalance: 40,
+  balance: 40,
   createdAt: now,
   updatedAt: now,
 });
@@ -89,7 +102,58 @@ await db.collection("settings").insertOne({
 });
 
 const pastBookingId = new mongoose.Types.ObjectId();
+const todayStamp = new Date().toISOString().slice(0, 10);
 await db.collection("bookings").insertMany([
+  {
+    tripId: "e2e-today",
+    pickup: "Today Square",
+    dropoff: "Old Town",
+    tripType: "oneway",
+    date: todayStamp,
+    time: "16:00",
+    passengers: 1,
+    selectedVehicle: vehicleId,
+    vehicleDetails: { name: "Sedan", price: "40", seats: "4" },
+    childSeats: 0,
+    babySeats: 0,
+    notes: "",
+    firstName: "Nora",
+    lastName: "Keller",
+    email: "nora@example.com",
+    phone: "+14155552671",
+    paymentMethod: "cash",
+    paymentStatus: "pending",
+    status: "upcoming",
+    totalAmount: 40,
+    createdAt: now,
+    updatedAt: now,
+  },
+  {
+    tripId: "e2e-driver",
+    pickup: "Lugano Station",
+    dropoff: "Paradiso",
+    tripType: "oneway",
+    date: "2026-12-21",
+    time: "11:00",
+    passengers: 2,
+    selectedVehicle: vehicleId,
+    vehicleDetails: { name: "Sedan", price: "60", seats: "4" },
+    childSeats: 0,
+    babySeats: 0,
+    notes: "",
+    firstName: "Mina",
+    lastName: "Rossi",
+    email: "mina@example.com",
+    phone: "+41790000000",
+    paymentMethod: "cash",
+    paymentStatus: "pending",
+    status: "upcoming",
+    totalAmount: 60,
+    driverRideStatus: "assigned",
+    assignedDriver: { _id: driverId, name: "Nia Driver", email: "driver@e2e.example" },
+    createdAt: now,
+    updatedAt: now,
+  },
   {
     tripId: "e2e-upcoming",
     pickup: "Geneva Airport",
@@ -180,6 +244,22 @@ await db.collection("bookings").insertMany([
     updatedAt: now,
   },
 ]);
+
+await db.collection("partnersettlemententries").insertOne({
+  partnerId,
+  bookingId: pastBookingId,
+  type: "ride_credit",
+  amount: 40,
+  balanceDelta: 40,
+  currency: "eur",
+  channel: "online",
+  fare: 50,
+  margin: 10,
+  partnerShare: 40,
+  note: "Online ride paid and complete",
+  createdAt: now,
+  updatedAt: now,
+});
 
 await db.collection("reviews").insertOne({
   bookingId: pastBookingId,

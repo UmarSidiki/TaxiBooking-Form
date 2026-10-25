@@ -207,7 +207,11 @@
     "indicative-rate-label": "Indicatief tarief — bevestigd na controle van beschikbaarheid:",
     "request-this-appointment": "Deze afspraak aanvragen",
     "submitting-request": "Verzenden…",
-    "whatsapp_confirmation-note": "Uw boekingsbevestiging wordt ook via WhatsApp verzonden."
+    "whatsapp_confirmation-note": "Uw boekingsbevestiging wordt ook via WhatsApp verzonden.",
+    "meet-greet": "Meet & greet",
+    "promo-code": "Promocode",
+    "due-now": "Nu te betalen",
+    "balance-due": "Nog te betalen"
   },
   "booking-failed-data-message": "Boeking mislukt: {0}",
   "embeddable": {
@@ -487,7 +491,31 @@
       "create-booking": "Boeking aanmaken",
       "booking-created": "Boeking {tripId} aangemaakt",
       "NoAwaitingPayment": "Geen offertes in afwachting van betaling",
-      "NoAwaitingPaymentDescription": "Geoffreerde aanvragen blijven hier tot de klant betaalt."
+      "NoAwaitingPaymentDescription": "Geoffreerde aanvragen blijven hier tot de klant betaalt.",
+      "overlap-notice": "Toegewezen. Dit overlapt {trip} om {time}.",
+      "partner-overlap-notice": "Partner toegewezen. Dit overlapt {trip} om {time}.",
+      "driver-time-off": "Deze chauffeur is vrij tijdens die ophaaltijd. Kies een andere.",
+      "edit-ride": "Rit bewerken",
+      "edit-saved": "Rit bijgewerkt.",
+      "edit-failed": "De rit kon niet worden bijgewerkt. Controleer de velden en probeer opnieuw.",
+      "activity": "Ritactiviteit",
+      "activity-empty": "Nog geen activiteit.",
+      "activity-loading": "Activiteit laden…",
+      "save-ride": "Rit opslaan",
+      "ride-notes": "Notities",
+      "quote-link-ready": "Betaallink klaar: {url}",
+      "quote-link-email-failed": "Offerte opgeslagen. E-mail mislukt, kopieer deze link: {url}",
+      "activity-assigned": "Toegewezen",
+      "activity-claimed": "Geclaimd",
+      "activity-started": "Gestart",
+      "activity-completed": "Voltooid",
+      "activity-no_show": "Niet verschenen",
+      "activity-cancelled": "Geannuleerd",
+      "activity-edited": "Bewerkt",
+      "activity-approved": "Goedgekeurd voor partners",
+      "activity-quoted": "Geoffreerd",
+      "activity-confirmed": "Bevestigd als contant",
+      "activity-declined": "Geweigerd"
     },
     "Home": {
       "failed-to-fetch-dashboard-stats": "Ophalen dashboardstatistieken mislukt",
@@ -600,7 +628,8 @@
         "failed-to-accept-ride": "Rit accepteren mislukt",
         "partner-earnings-label": "Uw uitbetaling",
         "retry": "Opnieuw proberen",
-        "dismiss": "Sluiten"
+        "dismiss": "Sluiten",
+        "balance": "Saldo"
       },
       "Rides": {
         "my-rides": "Mijn Ritten",
@@ -636,7 +665,10 @@
         "your-payout": "Uw Uitbetaling",
         "retry": "Opnieuw proberen",
         "load-error": "Ritten konden niet worden geladen. Probeer het opnieuw.",
-        "customer-review": "Klantbeoordeling"
+        "customer-review": "Klantbeoordeling",
+        "mark-completed": "Markeer als voltooid",
+        "completing": "Afronden…",
+        "complete-failed": "Deze rit kon niet worden afgerond. Probeer opnieuw."
       },
       "Sidebar": {
         "partner-portal": "Partner Portaal",
@@ -646,19 +678,21 @@
         "rides": "Ritten",
         "history": "Geschiedenis",
         "fleet": "Wagenpark",
-        "my-rides": "Mijn Ritten",
+        "my-rides": "Mijn ritten",
         "upcoming-rides": "Aankomende Ritten",
         "preferences": "Voorkeuren",
         "billing": "Facturatie",
         "overview": "Overzicht",
         "operations": "Operationeel",
         "fleet_management": "Wagenparkbeheer",
-        "account_settings": "Account & Instellingen"
+        "account_settings": "Account & Instellingen",
+        "available-rides": "Beschikbare ritten",
+        "vehicles": "Voertuigen"
       },
       "Billing": {
         "title": "Facturatie & Bankgegevens",
         "description": "Geef uw uitbetalingsgegevens op zodat beheerders weten waar ze uw verdiensten naartoe moeten sturen.",
-        "payout-summary-title": "Openstaande uitbetaling",
+        "payout-summary-title": "Saldo",
         "payout-summary-description": "Bedrag dat momenteel aan u verschuldigd is uit online of kaartbetalingen.",
         "last-paid": "Laatst betaald: {date}",
         "never": "Nooit",
@@ -687,7 +721,23 @@
         "save-button": "Bankgegevens opslaan",
         "save-success": "Bankgegevens succesvol bijgewerkt.",
         "save-error": "Opslaan bankgegevens mislukt. Probeer het opnieuw.",
-        "load-error": "Kan facturatiegegevens niet laden. Vernieuw de pagina en probeer het opnieuw."
+        "load-error": "Kan facturatiegegevens niet laden. Vernieuw de pagina en probeer het opnieuw.",
+        "statement-title": "Afschrift",
+        "statement-empty": "Nog geen regels.",
+        "download-statement": "Afschrift downloaden",
+        "col-when": "Wanneer",
+        "col-fare": "Tarief",
+        "col-margin": "Marge",
+        "col-share": "Partnerdeel",
+        "col-change": "Mutatie",
+        "col-balance": "Saldo",
+        "entry-ride_credit": "Rit",
+        "entry-settlement": "Afrekening",
+        "entry-opening_balance": "Beginsaldo",
+        "entry-clawback": "Terugboeking",
+        "payout-summary-owed": "De operator is u dit bedrag schuldig.",
+        "payout-summary-due": "U bent de operator dit bedrag schuldig.",
+        "payout-summary-even": "Er staat niets open."
       },
       "Fleet": {
         "fleet-management": "Wagenparkbeheer",
@@ -871,7 +921,38 @@
         "settlement-type-payout_paid": "Uitbetaling betaald",
         "settlement-type-remittance_credit": "Afdracht verschuldigd",
         "settlement-type-remittance_received": "Afdracht ontvangen",
-        "settlement-type-clawback": "Terugboeking"
+        "settlement-type-clawback": "Terugboeking",
+        "balance-label": "Saldo",
+        "balance-hint": "Positief: u bent de partner verschuldigd. Negatief: de partner is u verschuldigd.",
+        "settle-open": "Afrekening vastleggen",
+        "settle-title": "Afrekening vastleggen",
+        "settle-description": "Een deelbedrag mag. Het grootboek bewaart wie het vastlegde.",
+        "settle-amount": "Bedrag",
+        "settle-direction": "Richting",
+        "settle-pay-partner": "Partner betalen",
+        "settle-receive": "Ontvangen van partner",
+        "settle-method": "Manier",
+        "settle-bank": "Bank",
+        "settle-cash": "Contant",
+        "settle-other": "Anders",
+        "settle-reference": "Referentie",
+        "settle-save": "Afrekening opslaan",
+        "settle-saving": "Opslaan…",
+        "settle-error": "De afrekening kon niet worden opgeslagen. Probeer opnieuw.",
+        "col-when": "Wanneer",
+        "col-fare": "Tarief",
+        "col-margin": "Marge",
+        "col-share": "Partnerdeel",
+        "col-change": "Mutatie",
+        "col-balance": "Saldo",
+        "settlement-type-ride_credit": "Rit",
+        "settlement-type-settlement": "Afrekening",
+        "settlement-type-opening_balance": "Beginsaldo",
+        "tab-applications": "Aanvragen",
+        "tab-active": "Actief",
+        "tab-balances": "Saldi",
+        "tab-all": "Alles",
+        "active": "Actief"
       }
     },
     "Features": {
@@ -1307,7 +1388,8 @@
     "capacity": "Capaciteit",
     "network": "Netwerk",
     "booking_site": "Boekingssite",
-    "desk": "Balie"
+    "desk": "Balie",
+    "pricing": "Tarieven"
   },
   "FormBuilder": {
     "title": "Formulierbouwer",
@@ -1634,8 +1716,8 @@
     "trip-id": "Rit-ID:",
     "amount": "Bedrag:",
     "payment-method": "Betaalmethode:",
-    "confirmation-email-sent": "Bevestigingsmail Verzonden",
-    "we-and-apos-ve-sent-a-confirmation-email-with-all-your-booking-details-please-check-your-inbox-and-spam-folder": "We hebben een bevestigingsmail gestuurd met al uw boekingsdetails. Controleer uw inbox en spamfolder.",
+    "confirmation-email-sent": "Controleer de bevestigingsmail",
+    "we-and-apos-ve-sent-a-confirmation-email-with-all-your-booking-details-please-check-your-inbox-and-spam-folder": "Een bevestiging gaat weg wanneer e-mail aanstaat. Controleer inbox en spam.",
     "need-help": "Hulp Nodig?",
     "contact-our-24-7-support-team-at": "Neem 24/7 contact op met ons supportteam via",
     "or": "of",
@@ -1643,7 +1725,8 @@
     "return-to-home": "Terug naar Startpagina",
     "seconds": "seconden",
     "request-received-title": "Verzoek ontvangen",
-    "request-received-body": "Wij werken op afspraak. We bevestigen beschikbaarheid en mailen de vervolgstappen. Dit is nog geen boekingsbevestiging."
+    "request-received-body": "Wij werken op afspraak. We bevestigen beschikbaarheid en mailen de vervolgstappen. Dit is nog geen boekingsbevestiging.",
+    "contact-operator": "Neem contact op met de operator als u deze rit wilt wijzigen."
   },
   "Driver": {
     "failed-to-fetch-drivers": "Ophalen chauffeurs mislukt",
@@ -1739,7 +1822,20 @@
     "load_error": "We konden uw ritten niet laden. Probeer opnieuw.",
     "load_more": "Meer ritten laden",
     "retry": "Opnieuw proberen",
-    "passengers": "Passagiers"
+    "passengers": "Passagiers",
+    "action-started": "Gestart",
+    "action-completed": "Voltooid",
+    "action-no_show": "Niet verschenen",
+    "call": "Bellen",
+    "apple-maps": "Apple Kaarten",
+    "time-off-title": "Vrij",
+    "time-off-start": "Start",
+    "time-off-end": "Einde",
+    "time-off-note": "Notitie",
+    "time-off-save": "Deze uren blokkeren",
+    "time-off-saved": "Vrij opgeslagen.",
+    "time-off-invalid": "Het einde moet na de start liggen.",
+    "time-off-help": "In deze periode krijgt u geen ritten toegewezen."
   },
   "Stripe": {
     "payment-system-not-ready-please-refresh-the-page": "Betaalsysteem niet gereed. Vernieuw de pagina.",
@@ -1948,7 +2044,9 @@
       "hide_password": "Wachtwoord verbergen",
       "cover_kicker": "Opdrachten",
       "cover_title": "Sluit u aan bij de chauffeurs van deze operator.",
-      "cover_body": "Maak een account en wacht op een toegewezen rit."
+      "cover_body": "Maak een account en wacht op een toegewezen rit.",
+      "phone": "Mobiel nummer",
+      "phone_invalid": "Vul een mobiel nummer met landcode in, bijvoorbeeld +14155552671."
     },
     "PartnerSignIn": {
       "title": "Partner aanmelden",
@@ -1982,7 +2080,8 @@
       "hide_password": "Wachtwoord verbergen",
       "cover_kicker": "Affiliate-balie",
       "cover_title": "Sluit aan bij de overflow van deze exploitant.",
-      "cover_body": "Eén bedrijf, gedeelde vlootcategorieën — geen marktplaats."
+      "cover_body": "Eén bedrijf, gedeelde vlootcategorieën — geen marktplaats.",
+      "phone_invalid": "Vul een mobiel nummer met landcode in, bijvoorbeeld +14155552671."
     }
   },
   "AppError": {
@@ -2027,10 +2126,118 @@
     "declined-title": "Verzoek niet beschikbaar",
     "declined-body": "Dit verzoek is als niet beschikbaar gemarkeerd.",
     "already-paid-title": "Al bevestigd",
-    "already-paid-body": "Rit #{tripId} is al betaald en bevestigd."
+    "already-paid-body": "Rit #{tripId} is al betaald en bevestigd.",
+    "pay-cash": "Contant aan de chauffeur betalen",
+    "due-now": "Nu te betalen",
+    "balance-due": "Nog te betalen",
+    "loading": "Laden…",
+    "paid-in-full": "Deze rit is volledig betaald.",
+    "trip-total": "Rittotaal",
+    "cash-instructions": "Betaal de chauffeur contant of maak het bedrag over naar de rekening hieronder.",
+    "bank-details": "Bankgegevens"
   },
   "CountryBlocked": {
     "title": "Wij bedienen uw regio nog niet",
     "body": "Boekingen zijn niet beschikbaar vanaf uw huidige locatie. Denkt u dat dit een fout is, neem dan contact met ons op."
+  },
+  "Calendar": {
+    "title": "Kalender",
+    "admin-description": "Alle ritten, per toegewezen persoon.",
+    "views": "Kalenderweergaven",
+    "agenda": "Agenda",
+    "day": "Dag",
+    "week": "Week",
+    "month": "Maand",
+    "loading": "Laden…",
+    "load-error": "De kalender kon niet worden geladen. Probeer opnieuw.",
+    "empty": "Niets gepland in deze periode.",
+    "time-off": "Vrij",
+    "unassigned": "Niet toegewezen",
+    "feed-create": "Privéfeed maken",
+    "feed-revoke": "Feed intrekken",
+    "feed-ready": "Privéfeed klaar",
+    "feed-revoked": "Feed ingetrokken.",
+    "feed-error": "Feed kon niet worden bijgewerkt. Probeer opnieuw."
+  },
+  "Phone": {
+    "missing": "Voeg een mobiel nummer in internationaal formaat toe voordat u ritten aanneemt.",
+    "add": "Nummer toevoegen"
+  },
+  "Today": {
+    "title": "Vandaag",
+    "description": "Niet-toegewezen ritten, deadlines en saldi.",
+    "unassigned": "Vandaag niet toegewezen",
+    "deadlines": "Deadlines",
+    "balances": "Openstaande saldi",
+    "empty": "Niets hier.",
+    "loading": "Laden…",
+    "load-error": "Vandaag kon niet worden geladen. Probeer opnieuw."
+  },
+  "WhatsAppNotify": {
+    "title": "Berichten aan toegewezenen",
+    "loading": "Laden…",
+    "load-error": "Berichten konden niet worden geladen.",
+    "save-error": "Opslaan mislukt. Probeer opnieuw.",
+    "whatsappTplAssigned": "Rit toegewezen",
+    "whatsappTplAvailable": "Rit te claimen",
+    "whatsappTplChanged": "Rit gewijzigd of geannuleerd",
+    "whatsappTplReminder": "Ophaalherinnering",
+    "whatsappTplSettlement": "Afrekening vastgelegd"
+  },
+  "Pricing": {
+    "title": "Tarieven",
+    "loading": "Laden…",
+    "load-failed": "Tarieven laden mislukt.",
+    "saved": "Opgeslagen.",
+    "save-failed": "Opslaan mislukt. Controleer de waarden.",
+    "rules": "Nacht, feestdagen, minimum",
+    "night": "Nachtvenster en percentage",
+    "night-end": "Nacht eindigt",
+    "night-percent": "Nachtpercentage",
+    "meet": "Prijs meet & greet",
+    "minimum": "Minimumtarief exploitant",
+    "holiday": "Feestdag",
+    "holiday-percent": "Feestdagpercentage",
+    "add-holiday": "Feestdag toevoegen",
+    "save": "Opslaan",
+    "zone": "Zoneprijs",
+    "from": "Van-zone",
+    "to": "Naar-zone",
+    "price": "Vaste prijs",
+    "save-zone": "Zone opslaan",
+    "promo": "Promocode",
+    "code": "Code",
+    "kind": "Soort",
+    "amount": "Bedrag",
+    "max-uses": "Totaal gebruik",
+    "per-customer": "Gebruik per klant",
+    "percent": "Percentage",
+    "fixed": "Vast bedrag",
+    "save-promo": "Code opslaan",
+    "deposit": "Aanbetalingspercentage"
+  },
+  "Account": {
+    "title": "Uw ritten",
+    "sign-in": "Inloggen",
+    "sign-in-help": "We sturen een code via WhatsApp, daarna per e-mail.",
+    "email": "E-mail",
+    "phone": "Telefoon",
+    "code": "Code",
+    "send-code": "Code sturen",
+    "verify": "Controleren",
+    "code-sent": "Code verzonden.",
+    "send-failed": "Verzenden mislukt.",
+    "code-invalid": "Code ongeldig.",
+    "upcoming": "Aankomend",
+    "past": "Verleden",
+    "empty-upcoming": "Geen aankomende ritten.",
+    "empty-past": "Geen eerdere ritten.",
+    "change": "Wijzigen",
+    "cancel": "Annuleren",
+    "invoice": "Factuur",
+    "rebook": "Opnieuw boeken",
+    "hourly": "Per uur",
+    "updated": "Bijgewerkt.",
+    "cutoff": "Te dicht bij vertrek om te wijzigen."
   }
 }

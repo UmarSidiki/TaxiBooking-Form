@@ -19,9 +19,7 @@ export function RideStatusBadge({
 
   if (booking.status === 'canceled') {
     return (
-      <Badge
-        className={`${BADGE_CLASSES} bg-destructive text-destructive-foreground hover:bg-destructive/90`}
-      >
+      <Badge variant="destructive" className={BADGE_CLASSES}>
         <X className="w-3 h-3" /> {t('Dashboard.Rides.Canceled')}
       </Badge>
     );
@@ -29,9 +27,7 @@ export function RideStatusBadge({
 
   if (booking.status === 'requested') {
     return (
-      <Badge
-        className={`${BADGE_CLASSES} bg-secondary text-secondary-foreground`}
-      >
+      <Badge variant="secondary" className={BADGE_CLASSES}>
         <Inbox className="w-3 h-3" /> {t('Dashboard.Rides.status-requested')}
       </Badge>
     );
@@ -39,9 +35,7 @@ export function RideStatusBadge({
 
   if (booking.status === 'awaiting_payment') {
     return (
-      <Badge
-        className={`${BADGE_CLASSES} bg-secondary text-secondary-foreground`}
-      >
+      <Badge variant="secondary" className={BADGE_CLASSES}>
         <Clock className="w-3 h-3" /> {t('Dashboard.Rides.status-awaiting-payment')}
       </Badge>
     );
@@ -53,16 +47,14 @@ export function RideStatusBadge({
 
   if (completed || booking.status === 'completed') {
     return (
-      <Badge
-        className={`${BADGE_CLASSES} bg-muted hover:bg-muted/90 text-muted-foreground`}
-      >
+      <Badge variant="outline" className={`${BADGE_CLASSES} bg-muted text-foreground`}>
         <CheckCircle className="w-3 h-3" /> {t('Dashboard.Rides.Completed')}
       </Badge>
     );
   }
 
   return (
-    <Badge className={`${BADGE_CLASSES} bg-primary text-primary-foreground hover:bg-primary/90`}>
+    <Badge variant="default" className={BADGE_CLASSES}>
       <Calendar className="w-3 h-3" /> {t('Dashboard.Rides.Upcoming')}
     </Badge>
   );

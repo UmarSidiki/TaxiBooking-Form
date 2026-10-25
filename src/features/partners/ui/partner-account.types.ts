@@ -8,7 +8,7 @@ export type PartnerAccountData = {
   address?: string;
   city?: string;
   country?: string;
-  status: "pending" | "approved" | "rejected" | "suspended";
+  status: "pending" | "active" | "approved" | "rejected" | "suspended";
   documents: PartnerDocument[];
   rejectionReason?: string;
   registeredAt: string;

@@ -16,12 +16,14 @@ export function PartnerRideCard({
   currencySymbol,
   isBookingPassed,
   setDetailBooking,
+  onCompleted,
 }: {
   booking: PartnerRideBooking;
   t: PartnerRidesState["t"];
   currencySymbol: string;
   isBookingPassed: PartnerRidesState["isBookingPassed"];
   setDetailBooking: PartnerRidesState["setDetailBooking"];
+  onCompleted?: () => void;
 }) {
   const locale = useLocale();
   const dateLabel = new Date(booking.date).toLocaleDateString(locale, {
@@ -64,9 +66,26 @@ export function PartnerRideCard({
           </p>
         </div>
         <RideMapLine start={booking.pickup} end={booking.dropoff || "—"} />
-        <Button className="h-11 w-full" onClick={() => setDetailBooking(booking)}>
-          {t("view-details")}
-        </Button>
+        <div className="flex flex-col gap-2 sm:flex-row">
+          <Button className="h-11 flex-1" onClick={() => setDetailBooking(booking)}>
+            {t("view-details")}
+          </Button>
+          {booking.status === "upcoming" ? (
+            <Button
+              variant="secondary"
+              className="h-11 flex-1"
+              onClick={() => {
+                void fetch(`/api/partners/rides/${booking._id}/complete`, { method: "POST" }).then(
+                  (response) => {
+                    if (response.ok) onCompleted?.();
+                  },
+                );
+              }}
+            >
+              {t("mark-completed")}
+            </Button>
+          ) : null}
+        </div>
       </CardContent>
     </Card>
   );

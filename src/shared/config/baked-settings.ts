@@ -10,7 +10,7 @@ export interface BakedSettings {
 const defaults: BakedSettings = {
   adminEmail: null,
   stripeCurrency: 'EUR',
-  primaryColor: '#EAB308',
+  primaryColor: '#B45309',
   syncedAt: null,
 };
 

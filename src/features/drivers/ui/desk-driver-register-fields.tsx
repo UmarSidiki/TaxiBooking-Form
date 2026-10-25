@@ -11,6 +11,7 @@ export type DriverRegisterValues = {
   email: string;
   password: string;
   confirmPassword: string;
+  phone: string;
 };
 
 export function DeskDriverRegisterFields({
@@ -50,6 +51,15 @@ export function DeskDriverRegisterFields({
         onChange={onChange}
         loading={loading}
         autoComplete="email"
+      />
+      <Field
+        id="phone"
+        label={t("phone")}
+        type="tel"
+        value={values.phone}
+        onChange={onChange}
+        loading={loading}
+        autoComplete="tel"
       />
       <PasswordField
         id="password"

@@ -9,9 +9,12 @@ import { creditPartnerOnComplete } from '@/features/booking/lib/credit-partner-o
 import { clawbackPartnerSettlementsForBooking } from '@/features/partners/lib/clawback-partner-settlements';
 import { sendAssignmentEmails } from '@/features/booking/lib/send-assignment-emails';
 import { sendCancelCustomerEmail } from '@/features/booking/lib/send-cancel-customer-email';
+import { queueBookingWhatsApp } from '@/features/settings/lib/queue-booking-whatsapp';
 import { sendReassignmentEmails } from '@/features/booking/lib/send-reassignment-emails';
 import { sendAppointmentPatchEmails } from '@/features/booking/lib/send-appointment-patch-emails';
 import { absoluteHttpBase } from '@/features/booking/lib/booking-mail-url';
+import { quotePayUrl } from '@/features/booking/lib/quote-pay-url';
+import { notePatchActivity } from '@/features/booking/lib/note-patch-activity';
 import {
   parseBookingPatchBody,
   type BookingPatchAction,
@@ -25,13 +28,15 @@ export type PatchBookingResult =
       action: BookingPatchAction;
       /** Set when the booking was updated but a follow-up notification failed. */
       warn?: string;
+      payUrl?: string;
     }
   | { ok: false; status: number; message: string };
 
 export async function patchBooking(
   id: string,
   body: unknown,
-  baseUrl?: string
+  baseUrl?: string,
+  actor?: { id: string; role: "admin" | "driver" | "partner" | "system" },
 ): Promise<PatchBookingResult> {
   await connectDB();
 
@@ -91,6 +96,11 @@ export async function patchBooking(
     return { ok: false, status: 500, message: 'Failed to update booking' };
   }
 
+  queueBookingWhatsApp({
+    action: parsed.data.action,
+    before: booking,
+    after: updatedBooking,
+  });
   await sendCancelCustomerEmail(
     parsed.data.action,
     updatedBooking,
@@ -120,9 +130,19 @@ export async function patchBooking(
   // notification is a warning, not a failure. Returning 502 here made the desk
   // report an error while the ride had silently moved, so operators saw no
   // change at all.
-  const warn = emailResult.ok ? undefined : emailResult.message;
+  const assignmentWarn = "warn" in applied && applied.ok ? applied.warn : undefined;
+  const warn = [assignmentWarn, emailResult.ok ? undefined : emailResult.message]
+    .filter(Boolean)
+    .join(" ") || undefined;
   if (warn) {
     console.error('Booking updated but notification failed:', id, warn);
+  }
+
+  await notePatchActivity(parsed.data.action, id, actor);
+  if (parsed.data.action === "assign") {
+    void import("@/features/customers/lib/send-customer-ride-update").then((mod) =>
+      mod.sendCustomerRideUpdate(id, "driver_assigned"),
+    );
   }
 
   if (parsed.data.action === 'approvepartner') {
@@ -155,5 +175,10 @@ export async function patchBooking(
     await clawbackPartnerSettlementsForBooking(booking);
   }
 
-  return { ok: true, booking: updatedBooking, action: parsed.data.action, warn };
+  const payUrl =
+    parsed.data.action === "quote"
+      ? quotePayUrl(baseUrl, updatedBooking.locale, applied.paymentToken)
+      : undefined;
+
+  return { ok: true, booking: updatedBooking, action: parsed.data.action, warn, payUrl };
 }

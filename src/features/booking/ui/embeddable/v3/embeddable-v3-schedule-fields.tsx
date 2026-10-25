@@ -33,7 +33,7 @@ export function EmbeddableV3ScheduleFields({
             {/* Date and Time */}
             <div className="grid grid-cols-2 gap-2 sm:gap-3">
               <div>
-                <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="v3-date" className="mb-1 block text-sm font-medium text-foreground">
                   {t("Step1.Date")} *
                 </label>
                 <div className="relative">
@@ -41,6 +41,7 @@ export function EmbeddableV3ScheduleFields({
                     <Calendar className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                   </div>
                   <Input
+                    id="v3-date"
                     type="date"
                     value={formData.date}
                     min={minDate}
@@ -62,7 +63,7 @@ export function EmbeddableV3ScheduleFields({
                 )}
               </div>
               <div>
-                <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="v3-time" className="mb-1 block text-sm font-medium text-foreground">
                   {t("Step1.Time")} *
                 </label>
                 <div className="relative">
@@ -70,6 +71,7 @@ export function EmbeddableV3ScheduleFields({
                     <Clock className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                   </div>
                   <Input
+                    id="v3-time"
                     type="time"
                     value={formData.time}
                     onChange={(e) =>
@@ -93,7 +95,7 @@ export function EmbeddableV3ScheduleFields({
 
             {/* Passengers */}
             <div>
-              <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="v3-passengers" className="mb-1 block text-sm font-medium text-foreground">
                 {t("embeddable.passengers")}
               </label>
               <div className="relative">
@@ -101,6 +103,7 @@ export function EmbeddableV3ScheduleFields({
                   <Users className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                 </div>
                 <Input
+                  id="v3-passengers"
                   type="number"
                   placeholder={t("embeddable.passengers")}
                   value={formData.passengers}

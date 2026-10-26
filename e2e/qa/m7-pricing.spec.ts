@@ -44,13 +44,15 @@ test("M7 pricing desk, quote, and axe", async ({ page, browser }) => {
   await page.getByRole("button", { name: "Save rules" }).click();
   await expect(page.getByRole("status").last()).toContainText("Saved");
 
+  await page.getByRole("tab", { name: /Fixed routes/ }).click();
   await page.getByLabel("From zone").fill("Geneva Airport");
   await page.getByLabel("To zone").fill("Lausanne");
   await page.getByLabel("Fixed price").fill("40");
   await page.getByRole("button", { name: "Save zone" }).click();
   await expect(page.getByRole("status").last()).toContainText("Saved");
 
-  await page.getByLabel("Code").fill("SAVE10");
+  await page.getByRole("tab", { name: /Promo codes/ }).click();
+  await page.getByLabel("Code", { exact: true }).fill("SAVE10");
   await page.getByLabel("Amount").fill("10");
   await page.getByLabel("Total uses").fill("20");
   await page.getByLabel("Uses per customer").fill("2");

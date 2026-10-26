@@ -140,10 +140,7 @@ export function useStep2() {
                 waypoints: waypoints,
                 travelMode: google.maps.TravelMode.DRIVING,
               },
-              (
-                result: google.maps.DirectionsResult | null,
-                status: google.maps.DirectionsStatus
-              ) => {
+              (result, status) => {
                 if (status === "OK" && result && googleMapRef.current) {
                   if (!directionsRendererRef.current) {
                     directionsRendererRef.current =

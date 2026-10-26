@@ -61,7 +61,7 @@ export function WhatsAppTemplateFields({
       <label className="flex min-h-11 items-center gap-3 text-sm">
         <input
           type="checkbox"
-          className="size-11 shrink-0 accent-primary focus-visible:ring-2 focus-visible:ring-ring"
+          className="size-5 shrink-0 accent-primary focus-visible:ring-2 focus-visible:ring-ring"
           checked={draft.enabled}
           onChange={(event) => setDraft((prev) => ({ ...prev, enabled: event.target.checked }))}
         />

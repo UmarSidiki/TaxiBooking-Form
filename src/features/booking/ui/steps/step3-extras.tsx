@@ -116,7 +116,7 @@ export function Step3Extras({
             <label className="flex min-h-11 items-center gap-3 text-sm">
               <input
                 type="checkbox"
-                className="size-11 shrink-0 accent-primary"
+                className="size-5 shrink-0 accent-primary"
                 checked={formData.meetAndGreet}
                 onChange={(event) => setFormData((prev) => ({ ...prev, meetAndGreet: event.target.checked }))}
               />

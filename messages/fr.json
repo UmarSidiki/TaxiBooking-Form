@@ -1365,7 +1365,15 @@
       "whatsapp_messages_title": "4. Message text",
       "whatsapp_deliveries_help": "The last messages sent, so you can check they went out.",
       "whatsapp_unsaved": "You have unsaved changes.",
-      "whatsapp_discard": "Discard"
+      "whatsapp_discard": "Discard",
+      "whatsapp_stat_confirmations": "Booking confirmations",
+      "whatsapp_on": "On",
+      "whatsapp_off": "Off",
+      "whatsapp_stat_desk": "Desk numbers",
+      "whatsapp_stat_recent": "Recent sends",
+      "whatsapp_stat_recent_value": "{sent} sent · {failed} failed",
+      "whatsapp_group_setup": "Setup",
+      "whatsapp_group_messages": "Messages"
     }
   },
   "Sidebar": {

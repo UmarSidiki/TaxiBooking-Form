@@ -85,10 +85,10 @@ export function WhatsAppLinkPanel() {
   return (
     <div className="flex flex-col gap-4">
       <div className="flex flex-wrap items-center gap-2">
-        <span className="text-sm text-muted-foreground">{t("whatsapp_status_label")}</span>
         <span
           role="status"
           aria-live="polite"
+          aria-label={`${t("whatsapp_status_label")} ${statusLabel}`}
           className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-semibold ${
             status === "linked"
               ? "border-emerald-600/30 bg-emerald-50 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-200"

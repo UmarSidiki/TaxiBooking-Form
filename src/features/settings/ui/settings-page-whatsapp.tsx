@@ -66,9 +66,25 @@ export function SettingsPageWhatsapp() {
     );
   }
 
+  const sent = data.deliveries.filter((d) => d.status === "sent").length;
+  const failed = data.deliveries.filter((d) => d.status === "failed").length;
+
   return (
     <div className="flex flex-col gap-6">
       <DeskPageMeta title={t("nav_whatsapp")} description={t("whatsapp_help")} />
+      <dl className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+        {[
+          [t("whatsapp_stat_confirmations"), data.config.enabled ? t("whatsapp_on") : t("whatsapp_off")],
+          [t("whatsapp_stat_desk"), String(data.config.notifyNumbers.length)],
+          [t("whatsapp_stat_recent"), t("whatsapp_stat_recent_value", { sent: sent, failed: failed })],
+        ].map(([label, value]) => (
+          <div key={label} className="desk-card rounded-2xl border border-border bg-card p-5">
+            <dt className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{label}</dt>
+            <dd className="mt-1 text-xl font-semibold tabular-nums">{value}</dd>
+          </div>
+        ))}
+      </dl>
+      <h2 className="-mb-4 text-xs font-semibold uppercase tracking-wide text-muted-foreground">{t("whatsapp_group_setup")}</h2>
       <SettingsSection title={t("whatsapp_connection_title")} description={t("whatsapp_unofficial")}>
         <WhatsAppLinkPanel />
       </SettingsSection>
@@ -78,6 +94,7 @@ export function SettingsPageWhatsapp() {
       <SettingsSection title={t("whatsapp_assignee_title")} description={t("whatsapp_assignee_help")}>
         <WhatsAppNotifyToggles />
       </SettingsSection>
+      <h2 className="-mb-4 text-xs font-semibold uppercase tracking-wide text-muted-foreground">{t("whatsapp_group_messages")}</h2>
       <SettingsSection title={t("whatsapp_messages_title")} description={t("whatsapp_messages_help")}>
         <WhatsAppTemplates
           templates={data.templates}

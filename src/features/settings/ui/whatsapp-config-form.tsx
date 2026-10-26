@@ -66,7 +66,7 @@ export function WhatsAppConfigForm({
 
   return (
     <div className="flex flex-col gap-5">
-      <div className="flex items-center justify-between gap-4 rounded-md border border-border p-3">
+      <div className="flex items-center justify-between gap-4 rounded-xl bg-muted/50 p-3">
         <span className="flex flex-col">
           <span id="whatsapp-enabled-label" className="text-sm font-medium">{t("whatsapp_enabled")}</span>
           <span id="whatsapp-enabled-help" className="text-xs text-muted-foreground">{t("whatsapp_enabled_help")}</span>

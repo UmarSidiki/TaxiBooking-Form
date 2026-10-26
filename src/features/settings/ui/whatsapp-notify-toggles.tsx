@@ -53,9 +53,9 @@ export function WhatsAppNotifyToggles() {
 
   return (
     <div className="flex flex-col gap-1">
-      <ul className="divide-y divide-border">
+      <ul className="flex flex-col gap-2">
         {KEYS.map((key) => (
-          <li key={key} className="flex min-h-14 items-center justify-between gap-4 py-2">
+          <li key={key} className="flex min-h-14 items-center justify-between gap-4 rounded-xl bg-muted/50 px-3 py-2">
             <span className="flex flex-col">
               <span className="text-sm font-medium" id={`notify-${key}`}>{t(key)}</span>
               <span className="text-xs text-muted-foreground">{t(`${key}-help`)}</span>

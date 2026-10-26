@@ -60,3 +60,19 @@ export async function POST(request: Request) {
   );
   return NextResponse.json({ promo });
 }
+
+export async function DELETE(request: Request) {
+  const admin = await requireAdmin();
+  if (!admin.ok) return admin.response;
+  const url = new URL(request.url);
+  const kind = url.searchParams.get("kind");
+  const id = url.searchParams.get("id") ?? "";
+  if ((kind !== "zone" && kind !== "promo") || !/^[a-f\d]{24}$/i.test(id)) {
+    return NextResponse.json({ error: "invalid_body" }, { status: 400 });
+  }
+  await connectDB();
+  const removed =
+    kind === "zone" ? await ZonePrice.findByIdAndDelete(id) : await PromoCode.findByIdAndDelete(id);
+  if (!removed) return NextResponse.json({ error: "not_found" }, { status: 404 });
+  return NextResponse.json({ ok: true });
+}

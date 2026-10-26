@@ -84,9 +84,30 @@ export function WhatsAppLinkPanel() {
 
   return (
     <div className="flex flex-col gap-4">
-      <p className="text-sm font-medium" role="status" aria-live="polite">
-        {statusLabel}
-      </p>
+      <div className="flex flex-wrap items-center gap-2">
+        <span className="text-sm text-muted-foreground">{t("whatsapp_status_label")}</span>
+        <span
+          role="status"
+          aria-live="polite"
+          className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-semibold ${
+            status === "linked"
+              ? "border-emerald-600/30 bg-emerald-50 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-200"
+              : status === "failed"
+                ? "border-destructive/30 bg-destructive/10 text-destructive"
+                : "border-amber-600/30 bg-amber-50 text-amber-900 dark:bg-amber-950 dark:text-amber-100"
+          }`}
+        >
+          <span aria-hidden className="size-2 rounded-full bg-current" />
+          {statusLabel}
+        </span>
+      </div>
+      {status !== "linked" ? (
+        <ol className="list-decimal space-y-1 pl-5 text-sm text-muted-foreground">
+          <li>{t("whatsapp_step_1")}</li>
+          <li>{t("whatsapp_step_2")}</li>
+          <li>{t("whatsapp_step_3")}</li>
+        </ol>
+      ) : null}
       {link?.qrDataUrl ? (
         <img
           src={link.qrDataUrl}

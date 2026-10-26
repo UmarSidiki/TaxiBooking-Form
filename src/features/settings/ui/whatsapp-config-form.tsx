@@ -9,6 +9,7 @@ import type { WhatsAppDeskConfig } from "@/features/settings/ui/whatsapp-desk-ty
 import { apiPut } from "@/shared/http/api";
 import { Button } from "@/shared/ui/button";
 import { Input } from "@/shared/ui/input";
+import { Switch } from "@/shared/ui/switch";
 
 const MAX_NUMBERS = 5;
 
@@ -27,6 +28,10 @@ export function WhatsAppConfigForm({
   );
   const [saving, setSaving] = useState(false);
   const [notice, setNotice] = useState<string | null>(null);
+  const cleanNumbers = numbers.map((item) => item.trim()).filter(Boolean);
+  const dirty =
+    JSON.stringify({ ...draft, notifyNumbers: cleanNumbers }) !==
+    JSON.stringify({ ...config, notifyNumbers: config.notifyNumbers });
   const languageNames = new Intl.DisplayNames([uiLocale], { type: "language" });
 
   useEffect(() => {
@@ -51,7 +56,7 @@ export function WhatsAppConfigForm({
       if (data.success) {
         onSaved(body);
         setNotice(t("whatsapp_saved"));
-      }
+      } else setNotice(t("whatsapp_save_failed"));
     } catch {
       setNotice(t("whatsapp_save_failed"));
     } finally {
@@ -61,19 +66,21 @@ export function WhatsAppConfigForm({
 
   return (
     <div className="flex flex-col gap-5">
-      <label className="flex min-h-11 items-start gap-3 text-sm">
-        <input
-          type="checkbox"
-          name="whatsapp-enabled"
-          className="size-11 shrink-0 accent-primary focus-visible:ring-2 focus-visible:ring-ring"
-          checked={draft.enabled}
-          onChange={(event) => setDraft((prev) => ({ ...prev, enabled: event.target.checked }))}
-        />
-        <span>
-          <span className="font-medium">{t("whatsapp_enabled")}</span>
-          <span className="mt-1 block text-muted-foreground">{t("whatsapp_enabled_help")}</span>
+      <div className="flex items-center justify-between gap-4 rounded-md border border-border p-3">
+        <span className="flex flex-col">
+          <span id="whatsapp-enabled-label" className="text-sm font-medium">{t("whatsapp_enabled")}</span>
+          <span id="whatsapp-enabled-help" className="text-xs text-muted-foreground">{t("whatsapp_enabled_help")}</span>
         </span>
-      </label>
+        <Switch
+          checked={draft.enabled}
+          aria-labelledby="whatsapp-enabled-label"
+          aria-describedby="whatsapp-enabled-help"
+          onCheckedChange={(enabled) => {
+            setDraft((prev) => ({ ...prev, enabled }));
+            setNotice(null);
+          }}
+        />
+      </div>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <div>
           <label htmlFor="whatsapp-calling-code" className="mb-2 block text-sm font-medium">
@@ -165,14 +172,32 @@ export function WhatsAppConfigForm({
         />
         <p className="mt-1 text-xs text-muted-foreground">{t("whatsapp_company_phone_help")}</p>
       </div>
-      {notice ? (
-        <p className="text-sm" role="status" aria-live="polite">
-          {notice}
-        </p>
+      {dirty || notice ? (
+        <div className="sticky bottom-0 z-30 -mx-4 flex flex-wrap items-center justify-end gap-3 border-t border-border bg-card/95 px-4 pt-3 backdrop-blur pb-[max(0.75rem,env(safe-area-inset-bottom))]">
+          <p className="mr-auto text-sm text-muted-foreground" role="status" aria-live="polite">
+            {notice ?? t("whatsapp_unsaved")}
+          </p>
+          {dirty ? (
+            <>
+              <Button
+                type="button"
+                variant="ghost"
+                className="h-11"
+                disabled={saving}
+                onClick={() => {
+                  setDraft(config);
+                  setNumbers(config.notifyNumbers.length > 0 ? config.notifyNumbers : [""]);
+                }}
+              >
+                {t("whatsapp_discard")}
+              </Button>
+              <Button type="button" className="h-11" onClick={save} disabled={saving}>
+                {saving ? t("whatsapp_saving") : t("whatsapp_save")}
+              </Button>
+            </>
+          ) : null}
+        </div>
       ) : null}
-      <Button type="button" className="h-11 w-fit" onClick={save} disabled={saving}>
-        {saving ? t("whatsapp_saving") : t("whatsapp_save")}
-      </Button>
     </div>
   );
 }

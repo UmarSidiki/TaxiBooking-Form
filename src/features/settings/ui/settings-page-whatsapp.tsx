@@ -13,6 +13,7 @@ import { SettingsSection } from "@/features/settings/ui/settings-section";
 import { DeskPageMeta } from "@/features/dashboard/ui/desk-page-chrome";
 import { apiGet } from "@/shared/http/api";
 import { Button } from "@/shared/ui/button";
+import { Skeleton } from "@/shared/ui/skeleton";
 
 export function SettingsPageWhatsapp() {
   const t = useTranslations("Dashboard.Settings");
@@ -44,7 +45,14 @@ export function SettingsPageWhatsapp() {
     setData((prev) => (prev ? { ...prev, config } : prev));
   };
 
-  if (loading) return <p className="text-sm text-muted-foreground">{t("loading")}</p>;
+  if (loading) {
+    return (
+      <div role="status" aria-label={t("loading")} className="flex flex-col gap-4">
+        <Skeleton className="h-32 w-full" />
+        <Skeleton className="h-64 w-full" />
+      </div>
+    );
+  }
   if (loadError || !data) {
     return (
       <div className="flex flex-col gap-3">
@@ -61,14 +69,16 @@ export function SettingsPageWhatsapp() {
   return (
     <div className="flex flex-col gap-6">
       <DeskPageMeta title={t("nav_whatsapp")} description={t("whatsapp_help")} />
-      <SettingsSection title={t("whatsapp_connection")} description={t("whatsapp_unofficial")}>
+      <SettingsSection title={t("whatsapp_connection_title")} description={t("whatsapp_unofficial")}>
         <WhatsAppLinkPanel />
-        <WhatsAppNotifyToggles />
       </SettingsSection>
-      <SettingsSection title={t("whatsapp_settings")}>
+      <SettingsSection title={t("whatsapp_settings_title")} description={t("whatsapp_settings_help")}>
         <WhatsAppConfigForm config={data.config} onSaved={onConfig} />
       </SettingsSection>
-      <SettingsSection title={t("whatsapp_messages")} description={t("whatsapp_messages_help")}>
+      <SettingsSection title={t("whatsapp_assignee_title")} description={t("whatsapp_assignee_help")}>
+        <WhatsAppNotifyToggles />
+      </SettingsSection>
+      <SettingsSection title={t("whatsapp_messages_title")} description={t("whatsapp_messages_help")}>
         <WhatsAppTemplates
           templates={data.templates}
           companyPhone={data.config.companyPhone}
@@ -76,7 +86,7 @@ export function SettingsPageWhatsapp() {
           onChange={() => load(true)}
         />
       </SettingsSection>
-      <SettingsSection title={t("whatsapp_deliveries")}>
+      <SettingsSection title={t("whatsapp_deliveries")} description={t("whatsapp_deliveries_help")}>
         <WhatsAppDeliveryList deliveries={data.deliveries} />
       </SettingsSection>
     </div>

@@ -9,7 +9,7 @@ import CronMarker from "@/features/cron/model/CronMarker";
 import PricingRule from "@/features/pricing/model/PricingRule";
 import PromoCode from "@/features/pricing/model/PromoCode";
 import PromoRedemption from "@/features/pricing/model/PromoRedemption";
-import ZonePrice from "@/features/pricing/model/ZonePrice";
+import FixedRoute from "@/features/pricing/model/FixedRoute";
 import CustomerOtp from "@/features/customers/model/CustomerOtp";
 import CorporateAccount from "@/features/corporate/model/CorporateAccount";
 import RecurringRide from "@/features/corporate/model/RecurringRide";
@@ -31,7 +31,7 @@ export async function resetTestDb() {
     PricingRule.deleteMany({}),
     PromoCode.deleteMany({}),
     PromoRedemption.deleteMany({}),
-    ZonePrice.deleteMany({}),
+    FixedRoute.deleteMany({}),
     CustomerOtp.deleteMany({}),
     CorporateAccount.deleteMany({}),
     RecurringRide.deleteMany({}),

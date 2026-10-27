@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/shared/ui/button";
+import { addressInputProps } from "@/features/booking/lib/maps/place-autocomplete";
 import { Input } from "@/shared/ui/input";
 import type { FormData, FormErrors } from "@/features/booking/context/booking-form-context";
 import { STOP_WAIT_OPTIONS_15_MIN } from "@/features/booking/lib/stop-wait-duration-options";
@@ -51,6 +52,7 @@ export function Step1LocationFields({
             <div className="relative">
               <Input
                 id="booking-pickup"
+                {...addressInputProps}
                 ref={pickupInputRef}
                 placeholder={t("Step1.PickupPlaceholder")}
                 className={`h-11 pe-12 ${
@@ -82,6 +84,8 @@ export function Step1LocationFields({
                     <div className="relative flex-[3]">
                       <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-primary pointer-events-none" />
                       <Input
+                        {...addressInputProps}
+                        aria-label={`Stop ${index + 1} location`}
                         ref={(el) => {
                           stopInputRefs.current[index] = el;
                         }}
@@ -151,6 +155,7 @@ export function Step1LocationFields({
               </div>
               <Input
                 id="booking-dropoff"
+                {...addressInputProps}
                 ref={dropoffInputRef}
                 placeholder={t("Step1.DropoffPlaceholder")}
                 className={`${

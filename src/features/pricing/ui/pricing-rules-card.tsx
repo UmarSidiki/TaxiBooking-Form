@@ -5,33 +5,43 @@ import { useTranslations } from "next-intl";
 import { Button } from "@/shared/ui/button";
 import { PricingExampleFare } from "@/features/pricing/ui/pricing-example-fare";
 import { PricingField, PricingNotice, parseAmount, type Notice } from "@/features/pricing/ui/pricing-field";
+import { Switch } from "@/shared/ui/switch";
+import { EXTRA_KEYS, type PricingExtras } from "@/features/pricing/lib/quote-fare";
+import { addDays, rangesOverlap, type HolidayRange } from "@/features/pricing/lib/holidays";
 
 export type Rule = {
   nightStart: string;
   nightEnd: string;
   nightPercent: number;
-  meetGreetPrice: number;
-  operatorMinimumFare: number;
   depositPercent: number;
-  holidays: { date: string; percent: number }[];
+  holidays: HolidayRange[];
+  extras: PricingExtras;
 };
 
-type Draft = Omit<Rule, "nightPercent" | "meetGreetPrice" | "operatorMinimumFare" | "depositPercent"> & {
+type ExtraKey = (typeof EXTRA_KEYS)[number];
+type Draft = Omit<Rule, "nightPercent" | "depositPercent" | "extras"> & {
   nightPercent: string;
-  meetGreetPrice: string;
-  operatorMinimumFare: string;
   depositPercent: string;
+  extras: Record<ExtraKey, { enabled: boolean; price: string }>;
 };
 
 const toDraft = (rule: Rule): Draft => ({
   ...rule,
   nightPercent: String(rule.nightPercent),
-  meetGreetPrice: String(rule.meetGreetPrice),
-  operatorMinimumFare: String(rule.operatorMinimumFare),
   depositPercent: String(rule.depositPercent),
+  extras: Object.fromEntries(
+    EXTRA_KEYS.map((key) => [key, { enabled: rule.extras[key].enabled, price: String(rule.extras[key].price) }]),
+  ) as Draft["extras"],
 });
 
-const LIMITS = { nightPercent: 200, meetGreetPrice: Infinity, operatorMinimumFare: Infinity, depositPercent: 100 } as const;
+const LIMITS = { nightPercent: 200, depositPercent: 100 } as const;
+
+/** Hours until a range is removed (12h after its end day), using this device's clock. */
+function hoursLeft(end: string) {
+  const removeAt = new Date(`${addDays(end, 1)}T12:00:00`).getTime();
+  const ms = removeAt - Date.now();
+  return ms <= 48 * 3_600_000 ? Math.max(0, Math.ceil(ms / 3_600_000)) : null;
+}
 
 function Card({ title, help, children }: { title: string; help?: string; children: React.ReactNode }) {
   return (
@@ -48,7 +58,8 @@ function Card({ title, help, children }: { title: string; help?: string; childre
 export function PricingRulesCard({ initial, onSaved }: { initial: Rule; onSaved: (rule: Rule) => void }) {
   const t = useTranslations("Pricing");
   const [draft, setDraft] = useState<Draft>(() => toDraft(initial));
-  const [holidayDate, setHolidayDate] = useState("");
+  const [holidayStart, setHolidayStart] = useState("");
+  const [holidayEnd, setHolidayEnd] = useState("");
   const [holidayPercent, setHolidayPercent] = useState("");
   const [saving, setSaving] = useState(false);
   const [notice, setNotice] = useState<Notice>(null);
@@ -65,14 +76,31 @@ export function PricingRulesCard({ initial, onSaved }: { initial: Rule; onSaved:
       return [key, value === null || value < 0 || value > LIMITS[key] ? t("invalid-number") : undefined];
     }),
   ) as Record<keyof typeof LIMITS, string | undefined>;
-  const hasErrors = Object.values(errors).some(Boolean);
+  const extraErrors = Object.fromEntries(
+    EXTRA_KEYS.map((key) => {
+      const value = parseAmount(draft.extras[key].price);
+      return [key, draft.extras[key].enabled && (value === null || value < 0) ? t("invalid-number") : undefined];
+    }),
+  ) as Record<ExtraKey, string | undefined>;
+  const hasErrors = [...Object.values(errors), ...Object.values(extraErrors)].some(Boolean);
+  const setExtra = (key: ExtraKey, patch: Partial<Draft["extras"][ExtraKey]>) =>
+    set({ extras: { ...draft.extras, [key]: { ...draft.extras[key], ...patch } } });
+
+  const newRange: HolidayRange = { start: holidayStart, end: holidayEnd || holidayStart, percent: parseAmount(holidayPercent) ?? 0 };
+  const rangeError = holidayStart && newRange.end < newRange.start ? t("holiday-end-before-start") : undefined;
+  const overlapping = holidayStart && !rangeError ? draft.holidays.filter((range) => rangesOverlap(range, newRange)) : [];
+  const rangeText = (range: HolidayRange) => (range.start === range.end ? range.start : `${range.start} → ${range.end}`);
   const num = (key: keyof typeof LIMITS) => parseAmount(draft[key]) ?? 0;
+  const extrasNow = Object.fromEntries(
+    EXTRA_KEYS.map((key) => [key, { enabled: draft.extras[key].enabled, price: parseAmount(draft.extras[key].price) ?? 0 }]),
+  ) as PricingExtras;
 
   const addHoliday = () => {
     const percent = parseAmount(holidayPercent);
-    if (!holidayDate || percent === null || percent < 0 || percent > 200) return;
-    set({ holidays: [...draft.holidays.filter((h) => h.date !== holidayDate), { date: holidayDate, percent }].sort((a, b) => a.date.localeCompare(b.date)) });
-    setHolidayDate("");
+    if (!holidayStart || rangeError || percent === null || percent < 0 || percent > 200) return;
+    set({ holidays: [...draft.holidays.filter((range) => range.start !== newRange.start || range.end !== newRange.end), { ...newRange, percent }].sort((a, b) => a.start.localeCompare(b.start)) });
+    setHolidayStart("");
+    setHolidayEnd("");
     setHolidayPercent("");
   };
 
@@ -81,7 +109,12 @@ export function PricingRulesCard({ initial, onSaved }: { initial: Rule; onSaved:
       setNotice({ tone: "error", text: t("save-failed") });
       return;
     }
-    const rule: Rule = { ...draft, nightPercent: num("nightPercent"), meetGreetPrice: num("meetGreetPrice"), operatorMinimumFare: num("operatorMinimumFare"), depositPercent: num("depositPercent") };
+    const rule: Rule = {
+      ...draft,
+      nightPercent: num("nightPercent"),
+      depositPercent: num("depositPercent"),
+      extras: extrasNow,
+    };
     setSaving(true);
     try {
       const response = await fetch("/api/admin/pricing", { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(rule) });
@@ -109,39 +142,68 @@ export function PricingRulesCard({ initial, onSaved }: { initial: Rule; onSaved:
           {draft.holidays.length === 0 ? (
             <p className="text-sm text-muted-foreground">{t("holidays-empty")}</p>
           ) : (
-            <ul className="flex flex-wrap gap-2">
-              {draft.holidays.map((holiday) => (
-                <li key={holiday.date} className="flex items-center gap-1 rounded-full border border-border bg-muted pl-3 text-sm">
-                  <span className="tabular-nums">{holiday.date} · +{holiday.percent}%</span>
-                  <Button type="button" variant="ghost" size="icon" className="size-11 rounded-full" aria-label={t("remove-holiday", { date: holiday.date })} onClick={() => set({ holidays: draft.holidays.filter((h) => h.date !== holiday.date) })}>
-                    ×
-                  </Button>
-                </li>
-              ))}
+            <ul className="flex flex-col gap-2">
+              {draft.holidays.map((range, index) => {
+                const left = hoursLeft(range.end);
+                return (
+                  <li key={`${range.start}-${range.end}-${index}`} className="flex min-h-11 items-center gap-2 rounded-xl bg-muted/50 pl-3 text-sm">
+                    <span className="min-w-0 flex-1 tabular-nums">
+                      {rangeText(range)} · +{range.percent}%
+                      {left !== null ? <span className="block text-xs text-muted-foreground">{t("holiday-removed-in", { hours: left })}</span> : null}
+                    </span>
+                    <Button type="button" variant="ghost" size="icon" className="size-11 rounded-full" aria-label={t("remove-holiday", { date: rangeText(range) })} onClick={() => set({ holidays: draft.holidays.filter((_, i) => i !== index) })}>
+                      ×
+                    </Button>
+                  </li>
+                );
+              })}
             </ul>
           )}
-          <div className="grid items-end gap-3 sm:grid-cols-[1fr_8rem_auto]">
-            <PricingField label={t("holiday")} type="date" value={holidayDate} onChange={setHolidayDate} />
+          <div className="grid items-start gap-3 sm:grid-cols-2 xl:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_7rem_auto] [&>*]:min-w-0">
+            <PricingField label={t("holiday-start")} type="date" value={holidayStart} onChange={(v) => { setHolidayStart(v); if (!holidayEnd || holidayEnd < v) setHolidayEnd(v); }} />
+            <PricingField label={t("holiday-end")} type="date" value={holidayEnd} error={rangeError} onChange={setHolidayEnd} />
             <PricingField label={t("holiday-percent")} unit="%" inputMode="decimal" value={holidayPercent} onChange={setHolidayPercent} />
-            <Button type="button" variant="outline" className="h-11" disabled={!holidayDate || parseAmount(holidayPercent) === null} onClick={addHoliday}>
+            <Button type="button" variant="outline" className="h-11 w-full sm:mt-[1.625rem] xl:w-auto" disabled={!holidayStart || Boolean(rangeError) || parseAmount(holidayPercent) === null} onClick={addHoliday}>
               {t("add-holiday")}
             </Button>
           </div>
+          {overlapping.length > 0 ? (
+            <p role="status" className="rounded-md border border-amber-600/40 bg-amber-50 p-3 text-sm text-amber-900 dark:bg-amber-950 dark:text-amber-100">
+              {t("holiday-overlap", { ranges: overlapping.map(rangeText).join(", ") })}
+            </p>
+          ) : null}
         </Card>
-        <Card title={t("extras-title")}>
-          <div className="grid gap-4 sm:grid-cols-3">
-            <PricingField label={t("meet")} unit="€" inputMode="decimal" help={t("meet-help")} value={draft.meetGreetPrice} error={errors.meetGreetPrice} onChange={(v) => set({ meetGreetPrice: v })} />
-            <PricingField label={t("minimum")} unit="€" inputMode="decimal" help={t("minimum-help")} value={draft.operatorMinimumFare} error={errors.operatorMinimumFare} onChange={(v) => set({ operatorMinimumFare: v })} />
+        <Card title={t("extras-title")} help={t("extras-help")}>
+          <ul className="flex flex-col gap-2">
+            {EXTRA_KEYS.map((key) => (
+              <li key={key} className="flex flex-col gap-3 rounded-xl bg-muted/50 p-3 sm:flex-row sm:items-start">
+                <div className="flex min-h-11 flex-1 items-center justify-between gap-3">
+                  <span className="flex flex-col">
+                    <span id={`extra-${key}`} className="text-sm font-medium">{t(`extra-${key}`)}</span>
+                    <span className="text-xs text-muted-foreground">{draft.extras[key].enabled ? t("extra-shown") : t("extra-hidden")}</span>
+                  </span>
+                  <Switch checked={draft.extras[key].enabled} aria-labelledby={`extra-${key}`} onCheckedChange={(enabled) => setExtra(key, { enabled })} />
+                </div>
+                {draft.extras[key].enabled ? (
+                  <div className="sm:w-40">
+                    <PricingField label={key === "meetGreet" ? t("extra-price") : t("extra-price-each")} unit="€" inputMode="decimal" value={draft.extras[key].price} error={extraErrors[key]} onChange={(v) => setExtra(key, { price: v })} />
+                  </div>
+                ) : null}
+              </li>
+            ))}
+          </ul>
+        </Card>
+        <Card title={t("payment-title")}>
+          <div className="sm:max-w-xs">
             <PricingField label={t("deposit")} unit="%" inputMode="decimal" help={t("deposit-help")} value={draft.depositPercent} error={errors.depositPercent} onChange={(v) => set({ depositPercent: v })} />
           </div>
         </Card>
       </div>
       <div className="lg:sticky lg:top-4 lg:self-start">
         <PricingExampleFare
-          nightPercent={num("nightPercent")}
-          holidayPercent={draft.holidays[0]?.percent ?? 0}
-          meetGreetPrice={num("meetGreetPrice")}
-          minimumFare={num("operatorMinimumFare")}
+          night={{ start: draft.nightStart, end: draft.nightEnd, percent: num("nightPercent") }}
+          holidays={draft.holidays}
+          extras={extrasNow}
           depositPercent={num("depositPercent")}
         />
       </div>

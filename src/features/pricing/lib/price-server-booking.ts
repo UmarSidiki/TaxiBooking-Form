@@ -1,10 +1,19 @@
 import type { IVehicle } from "@/features/fleet/model";
 import { connectDB } from "@/shared/db";
+import { Setting } from "@/features/settings/model";
 import PricingRule from "@/features/pricing/model/PricingRule";
-import ZonePrice from "@/features/pricing/model/ZonePrice";
+import { activeHolidays, normalizeHolidays } from "@/features/pricing/lib/holidays";
+import { readExtras } from "@/features/pricing/lib/load-pricing-extras";
 import { loadPromo, redeemPromo, type PromoFailure } from "@/features/pricing/lib/redeem-promo";
-import { quoteFare, type FareQuote, type QuoteInput } from "@/features/pricing/lib/quote-fare";
+import {
+  disabledExtrasRequested,
+  quoteFare,
+  type FareQuote,
+  type QuoteInput,
+} from "@/features/pricing/lib/quote-fare";
 import type { TaxSettings } from "@/features/payments/lib/fare/calculate-booking-price";
+
+export type PriceFailure = PromoFailure | "extra_disabled";
 
 export async function priceServerBooking(input: {
   vehicle: IVehicle;
@@ -12,33 +21,36 @@ export async function priceServerBooking(input: {
   distanceKm?: number;
   tax: TaxSettings;
   redeem?: boolean;
-}): Promise<{ ok: true; quote: FareQuote } | { ok: false; error: PromoFailure }> {
+  now?: Date;
+}): Promise<{ ok: true; quote: FareQuote } | { ok: false; error: PriceFailure }> {
   await connectDB();
   const customerKey = input.booking.email?.trim().toLowerCase() ?? "";
-  const [rule, zones, promo] = await Promise.all([
-    PricingRule.findOne().lean(),
-    ZonePrice.find().limit(200).lean(),
+  const [rule, setting, promo] = await Promise.all([
+    PricingRule.findOne().lean<Record<string, never>>() as Promise<Record<string, unknown> | null>,
+    Setting.findOne({}, { timezone: 1 }).lean<{ timezone?: string }>(),
     loadPromo(input.booking.promoCode, customerKey),
   ]);
   if (!promo.ok) return promo;
+  const extras = readExtras(rule?.extras as never);
+  if (disabledExtrasRequested(input.booking, extras).length > 0) return { ok: false, error: "extra_disabled" };
+
+  const holidays = activeHolidays(
+    normalizeHolidays(rule?.holidays as never),
+    input.now ?? new Date(),
+    setting?.timezone,
+  );
   const quote = quoteFare(
     input.vehicle,
     input.booking,
     input.tax,
     input.distanceKm,
     {
-      zones: zones.map((zone) => ({
-        fromLabel: zone.fromLabel,
-        toLabel: zone.toLabel,
-        price: zone.price,
-      })),
       night: rule
-        ? { start: rule.nightStart, end: rule.nightEnd, percent: rule.nightPercent }
+        ? { start: String(rule.nightStart), end: String(rule.nightEnd), percent: Number(rule.nightPercent) || 0 }
         : undefined,
-      holidays: rule?.holidays ?? [],
-      meetGreetPrice: rule?.meetGreetPrice ?? 0,
-      operatorMinimumFare: rule?.operatorMinimumFare ?? 0,
-      depositPercent: rule?.depositPercent ?? 0,
+      holidays,
+      extras,
+      depositPercent: Number(rule?.depositPercent) || 0,
     },
     promo.promo,
   );

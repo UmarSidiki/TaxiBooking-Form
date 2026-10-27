@@ -15,6 +15,9 @@ export interface BookingPriceInput {
   stops?: Array<{ location: string; duration?: number }>;
   childSeats?: number;
   babySeats?: number;
+  /** Operator-wide seat prices from Pricing → Extras. */
+  childSeatPrice?: number;
+  babySeatPrice?: number;
 }
 
 export interface TaxSettings {
@@ -123,9 +126,9 @@ export function calculateBookingPrice(
       : vehiclePrice;
 
   const childSeatsPrice =
-    (Number(input.childSeats) || 0) * (vehicle.childSeatPrice ?? 0);
+    (Number(input.childSeats) || 0) * (input.childSeatPrice ?? 0);
   const babySeatsPrice =
-    (Number(input.babySeats) || 0) * (vehicle.babySeatPrice ?? 0);
+    (Number(input.babySeats) || 0) * (input.babySeatPrice ?? 0);
   const stopsTotalPrice = stopsTotal(vehicle, input);
   const extrasPrice = childSeatsPrice + babySeatsPrice + stopsTotalPrice;
 

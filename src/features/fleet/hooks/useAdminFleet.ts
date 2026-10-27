@@ -2,8 +2,6 @@
 
 import type { VehicleForm } from "@/features/fleet/ui/vehicle-form.types";
 import {
-  DEFAULT_BABY_SEAT_PRICE,
-  DEFAULT_CHILD_SEAT_PRICE,
   DEFAULT_VEHICLE_MINIMUM_HOURS,
   DEFAULT_VEHICLE_PRICE_PER_HOUR,
   DEFAULT_VEHICLE_RETURN_PRICE_PERCENTAGE,
@@ -88,8 +86,6 @@ export function useAdminFleet() {
   const handleEdit = (vehicle: IVehicle) => {
     setFormData({
       ...vehicle,
-      childSeatPrice: vehicle.childSeatPrice || DEFAULT_CHILD_SEAT_PRICE,
-      babySeatPrice: vehicle.babySeatPrice || DEFAULT_BABY_SEAT_PRICE,
       pricePerHour: vehicle.pricePerHour || DEFAULT_VEHICLE_PRICE_PER_HOUR,
       minimumHours: vehicle.minimumHours || DEFAULT_VEHICLE_MINIMUM_HOURS,
       returnPricePercentage:

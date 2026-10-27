@@ -6,6 +6,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { useBookingVehicles } from "@/features/booking/hooks/use-booking-vehicles";
 import { useDeskBookingAutocomplete } from "@/features/desk-booking/hooks/use-desk-booking-autocomplete";
 import type { DeskBookingOutcome } from "@/features/desk-booking/schema/desk-booking.schema";
+import { seatPrices, usePricingExtras } from "@/features/pricing/lib/use-pricing-extras";
 import { calculateBookingPrice } from "@/features/payments/lib/fare/calculate-booking-price";
 import { useTheme } from "@/features/settings/context/theme-context";
 import { ApiError, apiPost } from "@/shared/http/api";
@@ -191,6 +192,8 @@ export function useDeskBookingForm({
   const taxPercentage = settings?.taxPercentage ?? 0;
   const taxIncluded = settings?.taxIncluded ?? false;
 
+  const extras = usePricingExtras();
+  const seats = seatPrices(extras);
   const computedFare = useMemo(() => {
     if (!selectedVehicle) return null;
 
@@ -205,6 +208,7 @@ export function useDeskBookingForm({
         stops: formData.stops,
         childSeats: formData.childSeats,
         babySeats: formData.babySeats,
+        ...seats,
       },
       { enableTax, taxPercentage, taxIncluded },
       distanceKm
@@ -219,6 +223,8 @@ export function useDeskBookingForm({
     formData.stops,
     formData.childSeats,
     formData.babySeats,
+    seats.childSeatPrice,
+    seats.babySeatPrice,
     distanceKm,
     enableTax,
     taxPercentage,

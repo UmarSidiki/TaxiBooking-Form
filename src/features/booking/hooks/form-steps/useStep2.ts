@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useBookingForm } from "@/features/booking/context/booking-form-context";
 import { importLibrary, setOptions } from "@googlemaps/js-api-loader";
 import { useTheme } from "@/features/settings/context/theme-context";
+import { seatPrices, usePricingExtras } from "@/features/pricing/lib/use-pricing-extras";
 import { calculateBookingPrice } from "@/features/payments/lib/fare/calculate-booking-price";
 
 export function useStep2() {
@@ -185,6 +186,7 @@ export function useStep2() {
     fetchVehicles();
   }, [setVehicles]);
 
+  const seats = seatPrices(usePricingExtras());
   const priceFor = (vehicle: (typeof vehicles)[0]) =>
     calculateBookingPrice(
       vehicle,
@@ -197,6 +199,7 @@ export function useStep2() {
         stops: formData.stops,
         childSeats: formData.childSeats,
         babySeats: formData.babySeats,
+        ...seats,
       },
       {
         enableTax: settings?.enableTax ?? false,

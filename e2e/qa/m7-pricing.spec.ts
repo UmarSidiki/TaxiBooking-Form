@@ -36,19 +36,13 @@ test("M7 pricing desk, quote, and axe", async ({ page, browser }) => {
   await page.locator("#night-start").fill("22:00");
   await page.getByLabel("Night ends").fill("06:00");
   await page.getByLabel("Night percent").fill("10");
-  await page.locator("#meet").fill("15");
-  await page.locator("#minimum").fill("0");
-  await page.getByLabel("Holiday date").fill("2026-12-25");
+  await page.getByRole("switch", { name: "Meet & greet" }).click();
+  await page.getByLabel("Price", { exact: true }).fill("15");
+  await page.getByRole("switch", { name: "Child seat" }).click();
+  await page.getByLabel("Start date").fill("2026-12-25");
   await page.getByLabel("Holiday percent").fill("10");
   await page.getByRole("button", { name: "Add holiday" }).click();
   await page.getByRole("button", { name: "Save rules" }).click();
-  await expect(page.getByRole("status").last()).toContainText("Saved");
-
-  await page.getByRole("tab", { name: /Fixed routes/ }).click();
-  await page.getByLabel("From zone").fill("Geneva Airport");
-  await page.getByLabel("To zone").fill("Lausanne");
-  await page.getByLabel("Fixed price").fill("40");
-  await page.getByRole("button", { name: "Save zone" }).click();
   await expect(page.getByRole("status").last()).toContainText("Saved");
 
   await page.getByRole("tab", { name: /Promo codes/ }).click();

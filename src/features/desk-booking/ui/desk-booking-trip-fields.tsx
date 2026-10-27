@@ -1,6 +1,7 @@
 "use client";
 
 import { Plus, Trash2 } from "lucide-react";
+import { addressInputProps } from "@/features/booking/lib/maps/place-autocomplete";
 import type { useTranslations } from "next-intl";
 import type { RefObject } from "react";
 
@@ -96,8 +97,8 @@ export function DeskBookingTripFields({
         <Label htmlFor="desk-pickup">{t("Step1.PickupLocation")}</Label>
         <Input
           id="desk-pickup"
+          {...addressInputProps}
           ref={pickupRef}
-          autoComplete="off"
           value={formData.pickup}
           placeholder={t("Step1.PickupPlaceholder")}
           onChange={(event) => update({ pickup: event.target.value })}
@@ -110,8 +111,8 @@ export function DeskBookingTripFields({
             <Label htmlFor="desk-dropoff">{t("Step1.DropoffLocation")}</Label>
             <Input
               id="desk-dropoff"
+              {...addressInputProps}
               ref={dropoffRef}
-              autoComplete="off"
               value={formData.dropoff}
               placeholder={t("Step1.DropoffPlaceholder")}
               onChange={(event) => update({ dropoff: event.target.value })}

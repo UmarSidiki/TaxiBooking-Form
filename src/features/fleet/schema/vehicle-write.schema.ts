@@ -20,8 +20,6 @@ export const vehicleWriteSchema = z.object({
   returnPricePercentage: z.coerce.number().min(0).optional(),
   discount: z.coerce.number().min(0).optional(),
   category: z.string().trim().min(1),
-  childSeatPrice: z.coerce.number().min(0).optional(),
-  babySeatPrice: z.coerce.number().min(0).optional(),
   stopPrice: z.coerce.number().min(0).optional(),
   stopPricePerHour: z.coerce.number().min(0).optional(),
   priceTiers: z.array(priceTierSchema).optional(),

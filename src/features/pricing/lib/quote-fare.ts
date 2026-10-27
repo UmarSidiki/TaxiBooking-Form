@@ -1,31 +1,49 @@
 import type { IVehicle } from "@/features/fleet/model";
+import { DEFAULT_VEHICLE_RETURN_PRICE_PERCENTAGE } from "@/features/fleet/lib/vehicle-form-defaults";
 import {
   calculateBookingPrice,
   type BookingPriceInput,
   type TaxSettings,
 } from "@/features/payments/lib/fare/calculate-booking-price";
 import { splitDeposit } from "@/features/pricing/lib/deposit-charge";
+import { holidayPercentFor, type HolidayRange } from "@/features/pricing/lib/holidays";
 
 export type FareLine = { code: string; amount: number };
 
-export type ZoneFare = { fromLabel: string; toLabel: string; price: number };
-
 export type PromoFare = { code: string; kind: "percent" | "fixed"; amount: number };
 
+export type ExtraSetting = { enabled: boolean; price: number };
+export type PricingExtras = { meetGreet: ExtraSetting; childSeat: ExtraSetting; babySeat: ExtraSetting };
+export const EXTRA_KEYS = ["meetGreet", "childSeat", "babySeat"] as const;
+export const defaultExtras = (): PricingExtras => ({
+  meetGreet: { enabled: false, price: 0 },
+  childSeat: { enabled: false, price: 0 },
+  babySeat: { enabled: false, price: 0 },
+});
+
 export type OperatorFareRules = {
-  zones?: ZoneFare[];
   night?: { start: string; end: string; percent: number };
-  holidays?: { date: string; percent: number }[];
-  meetGreetPrice?: number;
-  operatorMinimumFare?: number;
+  holidays?: HolidayRange[];
+  extras?: PricingExtras;
   depositPercent?: number;
 };
 
 export type QuoteInput = BookingPriceInput & {
   date?: string;
   time?: string;
+  returnDate?: string;
+  returnTime?: string;
   meetAndGreet?: boolean;
 };
+
+/** Extras the request asks for that the operator has switched off. */
+export function disabledExtrasRequested(input: QuoteInput, extras: PricingExtras) {
+  const asked: string[] = [];
+  if (input.meetAndGreet && !extras.meetGreet.enabled) asked.push("meetGreet");
+  if ((Number(input.childSeats) || 0) > 0 && !extras.childSeat.enabled) asked.push("childSeat");
+  if ((Number(input.babySeats) || 0) > 0 && !extras.babySeat.enabled) asked.push("babySeat");
+  return asked;
+}
 
 export type FareQuote = {
   total: number;
@@ -43,22 +61,6 @@ export type FareQuote = {
 
 function roundMoney(value: number) {
   return Math.round(value * 100) / 100;
-}
-
-export function matchZonePrice(pickup: string, dropoff: string, zones: ZoneFare[]) {
-  const from = pickup.toLowerCase();
-  const to = dropoff.toLowerCase();
-  const hits = zones.filter(
-    (zone) =>
-      zone.fromLabel.trim().length >= 3 &&
-      zone.toLabel.trim().length >= 3 &&
-      from.includes(zone.fromLabel.trim().toLowerCase()) &&
-      to.includes(zone.toLabel.trim().toLowerCase()),
-  );
-  hits.sort(
-    (a, b) => b.fromLabel.length + b.toLabel.length - (a.fromLabel.length + a.toLabel.length),
-  );
-  return hits[0]?.price;
 }
 
 export function isNightTime(time: string, start: string, end: string) {
@@ -100,9 +102,9 @@ function promoAmount(base: number, promo: PromoFare | null | undefined) {
 }
 
 /**
- * Wraps `calculateBookingPrice`. Child seats, baby seats, stops, vehicle
- * minimum, tiers, and round-trip stay there. This adds zone prices, night and
- * holiday percents, meet & greet, an operator minimum, and a promo.
+ * Wraps `calculateBookingPrice`. Stops, vehicle minimum, tiers, and round-trip
+ * stay there. This adds extras, night and holiday surcharges per
+ * leg (a return leg uses its own date and time), a promo, and the deposit split.
  */
 export function quoteFare(
   vehicle: IVehicle,
@@ -112,39 +114,40 @@ export function quoteFare(
   rules: OperatorFareRules,
   promo?: PromoFare | null,
 ): FareQuote {
-  const zonePrice =
-    input.bookingType === "hourly" || !input.pickup || !input.dropoff
-      ? undefined
-      : matchZonePrice(input.pickup, input.dropoff, rules.zones ?? []);
-  const source = "toObject" in vehicle && typeof vehicle.toObject === "function" ? vehicle.toObject() : vehicle;
-  const pricedVehicle =
-    zonePrice == null
-      ? vehicle
-      : ({
-          ...source,
-          price: zonePrice,
-          pricePerKm: 0,
-          priceTiers: [],
-          minimumFare: 0,
-        } as IVehicle);
-  const base = calculateBookingPrice(pricedVehicle, input, tax, distanceKm);
+  const extras = rules.extras ?? defaultExtras();
+  const base = calculateBookingPrice(
+    vehicle,
+    {
+      ...input,
+      childSeatPrice: extras.childSeat.enabled ? extras.childSeat.price : 0,
+      babySeatPrice: extras.babySeat.enabled ? extras.babySeat.price : 0,
+    },
+    tax,
+    distanceKm,
+  );
   const anchor = tax.taxIncluded ? base.total : base.subtotal;
-  const meet = input.meetAndGreet ? roundMoney(rules.meetGreetPrice ?? 0) : 0;
-  const surchargeBase = anchor + meet;
-  const night =
-    input.time && rules.night && rules.night.percent > 0 && isNightTime(input.time, rules.night.start, rules.night.end)
-      ? roundMoney((surchargeBase * rules.night.percent) / 100)
+  const meet = input.meetAndGreet && extras.meetGreet.enabled ? roundMoney(extras.meetGreet.price) : 0;
+
+  const returnShare =
+    input.bookingType !== "hourly" && input.tripType === "roundtrip"
+      ? (vehicle.returnPricePercentage ?? DEFAULT_VEHICLE_RETURN_PRICE_PERCENTAGE) / 100
       : 0;
-  const holidayPercent =
-    rules.holidays?.find((holiday) => holiday.date === input.date)?.percent ?? 0;
-  const holiday =
-    holidayPercent > 0 ? roundMoney((surchargeBase * holidayPercent) / 100) : 0;
-  const beforeMinimum = surchargeBase + night + holiday;
-  const minimum =
-    (rules.operatorMinimumFare ?? 0) > beforeMinimum
-      ? roundMoney((rules.operatorMinimumFare ?? 0) - beforeMinimum)
-      : 0;
-  const beforePromo = beforeMinimum + minimum;
+  const returnLeg = roundMoney((base.breakdown.discountedVehiclePrice * returnShare) / (1 + returnShare));
+  const outboundLeg = anchor + meet - returnLeg;
+  const legSurcharge = (amount: number, date?: string, time?: string) => {
+    const nightPercent =
+      time && rules.night && rules.night.percent > 0 && isNightTime(time, rules.night.start, rules.night.end)
+        ? rules.night.percent
+        : 0;
+    const holidayPercent = holidayPercentFor(date, rules.holidays ?? []);
+    return { night: (amount * nightPercent) / 100, holiday: (amount * holidayPercent) / 100 };
+  };
+  const out = legSurcharge(outboundLeg, input.date, input.time);
+  const back = returnLeg > 0 ? legSurcharge(returnLeg, input.returnDate || input.date, input.returnTime || input.time) : { night: 0, holiday: 0 };
+  const night = roundMoney(out.night + back.night);
+  const holiday = roundMoney(out.holiday + back.holiday);
+
+  const beforePromo = anchor + meet + night + holiday;
   const discount = promoAmount(beforePromo, promo);
   const taxed = applyTax(roundMoney(beforePromo - discount), tax);
   const lines: FareLine[] = [
@@ -155,7 +158,6 @@ export function quoteFare(
     { code: "meet_greet", amount: meet },
     { code: "night", amount: night },
     { code: "holiday", amount: holiday },
-    { code: "minimum", amount: minimum },
     { code: "promo", amount: discount === 0 ? 0 : -discount },
     { code: "tax", amount: taxed.taxAmount },
   ].filter((line) => line.amount !== 0 || line.code === "vehicle");

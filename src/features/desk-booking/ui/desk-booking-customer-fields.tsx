@@ -1,5 +1,6 @@
 "use client";
 
+import { usePricingExtras } from "@/features/pricing/lib/use-pricing-extras";
 import type { useTranslations } from "next-intl";
 
 import type { DeskBookingFormValues } from "@/features/desk-booking/hooks/use-desk-booking-form";
@@ -28,6 +29,7 @@ export function DeskBookingCustomerFields({
   formData: DeskBookingFormValues;
   update: (patch: Partial<DeskBookingFormValues>) => void;
 }) {
+  const extras = usePricingExtras();
   return (
     <section className="flex flex-col gap-4">
       <h3 className="text-sm font-semibold text-foreground">
@@ -112,6 +114,7 @@ export function DeskBookingCustomerFields({
       </div>
 
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+        {extras.childSeat.enabled ? (
         <div className="flex flex-col gap-1.5">
           <Label htmlFor="desk-childSeats">{t("Step3.child-seats")}</Label>
           <Input
@@ -124,6 +127,8 @@ export function DeskBookingCustomerFields({
             }
           />
         </div>
+        ) : null}
+        {extras.babySeat.enabled ? (
         <div className="flex flex-col gap-1.5">
           <Label htmlFor="desk-babySeats">{t("Step3.baby-seats")}</Label>
           <Input
@@ -136,6 +141,7 @@ export function DeskBookingCustomerFields({
             }
           />
         </div>
+        ) : null}
       </div>
 
       <div className="flex flex-col gap-1.5">

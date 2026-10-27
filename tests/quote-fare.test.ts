@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import type { IVehicle } from "@/features/fleet/model";
 import { calculateBookingPrice } from "@/features/payments/lib/fare/calculate-booking-price";
-import { isNightTime, matchZonePrice, quoteFare } from "@/features/pricing/lib/quote-fare";
+import { isNightTime, quoteFare } from "@/features/pricing/lib/quote-fare";
 import { loadPromo, redeemPromo } from "@/features/pricing/lib/redeem-promo";
 import PromoCode from "@/features/pricing/model/PromoCode";
 
@@ -9,14 +9,14 @@ const vehicle = {
   price: 10,
   pricePerKm: 2,
   minimumFare: 20,
-  childSeatPrice: 5,
-  babySeatPrice: 0,
   discount: 0,
   returnPricePercentage: 100,
   stopPrice: 0,
   stopPricePerHour: 0,
   priceTiers: [],
 } as unknown as IVehicle;
+
+const extras = { meetGreet: { enabled: true, price: 15 }, childSeat: { enabled: true, price: 5 }, babySeat: { enabled: true, price: 0 } };
 
 const trip = {
   bookingType: "destination" as const,
@@ -30,77 +30,32 @@ const trip = {
 
 describe("quoteFare", () => {
   it("matches calculateBookingPrice when no operator rules are set", () => {
-    const base = calculateBookingPrice(vehicle, trip, { enableTax: true, taxPercentage: 10 }, 25);
-    const quote = quoteFare(vehicle, trip, { enableTax: true, taxPercentage: 10 }, 25, {});
+    const base = calculateBookingPrice(vehicle, { ...trip, childSeatPrice: 5 }, { enableTax: true, taxPercentage: 10 }, 25);
+    const quote = quoteFare(vehicle, trip, { enableTax: true, taxPercentage: 10 }, 25, { extras });
     expect(quote.total).toBe(base.total);
     expect(quote.lines.find((line) => line.code === "child_seats")?.amount).toBe(5);
   });
 
-  it("uses a zone price, then night, holiday, meet & greet, minimum, and a percent promo", () => {
+  it("uses the distance price, then night, holiday, meet & greet, minimum, and a percent promo", () => {
     const quote = quoteFare(
       vehicle,
       { ...trip, meetAndGreet: true },
       { enableTax: true, taxPercentage: 10 },
       25,
       {
-        zones: [{ fromLabel: "Geneva Airport", toLabel: "Lausanne", price: 40 }],
         night: { start: "22:00", end: "06:00", percent: 10 },
-        holidays: [{ date: "2026-12-25", percent: 10 }],
-        meetGreetPrice: 15,
-        operatorMinimumFare: 0,
+        holidays: [{ start: "2026-12-25", end: "2026-12-25", percent: 10 }],
+        extras,
       },
       { code: "SAVE10", kind: "percent", amount: 10 },
     );
-    expect(matchZonePrice("Geneva Airport T1", "Lausanne Station", [
-      { fromLabel: "Geneva Airport", toLabel: "Lausanne", price: 40 },
-    ])).toBe(40);
     expect(isNightTime("23:00", "22:00", "06:00")).toBe(true);
     expect(isNightTime("12:00", "22:00", "06:00")).toBe(false);
-    expect(quote.lines.find((line) => line.code === "vehicle")?.amount).toBe(40);
+    expect(quote.lines.find((line) => line.code === "vehicle")?.amount).toBe(60);
     expect(quote.lines.find((line) => line.code === "meet_greet")?.amount).toBe(15);
     expect(quote.lines.find((line) => line.code === "promo")?.amount).toBeLessThan(0);
     expect(quote.total).toBeGreaterThan(0);
     expect(quote.promoCode).toBe("SAVE10");
-  });
-
-  it("floors the fare at the operator minimum without replacing the vehicle minimum", () => {
-    const quote = quoteFare(
-      vehicle,
-      { ...trip, time: "12:00", childSeats: 0 },
-      {},
-      1,
-      { operatorMinimumFare: 80 },
-    );
-    expect(quote.lines.find((line) => line.code === "minimum")?.amount).toBeGreaterThan(0);
-    expect(quote.total).toBe(80);
-    expect(quote.chargeAmount).toBe(80);
-    expect(quote.balanceDue).toBe(0);
-  });
-
-  it("keeps the return percentage stored on a mongoose document when a zone matches", () => {
-    const doc = {
-      toObject() {
-        return {
-          price: 10,
-          pricePerKm: 2,
-          minimumFare: 20,
-          returnPricePercentage: 80,
-          priceTiers: [],
-          childSeatPrice: 0,
-          babySeatPrice: 0,
-          stopPrice: 0,
-          stopPricePerHour: 0,
-        };
-      },
-    } as unknown as IVehicle;
-    const quote = quoteFare(
-      doc,
-      { ...trip, time: "12:00", childSeats: 0, tripType: "roundtrip" },
-      {},
-      25,
-      { zones: [{ fromLabel: "Geneva Airport", toLabel: "Lausanne", price: 40 }] },
-    );
-    expect(quote.total).toBe(72);
   });
 
   it("charges the deposit online and keeps the balance", () => {

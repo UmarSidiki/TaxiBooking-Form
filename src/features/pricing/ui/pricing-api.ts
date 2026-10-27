@@ -1,4 +1,3 @@
-export type ZoneRow = { _id: string; fromLabel: string; toLabel: string; price: number };
 export type PromoRow = {
   _id: string;
   code: string;
@@ -14,7 +13,7 @@ export async function postPricing(body: unknown) {
   return response.ok;
 }
 
-export async function deletePricing(kind: "zone" | "promo", id: string) {
+export async function deletePricing(kind: "promo", id: string) {
   const response = await fetch(`/api/admin/pricing?kind=${kind}&id=${encodeURIComponent(id)}`, { method: "DELETE" });
   return response.ok;
 }

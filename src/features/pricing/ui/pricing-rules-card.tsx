@@ -159,11 +159,11 @@ export function PricingRulesCard({ initial, onSaved }: { initial: Rule; onSaved:
               })}
             </ul>
           )}
-          <div className="grid items-start gap-3 sm:grid-cols-[1fr_1fr_7rem_auto]">
+          <div className="grid items-start gap-3 sm:grid-cols-2 xl:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_7rem_auto] [&>*]:min-w-0">
             <PricingField label={t("holiday-start")} type="date" value={holidayStart} onChange={(v) => { setHolidayStart(v); if (!holidayEnd || holidayEnd < v) setHolidayEnd(v); }} />
             <PricingField label={t("holiday-end")} type="date" value={holidayEnd} error={rangeError} onChange={setHolidayEnd} />
             <PricingField label={t("holiday-percent")} unit="%" inputMode="decimal" value={holidayPercent} onChange={setHolidayPercent} />
-            <Button type="button" variant="outline" className="h-11 sm:mt-[1.625rem]" disabled={!holidayStart || Boolean(rangeError) || parseAmount(holidayPercent) === null} onClick={addHoliday}>
+            <Button type="button" variant="outline" className="h-11 w-full sm:mt-[1.625rem] xl:w-auto" disabled={!holidayStart || Boolean(rangeError) || parseAmount(holidayPercent) === null} onClick={addHoliday}>
               {t("add-holiday")}
             </Button>
           </div>

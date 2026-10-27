@@ -70,3 +70,25 @@ export function buildAutocompleteOptions(
 
   return options;
 }
+
+/**
+ * Keeps the Google suggestion list above the on-screen keyboard: after the
+ * keyboard opens, scroll the focused input to the upper part of the viewport.
+ */
+export function scrollAddressIntoView(input: HTMLElement | null, delayMs = 300) {
+  if (!input || typeof window === "undefined") return;
+  if (!window.matchMedia?.("(max-width: 767px)").matches) return;
+  window.setTimeout(() => input.scrollIntoView({ block: "start", behavior: "smooth" }), delayMs);
+}
+
+/** Shared attributes for address inputs wired to Places Autocomplete. */
+export const addressInputProps = {
+  type: "text",
+  inputMode: "text",
+  autoComplete: "off",
+  autoCorrect: "off",
+  autoCapitalize: "words",
+  spellCheck: false,
+  enterKeyHint: "next",
+  onFocus: (event: { currentTarget: HTMLElement }) => scrollAddressIntoView(event.currentTarget),
+} as const;

@@ -123,7 +123,6 @@ export function FleetVehicleDrawer({
                   key={id}
                   type="button"
                   onClick={() => setActiveTab(id)}
-                  aria-selected={isActive}
                   aria-current={isActive ? "true" : undefined}
                   className={`relative flex shrink-0 items-center gap-1.5 rounded-lg px-3 py-2 text-xs font-medium transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring min-h-[44px] ${
                     isActive
@@ -165,7 +164,6 @@ export function FleetVehicleDrawer({
                   key={id}
                   type="button"
                   onClick={() => setActiveTab(id)}
-                  aria-selected={isActive}
                   aria-current={isActive ? "true" : undefined}
                   className={`group relative flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 text-left text-sm font-medium transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
                     isActive

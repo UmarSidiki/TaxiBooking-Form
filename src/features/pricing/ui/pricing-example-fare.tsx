@@ -100,10 +100,9 @@ export function PricingExampleFare({
               <dd className="tabular-nums">{money(quote.balanceDue)}</dd>
             </div>
           </>
-        ) : (
-          <p className="text-xs text-muted-foreground">{t("example-full")}</p>
-        )}
+        ) : null}
       </dl>
+      {quote.depositDue > 0 ? null : <p className="text-xs text-muted-foreground">{t("example-full")}</p>}
     </section>
   );
 }

@@ -6,7 +6,6 @@ import {
   type TaxSettings,
 } from "@/features/payments/lib/fare/calculate-booking-price";
 import { splitDeposit } from "@/features/pricing/lib/deposit-charge";
-import { matchFixedRoute, type FixedRouteFare, type GeoPoint } from "@/features/pricing/lib/fixed-routes";
 import { holidayPercentFor, type HolidayRange } from "@/features/pricing/lib/holidays";
 
 export type FareLine = { code: string; amount: number };
@@ -23,9 +22,6 @@ export const defaultExtras = (): PricingExtras => ({
 });
 
 export type OperatorFareRules = {
-  fixedRoutes?: FixedRouteFare[];
-  /** Server-measured trip endpoints; never taken from the client. */
-  endpoints?: { pickup?: GeoPoint; dropoff?: GeoPoint };
   night?: { start: string; end: string; percent: number };
   holidays?: HolidayRange[];
   extras?: PricingExtras;
@@ -107,7 +103,7 @@ function promoAmount(base: number, promo: PromoFare | null | undefined) {
 
 /**
  * Wraps `calculateBookingPrice`. Stops, vehicle minimum, tiers, and round-trip
- * stay there. This adds fixed routes, extras, night and holiday surcharges per
+ * stay there. This adds extras, night and holiday surcharges per
  * leg (a return leg uses its own date and time), a promo, and the deposit split.
  */
 export function quoteFare(
@@ -119,17 +115,8 @@ export function quoteFare(
   promo?: PromoFare | null,
 ): FareQuote {
   const extras = rules.extras ?? defaultExtras();
-  const routePrice =
-    input.bookingType === "hourly"
-      ? undefined
-      : matchFixedRoute(rules.endpoints?.pickup, rules.endpoints?.dropoff, rules.fixedRoutes ?? []);
-  const source = "toObject" in vehicle && typeof vehicle.toObject === "function" ? vehicle.toObject() : vehicle;
-  const pricedVehicle =
-    routePrice == null
-      ? vehicle
-      : ({ ...source, price: routePrice, pricePerKm: 0, priceTiers: [], minimumFare: 0 } as IVehicle);
   const base = calculateBookingPrice(
-    pricedVehicle,
+    vehicle,
     {
       ...input,
       childSeatPrice: extras.childSeat.enabled ? extras.childSeat.price : 0,

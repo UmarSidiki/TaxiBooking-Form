@@ -28,22 +28,6 @@ export const pricingRuleWriteSchema = z.object({
   depositPercent: z.coerce.number().min(0).max(100).optional(),
 });
 
-const place = z.object({
-  label: z.string().trim().min(2).max(200),
-  placeId: z.string().max(300).optional(),
-  lat: z.number().min(-90).max(90),
-  lng: z.number().min(-180).max(180),
-  radiusKm: z.coerce.number().min(0.1).max(50),
-});
-
-export const fixedRouteWriteSchema = z.object({
-  id: z.string().regex(/^[a-f\d]{24}$/i).optional(),
-  from: z.array(place).min(1).max(20),
-  to: z.array(place).min(1).max(20),
-  price: z.coerce.number().min(0),
-  bothWays: z.boolean().default(false),
-});
-
 export const promoWriteSchema = z.object({
   code: z.string().trim().min(2).max(40),
   kind: z.enum(["percent", "fixed"]),

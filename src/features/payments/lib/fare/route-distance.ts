@@ -1,5 +1,5 @@
 import { mockRouteKm } from "@/features/booking/lib/mock-distance";
-import type { GeoPoint } from "@/features/pricing/lib/fixed-routes";
+export type GeoPoint = { lat: number; lng: number };
 
 export type MeasuredRoute = { km: number; pickup?: GeoPoint; dropoff?: GeoPoint };
 

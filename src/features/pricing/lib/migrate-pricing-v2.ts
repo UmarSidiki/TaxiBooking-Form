@@ -3,8 +3,6 @@ import type { IVehicle } from "@/features/fleet/model";
 import { normalizeHolidays } from "@/features/pricing/lib/holidays";
 import { quoteFare, type PricingExtras, type QuoteInput } from "@/features/pricing/lib/quote-fare";
 
-export type Geocode = (label: string) => Promise<{ lat: number; lng: number; label: string; placeId?: string } | null>;
-
 type LegacyRule = {
   _id: unknown;
   meetGreetPrice?: number;
@@ -21,29 +19,17 @@ const SAMPLES: (QuoteInput & { km?: number })[] = [
   { bookingType: "destination", tripType: "oneway", km: 20, childSeats: 1, babySeats: 1, meetAndGreet: true },
 ];
 
-/** Google Geocoding, server key from env. Returns null when unavailable. */
-export const googleGeocode: Geocode = async (label) => {
-  const key = process.env.GOOGLE_MAPS_SERVER_KEY || process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
-  if (!key) return null;
-  const response = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(label)}&key=${key}`);
-  const data = await response.json().catch(() => null);
-  const hit = data?.status === "OK" ? data.results?.[0] : null;
-  return hit ? { lat: hit.geometry.location.lat, lng: hit.geometry.location.lng, label: hit.formatted_address || label, placeId: hit.place_id } : null;
-};
-
 /**
  * Moves seat prices and meet & greet into PricingRule.extras (highest seat price
  * across active vehicles), folds the operator minimum into each vehicle minimum,
- * turns single-date holidays into ranges, and converts label zones into
- * geocoded fixed routes. Idempotent; `dryRun` writes nothing.
+ * and turns single-date holidays into ranges. Legacy zone/fixed-route collections are left
+ * untouched and ignored. Idempotent; `dryRun` writes nothing.
  */
-export async function migratePricingV2({ dryRun, geocode = googleGeocode }: { dryRun: boolean; geocode?: Geocode }) {
+export async function migratePricingV2({ dryRun }: { dryRun: boolean }) {
   const db = mongoose.connection.db;
   if (!db) throw new Error("Database not connected");
   const rules = db.collection<LegacyRule>("pricingrules");
   const vehicles = db.collection<LegacyVehicle>("vehicles");
-  const zones = db.collection<{ _id: unknown; fromLabel: string; toLabel: string; price: number }>("zoneprices");
-  const routes = db.collection("fixedroutes");
 
   const rule = await rules.findOne({});
   const fleet = await vehicles.find({}).toArray();
@@ -78,24 +64,6 @@ export async function migratePricingV2({ dryRun, geocode = googleGeocode }: { dr
     });
   }
 
-  const legacyZones = await zones.find({}).toArray();
-  const done = new Set((await routes.find({ migratedFromZone: { $exists: true } }, { projection: { migratedFromZone: 1 } }).toArray()).map((row) => String(row.migratedFromZone)));
-  const pendingZones = legacyZones.filter((zone) => !done.has(String(zone._id)));
-  const converted = [];
-  for (const zone of pendingZones) {
-    const [from, to] = await Promise.all([geocode(zone.fromLabel), geocode(zone.toLabel)]);
-    converted.push({
-      migratedFromZone: zone._id,
-      from: [{ label: from?.label ?? zone.fromLabel, lat: from?.lat ?? 0, lng: from?.lng ?? 0, placeId: from?.placeId, radiusKm: 2 }],
-      to: [{ label: to?.label ?? zone.toLabel, lat: to?.lat ?? 0, lng: to?.lng ?? 0, placeId: to?.placeId, radiusKm: 2 }],
-      price: zone.price,
-      bothWays: false,
-      needsReview: !from || !to,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    });
-  }
-
   const holidays = normalizeHolidays(rule?.holidays);
   if (!dryRun) {
     if (rule) {
@@ -110,7 +78,6 @@ export async function migratePricingV2({ dryRun, geocode = googleGeocode }: { dr
         },
       );
     }
-    if (converted.length) await routes.insertMany(converted);
   }
 
   return {
@@ -120,8 +87,6 @@ export async function migratePricingV2({ dryRun, geocode = googleGeocode }: { dr
     vehiclesUpdated: fleet.length,
     seatPriceDiffers,
     holidays: holidays.length,
-    zonesConverted: converted.length,
-    zonesNeedingReview: converted.filter((route) => route.needsReview).length,
     quotesChecked: active.length * SAMPLES.length,
     quoteDiffs,
   };

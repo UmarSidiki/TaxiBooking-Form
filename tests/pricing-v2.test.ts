@@ -1,6 +1,5 @@
 import { afterAll, describe, expect, it, vi } from "vitest";
 import type { IVehicle } from "@/features/fleet/model";
-import { haversineKm, matchFixedRoute } from "@/features/pricing/lib/fixed-routes";
 import {
   activeHolidays,
   holidayCutoff,
@@ -104,27 +103,6 @@ describe("holiday ranges", () => {
   });
 });
 
-describe("fixed routes", () => {
-  it("matches inside both radii and falls back outside", () => {
-    // ~1.5 km north of the airport point.
-    const near = { lat: airport.lat + 0.0135, lng: airport.lng };
-    const far = { lat: airport.lat + 0.0225, lng: airport.lng };
-    expect(haversineKm(airport, near)).toBeCloseTo(1.5, 1);
-    expect(matchFixedRoute(near, lausanne, [route])).toBe(40);
-    expect(matchFixedRoute(far, lausanne, [route])).toBeUndefined();
-    expect(matchFixedRoute(lausanne, near, [route])).toBeUndefined();
-    expect(matchFixedRoute(lausanne, near, [{ ...route, bothWays: true }])).toBe(40);
-  });
-
-  it("accepts any address on either side and prefers the tightest route", () => {
-    const station = { label: "Geneva station", lat: 46.2102, lng: 6.1424, radiusKm: 1 };
-    const wide = { ...route, from: [{ ...airport, radiusKm: 10 }], price: 55 };
-    const multi = { ...route, from: [airport, station], price: 45 };
-    expect(matchFixedRoute(station, lausanne, [wide, multi])).toBe(45);
-    expect(matchFixedRoute(undefined, lausanne, [multi])).toBeUndefined();
-  });
-});
-
 describe("extras", () => {
   it("flags requested extras that are switched off and prices them at zero", () => {
     const extras = { ...defaultExtras(), childSeat: { enabled: true, price: 7 } };
@@ -146,32 +124,22 @@ afterAll(() => {
 });
 
 describe("priceServerBooking", () => {
-  it("measures endpoints on the server, ignoring client coordinates, and rejects disabled extras", async () => {
+  it("prices by distance, ignores legacy fixed-route docs, and rejects disabled extras", async () => {
     const { priceServerBooking } = await import("@/features/pricing/lib/price-server-booking");
-    const FixedRoute = (await import("@/features/pricing/model/FixedRoute")).default;
     const PricingRule = (await import("@/features/pricing/model/PricingRule")).default;
-    await FixedRoute.create(route);
+    const mongoose = (await import("mongoose")).default;
+    await mongoose.connection.db!.collection("fixedroutes").insertOne({ ...route, legacy: true });
     await PricingRule.create({ extras: { ...defaultExtras(), childSeat: { enabled: true, price: 5 } } });
     const booking = {
       bookingType: "destination" as const,
       tripType: "oneway" as const,
       pickup: "Geneva Airport",
       dropoff: "Lausanne",
-      // A spoofer claims to start at the airport; the server-measured start is far away.
       pickupLat: airport.lat,
       pickupLng: airport.lng,
     };
-    const spoofed = await priceServerBooking({ vehicle, booking, distanceKm: 60, tax: {} });
-    expect(spoofed.ok && spoofed.quote.lines[0].amount).toBe(100);
-
-    const honest = await priceServerBooking({
-      vehicle,
-      booking,
-      distanceKm: 60,
-      tax: {},
-      measureRoute: async () => ({ km: 60, pickup: { lat: airport.lat, lng: airport.lng }, dropoff: lausanne }),
-    });
-    expect(honest.ok && honest.quote.lines[0].amount).toBe(40);
+    const priced = await priceServerBooking({ vehicle, booking, distanceKm: 60, tax: {} });
+    expect(priced.ok && priced.quote.lines[0].amount).toBe(100);
 
     const meet = await priceServerBooking({ vehicle, booking: { ...booking, meetAndGreet: true }, tax: {} });
     expect(meet).toEqual({ ok: false, error: "extra_disabled" });

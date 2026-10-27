@@ -45,14 +45,6 @@ test("M7 pricing desk, quote, and axe", async ({ page, browser }) => {
   await page.getByRole("button", { name: "Save rules" }).click();
   await expect(page.getByRole("status").last()).toContainText("Saved");
 
-  await page.getByRole("tab", { name: /Fixed routes/ }).click();
-  await page.getByRole("button", { name: "+ Add fixed route" }).click();
-  await page.getByLabel("Address 1", { exact: true }).first().fill("46.2381, 6.109");
-  await page.getByLabel("Address 1", { exact: true }).last().fill("46.5197, 6.6323");
-  await page.getByLabel("Fixed price").fill("40");
-  await page.getByRole("button", { name: "Save route" }).click();
-  await expect(page.getByRole("status").last()).toContainText("Saved");
-
   await page.getByRole("tab", { name: /Promo codes/ }).click();
   await page.getByLabel("Code", { exact: true }).fill("SAVE10");
   await page.getByLabel("Amount").fill("10");

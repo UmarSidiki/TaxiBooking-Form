@@ -1,6 +1,3 @@
-import type { RoutePlace } from "@/features/pricing/lib/fixed-routes";
-
-export type RouteRow = { _id: string; from: RoutePlace[]; to: RoutePlace[]; price: number; bothWays?: boolean; needsReview?: boolean };
 export type PromoRow = {
   _id: string;
   code: string;
@@ -16,7 +13,7 @@ export async function postPricing(body: unknown) {
   return response.ok;
 }
 
-export async function deletePricing(kind: "route" | "promo", id: string) {
+export async function deletePricing(kind: "promo", id: string) {
   const response = await fetch(`/api/admin/pricing?kind=${kind}&id=${encodeURIComponent(id)}`, { method: "DELETE" });
   return response.ok;
 }

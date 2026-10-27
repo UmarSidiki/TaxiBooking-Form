@@ -6,10 +6,9 @@ import { Link } from "@/shared/i18n/navigation";
 import { Button } from "@/shared/ui/button";
 import { Skeleton } from "@/shared/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs";
-import type { PromoRow, RouteRow } from "@/features/pricing/ui/pricing-api";
+import type { PromoRow } from "@/features/pricing/ui/pricing-api";
 import { PricingRulesCard, type Rule } from "@/features/pricing/ui/pricing-rules-card";
 import { PromoCodesPanel } from "@/features/pricing/ui/promo-codes-panel";
-import { FixedRoutesPanel } from "@/features/pricing/ui/fixed-routes-panel";
 import { defaultExtras } from "@/features/pricing/lib/quote-fare";
 import { normalizeHolidays } from "@/features/pricing/lib/holidays";
 import { readExtras } from "@/features/pricing/lib/read-extras";
@@ -23,7 +22,7 @@ const emptyRule: Rule = {
   extras: defaultExtras(),
 };
 
-type Data = { rule: Rule; routes: RouteRow[]; promos: PromoRow[] };
+type Data = { rule: Rule; promos: PromoRow[] };
 
 export function PricingDesk() {
   const t = useTranslations("Pricing");
@@ -44,7 +43,6 @@ export function PricingDesk() {
           holidays: normalizeHolidays(body.rule?.holidays),
           extras: readExtras(body.rule?.extras),
         },
-        routes: body.routes ?? [],
         promos: body.promos ?? [],
       });
       setStatus("ready");
@@ -81,16 +79,12 @@ export function PricingDesk() {
         </div>
       ) : (
         <Tabs defaultValue="rules">
-          <TabsList className="grid h-auto w-full grid-cols-3 sm:w-fit">
+          <TabsList className="grid h-auto w-full grid-cols-2 sm:w-fit">
             <TabsTrigger value="rules" className="min-h-11 whitespace-normal">{t("tab-rules")}</TabsTrigger>
-            <TabsTrigger value="zones" className="min-h-11 whitespace-normal">{t("tab-zones")} ({data.routes.length})</TabsTrigger>
             <TabsTrigger value="promos" className="min-h-11 whitespace-normal">{t("tab-promos")} ({data.promos.length})</TabsTrigger>
           </TabsList>
           <TabsContent value="rules" className="mt-2">
             <PricingRulesCard initial={data.rule} onSaved={(rule) => setData({ ...data, rule })} />
-          </TabsContent>
-          <TabsContent value="zones" className="mt-2">
-            <FixedRoutesPanel routes={data.routes} onChange={load} />
           </TabsContent>
           <TabsContent value="promos" className="mt-2">
             <PromoCodesPanel promos={data.promos} onChange={load} />

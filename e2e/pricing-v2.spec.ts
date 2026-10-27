@@ -58,28 +58,6 @@ test("pricing v2 click-through", async ({ page }, info) => {
     await expect(page.getByRole("status").filter({ hasText: "Saved" })).toBeVisible();
   }
 
-  // Fixed route editor
-  await page.getByRole("tab", { name: /Fixed routes/ }).click();
-  await page.getByRole("button", { name: "+ Add fixed route" }).click();
-  const pointA = page.getByRole("group", { name: "Point A (pickup)" });
-  const pointB = page.getByRole("group", { name: "Point B (drop-off)" });
-  await pointA.getByLabel("Address 1", { exact: true }).fill("46.2381, 6.109");
-  await pointA.getByLabel("Address 1", { exact: true }).blur();
-  await pointA.getByRole("button", { name: "+ Add address" }).click();
-  await pointA.getByLabel("Address 2", { exact: true }).fill("Not picked");
-  await expect(pointA.getByText("Pick an address from the suggestions.")).toBeVisible();
-  await pointA.getByLabel("Address 2", { exact: true }).fill("46.2102, 6.1424");
-  await pointA.getByLabel("Address 2", { exact: true }).blur();
-  await pointB.getByLabel("Address 1", { exact: true }).fill("46.5197, 6.6323");
-  await pointB.getByLabel("Address 1", { exact: true }).blur();
-  await pointB.getByLabel("Radius").fill("3");
-  await page.getByLabel("Fixed price").fill("40");
-  await page.getByRole("switch", { name: "Both directions" }).click();
-  await page.screenshot({ path: `${SHOTS}/v2-${p}-fixed-route-editor.png`, fullPage: true });
-  await page.getByRole("button", { name: "Save route" }).click();
-  await expect(page.getByText(/€40\.00/).first()).toBeVisible();
-  await page.screenshot({ path: `${SHOTS}/v2-${p}-fixed-routes.png`, fullPage: true });
-
   // Fleet form
   await go(page, "/en/dashboard/fleet");
   await page.getByRole("button", { name: /edit/i }).first().click();

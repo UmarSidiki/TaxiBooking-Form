@@ -17,19 +17,13 @@ const vehicle = {
 } as unknown as IVehicle;
 
 const rules = {
-  fixedRoutes: [{
-    from: [{ label: "Geneva Airport", lat: 46.2381, lng: 6.109, radiusKm: 2 }],
-    to: [{ label: "Lausanne", lat: 46.5197, lng: 6.6323, radiusKm: 3 }],
-    price: 40,
-  }],
-  endpoints: { pickup: { lat: 46.2391, lng: 6.11 }, dropoff: { lat: 46.517, lng: 6.629 } },
   night: { start: "22:00", end: "06:00", percent: 10 },
   holidays: [{ start: "2026-12-25", end: "2026-12-25", percent: 0 }],
   extras: { meetGreet: { enabled: true, price: 15 }, childSeat: { enabled: true, price: 5 }, babySeat: { enabled: true, price: 0 } },
 };
 
 describe("hourly and return fares", () => {
-  it("bills hourly from the vehicle hour rate and minimum hours, not the zone price", () => {
+  it("bills hourly from the vehicle hour rate and minimum hours", () => {
     const direct = calculateBookingPrice(
       vehicle,
       { bookingType: "hourly", duration: 1, tripType: "oneway" },
@@ -59,7 +53,7 @@ describe("hourly and return fares", () => {
     expect(quote.total).toBe(41.25);
   });
 
-  it("applies the return percentage on top of a zone price", () => {
+  it("applies the return percentage on top of the distance price", () => {
     const quote = quoteFare(
       vehicle,
       {
@@ -74,8 +68,8 @@ describe("hourly and return fares", () => {
       25,
       rules,
     );
-    expect(quote.lines.find((line) => line.code === "vehicle")?.amount).toBe(72);
-    expect(quote.taxAmount).toBe(7.2);
-    expect(quote.total).toBe(79.2);
+    expect(quote.lines.find((line) => line.code === "vehicle")?.amount).toBe(108);
+    expect(quote.taxAmount).toBe(10.8);
+    expect(quote.total).toBe(118.8);
   });
 });

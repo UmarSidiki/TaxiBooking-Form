@@ -34,16 +34,13 @@ async function seed(rule: Record<string, unknown>, vehicles: Record<string, unkn
   return db;
 }
 
-const geocode = async (label: string) =>
-  label.startsWith("Nowhere") ? null : { label: `${label}, CH`, lat: 46.2, lng: 6.1, placeId: `pid-${label}` };
-
 describe("pricing v2 migration", () => {
   it("dry-run writes nothing and shows unchanged quotes for uniform seat prices", async () => {
     const db = await seed(
       { meetGreetPrice: 15, operatorMinimumFare: 0, holidays: [{ date: "2026-12-25", percent: 10 }] },
       [vehicle("Sedan"), vehicle("Van", { price: 20 })],
     );
-    const report = await migratePricingV2({ dryRun: true, geocode });
+    const report = await migratePricingV2({ dryRun: true });
     expect(report.quoteDiffs).toEqual([]);
     expect(report.quotesChecked).toBe(8);
     expect(report.extras).toEqual({
@@ -51,8 +48,6 @@ describe("pricing v2 migration", () => {
       childSeat: { enabled: true, price: 10 },
       babySeat: { enabled: true, price: 10 },
     });
-    expect(report.zonesConverted).toBe(2);
-    expect(report.zonesNeedingReview).toBe(1);
     expect(await db.collection("fixedroutes").countDocuments()).toBe(0);
     expect((await db.collection("vehicles").findOne({ name: "Sedan" }))?.childSeatPrice).toBe(10);
   });
@@ -62,7 +57,7 @@ describe("pricing v2 migration", () => {
       { meetGreetPrice: 0, operatorMinimumFare: 30, holidays: [{ date: "2026-12-25", percent: 10 }] },
       [vehicle("Sedan", { childSeatPrice: 5 }), vehicle("Van")],
     );
-    const report = await migratePricingV2({ dryRun: false, geocode });
+    const report = await migratePricingV2({ dryRun: false });
     expect(report.seatPriceDiffers).toEqual(["Sedan"]);
     expect(report.quoteDiffs.some((diff) => diff.vehicle === "Sedan" && diff.sample === 3)).toBe(true);
     const rule = await db.collection("pricingrules").findOne({});
@@ -73,10 +68,10 @@ describe("pricing v2 migration", () => {
     const sedan = await db.collection("vehicles").findOne({ name: "Sedan" });
     expect(sedan?.minimumFare).toBe(30);
     expect(sedan?.childSeatPrice).toBeUndefined();
-    expect(await db.collection("fixedroutes").countDocuments({ needsReview: true })).toBe(1);
+    expect(await db.collection("fixedroutes").countDocuments()).toBe(0);
+    expect(await db.collection("zoneprices").countDocuments()).toBe(2);
 
-    const again = await migratePricingV2({ dryRun: false, geocode });
-    expect(again.zonesConverted).toBe(0);
-    expect(await db.collection("fixedroutes").countDocuments()).toBe(2);
+    const again = await migratePricingV2({ dryRun: false });
+    expect(again.vehiclesUpdated).toBe(2);
   });
 });

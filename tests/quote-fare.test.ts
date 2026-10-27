@@ -17,12 +17,6 @@ const vehicle = {
 } as unknown as IVehicle;
 
 const extras = { meetGreet: { enabled: true, price: 15 }, childSeat: { enabled: true, price: 5 }, babySeat: { enabled: true, price: 0 } };
-const route = {
-    from: [{ label: "Geneva Airport", lat: 46.2381, lng: 6.109, radiusKm: 2 }],
-    to: [{ label: "Lausanne", lat: 46.5197, lng: 6.6323, radiusKm: 3 }],
-    price: 40,
-  };
-const endpoints = { pickup: { lat: 46.2391, lng: 6.11 }, dropoff: { lat: 46.517, lng: 6.629 } };
 
 const trip = {
   bookingType: "destination" as const,
@@ -42,15 +36,13 @@ describe("quoteFare", () => {
     expect(quote.lines.find((line) => line.code === "child_seats")?.amount).toBe(5);
   });
 
-  it("uses a zone price, then night, holiday, meet & greet, minimum, and a percent promo", () => {
+  it("uses the distance price, then night, holiday, meet & greet, minimum, and a percent promo", () => {
     const quote = quoteFare(
       vehicle,
       { ...trip, meetAndGreet: true },
       { enableTax: true, taxPercentage: 10 },
       25,
       {
-        fixedRoutes: [route],
-        endpoints,
         night: { start: "22:00", end: "06:00", percent: 10 },
         holidays: [{ start: "2026-12-25", end: "2026-12-25", percent: 10 }],
         extras,
@@ -59,35 +51,11 @@ describe("quoteFare", () => {
     );
     expect(isNightTime("23:00", "22:00", "06:00")).toBe(true);
     expect(isNightTime("12:00", "22:00", "06:00")).toBe(false);
-    expect(quote.lines.find((line) => line.code === "vehicle")?.amount).toBe(40);
+    expect(quote.lines.find((line) => line.code === "vehicle")?.amount).toBe(60);
     expect(quote.lines.find((line) => line.code === "meet_greet")?.amount).toBe(15);
     expect(quote.lines.find((line) => line.code === "promo")?.amount).toBeLessThan(0);
     expect(quote.total).toBeGreaterThan(0);
     expect(quote.promoCode).toBe("SAVE10");
-  });
-
-  it("keeps the return percentage stored on a mongoose document when a zone matches", () => {
-    const doc = {
-      toObject() {
-        return {
-          price: 10,
-          pricePerKm: 2,
-          minimumFare: 20,
-          returnPricePercentage: 80,
-          priceTiers: [],
-          stopPrice: 0,
-          stopPricePerHour: 0,
-        };
-      },
-    } as unknown as IVehicle;
-    const quote = quoteFare(
-      doc,
-      { ...trip, time: "12:00", childSeats: 0, tripType: "roundtrip" },
-      {},
-      25,
-      { fixedRoutes: [route], endpoints },
-    );
-    expect(quote.total).toBe(72);
   });
 
   it("charges the deposit online and keeps the balance", () => {

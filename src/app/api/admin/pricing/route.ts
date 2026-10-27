@@ -1,10 +1,8 @@
 import { NextResponse } from "next/server";
 import { requireAdmin } from "@/features/auth/lib/require-role";
-import FixedRoute from "@/features/pricing/model/FixedRoute";
 import PricingRule from "@/features/pricing/model/PricingRule";
 import PromoCode from "@/features/pricing/model/PromoCode";
 import {
-  fixedRouteWriteSchema,
   pricingRuleWriteSchema,
   promoWriteSchema,
 } from "@/features/pricing/schema/pricing-write.schema";
@@ -14,12 +12,11 @@ export async function GET() {
   const admin = await requireAdmin();
   if (!admin.ok) return admin.response;
   await connectDB();
-  const [rule, routes, promos] = await Promise.all([
+  const [rule, promos] = await Promise.all([
     PricingRule.findOne().lean(),
-    FixedRoute.find().sort({ createdAt: 1 }).limit(200).lean(),
     PromoCode.find().sort({ code: 1 }).limit(200).lean(),
   ]);
-  return NextResponse.json({ rule, routes, promos });
+  return NextResponse.json({ rule, promos });
 }
 
 export async function PUT(request: Request) {
@@ -37,16 +34,6 @@ export async function POST(request: Request) {
   if (!admin.ok) return admin.response;
   const body = await request.json().catch(() => null);
   await connectDB();
-  if (body?.kind === "route") {
-    const parsed = fixedRouteWriteSchema.safeParse(body);
-    if (!parsed.success) return NextResponse.json({ error: "invalid_body" }, { status: 400 });
-    const { id, ...route } = parsed.data;
-    const saved = id
-      ? await FixedRoute.findByIdAndUpdate(id, { ...route, needsReview: false }, { new: true })
-      : await FixedRoute.create(route);
-    if (!saved) return NextResponse.json({ error: "not_found" }, { status: 404 });
-    return NextResponse.json({ route: saved });
-  }
   const parsed = promoWriteSchema.safeParse(body);
   if (!parsed.success) return NextResponse.json({ error: "invalid_body" }, { status: 400 });
   const promo = await PromoCode.findOneAndUpdate(
@@ -67,12 +54,11 @@ export async function DELETE(request: Request) {
   const url = new URL(request.url);
   const kind = url.searchParams.get("kind");
   const id = url.searchParams.get("id") ?? "";
-  if ((kind !== "route" && kind !== "promo") || !/^[a-f\d]{24}$/i.test(id)) {
+  if (kind !== "promo" || !/^[a-f\d]{24}$/i.test(id)) {
     return NextResponse.json({ error: "invalid_body" }, { status: 400 });
   }
   await connectDB();
-  const removed =
-    kind === "route" ? await FixedRoute.findByIdAndDelete(id) : await PromoCode.findByIdAndDelete(id);
+  const removed = await PromoCode.findByIdAndDelete(id);
   if (!removed) return NextResponse.json({ error: "not_found" }, { status: 404 });
   return NextResponse.json({ ok: true });
 }

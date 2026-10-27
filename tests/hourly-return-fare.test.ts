@@ -10,8 +10,6 @@ const vehicle = {
   minimumHours: 2,
   minimumFare: 20,
   returnPricePercentage: 80,
-  childSeatPrice: 5,
-  babySeatPrice: 0,
   discount: 0,
   stopPrice: 0,
   stopPricePerHour: 0,
@@ -19,11 +17,15 @@ const vehicle = {
 } as unknown as IVehicle;
 
 const rules = {
-  zones: [{ fromLabel: "Geneva Airport", toLabel: "Lausanne", price: 40 }],
+  fixedRoutes: [{
+    from: [{ label: "Geneva Airport", lat: 46.2381, lng: 6.109, radiusKm: 2 }],
+    to: [{ label: "Lausanne", lat: 46.5197, lng: 6.6323, radiusKm: 3 }],
+    price: 40,
+  }],
+  endpoints: { pickup: { lat: 46.2391, lng: 6.11 }, dropoff: { lat: 46.517, lng: 6.629 } },
   night: { start: "22:00", end: "06:00", percent: 10 },
-  holidays: [{ date: "2026-12-25", percent: 0 }],
-  meetGreetPrice: 15,
-  operatorMinimumFare: 0,
+  holidays: [{ start: "2026-12-25", end: "2026-12-25", percent: 0 }],
+  extras: { meetGreet: { enabled: true, price: 15 }, childSeat: { enabled: true, price: 5 }, babySeat: { enabled: true, price: 0 } },
 };
 
 describe("hourly and return fares", () => {

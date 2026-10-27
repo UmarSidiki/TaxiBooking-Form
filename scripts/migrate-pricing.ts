@@ -2,7 +2,7 @@ import { connectDB } from "@/shared/db/mongoose";
 import PricingRule from "@/features/pricing/model/PricingRule";
 import PromoCode from "@/features/pricing/model/PromoCode";
 import PromoRedemption from "@/features/pricing/model/PromoRedemption";
-import ZonePrice from "@/features/pricing/model/ZonePrice";
+import FixedRoute from "@/features/pricing/model/FixedRoute";
 
 const dryRun = process.argv.includes("--dry-run");
 
@@ -13,7 +13,7 @@ if (!dryRun && !existing) {
 }
 await Promise.all([
   PricingRule.syncIndexes(),
-  ZonePrice.syncIndexes(),
+  FixedRoute.syncIndexes(),
   PromoCode.syncIndexes(),
   PromoRedemption.syncIndexes(),
 ]);

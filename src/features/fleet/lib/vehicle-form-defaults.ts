@@ -9,8 +9,6 @@ export const DEFAULT_VEHICLE_PRICE_PER_HOUR = 30;
 export const DEFAULT_VEHICLE_MINIMUM_FARE = 20;
 export const DEFAULT_VEHICLE_MINIMUM_HOURS = 2;
 export const DEFAULT_VEHICLE_RETURN_PRICE_PERCENTAGE = 100;
-export const DEFAULT_CHILD_SEAT_PRICE = 10;
-export const DEFAULT_BABY_SEAT_PRICE = 10;
 
 const sharedVehicleFormDefaults = {
   name: "",
@@ -25,8 +23,6 @@ const sharedVehicleFormDefaults = {
   returnPricePercentage: DEFAULT_VEHICLE_RETURN_PRICE_PERCENTAGE,
   discount: 0,
   category: "economy",
-  childSeatPrice: DEFAULT_CHILD_SEAT_PRICE,
-  babySeatPrice: DEFAULT_BABY_SEAT_PRICE,
   stopPrice: 0,
   stopPricePerHour: 0,
   priceTiers: [] as { upToKm: number; type: "flat" | "per_km"; price: number }[],

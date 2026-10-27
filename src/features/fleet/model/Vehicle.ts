@@ -27,8 +27,6 @@ export interface IVehicle {
   returnPricePercentage: number;
   discount: number;
   category: string;
-  childSeatPrice: number;
-  babySeatPrice: number;
   stopPrice: number;
   stopPricePerHour: number;
   /**
@@ -130,18 +128,6 @@ const VehicleSchema = new Schema<IVehicle>(
       required: [true, "Category is required"],
       enum: ["economy", "comfort", "business", "van", "luxury", "suv"],
       default: "economy",
-    },
-    childSeatPrice: {
-      type: Number,
-      required: false,
-      min: [0, "Child seat price must be positive"],
-      default: 10,
-    },
-    babySeatPrice: {
-      type: Number,
-      required: false,
-      min: [0, "Baby seat price must be positive"],
-      default: 10,
     },
     stopPrice: {
       type: Number,

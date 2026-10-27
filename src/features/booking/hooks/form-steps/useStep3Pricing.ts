@@ -1,15 +1,12 @@
 "use client";
 
-import {
-  DEFAULT_BABY_SEAT_PRICE,
-  DEFAULT_CHILD_SEAT_PRICE,
-} from "@/features/fleet/lib/vehicle-form-defaults";
 import { calculateBookingPrice } from "@/features/payments/lib/fare/calculate-booking-price";
 import type { DistanceData, FormData } from "@/features/booking/context/booking-form-context";
 import type { ISetting } from "@/features/settings/model";
 import type { IVehicle } from "@/features/fleet/model";
 import { useMemo } from "react";
 import { useQuotedTotal } from "@/features/pricing/lib/use-quoted-total";
+import { seatPrices, usePricingExtras } from "@/features/pricing/lib/use-pricing-extras";
 
 export function useStep3Pricing({
   selectedVehicle,
@@ -26,6 +23,9 @@ export function useStep3Pricing({
   const taxPercentage = paymentSettings?.taxPercentage ?? 0;
   const taxIncluded = paymentSettings?.taxIncluded ?? false;
 
+  const extras = usePricingExtras();
+  const seats = seatPrices(extras);
+
   const priced = useMemo(() => {
     if (!selectedVehicle) return null;
 
@@ -40,6 +40,7 @@ export function useStep3Pricing({
         stops: formData.stops,
         childSeats: formData.childSeats,
         babySeats: formData.babySeats,
+        ...seats,
       },
       { enableTax, taxPercentage, taxIncluded },
       distanceData?.distance.km
@@ -54,6 +55,8 @@ export function useStep3Pricing({
     formData.stops,
     formData.childSeats,
     formData.babySeats,
+    seats.childSeatPrice,
+    seats.babySeatPrice,
     distanceData,
     enableTax,
     taxPercentage,
@@ -71,8 +74,9 @@ export function useStep3Pricing({
     vehiclePrice: breakdown?.vehiclePrice ?? 0,
     discount: breakdown?.discountPercentage ?? 0,
     discountedVehiclePrice: breakdown?.discountedVehiclePrice ?? 0,
-    childSeatPrice: selectedVehicle?.childSeatPrice ?? DEFAULT_CHILD_SEAT_PRICE,
-    babySeatPrice: selectedVehicle?.babySeatPrice ?? DEFAULT_BABY_SEAT_PRICE,
+    childSeatPrice: seats.childSeatPrice,
+    babySeatPrice: seats.babySeatPrice,
+    extras,
     stopBasePrice: selectedVehicle?.stopPrice ?? 0,
     stopPricePerHour: selectedVehicle?.stopPricePerHour ?? 0,
     stopsTotalPrice: breakdown?.stopsTotalPrice ?? 0,

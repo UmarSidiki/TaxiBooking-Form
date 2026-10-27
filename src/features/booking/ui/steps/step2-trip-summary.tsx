@@ -2,6 +2,7 @@
 
 import { BookingPaymentIcons } from "@/features/booking/ui/booking-payment-icons";
 import { Card } from "@/shared/ui/card";
+import { seatPrices, usePricingExtras } from "@/features/pricing/lib/use-pricing-extras";
 import { calculateBookingPrice } from "@/features/payments/lib/fare/calculate-booking-price";
 import type { DistanceData, FormData } from "@/features/booking/context/booking-form-context";
 import type { IVehicle } from "@/features/fleet/model";
@@ -32,6 +33,7 @@ export function Step2TripSummary({
   currencySymbol: string;
   t: TFn;
 }) {
+  const seats = seatPrices(usePricingExtras());
   const selectedVehicle = vehicles.find(
     (vehicle) => vehicle._id === formData.selectedVehicle
   );
@@ -48,6 +50,7 @@ export function Step2TripSummary({
           stops: formData.stops,
           childSeats: formData.childSeats,
           babySeats: formData.babySeats,
+          ...seats,
         },
         { enableTax, taxPercentage, taxIncluded },
         distanceData?.distance.km

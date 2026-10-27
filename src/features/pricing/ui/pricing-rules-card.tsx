@@ -98,7 +98,7 @@ export function PricingRulesCard({ initial, onSaved }: { initial: Rule; onSaved:
   const addHoliday = () => {
     const percent = parseAmount(holidayPercent);
     if (!holidayStart || rangeError || percent === null || percent < 0 || percent > 200) return;
-    set({ holidays: [...draft.holidays, { ...newRange, percent }].sort((a, b) => a.start.localeCompare(b.start)) });
+    set({ holidays: [...draft.holidays.filter((range) => range.start !== newRange.start || range.end !== newRange.end), { ...newRange, percent }].sort((a, b) => a.start.localeCompare(b.start)) });
     setHolidayStart("");
     setHolidayEnd("");
     setHolidayPercent("");

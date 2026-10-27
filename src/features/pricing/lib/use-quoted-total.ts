@@ -56,6 +56,8 @@ export function useQuotedTotal(formData: FormData, distanceKm: number | undefine
     formData.dropoff,
     formData.date,
     formData.time,
+    formData.returnDate,
+    formData.returnTime,
     formData.tripType,
     formData.bookingType,
     formData.childSeats,

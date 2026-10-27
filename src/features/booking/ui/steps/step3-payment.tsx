@@ -61,6 +61,7 @@ function Step3Payment() {
           setFormData={step.setFormData}
           childSeatPrice={step.childSeatPrice}
           babySeatPrice={step.babySeatPrice}
+          extras={step.extras}
           errors={step.errors}
         />
         <Step3PersonalDetails

@@ -1,8 +1,9 @@
 "use client";
 
+import { Link } from "@/shared/i18n/navigation";
+
 import type { FleetVehicleFormFieldsProps } from "@/features/fleet/ui/fleet-vehicle-form-fields";
 import { Input } from "@/shared/ui/input";
-import { useCurrency } from "@/shared/context/currency-context";
 import { useTranslations } from "next-intl";
 
 export function FleetVehicleFormCapacity({
@@ -10,7 +11,6 @@ export function FleetVehicleFormCapacity({
   setFormData,
 }: FleetVehicleFormFieldsProps) {
   const t = useTranslations();
-  const { currencySymbol } = useCurrency();
   return (
     <>
 
@@ -58,47 +58,12 @@ export function FleetVehicleFormCapacity({
         />
       </div>
 
-      <div>
-        <label htmlFor="vehicle-child-seat-price" className="mb-2 block text-sm font-medium">
-          {t("Dashboard.Fleet.child-seat-price-eur", {0: currencySymbol})}{" "}
-        </label>
-        <Input
-          id="vehicle-child-seat-price"
-          name="vehicle-child-seat-price"
-          type="number"
-          min="0"
-          step="0.01"
-          placeholder="10"
-          value={formData.childSeatPrice}
-          onChange={(e) =>
-            setFormData({
-              ...formData,
-              childSeatPrice: parseFloat(e.target.value) || 0,
-            })
-          }
-        />
-      </div>
-
-      <div>
-        <label htmlFor="vehicle-baby-seat-price" className="mb-2 block text-sm font-medium">
-          {t("Dashboard.Fleet.baby-seat-price-eur", {0: currencySymbol})}{" "}
-        </label>
-        <Input
-          id="vehicle-baby-seat-price"
-          name="vehicle-baby-seat-price"
-          type="number"
-          min="0"
-          step="0.01"
-          placeholder="10"
-          value={formData.babySeatPrice}
-          onChange={(e) =>
-            setFormData({
-              ...formData,
-              babySeatPrice: parseFloat(e.target.value) || 0,
-            })
-          }
-        />
-      </div>
+      <p className="text-sm text-muted-foreground sm:col-span-2">
+        {t("Dashboard.Fleet.seat-prices-moved")}{" "}
+        <Link href="/dashboard/pricing" className="inline-flex min-h-11 items-center font-medium text-primary underline underline-offset-4">
+          {t("Dashboard.Fleet.seat-prices-link")}
+        </Link>
+      </p>
     </>
   );
 }

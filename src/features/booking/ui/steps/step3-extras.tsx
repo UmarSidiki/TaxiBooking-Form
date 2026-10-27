@@ -14,8 +14,9 @@ export function Step3Extras({
   setFormData,
   childSeatPrice,
   babySeatPrice,
+  extras,
   errors,
-}: Pick<Step, "formData" | "setFormData" | "childSeatPrice" | "babySeatPrice" | "errors"> & {
+}: Pick<Step, "formData" | "setFormData" | "childSeatPrice" | "babySeatPrice" | "extras" | "errors"> & {
   t: ReturnType<typeof useTranslations>;
   currencySymbol: string;
 }) {
@@ -25,6 +26,7 @@ export function Step3Extras({
         <Card className="p-5">
           <h3 className="font-semibold mb-4 text-lg">{t('Step3.optional-extras')}</h3>
           <div className="space-y-4">
+            {extras.childSeat.enabled ? (
             <div className="flex items-center justify-between">
               <label className="text-sm font-medium">{t('Step3.child-seats')}</label>
               <div className="flex items-center gap-3">
@@ -64,6 +66,8 @@ export function Step3Extras({
                 )}
               </div>
             </div>
+            ) : null}
+            {extras.babySeat.enabled ? (
             <div className="flex items-center justify-between">
               <label className="text-sm font-medium">{t('Step3.baby-seats')}</label>
               <div className="flex items-center gap-3">
@@ -103,6 +107,7 @@ export function Step3Extras({
                 )}
               </div>
             </div>
+            ) : null}
             <input
               type="text"
               name="companyWebsite"
@@ -113,15 +118,20 @@ export function Step3Extras({
               autoComplete="off"
               aria-hidden="true"
             />
-            <label className="flex min-h-11 items-center gap-3 text-sm">
-              <input
-                type="checkbox"
-                className="size-5 shrink-0 accent-primary"
-                checked={formData.meetAndGreet}
-                onChange={(event) => setFormData((prev) => ({ ...prev, meetAndGreet: event.target.checked }))}
-              />
-              {t("Step3.meet-greet")}
-            </label>
+            {extras.meetGreet.enabled ? (
+              <label className="flex min-h-11 items-center gap-3 text-sm">
+                <input
+                  type="checkbox"
+                  className="size-5 shrink-0 accent-primary"
+                  checked={formData.meetAndGreet}
+                  onChange={(event) => setFormData((prev) => ({ ...prev, meetAndGreet: event.target.checked }))}
+                />
+                <span className="flex-1">{t("Step3.meet-greet")}</span>
+                <span className="font-medium tabular-nums">
+                  +{currencySymbol}{extras.meetGreet.price.toFixed(2)}
+                </span>
+              </label>
+            ) : null}
             <div>
               <label className="mb-2 block text-sm font-medium" htmlFor="promo-code">{t("Step3.promo-code")}</label>
               <Input

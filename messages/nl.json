@@ -2713,5 +2713,12 @@
     "status_cash": "Betalen bij ophalen",
     "payment_pay_on_pickup": "Betalen bij ophalen",
     "payment_status_pay_on_pickup": "Betalen bij ophalen"
+  },
+  "Riviera": {
+    "pickup": "Ophalen",
+    "dropoff": "Bestemming",
+    "change": "Wijzigen",
+    "total": "Totaal",
+    "passengers": "passagiers"
   }
 }

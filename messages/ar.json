@@ -2713,5 +2713,12 @@
     "status_cash": "الدفع عند الالتقاط",
     "payment_pay_on_pickup": "الدفع عند الالتقاط",
     "payment_status_pay_on_pickup": "الدفع عند الالتقاط"
+  },
+  "Riviera": {
+    "pickup": "نقطة الانطلاق",
+    "dropoff": "الوجهة",
+    "change": "تغيير",
+    "total": "الإجمالي",
+    "passengers": "ركاب"
   }
 }

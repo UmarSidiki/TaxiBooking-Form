@@ -2713,5 +2713,12 @@
     "status_cash": "Paiement à la prise en charge",
     "payment_pay_on_pickup": "Paiement à la prise en charge",
     "payment_status_pay_on_pickup": "Paiement à la prise en charge"
+  },
+  "Riviera": {
+    "pickup": "Départ",
+    "dropoff": "Arrivée",
+    "change": "Modifier",
+    "total": "Total",
+    "passengers": "passagers"
   }
 }

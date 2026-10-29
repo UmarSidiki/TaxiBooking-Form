@@ -2713,5 +2713,12 @@
     "status_cash": "Pago al recoger",
     "payment_pay_on_pickup": "Pago al recoger",
     "payment_status_pay_on_pickup": "Pago al recoger"
+  },
+  "Riviera": {
+    "pickup": "Recogida",
+    "dropoff": "Destino",
+    "change": "Cambiar",
+    "total": "Total",
+    "passengers": "pasajeros"
   }
 }

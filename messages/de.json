@@ -2713,5 +2713,12 @@
     "status_cash": "Zahlung bei Abholung",
     "payment_pay_on_pickup": "Zahlung bei Abholung",
     "payment_status_pay_on_pickup": "Zahlung bei Abholung"
+  },
+  "Riviera": {
+    "pickup": "Abholung",
+    "dropoff": "Ziel",
+    "change": "Ändern",
+    "total": "Gesamt",
+    "passengers": "Passagiere"
   }
 }

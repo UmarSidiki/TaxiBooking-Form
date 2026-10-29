@@ -2713,5 +2713,12 @@
     "status_cash": "Pay on pickup",
     "payment_pay_on_pickup": "Pay on pickup",
     "payment_status_pay_on_pickup": "Pay on pickup"
+  },
+  "Riviera": {
+    "pickup": "Pick-up",
+    "dropoff": "Drop-off",
+    "change": "Change",
+    "total": "Total",
+    "passengers": "passengers"
   }
 }

@@ -2713,5 +2713,12 @@
     "status_cash": "Оплата при посадке",
     "payment_pay_on_pickup": "Оплата при посадке",
     "payment_status_pay_on_pickup": "Оплата при посадке"
+  },
+  "Riviera": {
+    "pickup": "Подача",
+    "dropoff": "Назначение",
+    "change": "Изменить",
+    "total": "Итого",
+    "passengers": "пассажиры"
   }
 }

@@ -2713,5 +2713,12 @@
     "status_cash": "Pagamento al ritiro",
     "payment_pay_on_pickup": "Pagamento al ritiro",
     "payment_status_pay_on_pickup": "Pagamento al ritiro"
+  },
+  "Riviera": {
+    "pickup": "Prelievo",
+    "dropoff": "Destinazione",
+    "change": "Modifica",
+    "total": "Totale",
+    "passengers": "passeggeri"
   }
 }

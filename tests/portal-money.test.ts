@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 import { NextRequest } from "next/server";
 import { signCustomerToken } from "@/features/customers/lib/customer-token";
 import { Booking, RefundRequest } from "@/features/booking/model";
+import { Vehicle } from "@/features/fleet/model";
 import { createRide, createVehicle } from "./helpers/fixtures";
 import { applyCustomerTripAction } from "@/features/customers/lib/apply-customer-trip-action";
 import { Setting } from "@/features/settings/model";
@@ -13,6 +14,8 @@ import { finalizePaidBooking } from "@/features/payments/lib/finalize-paid-booki
 
 const mocks = vi.hoisted(() => ({
   stripe: { refunds: { create: vi.fn() } },
+  routeDistance: vi.fn(async (_input?: unknown) => 25.4),
+  fetchRoute: vi.fn(async () => ({ km: 25.4 })),
 }));
 
 vi.mock("next/headers", () => ({ cookies: async () => new Map() }));
@@ -22,6 +25,10 @@ vi.mock("@/features/payments/lib/stripe-client", () => ({
 }));
 vi.mock("@/features/notifications/notify", () => ({
   notify: vi.fn(async () => ({ ok: true, queued: 0, skipped: null, deliveries: [] })),
+}));
+vi.mock("@/features/payments/lib/fare/route-distance", () => ({
+  fetchRouteDistanceKm: mocks.routeDistance,
+  fetchRoute: mocks.fetchRoute,
 }));
 vi.mock("@/features/auth/lib/require-role", () => ({
   requireAdmin: async () => ({ ok: true }),
@@ -40,6 +47,8 @@ function dayOffset(days: number) {
 beforeEach(async () => {
   vi.clearAllMocks();
   mocks.stripe.refunds.create.mockResolvedValue({ id: "re_1" });
+  mocks.routeDistance.mockResolvedValue(25.4);
+  mocks.fetchRoute.mockResolvedValue({ km: 25.4 });
 });
 
 describe("portal money", () => {
@@ -723,7 +732,277 @@ describe("portal money", () => {
       action: "cancel",
     });
     const after = await Booking.findOne({ tripId: "trip-c18" });
-    expect(after?.partnerPayoutAmount).toBe(0);
-    expect(after?.partnerMarginAmount).toBe(0);
+  expect(after?.partnerPayoutAmount).toBe(0);
+  expect(after?.partnerMarginAmount).toBe(0);
+  });
+
+  it("C19 unedited change -> action none, diff 0, total unchanged", async () => {
+    process.env.NEXTAUTH_SECRET = "test-secret";
+    // pricing rules changed since booking
+    await PricingRule.create({
+      extras: { meetGreet: { enabled: true, price: 999 }, childSeat: { enabled: false, price: 0 }, babySeat: { enabled: false, price: 0 } },
+    });
+    const vehicle = await createVehicle();
+    await createRide({
+      selectedVehicle: vehicle._id,
+      tripId: "trip-c19",
+      status: "upcoming",
+      date: dayOffset(30),
+      time: "12:00",
+      bookingType: "hourly",
+      duration: 2,
+      meetAndGreet: true,
+      passengers: 2,
+      childSeats: 0,
+      babySeats: 0,
+      totalAmount: 70,
+      amountPaidCents: 7000,
+    });
+    const result = await applyCustomerTripAction({
+      id: "trip-c19",
+      email: "ada@example.com",
+      action: "change",
+      date: dayOffset(30),
+      time: "12:00",
+      pickup: "Airport",
+      dropoff: "Hotel",
+      selectedVehicle: String(vehicle._id),
+      passengers: 2,
+      childSeats: 0,
+      babySeats: 0,
+      meetAndGreet: true,
+    });
+    expect(result.ok).toBe(true);
+    if (!result.ok) return;
+    expect(result.action).toBe("none");
+    expect(result.difference).toBe(0);
+    expect(result.amount).toBe(0);
+    const booking = await Booking.findOne({ tripId: "trip-c19" });
+    expect(booking?.totalAmount).toBe(70);
+  });
+
+  it("C20 route-only change further dropoff card -> pay link exact diff", async () => {
+    process.env.NEXTAUTH_SECRET = "test-secret";
+    mocks.routeDistance.mockImplementation(async (input: unknown) => ((input as { dropoff?: string })?.dropoff === "FarHotel" ? 20 : 10));
+    await PricingRule.create({
+      extras: { meetGreet: { enabled: false, price: 0 }, childSeat: { enabled: false, price: 0 }, babySeat: { enabled: false, price: 0 } },
+    });
+    const vehicle = await createVehicle();
+    await createRide({
+      selectedVehicle: vehicle._id,
+      tripId: "trip-c20",
+      status: "upcoming",
+      date: dayOffset(30),
+      time: "12:00",
+      bookingType: "destination",
+      pickup: "Airport",
+      dropoff: "Hotel",
+      totalAmount: 30,
+      amountPaidCents: 3000,
+    });
+    const result = await applyCustomerTripAction({
+      id: "trip-c20",
+      email: "ada@example.com",
+      action: "change",
+      date: dayOffset(30),
+      time: "12:00",
+      dropoff: "FarHotel",
+      baseUrl: "http://localhost:3000",
+    });
+    expect(result.ok).toBe(true);
+    if (!result.ok) return;
+    expect(result.action).toBe("pay");
+    expect(typeof result.payUrl).toBe("string");
+    expect(result.amount).toBe(20);
+    expect(result.difference).toBe(20);
+    const booking = await Booking.findOne({ tripId: "trip-c20" });
+    expect(booking?.totalAmount).toBe(30);
+    expect(booking?.pendingChange?.diffCents).toBe(2000);
+  });
+
+  it("C21 pickup closer card -> refund request exact diff", async () => {
+    process.env.NEXTAUTH_SECRET = "test-secret";
+    mocks.routeDistance.mockImplementation(async (input: unknown) => ((input as { pickup?: string })?.pickup === "CloserPickup" ? 10 : 20));
+    await PricingRule.create({
+      extras: { meetGreet: { enabled: false, price: 0 }, childSeat: { enabled: false, price: 0 }, babySeat: { enabled: false, price: 0 } },
+    });
+    const vehicle = await createVehicle();
+    await createRide({
+      selectedVehicle: vehicle._id,
+      tripId: "trip-c21",
+      status: "upcoming",
+      date: dayOffset(30),
+      time: "12:00",
+      bookingType: "destination",
+      pickup: "Airport",
+      dropoff: "Hotel",
+      totalAmount: 50,
+      amountPaidCents: 5000,
+    });
+    const result = await applyCustomerTripAction({
+      id: "trip-c21",
+      email: "ada@example.com",
+      action: "change",
+      date: dayOffset(30),
+      time: "12:00",
+      pickup: "CloserPickup",
+    });
+    expect(result.ok).toBe(true);
+    if (!result.ok) return;
+    expect(result.action).toBe("refund");
+    expect(result.amount).toBe(20);
+    expect(result.difference).toBe(-20);
+    expect(result.refundRequestId).toBeTruthy();
+    const rr = await RefundRequest.findOne({ tripId: "trip-c21", reason: "booking_change" });
+    expect(rr).toBeTruthy();
+    expect(rr!.amount).toBe(20);
+    expect(rr!.amountCents).toBe(2000);
+    const booking = await Booking.findOne({ tripId: "trip-c21" });
+    expect(booking?.totalAmount).toBe(30);
+  });
+
+  it("C22 vehicle to pricier card -> pay link exact diff", async () => {
+    process.env.NEXTAUTH_SECRET = "test-secret";
+    mocks.routeDistance.mockResolvedValue(10);
+    await PricingRule.create({
+      extras: { meetGreet: { enabled: false, price: 0 }, childSeat: { enabled: false, price: 0 }, babySeat: { enabled: false, price: 0 } },
+    });
+    const vehicle = await createVehicle();
+    const pricier = await Vehicle.create({
+      name: "SUV",
+      description: "Big",
+      image: "/placeholder-car.jpg",
+      persons: 6,
+      baggages: 4,
+      price: 20,
+      pricePerKm: 4,
+      pricePerHour: 40,
+      minimumFare: 20,
+      minimumHours: 2,
+      returnPricePercentage: 100,
+      category: "suv",
+      isActive: true,
+    });
+    await createRide({
+      selectedVehicle: vehicle._id,
+      tripId: "trip-c22",
+      status: "upcoming",
+      date: dayOffset(30),
+      time: "12:00",
+      bookingType: "destination",
+      pickup: "Airport",
+      dropoff: "Hotel",
+      totalAmount: 30,
+      amountPaidCents: 3000,
+    });
+    const result = await applyCustomerTripAction({
+      id: "trip-c22",
+      email: "ada@example.com",
+      action: "change",
+      date: dayOffset(30),
+      time: "12:00",
+      selectedVehicle: String(pricier._id),
+      baseUrl: "http://localhost:3000",
+    });
+    expect(result.ok).toBe(true);
+    if (!result.ok) return;
+    expect(result.action).toBe("pay");
+    expect(typeof result.payUrl).toBe("string");
+    expect(result.amount).toBe(30);
+    const booking = await Booking.findOne({ tripId: "trip-c22" });
+    expect(booking?.totalAmount).toBe(30);
+  });
+
+  it("C23 vehicle to cheaper card -> refund request exact diff", async () => {
+    process.env.NEXTAUTH_SECRET = "test-secret";
+    mocks.routeDistance.mockResolvedValue(10);
+    await PricingRule.create({
+      extras: { meetGreet: { enabled: false, price: 0 }, childSeat: { enabled: false, price: 0 }, babySeat: { enabled: false, price: 0 } },
+    });
+    const vehicle = await createVehicle();
+    const pricier = await Vehicle.create({
+      name: "SUV",
+      description: "Big",
+      image: "/placeholder-car.jpg",
+      persons: 6,
+      baggages: 4,
+      price: 20,
+      pricePerKm: 4,
+      pricePerHour: 40,
+      minimumFare: 20,
+      minimumHours: 2,
+      returnPricePercentage: 100,
+      category: "suv",
+      isActive: true,
+    });
+    await createRide({
+      selectedVehicle: pricier._id,
+      tripId: "trip-c23",
+      status: "upcoming",
+      date: dayOffset(30),
+      time: "12:00",
+      bookingType: "destination",
+      pickup: "Airport",
+      dropoff: "Hotel",
+      totalAmount: 60,
+      amountPaidCents: 6000,
+    });
+    const result = await applyCustomerTripAction({
+      id: "trip-c23",
+      email: "ada@example.com",
+      action: "change",
+      date: dayOffset(30),
+      time: "12:00",
+      selectedVehicle: String(vehicle._id),
+    });
+    expect(result.ok).toBe(true);
+    if (!result.ok) return;
+    expect(result.action).toBe("refund");
+    expect(result.amount).toBe(30);
+    expect(result.refundRequestId).toBeTruthy();
+    const rr = await RefundRequest.findOne({ tripId: "trip-c23", reason: "booking_change" });
+    expect(rr).toBeTruthy();
+    expect(rr!.amount).toBe(30);
+    expect(rr!.amountCents).toBe(3000);
+    const booking = await Booking.findOne({ tripId: "trip-c23" });
+    expect(booking?.totalAmount).toBe(30);
+  });
+
+  it("C24 promo still-valid extras-only change keeps promo applied once", async () => {
+    process.env.NEXTAUTH_SECRET = "test-secret";
+    const PromoCode = (await import("@/features/pricing/model/PromoCode")).default;
+    await PromoCode.create({ code: "SAVE10", kind: "percent", amount: 10, active: true });
+    await PricingRule.create({
+      extras: { meetGreet: { enabled: true, price: 10 }, childSeat: { enabled: false, price: 0 }, babySeat: { enabled: false, price: 0 } },
+    });
+    const vehicle = await createVehicle();
+    await createRide({
+      selectedVehicle: vehicle._id,
+      tripId: "trip-c24",
+      status: "upcoming",
+      date: dayOffset(30),
+      time: "12:00",
+      bookingType: "hourly",
+      duration: 2,
+      meetAndGreet: false,
+      totalAmount: 60,
+      amountPaidCents: 5400,
+      promoCode: "SAVE10",
+    });
+    const result = await applyCustomerTripAction({
+      id: "trip-c24",
+      email: "ada@example.com",
+      action: "change",
+      date: dayOffset(30),
+      time: "12:00",
+      meetAndGreet: true,
+      dryRun: true,
+    });
+    expect(result.ok).toBe(true);
+    if (!result.ok) return;
+    // promo kept and applied once: 60 + 10 meetGreet = 70, 10% off = 63
+    expect(result.newTotal).toBe(63);
+    const booking = await Booking.findOne({ tripId: "trip-c24" });
+    expect(booking?.promoCode).toBe("SAVE10");
   });
 });

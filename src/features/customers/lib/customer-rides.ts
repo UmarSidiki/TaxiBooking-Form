@@ -7,7 +7,7 @@ export async function ridesForEmail(email: string) {
   const rows = await Booking.find({ email: new RegExp(`^${email.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}$`, "i") })
     .sort({ date: -1, time: -1 })
     .limit(50)
-    .select("tripId pickup dropoff date time returnDate returnTime status paymentStatus paymentMethod totalAmount bookingType duration passengers childSeats babySeats meetAndGreet vehicleDetails assignedDriver assignedPartner driverRideStatus whatsappOptIn firstName lastName phone locale")
+    .select("tripId pickup dropoff date time returnDate returnTime status paymentStatus paymentMethod totalAmount bookingType duration passengers childSeats babySeats meetAndGreet vehicleDetails selectedVehicle assignedDriver assignedPartner driverRideStatus whatsappOptIn firstName lastName phone locale")
     .lean();
   const now = new Date().toISOString().slice(0, 10);
   return {

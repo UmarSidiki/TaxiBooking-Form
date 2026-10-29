@@ -1,5 +1,6 @@
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
+import { isValidObjectId } from "mongoose";
 import { z } from "zod";
 import { applyCustomerTripAction } from "@/features/customers/lib/apply-customer-trip-action";
 import { readCustomerToken } from "@/features/customers/lib/customer-token";
@@ -9,7 +10,10 @@ const changeSchema = z.object({
   time: z.string().regex(/^\d{2}:\d{2}$/).optional(),
   pickup: z.string().optional(),
   dropoff: z.string().optional(),
-  selectedVehicle: z.string().optional(),
+  selectedVehicle: z
+    .string()
+    .optional()
+    .transform((v) => (v && isValidObjectId(v) ? v : undefined)),
   action: z.enum(["cancel", "change"]),
   passengers: z.number().int().positive().optional(),
   childSeats: z.number().int().min(0).optional(),

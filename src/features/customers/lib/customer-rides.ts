@@ -1,5 +1,6 @@
 import { Booking } from "@/features/booking/model";
 import PricingRule from "@/features/pricing/model/PricingRule";
+import { Setting } from "@/features/settings/model";
 import { zonedRideInstant } from "@/features/booking/lib/send-pickup-reminders";
 
 export async function ridesForEmail(email: string) {
@@ -16,9 +17,13 @@ export async function ridesForEmail(email: string) {
 }
 
 export async function changeAllowed(booking: { date: string; time: string }) {
-  const rule = await PricingRule.findOne().select("customerCutoffHours").lean();
+  const [rule, settings] = await Promise.all([
+    PricingRule.findOne().select("customerCutoffHours").lean(),
+    Setting.findOne().select("timezone").lean<{ timezone?: string }>(),
+  ]);
   const hours = rule?.customerCutoffHours ?? 2;
-  const instant = zonedRideInstant(booking.date, booking.time, "UTC");
+  const tz = settings?.timezone || "Europe/Zurich";
+  const instant = zonedRideInstant(booking.date, booking.time, tz);
   if (!instant) return false;
   return instant.getTime() - Date.now() >= hours * 60 * 60 * 1000;
 }

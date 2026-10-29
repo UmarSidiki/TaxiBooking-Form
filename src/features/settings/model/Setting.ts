@@ -82,6 +82,7 @@ export interface ISetting {
   whatsappTplChanged?: boolean;
   whatsappTplReminder?: boolean;
   whatsappTplSettlement?: boolean;
+  cancelPolicy?: Array<{ hoursBefore: number; feePercent: number }>;
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -345,6 +346,15 @@ const SettingSchema = new Schema<ISetting>(
     timezone: {
       type: String,
       default: "Europe/Zurich",
+    },
+    cancelPolicy: {
+      type: [
+        {
+          hoursBefore: { type: Number, default: 24 },
+          feePercent: { type: Number, default: 0 },
+        },
+      ],
+      default: [{ hoursBefore: 24, feePercent: 0 }],
     },
     whatsappTplAssigned: { type: Boolean, default: false },
     whatsappTplAvailable: { type: Boolean, default: false },

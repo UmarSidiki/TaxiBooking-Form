@@ -5,12 +5,35 @@ import { fetchRouteDistanceKm } from "@/features/payments/lib/fare/route-distanc
 import { priceServerBooking } from "@/features/pricing/lib/price-server-booking";
 import { zonedRideInstant } from "@/features/booking/lib/send-pickup-reminders";
 
-/** Re-prices a customer date/time change on the server. */
+export type RepriceCustomerTripInput = {
+  date?: string;
+  time?: string;
+  passengers?: number;
+  childSeats?: number;
+  babySeats?: number;
+  meetAndGreet?: boolean;
+};
+
+function normalizeInput(
+  dateOrInput: string | RepriceCustomerTripInput | undefined,
+  time?: string
+): RepriceCustomerTripInput {
+  if (typeof dateOrInput === "string") {
+    return { date: dateOrInput, time };
+  }
+  return dateOrInput ?? {};
+}
+
+/** Re-prices a customer date/time/pax/extras change on the server. */
 export async function repriceCustomerTrip(
   booking: IBooking,
-  date: string,
-  time: string
+  dateOrInput: string | RepriceCustomerTripInput,
+  time?: string
 ): Promise<Partial<IBooking> | null> {
+  const input = normalizeInput(dateOrInput, time);
+  const date = input.date ?? booking.date;
+  const timeValue = input.time ?? booking.time;
+
   const vehicle = await Vehicle.findById(booking.selectedVehicle);
   if (!vehicle) return null;
 
@@ -41,20 +64,21 @@ export async function repriceCustomerTrip(
       pickup: booking.pickup,
       dropoff: booking.dropoff,
       stops: booking.stops,
-      childSeats: booking.childSeats,
-      babySeats: booking.babySeats,
-      meetAndGreet: booking.meetAndGreet,
+      childSeats: input.childSeats ?? booking.childSeats,
+      babySeats: input.babySeats ?? booking.babySeats,
+      meetAndGreet: input.meetAndGreet ?? booking.meetAndGreet,
       promoCode: booking.promoCode,
       date,
-      time,
+      time: timeValue,
       returnDate: booking.returnDate,
       returnTime: booking.returnTime,
       email: booking.email,
-    },
+      passengers: input.passengers ?? booking.passengers,
+    } as any,
     distanceKm,
     tax: settings ?? {},
     redeem: false,
-    now: zonedRideInstant(date, time, "UTC") ?? undefined,
+    now: zonedRideInstant(date, timeValue, "UTC") ?? undefined,
   });
 
   if (!serverPrice.ok) return null;
@@ -62,7 +86,11 @@ export async function repriceCustomerTrip(
 
   return {
     date,
-    time,
+    time: timeValue,
+    passengers: input.passengers ?? booking.passengers,
+    childSeats: input.childSeats ?? booking.childSeats,
+    babySeats: input.babySeats ?? booking.babySeats,
+    meetAndGreet: input.meetAndGreet ?? booking.meetAndGreet,
     totalAmount: quote.total,
     subtotalAmount: quote.subtotal,
     taxAmount: quote.taxAmount,

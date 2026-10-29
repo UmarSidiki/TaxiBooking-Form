@@ -8,6 +8,10 @@ const changeSchema = z.object({
   date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
   time: z.string().regex(/^\d{2}:\d{2}$/).optional(),
   action: z.enum(["cancel", "change"]),
+  passengers: z.number().int().positive().optional(),
+  childSeats: z.number().int().min(0).optional(),
+  babySeats: z.number().int().min(0).optional(),
+  meetAndGreet: z.boolean().optional(),
 });
 
 async function emailFromRequest(request: Request) {
@@ -39,6 +43,10 @@ export async function POST(
     action: parsed.data.action,
     date: parsed.data.date,
     time: parsed.data.time,
+    passengers: parsed.data.passengers,
+    childSeats: parsed.data.childSeats,
+    babySeats: parsed.data.babySeats,
+    meetAndGreet: parsed.data.meetAndGreet,
   });
 
   if (!result.ok) {
@@ -54,5 +62,9 @@ export async function POST(
     date: result.date,
     time: result.time,
     totalAmount: result.totalAmount,
+    payUrl: result.payUrl,
+    refundRequestId: result.refundRequestId,
+    fee: result.fee,
+    refundAmount: result.refundAmount,
   });
 }

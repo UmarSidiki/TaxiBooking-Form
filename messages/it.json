@@ -1512,7 +1512,29 @@
       "tax-rate": "Tax rate",
       "tax-inclusive": "Tax inclusive",
       "invoice-footer": "Invoice footer",
-      "invoice-terms": "Invoice terms"
+      "invoice-terms": "Invoice terms",
+      "cancel-policy": "Cancel Policy",
+      "cancel-policy-hours-before": "Hours before",
+      "cancel-policy-fee-percent": "Fee %",
+      "cancel-policy-add": "Add tier",
+      "cancel-policy-remove": "Remove tier"
+    },
+    "Refunds": {
+      "title": "Refund Requests",
+      "empty": "No pending refund requests",
+      "loading": "Loading...",
+      "refresh": "Refresh",
+      "trip": "Trip",
+      "amount": "Amount",
+      "reason": "Reason",
+      "actions": "Actions",
+      "approve": "Approve",
+      "reject": "Reject",
+      "cancel": "Cancel",
+      "confirmApproveTitle": "Approve refund?",
+      "confirmApproveDescription": "This will process the refund via Stripe.",
+      "confirmRejectTitle": "Reject refund?",
+      "confirmRejectDescription": "This will reject the refund request."
     }
   },
   "Sidebar": {

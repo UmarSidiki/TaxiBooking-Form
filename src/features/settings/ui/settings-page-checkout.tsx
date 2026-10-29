@@ -4,6 +4,7 @@ import { Banknote, Building2, CreditCard } from "lucide-react";
 import { useTranslations } from "next-intl";
 
 import BookingTab from "@/features/settings/ui/booking-tab";
+import { CancelPolicyEditor } from "@/features/settings/ui/cancel-policy-editor";
 import { FeaturesTabTax } from "@/features/settings/ui/features-tab-tax";
 import { PaymentTabCurrency } from "@/features/settings/ui/payment-tab-currency";
 import { PaymentTabMethods } from "@/features/settings/ui/payment-tab-methods";
@@ -75,6 +76,9 @@ export function SettingsPageCheckout() {
       </SettingsSection>
       <SettingsSection title={t("Dashboard.Settings.booking-settings")}>
         <BookingTab settings={settings} handleMapSettingsChange={patch} />
+      </SettingsSection>
+      <SettingsSection title={t("Dashboard.Settings.cancel-policy")}>
+        <CancelPolicyEditor />
       </SettingsSection>
     </div>
   );

@@ -7,12 +7,13 @@ export async function ridesForEmail(email: string) {
   const rows = await Booking.find({ email: new RegExp(`^${email.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}$`, "i") })
     .sort({ date: -1, time: -1 })
     .limit(50)
-    .select("tripId pickup dropoff date time returnDate returnTime status paymentStatus totalAmount bookingType duration")
+    .select("tripId pickup dropoff date time returnDate returnTime status paymentStatus paymentMethod totalAmount bookingType duration passengers childSeats babySeats meetAndGreet vehicleDetails assignedDriver assignedPartner driverRideStatus whatsappOptIn firstName lastName phone locale")
     .lean();
   const now = new Date().toISOString().slice(0, 10);
   return {
-    upcoming: rows.filter((row) => row.status !== "canceled" && row.status !== "completed" && row.date >= now),
-    past: rows.filter((row) => row.status === "completed" || row.status === "canceled" || row.date < now),
+    upcoming: rows.filter((row: any) => row.status !== "canceled" && row.status !== "completed" && row.date >= now),
+    past: rows.filter((row: any) => row.status === "completed" || (row.status !== "canceled" && row.date < now)),
+    canceled: rows.filter((row: any) => row.status === "canceled"),
   };
 }
 

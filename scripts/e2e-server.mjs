@@ -283,6 +283,7 @@ const child = spawn("npx", ["next", "dev", "-H", "127.0.0.1", "-p", "3000"], {
     NEXTAUTH_SECRET: "e2e-secret-not-for-production",
     NEXTAUTH_URL: "http://127.0.0.1:3000",
     NEXT_PUBLIC_BASE_URL: "http://127.0.0.1:3000",
+    DISTANCE_MOCK: "1",
   },
 });
 

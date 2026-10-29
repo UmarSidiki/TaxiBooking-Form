@@ -102,7 +102,7 @@ export interface IBooking extends Document {
   partnerApprovedAt?: Date;
   /** Who is paid when both a driver and a partner are on the ride. */
   responsibleAssignee?: "driver" | "partner";
-  driverRideStatus?: "assigned" | "started" | "completed" | "no_show";
+  driverRideStatus?: "assigned" | "started" | "arrived" | "completed" | "no_show";
   cashCollected?: number;
   pickupReminderSent?: boolean;
   createdAt: Date;

@@ -38,6 +38,9 @@ export const PUBLIC_SETTING_FIELDS = [
   "dispatchAssigneeMode",
   "defaultPartnerMarginPercentage",
   "timezone",
+  "companyName",
+  "companyPhone",
+  "adminEmail",
 ] as const;
 
 export type PublicSettingField = (typeof PUBLIC_SETTING_FIELDS)[number];

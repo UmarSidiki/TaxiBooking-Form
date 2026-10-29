@@ -48,7 +48,9 @@ export async function GET(
   const pending = await RefundRequest.find({ bookingId: booking._id, status: "pending" }).lean();
   const pendingCents = pending.reduce((s: number, r: any) => s + Math.round((r.amount ?? 0) * 100), 0);
   const netPaidCents = amountPaidCents - amountRefundedCents - pendingCents;
-  const paid = netPaidCents / 100;
+  const paid = Math.max(0, netPaidCents) / 100;
+  const feeCents = Math.round(feeAmount * 100);
+  const refundCents = Math.max(0, netPaidCents - feeCents);
 
   return NextResponse.json({
     ok: true,
@@ -58,7 +60,8 @@ export async function GET(
     paid,
     feePercent,
     feeAmount,
-    refundAmount,
+    refundAmount: refundCents / 100,
+    listRefundAmount: refundAmount,
     hoursUntil,
     cancelPolicy: policy,
     modifiable: (await changeAllowed(booking)) && ["requested", "awaiting_payment", "upcoming"].includes(booking.status ?? ""),

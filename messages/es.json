@@ -2537,6 +2537,7 @@
     "whatsapp-opt-in": "WhatsApp notifications",
     "change-title": "Change trip",
     "change-review": "Review change",
+    "cancel-preview-failed": "No pudimos cargar los detalles de la cancelación. Cierra esta ventana e inténtalo de nuevo.",
     "change-preview-failed": "No pudimos calcular el nuevo precio. Revisa los datos e inténtalo de nuevo.",
     "change-current-total": "Current total",
     "change-new-total": "New total",

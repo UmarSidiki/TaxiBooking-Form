@@ -26,11 +26,13 @@ export function CancelTripDialog({
 }) {
   const [quote, setQuote] = useState<Quote | null>(null);
   const [loading, setLoading] = useState(false);
+  const [failed, setFailed] = useState(false);
 
   useEffect(() => {
     if (!open || !ride) return;
     let cancelled = false;
     setLoading(true);
+    setFailed(false);
     fetch(`/api/account/trips/${ride.tripId}/quote-cancel`)
       .then((r) => r.json())
       .then((data) => {
@@ -43,7 +45,12 @@ export function CancelTripDialog({
             totalAmount: data.totalAmount,
             paid: data.paid ?? data.totalAmount,
           });
+        } else {
+          setFailed(true);
         }
+      })
+      .catch(() => {
+        if (!cancelled) setFailed(true);
       })
       .finally(() => {
         if (!cancelled) setLoading(false);
@@ -62,6 +69,7 @@ export function CancelTripDialog({
           <DialogTitle>{t("cancel-title")}</DialogTitle>
         </DialogHeader>
         {loading ? <p>{t("loading")}…</p> : null}
+        {failed ? <p role="alert" className="text-destructive">{t("cancel-preview-failed")}</p> : null}
         {quote ? (
           <div className="space-y-2 text-sm" aria-live="polite">
             <p>{t("cancel-paid")}: {fmt(quote.paid)}</p>

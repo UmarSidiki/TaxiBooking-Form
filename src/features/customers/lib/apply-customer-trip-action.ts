@@ -348,6 +348,56 @@ async function cancelTrip(
   };
 }
 
+type ChangeInput = { date: string; time: string; pickup?: string; dropoff?: string; selectedVehicle?: string; passengers?: number; childSeats?: number; babySeats?: number; meetAndGreet?: boolean };
+
+/** True when any field that feeds the fare differs from the booking. Omitted fields count as unchanged. */
+export function priceAffectingChange(booking: IBooking, input: ChangeInput): boolean {
+  const differs = (next: unknown, current: unknown) => {
+    if (next === undefined || next === null || next === "") return false;
+    if (typeof next === "boolean" || typeof current === "boolean") return Boolean(next) !== Boolean(current);
+    if (typeof next === "number") return next !== Number(current ?? 0);
+    return String(next).trim() !== String(current ?? "").trim();
+  };
+  const b = booking as any;
+  return (
+    differs(input.date, b.date) ||
+    differs(input.time, b.time) ||
+    differs(input.pickup, b.pickup) ||
+    differs(input.dropoff, b.dropoff) ||
+    differs(input.selectedVehicle, b.selectedVehicle) ||
+    differs(input.passengers, b.passengers) ||
+    differs(input.childSeats, b.childSeats) ||
+    differs(input.babySeats, b.babySeats) ||
+    differs(input.meetAndGreet, b.meetAndGreet)
+  );
+}
+
+/** The booking's own price snapshot, used when nothing price-affecting changed. */
+function keepOriginalPrice(booking: IBooking) {
+  const b = booking as any;
+  const snapshot: Record<string, unknown> = {
+    date: b.date,
+    time: b.time,
+    pickup: b.pickup,
+    dropoff: b.dropoff,
+    selectedVehicle: b.selectedVehicle ? String(b.selectedVehicle) : undefined,
+    passengers: b.passengers,
+    childSeats: b.childSeats,
+    babySeats: b.babySeats,
+    meetAndGreet: b.meetAndGreet,
+    totalAmount: b.totalAmount,
+    subtotalAmount: b.subtotalAmount,
+    taxAmount: b.taxAmount,
+    taxPercentage: b.taxPercentage,
+    depositDue: b.depositDue,
+    balanceDue: b.balanceDue,
+    fareLines: b.fareLines,
+    promoCode: b.promoCode,
+  };
+  for (const key of Object.keys(snapshot)) if (snapshot[key] === undefined) delete snapshot[key];
+  return snapshot as Awaited<ReturnType<typeof repriceCustomerTrip>> & object;
+}
+
 async function changeTrip(
   booking: IBooking,
   input: { date: string; time: string; pickup?: string; dropoff?: string; selectedVehicle?: string; passengers?: number; childSeats?: number; babySeats?: number; meetAndGreet?: boolean },
@@ -360,7 +410,9 @@ async function changeTrip(
     booking.paymentTokenHash = undefined;
   }
 
-  const repriced = await repriceCustomerTrip(booking, input);
+  const repriced = priceAffectingChange(booking, input)
+    ? await repriceCustomerTrip(booking, input)
+    : keepOriginalPrice(booking);
   if (!repriced) {
     return { ok: false, status: 409, error: "not_modifiable", reason: "fare" };
   }

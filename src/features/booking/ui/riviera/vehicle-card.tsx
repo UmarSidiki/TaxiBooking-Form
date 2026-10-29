@@ -76,12 +76,12 @@ export function VehicleCard({
         </span>
       )}
 
-      <div className="specs">
-        <span>
+      <div className="specs" style={{ display: "flex", gap: 16, alignItems: "center" }}>
+        <span className="inline-flex items-center gap-1.5">
           <UsersIcon />
           {vehicle.persons}
         </span>
-        <span>
+        <span className="inline-flex items-center gap-1.5">
           <BagIcon />
           {vehicle.baggages}
         </span>

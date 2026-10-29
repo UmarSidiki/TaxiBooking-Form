@@ -34,7 +34,6 @@ export default function BookingFormContainer() {
   const { isLoading } = useGeo();
   const { settings } = useTheme();
   const t = useTranslations();
-  // const t = useTranslations();
 
   // Wait until URL params are processed
   useEffect(() => {
@@ -50,12 +49,6 @@ export default function BookingFormContainer() {
     (settings?.allowedBookingCountries?.length ?? 0) > 0;
   if (countryRestricted && isLoading) return <StepLoader />;
 
-  // Get step titles directly from translations
-  // const stepTitles = [
-  //   t("FormContainer.trip-details"),
-  //   t("FormContainer.select-vehicle"),
-  //   t("FormContainer.payment-and-details")
-  // ];
 
   const stepLabels = [t("FormContainer.trip-details"), t("FormContainer.select-vehicle"), t("FormContainer.payment-and-details")];
 
@@ -64,7 +57,7 @@ export default function BookingFormContainer() {
       <header className="top">
         <span className="brand">
           <b></b>
-          {process.env.NEXT_PUBLIC_WEBSITE_NAME || "Booking Form"}
+          {settings?.companyName || process.env.NEXT_PUBLIC_WEBSITE_NAME || t("FormContainer.Title")}
         </span>
         <div className="lang">
           <LanguageSwitcher />

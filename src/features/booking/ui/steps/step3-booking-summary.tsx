@@ -86,118 +86,14 @@ export function Step3BookingSummary({
             </div>
           )}
 
-          {/* Trip Details */}
-          <div className="space-y-3 text-sm">
-            <div className="flex items-start gap-2">
-              <MapPin className="h-5 w-5 text-[var(--ok)] flex-shrink-0 mt-0.5" />
-              <div>
-                <p className="text-xs text-[var(--ink2)]">{t('Step3.pickup')}</p>
-                <p className="font-medium text-[var(--ink)]">{formData.pickup}</p>
-              </div>
-            </div>
-
-            {/* Stops */}
-            {formData.stops
-              .filter(stop => stop.location.trim())
-              .map((stop, index) => (
-                <div key={index} className="flex items-start gap-2">
-                  <div className="flex items-center justify-center w-5 h-5 bg-blue-100 rounded-full flex-shrink-0 mt-0.5">
-                    <span className="text-xs font-semibold text-[var(--ink2)]">{index + 1}</span>
-                  </div>
-                  <div>
-                    <p className="text-xs text-[var(--ink2)]">{t('Step1.stop')} {index + 1}</p>
-                    <p className="font-medium text-[var(--ink)]">{stop.location}</p>
-                  </div>
-                </div>
-              ))}
-
-            {formData.bookingType === "destination" ? (
-              <>
-                <div className="flex items-start gap-2">
-                  <MapPin className="h-5 w-5 text-red-600 flex-shrink-0 mt-0.5" />
-                  <div>
-                    <p className="text-xs text-[var(--ink2)]">{t('Step3.dropoff')}</p>
-                    <p className="font-medium text-[var(--ink)]">
-                      {formData.dropoff}
-                    </p>
-                  </div>
-                </div>
-
-                {distanceData && (
-                  <>
-                    <div className="flex items-center gap-2">
-                      <Clock className="h-4 w-4 text-[var(--ink2)]" />
-                      <span className="text-[var(--ink)]">
-                        {distanceData.duration.text}
-                      </span>
-                    </div>
-
-                    <div className="flex items-center gap-2">
-                      <svg
-                        className="h-4 w-4 text-[var(--ink2)]"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"
-                        />
-                      </svg>
-                      <span className="text-[var(--ink)]">
-                        {distanceData.distance.text} -{" "}
-                        {formData.tripType === "oneway"
-                          ? t('Step3.one-way')
-                          : t('Step3.round-trip')}
-                      </span>
-                    </div>
-                  </>
-                )}
-              </>
-            ) : (
-              <div className="flex items-center gap-2">
-                <Clock className="h-4 w-4 text-[var(--ink2)]" />
-                <span className="text-[var(--ink)]">
-                  {formData.duration}{" "}
-                  {formData.duration === 1 ? "hour" : "hours"} {t('Step3.hourly-booking')}
-                </span>
-              </div>
-            )}
-
-            <div className="flex items-center gap-2">
-              <Calendar className="h-4 w-4 text-[var(--ink2)]" />
-              <span className="text-[var(--ink)]">
-                {formData.tripType === "roundtrip" ? t('Step3.departure') : t('Step3.date')}: {formData.date} at {formData.time}
-              </span>
-            </div>
-
-            {formData.tripType === "roundtrip" && formData.returnDate && (
-              <div className="flex items-center gap-2">
-                <Calendar className="h-4 w-4 text-[var(--ink2)]" />
-                <span className="text-[var(--ink)]">
-                  {t('Step3.return')}: {formData.returnDate} at {formData.returnTime}
-                </span>
-              </div>
-            )}
-
-            <div className="flex items-center gap-2">
-              <Users className="h-4 w-4 text-[var(--ink2)]" />
-              <span className="text-[var(--ink)]">
-                {formData.passengers} Passenger(s)
-              </span>
-            </div>
-          </div>
-
           {/* Selected Vehicle */}
           {selectedVehicle && (
             <div className="border-t pt-3">
               <div className="flex items-center gap-2 mb-2">
-                <Car className="h-4 w-4 text-primary" />
+                <Car className="h-4 w-4" style={{ color: "var(--ink2)" }} />
                 <span className="font-semibold text-sm">{t('Step3.selected-vehicle')}</span>
               </div>
-              <div className="bg-gray-50 p-3 rounded-lg">
+              <div className="bg-[var(--well)] p-3 rounded-lg">
                 <p className="font-medium">{selectedVehicle.name}</p>
                 <p className="text-xs text-[var(--ink2)] mt-1">
                   {selectedVehicle.description}
@@ -315,7 +211,7 @@ export function Step3BookingSummary({
                 </div>
                 <div className="flex justify-between items-center text-lg font-bold">
                   <span>{t("Step3.total-incl-tax")}</span>
-                  <span className="text-2xl text-primary">
+                  <span className="text-2xl font-mono" style={{ color: "var(--ink)" }}>
                     {currencySymbol}{totalPrice.toFixed(2)}
                   </span>
                 </div>
@@ -323,7 +219,7 @@ export function Step3BookingSummary({
             ) : (
               <div className="flex justify-between items-center text-lg font-bold">
                 <span>{t("Step2.total")}</span>
-                <span className="text-2xl text-primary">
+                <span className="text-2xl font-mono" style={{ color: "var(--ink)" }}>
                   {currencySymbol}{totalPrice.toFixed(2)}
                 </span>
               </div>

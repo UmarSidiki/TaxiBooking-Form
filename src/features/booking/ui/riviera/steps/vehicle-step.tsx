@@ -1,9 +1,96 @@
 "use client";
 
-import Step2VehicleSelection from "@/features/booking/ui/steps/step2-vehicle-selection";
+import { memo, useMemo } from "react";
+import { ArrowLeft } from "lucide-react";
+import { Button } from "@/shared/ui/button";
+import { useStep2 } from "@/features/booking/hooks/form-steps/useStep2";
+import { useTranslations } from "next-intl";
+import { useCurrency } from "@/shared/context/currency-context";
+import { Step2TripSummary } from "../../steps/step2-trip-summary";
+import { Step2VehicleList } from "../../steps/step2-vehicle-list";
 
-export function VehicleStep() {
-  return <Step2VehicleSelection />;
+function Step2VehicleSelection() {
+  const {
+    // Context values
+    formData,
+    vehicles,
+    vehiclesLoading,
+    vehiclesError,
+    distanceData,
+
+    // Tax settings
+    enableTax,
+    taxPercentage,
+    taxIncluded,
+
+    // Functions
+    calculatePrice,
+    calculateOriginalPrice,
+    handleVehicleSelect,
+    handleBack,
+    calculatingDistance,
+  } = useStep2();
+
+  const { currencySymbol } = useCurrency();
+
+  const t = useTranslations();
+
+  // Sort vehicles by calculated price (lowest first) - memoized for performance
+  const sortedVehicles = useMemo(() => {
+    return [...vehicles].sort((a, b) => {
+      const priceA = calculatePrice(a);
+      const priceB = calculatePrice(b);
+      return priceA - priceB;
+    });
+  }, [vehicles, calculatePrice]);
+
+  return (
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      {/* Main Content - Vehicle Selection */}
+      <div className="lg:col-span-2 space-y-4">
+        <div>
+          <h2 className="text-xl font-semibold mb-2">
+            {t("Step2.select-your-vehicle")}
+          </h2>
+          <p className="text-[var(--ink2)] text-sm">
+            {t("Step2.choose-the-perfect-vehicle-for-your-journey")}
+          </p>
+        </div>
+
+        <Step2VehicleList
+          vehicles={vehicles}
+          vehiclesLoading={vehiclesLoading}
+          vehiclesError={vehiclesError}
+          sortedVehicles={sortedVehicles}
+          formData={formData}
+          distanceData={distanceData}
+          calculatingDistance={calculatingDistance}
+          calculatePrice={calculatePrice}
+          calculateOriginalPrice={calculateOriginalPrice}
+          currencySymbol={currencySymbol}
+          handleVehicleSelect={handleVehicleSelect}
+          t={t}
+        />
+
+        <Button onClick={handleBack} variant="outline" className="w-full">
+          <ArrowLeft className="mr-2 h-4 w-4" />{" "}
+          {t("Step2.back-to-trip-details")}
+        </Button>
+      </div>
+
+      {/* Sidebar - Trip Summary */}
+      <Step2TripSummary
+        formData={formData}
+        vehicles={vehicles}
+        distanceData={distanceData}
+        enableTax={enableTax}
+        taxPercentage={taxPercentage}
+        taxIncluded={taxIncluded}
+        currencySymbol={currencySymbol}
+        t={t}
+      />
+    </div>
+  );
 }
 
-export default VehicleStep;
+export default memo(Step2VehicleSelection);

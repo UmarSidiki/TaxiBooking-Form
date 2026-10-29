@@ -91,7 +91,7 @@ export function VehicleArt({
       <path d={p.belt} stroke="var(--car-line)" strokeWidth={1} />
       <path d={p.door} stroke="var(--car-line)" strokeWidth={1} />
       <rect x={p.light[0][0]} y={p.light[0][1]} width={p.light[0][2]} height={p.light[0][3]} rx={1} fill="var(--car-head)" />
-      <rect x={p.light[1][0]} y={p.light[1][1]} width={p.light[1][2]} height={p.light[1][3]} rx={1} fill="#B3261E" />
+      <rect x={p.light[1][0]} y={p.light[1][1]} width={p.light[1][2]} height={p.light[1][3]} rx={1} fill="var(--err)" />
       {p.w.map((cx) => (
         <g key={cx}>{wheel(cx)}</g>
       ))}

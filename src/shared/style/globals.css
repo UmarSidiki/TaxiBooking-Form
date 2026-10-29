@@ -232,3 +232,65 @@ input[type="time"]::-webkit-date-and-time-value {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* Riviera public booking form tokens (scoped) */
+.riviera {
+  --paper: #F2EEE6;
+  --sheet: #FBF9F5;
+  --well: #E9E3D7;
+  --ink: #1C1A16;
+  --ink2: #5B554B;
+  --rule: #D9D1C2;
+  --rule2: #BDB3A1;
+  --sig: #B8411A;
+  --sig-on: #FFF8F2;
+  --sig-tint: #F6E1D5;
+  --ok: #2F6B3F;
+  --err: #A3261B;
+  --err-tint: #F8E0DC;
+  --car-body: #2A2723;
+  --car-glass: #9AA6AC;
+  --car-line: #4A453E;
+  --car-tyre: #16140F;
+  --car-rim: #B9B3A8;
+  --car-arch: #FBF9F5;
+  --car-head: #E9E2D2;
+  --display: var(--font-riviera-display), ui-sans-serif, sans-serif;
+  --body: var(--font-riviera-body), ui-sans-serif, sans-serif;
+  --mono: var(--font-riviera-mono), ui-monospace, monospace;
+  font-family: var(--body);
+  background: var(--paper);
+  color: var(--ink);
+  min-height: 100dvh;
+}
+:root[data-riviera-theme="dark"] .riviera {
+  --paper: #14130F;
+  --sheet: #1C1A16;
+  --well: #26231D;
+  --ink: #F1ECE2;
+  --ink2: #B3AA9B;
+  --rule: #34302A;
+  --rule2: #4A453C;
+  --sig: #F08A5D;
+  --sig-on: #1B0E07;
+  --sig-tint: #3A2318;
+  --ok: #7CC48D;
+  --err: #FF8F82;
+  --err-tint: #3B1D19;
+  --car-body: #D6D0C4;
+  --car-glass: #3B4247;
+  --car-line: #9E978A;
+  --car-tyre: #0B0A08;
+  --car-rim: #8C867B;
+  --car-arch: #1C1A16;
+  --car-head: #FFF6DC;
+}
+[dir="rtl"] .riviera {
+  --body: var(--font-riviera-arabic), sans-serif;
+  --display: var(--font-riviera-arabic), sans-serif;
+}
+.riviera * { box-sizing: border-box; }
+.riviera .num { unicode-bidi: isolate; direction: ltr; font-family: var(--mono); font-variant-numeric: tabular-nums; }
+.riviera :focus-visible { outline: 2px solid var(--sig); outline-offset: 2px; border-radius: 2px; }
+.riviera button, .riviera input, .riviera select { font: inherit; color: inherit; }
+.riviera input { font-size: 16px; }

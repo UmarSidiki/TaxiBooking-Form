@@ -1,7 +1,7 @@
 import type { CSSProperties } from "react";
 import type { Metadata } from "next";
 import { headers } from "next/headers";
-import { Geist, Geist_Mono, Libre_Franklin } from "next/font/google";
+import { Geist, Geist_Mono, Libre_Franklin, Bricolage_Grotesque, IBM_Plex_Sans, IBM_Plex_Mono, IBM_Plex_Sans_Arabic } from "next/font/google";
 import "@/shared/style/globals.css";
 import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { notFound } from "next/navigation";
@@ -32,6 +32,34 @@ const deskSans = Libre_Franklin({
   variable: "--font-desk-sans",
   subsets: ["latin"],
   display: "swap",
+});
+
+const rivieraDisplay = Bricolage_Grotesque({
+  variable: "--font-riviera-display",
+  subsets: ["latin"],
+  display: "swap",
+  weight: ["500", "600", "700"],
+});
+
+const rivieraBody = IBM_Plex_Sans({
+  variable: "--font-riviera-body",
+  subsets: ["latin"],
+  display: "swap",
+  weight: ["400", "500", "600"],
+});
+
+const rivieraMono = IBM_Plex_Mono({
+  variable: "--font-riviera-mono",
+  subsets: ["latin"],
+  display: "swap",
+  weight: ["500", "600"],
+});
+
+const rivieraArabic = IBM_Plex_Sans_Arabic({
+  variable: "--font-riviera-arabic",
+  subsets: ["arabic"],
+  display: "swap",
+  weight: ["400", "500", "600"],
 });
 
 const siteName = process.env.NEXT_PUBLIC_WEBSITE_NAME ?? "Booking Form";
@@ -107,10 +135,15 @@ export default async function RootLayout({ children, params }: Props) {
         <link rel="preconnect" href="https://maps.googleapis.com" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var s=localStorage.getItem('riviera-theme');var d=s||(window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.dataset.rivieraTheme=d;}catch(e){document.documentElement.dataset.rivieraTheme='light';}})();`,
+          }}
+        />
       </head>
       <body
         style={cssVariables}
-        className={`${geistSans.variable} ${geistMono.variable} ${deskSans.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} ${deskSans.variable} ${rivieraDisplay.variable} ${rivieraBody.variable} ${rivieraMono.variable} ${rivieraArabic.variable} antialiased`}
       >
         <AuthSessionProvider>
           <ThemeProvider initialSettings={serializedThemeSettings}>

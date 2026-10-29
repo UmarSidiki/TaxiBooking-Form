@@ -7,6 +7,7 @@ import { ridePayUrl } from "@/features/invoices/lib/ride-pay-link";
 import { allocateInvoiceNumber } from "@/features/invoices/lib/allocate-invoice-number";
 import { Setting } from "@/features/settings/model";
 import { getCurrencySymbol } from "@/shared/lib/utils";
+import { resolvePublicUrl } from "@/features/settings/lib/public-url";
 
 async function logoDataUrl() {
   try {
@@ -27,7 +28,7 @@ export async function buildInvoicePdf(tripId: string) {
   ]);
   const currency = settings?.stripeCurrency?.toUpperCase() || "EUR";
   const symbol = getCurrencySymbol(currency);
-  const base = process.env.NEXT_PUBLIC_BASE_URL || process.env.NEXTAUTH_URL;
+  const base = await resolvePublicUrl();
   const payUrl = ridePayUrl(base, booking.locale, tripId);
   const qrDataUrl = payUrl ? await QRCode.toDataURL(payUrl, { margin: 1, width: 280 }) : undefined;
   const pdf = await renderInvoicePdf(booking, symbol, settings?.smtpSenderName || "Booking", {

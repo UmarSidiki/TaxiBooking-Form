@@ -9,7 +9,7 @@ import { whatsappLocales } from "@/features/settings/schema/whatsapp.schema";
 import { renderWhatsAppTemplate } from "@/features/settings/lib/whatsapp-template-text";
 import { toWhatsAppDigits, toWhatsAppJid } from "@/features/settings/lib/whatsapp-phone";
 import { sendWhatsAppTexts } from "@/features/settings/lib/whatsapp-session";
-import { absoluteHttpBase } from "@/features/booking/lib/booking-mail-url";
+import { resolvePublicUrl } from "@/features/settings/lib/public-url";
 import { customerPortalUrl } from "@/features/customers/lib/customer-token";
 
 type Audience = "customer" | "desk";
@@ -53,6 +53,7 @@ export async function sendBookingWhatsApp(bookingId: string) {
       templates.find((item) => item.audience === audience && item.locale === locale) ??
       templates.find((item) => item.audience === audience && item.locale === config.defaultLocale);
 
+    const baseUrl = await resolvePublicUrl();
     const values = {
       name: `${booking.firstName} ${booking.lastName}`.trim(),
       tripId: booking.tripId,
@@ -64,7 +65,7 @@ export async function sendBookingWhatsApp(bookingId: string) {
       total: typeof booking.totalAmount === "number" ? booking.totalAmount.toFixed(2) : "",
       passengers: String(booking.passengers),
       companyPhone: config.companyPhone,
-      portal: customerPortalUrl(absoluteHttpBase(process.env.NEXT_PUBLIC_BASE_URL || process.env.NEXTAUTH_URL), locale, booking.email) ?? "",
+      portal: customerPortalUrl(baseUrl, locale, booking.email) ?? "",
     };
 
     const jobs: Job[] = [];

@@ -5,7 +5,7 @@ import { Booking } from "@/features/booking/model";
 import { createDeskBooking } from "@/features/desk-booking/lib/create-desk-booking.service";
 import { isDeskBookingEnabled } from "@/features/desk-booking/lib/is-desk-booking-enabled";
 import { parseDeskBookingInput } from "@/features/desk-booking/schema/desk-booking.schema";
-import { resolveBookingRequestBaseUrl } from "@/features/booking/lib/resolve-booking-request-base-url";
+import { resolvePublicUrl } from "@/features/settings/lib/public-url";
 import { requireAdmin } from "@/features/auth/lib/require-role";
 import { jsonError } from "@/shared/http/json-error";
 
@@ -65,7 +65,7 @@ export async function POST(request: NextRequest) {
     const result = await createDeskBooking(
       parsed.data,
       { userId: user.id, name: user.name ?? user.email ?? undefined },
-      resolveBookingRequestBaseUrl(request)
+      (await resolvePublicUrl({ request })) ?? undefined
     );
 
     if (!result.ok) {

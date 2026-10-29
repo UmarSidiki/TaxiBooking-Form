@@ -61,6 +61,8 @@ export interface ISetting {
   dispatchAssigneeMode?: "exclusive" | "allow_both";
   defaultPartnerMarginPercentage?: number;
   adminEmail?: string;
+  /** Persisted public site URL, detected from authenticated dashboard requests. */
+  publicBaseUrl?: string;
   timezone?: string;
   whatsappTplAssigned?: boolean;
   whatsappTplAvailable?: boolean;
@@ -272,6 +274,10 @@ const SettingSchema = new Schema<ISetting>(
       default: false,
     },
     adminEmail: {
+      type: String,
+      default: "",
+    },
+    publicBaseUrl: {
       type: String,
       default: "",
     },

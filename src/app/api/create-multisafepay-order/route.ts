@@ -4,7 +4,7 @@ import { connectDB } from '@/shared/db';
 import { PendingBooking } from '@/features/booking/model';
 import { Vehicle } from '@/features/fleet/model';
 import { generateShortId } from '@/shared/lib/generate-id';
-import { resolvePublicBaseUrl } from '@/features/payments/lib/resolve-base-url';
+import { resolvePublicUrl } from '@/features/settings/lib/public-url';
 import { priceServerBooking } from '@/features/pricing/lib/price-server-booking';
 import { chargeDrift } from '@/features/pricing/lib/deposit-charge';
 import { fetchRouteDistanceKm } from '@/features/payments/lib/fare/route-distance';
@@ -42,7 +42,7 @@ export async function POST(request: NextRequest) {
       return jsonError("payment_not_configured", 500);
     }
 
-    const baseUrl = resolvePublicBaseUrl(request);
+    const baseUrl = await resolvePublicUrl({ request });
     if (!baseUrl) {
       return jsonError("payment_not_configured", 500);
     }

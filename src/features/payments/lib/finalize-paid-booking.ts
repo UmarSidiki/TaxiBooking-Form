@@ -1,4 +1,5 @@
 import { connectDB } from '@/shared/db';
+import { resolvePublicUrl } from '@/features/settings/lib/public-url';
 import { Booking, PendingBooking } from '@/features/booking/model';
 import { buildBookingEmailDataFromBooking } from '@/features/payments/lib/booking-email-data';
 import { createBookingFromPending } from '@/features/payments/lib/create-booking-from-pending';
@@ -107,7 +108,7 @@ export async function finalizePaidBooking(
   });
 
   if (existingBooking) {
-    const baseUrl = input.baseUrl || process.env.NEXT_PUBLIC_BASE_URL || '';
+    const baseUrl = input.baseUrl || (await resolvePublicUrl()) || '';
 
     if (existingBooking.status === 'awaiting_payment') {
       const { finalizeQuoteBooking } = await import(

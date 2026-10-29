@@ -48,6 +48,7 @@ describe("invoices", () => {
     process.env.QA_MOCK_WHATSAPP = "1";
     process.env.NEXTAUTH_SECRET = "qa-secret-not-for-production";
     process.env.NEXTAUTH_URL = "http://127.0.0.1:3000";
+    process.env.NEXT_PUBLIC_BASE_URL = "http://127.0.0.1:3000";
     clearQaMail();
     clearWhatsAppOutbox();
     const vehicle = await createVehicle();

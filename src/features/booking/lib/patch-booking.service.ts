@@ -15,6 +15,7 @@ import { sendAppointmentPatchEmails } from '@/features/booking/lib/send-appointm
 import { absoluteHttpBase } from '@/features/booking/lib/booking-mail-url';
 import { quotePayUrl } from '@/features/booking/lib/quote-pay-url';
 import { notePatchActivity } from '@/features/booking/lib/note-patch-activity';
+import { resolvePublicUrl } from '@/features/settings/lib/public-url';
 import {
   parseBookingPatchBody,
   type BookingPatchAction,
@@ -45,12 +46,15 @@ export async function patchBooking(
     return { ok: false, status: parsed.status, message: parsed.error };
   }
 
-  if (parsed.data.action === 'quote' && !absoluteHttpBase(baseUrl)) {
+  const resolvedBaseUrl =
+    absoluteHttpBase(baseUrl) ?? (await resolvePublicUrl()) ?? undefined;
+
+  if (parsed.data.action === 'quote' && !resolvedBaseUrl) {
     return {
       ok: false,
       status: 400,
       message:
-        'Cannot send pay link: set NEXT_PUBLIC_BASE_URL or open the desk from a public URL',
+        'Cannot send pay link: set the public URL in settings or open the desk from a public URL',
     };
   }
 
@@ -123,7 +127,7 @@ export async function patchBooking(
     action: parsed.data.action,
     booking: updatedBooking,
     paymentToken: applied.paymentToken,
-    baseUrl,
+    baseUrl: resolvedBaseUrl,
   });
 
   // The booking is already durably updated at this point, so a failed
@@ -152,7 +156,7 @@ export async function patchBooking(
         String(updatedBooking._id)
       );
       if (bookingForNotification) {
-        await notifyEligiblePartners(bookingForNotification, baseUrl);
+        await notifyEligiblePartners(bookingForNotification, resolvedBaseUrl);
       }
     }
   }
@@ -177,7 +181,7 @@ export async function patchBooking(
 
   const payUrl =
     parsed.data.action === "quote"
-      ? quotePayUrl(baseUrl, updatedBooking.locale, applied.paymentToken)
+      ? quotePayUrl(resolvedBaseUrl, updatedBooking.locale, applied.paymentToken)
       : undefined;
 
   return { ok: true, booking: updatedBooking, action: parsed.data.action, warn, payUrl };

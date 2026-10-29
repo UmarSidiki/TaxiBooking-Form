@@ -6,6 +6,7 @@ import { Setting } from '@/features/settings/model';
 import { finalizePaidBooking } from '@/features/payments/lib/finalize-paid-booking';
 import { settleRideCharge } from '@/features/invoices/lib/settle-ride-charge';
 import { getStripeApiVersion } from '@/features/payments/lib/stripe-client';
+import { resolvePublicUrl } from '@/features/settings/lib/public-url';
 
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
@@ -67,7 +68,7 @@ export async function POST(request: NextRequest) {
         const result = await finalizePaidBooking({
           provider: 'stripe',
           paymentIntentId: paymentIntent.id,
-          baseUrl: process.env.NEXT_PUBLIC_BASE_URL || '',
+          baseUrl: (await resolvePublicUrl()) ?? '',
         });
 
         if (!result.success) {

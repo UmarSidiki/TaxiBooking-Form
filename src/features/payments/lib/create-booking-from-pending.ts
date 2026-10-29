@@ -3,6 +3,7 @@ import { Vehicle } from '@/features/fleet/model';
 import { buildBookingEmailData } from '@/features/payments/lib/booking-email-data';
 import { buildPaidBookingRecord } from '@/features/payments/lib/build-paid-booking-record';
 import { isDuplicateKeyError } from '@/shared/lib/mongo-error';
+import { resolvePublicUrl } from '@/features/settings/lib/public-url';
 import type {
   FinalizePaidBookingInput,
   FinalizePaidBookingResult,
@@ -57,7 +58,7 @@ export async function createBookingFromPending(
 
   try {
     const newBooking = await Booking.create(bookingPayload);
-    const baseUrl = input.baseUrl || process.env.NEXT_PUBLIC_BASE_URL || '';
+    const baseUrl = input.baseUrl || (await resolvePublicUrl()) || '';
 
     const emailData = buildBookingEmailData(orderId, pendingBooking, vehicle, {
       bookingId: newBooking._id.toString(),

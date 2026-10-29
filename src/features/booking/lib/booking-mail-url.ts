@@ -7,7 +7,7 @@ export function bookingMailLocale(value?: string | null) {
 }
 
 export function absoluteHttpBase(value?: string | null) {
-  const raw = (value || process.env.NEXT_PUBLIC_BASE_URL || "").trim().replace(/\/$/, "");
+  const raw = (value || "").trim().replace(/\/$/, "");
   return /^https?:\/\//i.test(raw) ? raw : null;
 }
 

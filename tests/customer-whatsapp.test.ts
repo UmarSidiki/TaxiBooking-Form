@@ -9,7 +9,7 @@ describe("customer ride WhatsApp", () => {
   it("stays quiet until that message is enabled, then includes driver, car, and plate", async () => {
     process.env.QA_MOCK_WHATSAPP = "1";
     process.env.NEXTAUTH_SECRET = "test-secret";
-    process.env.NEXTAUTH_URL = "http://127.0.0.1:3000";
+    process.env.NEXT_PUBLIC_BASE_URL = "http://127.0.0.1:3000";
     clearWhatsAppOutbox();
     const vehicle = await createVehicle();
     await Vehicle.updateOne({ _id: vehicle._id }, { plate: "GE 123" });

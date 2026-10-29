@@ -8,6 +8,7 @@ import { parseJsonBody } from "@/shared/http/parse-json-body";
 import { jsonError } from "@/shared/http/json-error";
 import { limitSensitive } from "@/shared/http/sensitive-limit";
 import { partnerRegisterSchema } from "@/features/partners/schema/partner-write.schema";
+import { resolvePublicUrl } from "@/features/settings/lib/public-url";
 
 export async function POST(request: NextRequest) {
   const limited = await limitSensitive(request, "login");
@@ -38,10 +39,7 @@ export async function POST(request: NextRequest) {
       isActive: false,
     });
 
-    const baseUrl =
-      request.headers.get("origin") ||
-      request.headers.get("referer")?.split("/").slice(0, 3).join("/") ||
-      process.env.NEXT_PUBLIC_BASE_URL;
+    const baseUrl = (await resolvePublicUrl({ request })) ?? undefined;
 
     try {
       await sendAdminPartnerRegistrationEmail({

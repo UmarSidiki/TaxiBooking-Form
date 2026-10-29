@@ -9,6 +9,7 @@ import { getSettingsCurrency } from "@/features/booking/lib/get-settings-currenc
 import { initCashBookingPartners } from "@/features/booking/lib/init-cash-booking-partners";
 import { updateBookingFields } from "@/features/booking/lib/booking.repo";
 import { buildBookingEmailDataFromBooking } from "@/features/payments/lib/booking-email-data";
+import { resolvePublicUrl } from "@/features/settings/lib/public-url";
 import type { BookingPatchAction } from "@/features/booking/schema/booking-patch.schema";
 import type { IBooking } from "@/features/booking/model";
 
@@ -28,22 +29,24 @@ export async function sendAppointmentPatchEmails(input: {
   }
 
   const currency = await getSettingsCurrency();
+  const resolvedBaseUrl =
+    absoluteHttpBase(baseUrl) ?? (await resolvePublicUrl()) ?? undefined;
   const emailData = buildBookingEmailDataFromBooking(booking, {
     paymentMethod: booking.paymentMethod || "pending",
     currency,
-    baseUrl,
+    baseUrl: resolvedBaseUrl,
   });
 
   if (action === "quote") {
     if (!paymentToken) {
       return { ok: false, message: "Pay token missing after quote" };
     }
-    const base = absoluteHttpBase(baseUrl);
+    const base = absoluteHttpBase(resolvedBaseUrl);
     if (!base) {
       return {
         ok: false,
         message:
-          "Cannot send pay link: set NEXT_PUBLIC_BASE_URL or call from a browser origin",
+          "Cannot send pay link: set the public URL in settings or call from a browser origin",
       };
     }
     const locale = bookingMailLocale(booking.locale);
@@ -70,7 +73,7 @@ export async function sendAppointmentPatchEmails(input: {
       String(booking._id),
       "cash",
       booking.totalAmount ?? 0,
-      baseUrl
+      resolvedBaseUrl
     );
     return { ok: true };
   }

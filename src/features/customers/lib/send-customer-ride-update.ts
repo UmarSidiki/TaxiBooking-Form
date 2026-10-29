@@ -1,6 +1,7 @@
 import { Booking } from "@/features/booking/model";
 import { Vehicle } from "@/features/fleet/model";
 import { absoluteHttpBase } from "@/features/booking/lib/booking-mail-url";
+import { resolvePublicUrl } from "@/features/settings/lib/public-url";
 import { readCustomerToken, signCustomerToken } from "@/features/customers/lib/customer-token";
 import { WhatsAppConfig, WhatsAppTemplate } from "@/features/settings/model";
 import { renderWhatsAppTemplate } from "@/features/settings/lib/whatsapp-template-text";
@@ -10,8 +11,8 @@ import { sendWhatsAppTexts } from "@/features/settings/lib/whatsapp-session";
 export const CUSTOMER_RIDE_EVENTS = ["driver_assigned", "on_the_way", "arrived", "completed"] as const;
 export type CustomerRideEvent = (typeof CUSTOMER_RIDE_EVENTS)[number];
 
-export function rideStatusUrl(locale: string, tripId: string) {
-  const base = absoluteHttpBase(process.env.NEXT_PUBLIC_BASE_URL || process.env.NEXTAUTH_URL);
+export async function rideStatusUrl(locale: string, tripId: string) {
+  const base = absoluteHttpBase(await resolvePublicUrl());
   const token = signCustomerToken(`${locale}|${tripId}`, 60 * 60 * 24 * 14);
   if (!base || !token) return "";
   return `${base}/${locale}/ride-status?token=${encodeURIComponent(token)}`;
@@ -42,7 +43,7 @@ export async function sendCustomerRideUpdate(bookingId: string, event: CustomerR
     vehicle: vehicle?.name || booking.vehicleDetails?.name || "",
     plate: vehicle?.plate || "",
     driver: booking.assignedDriver?.name || "",
-    statusUrl: rideStatusUrl(booking.locale || "en", booking.tripId),
+    statusUrl: await rideStatusUrl(booking.locale || "en", booking.tripId),
     total: typeof booking.totalAmount === "number" ? booking.totalAmount.toFixed(2) : "",
   });
   const sent = await sendWhatsAppTexts([{ jid: toWhatsAppJid(digits), text }]);

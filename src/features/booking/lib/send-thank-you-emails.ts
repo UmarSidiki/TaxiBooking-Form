@@ -3,6 +3,7 @@ import { Booking } from "@/features/booking/model";
 import { Setting } from "@/features/settings/model";
 import { sendOrderThankYouEmail } from "@/features/booking/email/order-thank-you";
 import { patchBooking } from "@/features/booking/lib/patch-booking.service";
+import { resolvePublicUrl } from "@/features/settings/lib/public-url";
 
 export async function sendThankYouEmails() {
   try {
@@ -47,8 +48,7 @@ export async function sendThankYouEmails() {
 
     let sentCount = 0;
     let failedCount = 0;
-    const baseUrl =
-      process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
+    const baseUrl = (await resolvePublicUrl()) ?? "";
 
     for (const booking of completedBookings) {
       try {

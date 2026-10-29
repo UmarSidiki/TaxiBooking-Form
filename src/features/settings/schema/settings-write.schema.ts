@@ -61,5 +61,6 @@ export const settingsWriteSchema = z.object({
   dispatchAssigneeMode: z.enum(["exclusive", "allow_both"]).optional(),
   defaultPartnerMarginPercentage: z.number().min(0).max(100).optional(),
   adminEmail: z.string().optional(),
+  publicBaseUrl: z.string().trim().max(300).optional(),
   timezone: z.string().optional(),
 });

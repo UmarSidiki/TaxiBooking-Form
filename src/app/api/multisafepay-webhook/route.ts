@@ -3,7 +3,7 @@ import { connectDB } from '@/shared/db';
 import { Setting } from '@/features/settings/model';
 import { finalizePaidBooking } from '@/features/payments/lib/finalize-paid-booking';
 import { settleRideCharge } from '@/features/invoices/lib/settle-ride-charge';
-import { resolvePublicBaseUrl } from '@/features/payments/lib/resolve-base-url';
+import { resolvePublicUrl } from '@/features/settings/lib/public-url';
 
 export const dynamic = 'force-dynamic';
 export const maxDuration = 60;
@@ -67,7 +67,7 @@ async function handleWebhook(request: NextRequest) {
       );
     }
 
-    const baseUrl = resolvePublicBaseUrl(request) || undefined;
+    const baseUrl = (await resolvePublicUrl()) || undefined;
 
     if (order_id?.startsWith("due_")) {
       const settled = await settleRideCharge({ orderId: order_id });

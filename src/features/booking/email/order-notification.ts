@@ -5,6 +5,7 @@ import { getBakedSettings } from '@/shared/config/baked-settings';
 import { Setting } from '@/features/settings/model';
 import { getCurrencySymbol } from '@/shared/lib/utils';
 import { deskRideUrl } from '@/features/booking/lib/booking-mail-url';
+import { resolvePublicUrl } from '@/features/settings/lib/public-url';
 import type { BookingEmailData } from '@/features/payments/lib/booking-email-data';
 
 function generateOwnerEmailHTML(
@@ -143,7 +144,7 @@ export async function sendOrderNotificationEmail(bookingData: BookingEmailData) 
     const currencySymbol = getCurrencySymbol(currency);
     const primaryColor = settings?.primaryColor || baked.primaryColor || '#EAB308';
     const deskUrl = deskRideUrl(
-      process.env.NEXT_PUBLIC_BASE_URL || bookingData.baseUrl,
+      bookingData.baseUrl || (await resolvePublicUrl()) || undefined,
       bookingData.locale,
       bookingData.bookingId
     );

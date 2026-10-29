@@ -25,7 +25,8 @@ export async function sendAssignmentEmails(input: {
         buildRideDispatchEmailPayload(
           updatedBooking,
           updatedBooking.assignedPartner,
-          partnerPayoutOrTotal(updatedBooking)
+          partnerPayoutOrTotal(updatedBooking),
+          'partner'
         )
       );
 
@@ -52,7 +53,8 @@ export async function sendAssignmentEmails(input: {
         buildRideDispatchEmailPayload(
           updatedBooking,
           updatedBooking.assignedDriver,
-          bookingTotalOrZero(updatedBooking)
+          bookingTotalOrZero(updatedBooking),
+          'driver'
         )
       );
 

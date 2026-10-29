@@ -41,6 +41,8 @@ export type NotificationEventDefinition = {
   channels: readonly NotificationChannel[];
   variables: readonly string[];
   templates: LocalizedTemplates;
+  /** Subject + intro defaults for the email body component. */
+  emailTemplates?: LocalizedTemplates;
   /** Channel-level default when no NotificationSetting row exists. */
   defaultEnabled?: Partial<Record<NotificationChannel, boolean>>;
   timing?: { hoursBefore?: number };

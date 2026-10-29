@@ -108,13 +108,16 @@ export const whatsappEventActionSchema = z.discriminatedUnion("action", [
     action: z.literal("template"),
     event: eventKey,
     audience: eventAudience,
+    channel: z.enum(notificationChannels).default("whatsapp"),
     locale: z.enum(whatsappLocales),
+    subject: z.string().trim().max(200).optional(),
     body: z.string().trim().min(1).max(1000),
   }),
   z.object({
     action: z.literal("reset"),
     event: eventKey,
     audience: eventAudience,
+    channel: z.enum(notificationChannels).default("whatsapp"),
     locale: z.enum(whatsappLocales),
   }),
 ]);

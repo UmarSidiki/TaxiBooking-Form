@@ -6,6 +6,8 @@ export function createCancellationEmailData(
 ) {
   return {
     tripId: booking.tripId,
+    bookingId: booking._id ? String(booking._id) : undefined,
+    locale: booking.locale,
     pickup: booking.pickup,
     dropoff: booking.dropoff || 'N/A (Hourly booking)',
     stops: booking.stops || [],

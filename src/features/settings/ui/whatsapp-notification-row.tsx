@@ -124,15 +124,9 @@ export function WhatsAppNotificationRow({
                 id={`notify-switch-${id}-${channel}`}
                 checked={enabled}
                 aria-labelledby={`${nameId} ${labelId}`}
-                aria-describedby={channel === "email" ? `notify-email-hint-${id}` : undefined}
                 onCheckedChange={(checked) => void toggle(channel, checked)}
               />
               <span id={labelId}>{t(CHANNELS[channel])}</span>
-              {channel === "email" ? (
-                <span id={`notify-email-hint-${id}`} className="sr-only">
-                  {t("notify_email_soon")}
-                </span>
-              ) : null}
             </label>
           );
         })}

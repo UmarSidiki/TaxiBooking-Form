@@ -91,6 +91,7 @@ export async function deliverAssigneeNotice(input: {
       {
         variables: variablesFor(input.kind, input.ride, input.amount, input.currency),
         recipients: groupRecipients(input.kind, input.recipients),
+        channels: ["whatsapp"],
       },
       { linked: deps?.linked, send: deps?.send },
     );

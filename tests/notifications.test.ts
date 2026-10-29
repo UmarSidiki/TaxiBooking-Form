@@ -23,10 +23,10 @@ function contextFor(key: NotificationEventKey): NotificationContext {
     recipients.customer = [{ phone: "+14155552671", email: "customer@example.com", whatsappOptIn: true }];
   }
   if (definition.audiences.includes("driver")) {
-    recipients.driver = [{ phone: "+14155552672" }];
+    recipients.driver = [{ phone: "+14155552672", email: "driver@example.com" }];
   }
   if (definition.audiences.includes("partner")) {
-    recipients.partner = [{ phone: "+14155552673" }];
+    recipients.partner = [{ phone: "+14155552673", email: "partner@example.com" }];
   }
   return {
     locale: "en",

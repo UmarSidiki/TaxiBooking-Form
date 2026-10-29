@@ -6,6 +6,7 @@ import {
   isNotificationEnabled,
   resolveNotificationTemplate,
 } from "@/features/notifications/lib/notification-resolution";
+import { getNotificationSetting } from "@/features/notifications/lib/notification-settings";
 import { resolveNotificationRecipients } from "@/features/notifications/lib/notification-recipients";
 import { notificationUrlVariables } from "@/features/notifications/lib/notification-urls";
 import {
@@ -14,6 +15,11 @@ import {
   type NotificationContext,
   type NotificationEventDefinition,
 } from "@/features/notifications/notification-types";
+import { emailDefaultCopy } from "@/features/emails/defaults";
+import { loadEmailBrand } from "@/features/emails/lib/brand";
+import { renderEmail } from "@/features/emails/lib/render-email";
+import { buildNotificationEmail } from "@/features/emails/templates/build-notification-email";
+import type { EmailEventKey } from "@/features/emails/types";
 
 export type PlannedWhatsApp = {
   audience: NotificationAudience;
@@ -28,6 +34,7 @@ export type PlannedEmail = {
   to: string;
   subject: string;
   text: string;
+  html: string;
   attachments?: { filename: string; content: Buffer; contentType?: string }[];
 };
 
@@ -86,6 +93,7 @@ export async function planNotifications(
   const channels = ctx.channels ?? definition.channels;
   const quiet = channels.includes("whatsapp") && inQuietHours(config, settings?.timezone ?? "Europe/Zurich");
   const plan: NotificationPlan = { whatsapp: [], email: [], disabled: true, quietHours: quiet };
+  const brand = channels.includes("email") ? await loadEmailBrand() : null;
 
   for (const channel of channels) {
     for (const audience of definition.audiences) {
@@ -106,12 +114,41 @@ export async function planNotifications(
           plan.whatsapp.push({ audience, to: digits, jid: toWhatsAppJid(digits), text, document: ctx.document });
           continue;
         }
-        if (!recipient.email) continue;
+        if (!recipient.email || !brand) continue;
+
+        const fallback = emailDefaultCopy(
+          definition.key as EmailEventKey,
+          locale,
+          variables,
+        );
+        const stored = (await getNotificationSetting(definition.key, "email", audience))
+          ?.templates;
+        const storedTemplate = stored?.[locale] ?? stored?.en;
+        const subject = storedTemplate?.subject
+          ? renderWhatsAppTemplate(storedTemplate.subject, variables)
+          : fallback.subject;
+        const intro = storedTemplate?.body
+          ? renderWhatsAppTemplate(storedTemplate.body, variables)
+          : fallback.intro;
+        const manageUrl = audience === "customer" ? variables.portal : null;
+        const rendered = await renderEmail(
+          buildNotificationEmail({
+            event: definition.key as EmailEventKey,
+            copy: { subject, intro },
+            brand,
+            locale,
+            variables,
+            manageUrl,
+          }),
+          [variables.payUrl, variables.reviewUrl, variables.statusUrl, manageUrl],
+        );
+
         plan.email.push({
           audience,
           to: recipient.email,
-          subject: renderWhatsAppTemplate(template.subject ?? "", variables),
-          text,
+          subject,
+          text: rendered.text,
+          html: rendered.html,
           attachments: ctx.document
             ? [{
                 filename: ctx.document.fileName,

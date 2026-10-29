@@ -14,6 +14,12 @@ export type RegistryTemplateView = {
   custom: boolean;
 };
 
+export type RegistryEmailTemplateView = {
+  subject: string;
+  body: string;
+  custom: boolean;
+};
+
 export type RegistryEventRow = {
   key: string;
   audience: NotificationAudience;
@@ -21,6 +27,8 @@ export type RegistryEventRow = {
   variables: string[];
   templates: Record<NotificationLocale, RegistryTemplateView>;
   defaults: Record<NotificationLocale, string>;
+  emailTemplates: Record<NotificationLocale, RegistryEmailTemplateView>;
+  emailDefaults: Record<NotificationLocale, RegistryEmailTemplateView>;
   timing: { hoursBefore: number; custom: boolean } | null;
 };
 

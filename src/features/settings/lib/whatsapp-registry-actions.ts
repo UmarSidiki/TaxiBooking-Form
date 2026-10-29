@@ -37,25 +37,28 @@ export async function updateWhatsAppEvent(input: WhatsAppEventAction) {
       return { ok: true as const };
     }
     case "template": {
-      if (!definition.channels.includes("whatsapp")) {
+      if (!definition.channels.includes(input.channel)) {
         return { ok: false as const, error: "invalid_channel" };
       }
       await saveNotificationTemplate({
         event: input.event,
-        channel: "whatsapp",
+        channel: input.channel,
         audience: input.audience,
         locale: input.locale,
-        template: { body: input.body },
+        template:
+          input.channel === "email"
+            ? { subject: input.subject ?? "", body: input.body }
+            : { body: input.body },
       });
       return { ok: true as const };
     }
     case "reset": {
-      if (!definition.channels.includes("whatsapp")) {
+      if (!definition.channels.includes(input.channel)) {
         return { ok: false as const, error: "invalid_channel" };
       }
       await resetNotificationTemplate({
         event: input.event,
-        channel: "whatsapp",
+        channel: input.channel,
         audience: input.audience,
         locale: input.locale,
       });

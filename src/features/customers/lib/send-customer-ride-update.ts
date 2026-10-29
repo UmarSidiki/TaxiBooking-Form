@@ -34,6 +34,7 @@ export async function sendCustomerRideUpdate(bookingId: string, event: CustomerR
   const result = await notify(event, {
     locale: localeFor(booking.locale, config.defaultLocale),
     customerEmail: booking.email,
+    channels: ["whatsapp"],
     variables: {
       name: `${booking.firstName} ${booking.lastName}`.trim(),
       tripId: booking.tripId,

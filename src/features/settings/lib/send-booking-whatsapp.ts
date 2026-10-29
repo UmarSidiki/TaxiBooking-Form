@@ -23,6 +23,7 @@ export async function sendBookingWhatsApp(bookingId: string) {
       locale: localeFor(booking.locale, config.defaultLocale),
       bookingId: String(booking._id),
       customerEmail: booking.email,
+      channels: ["whatsapp"],
       variables: {
         name: `${booking.firstName} ${booking.lastName}`.trim(),
         tripId: booking.tripId,

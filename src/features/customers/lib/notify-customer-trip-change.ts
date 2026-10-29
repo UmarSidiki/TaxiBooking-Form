@@ -14,17 +14,24 @@ import { sendTripChangeAdminEmail } from "@/features/customers/email/trip-change
 import type { IBooking } from "@/features/booking/model";
 
 async function notifyAssignees(booking: IBooking, kind: "cancel" | "change") {
-  const assignees = [booking.assignedDriver, booking.assignedPartner].filter(
-    (assignee): assignee is { _id: string; name: string; email: string } =>
-      Boolean(assignee?.email)
-  );
+  const assignees: Array<{
+    assignee: { _id: string; name: string; email: string };
+    audience: "driver" | "partner";
+  }> = [];
+  if (booking.assignedDriver?.email) {
+    assignees.push({ assignee: booking.assignedDriver, audience: "driver" });
+  }
+  if (booking.assignedPartner?.email) {
+    assignees.push({ assignee: booking.assignedPartner, audience: "partner" });
+  }
 
   await Promise.all(
-    assignees.map((assignee) => {
+    assignees.map(({ assignee, audience }) => {
       const payload = buildRideDispatchEmailPayload(
         booking,
         assignee,
-        bookingTotalOrZero(booking)
+        bookingTotalOrZero(booking),
+        audience
       );
       return kind === "cancel"
         ? sendRideCancellationEmail(payload)

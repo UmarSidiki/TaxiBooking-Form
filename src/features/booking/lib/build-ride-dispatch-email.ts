@@ -5,7 +5,8 @@ const FALLBACK_VEHICLE_DETAILS = { name: 'N/A', price: '0', seats: '4' };
 export function buildRideDispatchEmailPayload(
   booking: IBooking,
   assignee: { name: string; email: string },
-  totalAmount: number
+  totalAmount: number,
+  audience: "driver" | "partner" = "driver"
 ) {
   return {
     tripId: booking.tripId,
@@ -33,6 +34,8 @@ export function buildRideDispatchEmailPayload(
     flightNumber: booking.flightNumber,
     driverName: assignee.name,
     driverEmail: assignee.email,
+    baseUrl: undefined,
+    audience,
   };
 }
 

@@ -82,12 +82,29 @@ function templateView(
   };
 }
 
+function emailView(
+  definition: NotificationEventDefinition,
+  stored: Record<string, { subject?: string; body: string }> | undefined,
+  locale: NotificationLocale,
+) {
+  const fallback =
+    definition.emailTemplates?.[locale] ?? definition.emailTemplates?.en;
+  const storedExact = stored?.[locale];
+  const storedFallback = stored?.en;
+  return {
+    subject: storedExact?.subject ?? storedFallback?.subject ?? fallback?.subject ?? "",
+    body: storedExact?.body ?? storedFallback?.body ?? fallback?.body ?? "",
+    custom: Boolean(storedExact),
+  };
+}
+
 function rowFor(
   definition: NotificationEventDefinition,
   audience: NotificationAudience,
   stored: Record<string, { body: string }> | undefined,
   legacy: LegacyTemplate[],
   storedTiming: number | undefined,
+  storedEmail: Record<string, { subject?: string; body: string }> | undefined,
 ): RegistryEventRow {
   const templates = Object.fromEntries(
     notificationLocales.map((locale) => [locale, templateView(definition, stored, legacy, locale)]),
@@ -106,6 +123,19 @@ function rowFor(
           hoursBefore: storedTiming ?? fallbackTiming ?? 24,
           custom: storedTiming !== undefined,
         };
+  const emailTemplates = Object.fromEntries(
+    notificationLocales.map((locale) => [locale, emailView(definition, storedEmail, locale)]),
+  ) as RegistryEventRow["emailTemplates"];
+  const emailDefaults = Object.fromEntries(
+    notificationLocales.map((locale) => {
+      const fallback =
+        definition.emailTemplates?.[locale] ?? definition.emailTemplates?.en;
+      return [
+        locale,
+        { subject: fallback?.subject ?? "", body: fallback?.body ?? "", custom: false },
+      ];
+    }),
+  ) as RegistryEventRow["emailDefaults"];
   return {
     key: definition.key,
     audience,
@@ -113,6 +143,8 @@ function rowFor(
     variables: [...definition.variables],
     templates,
     defaults,
+    emailTemplates,
+    emailDefaults,
     timing,
   };
 }
@@ -134,6 +166,7 @@ export async function loadWhatsAppRegistry(): Promise<WhatsAppRegistryData> {
     for (const audience of definition.audiences) {
       const rows = settings.filter((row) => row.event === key && row.audience === audience);
       const whatsapp = rows.find((row) => row.channel === "whatsapp");
+      const email = rows.find((row) => row.channel === "email");
       const legacy = legacyRows.filter(
         (row) => row.event === key && row.audience === audience,
       );
@@ -143,6 +176,7 @@ export async function loadWhatsAppRegistry(): Promise<WhatsAppRegistryData> {
         whatsapp?.templates,
         legacy,
         whatsapp?.timing?.hoursBefore,
+        email?.templates,
       );
       await Promise.all(
         definition.channels.map(async (channel) => {

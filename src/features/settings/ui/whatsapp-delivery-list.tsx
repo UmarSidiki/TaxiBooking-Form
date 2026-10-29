@@ -3,7 +3,6 @@
 import { useMemo, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 
-import { isNotificationEventKey } from "@/features/notifications/notification-events";
 import type { RegistryDelivery } from "@/features/settings/lib/whatsapp-registry-types";
 
 const STATUSES = ["sending", "sent", "failed"] as const;
@@ -35,7 +34,7 @@ export function WhatsAppDeliveryList({ deliveries }: { deliveries: RegistryDeliv
   );
   const eventName = (key?: string) => {
     if (!key) return "—";
-    return isNotificationEventKey(key) ? t(`notify_event_${key}_name`) : key;
+    return t.has(`notify_event_${key}_name`) ? t(`notify_event_${key}_name`) : key;
   };
 
   return (

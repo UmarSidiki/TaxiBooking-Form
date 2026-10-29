@@ -42,6 +42,10 @@ export interface ISetting {
   smtpTestEmail?: string;
   smtpFrom?: string;
   smtpSenderName?: string;
+  companyName?: string;
+  companyLogoUrl?: string;
+  companyAddress?: string;
+  companyPhone?: string;
   enablePartners?: boolean;
   enableDrivers?: boolean;
   /** When true: customer submits appointment request; pay after operator quote. */
@@ -214,6 +218,22 @@ const SettingSchema = new Schema<ISetting>(
       default: "",
     },
     smtpSenderName: {
+      type: String,
+      default: "",
+    },
+    companyName: {
+      type: String,
+      default: "",
+    },
+    companyLogoUrl: {
+      type: String,
+      default: "",
+    },
+    companyAddress: {
+      type: String,
+      default: "",
+    },
+    companyPhone: {
       type: String,
       default: "",
     },

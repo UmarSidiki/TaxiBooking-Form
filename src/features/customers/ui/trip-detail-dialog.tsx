@@ -4,6 +4,7 @@ import { Button } from "@/shared/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/shared/ui/dialog";
 import { Badge } from "@/shared/ui/badge";
 import type { Ride } from "./account-types";
+import { formatPortalMoney } from "./portal-money";
 
 const TIMELINE = ["booked", "assigned", "on-the-way", "arrived", "completed"] as const;
 
@@ -53,7 +54,7 @@ export function TripDetailDialog({
         <div className="space-y-4 text-sm">
           <div>
             <p>{ride.date} {ride.time}</p>
-            {typeof ride.totalAmount === "number" ? <p>{t("total")}: {ride.totalAmount.toFixed(2)}</p> : null}
+            {typeof ride.totalAmount === "number" ? <p>{t("total")}: {formatPortalMoney(ride.totalAmount)}</p> : null}
             <p>{t("passengers")}: {ride.passengers ?? 1}</p>
             {ride.vehicleDetails?.name ? <p>{t("vehicle")}: {ride.vehicleDetails.name}</p> : null}
           </div>

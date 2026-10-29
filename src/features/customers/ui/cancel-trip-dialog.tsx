@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { Button } from "@/shared/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/shared/ui/dialog";
 import type { Ride } from "./account-types";
+import { formatPortalMoney } from "./portal-money";
 
 type Quote = { feePercent: number; feeAmount: number; refundAmount: number; totalAmount: number; paid?: number };
 
@@ -60,7 +61,7 @@ export function CancelTripDialog({
     };
   }, [open, ride]);
 
-  const fmt = (n?: number) => (typeof n === "number" ? n.toFixed(2) : "—");
+  const fmt = formatPortalMoney;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>

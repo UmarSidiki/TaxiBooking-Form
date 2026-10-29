@@ -12,6 +12,7 @@ import { ChangeTripDialog } from "./change-trip-dialog";
 import { CancelTripDialog } from "./cancel-trip-dialog";
 import { AccountProfile } from "./account-profile";
 import type { Ride, CustomerProfile } from "./account-types";
+import { setPortalMoneyFormat } from "./portal-money";
 
 export function AccountDesk() {
   const t = useTranslations("Account");
@@ -56,7 +57,10 @@ export function AccountDesk() {
     const token = params.get("token");
     fetch("/api/settings")
       .then((r) => r.json())
-      .then((d) => setSettings(d?.data ?? null))
+      .then((d) => {
+        setPortalMoneyFormat({ currency: d?.data?.stripeCurrency, locale });
+        setSettings(d?.data ?? null);
+      })
       .catch(() => null);
     // Load the profile only after the trips call, which swaps the session
     // cookie when a magic-link token is in the URL.

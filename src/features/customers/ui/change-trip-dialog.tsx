@@ -7,6 +7,7 @@ import { Input } from "@/shared/ui/input";
 import { Label } from "@/shared/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/shared/ui/select";
 import type { Ride } from "./account-types";
+import { formatPortalMoney } from "./portal-money";
 
 type Preview = {
   currentTotal?: number;
@@ -112,7 +113,7 @@ export function ChangeTripDialog({
     onSubmit({ date, time, passengers, childSeats, babySeats, meetAndGreet, pickup, dropoff, selectedVehicle });
   };
 
-  const fmt = (n?: number) => (typeof n === "number" ? n.toFixed(2) : "—");
+  const fmt = formatPortalMoney;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -162,8 +163,8 @@ export function ChangeTripDialog({
             <Label htmlFor="change-baby">{t("baby-seats")}</Label>
             <Input id="change-baby" type="number" min={0} className="h-11 text-base" value={babySeats} onChange={(e) => setBabySeats(Number(e.target.value) || 0)} />
           </div>
-          <label className="flex items-center gap-2 text-sm">
-            <input type="checkbox" checked={meetAndGreet} onChange={(e) => setMeetAndGreet(e.target.checked)} />
+          <label className="flex min-h-11 cursor-pointer items-center gap-3 py-2 text-base sm:text-sm">
+            <input type="checkbox" className="size-5" checked={meetAndGreet} onChange={(e) => setMeetAndGreet(e.target.checked)} />
             {t("meet-greet")}
           </label>
         </div>

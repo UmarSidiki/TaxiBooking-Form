@@ -3,6 +3,7 @@
 import { Button } from "@/shared/ui/button";
 import { Card, CardContent } from "@/shared/ui/card";
 import type { Ride } from "./account-types";
+import { formatPortalMoney } from "./portal-money";
 
 export function TripCard({ ride, t, onView }: { ride: Ride; t: (k: string) => string; onView: () => void }) {
   const status = ride.status ?? "upcoming";
@@ -15,7 +16,7 @@ export function TripCard({ ride, t, onView }: { ride: Ride; t: (k: string) => st
         </div>
         <p className="mt-1 text-sm text-muted-foreground">{ride.date} {ride.time}</p>
         {typeof ride.totalAmount === "number" ? (
-          <p className="mt-1 text-sm">{t("total")}: {ride.totalAmount.toFixed(2)}</p>
+          <p className="mt-1 text-sm">{t("total")}: {formatPortalMoney(ride.totalAmount)}</p>
         ) : null}
         <div className="mt-3">
           <Button className="h-11" type="button" variant="outline" onClick={onView}>{t("details")}</Button>

@@ -54,18 +54,22 @@ export function AccountDesk() {
 
   useEffect(() => {
     const token = params.get("token");
-    void load(token);
     fetch("/api/settings")
       .then((r) => r.json())
       .then((d) => setSettings(d?.data ?? null))
       .catch(() => null);
-    fetch("/api/account/profile")
-      .then((r) => (r.ok ? r.json() : null))
-      .then((d) => {
-        if (d?.profile) setProfile(d.profile);
-        if (d?.profile?.name) setCustomerName(d.profile.name);
-      })
-      .catch(() => null);
+    // Load the profile only after the trips call, which swaps the session
+    // cookie when a magic-link token is in the URL.
+    void load(token).then((ok) => {
+      if (!ok) return;
+      fetch("/api/account/profile")
+        .then((r) => (r.ok ? r.json() : null))
+        .then((d) => {
+          setProfile(d?.profile ?? null);
+          if (d?.profile?.name) setCustomerName(d.profile.name);
+        })
+        .catch(() => null);
+    });
   }, [params]);
 
   const send = async () => {

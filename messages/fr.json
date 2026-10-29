@@ -990,7 +990,9 @@
       "appointment-request-module": "Sur rendez-vous",
       "enable-appointment-request": "Les clients envoient une demande de rendez-vous. Vous confirmez la disponibilité et le prix avant le paiement. L’e-mail de confirmation n’est envoyé qu’après validation.",
       "desk-booking-module": "Réservation opérateur",
-      "enable-desk-booking": "Le personnel peut créer des réservations pour un client, avec un prix manuel facultatif."
+      "enable-desk-booking": "Le personnel peut créer des réservations pour un client, avec un prix manuel facultatif.",
+      "promos-module": "Codes promotionnels",
+      "enable-promo-codes": "Afficher le champ de code promo sur le formulaire de réservation lorsqu'un code promo actif existe."
     },
     "Fleet": {
       "failed-to-fetch-vehicles": "Échec de la récupération des véhicules",
@@ -2280,6 +2282,8 @@
     "delete": "Delete",
     "cancel": "Cancel",
     "delete-confirm": "Delete {name}? This can't be undone.",
+    "active": "Actif",
+    "promo-active": "{code} actif",
     "holiday-start": "Date de début",
     "holiday-end": "Date de fin",
     "holiday-end-before-start": "La date de fin doit être égale ou postérieure à la date de début.",

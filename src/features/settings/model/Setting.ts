@@ -50,6 +50,8 @@ export interface ISetting {
   enableFormBuilder?: boolean;
   /** When true: the desk can create bookings on a Customer's behalf. */
   enableDeskBooking?: boolean;
+  /** When true: the promo code field shows on the booking form (if a usable code exists). */
+  promoCodesEnabled?: boolean;
   enableTax?: boolean;
   taxPercentage?: number;
   taxIncluded?: boolean;
@@ -252,6 +254,10 @@ const SettingSchema = new Schema<ISetting>(
     enableDeskBooking: {
       type: Boolean,
       default: false,
+    },
+    promoCodesEnabled: {
+      type: Boolean,
+      default: true,
     },
     enableTax: {
       type: Boolean,

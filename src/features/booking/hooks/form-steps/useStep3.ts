@@ -130,10 +130,13 @@ export function useStep3() {
     setCurrentStep(2);
   };
 
+  const promoAvailable = settings?.promoAvailable ?? false;
+
   return {
     // State
     stripeConfig,
     paymentSettings,
+    promoAvailable,
     selectedPaymentMethod,
     setSelectedPaymentMethod,
     clientSecret,

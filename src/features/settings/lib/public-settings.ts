@@ -30,6 +30,7 @@ export const PUBLIC_SETTING_FIELDS = [
   "enableEmbeddableForm",
   "enableFormBuilder",
   "enableDeskBooking",
+  "promoCodesEnabled",
   "enableTax",
   "taxPercentage",
   "taxIncluded",
@@ -44,6 +45,8 @@ export type PublicSettingField = (typeof PUBLIC_SETTING_FIELDS)[number];
 export type PublicSettings = Pick<ISetting, PublicSettingField> & {
   /** The pay page needs to know whether MultiSafepay is configured. */
   hasMultisafepayApiKey: boolean;
+  /** True when promos are enabled and at least one usable code exists. */
+  promoAvailable?: boolean;
 };
 
 export function toPublicSettings(

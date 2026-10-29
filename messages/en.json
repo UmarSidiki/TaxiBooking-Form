@@ -990,7 +990,9 @@
       "appointment-request-module": "Appoint first",
       "enable-appointment-request": "Customers submit an appointment request. You confirm availability and price before they pay. Booking Confirmed emails go out only after confirmation.",
       "desk-booking-module": "Desk booking",
-      "enable-desk-booking": "Staff can create bookings on a customer's behalf, with an optional manual price."
+      "enable-desk-booking": "Staff can create bookings on a customer's behalf, with an optional manual price.",
+      "promos-module": "Promo codes",
+      "enable-promo-codes": "Show the promo code field on the booking form when an active promo code exists."
     },
     "Fleet": {
       "failed-to-fetch-vehicles": "Failed to fetch vehicles",
@@ -2280,6 +2282,8 @@
     "delete": "Delete",
     "cancel": "Cancel",
     "delete-confirm": "Delete {name}? This can't be undone.",
+    "active": "Active",
+    "promo-active": "{code} active",
     "holiday-start": "Start date",
     "holiday-end": "End date",
     "holiday-end-before-start": "End date must be on or after the start date.",

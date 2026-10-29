@@ -4,8 +4,10 @@ import PricingRule from "@/features/pricing/model/PricingRule";
 import PromoCode from "@/features/pricing/model/PromoCode";
 import {
   pricingRuleWriteSchema,
+  promoActiveSchema,
   promoWriteSchema,
 } from "@/features/pricing/schema/pricing-write.schema";
+import { clearPromoAvailabilityCache } from "@/features/pricing/lib/is-promo-available";
 import { connectDB } from "@/shared/db";
 
 export async function GET() {
@@ -45,6 +47,23 @@ export async function POST(request: Request) {
     },
     { upsert: true, new: true },
   );
+  clearPromoAvailabilityCache();
+  return NextResponse.json({ promo });
+}
+
+export async function PATCH(request: Request) {
+  const admin = await requireAdmin();
+  if (!admin.ok) return admin.response;
+  const parsed = promoActiveSchema.safeParse(await request.json().catch(() => null));
+  if (!parsed.success) return NextResponse.json({ error: "invalid_body" }, { status: 400 });
+  await connectDB();
+  const promo = await PromoCode.findByIdAndUpdate(
+    parsed.data.id,
+    { active: parsed.data.active },
+    { new: true },
+  );
+  if (!promo) return NextResponse.json({ error: "not_found" }, { status: 404 });
+  clearPromoAvailabilityCache();
   return NextResponse.json({ promo });
 }
 
@@ -60,5 +79,6 @@ export async function DELETE(request: Request) {
   await connectDB();
   const removed = await PromoCode.findByIdAndDelete(id);
   if (!removed) return NextResponse.json({ error: "not_found" }, { status: 404 });
+  clearPromoAvailabilityCache();
   return NextResponse.json({ ok: true });
 }

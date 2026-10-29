@@ -6,6 +6,10 @@ import { parseJsonBody } from "@/shared/http/parse-json-body";
 import { jsonError } from "@/shared/http/json-error";
 import { settingsWriteSchema } from "@/features/settings/schema/settings-write.schema";
 import { toPublicSettings } from "@/features/settings/lib/public-settings";
+import {
+  clearPromoAvailabilityCache,
+  isPromoAvailable,
+} from "@/features/pricing/lib/is-promo-available";
 
 export async function GET(request: Request) {
   await connectDB();
@@ -24,7 +28,7 @@ export async function GET(request: Request) {
     if (!wantsFullScope) {
       return NextResponse.json({
         success: true,
-        data: toPublicSettings(settings),
+        data: { ...toPublicSettings(settings), promoAvailable: await isPromoAvailable() },
       });
     }
 
@@ -51,10 +55,12 @@ export async function POST(request: Request) {
     if (existing) {
       Object.assign(existing, parsed.data);
       await existing.save();
+      clearPromoAvailabilityCache();
       return NextResponse.json({ success: true, data: existing });
     }
     const newSettings = new Setting(parsed.data);
     await newSettings.save();
+    clearPromoAvailabilityCache();
     return NextResponse.json({ success: true, data: newSettings });
   } catch (error) {
     console.error("Settings POST failed:", error);

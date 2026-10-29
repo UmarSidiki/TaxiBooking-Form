@@ -28,10 +28,16 @@ export const pricingRuleWriteSchema = z.object({
   depositPercent: z.coerce.number().min(0).max(100).optional(),
 });
 
+export const promoActiveSchema = z.object({
+  id: z.string().regex(/^[a-f\d]{24}$/i),
+  active: z.boolean(),
+});
+
 export const promoWriteSchema = z.object({
   code: z.string().trim().min(2).max(40),
   kind: z.enum(["percent", "fixed"]),
   amount: z.coerce.number().positive(),
+  active: z.boolean().optional(),
   expiresAt: z.string().optional(),
   maxUses: z.coerce.number().int().positive().optional(),
   maxUsesPerCustomer: z.coerce.number().int().positive().optional(),

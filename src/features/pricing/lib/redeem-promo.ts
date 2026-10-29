@@ -10,6 +10,7 @@ export async function loadPromo(code: string | undefined, customerKey: string, n
   await connectDB();
   const promo = await PromoCode.findOne({ code: normalized });
   if (!promo) return { ok: false as const, error: "promo_invalid" as const };
+  if (promo.active === false) return { ok: false as const, error: "promo_invalid" as const };
   if (promo.expiresAt && promo.expiresAt.getTime() <= now.getTime()) {
     return { ok: false as const, error: "promo_expired" as const };
   }

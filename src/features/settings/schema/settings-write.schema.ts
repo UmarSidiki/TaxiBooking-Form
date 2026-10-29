@@ -53,6 +53,7 @@ export const settingsWriteSchema = z.object({
   enableEmbeddableForm: z.boolean().optional(),
   enableFormBuilder: z.boolean().optional(),
   enableDeskBooking: z.boolean().optional(),
+  promoCodesEnabled: z.boolean().optional(),
   enableTax: z.boolean().optional(),
   taxPercentage: z.number().optional(),
   taxIncluded: z.boolean().optional(),

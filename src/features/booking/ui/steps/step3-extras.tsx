@@ -16,7 +16,11 @@ export function Step3Extras({
   babySeatPrice,
   extras,
   errors,
-}: Pick<Step, "formData" | "setFormData" | "childSeatPrice" | "babySeatPrice" | "extras" | "errors"> & {
+  promoAvailable,
+}: Pick<
+  Step,
+  "formData" | "setFormData" | "childSeatPrice" | "babySeatPrice" | "extras" | "errors" | "promoAvailable"
+> & {
   t: ReturnType<typeof useTranslations>;
   currencySymbol: string;
 }) {
@@ -132,15 +136,17 @@ export function Step3Extras({
                 </span>
               </label>
             ) : null}
-            <div>
-              <label className="mb-2 block text-sm font-medium" htmlFor="promo-code">{t("Step3.promo-code")}</label>
-              <Input
-                id="promo-code"
-                className="h-11"
-                value={formData.promoCode}
-                onChange={(event) => setFormData((prev) => ({ ...prev, promoCode: event.target.value }))}
-              />
-            </div>
+            {promoAvailable ? (
+              <div>
+                <label className="mb-2 block text-sm font-medium" htmlFor="promo-code">{t("Step3.promo-code")}</label>
+                <Input
+                  id="promo-code"
+                  className="h-11"
+                  value={formData.promoCode}
+                  onChange={(event) => setFormData((prev) => ({ ...prev, promoCode: event.target.value }))}
+                />
+              </div>
+            ) : null}
             <div>
               <label className="text-sm font-medium block mb-2">
                 {t('Step3.special-requests-optional')} </label>

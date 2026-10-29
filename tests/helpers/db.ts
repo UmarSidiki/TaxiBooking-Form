@@ -4,6 +4,7 @@ import { Driver } from "@/features/drivers/model";
 import { Vehicle } from "@/features/fleet/model";
 import { Partner, PartnerSettlementEntry } from "@/features/partners/model";
 import { clearPartnerDispatchSettingsCache } from "@/features/partners/lib/get-partner-dispatch-settings";
+import { clearPromoAvailabilityCache } from "@/features/pricing/lib/is-promo-available";
 import { Review } from "@/features/reviews/model";
 import CronMarker from "@/features/cron/model/CronMarker";
 import PricingRule from "@/features/pricing/model/PricingRule";
@@ -18,6 +19,7 @@ import { Setting } from "@/features/settings/model";
 export async function resetTestDb() {
   await connectDB();
   clearPartnerDispatchSettingsCache();
+  clearPromoAvailabilityCache();
   await Promise.all([
     Booking.deleteMany({}),
     Driver.deleteMany({}),

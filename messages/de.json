@@ -990,7 +990,9 @@
       "appointment-request-module": "Termin zuerst",
       "enable-appointment-request": "Kunden senden eine Terminanfrage. Sie bestätigen Verfügbarkeit und Preis vor der Zahlung. Bestätigungs-E-Mails gehen erst nach Freigabe raus.",
       "desk-booking-module": "Operator-Buchung",
-      "enable-desk-booking": "Mitarbeiter können Buchungen im Namen eines Kunden erstellen, optional mit manuellem Preis."
+      "enable-desk-booking": "Mitarbeiter können Buchungen im Namen eines Kunden erstellen, optional mit manuellem Preis.",
+      "promos-module": "Aktionscodes",
+      "enable-promo-codes": "Das Feld für den Aktionscode im Buchungsformular anzeigen, wenn ein aktiver Aktionscode vorhanden ist."
     },
     "Fleet": {
       "failed-to-fetch-vehicles": "Fahrzeuge konnten nicht abgerufen werden",
@@ -2280,6 +2282,8 @@
     "delete": "Delete",
     "cancel": "Cancel",
     "delete-confirm": "Delete {name}? This can't be undone.",
+    "active": "Aktiv",
+    "promo-active": "{code} aktiv",
     "holiday-start": "Startdatum",
     "holiday-end": "Enddatum",
     "holiday-end-before-start": "Das Enddatum muss am oder nach dem Startdatum liegen.",

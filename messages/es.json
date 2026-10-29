@@ -990,7 +990,9 @@
       "appointment-request-module": "Primero cita",
       "enable-appointment-request": "Los clientes envían una solicitud de cita. Usted confirma disponibilidad y precio antes de que paguen. El correo de confirmación solo se envía después.",
       "desk-booking-module": "Reserva de operador",
-      "enable-desk-booking": "El personal puede crear reservas en nombre de un cliente, con un precio manual opcional."
+      "enable-desk-booking": "El personal puede crear reservas en nombre de un cliente, con un precio manual opcional.",
+      "promos-module": "Códigos promocionales",
+      "enable-promo-codes": "Mostrar el campo de código promocional en el formulario de reserva cuando exista un código activo."
     },
     "Fleet": {
       "failed-to-fetch-vehicles": "Error al obtener vehículos",
@@ -2280,6 +2282,8 @@
     "delete": "Delete",
     "cancel": "Cancel",
     "delete-confirm": "Delete {name}? This can't be undone.",
+    "active": "Activo",
+    "promo-active": "{code} activo",
     "holiday-start": "Fecha de inicio",
     "holiday-end": "Fecha de fin",
     "holiday-end-before-start": "La fecha de fin debe ser igual o posterior a la de inicio.",

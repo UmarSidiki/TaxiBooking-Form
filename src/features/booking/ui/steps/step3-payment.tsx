@@ -54,6 +54,12 @@ function Step3Payment() {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
       <div className="lg:col-span-2 space-y-4">
+        <Step3PersonalDetails
+          t={t}
+          formData={step.formData}
+          setFormData={step.setFormData}
+          errors={step.errors}
+        />
         <Step3Extras
           t={t}
           currencySymbol={currencySymbol}
@@ -63,12 +69,7 @@ function Step3Payment() {
           babySeatPrice={step.babySeatPrice}
           extras={step.extras}
           errors={step.errors}
-        />
-        <Step3PersonalDetails
-          t={t}
-          formData={step.formData}
-          setFormData={step.setFormData}
-          errors={step.errors}
+          promoAvailable={step.promoAvailable}
         />
         {geo.bookingBlocked ? (
           <Step3CountryBlockedPanel t={t} />

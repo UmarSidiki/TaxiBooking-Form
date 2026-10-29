@@ -41,6 +41,7 @@ function withModuleDefaults(data: Partial<ISetting>): Partial<ISetting> {
     enableAppointmentRequest: data.enableAppointmentRequest ?? false,
     enableEmbeddableForm: data.enableEmbeddableForm ?? false,
     enableFormBuilder: data.enableFormBuilder ?? false,
+    promoCodesEnabled: data.promoCodesEnabled ?? true,
     partnerCashSettlement: data.partnerCashSettlement ?? "keep_cash",
     dispatchAssigneeMode: data.dispatchAssigneeMode ?? "exclusive",
     defaultPartnerMarginPercentage:

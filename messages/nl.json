@@ -990,7 +990,9 @@
       "appointment-request-module": "Eerst afspraak",
       "enable-appointment-request": "Klanten sturen een afspraakverzoek. U bevestigt beschikbaarheid en prijs vóór betaling. Bevestigingsmails gaan pas daarna uit.",
       "desk-booking-module": "Operatorboeking",
-      "enable-desk-booking": "Medewerkers kunnen boekingen voor een klant aanmaken, met een optionele handmatige prijs."
+      "enable-desk-booking": "Medewerkers kunnen boekingen voor een klant aanmaken, met een optionele handmatige prijs.",
+      "promos-module": "Kortingscodes",
+      "enable-promo-codes": "Toon het veld voor de kortingscode in het boekingsformulier wanneer er een actieve kortingscode bestaat."
     },
     "Fleet": {
       "failed-to-fetch-vehicles": "Ophalen voertuigen mislukt",
@@ -2280,6 +2282,8 @@
     "delete": "Delete",
     "cancel": "Cancel",
     "delete-confirm": "Delete {name}? This can't be undone.",
+    "active": "Actief",
+    "promo-active": "{code} actief",
     "holiday-start": "Startdatum",
     "holiday-end": "Einddatum",
     "holiday-end-before-start": "De einddatum moet op of na de startdatum liggen.",

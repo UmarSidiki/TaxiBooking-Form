@@ -990,7 +990,9 @@
       "appointment-request-module": "الموعد أولاً",
       "enable-appointment-request": "يرسل العملاء طلب موعد. تؤكد التوفر والسعر قبل الدفع. تُرسل رسالة تأكيد الحجز فقط بعد التأكيد.",
       "desk-booking-module": "حجز من الموظف",
-      "enable-desk-booking": "يمكن للموظفين إنشاء حجوزات نيابة عن العميل، مع سعر يدوي اختياري."
+      "enable-desk-booking": "يمكن للموظفين إنشاء حجوزات نيابة عن العميل، مع سعر يدوي اختياري.",
+      "promos-module": "رموز الخصم",
+      "enable-promo-codes": "إظهار حقل رمز الخصم في نموذج الحجز عند وجود رمز خصم نشط."
     },
     "Fleet": {
       "failed-to-fetch-vehicles": "فشل جلب المركبات",
@@ -2280,6 +2282,8 @@
     "delete": "Delete",
     "cancel": "Cancel",
     "delete-confirm": "Delete {name}? This can't be undone.",
+    "active": "نشط",
+    "promo-active": "رمز {code} نشط",
     "holiday-start": "تاريخ البدء",
     "holiday-end": "تاريخ الانتهاء",
     "holiday-end-before-start": "يجب أن يكون تاريخ الانتهاء في يوم البدء أو بعده.",

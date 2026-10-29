@@ -1,4 +1,5 @@
 /* Component styles ported from mockup, scoped under .riviera */
+html:has(.riviera), body:has(.riviera) { background-color: var(--paper); }
 .riviera .app { display: grid; min-height: 100dvh; }
 .riviera .top { display: flex; align-items: center; gap: 10px; padding: calc(10px + env(safe-area-inset-top)) 16px 10px; position: sticky; top: 0; z-index: 5; background: color-mix(in srgb, var(--paper) 92%, transparent); border-bottom: 1px solid var(--rule); }
 .riviera .brand { font: 700 19px/1 var(--display); letter-spacing: -.02em; display: flex; align-items: center; gap: 8px; margin-inline-end: auto; }
@@ -70,14 +71,14 @@
 .riviera .side { display: none; }
 .riviera .fine { font-size: 12.5px; color: var(--ink2); margin-top: 14px; }
 @media (min-width: 1024px) {
-  .riviera { display: grid; grid-template-columns: minmax(480px, 560px) 1fr; grid-template-rows: auto 1fr; }
+  .riviera:not(.no-map) { display: grid; grid-template-columns: minmax(480px, 560px) 1fr; grid-template-rows: auto 1fr; }
   .riviera .top { grid-column: 1 / -1; padding: 18px 32px; border-bottom: 1px solid var(--rule); }
   .riviera .map { grid-column: 2; grid-row: 2; height: auto; position: sticky; top: 77px; height: calc(100dvh - 77px); }
   .riviera .sheet { grid-column: 1; grid-row: 2; margin: 0; border-radius: 0; padding: 12px 40px 140px; background: var(--paper); }
   .riviera .bar { position: fixed; inset-inline-start: 0; inset-inline-end: auto; width: min(560px, 100%); background: var(--paper); padding: 16px 40px; }
-  .riviera.no-map { grid-template-columns: 1fr minmax(380px, 420px); max-width: 1180px; margin: 0 auto; column-gap: 56px; }
+  .riviera.no-map { display: block; max-width: none; margin: 0; background: var(--paper); min-height: 100dvh; }
   .riviera.no-map .top { border: 0; padding-inline: 0; }
-  .riviera.no-map .sheet { padding-inline: 0; }
+  .riviera.no-map .sheet { max-width: 1180px; margin-inline: auto; display: grid; grid-template-columns: minmax(0, 1fr) 380px; gap: 56px; padding: 28px 0 140px; background: var(--paper); }
   .riviera.no-map .bar { position: sticky; top: 96px; inset: auto; width: auto; grid-column: 2; grid-row: 2; align-self: start; flex-wrap: wrap; border: 1px solid var(--rule); border-radius: 6px; padding: 20px; background: var(--sheet); flex-direction: column; align-items: stretch; }
   .riviera.no-map .bar .go { justify-content: center; }
   .riviera.no-map .bar .back { display: none; }

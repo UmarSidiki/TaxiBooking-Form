@@ -44,7 +44,7 @@ export function Step2PriceBreakdown({
   return (
                 <div className="border-t pt-3">
                   <div className="flex justify-between items-center mb-1">
-                    <span className="text-sm text-gray-600">
+                    <span className="text-sm text-[var(--ink2)]">
                       {t("Step2.vehicle-type")}
                     </span>
                     <span className="text-sm font-medium">
@@ -55,7 +55,7 @@ export function Step2PriceBreakdown({
                   {/* Stop costs breakdown */}
                   {stopCosts > 0 && (
                     <div className="mb-2 space-y-1">
-                      <div className="flex justify-between items-center text-sm font-medium text-gray-700">
+                      <div className="flex justify-between items-center text-sm font-medium text-[var(--ink)]">
                         <span>
                           {t('Dashboard.Rides.Stops')} ({stopBreakdown.length})
                         </span>
@@ -63,7 +63,7 @@ export function Step2PriceBreakdown({
                           {currencySymbol}{stopCosts.toFixed(2)}
                         </span>
                       </div>
-                      <div className="ml-2 space-y-0.5 text-xs text-gray-500">
+                      <div className="ml-2 space-y-0.5 text-xs text-[var(--ink2)]">
                         {stopBreakdown.map((stop, index) => (
                           <div key={index} className="flex justify-between">
                             <span>
@@ -84,14 +84,14 @@ export function Step2PriceBreakdown({
                   {/* Tax and Total */}
                   {enableTax && taxPercentage > 0 ? (
                     <>
-                      <div className="flex justify-between items-center text-sm text-gray-600 mb-1">
+                      <div className="flex justify-between items-center text-sm text-[var(--ink2)] mb-1">
                         <span>{t("Step2.subtotal")}</span>
                         <span>
                           {currencySymbol}
                           {priceBreakdown.subtotal.toFixed(2)}
                         </span>
                       </div>
-                      <div className="flex justify-between items-center text-sm text-gray-600 mb-1">
+                      <div className="flex justify-between items-center text-sm text-[var(--ink2)] mb-1">
                         <span>{t("Step2.tax", { 0: taxPercentage })}{taxIncluded ? ` - ${t("Step2.included")}` : ''}</span>
                         <span>
                           {currencySymbol}
@@ -101,11 +101,11 @@ export function Step2PriceBreakdown({
                       <div className="flex justify-between items-center text-lg font-bold">
                         <span>{t("Step2.total")}</span>
                         <div className="text-right">
-                          <p className="text-gray-900">
+                          <p className="text-[var(--ink)]">
                             {currencySymbol}
                             {priceBreakdown.total.toFixed(2)}
                           </p>
-                          <p className="text-xs text-gray-500 font-normal">{t("Step2.incl-tax")}</p>
+                          <p className="text-xs text-[var(--ink2)] font-normal">{t("Step2.incl-tax")}</p>
                         </div>
                       </div>
                     </>
@@ -113,7 +113,7 @@ export function Step2PriceBreakdown({
                     <div className="flex justify-between items-center text-lg font-bold">
                       <span>{t("Step2.total")}</span>
                       <div className="text-right">
-                        <p className="text-gray-900">
+                        <p className="text-[var(--ink)]">
                           {currencySymbol}
                           {priceBreakdown.total.toFixed(2)}
                         </p>

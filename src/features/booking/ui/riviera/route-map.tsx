@@ -2,7 +2,7 @@
 
 import "leaflet/dist/leaflet.css";
 import { useEffect } from "react";
-import { MapContainer, TileLayer, Marker, Polyline, useMap } from "react-leaflet";
+import { MapContainer, TileLayer, Marker, Polyline, useMap, AttributionControl } from "react-leaflet";
 import L from "leaflet";
 
 const pickup: [number, number] = [46.2381, 6.109];
@@ -17,19 +17,22 @@ function FitBounds() {
   return null;
 }
 
-const markerIcon = (color: string) =>
-  L.divIcon({
-    className: "",
-    html: `<span style="display:block;width:14px;height:14px;border-radius:50%;background:${color};border:3px solid #fff;box-shadow:0 0 0 1px rgba(0,0,0,.2)"></span>`,
-    iconSize: [14, 14],
-    iconAnchor: [7, 7],
-  });
+const pickupIcon = L.divIcon({
+  className: "",
+  html: `<span style="display:block;width:16px;height:16px;border-radius:50%;background:var(--sheet);border:3px solid var(--ink);box-shadow:0 0 0 1px var(--rule2)"></span>`,
+  iconSize: [16, 16],
+  iconAnchor: [8, 8],
+});
+
+const dropoffIcon = L.divIcon({
+  className: "",
+  html: `<span style="display:block;width:16px;height:16px;border-radius:3px;background:var(--sig);border:2px solid var(--sheet);box-shadow:0 0 0 1px var(--rule2)"></span>`,
+  iconSize: [16, 16],
+  iconAnchor: [8, 8],
+});
 
 export function RivieraMap({ theme }: { theme?: "light" | "dark" }) {
-  const tiles =
-    theme === "dark"
-      ? "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
-      : "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png";
+  const tiles = "https://tile.openstreetmap.org/{z}/{x}/{y}.png";
 
   return (
     <MapContainer
@@ -37,15 +40,15 @@ export function RivieraMap({ theme }: { theme?: "light" | "dark" }) {
       zoom={12}
       style={{ height: "100%", width: "100%" }}
       scrollWheelZoom={false}
+      zoomControl={false}
+      attributionControl={false}
     >
-      <TileLayer
-        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
-        url={tiles}
-      />
-      <Marker position={pickup} icon={markerIcon("#1C1A16")}>
+      <TileLayer attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' url={tiles} />
+      <AttributionControl prefix={false} />
+      <Marker position={pickup} icon={pickupIcon}>
         <span>Pick-up</span>
       </Marker>
-      <Marker position={dropoff} icon={markerIcon("#B8411A")}>
+      <Marker position={dropoff} icon={dropoffIcon}>
         <span>Drop-off</span>
       </Marker>
       <Polyline positions={[pickup, dropoff]} color="#1C1A16" weight={3} />

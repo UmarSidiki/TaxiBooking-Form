@@ -77,14 +77,10 @@ export default function BookingFormContainer() {
           <Suspense fallback={<StepLoader />}>
             <RivieraMap />
           </Suspense>
-          <div className="attr" dir="ltr">
-            &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &middot; &copy; CARTO
-          </div>
         </div>
       )}
 
       <main className="sheet">
-        {currentStep > 1 && <TripStrip />}
         <nav className="steps" aria-label="Progress">
           {stepLabels.map((s, i) => (
             <span key={s} className={i + 1 === currentStep ? "on" : i + 1 < currentStep ? "done" : ""} aria-current={i + 1 === currentStep ? "step" : undefined}>

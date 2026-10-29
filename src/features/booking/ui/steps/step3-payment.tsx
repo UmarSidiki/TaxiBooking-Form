@@ -13,6 +13,7 @@ import { Step3CountryBlockedPanel } from "@/features/booking/ui/steps/step3-coun
 import { Step3Extras } from "@/features/booking/ui/steps/step3-extras";
 import { Step3PaymentMethods } from "@/features/booking/ui/steps/step3-payment-methods";
 import { Step3PersonalDetails } from "@/features/booking/ui/steps/step3-personal-details";
+import { TripStrip } from "@/features/booking/ui/riviera/trip-strip";
 
 function Step3Payment() {
   const step = useStep3();
@@ -30,6 +31,7 @@ function Step3Payment() {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
       <div className="lg:col-span-2 space-y-4">
+        <TripStrip />
         <Step3PersonalDetails
           t={t}
           formData={step.formData}

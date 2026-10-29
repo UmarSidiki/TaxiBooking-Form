@@ -80,7 +80,7 @@ export function Step3BookingSummary({
             <div className="border rounded-lg overflow-hidden">
               <div
                 ref={mapRef}
-                className="w-full h-48 bg-gray-100"
+                className="w-full h-48 bg-[var(--well)]"
                 style={{ minHeight: "200px" }}
               />
             </div>
@@ -89,10 +89,10 @@ export function Step3BookingSummary({
           {/* Trip Details */}
           <div className="space-y-3 text-sm">
             <div className="flex items-start gap-2">
-              <MapPin className="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" />
+              <MapPin className="h-5 w-5 text-[var(--ok)] flex-shrink-0 mt-0.5" />
               <div>
-                <p className="text-xs text-gray-500">{t('Step3.pickup')}</p>
-                <p className="font-medium text-gray-900">{formData.pickup}</p>
+                <p className="text-xs text-[var(--ink2)]">{t('Step3.pickup')}</p>
+                <p className="font-medium text-[var(--ink)]">{formData.pickup}</p>
               </div>
             </div>
 
@@ -102,11 +102,11 @@ export function Step3BookingSummary({
               .map((stop, index) => (
                 <div key={index} className="flex items-start gap-2">
                   <div className="flex items-center justify-center w-5 h-5 bg-blue-100 rounded-full flex-shrink-0 mt-0.5">
-                    <span className="text-xs font-semibold text-gray-600">{index + 1}</span>
+                    <span className="text-xs font-semibold text-[var(--ink2)]">{index + 1}</span>
                   </div>
                   <div>
-                    <p className="text-xs text-gray-500">{t('Step1.stop')} {index + 1}</p>
-                    <p className="font-medium text-gray-900">{stop.location}</p>
+                    <p className="text-xs text-[var(--ink2)]">{t('Step1.stop')} {index + 1}</p>
+                    <p className="font-medium text-[var(--ink)]">{stop.location}</p>
                   </div>
                 </div>
               ))}
@@ -116,8 +116,8 @@ export function Step3BookingSummary({
                 <div className="flex items-start gap-2">
                   <MapPin className="h-5 w-5 text-red-600 flex-shrink-0 mt-0.5" />
                   <div>
-                    <p className="text-xs text-gray-500">{t('Step3.dropoff')}</p>
-                    <p className="font-medium text-gray-900">
+                    <p className="text-xs text-[var(--ink2)]">{t('Step3.dropoff')}</p>
+                    <p className="font-medium text-[var(--ink)]">
                       {formData.dropoff}
                     </p>
                   </div>
@@ -126,15 +126,15 @@ export function Step3BookingSummary({
                 {distanceData && (
                   <>
                     <div className="flex items-center gap-2">
-                      <Clock className="h-4 w-4 text-gray-600" />
-                      <span className="text-gray-700">
+                      <Clock className="h-4 w-4 text-[var(--ink2)]" />
+                      <span className="text-[var(--ink)]">
                         {distanceData.duration.text}
                       </span>
                     </div>
 
                     <div className="flex items-center gap-2">
                       <svg
-                        className="h-4 w-4 text-gray-600"
+                        className="h-4 w-4 text-[var(--ink2)]"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -146,7 +146,7 @@ export function Step3BookingSummary({
                           d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"
                         />
                       </svg>
-                      <span className="text-gray-700">
+                      <span className="text-[var(--ink)]">
                         {distanceData.distance.text} -{" "}
                         {formData.tripType === "oneway"
                           ? t('Step3.one-way')
@@ -158,8 +158,8 @@ export function Step3BookingSummary({
               </>
             ) : (
               <div className="flex items-center gap-2">
-                <Clock className="h-4 w-4 text-gray-600" />
-                <span className="text-gray-700">
+                <Clock className="h-4 w-4 text-[var(--ink2)]" />
+                <span className="text-[var(--ink)]">
                   {formData.duration}{" "}
                   {formData.duration === 1 ? "hour" : "hours"} {t('Step3.hourly-booking')}
                 </span>
@@ -167,24 +167,24 @@ export function Step3BookingSummary({
             )}
 
             <div className="flex items-center gap-2">
-              <Calendar className="h-4 w-4 text-gray-600" />
-              <span className="text-gray-700">
+              <Calendar className="h-4 w-4 text-[var(--ink2)]" />
+              <span className="text-[var(--ink)]">
                 {formData.tripType === "roundtrip" ? t('Step3.departure') : t('Step3.date')}: {formData.date} at {formData.time}
               </span>
             </div>
 
             {formData.tripType === "roundtrip" && formData.returnDate && (
               <div className="flex items-center gap-2">
-                <Calendar className="h-4 w-4 text-gray-600" />
-                <span className="text-gray-700">
+                <Calendar className="h-4 w-4 text-[var(--ink2)]" />
+                <span className="text-[var(--ink)]">
                   {t('Step3.return')}: {formData.returnDate} at {formData.returnTime}
                 </span>
               </div>
             )}
 
             <div className="flex items-center gap-2">
-              <Users className="h-4 w-4 text-gray-600" />
-              <span className="text-gray-700">
+              <Users className="h-4 w-4 text-[var(--ink2)]" />
+              <span className="text-[var(--ink)]">
                 {formData.passengers} Passenger(s)
               </span>
             </div>
@@ -199,15 +199,15 @@ export function Step3BookingSummary({
               </div>
               <div className="bg-gray-50 p-3 rounded-lg">
                 <p className="font-medium">{selectedVehicle.name}</p>
-                <p className="text-xs text-gray-600 mt-1">
+                <p className="text-xs text-[var(--ink2)] mt-1">
                   {selectedVehicle.description}
                 </p>
                 <div className="flex justify-between items-center mt-2">
-                  <span className="text-xs text-gray-600">{t('Step3.base-fare')}</span>
+                  <span className="text-xs text-[var(--ink2)]">{t('Step3.base-fare')}</span>
                   <div className="text-right">
                     {discount > 0 ? (
                       <>
-                        <span className="text-xs text-gray-400 line-through mr-2">
+                        <span className="text-xs text-[var(--ink2)] line-through mr-2">
                           {currencySymbol}{vehiclePrice.toFixed(2)}
                         </span>
                         <span className="font-semibold">
@@ -232,7 +232,7 @@ export function Step3BookingSummary({
               <div className="space-y-1 text-sm">
                 {formData.childSeats > 0 && (
                   <div className="flex justify-between">
-                    <span className="text-gray-600">
+                    <span className="text-[var(--ink2)]">
                       {t('Step3.child-seatsx')} {formData.childSeats}
                     </span>
                     <span className="font-medium">
@@ -242,7 +242,7 @@ export function Step3BookingSummary({
                 )}
                 {formData.babySeats > 0 && (
                   <div className="flex justify-between">
-                    <span className="text-gray-600">
+                    <span className="text-[var(--ink2)]">
                       {t('Step3.baby-seatsx')} {formData.babySeats}
                     </span>
                     <span className="font-medium">
@@ -258,14 +258,14 @@ export function Step3BookingSummary({
                   return (
                     <div>
                       <div className="flex justify-between font-medium">
-                        <span className="text-gray-600">
+                        <span className="text-[var(--ink2)]">
                           {t('Dashboard.Rides.Stops')} ({validStops.length})
                         </span>
                         <span>
                           {currencySymbol}{stopsTotalPrice.toFixed(2)}
                         </span>
                       </div>
-                      <div className="ml-2 mt-1 space-y-0.5 text-xs text-gray-500">
+                      <div className="ml-2 mt-1 space-y-0.5 text-xs text-[var(--ink2)]">
                         {validStops.map((stop, index) => {
                           const baseCost = basePrice;
                           let durationCost = 0;
@@ -301,13 +301,13 @@ export function Step3BookingSummary({
           <div className="border-t pt-3">
             {enableTax && taxPercentage > 0 ? (
               <>
-                <div className="flex justify-between items-center text-sm text-gray-600 mb-1">
+                <div className="flex justify-between items-center text-sm text-[var(--ink2)] mb-1">
                   <span>{t("Step3.subtotal")}</span>
                   <span>
                     {currencySymbol}{displaySubtotalAmount.toFixed(2)}
                   </span>
                 </div>
-                <div className="flex justify-between items-center text-sm text-gray-600 mb-2">
+                <div className="flex justify-between items-center text-sm text-[var(--ink2)] mb-2">
                   <span>{t("Step3.tax", { 0: taxPercentage })}{taxIncluded ? ` - ${t("Step3.included")}` : ''}</span>
                   <span>
                     {currencySymbol}{taxAmount.toFixed(2)}
@@ -341,25 +341,25 @@ export function Step3BookingSummary({
           {/* Benefits */}
           <div className="border-t pt-3 space-y-2">
             <h4 className="font-semibold text-sm mb-2">{t('Step3.what-and-apos-s-included')}</h4>
-            <div className="space-y-2 text-xs text-gray-700">
+            <div className="space-y-2 text-xs text-[var(--ink)]">
               <div className="flex items-center gap-2">
-                <CheckCircle2 className="h-4 w-4 text-green-600" />
+                <CheckCircle2 className="h-4 w-4 text-[var(--ok)]" />
                 <span>{t('Step3.door-to-door-service')}</span>
               </div>
               <div className="flex items-center gap-2">
-                <CheckCircle2 className="h-4 w-4 text-green-600" />
+                <CheckCircle2 className="h-4 w-4 text-[var(--ok)]" />
                 <span>{t('Step3.meet-and-greet')}</span>
               </div>
               <div className="flex items-center gap-2">
-                <CheckCircle2 className="h-4 w-4 text-green-600" />
+                <CheckCircle2 className="h-4 w-4 text-[var(--ok)]" />
                 <span>{t('Step3.instant-confirmation')}</span>
               </div>
               <div className="flex items-center gap-2">
-                <Shield className="h-4 w-4 text-green-600" />
+                <Shield className="h-4 w-4 text-[var(--ok)]" />
                 <span>{t('Step3.secure-payment')}</span>
               </div>
               <div className="flex items-center gap-2">
-                <CheckCircle2 className="h-4 w-4 text-green-600" />
+                <CheckCircle2 className="h-4 w-4 text-[var(--ok)]" />
                 <span>{t('Step3.free-cancellation-24h')}</span>
               </div>
             </div>
@@ -368,7 +368,7 @@ export function Step3BookingSummary({
           {/* Support */}
           <div className="border-t pt-3 space-y-2 text-xs">
             <div className="flex items-center gap-2 font-semibold">
-              <CreditCard className="h-4 w-4 text-blue-600" />
+              <CreditCard className="h-4 w-4 text-[var(--ink2)]" />
               <span>{t('Step3.24-7-customer-support')}</span>
             </div>
             {process.env.NEXT_PUBLIC_SUPPORT_EMAIL ? (

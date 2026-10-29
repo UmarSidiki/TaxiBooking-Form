@@ -18,7 +18,7 @@ export function Step1BookingTypeFields({
 }) {
   return (
           <div>
-            <label className="block text-sm font-medium mb-1.5 text-gray-700">
+            <label className="block text-sm font-medium mb-1.5 text-[var(--ink)]">
               {t("Step1.BookingType")}
             </label>
             <div className="grid grid-cols-2 gap-2">
@@ -28,8 +28,8 @@ export function Step1BookingTypeFields({
                 variant="outline"
                 className={`${
                   formData.bookingType === "destination"
-                    ? "bg-primary text-primary-foreground border-primary hover:bg-primary/90"
-                    : "bg-white hover:bg-gray-50"
+                    ? "bg-primary text-primary-foreground border-[var(--ink)] hover:bg-primary/90"
+                    : "bg-[var(--sheet)] hover:bg-gray-50"
                 }`}
               >
                 <MapPin className="h-4 w-4" />
@@ -41,15 +41,15 @@ export function Step1BookingTypeFields({
                 variant="outline"
                 className={`${
                   formData.bookingType === "hourly"
-                    ? "bg-primary text-primary-foreground border-primary hover:bg-primary/90"
-                    : "bg-white hover:bg-gray-50"
+                    ? "bg-primary text-primary-foreground border-[var(--ink)] hover:bg-primary/90"
+                    : "bg-[var(--sheet)] hover:bg-gray-50"
                 }`}
               >
                 <Clock className="h-4 w-4" />
                 {t("Step1.TimeBased")}
               </Button>
             </div>
-            <p className="text-xs text-gray-500 mt-1">
+            <p className="text-xs text-[var(--ink2)] mt-1">
               {formData.bookingType === "destination"
                 ? t("Step1.price-based-on-distance-traveled")
                 : t("Step1.price-based-on-hourly-rate")}

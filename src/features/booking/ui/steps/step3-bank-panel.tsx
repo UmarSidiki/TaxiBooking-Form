@@ -29,7 +29,7 @@ export function Step3BankPanel({
   return (
                 <div className="mt-4 bg-blue-50 border border-blue-200 rounded-lg p-4">
                   <div className="flex items-start gap-3 mb-4">
-                    <Building2 className="h-5 w-5 text-blue-600 flex-shrink-0 mt-0.5" />
+                    <Building2 className="h-5 w-5 text-[var(--ink2)] flex-shrink-0 mt-0.5" />
                     <div>
                       <p className="font-medium text-blue-900 mb-1">
                         {t('Step3.bank-transfer-instructions')} </p>
@@ -38,10 +38,10 @@ export function Step3BankPanel({
                     </div>
                   </div>
 
-                  <div className="bg-white rounded-lg p-4 space-y-3 text-sm">
+                  <div className="bg-[var(--sheet)] rounded-lg p-4 space-y-3 text-sm">
                     {paymentSettings.bankName && (
                       <div>
-                        <p className="text-gray-500 text-xs">{t('Step3.bank-name')}</p>
+                        <p className="text-[var(--ink2)] text-xs">{t('Step3.bank-name')}</p>
                         <p className="font-medium">
                           {paymentSettings.bankName}
                         </p>
@@ -49,7 +49,7 @@ export function Step3BankPanel({
                     )}
                     {paymentSettings.bankAccountName && (
                       <div>
-                        <p className="text-gray-500 text-xs">{t('Step3.account-name')}</p>
+                        <p className="text-[var(--ink2)] text-xs">{t('Step3.account-name')}</p>
                         <p className="font-medium">
                           {paymentSettings.bankAccountName}
                         </p>
@@ -57,7 +57,7 @@ export function Step3BankPanel({
                     )}
                     {paymentSettings.bankAccountNumber && (
                       <div>
-                        <p className="text-gray-500 text-xs">{t('Step3.account-number')}</p>
+                        <p className="text-[var(--ink2)] text-xs">{t('Step3.account-number')}</p>
                         <p className="font-medium">
                           {paymentSettings.bankAccountNumber}
                         </p>
@@ -65,7 +65,7 @@ export function Step3BankPanel({
                     )}
                     {paymentSettings.bankIBAN && (
                       <div>
-                        <p className="text-gray-500 text-xs">IBAN</p>
+                        <p className="text-[var(--ink2)] text-xs">IBAN</p>
                         <p className="font-medium font-mono">
                           {paymentSettings.bankIBAN}
                         </p>
@@ -73,7 +73,7 @@ export function Step3BankPanel({
                     )}
                     {paymentSettings.bankSwiftBIC && (
                       <div>
-                        <p className="text-gray-500 text-xs">SWIFT/BIC</p>
+                        <p className="text-[var(--ink2)] text-xs">SWIFT/BIC</p>
                         <p className="font-medium">
                           {paymentSettings.bankSwiftBIC}
                         </p>

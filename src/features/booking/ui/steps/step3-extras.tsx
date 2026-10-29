@@ -34,7 +34,7 @@ export function Step3Extras({
             <div className="flex items-center justify-between">
               <label className="text-sm font-medium">{t('Step3.child-seats')}</label>
               <div className="flex items-center gap-3">
-                <span className="text-sm text-gray-600">
+                <span className="text-sm text-[var(--ink2)]">
                   {currencySymbol}{childSeatPrice} {t('Step3.each')}
                 </span>
                 <Input
@@ -75,7 +75,7 @@ export function Step3Extras({
             <div className="flex items-center justify-between">
               <label className="text-sm font-medium">{t('Step3.baby-seats')}</label>
               <div className="flex items-center gap-3">
-                <span className="text-sm text-gray-600">
+                <span className="text-sm text-[var(--ink2)]">
                   {currencySymbol}{babySeatPrice} {t('Step3.each')}
                 </span>
                 <Input

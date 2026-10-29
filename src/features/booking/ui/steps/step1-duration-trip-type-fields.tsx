@@ -26,7 +26,7 @@ export function Step1DurationTripTypeFields({
           {/* Duration - Only for hourly bookings */}
           {formData.bookingType === "hourly" && (
             <div>
-              <label className="block text-sm font-medium mb-1.5 text-gray-700">
+              <label className="block text-sm font-medium mb-1.5 text-[var(--ink)]">
                 <Clock className="inline h-4 w-4 mr-1" />
                 {t("Step1.Duration")} *
               </label>
@@ -35,13 +35,13 @@ export function Step1DurationTripTypeFields({
                 min="1"
                 step="1"
                 placeholder="2"
-                className="focus:border-primary-500 focus:ring-primary-500"
+                className="focus:border-[var(--ink)]-500 focus:ring-primary-500"
                 value={formData.duration}
                 onChange={(e) => {
                   handleInputChange("duration", parseInt(e.target.value) || 1);
                 }}
               />
-              <p className="text-xs text-gray-500 mt-1">
+              <p className="text-xs text-[var(--ink2)] mt-1">
                 {t("Step1.DurationDescription")}
               </p>
             </div>
@@ -50,7 +50,7 @@ export function Step1DurationTripTypeFields({
           {/* Trip Type - Only for destination-based bookings */}
           {formData.bookingType === "destination" && (
             <div>
-              <label className="block text-sm font-medium mb-1.5 text-gray-700">
+              <label className="block text-sm font-medium mb-1.5 text-[var(--ink)]">
                 Trip Type
               </label>
               <div className="grid grid-cols-2 gap-2">
@@ -65,8 +65,8 @@ export function Step1DurationTripTypeFields({
                   variant="outline"
                   className={`${
                     formData.tripType === "oneway"
-                      ? "bg-primary text-primary-foreground border-primary hover:bg-primary/90"
-                      : "bg-white hover:bg-gray-50"
+                      ? "bg-primary text-primary-foreground border-[var(--ink)] hover:bg-primary/90"
+                      : "bg-[var(--sheet)] hover:bg-gray-50"
                   }`}
                 >
                   {t("Step1.OneWay")}
@@ -82,8 +82,8 @@ export function Step1DurationTripTypeFields({
                   variant="outline"
                   className={`${
                     formData.tripType === "roundtrip"
-                      ? "bg-primary text-primary-foreground border-primary hover:bg-primary/90"
-                      : "bg-white hover:bg-gray-50"
+                      ? "bg-primary text-primary-foreground border-[var(--ink)] hover:bg-primary/90"
+                      : "bg-[var(--sheet)] hover:bg-gray-50"
                   }`}
                 >
                   {t("Step1.RoundTrip")}

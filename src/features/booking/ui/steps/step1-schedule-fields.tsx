@@ -45,8 +45,8 @@ export function Step1ScheduleFields({
                 type="date"
                 min={today}
                 className={`${
-                  errors.date ? "border-red-500" : "border-gray-300"
-                } focus:border-primary-500 focus:ring-primary-500`}
+                  errors.date ? "border-red-500" : "border-[var(--rule2)]"
+                } focus:border-[var(--ink)]-500 focus:ring-primary-500`}
                 value={formData.date}
                 onChange={(e) => {
                   handleInputChange("date", e.target.value);
@@ -68,8 +68,8 @@ export function Step1ScheduleFields({
                 id="booking-time"
                 type="time"
                 className={`${
-                  errors.time ? "border-red-500" : "border-gray-300"
-                } focus:border-primary-500 focus:ring-primary-500`}
+                  errors.time ? "border-red-500" : "border-[var(--rule2)]"
+                } focus:border-[var(--ink)]-500 focus:ring-primary-500`}
                 value={formData.time}
                 onChange={(e) => {
                   handleInputChange("time", e.target.value);
@@ -85,7 +85,7 @@ export function Step1ScheduleFields({
           {formData.tripType === "roundtrip" && (
             <div className="grid grid-cols-2 gap-3">
               <div className="min-w-0">
-                <label className="block text-sm font-medium mb-1.5 text-gray-700">
+                <label className="block text-sm font-medium mb-1.5 text-[var(--ink)]">
                   <CalendarDays className="inline h-4 w-4 mr-1" />
                   {t("Step1.ReturnDate")} *
                 </label>
@@ -93,8 +93,8 @@ export function Step1ScheduleFields({
                   type="date"
                   min={formData.date || today}
                   className={`${
-                    errors.returnDate ? "border-red-500" : "border-gray-300"
-                  } focus:border-primary-500 focus:ring-primary-500`}
+                    errors.returnDate ? "border-red-500" : "border-[var(--rule2)]"
+                  } focus:border-[var(--ink)]-500 focus:ring-primary-500`}
                   value={formData.returnDate}
                   onChange={(e) => {
                     handleInputChange("returnDate", e.target.value);
@@ -107,15 +107,15 @@ export function Step1ScheduleFields({
                 )}
               </div>
               <div className="min-w-0">
-                <label className="block text-sm font-medium mb-1.5 text-gray-700">
+                <label className="block text-sm font-medium mb-1.5 text-[var(--ink)]">
                   <Clock className="inline h-4 w-4 mr-1" />
                   {t("Step1.ReturnTime")} *
                 </label>
                 <Input
                   type="time"
                   className={`${
-                    errors.returnTime ? "border-red-500" : "border-gray-300"
-                  } focus:border-primary-500 focus:ring-primary-500`}
+                    errors.returnTime ? "border-red-500" : "border-[var(--rule2)]"
+                  } focus:border-[var(--ink)]-500 focus:ring-primary-500`}
                   value={formData.returnTime}
                   onChange={(e) => {
                     handleInputChange("returnTime", e.target.value);
@@ -132,7 +132,7 @@ export function Step1ScheduleFields({
 
           {/* Passengers */}
           <div>
-            <label className="block text-sm font-medium mb-1.5 text-gray-700">
+            <label className="block text-sm font-medium mb-1.5 text-[var(--ink)]">
               <Users className="inline h-4 w-4 mr-1" />
               {t("Step1.Passengers")}
             </label>
@@ -141,7 +141,7 @@ export function Step1ScheduleFields({
               min={String(MIN_PASSENGERS)}
               max={String(MAX_PASSENGERS)}
               placeholder="1"
-              className="border-gray-300 focus:border-primary-500 focus:ring-primary-500"
+              className="border-[var(--rule2)] focus:border-[var(--ink)]-500 focus:ring-primary-500"
               value={formData.passengers === 0 ? "" : formData.passengers}
               onChange={handlePassengerChange}
               onBlur={handlePassengerBlur}

@@ -4,7 +4,7 @@ import type { DistanceData, FormData } from "@/features/booking/context/booking-
 import type { IVehicle } from "@/features/fleet/model";
 import { Loader2 } from "lucide-react";
 import type { useTranslations } from "next-intl";
-import { Step2VehicleCard } from "./step2-vehicle-card";
+import { VehicleCard } from "@/features/booking/ui/riviera/vehicle-card";
 
 type TFn = ReturnType<typeof useTranslations>;
 
@@ -71,7 +71,7 @@ export function Step2VehicleList({
               const isBestPrice = index === 0; // First vehicle after sorting is the cheapest
 
               return (
-                <Step2VehicleCard
+                <VehicleCard
                   key={vehicle._id}
                   vehicle={vehicle}
                   formData={formData}

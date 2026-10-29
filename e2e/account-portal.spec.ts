@@ -23,8 +23,12 @@ async function go(page: any, path: string) {
   }
 }
 
-test("account portal tabs, cancel fee, change price, completed ride", async ({ page }) => {
+test("account portal tabs, cancel fee, change price, completed ride", async ({ page }, testInfo) => {
   test.setTimeout(120_000);
+  const shot = (name: string) =>
+    process.env.SHOTS_DIR
+      ? page.screenshot({ path: `${process.env.SHOTS_DIR}/bf-portal-${name}-${testInfo.project.name}.png`, fullPage: true })
+      : Promise.resolve();
 
   const token = signToken("ada@example.com");
   await go(page, `/en/account?token=${token}`);
@@ -32,12 +36,14 @@ test("account portal tabs, cancel fee, change price, completed ride", async ({ p
   await expect(page.getByRole("tab", { name: "Upcoming" })).toBeVisible();
   await expect(page.getByRole("tab", { name: "Past" })).toBeVisible();
   await expect(page.getByRole("tab", { name: "Cancelled" })).toBeVisible();
+  await shot("list");
 
   // Cancel fee preview shown
   await page.getByRole("button", { name: "Details" }).first().click();
   await expect(page.getByRole("dialog")).toBeVisible();
   await page.getByRole("button", { name: "Cancel" }).click();
   await expect(page.getByText(/Cancellation fee/)).toBeVisible();
+  await shot("cancel");
   await page.getByRole("button", { name: "Close" }).first().click();
 
   // Change shows preview summary then confirms
@@ -48,6 +54,9 @@ test("account portal tabs, cancel fee, change price, completed ride", async ({ p
   await expect(page.getByText(/Current total/)).toBeVisible();
   await expect(page.getByText(/New total/)).toBeVisible();
   await expect(page.getByText(/Already paid/)).toBeVisible();
+  await shot("change-review");
+  const axe = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21aa"]).analyze();
+  expect(axe.violations.filter((v) => v.impact === "serious" || v.impact === "critical").map((v) => v.id)).toEqual([]);
   await page.getByRole("button", { name: "Confirm change" }).click();
 
   // Completed ride has no actions

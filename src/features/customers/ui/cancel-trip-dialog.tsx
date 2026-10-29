@@ -65,7 +65,7 @@ export function CancelTripDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent>
+      <DialogContent className="max-h-[90dvh] overflow-y-auto pb-[max(1rem,env(safe-area-inset-bottom))]">
         <DialogHeader>
           <DialogTitle>{t("cancel-title")}</DialogTitle>
         </DialogHeader>

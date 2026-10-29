@@ -13,7 +13,7 @@ export async function POST(request: Request) {
   const parsed = await parseJsonBody(request, whatsappTestSendSchema);
   if (!parsed.ok) return parsed.response;
   try {
-    const result = await sendWhatsAppTest(parsed.data.templateId, parsed.data.to);
+    const result = await sendWhatsAppTest(parsed.data);
     if (!result.ok) {
       const status = result.error === "not_found" ? 404 : 400;
       return jsonError(result.error, status);

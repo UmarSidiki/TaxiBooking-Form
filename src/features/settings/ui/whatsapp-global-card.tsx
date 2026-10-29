@@ -5,15 +5,19 @@ import { useLocale, useTranslations } from "next-intl";
 
 import { DeskSelect } from "@/features/dashboard/ui/desk-select";
 import { whatsappLocales } from "@/features/settings/schema/whatsapp.schema";
+import { WhatsAppDeskNumbersField } from "@/features/settings/ui/whatsapp-desk-numbers-field";
+import { WhatsAppQuietHoursField } from "@/features/settings/ui/whatsapp-quiet-hours-field";
 import type { WhatsAppDeskConfig } from "@/features/settings/ui/whatsapp-desk-types";
 import { apiPut } from "@/shared/http/api";
 import { Button } from "@/shared/ui/button";
 import { Input } from "@/shared/ui/input";
 import { Switch } from "@/shared/ui/switch";
 
-const MAX_NUMBERS = 5;
+function payload(config: WhatsAppDeskConfig): WhatsAppDeskConfig {
+  return { ...config, notifyNumbers: config.notifyNumbers.map((item) => item.trim()).filter(Boolean) };
+}
 
-export function WhatsAppConfigForm({
+export function WhatsAppGlobalCard({
   config,
   onSaved,
 }: {
@@ -23,40 +27,36 @@ export function WhatsAppConfigForm({
   const t = useTranslations("Dashboard.Settings");
   const uiLocale = useLocale();
   const [draft, setDraft] = useState(config);
-  const [numbers, setNumbers] = useState<string[]>(
-    config.notifyNumbers.length > 0 ? config.notifyNumbers : [""]
-  );
+  const [rateLimit, setRateLimit] = useState(String(config.sendRateLimit));
   const [saving, setSaving] = useState(false);
   const [notice, setNotice] = useState<string | null>(null);
-  const cleanNumbers = numbers.map((item) => item.trim()).filter(Boolean);
-  const dirty =
-    JSON.stringify({ ...draft, notifyNumbers: cleanNumbers }) !==
-    JSON.stringify({ ...config, notifyNumbers: config.notifyNumbers });
-  const languageNames = new Intl.DisplayNames([uiLocale], { type: "language" });
 
   useEffect(() => {
     setDraft(config);
-    setNumbers(config.notifyNumbers.length > 0 ? config.notifyNumbers : [""]);
+    setRateLimit(String(config.sendRateLimit));
   }, [config]);
 
+  const next: WhatsAppDeskConfig = {
+    ...payload(draft),
+    sendRateLimit: Number(rateLimit) || 0,
+  };
+  const dirty = JSON.stringify(next) !== JSON.stringify(payload(config));
+  const languageNames = new Intl.DisplayNames([uiLocale], { type: "language" });
+
   const save = async () => {
-    const notifyNumbers = numbers.map((item) => item.trim()).filter(Boolean);
-    if (notifyNumbers.length > MAX_NUMBERS) {
-      setNotice(t("whatsapp_notify_limit"));
-      return;
-    }
     setSaving(true);
     setNotice(null);
     try {
-      const body = { ...draft, notifyNumbers };
-      const data = await apiPut<{ success: boolean; data: WhatsAppDeskConfig }>(
+      const response = await apiPut<{ success: boolean; data: WhatsAppDeskConfig }>(
         "/api/settings/whatsapp",
-        body
+        next,
       );
-      if (data.success) {
-        onSaved(body);
-        setNotice(t("whatsapp_saved"));
-      } else setNotice(t("whatsapp_save_failed"));
+      if (!response.success) {
+        setNotice(t("whatsapp_save_failed"));
+        return;
+      }
+      onSaved(next);
+      setNotice(t("whatsapp_saved"));
     } catch {
       setNotice(t("whatsapp_save_failed"));
     } finally {
@@ -68,8 +68,12 @@ export function WhatsAppConfigForm({
     <div className="flex flex-col gap-5">
       <div className="flex items-center justify-between gap-4 rounded-xl bg-muted/50 p-3">
         <span className="flex flex-col">
-          <span id="whatsapp-enabled-label" className="text-sm font-medium">{t("whatsapp_enabled")}</span>
-          <span id="whatsapp-enabled-help" className="text-xs text-muted-foreground">{t("whatsapp_enabled_help")}</span>
+          <span id="whatsapp-enabled-label" className="text-sm font-medium">
+            {t("whatsapp_enabled")}
+          </span>
+          <span id="whatsapp-enabled-help" className="text-xs text-muted-foreground">
+            {t("whatsapp_enabled_help")}
+          </span>
         </span>
         <Switch
           checked={draft.enabled}
@@ -81,6 +85,7 @@ export function WhatsAppConfigForm({
           }}
         />
       </div>
+
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <div>
           <label htmlFor="whatsapp-calling-code" className="mb-2 block text-sm font-medium">
@@ -114,64 +119,65 @@ export function WhatsAppConfigForm({
           />
           <p className="mt-1 text-xs text-muted-foreground">{t("whatsapp_fallback_help")}</p>
         </div>
+        <div>
+          <label htmlFor="whatsapp-rate-limit" className="mb-2 block text-sm font-medium">
+            {t("notify_rate_limit")}
+          </label>
+          <Input
+            id="whatsapp-rate-limit"
+            name="sendRateLimit"
+            type="number"
+            min={0}
+            max={120}
+            inputMode="numeric"
+            value={rateLimit}
+            onChange={(event) => setRateLimit(event.target.value)}
+          />
+          <p className="mt-1 text-xs text-muted-foreground">{t("notify_rate_limit_help")}</p>
+        </div>
+        <div>
+          <label htmlFor="whatsapp-company-phone" className="mb-2 block text-sm font-medium">
+            {t("whatsapp_company_phone")}
+          </label>
+          <Input
+            id="whatsapp-company-phone"
+            name="companyPhone"
+            type="tel"
+            autoComplete="tel"
+            spellCheck={false}
+            translate="no"
+            value={draft.companyPhone}
+            onChange={(event) => setDraft((prev) => ({ ...prev, companyPhone: event.target.value }))}
+          />
+          <p className="mt-1 text-xs text-muted-foreground">{t("whatsapp_company_phone_help")}</p>
+        </div>
       </div>
-      <fieldset className="flex flex-col gap-3">
-        <legend className="mb-1 text-sm font-medium">{t("whatsapp_notify")}</legend>
-        <p className="text-xs text-muted-foreground">{t("whatsapp_notify_help")}</p>
-        {numbers.map((number, index) => (
-          <div key={index} className="flex items-center gap-2">
-            <label className="sr-only" htmlFor={`whatsapp-desk-${index}`}>
-              {t("whatsapp_number_label")} {index + 1}
-            </label>
-            <Input
-              id={`whatsapp-desk-${index}`}
-              name={`deskNumber-${index}`}
-              type="tel"
-              autoComplete="tel"
-              spellCheck={false}
-              translate="no"
-              value={number}
-              onChange={(event) =>
-                setNumbers((prev) => prev.map((item, i) => (i === index ? event.target.value : item)))
-              }
-            />
-            <Button
-              type="button"
-              variant="outline"
-              className="h-11 shrink-0"
-              onClick={() => setNumbers((prev) => prev.filter((_, i) => i !== index))}
-              disabled={numbers.length === 1 && number === ""}
-            >
-              {t("whatsapp_remove_number")}
-            </Button>
-          </div>
-        ))}
-        <Button
-          type="button"
-          variant="outline"
-          className="h-11 w-fit"
-          disabled={numbers.length >= MAX_NUMBERS}
-          onClick={() => setNumbers((prev) => [...prev, ""])}
-        >
-          {t("whatsapp_add_number")}
-        </Button>
-      </fieldset>
-      <div>
-        <label htmlFor="whatsapp-company-phone" className="mb-2 block text-sm font-medium">
-          {t("whatsapp_company_phone")}
-        </label>
-        <Input
-          id="whatsapp-company-phone"
-          name="companyPhone"
-          type="tel"
-          autoComplete="tel"
-          spellCheck={false}
-          translate="no"
-          value={draft.companyPhone}
-          onChange={(event) => setDraft((prev) => ({ ...prev, companyPhone: event.target.value }))}
+
+      <WhatsAppQuietHoursField
+        value={draft.quietHours}
+        onChange={(quietHours) => setDraft((prev) => ({ ...prev, quietHours }))}
+      />
+      <WhatsAppDeskNumbersField
+        value={draft.notifyNumbers}
+        onChange={(notifyNumbers) => setDraft((prev) => ({ ...prev, notifyNumbers }))}
+      />
+      <div className="flex items-center justify-between gap-4 rounded-xl bg-muted/50 p-3">
+        <span className="flex flex-col">
+          <span id="whatsapp-opt-in-label" className="text-sm font-medium">
+            {t("notify_opt_in")}
+          </span>
+          <span id="whatsapp-opt-in-help" className="text-xs text-muted-foreground">
+            {t("notify_opt_in_help")}
+          </span>
+        </span>
+        <Switch
+          checked={draft.requireOptIn}
+          aria-labelledby="whatsapp-opt-in-label"
+          aria-describedby="whatsapp-opt-in-help"
+          onCheckedChange={(requireOptIn) => setDraft((prev) => ({ ...prev, requireOptIn }))}
         />
-        <p className="mt-1 text-xs text-muted-foreground">{t("whatsapp_company_phone_help")}</p>
       </div>
+
       {dirty || notice ? (
         <div className="sticky bottom-0 z-30 -mx-4 flex flex-wrap items-center justify-end gap-3 border-t border-border bg-card/95 px-4 pt-3 backdrop-blur pb-[max(0.75rem,env(safe-area-inset-bottom))]">
           <p className="mr-auto text-sm text-muted-foreground" role="status" aria-live="polite">
@@ -186,7 +192,7 @@ export function WhatsAppConfigForm({
                 disabled={saving}
                 onClick={() => {
                   setDraft(config);
-                  setNumbers(config.notifyNumbers.length > 0 ? config.notifyNumbers : [""]);
+                  setRateLimit(String(config.sendRateLimit));
                 }}
               >
                 {t("whatsapp_discard")}

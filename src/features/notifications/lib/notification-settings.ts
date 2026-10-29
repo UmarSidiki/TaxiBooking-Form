@@ -85,6 +85,20 @@ export async function saveNotificationTemplate(input: {
   );
 }
 
+export async function resetNotificationTemplate(input: {
+  event: string;
+  channel: NotificationChannel;
+  audience: NotificationAudience;
+  locale: string;
+}) {
+  await connectDB();
+  const { event, channel, audience, locale } = input;
+  await NotificationSetting.updateOne(
+    { event, channel, audience },
+    { $unset: { [`templates.${locale}`]: "" } },
+  );
+}
+
 export async function saveNotificationTiming(
   event: string,
   channel: NotificationChannel,

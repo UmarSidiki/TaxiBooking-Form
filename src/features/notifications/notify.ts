@@ -31,7 +31,7 @@ function isDuplicateKey(error: unknown) {
   );
 }
 
-async function claimDeliveries(bookingId: string, messages: PlannedWhatsApp[]) {
+async function claimDeliveries(eventKey: string, bookingId: string, messages: PlannedWhatsApp[]) {
   const claimed: PlannedWhatsApp[] = [];
   for (const message of messages) {
     if (message.audience !== "customer" && message.audience !== "desk") {
@@ -40,6 +40,7 @@ async function claimDeliveries(bookingId: string, messages: PlannedWhatsApp[]) {
     }
     try {
       await WhatsAppDelivery.create({
+        event: eventKey,
         bookingId,
         audience: message.audience,
         to: message.to,
@@ -96,7 +97,7 @@ export async function notify(
     }
 
     if (ctx.bookingId && whatsapp.length > 0) {
-      whatsapp = await claimDeliveries(ctx.bookingId, whatsapp);
+      whatsapp = await claimDeliveries(eventKey, ctx.bookingId, whatsapp);
     }
 
     if (whatsapp.length === 0 && plan.email.length === 0) {

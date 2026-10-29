@@ -4,6 +4,9 @@ export type WhatsAppDeskConfig = {
   notifyNumbers: string[];
   companyPhone: string;
   defaultLocale: string;
+  quietHours: { enabled: boolean; startHour: number; endHour: number };
+  requireOptIn: boolean;
+  sendRateLimit: number;
 };
 
 export type WhatsAppDeskTemplate = {
@@ -17,6 +20,7 @@ export type WhatsAppDeskTemplate = {
 
 export type WhatsAppDeskDelivery = {
   _id: string;
+  event?: string;
   audience: "customer" | "desk";
   to: string;
   status: "sending" | "sent" | "failed";

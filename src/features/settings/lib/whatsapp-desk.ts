@@ -7,7 +7,9 @@ import {
 import type {
   WhatsAppConfigWrite,
   WhatsAppTemplateWrite,
+  WhatsAppTestSendInput,
 } from "@/features/settings/schema/whatsapp.schema";
+import { resolveNotificationTemplate } from "@/features/notifications/lib/notification-resolution";
 import { renderWhatsAppTemplate, whatsappSampleValues } from "@/features/settings/lib/whatsapp-template-text";
 import { toWhatsAppDigits, toWhatsAppJid } from "@/features/settings/lib/whatsapp-phone";
 import { sendWhatsAppTexts } from "@/features/settings/lib/whatsapp-session";
@@ -53,6 +55,7 @@ export async function loadWhatsAppDesk() {
       defaultLocale: "en",
       quietHours: { enabled: false, startHour: 22, endHour: 7 },
       requireOptIn: true,
+      sendRateLimit: 0,
     },
     templates: sortTemplates(templates),
     deliveries,
@@ -93,22 +96,32 @@ export async function deleteWhatsAppTemplate(id: string) {
   await WhatsAppTemplate.findByIdAndDelete(id);
 }
 
-export async function sendWhatsAppTest(templateId: string, to: string) {
+export async function sendWhatsAppTest(input: WhatsAppTestSendInput) {
   await connectDB();
-  const [setting, legacy, config] = await Promise.all([
-    getNotificationSettingById(templateId),
-    WhatsAppTemplate.findById(templateId).lean(),
-    WhatsAppConfig.findOne(),
-  ]);
-  if ((!setting && !legacy) || !config) {
-    return { ok: false as const, error: "not_found" as const };
-  }
-  const digits = toWhatsAppDigits(to, config.defaultCallingCode);
+  const config = await WhatsAppConfig.findOne();
+  if (!config) return { ok: false as const, error: "not_found" as const };
+  const digits = toWhatsAppDigits(input.to, config.defaultCallingCode);
   if (!digits) return { ok: false as const, error: "invalid_phone" as const };
 
-  const body = setting
-    ? (setting.templates[config.defaultLocale] ?? Object.values(setting.templates)[0])?.body
-    : legacy?.body;
+  let body: string | undefined;
+  if ("templateId" in input) {
+    const [setting, legacy] = await Promise.all([
+      getNotificationSettingById(input.templateId),
+      WhatsAppTemplate.findById(input.templateId).lean(),
+    ]);
+    if (!setting && !legacy) return { ok: false as const, error: "not_found" as const };
+    body = setting
+      ? (setting.templates[config.defaultLocale] ?? Object.values(setting.templates)[0])?.body
+      : legacy?.body;
+  } else {
+    const template = await resolveNotificationTemplate(
+      input.event,
+      "whatsapp",
+      input.audience,
+      input.locale ?? config.defaultLocale,
+    );
+    body = template?.body;
+  }
   if (!body) return { ok: false as const, error: "not_found" as const };
 
   const text = renderWhatsAppTemplate(body, {

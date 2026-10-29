@@ -9,6 +9,8 @@ import { clearWhatsAppAuth, readWhatsAppLinked } from "@/features/settings/lib/w
 import { pairWhatsApp } from "@/features/settings/lib/whatsapp-pair";
 import { isLoggedOut, openWhatsAppSocket, waitForOpen } from "@/features/settings/lib/whatsapp-socket";
 import { pushWhatsAppOutbox, qaWhatsAppMockEnabled } from "@/features/settings/lib/whatsapp-outbox";
+import { WhatsAppConfig } from "@/features/settings/model";
+import { waitForSendSlot } from "@/features/settings/lib/whatsapp-rate-limit";
 
 export type WhatsAppLinkView = {
   status: "needs_scan" | "waiting" | "linked" | "failed";
@@ -97,26 +99,29 @@ export function sendWhatsAppTexts(messages: WhatsAppOutbound[]) {
 
     try {
       await waitForOpen(sock, 20_000);
-      const results = await Promise.all(
-        messages.map(async (message) => {
-          try {
-            await sock.sendMessage(
-              message.jid,
-              message.document
-                ? {
-                    document: Buffer.from(message.document.base64, "base64"),
-                    mimetype: "application/pdf",
-                    fileName: message.document.fileName,
-                    caption: message.text,
-                  }
-                : { text: message.text },
-            );
-            return { jid: message.jid, ok: true };
-          } catch {
-            return { jid: message.jid, ok: false };
-          }
-        })
-      );
+      const config = await WhatsAppConfig.findOne()
+        .select("sendRateLimit")
+        .lean<{ sendRateLimit?: number }>();
+      const results: { jid: string; ok: boolean }[] = [];
+      for (const message of messages) {
+        await waitForSendSlot(config?.sendRateLimit ?? 0);
+        try {
+          await sock.sendMessage(
+            message.jid,
+            message.document
+              ? {
+                  document: Buffer.from(message.document.base64, "base64"),
+                  mimetype: "application/pdf",
+                  fileName: message.document.fileName,
+                  caption: message.text,
+                }
+              : { text: message.text },
+          );
+          results.push({ jid: message.jid, ok: true });
+        } catch {
+          results.push({ jid: message.jid, ok: false });
+        }
+      }
       return { ok: true, results };
     } catch (error) {
       if (isLoggedOut(error)) {

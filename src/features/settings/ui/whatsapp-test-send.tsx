@@ -7,11 +7,15 @@ import { ApiError, apiPost } from "@/shared/http/api";
 import { Button } from "@/shared/ui/button";
 import { Input } from "@/shared/ui/input";
 
+type Target =
+  | { templateId: string }
+  | { event: string; audience: "customer" | "desk" | "driver" | "partner"; locale?: string };
+
 export function WhatsAppTestSend({
-  templateId,
+  target,
   fieldId,
 }: {
-  templateId: string;
+  target: Target;
   fieldId: string;
 }) {
   const t = useTranslations("Dashboard.Settings");
@@ -20,14 +24,10 @@ export function WhatsAppTestSend({
   const [notice, setNotice] = useState<string | null>(null);
 
   const send = async () => {
-    if (!templateId) {
-      setNotice(t("whatsapp_test_pick"));
-      return;
-    }
     setSending(true);
     setNotice(null);
     try {
-      await apiPost("/api/settings/whatsapp/test", { templateId, to });
+      await apiPost("/api/settings/whatsapp/test", { ...target, to });
       setNotice(t("whatsapp_test_ok"));
     } catch (error) {
       const code = error instanceof ApiError ? error.code : "";
@@ -40,23 +40,26 @@ export function WhatsAppTestSend({
   };
 
   return (
-    <div className="flex flex-col gap-3">
+    <div className="flex flex-col gap-2">
       <label htmlFor={fieldId} className="text-sm font-medium">
         {t("whatsapp_test_to")}
       </label>
-      <Input
-        id={fieldId}
-        name={fieldId}
-        type="tel"
-        autoComplete="tel"
-        spellCheck={false}
-        translate="no"
-        value={to}
-        onChange={(event) => setTo(event.target.value)}
-      />
-      <Button type="button" className="h-11 w-fit" onClick={send} disabled={sending || !to.trim()}>
-        {sending ? t("whatsapp_testing") : t("whatsapp_test")}
-      </Button>
+      <div className="flex flex-wrap items-end gap-2">
+        <Input
+          id={fieldId}
+          name={fieldId}
+          type="tel"
+          autoComplete="tel"
+          spellCheck={false}
+          translate="no"
+          className="max-w-56"
+          value={to}
+          onChange={(event) => setTo(event.target.value)}
+        />
+        <Button type="button" className="h-11" onClick={send} disabled={sending || !to.trim()}>
+          {sending ? t("whatsapp_testing") : t("whatsapp_test")}
+        </Button>
+      </div>
       {notice ? (
         <p role="status" aria-live="polite" className="text-sm">
           {notice}

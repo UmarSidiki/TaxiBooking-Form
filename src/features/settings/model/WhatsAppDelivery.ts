@@ -2,6 +2,7 @@ import { Schema, model, models } from "mongoose";
 
 export interface IWhatsAppDelivery {
   _id?: string;
+  event?: string;
   bookingId: string;
   audience: "customer" | "desk";
   to: string;
@@ -12,6 +13,7 @@ export interface IWhatsAppDelivery {
 
 const WhatsAppDeliverySchema = new Schema<IWhatsAppDelivery>(
   {
+    event: { type: String },
     bookingId: { type: String, required: true },
     audience: { type: String, enum: ["customer", "desk"], required: true },
     to: { type: String, required: true },

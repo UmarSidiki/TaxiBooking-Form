@@ -211,7 +211,8 @@
     "meet-greet": "Встреча с табличкой",
     "promo-code": "Промокод",
     "due-now": "К оплате сейчас",
-    "balance-due": "Остаток"
+    "balance-due": "Остаток",
+    "complete-contact-details-to-continue": "Заполните контактные данные, чтобы продолжить."
   },
   "booking-failed-data-message": "Бронирование не удалось: {0}",
   "embeddable": {

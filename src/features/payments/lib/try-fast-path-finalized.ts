@@ -19,6 +19,9 @@ export async function tryFastPathFinalized(
   if (input.transactionId) {
     orConditions.push({ multisafepayTransactionId: input.transactionId });
   }
+  if (input.draftId) {
+    orConditions.push({ draftId: input.draftId });
+  }
 
   if (orConditions.length === 0) {
     return null;

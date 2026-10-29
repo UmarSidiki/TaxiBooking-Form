@@ -4,6 +4,8 @@ import { connectDB } from '@/shared/db';
 import { generateTripId } from '@/shared/lib/generate-id';
 import { getCurrencySymbol } from '@/shared/lib/utils';
 import { sanitizeInput } from '@/shared/lib/validation';
+import { isDuplicateKeyError } from '@/shared/lib/mongo-error';
+import { Booking, PendingBooking } from '@/features/booking/model';
 import {
   createBookingDocument,
   findRecentDuplicateBooking,
@@ -31,7 +33,8 @@ export type CreateCashBookingResult =
 
 export async function createCashBooking(
   formData: CashBookingInput,
-  baseUrl?: string
+  baseUrl?: string,
+  draftId?: string
 ): Promise<CreateCashBookingResult> {
   const abuse = bookingAbuseReason(formData);
   if (abuse) return { ok: false, status: 400, message: abuse };
@@ -39,6 +42,19 @@ export async function createCashBooking(
     return { ok: false, status: 400, message: "turnstile" };
   }
   await connectDB();
+
+  if (draftId) {
+    const existing = await Booking.findOne({ draftId });
+    if (existing) {
+      return {
+        ok: true,
+        tripId: existing.tripId,
+        totalAmount: existing.totalAmount ?? 0,
+        message: "Booking already confirmed",
+      };
+    }
+  }
+
   const vehicle = await Vehicle.findById(formData.selectedVehicle);
 
   if (!vehicle) {
@@ -119,6 +135,7 @@ export async function createCashBooking(
 
   const bookingData = {
     tripId,
+    draftId,
     pickup: formData.pickup,
     dropoff: formData.dropoff || '',
     stops: formData.stops || [],
@@ -160,7 +177,27 @@ export async function createCashBooking(
     balanceDue: priced.balanceDue,
   };
 
-  const savedBooking = await createBookingDocument(bookingData);
+  let savedBooking: Awaited<ReturnType<typeof createBookingDocument>>;
+  try {
+    savedBooking = await createBookingDocument(bookingData);
+  } catch (error) {
+    if (draftId && isDuplicateKeyError(error)) {
+      const existing = await Booking.findOne({ draftId });
+      if (existing) {
+        return {
+          ok: true,
+          tripId: existing.tripId,
+          totalAmount: existing.totalAmount ?? 0,
+          message: "Booking already confirmed",
+        };
+      }
+    }
+    throw error;
+  }
+
+  if (draftId) {
+    await PendingBooking.updateOne({ draftId }, { $set: { status: "abandoned" } });
+  }
 
   await initCashBookingPartners(
     savedBooking._id.toString(),

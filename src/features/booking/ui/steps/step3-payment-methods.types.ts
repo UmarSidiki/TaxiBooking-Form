@@ -14,6 +14,7 @@ export type Step3PaymentMethodsProps = Pick<
   | "creatingPaymentIntent"
   | "paymentError"
   | "retryStripePayment"
+  | "contactValid"
   | "totalPrice"
   | "handleStripePaymentSuccess"
   | "handleStripePaymentError"

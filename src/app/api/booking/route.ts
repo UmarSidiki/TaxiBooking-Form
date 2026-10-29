@@ -7,6 +7,7 @@ import { parseCashBookingInput } from "@/features/booking/schema/cash-booking.sc
 import { blockIfCountryNotAllowed } from "@/features/geo/lib/booking-country-policy";
 import { jsonError, jsonErrorFromStatus } from "@/shared/http/json-error";
 import { limitSensitive } from "@/shared/http/sensitive-limit";
+import { readIdempotencyKey } from "@/shared/http/read-idempotency-key";
 
 export async function POST(request: NextRequest) {
   const limited = await limitSensitive(request, "booking");
@@ -31,10 +32,11 @@ export async function POST(request: NextRequest) {
 
     const baseUrl = (await resolvePublicUrl({ request })) ?? undefined;
     const appointFirst = await isAppointmentRequestEnabled();
+    const draftId = parsed.data.draftId ?? readIdempotencyKey(request);
 
     const result = appointFirst
-      ? await createAppointmentRequest(parsed.data, baseUrl)
-      : await createCashBooking(parsed.data, baseUrl);
+      ? await createAppointmentRequest(parsed.data, baseUrl, draftId)
+      : await createCashBooking(parsed.data, baseUrl, draftId);
 
     if (!result.ok) {
       return jsonErrorFromStatus(result.status);

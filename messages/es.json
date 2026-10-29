@@ -211,7 +211,8 @@
     "meet-greet": "Recibimiento",
     "promo-code": "Código promocional",
     "due-now": "A pagar ahora",
-    "balance-due": "Saldo pendiente"
+    "balance-due": "Saldo pendiente",
+    "complete-contact-details-to-continue": "Completa tus datos de contacto para continuar."
   },
   "booking-failed-data-message": "Reserva fallida: {0}",
   "embeddable": {

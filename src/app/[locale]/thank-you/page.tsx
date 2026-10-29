@@ -15,12 +15,39 @@ export default function ThankYouPage() {
   const router = useRouter();
   const [countdown, setCountdown] = useState(5);
   const [redirectUrl, setRedirectUrl] = useState<string>('/');
+  const [paymentInfo, setPaymentInfo] = useState<{
+    tripId?: string | null;
+    amount?: number | null;
+    paymentMethod?: string | null;
+  } | null>(null);
   const { settings } = useTheme();
   const { currencySymbol } = useCurrency();
 
-  const tripId = searchParams.get('tripId');
-  const amount = searchParams.get('amount');
-  const paymentMethod = searchParams.get('method');
+  const draftId = searchParams.get('draftId');
+  const tripIdParam = searchParams.get('tripId');
+  const paymentMethodParam = searchParams.get('method');
+
+  useEffect(() => {
+    if (!draftId) return;
+    let cancelled = false;
+    fetch(`/api/payment-status?draftId=${encodeURIComponent(draftId)}`)
+      .then((response) => response.json())
+      .then((data) => {
+        if (cancelled || !data?.success) return;
+        setPaymentInfo(data);
+      })
+      .catch(() => undefined);
+    return () => {
+      cancelled = true;
+    };
+  }, [draftId]);
+
+  const tripId = paymentInfo?.tripId ?? tripIdParam;
+  const amount =
+    typeof paymentInfo?.amount === 'number'
+      ? paymentInfo.amount.toFixed(2)
+      : null;
+  const paymentMethod = paymentInfo?.paymentMethod ?? paymentMethodParam;
 
   useEffect(() => {
     if (settings?.redirectUrl) {

@@ -3,6 +3,8 @@ import { registerBookingIndexes } from "./booking-indexes";
 
 export interface IBooking extends Document {
   tripId: string;
+  /** Client checkout draft that produced this booking (idempotency key). */
+  draftId?: string;
   pickup: string;
   dropoff?: string;
   stops?: Array<{
@@ -48,6 +50,8 @@ export interface IBooking extends Document {
   estimatedAmount?: number;
   quotedAmount?: number;
   quotedAt?: Date;
+  depositDue?: number;
+  balanceDue?: number;
   declinedAt?: Date;
   declineReason?: string;
   paymentTokenHash?: string;
@@ -107,6 +111,7 @@ export interface IBooking extends Document {
 
 const BookingSchema: Schema = new Schema({
   tripId: { type: String, required: true, unique: true },
+  draftId: { type: String, unique: true, sparse: true },
   pickup: { type: String, required: true },
   dropoff: { type: String },
   stops: [{
@@ -229,6 +234,7 @@ export default Booking;
 
 export interface BookingInput {
   bookingType?: "destination" | "hourly";
+  draftId?: string;
   pickup: string;
   dropoff?: string;
   stops?: Array<{

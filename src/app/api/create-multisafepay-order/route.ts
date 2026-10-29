@@ -25,6 +25,7 @@ export async function POST(request: NextRequest) {
       return jsonError("country_blocked", 403);
     }
     const {
+      draftId,
       amount,
       customerEmail,
       customerName,
@@ -92,32 +93,46 @@ export async function POST(request: NextRequest) {
       : 'https://api.multisafepay.com/v1/json/orders';
 
     const userLocale = locale || 'en';
-    const generatedOrderId = generateShortId(5);
+    const existingPending = await PendingBooking.findOne({ draftId });
+    const generatedOrderId = existingPending?.orderId ?? generateShortId(5);
     const orderCurrency = (settings?.stripeCurrency || 'EUR').toUpperCase();
 
-    await PendingBooking.findOneAndUpdate(
-      { orderId: generatedOrderId },
-      {
-        $set: {
-          bookingData: {
-            ...bookingData,
-            locale: locale || bookingData.locale || "en",
-            totalAmount: priced.total,
-            subtotalAmount: priced.subtotal,
-            taxAmount: priced.taxAmount,
-            taxPercentage: priced.taxPercentage,
-            depositDue: priced.depositDue,
-            balanceDue: priced.balanceDue,
-            fareLines: priced.lines,
-            promoCode: priced.promoCode,
-          },
-          paymentMethod: 'multisafepay',
-          expectedAmount: priced.chargeAmount,
-          expiresAt: new Date(Date.now() + 30 * 60 * 1000),
-        },
+    const pendingDocument = {
+      bookingData: {
+        ...bookingData,
+        locale: locale || bookingData.locale || "en",
+        totalAmount: priced.total,
+        subtotalAmount: priced.subtotal,
+        taxAmount: priced.taxAmount,
+        taxPercentage: priced.taxPercentage,
+        depositDue: priced.depositDue,
+        balanceDue: priced.balanceDue,
+        fareLines: priced.lines,
+        promoCode: priced.promoCode,
       },
-      { upsert: true, returnDocument: 'after' }
-    );
+      paymentMethod: 'multisafepay',
+      status: 'open' as const,
+      expectedAmount: priced.chargeAmount,
+      expiresAt: new Date(Date.now() + 48 * 60 * 60 * 1000),
+    };
+
+    if (existingPending) {
+      existingPending.set(pendingDocument);
+      await existingPending.save();
+    } else {
+      try {
+        await PendingBooking.create({
+          draftId,
+          orderId: generatedOrderId,
+          ...pendingDocument,
+        });
+      } catch (error) {
+        const raced = await PendingBooking.findOne({ draftId });
+        if (!raced) throw error;
+        raced.set(pendingDocument);
+        await raced.save();
+      }
+    }
 
     const orderPayload = {
       type: 'redirect',

@@ -211,7 +211,8 @@
     "meet-greet": "Meet & greet",
     "promo-code": "Promocode",
     "due-now": "Nu te betalen",
-    "balance-due": "Nog te betalen"
+    "balance-due": "Nog te betalen",
+    "complete-contact-details-to-continue": "Vul uw contactgegevens in om door te gaan."
   },
   "booking-failed-data-message": "Boeking mislukt: {0}",
   "embeddable": {

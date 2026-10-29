@@ -21,6 +21,7 @@ export function Step3StripePanel({
   paymentSettings,
   clientSecret,
   stripeOrderId,
+  contactValid,
   paymentError,
   retryStripePayment,
   totalPrice,
@@ -38,6 +39,7 @@ export function Step3StripePanel({
   | "paymentSettings"
   | "clientSecret"
   | "stripeOrderId"
+  | "contactValid"
   | "paymentError"
   | "retryStripePayment"
   | "totalPrice"
@@ -123,6 +125,7 @@ export function Step3StripePanel({
                           }}
                           onSuccess={handleStripePaymentSuccess}
                           onError={handleStripePaymentError}
+                          contactValid={contactValid}
                         />
                       </StripeProvider>
                     )}

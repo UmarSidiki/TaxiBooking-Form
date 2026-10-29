@@ -11,6 +11,7 @@ export function Step3BankPanel({
   totalPrice,
   handleBankTransferBooking,
   isLoading,
+  contactValid,
 }: Pick<
   Step3PaymentMethodsProps,
   | "t"
@@ -19,6 +20,7 @@ export function Step3BankPanel({
   | "totalPrice"
   | "handleBankTransferBooking"
   | "isLoading"
+  | "contactValid"
 >) {
   if (!paymentSettings) {
     return null;
@@ -81,7 +83,7 @@ export function Step3BankPanel({
 
                   <Button
                     onClick={handleBankTransferBooking}
-                    disabled={isLoading}
+                    disabled={isLoading || !contactValid}
                     className="w-full mt-4 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold py-6"
                   >
                     {isLoading ? (

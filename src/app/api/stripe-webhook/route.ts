@@ -68,6 +68,7 @@ export async function POST(request: NextRequest) {
         const result = await finalizePaidBooking({
           provider: 'stripe',
           paymentIntentId: paymentIntent.id,
+          draftId: paymentIntent.metadata?.draft_id,
           baseUrl: (await resolvePublicUrl()) ?? '',
         });
 
@@ -105,8 +106,16 @@ export async function POST(request: NextRequest) {
 
 async function handlePaymentIntentFailed(paymentIntent: Stripe.PaymentIntent) {
   const orderId = paymentIntent.metadata?.order_id;
-  if (orderId) {
-    await PendingBooking.deleteOne({ orderId });
+  const draftId = paymentIntent.metadata?.draft_id;
+  const lookup = [
+    ...(orderId ? [{ orderId }] : []),
+    ...(draftId ? [{ draftId }] : []),
+  ];
+  if (lookup.length > 0) {
+    await PendingBooking.updateMany(
+      { $or: lookup },
+      { $set: { status: 'abandoned' } }
+    );
   }
 }
 

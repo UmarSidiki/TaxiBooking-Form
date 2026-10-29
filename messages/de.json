@@ -211,7 +211,8 @@
     "meet-greet": "Meet & Greet",
     "promo-code": "Aktionscode",
     "due-now": "Jetzt fällig",
-    "balance-due": "Restbetrag"
+    "balance-due": "Restbetrag",
+    "complete-contact-details-to-continue": "Vervollständigen Sie Ihre Kontaktdaten, um fortzufahren."
   },
   "booking-failed-data-message": "Buchung fehlgeschlagen: {0}",
   "embeddable": {

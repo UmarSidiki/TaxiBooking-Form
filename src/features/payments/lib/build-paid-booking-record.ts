@@ -10,6 +10,7 @@ export function buildPaidBookingRecord(
     paymentMethod: PaymentProvider;
     paidAmount: number;
     currency: string;
+    draftId?: string;
     stripePaymentIntentId?: string;
     multisafepayOrderId?: string;
     multisafepayTransactionId?: string;
@@ -20,6 +21,7 @@ export function buildPaidBookingRecord(
 
   return {
     tripId: orderId,
+    draftId: options.draftId,
     pickup: data.pickup,
     dropoff: data.dropoff || '',
     stops: data.stops || [],

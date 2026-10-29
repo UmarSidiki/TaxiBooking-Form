@@ -7,7 +7,7 @@ export type CronBody =
   | { ok: true; skipped: "locked" }
   | {
       ok: boolean;
-      hourly: { reminders: number; notifications: number; holidaysPruned: number };
+      hourly: { reminders: number; notifications: number; holidaysPruned: number; pendingSwept: number };
       daily: "skipped" | "ran" | "failed";
     };
 
@@ -43,15 +43,17 @@ async function runDaily() {
 /** Hourly reminders and notifications. Cleanup, deletions, and later daily jobs run once per UTC day. */
 export async function runCron(): Promise<CronBody> {
   const held = await withCronLock(async () => {
-    const [{ sendPickupReminders }, { sendThankYouEmails }, { pruneExpiredHolidays }] = await Promise.all([
+    const [{ sendPickupReminders }, { sendThankYouEmails }, { pruneExpiredHolidays }, { sweepAbandonedPendingBookings }] = await Promise.all([
       import("@/features/booking/lib/send-pickup-reminders"),
       import("@/features/booking/lib/send-thank-you-emails"),
       import("@/features/pricing/lib/prune-holidays"),
+      import("@/features/booking/lib/sweep-abandoned-pending-bookings"),
     ]);
-    const [reminders, notifications, holidays] = await Promise.all([
+    const [reminders, notifications, holidays, pending] = await Promise.all([
       sendPickupReminders() as Promise<Counted>,
       sendThankYouEmails() as Promise<Counted>,
       pruneExpiredHolidays().catch(() => 0),
+      sweepAbandonedPendingBookings().catch(() => ({ success: false, count: 0 })),
     ]);
     const daily = await runDaily();
     return {
@@ -60,6 +62,7 @@ export async function runCron(): Promise<CronBody> {
         reminders: reminders.sent ?? 0,
         notifications: notifications.sent ?? 0,
         holidaysPruned: holidays,
+        pendingSwept: pending.count,
       },
       daily,
     };

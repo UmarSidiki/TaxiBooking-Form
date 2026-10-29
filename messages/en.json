@@ -211,7 +211,8 @@
     "meet-greet": "Meet & greet",
     "promo-code": "Promo code",
     "due-now": "Due now",
-    "balance-due": "Balance due"
+    "balance-due": "Balance due",
+    "complete-contact-details-to-continue": "Complete your contact details to continue."
   },
   "booking-failed-data-message": "Booking failed: {0}",
   "embeddable": {

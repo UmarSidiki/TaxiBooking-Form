@@ -1,6 +1,6 @@
 "use client";
 
-import React, { memo, useEffect } from "react";
+import React, { memo } from "react";
 import { ArrowLeft } from "lucide-react";
 import { Button } from "@/shared/ui/button";
 import { useStep3 } from "@/features/booking/hooks/form-steps/useStep3";
@@ -17,11 +17,7 @@ import { Step3PersonalDetails } from "@/features/booking/ui/steps/step3-personal
 function Step3Payment() {
   const step = useStep3();
   const {
-    stripeConfig,
     paymentSettings,
-    selectedPaymentMethod,
-    setSelectedPaymentMethod,
-    creatingPaymentIntent,
     isLoading,
     handleBack,
   } = step;
@@ -30,26 +26,6 @@ function Step3Payment() {
   const t = useTranslations();
   const { geo } = useGeo();
   const appointFirst = Boolean(paymentSettings?.enableAppointmentRequest);
-
-  useEffect(() => {
-    if (appointFirst || geo.bookingBlocked) return;
-    if (paymentSettings?.acceptedPaymentMethods && !selectedPaymentMethod) {
-      if (paymentSettings.acceptedPaymentMethods.includes("card") && stripeConfig.enabled) {
-        setSelectedPaymentMethod("card");
-      } else if (paymentSettings.acceptedPaymentMethods.includes("cash")) {
-        setSelectedPaymentMethod("cash");
-      } else if (paymentSettings.acceptedPaymentMethods.includes("bank_transfer")) {
-        setSelectedPaymentMethod("bank_transfer");
-      }
-    }
-  }, [
-    appointFirst,
-    geo.bookingBlocked,
-    paymentSettings,
-    selectedPaymentMethod,
-    setSelectedPaymentMethod,
-    stripeConfig,
-  ]);
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -89,6 +65,7 @@ function Step3Payment() {
             paymentSettings={step.paymentSettings}
             selectedPaymentMethod={step.selectedPaymentMethod}
             setSelectedPaymentMethod={step.setSelectedPaymentMethod}
+            contactValid={step.contactValid}
             clientSecret={step.clientSecret}
             stripeOrderId={step.stripeOrderId}
             creatingPaymentIntent={step.creatingPaymentIntent}
@@ -113,7 +90,7 @@ function Step3Payment() {
             onClick={handleBack}
             variant="outline"
             className="flex-1"
-            disabled={isLoading || creatingPaymentIntent}
+            disabled={isLoading || step.creatingPaymentIntent}
           >
             <ArrowLeft className="mr-2 h-4 w-4" /> {t("Step3.back-to-vehicles")}
           </Button>

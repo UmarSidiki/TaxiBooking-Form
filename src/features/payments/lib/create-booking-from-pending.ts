@@ -21,9 +21,12 @@ export async function createBookingFromPending(
     stripePaymentIntentId?: string;
     multisafepayOrderId?: string;
     multisafepayTransactionId?: string;
-  }
+  },
+  draftId?: string
 ): Promise<FinalizePaidBookingResult> {
-  const pendingBooking = await PendingBooking.findOne({ orderId });
+  const pendingBooking = await PendingBooking.findOne({
+    $or: [{ orderId }, ...(draftId ? [{ draftId }] : [])],
+  });
 
   if (!pendingBooking) {
     return {
@@ -53,6 +56,7 @@ export async function createBookingFromPending(
     paymentMethod: input.provider,
     paidAmount,
     currency,
+    draftId: draftId ?? pendingBooking.draftId,
     ...paymentIds,
   });
 
@@ -85,6 +89,7 @@ export async function createBookingFromPending(
     const existing = await Booking.findOne({
       $or: [
         { tripId: orderId },
+        ...(draftId ? [{ draftId }] : []),
         ...(paymentIds.stripePaymentIntentId
           ? [{ stripePaymentIntentId: paymentIds.stripePaymentIntentId }]
           : []),

@@ -211,7 +211,8 @@
     "meet-greet": "استقبال باللافتة",
     "promo-code": "رمز ترويجي",
     "due-now": "المستحق الآن",
-    "balance-due": "المتبقي"
+    "balance-due": "المتبقي",
+    "complete-contact-details-to-continue": "أكمل بيانات الاتصال للمتابعة."
   },
   "booking-failed-data-message": "فشل الحجز: {0}",
   "embeddable": {

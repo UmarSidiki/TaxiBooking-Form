@@ -8,9 +8,10 @@ export function Step3MultisafepayPanel({
   t,
   handleMultisafepayBooking,
   isLoading,
+  contactValid,
 }: Pick<
   Step3PaymentMethodsProps,
-  "t" | "handleMultisafepayBooking" | "isLoading"
+  "t" | "handleMultisafepayBooking" | "isLoading" | "contactValid"
 >) {
   return (
                 <div className="mt-4">
@@ -29,7 +30,7 @@ export function Step3MultisafepayPanel({
 
                   <Button
                     onClick={handleMultisafepayBooking}
-                    disabled={isLoading}
+                    disabled={isLoading || !contactValid}
                     className="w-full bg-[#00ABEE] hover:bg-[#00ABEE]/80 text-white font-semibold py-6"
                   >
                     {isLoading ? (

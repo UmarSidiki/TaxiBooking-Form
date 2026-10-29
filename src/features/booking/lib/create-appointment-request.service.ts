@@ -4,6 +4,8 @@ import { connectDB } from "@/shared/db";
 import { generateTripId } from "@/shared/lib/generate-id";
 import { getCurrencySymbol } from "@/shared/lib/utils";
 import { sanitizeInput } from "@/shared/lib/validation";
+import { isDuplicateKeyError } from "@/shared/lib/mongo-error";
+import { Booking, PendingBooking } from "@/features/booking/model";
 import {
   createBookingDocument,
   findRecentDuplicateBooking,
@@ -24,13 +26,27 @@ export type CreateAppointmentRequestResult =
 
 export async function createAppointmentRequest(
   formData: CashBookingInput,
-  baseUrl?: string
+  baseUrl?: string,
+  draftId?: string
 ): Promise<CreateAppointmentRequestResult> {
   if (!(await isAppointmentRequestEnabled())) {
     return { ok: false, status: 400, message: "Appointment request is disabled" };
   }
 
   await connectDB();
+
+  if (draftId) {
+    const existing = await Booking.findOne({ draftId });
+    if (existing) {
+      return {
+        ok: true,
+        tripId: existing.tripId,
+        totalAmount: existing.totalAmount ?? 0,
+        message: "Request already received",
+      };
+    }
+  }
+
   const vehicle = await Vehicle.findById(formData.selectedVehicle);
   if (!vehicle) {
     return { ok: false, status: 404, message: "Selected vehicle not found" };
@@ -96,6 +112,7 @@ export async function createAppointmentRequest(
 
   const bookingData = {
     tripId,
+    draftId,
     pickup: formData.pickup,
     dropoff: formData.dropoff || "",
     stops: formData.stops || [],
@@ -139,7 +156,27 @@ export async function createAppointmentRequest(
     promoCode: priced.promoCode,
   };
 
-  const saved = await createBookingDocument(bookingData);
+  let saved: Awaited<ReturnType<typeof createBookingDocument>>;
+  try {
+    saved = await createBookingDocument(bookingData);
+  } catch (error) {
+    if (draftId && isDuplicateKeyError(error)) {
+      const existing = await Booking.findOne({ draftId });
+      if (existing) {
+        return {
+          ok: true,
+          tripId: existing.tripId,
+          totalAmount: existing.totalAmount ?? 0,
+          message: "Request already received",
+        };
+      }
+    }
+    throw error;
+  }
+
+  if (draftId) {
+    await PendingBooking.updateOne({ draftId }, { $set: { status: "abandoned" } });
+  }
 
   const emailData = await createCashBookingEmailData(
     {

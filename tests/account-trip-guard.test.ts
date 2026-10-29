@@ -2,7 +2,7 @@ import { afterAll, describe, expect, it, vi } from "vitest";
 import mongoose from "mongoose";
 import { signCustomerToken } from "@/features/customers/lib/customer-token";
 import { Booking } from "@/features/booking/model";
-import { createRide } from "./helpers/fixtures";
+import { createRide, createVehicle } from "./helpers/fixtures";
 
 vi.mock("next/headers", () => ({ cookies: async () => new Map() }));
 
@@ -43,11 +43,13 @@ describe("customer account trip guard", () => {
   });
 
   it("allows a change on a future upcoming ride", async () => {
-    await createRide({ selectedVehicle: vehicle(), tripId: "trip-move", status: "upcoming", date: dayOffset(30), time: "12:00" });
+    const vehicle = await createVehicle();
+    await createRide({ selectedVehicle: vehicle._id, bookingType: "hourly", duration: 2, tripId: "trip-move", status: "upcoming", date: dayOffset(30), time: "12:00" });
     const response = await act("trip-move", "ada@example.com", { action: "change", date: dayOffset(40), time: "09:00" });
     expect(response.status).toBe(200);
     const body = await response.json();
     expect(body.time).toBe("09:00");
+    expect(typeof body.totalAmount).toBe("number");
   });
 
   it("is idempotent when the trip is already cancelled", async () => {

@@ -55,6 +55,7 @@ interface StripePaymentFormProps {
   currency?: string;
   orderId?: string;
   bookingData?: BookingData;
+  contactValid?: boolean;
   onSuccess: (paymentIntentId: string) => void;
   onError: (error: string) => void;
 }
@@ -64,6 +65,7 @@ export default function StripePaymentForm({
   currency = "EUR",
   orderId,
   bookingData,
+  contactValid = true,
   onSuccess,
   onError,
 }: StripePaymentFormProps) {
@@ -349,7 +351,7 @@ export default function StripePaymentForm({
       {/* Submit Button */}
       <Button
         type="submit"
-        disabled={!stripe || !elements || isProcessing}
+        disabled={!stripe || !elements || isProcessing || !contactValid}
         className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold py-6 text-base shadow-lg hover:shadow-xl transition-all duration-200"
       >
         {isProcessing ? (

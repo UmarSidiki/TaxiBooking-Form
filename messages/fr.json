@@ -211,7 +211,8 @@
     "meet-greet": "Accueil avec pancarte",
     "promo-code": "Code promo",
     "due-now": "À payer maintenant",
-    "balance-due": "Solde restant"
+    "balance-due": "Solde restant",
+    "complete-contact-details-to-continue": "Complétez vos coordonnées pour continuer."
   },
   "booking-failed-data-message": "La réservation a échoué : {0}",
   "embeddable": {

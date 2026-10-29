@@ -42,7 +42,7 @@ test("whatsapp settings lists events, filters deliveries, and edits a template",
   await expect(row.getByText("Booking confirmed")).toBeVisible();
 
   await expect(page.getByLabel("Event")).toBeVisible();
-  await expect(page.getByLabel("Status")).toBeVisible();
+  await expect(page.locator("#notify-filter-status")).toBeVisible();
 
   await row.getByRole("button", { name: "Edit message" }).click();
   const dialog = page.getByRole("dialog");

@@ -62,6 +62,7 @@ export function ChangeTripDialog({
       setBabySeats(ride.babySeats ?? 0);
       setMeetAndGreet(ride.meetAndGreet ?? false);
       setPreview(null);
+      setPreviewError(null);
     }
   }, [ride, open]);
 
@@ -73,9 +74,12 @@ export function ChangeTripDialog({
       .catch(() => setVehicles([]));
   }, [open]);
 
+  const [previewError, setPreviewError] = useState<string | null>(null);
+
   const review = async () => {
     if (!ride) return;
     setPreviewing(true);
+    setPreviewError(null);
     try {
       const res = await fetch(`/api/account/trips/${ride.tripId}`, {
         method: "POST",
@@ -96,6 +100,9 @@ export function ChangeTripDialog({
       });
       const body = await res.json().catch(() => null);
       if (res.ok && body?.ok) setPreview(body);
+      else setPreviewError(t("change-preview-failed"));
+    } catch {
+      setPreviewError(t("change-preview-failed"));
     } finally {
       setPreviewing(false);
     }
@@ -163,7 +170,10 @@ export function ChangeTripDialog({
 
         <div aria-live="polite" className="mt-3 rounded-md border border-border p-3 text-sm">
           {!preview ? (
-            <p>{t("change-review")}</p>
+            <>
+              <p>{t("change-review")}</p>
+              {previewError ? <p role="alert" className="text-destructive">{previewError}</p> : null}
+            </>
           ) : (
             <>
               <p>{t("change-current-total")}: {fmt(preview.currentTotal)}</p>

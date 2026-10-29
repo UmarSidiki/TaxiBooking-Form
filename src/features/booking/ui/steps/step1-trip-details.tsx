@@ -13,7 +13,6 @@ import { Step1BookingTypeFields } from "./step1-booking-type-fields";
 import { Step1DurationTripTypeFields } from "./step1-duration-trip-type-fields";
 import { Step1Footer } from "./step1-footer";
 import { Step1LocationFields } from "./step1-location-fields";
-import { Step1MapPanel } from "./step1-map-panel";
 import { Step1ScheduleFields } from "./step1-schedule-fields";
 
 function Step1TripDetails() {
@@ -83,18 +82,8 @@ function Step1TripDetails() {
   } = useBookingStops(formData, setFormData);
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-7 gap-6">
-      <Step1MapPanel
-        t={t}
-        mapRef={mapRef}
-        mapLoaded={mapLoaded}
-        distanceData={distanceData}
-        formData={formData}
-      />
-
-      {/* Form Section - Right Side */}
-      <div className="lg:col-span-4 bg-[var(--sheet)] p-6">
-        <div className="space-y-4">
+    <div className="space-y-4">
+      <div className="space-y-4">
           <div>
             <h2 className="text-xl font-semibold mb-2">{t("Step1.Title")}</h2>
             <p className="text-sm text-[var(--ink2)]">{t("Step1.Description")}</p>
@@ -148,7 +137,6 @@ function Step1TripDetails() {
             handleNext={handleNext}
           />
         </div>
-      </div>
     </div>
   );
 }

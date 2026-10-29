@@ -65,8 +65,8 @@ export function Step1DurationTripTypeFields({
                   variant="outline"
                   className={`${
                     formData.tripType === "oneway"
-                      ? "bg-primary text-primary-foreground border-[var(--ink)] hover:bg-primary/90"
-                      : "bg-[var(--sheet)] hover:bg-gray-50"
+                      ? "bg-[var(--sheet)] text-[var(--ink)] border-2 border-[var(--ink)]"
+                      : "bg-[var(--sheet)] hover:bg-[var(--well)]"
                   }`}
                 >
                   {t("Step1.OneWay")}
@@ -82,8 +82,8 @@ export function Step1DurationTripTypeFields({
                   variant="outline"
                   className={`${
                     formData.tripType === "roundtrip"
-                      ? "bg-primary text-primary-foreground border-[var(--ink)] hover:bg-primary/90"
-                      : "bg-[var(--sheet)] hover:bg-gray-50"
+                      ? "bg-[var(--sheet)] text-[var(--ink)] border-2 border-[var(--ink)]"
+                      : "bg-[var(--sheet)] hover:bg-[var(--well)]"
                   }`}
                 >
                   {t("Step1.RoundTrip")}

@@ -64,7 +64,7 @@ export default function BookingFormContainer() {
       <header className="top">
         <span className="brand">
           <b></b>
-          {process.env.NEXT_PUBLIC_WEBSITE_NAME}
+          {process.env.NEXT_PUBLIC_WEBSITE_NAME || "Booking Form"}
         </span>
         <div className="lang">
           <LanguageSwitcher />

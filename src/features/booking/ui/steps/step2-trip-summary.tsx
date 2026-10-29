@@ -10,6 +10,7 @@ import type { useTranslations } from "next-intl";
 import { Step2IncludedServices } from "./step2-included-services";
 import { Step2PriceBreakdown } from "./step2-price-breakdown";
 import { Step2Support } from "./step2-support";
+import { TripStrip } from "@/features/booking/ui/riviera/trip-strip";
 
 type TFn = ReturnType<typeof useTranslations>;
 
@@ -59,9 +60,7 @@ export function Step2TripSummary({
   return (
       <div className="lg:col-span-1">
         <Card className="sticky top-4 p-5 space-y-4">
-          <h3 className="font-bold text-lg border-b pb-2">
-            {t("Step2.your-trip")}
-          </h3>
+          <TripStrip />
 
           {/* Selected Vehicle Price */}
           <Step2PriceBreakdown

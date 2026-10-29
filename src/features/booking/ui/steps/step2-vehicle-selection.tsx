@@ -8,7 +8,6 @@ import { useTranslations } from "next-intl";
 import { useCurrency } from "@/shared/context/currency-context";
 import { Step2TripSummary } from "./step2-trip-summary";
 import { Step2VehicleList } from "./step2-vehicle-list";
-import { TripStrip } from "@/features/booking/ui/riviera/trip-strip";
 
 function Step2VehicleSelection() {
   const {
@@ -49,7 +48,6 @@ function Step2VehicleSelection() {
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
       {/* Main Content - Vehicle Selection */}
       <div className="lg:col-span-2 space-y-4">
-        <TripStrip />
         <div>
           <h2 className="text-xl font-semibold mb-2">
             {t("Step2.select-your-vehicle")}

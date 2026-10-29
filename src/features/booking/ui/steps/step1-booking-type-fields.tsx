@@ -28,8 +28,8 @@ export function Step1BookingTypeFields({
                 variant="outline"
                 className={`${
                   formData.bookingType === "destination"
-                    ? "bg-primary text-primary-foreground border-[var(--ink)] hover:bg-primary/90"
-                    : "bg-[var(--sheet)] hover:bg-gray-50"
+                    ? "bg-[var(--sheet)] text-[var(--ink)] border-2 border-[var(--ink)]"
+                    : "bg-[var(--sheet)] hover:bg-[var(--well)]"
                 }`}
               >
                 <MapPin className="h-4 w-4" />
@@ -41,8 +41,8 @@ export function Step1BookingTypeFields({
                 variant="outline"
                 className={`${
                   formData.bookingType === "hourly"
-                    ? "bg-primary text-primary-foreground border-[var(--ink)] hover:bg-primary/90"
-                    : "bg-[var(--sheet)] hover:bg-gray-50"
+                    ? "bg-[var(--sheet)] text-[var(--ink)] border-2 border-[var(--ink)]"
+                    : "bg-[var(--sheet)] hover:bg-[var(--well)]"
                 }`}
               >
                 <Clock className="h-4 w-4" />

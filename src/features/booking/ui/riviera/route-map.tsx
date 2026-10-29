@@ -51,7 +51,8 @@ export function RivieraMap({ theme }: { theme?: "light" | "dark" }) {
       <Marker position={dropoff} icon={dropoffIcon}>
         <span>Drop-off</span>
       </Marker>
-      <Polyline positions={[pickup, dropoff]} color="#1C1A16" weight={3} />
+      <Polyline positions={[pickup, dropoff]} color="var(--sheet)" weight={8} />
+      <Polyline positions={[pickup, dropoff]} color="var(--ink)" weight={4} />
       <FitBounds />
     </MapContainer>
   );

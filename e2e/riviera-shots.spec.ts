@@ -25,6 +25,8 @@ for (const scheme of ["light", "dark"] as const) {
     await page.screenshot({ path: `${SHOTS}/app-${name}-step3.png` });
     if (scheme === "light" && view === "iphone") {
       await page.goto("/ar", { waitUntil: "domcontentloaded" });
+      await page.evaluate(() => sessionStorage.clear());
+      await page.reload({ waitUntil: "domcontentloaded" });
       await page.waitForTimeout(2500);
       await page.screenshot({ path: `${SHOTS}/app-iphone-ar-step1.png` });
     }

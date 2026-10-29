@@ -12,7 +12,6 @@ import { useBookingFormContainer } from "@/features/booking/hooks/form-container
 import { useBookingForm } from "@/features/booking/context/booking-form-context";
 import { useGeo } from "@/features/geo/context/geo-context";
 import { useTheme } from "@/features/settings/context/theme-context";
-import Image from "next/image";
 
 const RivieraMap = dynamic(() => import("./riviera/route-map").then((m) => m.RivieraMap), { ssr: false });
 

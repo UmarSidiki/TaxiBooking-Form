@@ -5,6 +5,7 @@ export interface IRefundRequest {
   bookingId: any;
   tripId?: string;
   amount: number;
+  amountCents?: number;
   reason: string;
   status: "pending" | "approved" | "rejected" | "refunded";
   stripeRefundId?: string;
@@ -17,6 +18,7 @@ const RefundRequestSchema = new Schema<IRefundRequest>(
     bookingId: { type: Schema.Types.ObjectId, ref: "Booking", required: true, index: true },
     tripId: { type: String },
     amount: { type: Number, required: true },
+    amountCents: { type: Number },
     reason: { type: String, required: true },
     status: {
       type: String,

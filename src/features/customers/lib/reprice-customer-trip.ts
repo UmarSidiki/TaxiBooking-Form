@@ -55,31 +55,44 @@ export async function repriceCustomerTrip(
     return null;
   }
 
-  const serverPrice = await priceServerBooking({
+  const baseBooking = {
+    bookingType: booking.bookingType,
+    tripType: booking.tripType,
+    duration: booking.duration,
+    pickup: booking.pickup,
+    dropoff: booking.dropoff,
+    stops: booking.stops,
+    childSeats: input.childSeats ?? booking.childSeats,
+    babySeats: input.babySeats ?? booking.babySeats,
+    meetAndGreet: input.meetAndGreet ?? booking.meetAndGreet,
+    date,
+    time: timeValue,
+    returnDate: booking.returnDate,
+    returnTime: booking.returnTime,
+    email: booking.email,
+    passengers: input.passengers ?? booking.passengers,
+  };
+
+  let serverPrice = await priceServerBooking({
     vehicle,
-    booking: {
-      bookingType: booking.bookingType,
-      tripType: booking.tripType,
-      duration: booking.duration,
-      pickup: booking.pickup,
-      dropoff: booking.dropoff,
-      stops: booking.stops,
-      childSeats: input.childSeats ?? booking.childSeats,
-      babySeats: input.babySeats ?? booking.babySeats,
-      meetAndGreet: input.meetAndGreet ?? booking.meetAndGreet,
-      promoCode: booking.promoCode,
-      date,
-      time: timeValue,
-      returnDate: booking.returnDate,
-      returnTime: booking.returnTime,
-      email: booking.email,
-      passengers: input.passengers ?? booking.passengers,
-    } as any,
+    booking: { ...baseBooking, promoCode: booking.promoCode } as any,
     distanceKm,
     tax: settings ?? {},
     redeem: false,
     now: zonedRideInstant(date, timeValue, "UTC") ?? undefined,
   });
+
+  // If the promo no longer validates, reprice without it (never double-discount).
+  if (!serverPrice.ok && String(serverPrice.error).startsWith("promo_")) {
+    serverPrice = await priceServerBooking({
+      vehicle,
+      booking: { ...baseBooking, promoCode: undefined } as any,
+      distanceKm,
+      tax: settings ?? {},
+      redeem: false,
+      now: zonedRideInstant(date, timeValue, "UTC") ?? undefined,
+    });
+  }
 
   if (!serverPrice.ok) return null;
   const quote = serverPrice.quote;
@@ -98,5 +111,6 @@ export async function repriceCustomerTrip(
     depositDue: quote.depositDue,
     balanceDue: quote.balanceDue,
     fareLines: quote.lines,
+    promoCode: quote.promoCode,
   };
 }

@@ -1,4 +1,5 @@
 import type { IBooking } from "@/features/booking/model";
+import { Booking } from "@/features/booking/model";
 import {
   updateBookingById,
   updateBookingFields,
@@ -44,6 +45,40 @@ export async function finalizeQuoteBooking(input: {
     return {
       success: false,
       message: "Booking is not awaiting payment",
+    };
+  }
+
+  // Pending change pay link: apply the proposed change once paid.
+  if (booking.pendingChange) {
+    const pc = booking.pendingChange as any;
+    if (pc.expiresAt && new Date(pc.expiresAt).getTime() < Date.now()) {
+      await Booking.findByIdAndUpdate(String(booking._id), {
+        $unset: { pendingChange: 1, paymentTokenHash: 1 },
+        $set: { status: "upcoming", updatedAt: new Date() },
+      });
+      return { success: false, message: "Payment link expired" };
+    }
+    const proposed = (pc.proposed ?? {}) as Record<string, unknown>;
+    await Booking.findByIdAndUpdate(String(booking._id), {
+      $set: {
+        ...proposed,
+        totalAmount: (pc.newTotalCents ?? 0) / 100,
+        status: "upcoming",
+        paymentStatus: "completed",
+        paymentMethod: input.provider,
+        amountPaidCents: (booking.amountPaidCents ?? 0) + (pc.diffCents ?? 0),
+        updatedAt: new Date(),
+        ...(input.stripePaymentIntentId
+          ? { stripePaymentIntentId: input.stripePaymentIntentId }
+          : {}),
+      },
+      $unset: { pendingChange: 1, paymentTokenHash: 1, quotedAmount: 1 },
+    });
+    return {
+      success: true,
+      tripId: booking.tripId,
+      bookingId: String(booking._id),
+      emails: { confirmationSent: false, adminSent: false },
     };
   }
 

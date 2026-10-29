@@ -9,7 +9,6 @@ import { notify } from "@/features/notifications/notify";
 import { mintPaymentToken } from "@/features/booking/lib/payment-token";
 import { quotePayUrl } from "@/features/booking/lib/quote-pay-url";
 import { resolvePublicUrl } from "@/features/settings/lib/public-url";
-import { getStripeClient } from "@/features/payments/lib/stripe-client";
 import { computeCancelFee, normalizeCancelPolicy } from "@/features/customers/lib/cancel-policy";
 
 export type CustomerTripAction = "cancel" | "change";
@@ -25,6 +24,13 @@ export type CustomerTripActionResult =
       refundRequestId?: string;
       fee?: number;
       refundAmount?: number;
+      currentTotal?: number;
+      newTotal?: number;
+      paid?: number;
+      difference?: number;
+      action?: "pay" | "refund" | "none" | "balance_due";
+      amount?: number;
+      dryRun?: boolean;
     }
   | { ok: false; status: number; error: string; reason?: string };
 
@@ -42,6 +48,17 @@ async function findOwnedTrip(id: string, email: string): Promise<IBooking | null
 
 function round2(value: number) {
   return Math.round(value * 100) / 100;
+}
+
+function toCents(value: number) {
+  return Math.round(value * 100);
+}
+
+function isCardPaid(booking: IBooking) {
+  return (
+    (booking.paymentMethod === "stripe" || booking.paymentMethod === "multisafepay") &&
+    booking.paymentStatus === "completed"
+  );
 }
 
 async function operatorTimezone() {
@@ -88,6 +105,18 @@ async function buildNotifyContext(booking: IBooking, baseUrl?: string) {
   };
 }
 
+async function netPaidCents(booking: IBooking) {
+  if (booking.amountPaidCents == null && isCardPaid(booking)) {
+    booking.amountPaidCents = toCents(booking.totalAmount ?? 0);
+  }
+  if (booking.amountRefundedCents == null) {
+    booking.amountRefundedCents = toCents(booking.refundAmount ?? 0);
+  }
+  const pending = await RefundRequest.find({ bookingId: booking._id, status: "pending" }).lean();
+  const pendingCents = pending.reduce((sum, r: any) => sum + toCents(r.amount ?? 0), 0);
+  return (booking.amountPaidCents ?? 0) - (booking.amountRefundedCents ?? 0) - pendingCents;
+}
+
 export async function applyCustomerTripAction(input: {
   id: string;
   email: string;
@@ -99,6 +128,7 @@ export async function applyCustomerTripAction(input: {
   babySeats?: number;
   meetAndGreet?: boolean;
   baseUrl?: string;
+  dryRun?: boolean;
 }): Promise<CustomerTripActionResult> {
   await connectDB();
   const booking = await findOwnedTrip(input.id, input.email);
@@ -120,7 +150,7 @@ export async function applyCustomerTripAction(input: {
   }
 
   if (input.action === "cancel") {
-    return cancelTrip(booking, input.baseUrl);
+    return cancelTrip(booking, input.baseUrl, input.dryRun ?? false);
   }
 
   const date = input.date ?? booking.date;
@@ -137,17 +167,26 @@ export async function applyCustomerTripAction(input: {
     return { ok: false, status: 409, error: "not_modifiable", reason: "past" };
   }
 
-  return changeTrip(booking, {
-    date,
-    time,
-    passengers: input.passengers,
-    childSeats: input.childSeats,
-    babySeats: input.babySeats,
-    meetAndGreet: input.meetAndGreet,
-  }, input.baseUrl);
+  return changeTrip(
+    booking,
+    {
+      date,
+      time,
+      passengers: input.passengers,
+      childSeats: input.childSeats,
+      babySeats: input.babySeats,
+      meetAndGreet: input.meetAndGreet,
+    },
+    input.baseUrl,
+    input.dryRun ?? false,
+  );
 }
 
-async function cancelTrip(booking: IBooking, baseUrl?: string): Promise<CustomerTripActionResult> {
+async function cancelTrip(
+  booking: IBooking,
+  baseUrl?: string,
+  dryRun = false,
+): Promise<CustomerTripActionResult> {
   const tz = await operatorTimezone();
   const instant = zonedRideInstant(booking.date, booking.time, tz);
   const hoursUntil = instant ? (instant.getTime() - Date.now()) / (60 * 60 * 1000) : 0;
@@ -155,15 +194,104 @@ async function cancelTrip(booking: IBooking, baseUrl?: string): Promise<Customer
   const settings = await Setting.findOne().lean();
   const policy = normalizeCancelPolicy(settings?.cancelPolicy);
   const total = typeof booking.totalAmount === "number" ? booking.totalAmount : 0;
-  const { feePercent, feeAmount, refundAmount } = computeCancelFee(policy, total, hoursUntil);
+
+  if (booking.amountPaidCents == null) {
+    booking.amountPaidCents = isCardPaid(booking) ? toCents(total) : 0;
+  }
+  if (booking.amountRefundedCents == null) {
+    booking.amountRefundedCents = toCents(booking.refundAmount ?? 0);
+  }
+  const netPaid = await netPaidCents(booking);
+
+  const { feePercent, feeAmount } = computeCancelFee(policy, total, hoursUntil);
+  const feeCents = toCents(feeAmount);
+  const refundCents = Math.max(0, netPaid - feeCents);
+  const refundAmount = refundCents / 100;
+
+  const isCard = isCardPaid(booking);
+  const cashUnpaid = !isCard;
+
+  if (dryRun) {
+    return {
+      ok: true,
+      status: booking.status ?? "upcoming",
+      date: booking.date,
+      time: booking.time,
+      totalAmount: total,
+      fee: feeAmount,
+      refundAmount: isCard ? refundAmount : 0,
+      currentTotal: total,
+      newTotal: total,
+      paid: netPaid / 100,
+      difference: 0,
+      action:
+        isCard && refundCents > 0
+          ? "refund"
+          : cashUnpaid && feeCents > 0
+            ? "balance_due"
+            : "none",
+      amount:
+        isCard && refundCents > 0
+          ? refundAmount
+          : cashUnpaid && feeCents > 0
+            ? feeAmount
+            : 0,
+      dryRun: true,
+    };
+  }
 
   // Release driver assignment.
   booking.assignedDriver = undefined;
 
-  // Create RefundRequest for Stripe-paid bookings (no automatic refund).
+  // Invalidate pending pay link.
+  booking.paymentTokenHash = undefined;
+  booking.pendingChange = undefined;
+
+  // Partner/driver ledger: zero payout on cancel.
+  if (booking.partnerPayoutAmount != null) booking.partnerPayoutAmount = 0;
+  if (booking.partnerMarginAmount != null) booking.partnerMarginAmount = 0;
+
+  const currentVersion = (booking as any).__v;
+
+  const updated = await Booking.findOneAndUpdate(
+    { _id: booking._id, status: { $in: MODIFIABLE_STATUSES }, __v: currentVersion },
+    {
+      $set: {
+        status: "canceled",
+        canceledAt: new Date(),
+        assignedDriver: undefined,
+        paymentTokenHash: undefined,
+        pendingChange: undefined,
+        partnerPayoutAmount: 0,
+        partnerMarginAmount: 0,
+        amountPaidCents: booking.amountPaidCents,
+        amountRefundedCents: booking.amountRefundedCents,
+        updatedAt: new Date(),
+      },
+      $inc: { __v: 1 },
+    },
+    { new: true },
+  );
+
+  if (!updated) {
+    const fresh = await Booking.findById(booking._id);
+    if (fresh && CANCELED_STATUSES.includes(fresh.status ?? "")) {
+      return okResult(fresh);
+    }
+    return { ok: false, status: 409, error: "conflict" };
+  }
+
+  booking.status = "canceled";
+  booking.canceledAt = updated.canceledAt;
+
+  // Create RefundRequest for card-paid bookings (no automatic refund).
   let refundRequestId: string | undefined;
-  if (booking.paymentMethod === "stripe" && booking.paymentStatus === "completed" && refundAmount > 0) {
-    const existing = await RefundRequest.findOne({ bookingId: booking._id, reason: "cancellation" });
+  if (isCard && refundCents > 0) {
+    const existing = await RefundRequest.findOne({
+      bookingId: booking._id,
+      reason: "cancellation",
+      status: "pending",
+    });
     if (existing) {
       refundRequestId = String(existing._id);
     } else {
@@ -171,6 +299,7 @@ async function cancelTrip(booking: IBooking, baseUrl?: string): Promise<Customer
         bookingId: booking._id,
         tripId: booking.tripId,
         amount: refundAmount,
+        amountCents: refundCents,
         reason: "cancellation",
         status: "pending",
       });
@@ -178,12 +307,8 @@ async function cancelTrip(booking: IBooking, baseUrl?: string): Promise<Customer
     }
   }
 
-  booking.status = "canceled";
-  booking.canceledAt = new Date();
-  booking.updatedAt = new Date();
-  await booking.save();
-
-  const ctx = await buildNotifyContext(booking, baseUrl);
+  const resolvedBase = baseUrl ?? (await resolvePublicUrl().then((url) => url ?? undefined));
+  const ctx = await buildNotifyContext(booking, resolvedBase);
   try {
     await notify("booking_cancelled", ctx);
   } catch (error) {
@@ -195,18 +320,41 @@ async function cancelTrip(booking: IBooking, baseUrl?: string): Promise<Customer
     status: "canceled",
     date: booking.date,
     time: booking.time,
-    totalAmount: booking.totalAmount,
+    totalAmount: total,
     fee: feeAmount,
-    refundAmount,
+    refundAmount: isCard ? refundAmount : 0,
     refundRequestId,
+    currentTotal: total,
+    newTotal: total,
+    paid: netPaid / 100,
+    difference: 0,
+    action:
+      isCard && refundCents > 0
+        ? "refund"
+        : cashUnpaid && feeCents > 0
+          ? "balance_due"
+          : "none",
+    amount:
+      isCard && refundCents > 0
+        ? refundAmount
+        : cashUnpaid && feeCents > 0
+          ? feeAmount
+          : 0,
   };
 }
 
 async function changeTrip(
   booking: IBooking,
   input: { date: string; time: string; passengers?: number; childSeats?: number; babySeats?: number; meetAndGreet?: boolean },
-  baseUrl?: string
+  baseUrl?: string,
+  dryRun = false,
 ): Promise<CustomerTripActionResult> {
+  // Invalidate expired pending pay link.
+  if (booking.pendingChange?.expiresAt && new Date(booking.pendingChange.expiresAt).getTime() < Date.now()) {
+    booking.pendingChange = undefined;
+    booking.paymentTokenHash = undefined;
+  }
+
   const repriced = await repriceCustomerTrip(booking, input);
   if (!repriced) {
     return { ok: false, status: 409, error: "not_modifiable", reason: "fare" };
@@ -214,44 +362,209 @@ async function changeTrip(
 
   const oldTotal = typeof booking.totalAmount === "number" ? booking.totalAmount : 0;
   const newTotal = typeof repriced.totalAmount === "number" ? repriced.totalAmount : oldTotal;
-  const diff = round2(newTotal - oldTotal);
+  const oldCents = toCents(oldTotal);
+  const newCents = toCents(newTotal);
 
-  booking.set({ ...repriced, updatedAt: new Date() });
-  // Preserve original pax/extras if not provided.
-  if (input.passengers !== undefined) booking.passengers = input.passengers;
-  if (input.childSeats !== undefined) booking.childSeats = input.childSeats;
-  if (input.babySeats !== undefined) booking.babySeats = input.babySeats;
-  if (input.meetAndGreet !== undefined) booking.meetAndGreet = input.meetAndGreet;
+  if (booking.amountPaidCents == null) {
+    booking.amountPaidCents = isCardPaid(booking) ? oldCents : 0;
+  }
+  if (booking.amountRefundedCents == null) {
+    booking.amountRefundedCents = toCents(booking.refundAmount ?? 0);
+  }
 
-  let payUrl: string | undefined;
-  let refundRequestId: string | undefined;
+  const netPaid = await netPaidCents(booking);
+  const isCard = isCardPaid(booking);
 
-  const resolvedBase = baseUrl ?? (await resolvePublicUrl().then((url) => url ?? undefined));
+  const priceDiffCents = newCents - oldCents;
 
-  if (diff > 0) {
-    const { token, hash } = mintPaymentToken();
-    booking.paymentTokenHash = hash;
-    payUrl = quotePayUrl(resolvedBase, booking.locale, token);
-  } else if (diff < 0) {
-    const refundAmount = round2(Math.abs(diff));
-    if (booking.paymentMethod === "stripe" && booking.paymentStatus === "completed" && refundAmount > 0) {
-      const existing = await RefundRequest.findOne({ bookingId: booking._id, reason: "booking_change" });
-      if (existing) {
-        refundRequestId = String(existing._id);
-      } else {
-        const created = await RefundRequest.create({
-          bookingId: booking._id,
-          tripId: booking.tripId,
-          amount: refundAmount,
-          reason: "booking_change",
-          status: "pending",
-        });
-        refundRequestId = String(created._id);
-      }
+  let action: "pay" | "refund" | "none" | "balance_due" = "none";
+  let amountCents = 0;
+
+  if (isCard) {
+    if (newCents < netPaid) {
+      action = "refund";
+      amountCents = netPaid - newCents;
+    } else if (newCents > netPaid) {
+      action = "pay";
+      amountCents = newCents - netPaid;
+    } else {
+      action = "none";
+      amountCents = 0;
+    }
+  } else {
+    const balanceCents = newCents - netPaid;
+    if (balanceCents !== 0) {
+      action = "balance_due";
+      amountCents = Math.abs(balanceCents);
+    } else {
+      action = "none";
+      amountCents = 0;
     }
   }
 
-  await booking.save();
+  if (dryRun) {
+    return {
+      ok: true,
+      status: booking.status ?? "upcoming",
+      date: repriced.date ?? booking.date,
+      time: repriced.time ?? booking.time,
+      totalAmount: newTotal,
+      currentTotal: oldTotal,
+      newTotal,
+      paid: netPaid / 100,
+      difference: priceDiffCents / 100,
+      action,
+      amount: amountCents / 100,
+      dryRun: true,
+    };
+  }
+
+  const resolvedBase = baseUrl ?? (await resolvePublicUrl().then((url) => url ?? undefined));
+
+  // A new change request replaces/invalidates a previous pending pay link.
+  const hadPending = !!booking.pendingChange;
+  if (hadPending) {
+    booking.paymentTokenHash = undefined;
+    booking.pendingChange = undefined;
+  }
+
+  const currentVersion = (booking as any).__v;
+
+  if (isCard && newCents > netPaid) {
+    // DO NOT apply change; store pendingChange + pay link for exactly the diff.
+    const { token, hash } = mintPaymentToken();
+    const diffForPay = newCents - netPaid;
+    const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000);
+    const proposed = { ...repriced };
+    booking.paymentTokenHash = hash;
+    booking.pendingChange = {
+      newTotalCents: newCents,
+      diffCents: diffForPay,
+      payLinkId: token,
+      expiresAt,
+      proposed,
+      createdAt: new Date(),
+    };
+
+    const updated = await Booking.findOneAndUpdate(
+      { _id: booking._id, status: { $in: MODIFIABLE_STATUSES }, __v: currentVersion },
+      {
+        $set: {
+          paymentTokenHash: hash,
+          pendingChange: booking.pendingChange,
+          status: "awaiting_payment",
+          quotedAmount: diffForPay / 100,
+          amountPaidCents: booking.amountPaidCents,
+          amountRefundedCents: booking.amountRefundedCents,
+          updatedAt: new Date(),
+        },
+        $inc: { __v: 1 },
+      },
+      { new: true },
+    );
+
+    if (!updated) {
+      return { ok: false, status: 409, error: "conflict" };
+    }
+
+    const payUrl = quotePayUrl(resolvedBase, booking.locale, token);
+
+    const ctx = await buildNotifyContext(booking, resolvedBase);
+    try {
+      await notify("booking_changed", ctx);
+    } catch (error) {
+      console.error("Customer trip notification failed:", error);
+    }
+
+    return {
+      ok: true,
+      status: booking.status ?? "upcoming",
+      date: booking.date,
+      time: booking.time,
+      totalAmount: oldTotal,
+      payUrl,
+      currentTotal: oldTotal,
+      newTotal,
+      paid: netPaid / 100,
+      difference: priceDiffCents / 100,
+      action: "pay",
+      amount: diffForPay / 100,
+    };
+  }
+
+  // Applied change (card decrease/equal or cash/bank unpaid).
+  const setFields: any = {
+    ...repriced,
+    amountPaidCents: booking.amountPaidCents,
+    amountRefundedCents: booking.amountRefundedCents,
+    updatedAt: new Date(),
+  };
+  if (input.passengers !== undefined) setFields.passengers = input.passengers;
+  if (input.childSeats !== undefined) setFields.childSeats = input.childSeats;
+  if (input.babySeats !== undefined) setFields.babySeats = input.babySeats;
+  if (input.meetAndGreet !== undefined) setFields.meetAndGreet = input.meetAndGreet;
+
+  // Adjust partner payout/margin proportionally to the new total.
+  if (booking.partnerPayoutAmount != null && oldCents > 0) {
+    const ratio = newCents / oldCents;
+    setFields.partnerPayoutAmount = round2(booking.partnerPayoutAmount * ratio);
+  }
+  if (booking.partnerMarginAmount != null && oldCents > 0) {
+    const ratio = newCents / oldCents;
+    setFields.partnerMarginAmount = round2(booking.partnerMarginAmount * ratio);
+  }
+
+  // Create RefundRequest for card decrease.
+  let refundRequestId: string | undefined;
+  if (isCard && newCents < netPaid) {
+    const refundAmountMajor = (netPaid - newCents) / 100;
+    const refundCentsVal = netPaid - newCents;
+    const existing = await RefundRequest.findOne({
+      bookingId: booking._id,
+      reason: "booking_change",
+      status: "pending",
+    });
+    if (existing) {
+      refundRequestId = String(existing._id);
+    } else {
+      const created = await RefundRequest.create({
+        bookingId: booking._id,
+        tripId: booking.tripId,
+        amount: refundAmountMajor,
+        amountCents: refundCentsVal,
+        reason: "booking_change",
+        status: "pending",
+      });
+      refundRequestId = String(created._id);
+    }
+  }
+
+  if (hadPending) {
+    setFields.pendingChange = undefined;
+  }
+  setFields.paymentTokenHash = undefined;
+
+  const updatePayload: any = {
+    $set: setFields,
+    $inc: { __v: 1 },
+  };
+  if (hadPending) {
+    updatePayload.$unset = { pendingChange: 1, paymentTokenHash: 1 };
+  }
+
+  const updated = await Booking.findOneAndUpdate(
+    { _id: booking._id, status: { $in: MODIFIABLE_STATUSES }, __v: currentVersion },
+    updatePayload,
+    { new: true },
+  );
+
+  if (!updated) {
+    return { ok: false, status: 409, error: "conflict" };
+  }
+
+  booking.set({ ...setFields });
+  if (hadPending) booking.pendingChange = undefined;
+  booking.paymentTokenHash = undefined;
 
   const ctx = await buildNotifyContext(booking, resolvedBase);
   try {
@@ -266,8 +579,13 @@ async function changeTrip(
     date: booking.date,
     time: booking.time,
     totalAmount: newTotal,
-    payUrl,
     refundRequestId,
+    currentTotal: oldTotal,
+    newTotal,
+    paid: netPaid / 100,
+    difference: priceDiffCents / 100,
+    action,
+    amount: amountCents / 100,
   };
 }
 
@@ -278,5 +596,8 @@ function okResult(booking: IBooking): CustomerTripActionResult {
     date: booking.date,
     time: booking.time,
     totalAmount: booking.totalAmount,
+    currentTotal: booking.totalAmount,
+    newTotal: booking.totalAmount,
+    paid: (booking.amountPaidCents ?? 0) / 100,
   };
 }

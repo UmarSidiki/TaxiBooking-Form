@@ -47,6 +47,7 @@ export async function POST(
 
   if (booking) {
     booking.refundAmount = (booking.refundAmount ?? 0) + refundRequest.amount;
+    booking.amountRefundedCents = (booking.amountRefundedCents ?? 0) + (refundRequest.amountCents ?? Math.round(refundRequest.amount * 100));
     if (refundRequest.reason === "cancellation") booking.paymentStatus = "refunded";
     await booking.save();
   }

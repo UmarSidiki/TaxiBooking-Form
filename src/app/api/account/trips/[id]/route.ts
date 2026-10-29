@@ -12,6 +12,7 @@ const changeSchema = z.object({
   childSeats: z.number().int().min(0).optional(),
   babySeats: z.number().int().min(0).optional(),
   meetAndGreet: z.boolean().optional(),
+  dryRun: z.boolean().optional(),
 });
 
 async function emailFromRequest(request: Request) {
@@ -47,6 +48,7 @@ export async function POST(
     childSeats: parsed.data.childSeats,
     babySeats: parsed.data.babySeats,
     meetAndGreet: parsed.data.meetAndGreet,
+    dryRun: parsed.data.dryRun,
   });
 
   if (!result.ok) {
@@ -66,5 +68,11 @@ export async function POST(
     refundRequestId: result.refundRequestId,
     fee: result.fee,
     refundAmount: result.refundAmount,
+    currentTotal: result.currentTotal,
+    newTotal: result.newTotal,
+    paid: result.paid,
+    difference: result.difference,
+    action: result.action,
+    amount: result.amount,
   });
 }

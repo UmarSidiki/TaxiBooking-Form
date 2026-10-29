@@ -74,6 +74,19 @@ export interface IBooking extends Document {
   paymentMismatchAmount?: number;
   refundAmount?: number;
   refundPercentage?: number;
+  /** Sum of captured payments in integer minor units (cents). */
+  amountPaidCents?: number;
+  /** Sum of approved refunds in integer minor units (cents). */
+  amountRefundedCents?: number;
+  /** Pending change proposal awaiting payment. */
+  pendingChange?: {
+    newTotalCents: number;
+    diffCents: number;
+    payLinkId?: string;
+    expiresAt?: Date;
+    proposed?: Record<string, unknown>;
+    createdAt?: Date;
+  };
   canceledAt?: Date;
   thankYouEmailSent?: boolean;
   confirmationEmailSent?: boolean;
@@ -189,6 +202,16 @@ const BookingSchema: Schema = new Schema({
   paymentMismatchAmount: { type: Number },
   refundAmount: { type: Number },
   refundPercentage: { type: Number },
+  amountPaidCents: { type: Number },
+  amountRefundedCents: { type: Number },
+  pendingChange: {
+    newTotalCents: { type: Number },
+    diffCents: { type: Number },
+    payLinkId: { type: String },
+    expiresAt: { type: Date },
+    proposed: { type: Schema.Types.Mixed },
+    createdAt: { type: Date },
+  },
   canceledAt: { type: Date },
   thankYouEmailSent: { type: Boolean, default: false },
   confirmationEmailSent: { type: Boolean, default: false },

@@ -63,4 +63,12 @@ export const settingsWriteSchema = z.object({
   adminEmail: z.string().optional(),
   publicBaseUrl: z.string().trim().max(300).optional(),
   timezone: z.string().optional(),
+  legalName: z.string().optional(),
+  address: z.string().optional(),
+  taxId: z.string().optional(),
+  regNo: z.string().optional(),
+  taxRate: z.number().optional(),
+  taxInclusive: z.boolean().optional(),
+  invoiceFooter: z.string().optional(),
+  invoiceTerms: z.string().optional(),
 });

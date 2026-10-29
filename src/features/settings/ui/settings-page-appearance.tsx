@@ -3,6 +3,7 @@
 import { useTranslations } from "next-intl";
 
 import AppearanceTab from "@/features/settings/ui/appearance-tab";
+import { InvoiceLegalCard } from "@/features/settings/ui/invoice-legal-card";
 import { PublicUrlTab } from "@/features/settings/ui/public-url-tab";
 import { useSettingsDesk } from "@/features/settings/ui/settings-desk-context";
 import { SettingsDeskSave } from "@/features/settings/ui/settings-desk-save";
@@ -38,6 +39,9 @@ export function SettingsPageAppearance({
           detected={detectedPublicUrl}
           onChange={(value) => patch("publicBaseUrl", value)}
         />
+      </SettingsSection>
+      <SettingsSection title={t("Dashboard.Settings.invoice-legal")}>
+        <InvoiceLegalCard settings={settings} patch={patch} />
       </SettingsSection>
     </div>
   );

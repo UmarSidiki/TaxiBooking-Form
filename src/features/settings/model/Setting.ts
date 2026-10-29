@@ -46,6 +46,15 @@ export interface ISetting {
   companyLogoUrl?: string;
   companyAddress?: string;
   companyPhone?: string;
+  /** Invoice / legal (M7) */
+  legalName?: string;
+  address?: string;
+  taxId?: string;
+  regNo?: string;
+  taxRate?: number;
+  taxInclusive?: boolean;
+  invoiceFooter?: string;
+  invoiceTerms?: string;
   enablePartners?: boolean;
   enableDrivers?: boolean;
   /** When true: customer submits appointment request; pay after operator quote. */
@@ -234,6 +243,38 @@ const SettingSchema = new Schema<ISetting>(
       default: "",
     },
     companyPhone: {
+      type: String,
+      default: "",
+    },
+    legalName: {
+      type: String,
+      default: "",
+    },
+    address: {
+      type: String,
+      default: "",
+    },
+    taxId: {
+      type: String,
+      default: "",
+    },
+    regNo: {
+      type: String,
+      default: "",
+    },
+    taxRate: {
+      type: Number,
+      default: 0,
+    },
+    taxInclusive: {
+      type: Boolean,
+      default: false,
+    },
+    invoiceFooter: {
+      type: String,
+      default: "",
+    },
+    invoiceTerms: {
       type: String,
       default: "",
     },

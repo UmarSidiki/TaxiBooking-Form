@@ -1503,7 +1503,16 @@
       "notify_event_password_reset_otp_name": "Código de restablecimiento",
       "notify_event_password_reset_otp_help": "Se envía con el código para restablecer la contraseña.",
       "notify_event_smtp_test_name": "Prueba SMTP",
-      "notify_event_smtp_test_help": "Se envía cuando el operador prueba la configuración SMTP."
+      "notify_event_smtp_test_help": "Se envía cuando el operador prueba la configuración SMTP.",
+      "invoice-legal": "Invoice & legal",
+      "legal-name": "Legal name",
+      "invoice-address": "Address",
+      "tax-id": "Tax ID",
+      "reg-no": "Registration no.",
+      "tax-rate": "Tax rate",
+      "tax-inclusive": "Tax inclusive",
+      "invoice-footer": "Invoice footer",
+      "invoice-terms": "Invoice terms"
     }
   },
   "Sidebar": {

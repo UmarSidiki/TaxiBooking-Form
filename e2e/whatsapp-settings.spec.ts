@@ -48,7 +48,7 @@ test("whatsapp settings lists events, filters deliveries, and edits a template",
   const dialog = page.getByRole("dialog");
   await expect(dialog).toBeVisible();
   await expect(dialog.getByRole("heading", { name: "Edit message" })).toBeVisible();
-  await expect(dialog.getByText("Variables")).toBeVisible();
+  await expect(dialog.getByText("Variables", { exact: true }).first()).toBeVisible();
   await expect(dialog.getByRole("textbox", { name: "Message" })).toBeVisible();
 
   await page.screenshot({

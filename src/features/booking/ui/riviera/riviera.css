@@ -77,14 +77,12 @@ html:has(.riviera), body:has(.riviera) { background-color: var(--paper); }
   .riviera .sheet { grid-column: 1; grid-row: 2; margin: 0; border-radius: 0; padding: 12px 40px 140px; background: var(--paper); }
   .riviera .bar { position: fixed; inset-inline-start: 0; inset-inline-end: auto; width: min(560px, 100%); background: var(--paper); padding: 16px 40px; }
   .riviera.no-map { display: block; max-width: none; margin: 0; background: var(--paper); min-height: 100dvh; }
-  .riviera.no-map .top { border: 0; padding-inline: 0; }
-  .riviera.no-map .sheet { max-width: 1180px; margin-inline: auto; display: grid; grid-template-columns: minmax(0, 1fr) 380px; gap: 56px; padding: 28px 0 140px; background: var(--paper); }
+  .riviera.no-map .top { padding-inline: 32px; }
+  .riviera.no-map .sheet { max-width: 1180px; margin-inline: auto; display: block; padding: 28px 32px 140px; background: var(--paper); }
   .riviera.no-map .bar { position: sticky; top: 96px; inset: auto; width: auto; grid-column: 2; grid-row: 2; align-self: start; flex-wrap: wrap; border: 1px solid var(--rule); border-radius: 6px; padding: 20px; background: var(--sheet); flex-direction: column; align-items: stretch; }
   .riviera.no-map .bar .go { justify-content: center; }
   .riviera.no-map .bar .back { display: none; }
-  .riviera.no-map .trip { grid-column: 2; margin: 0; }
   .riviera.no-map .sheet { padding-top: 28px; }
-  .riviera.no-map .veh { /* 3-col via parent */ }
 }
 .riviera.no-map .cars { grid-template-columns: repeat(3, 1fr); }
 .riviera .num { unicode-bidi: isolate; direction: ltr; font-family: var(--mono); font-variant-numeric: tabular-nums; letter-spacing: -.01em; }

@@ -2719,6 +2719,6 @@
     "dropoff": "Bestemming",
     "change": "Wijzigen",
     "total": "Totaal",
-    "passengers": "passagiers"
+    "passengers": "{count, plural, one {# passagier} other {# passagiers}}"
   }
 }

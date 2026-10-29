@@ -6,16 +6,11 @@ import { Button } from "@/shared/ui/button";
 import { useStep2 } from "@/features/booking/hooks/form-steps/useStep2";
 import { useTranslations } from "next-intl";
 import { useCurrency } from "@/shared/context/currency-context";
-import { Step2Map } from "./step2-map";
 import { Step2TripSummary } from "./step2-trip-summary";
 import { Step2VehicleList } from "./step2-vehicle-list";
 
 function Step2VehicleSelection() {
   const {
-    // State
-    mapLoaded,
-    mapRef,
-
     // Context values
     formData,
     vehicles,
@@ -53,9 +48,6 @@ function Step2VehicleSelection() {
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
       {/* Main Content - Vehicle Selection */}
       <div className="lg:col-span-2 space-y-4">
-        {/* Map Section */}
-        <Step2Map mapRef={mapRef} mapLoaded={mapLoaded} />
-
         <div>
           <h2 className="text-xl font-semibold mb-2">
             {t("Step2.select-your-vehicle")}

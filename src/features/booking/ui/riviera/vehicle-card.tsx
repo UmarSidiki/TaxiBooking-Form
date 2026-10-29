@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { VehicleArt, vehicleKindFromVehicle } from "./vehicle-art";
 
 export function VehicleCard({ vehicle, selected, onSelect }: {
@@ -8,6 +9,8 @@ export function VehicleCard({ vehicle, selected, onSelect }: {
   onSelect?: () => void;
 }) {
   const kind = vehicleKindFromVehicle(vehicle);
+  const [imgFailed, setImgFailed] = useState(false);
+  const showImage = !!vehicle.imageUrl && !imgFailed;
   return (
     <button
       type="button"
@@ -17,9 +20,9 @@ export function VehicleCard({ vehicle, selected, onSelect }: {
       onClick={onSelect}
     >
       <div className="art">
-        {vehicle.imageUrl ? (
+        {showImage ? (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={vehicle.imageUrl} alt={vehicle.name ?? "Vehicle"} style={{ height: 72, width: "auto" }} />
+          <img src={vehicle.imageUrl} alt={vehicle.name ?? "Vehicle"} style={{ height: 72, width: "auto" }} onError={() => setImgFailed(true)} />
         ) : (
           <VehicleArt kind={kind} style={{ height: 72 }} />
         )}

@@ -2719,6 +2719,6 @@
     "dropoff": "Назначение",
     "change": "Изменить",
     "total": "Итого",
-    "passengers": "пассажиры"
+    "passengers": "{count, plural, one {# пассажир} few {# пассажира} many {# пассажиров} other {# пассажира}}"
   }
 }

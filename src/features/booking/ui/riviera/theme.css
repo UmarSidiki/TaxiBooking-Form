@@ -1,5 +1,23 @@
 /* Riviera public booking form tokens (scoped) */
 .riviera {
+  /* Bridge to Tailwind/shadcn variables so legacy components adopt Riviera tokens */
+  --background: var(--paper);
+  --foreground: var(--ink);
+  --card: var(--sheet);
+  --card-foreground: var(--ink);
+  --popover: var(--sheet);
+  --popover-foreground: var(--ink);
+  --primary: var(--sig);
+  --primary-foreground: var(--sig-on);
+  --secondary: var(--well);
+  --secondary-foreground: var(--ink);
+  --muted: var(--well);
+  --muted-foreground: var(--ink2);
+  --accent: var(--well);
+  --accent-foreground: var(--ink);
+  --border: var(--rule);
+  --input: var(--rule2);
+  --ring: var(--sig);
   --paper: #F2EEE6;
   --sheet: #FBF9F5;
   --well: #E9E3D7;

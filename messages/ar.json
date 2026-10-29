@@ -2719,6 +2719,6 @@
     "dropoff": "الوجهة",
     "change": "تغيير",
     "total": "الإجمالي",
-    "passengers": "ركاب"
+    "passengers": "{count, plural, one {# راكب} other {# ركاب}}"
   }
 }

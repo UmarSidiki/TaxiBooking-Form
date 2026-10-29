@@ -2719,6 +2719,6 @@
     "dropoff": "Destino",
     "change": "Cambiar",
     "total": "Total",
-    "passengers": "pasajeros"
+    "passengers": "{count, plural, one {# pasajero} other {# pasajeros}}"
   }
 }

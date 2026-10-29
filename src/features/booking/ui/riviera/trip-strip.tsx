@@ -1,11 +1,15 @@
 "use client";
 
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useBookingForm } from "@/features/booking/context/booking-form-context";
 
 export function TripStrip() {
   const t = useTranslations("Riviera");
+  const locale = useLocale();
   const { formData, distanceData, setCurrentStep } = useBookingForm();
+  const formattedDate = formData.date
+    ? new Intl.DateTimeFormat(locale, { dateStyle: "medium" }).format(new Date(formData.date))
+    : "";
   return (
     <section className="trip" aria-label="Trip summary">
       <div className="rail">
@@ -22,7 +26,7 @@ export function TripStrip() {
       <b>{formData.dropoff || t("dropoff")}</b>
       <div className="when">
         <span>
-          {formData.date} &middot; <span className="num">{formData.time}</span> &middot; {formData.passengers} {t("passengers")}
+          {formattedDate} &middot; <span className="num">{formData.time}</span> &middot; {t("passengers", { count: formData.passengers })}
         </span>
         <button type="button" className="edit" onClick={() => setCurrentStep(1)}>
           {t("change")}

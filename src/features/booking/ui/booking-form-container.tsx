@@ -3,6 +3,7 @@
 import React, { lazy, Suspense, useEffect } from "react";
 import { Loader2 } from "lucide-react";
 import "./riviera/theme.css";
+import "./riviera/riviera.css";
 import { useTranslations } from "next-intl";
 import dynamic from "next/dynamic";
 import { LanguageSwitcher } from "@/shared/chrome/language-switcher";
@@ -16,9 +17,9 @@ import { useTheme } from "@/features/settings/context/theme-context";
 const RivieraMap = dynamic(() => import("./riviera/route-map").then((m) => m.RivieraMap), { ssr: false });
 
 // Lazy load steps to reduce initial bundle size
-const Step1TripDetails = lazy(() => import("./steps/step1-trip-details"));
-const Step2VehicleSelection = lazy(() => import("./steps/step2-vehicle-selection"));
-const Step3Payment = lazy(() => import("./steps/step3-payment"));
+const Step1TripDetails = lazy(() => import("./riviera/steps/route-step"));
+const Step2VehicleSelection = lazy(() => import("./riviera/steps/vehicle-step"));
+const Step3Payment = lazy(() => import("./riviera/steps/details-step"));
 
 // Loading fallback component
 const StepLoader = () => (
@@ -59,7 +60,7 @@ export default function BookingFormContainer() {
   const stepLabels = [t("FormContainer.trip-details"), t("FormContainer.select-vehicle"), t("FormContainer.payment-and-details")];
 
   return (
-    <div className="riviera min-h-screen">
+    <div className={`riviera min-h-screen ${currentStep > 1 ? "no-map" : ""}`}>
       <header className="top">
         <span className="brand">
           <b></b>

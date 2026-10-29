@@ -1,9 +1,8 @@
 import { Booking } from "@/features/booking/model";
 import RideCharge from "@/features/invoices/model/RideCharge";
 import { rideAmountDue } from "@/features/invoices/lib/ride-amount-due";
-import type { NextRequest } from "next/server";
 import { getStripeClient } from "@/features/payments/lib/stripe-client";
-import { resolvePublicBaseUrl } from "@/features/payments/lib/resolve-base-url";
+import { resolvePublicUrl } from "@/features/settings/lib/public-url";
 import { Setting } from "@/features/settings/model";
 import { connectDB } from "@/shared/db";
 import { generateShortId } from "@/shared/lib/generate-id";
@@ -104,7 +103,7 @@ async function openMultisafepay(
   request: Request,
 ) {
   const settings = await Setting.findOne();
-  const baseUrl = resolvePublicBaseUrl(request as NextRequest);
+  const baseUrl = await resolvePublicUrl({ request });
   if (!settings?.multisafepayApiKey || !baseUrl) {
     return { ok: true as const, state: "cash" as const, summary };
   }

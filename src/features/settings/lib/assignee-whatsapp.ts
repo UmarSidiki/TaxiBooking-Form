@@ -1,63 +1,81 @@
 import { Driver } from "@/features/drivers/model";
 import { Partner } from "@/features/partners/model";
-import { Setting } from "@/features/settings/model";
-import { readWhatsAppLinked } from "@/features/settings/lib/whatsapp-mongo-auth";
-import { sendWhatsAppTexts } from "@/features/settings/lib/whatsapp-session";
-import {
-  assignedText,
-  availableText,
-  cancelledText,
-  changedText,
-  phoneToJid,
-  reminderText,
-  settlementText,
-  type RideNotice,
-} from "@/features/settings/lib/assignee-whatsapp-text";
+import { notify } from "@/features/notifications/notify";
+import type { NotificationAudience } from "@/features/notifications/notification-types";
 
-export type NoticeKind = "assigned" | "available" | "changed" | "cancelled" | "reminder" | "settlement";
+export type RideNotice = {
+  tripId: string;
+  pickup: string;
+  date: string;
+  time: string;
+};
 
-export type NoticeRecipient = { phone?: string | null; name?: string };
+export type NoticeKind =
+  | "assigned"
+  | "available"
+  | "changed"
+  | "cancelled"
+  | "reminder"
+  | "settlement";
 
-type ToggleKey =
-  | "whatsappTplAssigned"
-  | "whatsappTplAvailable"
-  | "whatsappTplChanged"
-  | "whatsappTplReminder"
-  | "whatsappTplSettlement";
-
-const TOGGLE: Record<NoticeKind, ToggleKey> = {
-  assigned: "whatsappTplAssigned",
-  available: "whatsappTplAvailable",
-  changed: "whatsappTplChanged",
-  cancelled: "whatsappTplChanged",
-  reminder: "whatsappTplReminder",
-  settlement: "whatsappTplSettlement",
+export type NoticeRecipient = {
+  phone?: string | null;
+  email?: string | null;
+  name?: string;
+  audience?: "driver" | "partner";
+  whatsappOptIn?: boolean;
 };
 
 export type OutboundText = { jid: string; text: string };
 
 export type WhatsAppSend = (messages: OutboundText[]) => Promise<{ ok: boolean }>;
 
-function textFor(kind: NoticeKind, ride: RideNotice | undefined, amount?: number, currency?: string) {
-  if (kind === "settlement") return settlementText(amount ?? 0, currency ?? "eur");
-  if (!ride) return "";
-  if (kind === "assigned") return assignedText(ride);
-  if (kind === "available") return availableText(ride);
-  if (kind === "changed") return changedText(ride);
-  if (kind === "cancelled") return cancelledText(ride);
-  return reminderText(ride);
+const EVENT: Record<NoticeKind, string> = {
+  assigned: "ride_assigned",
+  available: "ride_available",
+  changed: "ride_changed",
+  cancelled: "ride_cancelled",
+  reminder: "pickup_reminder",
+  settlement: "partner_settlement",
+};
+
+const DEFAULT_AUDIENCE: Record<NoticeKind, "driver" | "partner"> = {
+  assigned: "driver",
+  available: "driver",
+  changed: "driver",
+  cancelled: "driver",
+  reminder: "driver",
+  settlement: "partner",
+};
+
+function groupRecipients(kind: NoticeKind, recipients: NoticeRecipient[]) {
+  const groups: Partial<Record<NotificationAudience, NoticeRecipient[]>> = {};
+  for (const recipient of recipients) {
+    const audience = recipient.audience ?? DEFAULT_AUDIENCE[kind];
+    (groups[audience] ??= []).push(recipient);
+  }
+  return groups;
 }
 
-export function messagesFor(kind: NoticeKind, recipients: NoticeRecipient[], ride?: RideNotice, amount?: number, currency?: string) {
-  const text = textFor(kind, ride, amount, currency);
-  const messages: OutboundText[] = [];
-  for (const recipient of recipients) {
-    if (!recipient.phone) continue;
-    const jid = phoneToJid(recipient.phone);
-    if (!jid) continue;
-    messages.push({ jid, text });
+function variablesFor(
+  kind: NoticeKind,
+  ride?: RideNotice,
+  amount?: number,
+  currency?: string,
+) {
+  if (kind === "settlement") {
+    return {
+      total: (amount ?? 0).toFixed(2),
+      currency: (currency ?? "eur").toUpperCase(),
+    };
   }
-  return messages;
+  if (!ride) return {};
+  return {
+    tripId: ride.tripId,
+    pickup: ride.pickup,
+    date: ride.date,
+    time: ride.time,
+  };
 }
 
 export async function deliverAssigneeNotice(input: {
@@ -67,26 +85,32 @@ export async function deliverAssigneeNotice(input: {
   amount?: number;
   currency?: string;
 }, deps?: { linked?: () => Promise<boolean>; send?: WhatsAppSend }) {
-  const linked = deps?.linked ?? readWhatsAppLinked;
-  const send = deps?.send ?? ((messages) => sendWhatsAppTexts(messages));
   try {
-    const settings = await Setting.findOne().select(TOGGLE[input.kind]).lean();
-    if (!settings?.[TOGGLE[input.kind]]) {
-      console.info("WhatsApp skipped: toggle off", input.kind);
-      return { sent: 0, reason: "toggle_off" as const };
-    }
-    if (!(await linked())) {
+    const result = await notify(
+      EVENT[input.kind],
+      {
+        variables: variablesFor(input.kind, input.ride, input.amount, input.currency),
+        recipients: groupRecipients(input.kind, input.recipients),
+        channels: ["whatsapp"],
+      },
+      { linked: deps?.linked, send: deps?.send },
+    );
+
+    if (result.skipped === "not_linked") {
       console.info("WhatsApp skipped: session not linked", input.kind);
       return { sent: 0, reason: "not_linked" as const };
     }
-    const messages = messagesFor(input.kind, input.recipients, input.ride, input.amount, input.currency);
-    if (!messages.length) {
+    if (result.skipped === "disabled") {
+      console.info("WhatsApp skipped: toggle off", input.kind);
+      return { sent: 0, reason: "toggle_off" as const };
+    }
+    if (!result.ok) return { sent: 0, reason: "failed" as const };
+    if (result.queued === 0) {
       console.info("WhatsApp skipped: no phone", input.kind);
       return { sent: 0, reason: "no_phone" as const };
     }
-    const result = await send(messages);
-    console.info("WhatsApp assignee notice", input.kind, messages.map((message) => message.jid), result.ok);
-    return { sent: result.ok ? messages.length : 0, reason: result.ok ? "sent" as const : "failed" as const };
+    console.info("WhatsApp assignee notice", input.kind, result.deliveries.map((item) => item.to));
+    return { sent: result.queued, reason: "sent" as const };
   } catch (error) {
     console.error("WhatsApp assignee notice failed:", input.kind, error);
     return { sent: 0, reason: "failed" as const };
@@ -108,7 +132,7 @@ export async function phonesForAssignees(input: {
     input.partnerId ? Partner.findById(input.partnerId).select("phone name").lean() : null,
   ]);
   return {
-    driver: driver ? { phone: driver.phone, name: driver.name } : undefined,
-    partner: partner ? { phone: partner.phone, name: partner.name } : undefined,
+    driver: driver ? { phone: driver.phone, name: driver.name, audience: "driver" as const } : undefined,
+    partner: partner ? { phone: partner.phone, name: partner.name, audience: "partner" as const } : undefined,
   };
 }

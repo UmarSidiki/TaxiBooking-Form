@@ -6,6 +6,7 @@ import { Setting } from '@/features/settings/model';
 import { finalizePaidBooking } from '@/features/payments/lib/finalize-paid-booking';
 import { settleRideCharge } from '@/features/invoices/lib/settle-ride-charge';
 import { getStripeApiVersion } from '@/features/payments/lib/stripe-client';
+import { resolvePublicUrl } from '@/features/settings/lib/public-url';
 
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
@@ -67,7 +68,8 @@ export async function POST(request: NextRequest) {
         const result = await finalizePaidBooking({
           provider: 'stripe',
           paymentIntentId: paymentIntent.id,
-          baseUrl: process.env.NEXT_PUBLIC_BASE_URL || '',
+          draftId: paymentIntent.metadata?.draft_id,
+          baseUrl: (await resolvePublicUrl({ request })) ?? undefined,
         });
 
         if (!result.success) {
@@ -104,8 +106,16 @@ export async function POST(request: NextRequest) {
 
 async function handlePaymentIntentFailed(paymentIntent: Stripe.PaymentIntent) {
   const orderId = paymentIntent.metadata?.order_id;
-  if (orderId) {
-    await PendingBooking.deleteOne({ orderId });
+  const draftId = paymentIntent.metadata?.draft_id;
+  const lookup = [
+    ...(orderId ? [{ orderId }] : []),
+    ...(draftId ? [{ draftId }] : []),
+  ];
+  if (lookup.length > 0) {
+    await PendingBooking.updateMany(
+      { $or: lookup },
+      { $set: { status: 'abandoned' } }
+    );
   }
 }
 

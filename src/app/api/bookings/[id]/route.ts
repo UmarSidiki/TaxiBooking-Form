@@ -6,7 +6,7 @@ import {
   findBookingById,
 } from "@/features/booking/lib/booking.repo";
 import { patchBooking } from "@/features/booking/lib/patch-booking.service";
-import { resolveBookingRequestBaseUrl } from "@/features/booking/lib/resolve-booking-request-base-url";
+import { resolvePublicUrl } from "@/features/settings/lib/public-url";
 import { parseJsonBody } from "@/shared/http/parse-json-body";
 import { jsonError, jsonErrorFromStatus } from "@/shared/http/json-error";
 import { requireAdmin } from "@/features/auth/lib/require-role";
@@ -43,7 +43,7 @@ export async function PATCH(
     const result = await patchBooking(
       id,
       parsed.data,
-      resolveBookingRequestBaseUrl(request),
+      (await resolvePublicUrl({ request })) ?? undefined,
       { id: access.session.user.id, role: "admin" },
     );
     if (!result.ok) {

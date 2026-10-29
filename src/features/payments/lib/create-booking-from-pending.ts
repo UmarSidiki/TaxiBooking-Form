@@ -3,6 +3,7 @@ import { Vehicle } from '@/features/fleet/model';
 import { buildBookingEmailData } from '@/features/payments/lib/booking-email-data';
 import { buildPaidBookingRecord } from '@/features/payments/lib/build-paid-booking-record';
 import { isDuplicateKeyError } from '@/shared/lib/mongo-error';
+import { resolvePublicUrl } from '@/features/settings/lib/public-url';
 import type {
   FinalizePaidBookingInput,
   FinalizePaidBookingResult,
@@ -20,9 +21,12 @@ export async function createBookingFromPending(
     stripePaymentIntentId?: string;
     multisafepayOrderId?: string;
     multisafepayTransactionId?: string;
-  }
+  },
+  draftId?: string
 ): Promise<FinalizePaidBookingResult> {
-  const pendingBooking = await PendingBooking.findOne({ orderId });
+  const pendingBooking = await PendingBooking.findOne({
+    $or: [{ orderId }, ...(draftId ? [{ draftId }] : [])],
+  });
 
   if (!pendingBooking) {
     return {
@@ -52,12 +56,13 @@ export async function createBookingFromPending(
     paymentMethod: input.provider,
     paidAmount,
     currency,
+    draftId: draftId ?? pendingBooking.draftId,
     ...paymentIds,
   });
 
   try {
     const newBooking = await Booking.create(bookingPayload);
-    const baseUrl = input.baseUrl || process.env.NEXT_PUBLIC_BASE_URL || '';
+    const baseUrl = input.baseUrl || (await resolvePublicUrl()) || undefined;
 
     const emailData = buildBookingEmailData(orderId, pendingBooking, vehicle, {
       bookingId: newBooking._id.toString(),
@@ -84,6 +89,7 @@ export async function createBookingFromPending(
     const existing = await Booking.findOne({
       $or: [
         { tripId: orderId },
+        ...(draftId ? [{ draftId }] : []),
         ...(paymentIds.stripePaymentIntentId
           ? [{ stripePaymentIntentId: paymentIds.stripePaymentIntentId }]
           : []),

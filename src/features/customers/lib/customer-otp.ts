@@ -1,9 +1,7 @@
 import { createHash, randomInt } from "node:crypto";
 import { connectDB } from "@/shared/db";
 import CustomerOtp from "@/features/customers/model/CustomerOtp";
-import { sendEmail } from "@/features/settings/lib/email";
-import { sendWhatsAppTexts } from "@/features/settings/lib/whatsapp-session";
-import { toWhatsAppJid } from "@/features/settings/lib/whatsapp-phone";
+import { notify } from "@/features/notifications/notify";
 
 const TTL_MS = 10 * 60 * 1000;
 const WINDOW_MS = 15 * 60 * 1000;
@@ -12,6 +10,27 @@ const MAX_ATTEMPTS = 5;
 
 function hashCode(email: string, code: string) {
   return createHash("sha256").update(`${process.env.NEXTAUTH_SECRET || ""}:${email}:${code}`).digest("hex");
+}
+
+async function deliverCode(code: string, email: string, phone: string) {
+  const recipients = { customer: [{ phone, email, whatsappOptIn: true }] };
+  const variables = { code, ttlMinutes: String(TTL_MS / 60000) };
+
+  const whatsapp = await notify("sign_in_otp", {
+    variables,
+    channels: ["whatsapp"],
+    recipients,
+  });
+  if (whatsapp.deliveries.some((delivery) => delivery.channel === "whatsapp")) {
+    return "whatsapp" as const;
+  }
+
+  await notify("sign_in_otp", {
+    variables,
+    channels: ["email"],
+    recipients,
+  });
+  return "email" as const;
 }
 
 export async function sendCustomerOtp(emailRaw: string, phoneRaw?: string) {
@@ -33,14 +52,7 @@ export async function sendCustomerOtp(emailRaw: string, phoneRaw?: string) {
     expiresAt: new Date(Date.now() + TTL_MS),
     sentAt: new Date(),
   });
-  let channel: "whatsapp" | "email" = "email";
-  if (phone) {
-    const sent = await sendWhatsAppTexts([{ jid: toWhatsAppJid(phone), text: `Your sign-in code is ${code}` }]);
-    if (sent.ok) channel = "whatsapp";
-  }
-  if (channel === "email") {
-    await sendEmail({ to: email, subject: "Your sign-in code", text: `Your sign-in code is ${code}. It expires in 10 minutes.` });
-  }
+  const channel = await deliverCode(code, email, phone);
   return { ok: true as const, channel };
 }
 

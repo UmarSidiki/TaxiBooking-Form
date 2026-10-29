@@ -36,7 +36,7 @@ export async function POST(request: NextRequest) {
     }
 
     existing.bookingData = nextBookingData;
-    existing.expiresAt = new Date(Date.now() + 30 * 60 * 1000);
+    existing.expiresAt = new Date(Date.now() + 48 * 60 * 60 * 1000);
     await existing.save();
 
     return NextResponse.json({

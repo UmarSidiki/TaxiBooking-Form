@@ -3,6 +3,8 @@ import { registerBookingIndexes } from "./booking-indexes";
 
 export interface IBooking extends Document {
   tripId: string;
+  /** Client checkout draft that produced this booking (idempotency key). */
+  draftId?: string;
   pickup: string;
   dropoff?: string;
   stops?: Array<{
@@ -48,6 +50,8 @@ export interface IBooking extends Document {
   estimatedAmount?: number;
   quotedAmount?: number;
   quotedAt?: Date;
+  depositDue?: number;
+  balanceDue?: number;
   declinedAt?: Date;
   declineReason?: string;
   paymentTokenHash?: string;
@@ -70,6 +74,19 @@ export interface IBooking extends Document {
   paymentMismatchAmount?: number;
   refundAmount?: number;
   refundPercentage?: number;
+  /** Sum of captured payments in integer minor units (cents). */
+  amountPaidCents?: number;
+  /** Sum of approved refunds in integer minor units (cents). */
+  amountRefundedCents?: number;
+  /** Pending change proposal awaiting payment. */
+  pendingChange?: {
+    newTotalCents: number;
+    diffCents: number;
+    payLinkId?: string;
+    expiresAt?: Date;
+    proposed?: Record<string, unknown>;
+    createdAt?: Date;
+  };
   canceledAt?: Date;
   thankYouEmailSent?: boolean;
   confirmationEmailSent?: boolean;
@@ -98,7 +115,7 @@ export interface IBooking extends Document {
   partnerApprovedAt?: Date;
   /** Who is paid when both a driver and a partner are on the ride. */
   responsibleAssignee?: "driver" | "partner";
-  driverRideStatus?: "assigned" | "started" | "completed" | "no_show";
+  driverRideStatus?: "assigned" | "started" | "arrived" | "completed" | "no_show";
   cashCollected?: number;
   pickupReminderSent?: boolean;
   createdAt: Date;
@@ -107,6 +124,7 @@ export interface IBooking extends Document {
 
 const BookingSchema: Schema = new Schema({
   tripId: { type: String, required: true, unique: true },
+  draftId: { type: String, unique: true, sparse: true },
   pickup: { type: String, required: true },
   dropoff: { type: String },
   stops: [{
@@ -184,6 +202,9 @@ const BookingSchema: Schema = new Schema({
   paymentMismatchAmount: { type: Number },
   refundAmount: { type: Number },
   refundPercentage: { type: Number },
+  amountPaidCents: { type: Number },
+  amountRefundedCents: { type: Number },
+  pendingChange: { type: Schema.Types.Mixed },
   canceledAt: { type: Date },
   thankYouEmailSent: { type: Boolean, default: false },
   confirmationEmailSent: { type: Boolean, default: false },
@@ -229,6 +250,7 @@ export default Booking;
 
 export interface BookingInput {
   bookingType?: "destination" | "hourly";
+  draftId?: string;
   pickup: string;
   dropoff?: string;
   stops?: Array<{

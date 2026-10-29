@@ -42,6 +42,19 @@ export interface ISetting {
   smtpTestEmail?: string;
   smtpFrom?: string;
   smtpSenderName?: string;
+  companyName?: string;
+  companyLogoUrl?: string;
+  companyAddress?: string;
+  companyPhone?: string;
+  /** Invoice / legal (M7) */
+  legalName?: string;
+  address?: string;
+  taxId?: string;
+  regNo?: string;
+  taxRate?: number;
+  taxInclusive?: boolean;
+  invoiceFooter?: string;
+  invoiceTerms?: string;
   enablePartners?: boolean;
   enableDrivers?: boolean;
   /** When true: customer submits appointment request; pay after operator quote. */
@@ -50,6 +63,8 @@ export interface ISetting {
   enableFormBuilder?: boolean;
   /** When true: the desk can create bookings on a Customer's behalf. */
   enableDeskBooking?: boolean;
+  /** When true: the promo code field shows on the booking form (if a usable code exists). */
+  promoCodesEnabled?: boolean;
   enableTax?: boolean;
   taxPercentage?: number;
   taxIncluded?: boolean;
@@ -59,12 +74,15 @@ export interface ISetting {
   dispatchAssigneeMode?: "exclusive" | "allow_both";
   defaultPartnerMarginPercentage?: number;
   adminEmail?: string;
+  /** Persisted public site URL, detected from authenticated dashboard requests. */
+  publicBaseUrl?: string;
   timezone?: string;
   whatsappTplAssigned?: boolean;
   whatsappTplAvailable?: boolean;
   whatsappTplChanged?: boolean;
   whatsappTplReminder?: boolean;
   whatsappTplSettlement?: boolean;
+  cancelPolicy?: Array<{ hoursBefore: number; feePercent: number }>;
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -213,6 +231,54 @@ const SettingSchema = new Schema<ISetting>(
       type: String,
       default: "",
     },
+    companyName: {
+      type: String,
+      default: "",
+    },
+    companyLogoUrl: {
+      type: String,
+      default: "",
+    },
+    companyAddress: {
+      type: String,
+      default: "",
+    },
+    companyPhone: {
+      type: String,
+      default: "",
+    },
+    legalName: {
+      type: String,
+      default: "",
+    },
+    address: {
+      type: String,
+      default: "",
+    },
+    taxId: {
+      type: String,
+      default: "",
+    },
+    regNo: {
+      type: String,
+      default: "",
+    },
+    taxRate: {
+      type: Number,
+      default: 0,
+    },
+    taxInclusive: {
+      type: Boolean,
+      default: false,
+    },
+    invoiceFooter: {
+      type: String,
+      default: "",
+    },
+    invoiceTerms: {
+      type: String,
+      default: "",
+    },
     enablePartners: {
       type: Boolean,
       default: false,
@@ -253,6 +319,10 @@ const SettingSchema = new Schema<ISetting>(
       type: Boolean,
       default: false,
     },
+    promoCodesEnabled: {
+      type: Boolean,
+      default: true,
+    },
     enableTax: {
       type: Boolean,
       default: false,
@@ -269,9 +339,22 @@ const SettingSchema = new Schema<ISetting>(
       type: String,
       default: "",
     },
+    publicBaseUrl: {
+      type: String,
+      default: "",
+    },
     timezone: {
       type: String,
       default: "Europe/Zurich",
+    },
+    cancelPolicy: {
+      type: [
+        {
+          hoursBefore: { type: Number, default: 24 },
+          feePercent: { type: Number, default: 0 },
+        },
+      ],
+      default: [{ hoursBefore: 24, feePercent: 0 }],
     },
     whatsappTplAssigned: { type: Boolean, default: false },
     whatsappTplAvailable: { type: Boolean, default: false },

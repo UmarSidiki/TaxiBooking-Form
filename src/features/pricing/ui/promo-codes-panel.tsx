@@ -3,7 +3,8 @@
 import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { Button } from "@/shared/ui/button";
-import { deletePricing, postPricing, type PromoRow } from "@/features/pricing/ui/pricing-api";
+import { Switch } from "@/shared/ui/switch";
+import { deletePricing, postPricing, setPromoActive, type PromoRow } from "@/features/pricing/ui/pricing-api";
 import { PricingField, PricingNotice, parseAmount, type Notice } from "@/features/pricing/ui/pricing-field";
 
 const empty = { code: "", kind: "percent" as "percent" | "fixed", amount: "", maxUses: "", maxUsesPerCustomer: "" };
@@ -18,6 +19,7 @@ export function PromoCodesPanel({ promos, onChange }: { promos: PromoRow[]; onCh
   const [form, setForm] = useState(empty);
   const [editing, setEditing] = useState<PromoRow | null>(null);
   const [busy, setBusy] = useState(false);
+  const [toggling, setToggling] = useState<string | null>(null);
   const [notice, setNotice] = useState<Notice>(null);
 
   const amount = parseAmount(form.amount);
@@ -46,6 +48,14 @@ export function PromoCodesPanel({ promos, onChange }: { promos: PromoRow[]; onCh
       await onChange();
     }
     setBusy(false);
+  };
+
+  const toggleActive = async (promo: PromoRow, active: boolean) => {
+    setToggling(promo._id);
+    const ok = await setPromoActive(promo._id, active);
+    setNotice({ tone: ok ? "ok" : "error", text: ok ? t("saved") : t("save-failed") });
+    if (ok) await onChange();
+    setToggling(null);
   };
 
   const remove = async (promo: PromoRow) => {
@@ -77,6 +87,15 @@ export function PromoCodesPanel({ promos, onChange }: { promos: PromoRow[]; onCh
                       perCustomer: promo.maxUsesPerCustomer ?? "∞",
                     })}
                   </span>
+                </span>
+                <span className="flex items-center gap-2 text-sm text-muted-foreground">
+                  {t("active")}
+                  <Switch
+                    aria-label={t("promo-active", { code: promo.code })}
+                    checked={promo.active !== false}
+                    disabled={toggling === promo._id}
+                    onCheckedChange={(active) => void toggleActive(promo, active)}
+                  />
                 </span>
                 <Button type="button" variant="outline" className="h-11" onClick={() => { setEditing(promo); setForm({ code: promo.code, kind: promo.kind, amount: String(promo.amount), maxUses: promo.maxUses ? String(promo.maxUses) : "", maxUsesPerCustomer: promo.maxUsesPerCustomer ? String(promo.maxUsesPerCustomer) : "" }); setNotice(null); }}>
                   {t("edit")}

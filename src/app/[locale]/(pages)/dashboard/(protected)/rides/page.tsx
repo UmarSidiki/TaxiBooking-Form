@@ -6,6 +6,7 @@ import { NewDeskBookingDrawer } from "@/features/desk-booking/ui/new-desk-bookin
 import { AdminRideCancelDialog } from "@/features/rides/ui/admin-ride-cancel-dialog";
 import { AdminRideDetailDialog } from "@/features/rides/ui/admin-ride-detail-dialog";
 import { AdminRidesTabs } from "@/features/rides/ui/admin-rides-tabs";
+import { AdminRefundRequestsCard } from "@/features/dashboard/ui/admin-refund-requests-card";
 import { AdminRidesToolbar } from "@/features/rides/ui/admin-rides-toolbar";
 import { DeskNotice } from "@/features/dashboard/ui/desk-notice";
 import { useAdminRides } from "@/features/rides/hooks/useAdminRides";
@@ -52,6 +53,8 @@ export default function RidesPage() {
       ) : null}
 
       <AdminRidesTabs rides={rides} />
+
+      <AdminRefundRequestsCard />
 
       <AdminRideDetailDialog
         t={rides.t}

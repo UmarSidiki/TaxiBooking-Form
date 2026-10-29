@@ -3,11 +3,17 @@
 import { useTranslations } from "next-intl";
 
 import AppearanceTab from "@/features/settings/ui/appearance-tab";
+import { InvoiceLegalCard } from "@/features/settings/ui/invoice-legal-card";
+import { PublicUrlTab } from "@/features/settings/ui/public-url-tab";
 import { useSettingsDesk } from "@/features/settings/ui/settings-desk-context";
 import { SettingsDeskSave } from "@/features/settings/ui/settings-desk-save";
 import { SettingsSection } from "@/features/settings/ui/settings-section";
 
-export function SettingsPageAppearance() {
+export function SettingsPageAppearance({
+  detectedPublicUrl,
+}: {
+  detectedPublicUrl: string | null;
+}) {
   const t = useTranslations();
   const { settings, patch } = useSettingsDesk();
 
@@ -26,6 +32,16 @@ export function SettingsPageAppearance() {
           handleBorderRadiusChange={(value) => patch("borderRadius", value)}
           handleTimezoneChange={(value) => patch("timezone", value)}
         />
+      </SettingsSection>
+      <SettingsSection title={t("Dashboard.Settings.public-url-title")}>
+        <PublicUrlTab
+          settings={settings}
+          detected={detectedPublicUrl}
+          onChange={(value) => patch("publicBaseUrl", value)}
+        />
+      </SettingsSection>
+      <SettingsSection title={t("Dashboard.Settings.invoice-legal")}>
+        <InvoiceLegalCard settings={settings} patch={patch} />
       </SettingsSection>
     </div>
   );

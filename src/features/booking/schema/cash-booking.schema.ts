@@ -14,6 +14,8 @@ export const cashBookingStopSchema = z.object({
 });
 
 export const cashBookingBaseSchema = z.object({
+  /** Client checkout draft, also sent as the Idempotency-Key header. */
+  draftId: z.string().uuid().optional(),
   bookingType: z.enum(["destination", "hourly"]).optional(),
   pickup: z.string().trim().min(1),
   dropoff: z.string().optional(),

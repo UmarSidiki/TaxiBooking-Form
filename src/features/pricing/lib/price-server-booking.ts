@@ -27,9 +27,15 @@ export async function priceServerBooking(input: {
   const customerKey = input.booking.email?.trim().toLowerCase() ?? "";
   const [rule, setting, promo] = await Promise.all([
     PricingRule.findOne().lean<Record<string, never>>() as Promise<Record<string, unknown> | null>,
-    Setting.findOne({}, { timezone: 1 }).lean<{ timezone?: string }>(),
+    Setting.findOne({}, { timezone: 1, promoCodesEnabled: 1 }).lean<{
+      timezone?: string;
+      promoCodesEnabled?: boolean;
+    }>(),
     loadPromo(input.booking.promoCode, customerKey),
   ]);
+  if (input.booking.promoCode?.trim() && setting?.promoCodesEnabled === false) {
+    return { ok: false, error: "promo_invalid" };
+  }
   if (!promo.ok) return promo;
   const extras = readExtras(rule?.extras as never);
   if (disabledExtrasRequested(input.booking, extras).length > 0) return { ok: false, error: "extra_disabled" };

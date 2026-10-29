@@ -1,4 +1,5 @@
 import { connectDB } from '@/shared/db';
+import { resolvePublicUrl } from '@/features/settings/lib/public-url';
 import { Booking, PendingBooking } from '@/features/booking/model';
 import { buildBookingEmailDataFromBooking } from '@/features/payments/lib/booking-email-data';
 import { createBookingFromPending } from '@/features/payments/lib/create-booking-from-pending';
@@ -35,6 +36,7 @@ export async function finalizePaidBooking(
   }
 
   let orderId: string | undefined = input.orderId;
+  let draftId: string | undefined = input.draftId;
   let paidAmount = 0;
   let currency = DEFAULT_CURRENCY;
   const paymentIds: {
@@ -58,6 +60,7 @@ export async function finalizePaidBooking(
     }
 
     orderId = verified.orderId;
+    draftId = verified.draftId ?? draftId;
     paidAmount = verified.paidAmount;
     currency = verified.currency;
     paymentIds.stripePaymentIntentId = input.paymentIntentId;
@@ -102,12 +105,13 @@ export async function finalizePaidBooking(
       ...(paymentIds.multisafepayTransactionId
         ? [{ multisafepayTransactionId: paymentIds.multisafepayTransactionId }]
         : []),
+      ...(draftId ? [{ draftId }] : []),
       { tripId: orderId },
     ],
   });
 
   if (existingBooking) {
-    const baseUrl = input.baseUrl || process.env.NEXT_PUBLIC_BASE_URL || '';
+    const baseUrl = input.baseUrl || (await resolvePublicUrl()) || undefined;
 
     if (existingBooking.status === 'awaiting_payment') {
       const { finalizeQuoteBooking } = await import(
@@ -153,8 +157,15 @@ export async function finalizePaidBooking(
       };
     }
 
-    await PendingBooking.deleteOne({ orderId });
+    await PendingBooking.deleteOne({
+      $or: [{ orderId }, ...(draftId ? [{ draftId }] : [])],
+    });
 
+    let changed = false;
+    if (draftId && existingBooking.draftId !== draftId) {
+      existingBooking.draftId = draftId;
+      changed = true;
+    }
     if (existingBooking.paymentStatus !== 'completed') {
       existingBooking.paymentStatus = 'completed';
       existingBooking.paymentMethod = input.provider;
@@ -167,6 +178,9 @@ export async function finalizePaidBooking(
       if (paymentIds.multisafepayTransactionId) {
         existingBooking.multisafepayTransactionId = paymentIds.multisafepayTransactionId;
       }
+      changed = true;
+    }
+    if (changed) {
       await existingBooking.save();
     }
     await creditPartnerAfterPayment(existingBooking);
@@ -196,6 +210,7 @@ export async function finalizePaidBooking(
     orderId!,
     paidAmount,
     currency,
-    paymentIds
+    paymentIds,
+    draftId
   );
 }

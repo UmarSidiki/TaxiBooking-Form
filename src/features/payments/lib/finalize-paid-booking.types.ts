@@ -5,6 +5,7 @@ export type FinalizePaidBookingInput = {
   paymentIntentId?: string;
   transactionId?: string;
   orderId?: string;
+  draftId?: string;
   baseUrl?: string;
 };
 
@@ -21,6 +22,7 @@ export type FinalizePaidBookingResult = {
 export type VerifiedPayment = {
   ok: true;
   orderId: string;
+  draftId?: string;
   paidAmount: number;
   currency: string;
   transactionId?: string;

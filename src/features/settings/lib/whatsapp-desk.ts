@@ -7,18 +7,45 @@ import {
 import type {
   WhatsAppConfigWrite,
   WhatsAppTemplateWrite,
+  WhatsAppTestSendInput,
 } from "@/features/settings/schema/whatsapp.schema";
+import { resolveNotificationTemplate } from "@/features/notifications/lib/notification-resolution";
 import { renderWhatsAppTemplate, whatsappSampleValues } from "@/features/settings/lib/whatsapp-template-text";
 import { toWhatsAppDigits, toWhatsAppJid } from "@/features/settings/lib/whatsapp-phone";
 import { sendWhatsAppTexts } from "@/features/settings/lib/whatsapp-session";
+import {
+  deleteNotificationSetting,
+  getNotificationSetting,
+  getNotificationSettingById,
+  listNotificationSettings,
+  saveNotificationTemplate,
+} from "@/features/notifications/lib/notification-settings";
+import {
+  legacyTemplates,
+  sortTemplates,
+  templatesFromSettings,
+} from "@/features/settings/lib/whatsapp-desk-templates";
 
 export async function loadWhatsAppDesk() {
   await connectDB();
-  const [config, templates, deliveries] = await Promise.all([
+  const [config, settings, legacy, deliveries] = await Promise.all([
     WhatsAppConfig.findOne().lean(),
-    WhatsAppTemplate.find({ audience: { $in: ["customer", "desk"] } }).sort({ updatedAt: -1 }).limit(80).lean(),
+    listNotificationSettings(),
+    WhatsAppTemplate.find({ audience: { $in: ["customer", "desk"] } }).lean(),
     WhatsAppDelivery.find().sort({ createdAt: -1 }).limit(20).lean(),
   ]);
+
+  const templates = templatesFromSettings(settings);
+  for (const row of legacyTemplates(legacy)) {
+    const exists = templates.some(
+      (item) =>
+        item.event === row.event &&
+        item.audience === row.audience &&
+        item.locale === row.locale,
+    );
+    if (!exists) templates.push(row);
+  }
+
   return {
     config: config ?? {
       enabled: false,
@@ -26,8 +53,11 @@ export async function loadWhatsAppDesk() {
       notifyNumbers: [],
       companyPhone: "",
       defaultLocale: "en",
+      quietHours: { enabled: false, startHour: 22, endHour: 7 },
+      requireOptIn: true,
+      sendRateLimit: 0,
     },
-    templates,
+    templates: sortTemplates(templates),
     deliveries,
   };
 }
@@ -40,46 +70,61 @@ export async function saveWhatsAppConfig(input: WhatsAppConfigWrite) {
   }).lean();
 }
 
-async function clearOtherEnabled(event: string, audience: string, locale: string, keepId?: string) {
-  await WhatsAppTemplate.updateMany(
-    {
-      event,
-      audience,
-      locale,
-      enabled: true,
-      ...(keepId ? { _id: { $ne: keepId } } : {}),
-    },
-    { $set: { enabled: false } }
-  );
-}
-
 export async function createWhatsAppTemplate(input: WhatsAppTemplateWrite) {
-  await connectDB();
-  if (input.enabled) await clearOtherEnabled(input.event, input.audience, input.locale);
-  return WhatsAppTemplate.create(input);
+  await saveNotificationTemplate({
+    event: input.event,
+    channel: "whatsapp",
+    audience: input.audience,
+    locale: input.locale,
+    template: { body: input.body },
+    enabled: input.enabled,
+  });
+  return getNotificationSetting(input.event, "whatsapp", input.audience);
 }
 
-export async function updateWhatsAppTemplate(id: string, input: WhatsAppTemplateWrite) {
-  await connectDB();
-  if (input.enabled) await clearOtherEnabled(input.event, input.audience, input.locale, id);
-  return WhatsAppTemplate.findByIdAndUpdate(id, input, { returnDocument: "after" }).lean();
+export async function updateWhatsAppTemplate(_id: string, input: WhatsAppTemplateWrite) {
+  return createWhatsAppTemplate(input);
 }
 
 export async function deleteWhatsAppTemplate(id: string) {
   await connectDB();
+  const setting = await getNotificationSettingById(id);
+  if (setting) {
+    await deleteNotificationSetting(id);
+    return;
+  }
   await WhatsAppTemplate.findByIdAndDelete(id);
 }
 
-export async function sendWhatsAppTest(templateId: string, to: string) {
+export async function sendWhatsAppTest(input: WhatsAppTestSendInput) {
   await connectDB();
-  const [template, config] = await Promise.all([
-    WhatsAppTemplate.findById(templateId),
-    WhatsAppConfig.findOne(),
-  ]);
-  if (!template || !config) return { ok: false as const, error: "not_found" as const };
-  const digits = toWhatsAppDigits(to, config.defaultCallingCode);
+  const config = await WhatsAppConfig.findOne();
+  if (!config) return { ok: false as const, error: "not_found" as const };
+  const digits = toWhatsAppDigits(input.to, config.defaultCallingCode);
   if (!digits) return { ok: false as const, error: "invalid_phone" as const };
-  const text = renderWhatsAppTemplate(template.body, {
+
+  let body: string | undefined;
+  if ("templateId" in input) {
+    const [setting, legacy] = await Promise.all([
+      getNotificationSettingById(input.templateId),
+      WhatsAppTemplate.findById(input.templateId).lean(),
+    ]);
+    if (!setting && !legacy) return { ok: false as const, error: "not_found" as const };
+    body = setting
+      ? (setting.templates[config.defaultLocale] ?? Object.values(setting.templates)[0])?.body
+      : legacy?.body;
+  } else {
+    const template = await resolveNotificationTemplate(
+      input.event,
+      "whatsapp",
+      input.audience,
+      input.locale ?? config.defaultLocale,
+    );
+    body = template?.body;
+  }
+  if (!body) return { ok: false as const, error: "not_found" as const };
+
+  const text = renderWhatsAppTemplate(body, {
     ...whatsappSampleValues,
     companyPhone: config.companyPhone || whatsappSampleValues.companyPhone,
   });

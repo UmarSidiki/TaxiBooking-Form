@@ -8,7 +8,7 @@ import { parseJsonBody } from "@/shared/http/parse-json-body";
 import { jsonError } from "@/shared/http/json-error";
 import { vehicleIdBodySchema } from "@/features/partners/schema/partner-write.schema";
 import { sendFleetRequestNotificationEmail } from "@/features/partners/email/fleet-notification";
-import { getBaseUrl } from "@/shared/lib/get-base-url";
+import { resolvePublicUrl } from "@/features/settings/lib/public-url";
 import { partnerMayWork } from "@/features/partners/lib/partner-access";
 
 export async function POST(request: NextRequest) {
@@ -64,7 +64,7 @@ export async function POST(request: NextRequest) {
     try {
       // Fetch vehicle details for the email
       const vehicle = await Vehicle.findById(vehicleId);
-      const baseUrl = getBaseUrl(request);
+      const baseUrl = (await resolvePublicUrl({ request })) ?? undefined;
       
       await sendFleetRequestNotificationEmail({
         partnerName: partner.name,

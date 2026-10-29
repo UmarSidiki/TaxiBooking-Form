@@ -39,7 +39,7 @@ export async function POST(
     }
     queueAssigneeNotice({
       kind: "assigned",
-      recipients: [{ phone: partner.phone, name: partner.name }],
+      recipients: [{ phone: partner.phone, name: partner.name, audience: "partner" }],
       ride: {
         tripId: updatedRide.tripId,
         pickup: updatedRide.pickup,

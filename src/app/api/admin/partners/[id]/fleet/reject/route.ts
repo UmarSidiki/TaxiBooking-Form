@@ -3,7 +3,7 @@ import { connectDB } from "@/shared/db";
 import Partner, { type IFleetRequest } from "@/features/partners/model/Partner";
 import Vehicle from "@/features/fleet/model/Vehicle";
 import { sendFleetRejectionEmail } from "@/features/partners/email/fleet-notification";
-import { getBaseUrl } from "@/shared/lib/get-base-url";
+import { resolvePublicUrl } from "@/features/settings/lib/public-url";
 import { requireAdmin } from "@/features/auth/lib/require-role";
 import { parseJsonBody } from "@/shared/http/parse-json-body";
 import { jsonError } from "@/shared/http/json-error";
@@ -56,7 +56,7 @@ export async function PATCH(
     // Send email notification to partner
     if (vehicle) {
       try {
-        const baseUrl = getBaseUrl(request);
+        const baseUrl = (await resolvePublicUrl({ request })) ?? undefined;
         
         await sendFleetRejectionEmail({
           partnerName: partner.name,

@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { connectDB } from "@/shared/db";
 import { findBookingById } from "@/features/booking/lib/booking.repo";
 import { patchBooking } from "@/features/booking/lib/patch-booking.service";
-import { resolveBookingRequestBaseUrl } from "@/features/booking/lib/resolve-booking-request-base-url";
+import { resolvePublicUrl } from "@/features/settings/lib/public-url";
 import { requireRole } from "@/features/auth/lib/require-role";
 import { jsonError } from "@/shared/http/json-error";
 
@@ -25,7 +25,7 @@ export async function POST(
     const result = await patchBooking(
       id,
       { action: "complete" },
-      resolveBookingRequestBaseUrl(request),
+      (await resolvePublicUrl({ request })) ?? undefined,
       { id: access.session.user.id, role: "partner" },
     );
     if (!result.ok) {

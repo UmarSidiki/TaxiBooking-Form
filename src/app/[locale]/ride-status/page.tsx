@@ -1,5 +1,5 @@
 import { Booking } from "@/features/booking/model";
-import { readRideStatusToken } from "@/features/customers/lib/send-customer-ride-update";
+import { readRideStatusToken } from "@/features/customers/lib/ride-status-url";
 import { connectDB } from "@/shared/db";
 
 export default async function RideStatusPage({

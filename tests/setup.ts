@@ -8,6 +8,7 @@ if (!process.env.MONGODB_URI && existsSync(URI_FILE)) {
 }
 
 beforeEach(async () => {
+  delete process.env.QA_MOCK_WHATSAPP;
   const { resetTestDb } = await import("./helpers/db");
   await resetTestDb();
 });

@@ -8,6 +8,7 @@ import { startRideCheckout } from "@/features/invoices/lib/start-ride-checkout";
 import { clearQaMail, readQaMail } from "@/features/settings/lib/email-outbox";
 import { clearWhatsAppOutbox, readWhatsAppOutbox } from "@/features/settings/lib/whatsapp-outbox";
 import { createRide, createVehicle } from "./helpers/fixtures";
+import NotificationSetting from "@/features/notifications/model/NotificationSetting";
 
 describe("invoices", () => {
   it("keeps one sequential number and renders a localized PDF", async () => {
@@ -35,8 +36,8 @@ describe("invoices", () => {
     expect(built?.pdf.subarray(0, 4).toString()).toBe("%PDF");
     expect(built!.pdf.length).toBeGreaterThan(20_000);
     expect(built?.payUrl).toContain("/pay/ride/");
-    mkdirSync("/opt/cursor/artifacts/qa", { recursive: true });
-    writeFileSync("/opt/cursor/artifacts/qa/m8-invoice-sample.pdf", built!.pdf);
+    mkdirSync("/workspace/shots", { recursive: true });
+    writeFileSync("/workspace/shots/m8-invoice-sample.pdf", built!.pdf);
     expect(invoiceCopy("ar").invoice).toBe("فاتورة");
     expect(invoiceLineLabel("night", "de")).toBe("Nachtzuschlag");
     expect(invoiceCopy("zz").invoice).toBe("Invoice");
@@ -48,6 +49,7 @@ describe("invoices", () => {
     process.env.QA_MOCK_WHATSAPP = "1";
     process.env.NEXTAUTH_SECRET = "qa-secret-not-for-production";
     process.env.NEXTAUTH_URL = "http://127.0.0.1:3000";
+    process.env.NEXT_PUBLIC_BASE_URL = "http://127.0.0.1:3000";
     clearQaMail();
     clearWhatsAppOutbox();
     const vehicle = await createVehicle();
@@ -57,10 +59,18 @@ describe("invoices", () => {
       depositDue: 20,
       balanceDue: 60,
       paymentStatus: "pending",
+      whatsappOptIn: true,
       fareLines: [{ code: "vehicle", amount: 80 }],
     });
+    await NotificationSetting.create({
+      event: "invoice_notice",
+      channel: "whatsapp",
+      audience: "customer",
+      enabled: true,
+      templates: {},
+    });
     const preview = await buildInvoicePdf(ride.tripId);
-    writeFileSync("/opt/cursor/artifacts/qa/m8-invoice-en.pdf", preview!.pdf);
+    writeFileSync("/workspace/shots/m8-invoice-en.pdf", preview!.pdf);
     const sent = await sendInvoiceNotice(ride.tripId, true);
     expect(sent.ok && sent.emailed).toBe(true);
     const mail = readQaMail().at(-1);
@@ -71,6 +81,31 @@ describe("invoices", () => {
     expect(Buffer.from(document?.base64 || "", "base64").subarray(0, 4).toString()).toBe("%PDF");
     delete process.env.QA_MOCK_EMAIL;
     delete process.env.QA_MOCK_WHATSAPP;
+  });
+
+  it("reconciles invoice totals with the booking snapshot", async () => {
+    process.env.NEXTAUTH_SECRET = "qa-secret-not-for-production";
+    process.env.NEXTAUTH_URL = "http://127.0.0.1:3000";
+    process.env.NEXT_PUBLIC_BASE_URL = "http://127.0.0.1:3000";
+    const vehicle = await createVehicle();
+    const ride = await createRide({
+      selectedVehicle: vehicle._id,
+      fareLines: [
+        { code: "vehicle", amount: 40 },
+        { code: "promo", amount: -4 },
+      ],
+      totalAmount: 39.6,
+      subtotalAmount: 36,
+      taxAmount: 3.6,
+      taxPercentage: 10,
+      paymentStatus: "pending",
+    });
+    const built = await buildInvoicePdf(ride.tripId);
+    expect(built?.pdf.subarray(0, 4).toString()).toBe("%PDF");
+    const lines = (ride.fareLines ?? []).filter((l: { code: string }) => l.code !== "tax");
+    const net = lines.reduce((sum: number, line: { amount: number }) => sum + line.amount, 0);
+    expect(net).toBeCloseTo(ride.subtotalAmount ?? 0, 1);
+    expect((ride.subtotalAmount ?? 0) + (ride.taxAmount ?? 0)).toBeCloseTo(ride.totalAmount ?? 0, 1);
   });
 
   it("opens a cash pay page or a Stripe checkout for the amount due", async () => {

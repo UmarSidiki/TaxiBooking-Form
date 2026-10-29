@@ -1,6 +1,17 @@
 import type { FormData, FormErrors } from "@/features/booking/context/booking-form-context";
+import { isValidEmail, isValidPhone } from "@/shared/lib/validation";
 import type { useTranslations } from "next-intl";
 import type { Dispatch, SetStateAction } from "react";
+
+/** Cheap render-time gate for enabling the payment buttons. */
+export function isStep3ContactValid(formData: FormData): boolean {
+  return Boolean(
+    formData.firstName.trim() &&
+      formData.lastName.trim() &&
+      isValidEmail(formData.email) &&
+      isValidPhone(formData.phone)
+  );
+}
 
 export function validateStep3Contact(
   formData: FormData,

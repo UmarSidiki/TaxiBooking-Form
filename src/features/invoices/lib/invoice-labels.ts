@@ -92,3 +92,17 @@ export function invoiceCopy(locale?: string | null) {
 export function invoiceLineLabel(code: string, locale?: string | null) {
   return LINES[code]?.[invoiceLocale(locale)] ?? code;
 }
+
+const PAYMENT_METHODS: Record<string, Record<InvoiceLocale, string>> = {
+  stripe: { en: "Card", fr: "Carte", es: "Tarjeta", de: "Karte", nl: "Kaart", it: "Carta", ru: "Карта", ar: "بطاقة" },
+  card: { en: "Card", fr: "Carte", es: "Tarjeta", de: "Karte", nl: "Kaart", it: "Carta", ru: "Карта", ar: "بطاقة" },
+  cash: { en: "Cash", fr: "Espèces", es: "Efectivo", de: "Bargeld", nl: "Contant", it: "Contanti", ru: "Наличные", ar: "نقداً" },
+  bank_transfer: { en: "Bank transfer", fr: "Virement", es: "Transferencia", de: "Überweisung", nl: "Overschrijving", it: "Bonifico", ru: "Банковский перевод", ar: "تحويل بنكي" },
+  multisafepay: { en: "Card", fr: "Carte", es: "Tarjeta", de: "Karte", nl: "Kaart", it: "Carta", ru: "Карта", ar: "بطاقة" },
+};
+
+export function invoicePaymentMethodLabel(method: string | undefined | null, locale?: string | null) {
+  const key = String(method ?? "").toLowerCase().trim();
+  const map = PAYMENT_METHODS[key] ?? PAYMENT_METHODS.stripe;
+  return map?.[invoiceLocale(locale)] ?? method ?? "";
+}

@@ -24,6 +24,8 @@ export const completePaymentBodySchema = z
   );
 
 export const multisafepayOrderBodySchema = z.object({
+  /** Client checkout draft, also the idempotency key for this order. */
+  draftId: z.string().uuid(),
   /** Advisory only - the server recomputes and charges the authoritative fare. */
   amount: z.number().optional(),
   /** Ignored — charge currency comes from Settings only. */

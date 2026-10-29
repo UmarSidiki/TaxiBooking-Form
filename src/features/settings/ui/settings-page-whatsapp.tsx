@@ -3,30 +3,35 @@
 import { useCallback, useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 
-import { WhatsAppConfigForm } from "@/features/settings/ui/whatsapp-config-form";
-import { WhatsAppDeliveryList } from "@/features/settings/ui/whatsapp-delivery-list";
-import { WhatsAppLinkPanel } from "@/features/settings/ui/whatsapp-link-panel";
-import { WhatsAppNotifyToggles } from "@/features/settings/ui/whatsapp-notify-toggles";
-import { WhatsAppTemplates } from "@/features/settings/ui/whatsapp-templates";
-import type { WhatsAppDeskConfig, WhatsAppDeskData } from "@/features/settings/ui/whatsapp-desk-types";
-import { SettingsSection } from "@/features/settings/ui/settings-section";
 import { DeskPageMeta } from "@/features/dashboard/ui/desk-page-chrome";
+import type {
+  RegistryEventRow,
+  WhatsAppRegistryData,
+} from "@/features/settings/lib/whatsapp-registry-types";
+import { SettingsSection } from "@/features/settings/ui/settings-section";
+import { WhatsAppConnectionCard } from "@/features/settings/ui/whatsapp-connection-card";
+import { WhatsAppDeliveryList } from "@/features/settings/ui/whatsapp-delivery-list";
+import { WhatsAppEventSheet } from "@/features/settings/ui/whatsapp-event-sheet";
+import { WhatsAppGlobalCard } from "@/features/settings/ui/whatsapp-global-card";
+import { WhatsAppRegistryList } from "@/features/settings/ui/whatsapp-registry-list";
+import type { WhatsAppDeskConfig } from "@/features/settings/ui/whatsapp-desk-types";
 import { apiGet } from "@/shared/http/api";
 import { Button } from "@/shared/ui/button";
 import { Skeleton } from "@/shared/ui/skeleton";
 
 export function SettingsPageWhatsapp() {
   const t = useTranslations("Dashboard.Settings");
-  const [data, setData] = useState<WhatsAppDeskData | null>(null);
+  const [data, setData] = useState<WhatsAppRegistryData | null>(null);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState(false);
+  const [editing, setEditing] = useState<RegistryEventRow | null>(null);
 
   const load = useCallback(async (quiet = false) => {
     if (!quiet) setLoading(true);
     setLoadError(false);
     try {
-      const response = await apiGet<{ success: boolean; data: WhatsAppDeskData }>(
-        "/api/settings/whatsapp"
+      const response = await apiGet<{ success: boolean; data: WhatsAppRegistryData }>(
+        "/api/settings/whatsapp/events"
       );
       if (response.success) setData(response.data);
       else setLoadError(true);
@@ -40,10 +45,6 @@ export function SettingsPageWhatsapp() {
   useEffect(() => {
     void load();
   }, [load]);
-
-  const onConfig = (config: WhatsAppDeskConfig) => {
-    setData((prev) => (prev ? { ...prev, config } : prev));
-  };
 
   if (loading) {
     return (
@@ -66,46 +67,45 @@ export function SettingsPageWhatsapp() {
     );
   }
 
-  const sent = data.deliveries.filter((d) => d.status === "sent").length;
-  const failed = data.deliveries.filter((d) => d.status === "failed").length;
+  const onConfig = (config: WhatsAppDeskConfig) => {
+    setData((prev) => (prev ? { ...prev, config } : prev));
+  };
 
   return (
     <div className="flex flex-col gap-6">
-      <DeskPageMeta title={t("nav_whatsapp")} description={t("whatsapp_help")} />
-      <dl className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-        {[
-          [t("whatsapp_stat_confirmations"), data.config.enabled ? t("whatsapp_on") : t("whatsapp_off")],
-          [t("whatsapp_stat_desk"), String(data.config.notifyNumbers.length)],
-          [t("whatsapp_stat_recent"), t("whatsapp_stat_recent_value", { sent: sent, failed: failed })],
-        ].map(([label, value]) => (
-          <div key={label} className="desk-card rounded-2xl border border-border bg-card p-5">
-            <dt className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{label}</dt>
-            <dd className="mt-1 text-xl font-semibold tabular-nums">{value}</dd>
-          </div>
-        ))}
-      </dl>
-      <h2 className="-mb-4 text-xs font-semibold uppercase tracking-wide text-muted-foreground">{t("whatsapp_group_setup")}</h2>
-      <SettingsSection title={t("whatsapp_connection_title")} description={t("whatsapp_unofficial")}>
-        <WhatsAppLinkPanel />
+      <DeskPageMeta title={t("nav_whatsapp")} description={t("notify_help")} />
+      <SettingsSection
+        title={t("notify_connection_title")}
+        description={t("notify_connection_help")}
+      >
+        <WhatsAppConnectionCard config={data.config} />
       </SettingsSection>
-      <SettingsSection title={t("whatsapp_settings_title")} description={t("whatsapp_settings_help")}>
-        <WhatsAppConfigForm config={data.config} onSaved={onConfig} />
+      <SettingsSection
+        title={t("notify_global_title")}
+        description={t("notify_global_help")}
+      >
+        <WhatsAppGlobalCard config={data.config} onSaved={onConfig} />
       </SettingsSection>
-      <SettingsSection title={t("whatsapp_assignee_title")} description={t("whatsapp_assignee_help")}>
-        <WhatsAppNotifyToggles />
-      </SettingsSection>
-      <h2 className="-mb-4 text-xs font-semibold uppercase tracking-wide text-muted-foreground">{t("whatsapp_group_messages")}</h2>
-      <SettingsSection title={t("whatsapp_messages_title")} description={t("whatsapp_messages_help")}>
-        <WhatsAppTemplates
-          templates={data.templates}
-          companyPhone={data.config.companyPhone}
-          defaultLocale={data.config.defaultLocale}
-          onChange={() => load(true)}
-        />
-      </SettingsSection>
-      <SettingsSection title={t("whatsapp_deliveries")} description={t("whatsapp_deliveries_help")}>
+      <WhatsAppRegistryList
+        events={data.events}
+        onEdit={setEditing}
+        onChanged={() => void load(true)}
+      />
+      <SettingsSection
+        title={t("whatsapp_deliveries")}
+        description={t("whatsapp_deliveries_help")}
+      >
         <WhatsAppDeliveryList deliveries={data.deliveries} />
       </SettingsSection>
+      {editing ? (
+        <WhatsAppEventSheet
+          row={editing}
+          companyPhone={data.config.companyPhone}
+          defaultLocale={data.config.defaultLocale}
+          onClose={() => setEditing(null)}
+          onChanged={() => void load(true)}
+        />
+      ) : null}
     </div>
   );
 }

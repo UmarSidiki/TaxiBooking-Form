@@ -1,8 +1,10 @@
 import type { ReactNode } from "react";
+import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { getServerSession } from "next-auth";
 
 import { authOptions } from "@/features/auth";
+import { persistDetectedPublicBaseUrl } from "@/features/settings/lib/public-url";
 import { SettingsDeskProvider } from "@/features/settings/ui/settings-desk-context";
 import { AppSidebar } from "@/features/dashboard/ui/app-sidebar";
 import { DeskShell } from "@/features/dashboard/ui/desk-shell";
@@ -27,6 +29,8 @@ export default async function DashboardProtectedLayout({
   if (role !== "admin" && role !== "superadmin") {
     redirect(`/drivers`);
   }
+
+  await persistDetectedPublicBaseUrl(await headers());
 
   return (
     <SettingsDeskProvider>

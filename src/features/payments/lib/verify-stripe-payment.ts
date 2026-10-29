@@ -40,6 +40,7 @@ export async function verifyStripePayment(
   return {
     ok: true,
     orderId,
+    draftId: paymentIntent.metadata?.draft_id,
     paidAmount: getPaidAmountFromPaymentIntent(paymentIntent),
     currency:
       paymentIntent.currency?.toUpperCase() ||

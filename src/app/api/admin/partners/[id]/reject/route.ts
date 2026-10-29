@@ -3,6 +3,7 @@ import { connectDB } from "@/shared/db";
 import { Partner } from "@/features/partners/model";
 import { sendPartnerRejectionEmail } from "@/features/partners/email/notification";
 import { requireAdmin } from "@/features/auth/lib/require-role";
+import { resolvePublicUrl } from "@/features/settings/lib/public-url";
 import { parseJsonBody } from "@/shared/http/parse-json-body";
 import { jsonError } from "@/shared/http/json-error";
 import { reasonBodySchema } from "@/features/partners/schema/partner-write.schema";
@@ -33,11 +34,7 @@ export async function PATCH(
 
     await partner.save();
 
-    // Get base URL from request headers
-    const baseUrl = request.headers.get('origin') || 
-                   request.headers.get('referer')?.split('/').slice(0, 3).join('/') || 
-                   process.env.NEXTAUTH_URL || 
-                   'http://localhost:3000';
+    const baseUrl = (await resolvePublicUrl({ request })) ?? undefined;
 
     // Send rejection email (don't wait for it)
     sendPartnerRejectionEmail({

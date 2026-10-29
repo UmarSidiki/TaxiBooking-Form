@@ -36,6 +36,12 @@ export function Step3PaymentMethods(props: Step3PaymentMethodsProps) {
                 setSelectedPaymentMethod={props.setSelectedPaymentMethod}
               />
 
+              {props.selectedPaymentMethod && !props.contactValid && (
+                <p className="text-sm text-amber-700">
+                  {t('Step3.complete-contact-details-to-continue')}
+                </p>
+              )}
+
               {/* Stripe Card Payment */}
               {selectedPaymentMethod === "card" && (
                 <Step3StripePanel
@@ -44,6 +50,7 @@ export function Step3PaymentMethods(props: Step3PaymentMethodsProps) {
                   paymentSettings={props.paymentSettings}
                   clientSecret={props.clientSecret}
                   stripeOrderId={props.stripeOrderId}
+                  contactValid={props.contactValid}
                   paymentError={props.paymentError}
                   retryStripePayment={props.retryStripePayment}
                   totalPrice={props.totalPrice}
@@ -65,6 +72,7 @@ export function Step3PaymentMethods(props: Step3PaymentMethodsProps) {
                   totalPrice={props.totalPrice}
                   handleCashBooking={props.handleCashBooking}
                   isLoading={props.isLoading}
+                  contactValid={props.contactValid}
                 />
               )}
 
@@ -77,6 +85,7 @@ export function Step3PaymentMethods(props: Step3PaymentMethodsProps) {
                   totalPrice={props.totalPrice}
                   handleBankTransferBooking={props.handleBankTransferBooking}
                   isLoading={props.isLoading}
+                  contactValid={props.contactValid}
                 />
               )}
 
@@ -86,6 +95,7 @@ export function Step3PaymentMethods(props: Step3PaymentMethodsProps) {
                   t={props.t}
                   handleMultisafepayBooking={props.handleMultisafepayBooking}
                   isLoading={props.isLoading}
+                  contactValid={props.contactValid}
                 />
               )}
             </div>

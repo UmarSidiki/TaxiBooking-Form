@@ -10,9 +10,10 @@ export function Step3CashPanel({
   totalPrice,
   handleCashBooking,
   isLoading,
+  contactValid,
 }: Pick<
   Step3PaymentMethodsProps,
-  "t" | "currencySymbol" | "totalPrice" | "handleCashBooking" | "isLoading"
+  "t" | "currencySymbol" | "totalPrice" | "handleCashBooking" | "isLoading" | "contactValid"
 >) {
   return (
                 <div className="mt-4 bg-green-50 border border-green-200 rounded-lg p-4">
@@ -27,7 +28,7 @@ export function Step3CashPanel({
                   </div>
                   <Button
                     onClick={handleCashBooking}
-                    disabled={isLoading}
+                    disabled={isLoading || !contactValid}
                     className="w-full mt-4 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold py-6"
                   >
                     {isLoading ? (

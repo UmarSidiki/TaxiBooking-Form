@@ -3,6 +3,7 @@ import { finalizePaidBooking } from "@/features/payments/lib/finalize-paid-booki
 import { parseJsonBody } from "@/shared/http/parse-json-body";
 import { jsonError } from "@/shared/http/json-error";
 import { completePaymentBodySchema } from "@/features/payments/schema/checkout.schema";
+import { resolvePublicUrl } from "@/features/settings/lib/public-url";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 30;
@@ -12,10 +13,7 @@ export async function POST(request: NextRequest) {
     const parsed = await parseJsonBody(request, completePaymentBodySchema);
     if (!parsed.ok) return parsed.response;
 
-    const baseUrl =
-      process.env.NEXT_PUBLIC_BASE_URL ||
-      request.headers.get("origin") ||
-      undefined;
+    const baseUrl = (await resolvePublicUrl({ request })) ?? undefined;
 
     const result = await finalizePaidBooking({
       ...parsed.data,

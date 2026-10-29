@@ -1,5 +1,6 @@
 import type { CSSProperties } from "react";
 import type { Metadata } from "next";
+import { headers } from "next/headers";
 import { Geist, Geist_Mono, Libre_Franklin } from "next/font/google";
 import "@/shared/style/globals.css";
 import { NextIntlClientProvider, hasLocale } from "next-intl";
@@ -11,6 +12,7 @@ import { CurrencyProvider } from "@/shared/context/currency-context";
 import { GeoProvider } from "@/features/geo/context/geo-context";
 import { getThemeSettings } from "@/features/settings/lib/theme-settings";
 import type { ThemeSettings } from "@/features/settings/lib/theme-settings";
+import { resolvePublicUrl } from "@/features/settings/lib/public-url";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -35,44 +37,46 @@ const deskSans = Libre_Franklin({
 const siteName = process.env.NEXT_PUBLIC_WEBSITE_NAME ?? "Booking Form";
 const siteDescription =
   "Premium booking experiences for riders, partners, and administrators—ready for any brand.";
-const appUrl = process.env.NEXT_PUBLIC_BASE_URL;
-const metadataBase = appUrl ? new URL(appUrl) : undefined;
 const logoPath = "/logo.png";
 
-export const metadata: Metadata = {
-  metadataBase,
-  title: {
-    default: siteName,
-    template: `%s | ${siteName}`,
-  },
-  description: siteDescription,
-  icons: {
-    icon: "/favicon.ico",
-    shortcut: "/favicon.ico",
-    apple: "/icon.png",
-  },
-  openGraph: {
-    title: siteName,
+export async function generateMetadata(): Promise<Metadata> {
+  const base = await resolvePublicUrl({ request: await headers() });
+
+  return {
+    metadataBase: base ? new URL(base) : undefined,
+    title: {
+      default: siteName,
+      template: `%s | ${siteName}`,
+    },
     description: siteDescription,
-    url: "/",
-    siteName,
-    images: [
-      {
-        url: logoPath,
-        width: 512,
-        height: 512,
-        alt: `${siteName} logo`,
-      },
-    ],
-    type: "website",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: siteName,
-    description: siteDescription,
-    images: [logoPath],
-  },
-};
+    icons: {
+      icon: "/favicon.ico",
+      shortcut: "/favicon.ico",
+      apple: "/icon.png",
+    },
+    openGraph: {
+      title: siteName,
+      description: siteDescription,
+      url: "/",
+      siteName,
+      images: [
+        {
+          url: logoPath,
+          width: 512,
+          height: 512,
+          alt: `${siteName} logo`,
+        },
+      ],
+      type: "website",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: siteName,
+      description: siteDescription,
+      images: [logoPath],
+    },
+  };
+}
 
 type Props = {
   children: React.ReactNode;

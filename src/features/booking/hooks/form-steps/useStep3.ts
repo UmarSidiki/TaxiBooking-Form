@@ -9,6 +9,7 @@ import { ISetting } from "@/features/settings/model";
 import { useStep3Map } from "@/features/booking/hooks/form-steps/useStep3Map";
 import { useStep3Payments } from "@/features/booking/hooks/form-steps/useStep3Payments";
 import { useStep3Pricing } from "@/features/booking/hooks/form-steps/useStep3Pricing";
+import { isStep3ContactValid } from "@/features/payments/lib/validate-step3-contact";
 
 export function useStep3() {
   const t = useTranslations();
@@ -71,15 +72,6 @@ export function useStep3() {
         publishableKey: settings.stripePublishableKey,
       });
     }
-
-    if (settings.acceptedPaymentMethods && settings.acceptedPaymentMethods.length > 0) {
-      setSelectedPaymentMethod((current) => {
-        if (current) return current;
-        return settings.acceptedPaymentMethods!.includes("card")
-          ? "card"
-          : settings.acceptedPaymentMethods![0];
-      });
-    }
   }, [settings]);
 
   const selectedVehicle = vehicles.find(
@@ -111,7 +103,6 @@ export function useStep3() {
     setStripeOrderId,
     creatingPaymentIntent,
     setCreatingPaymentIntent,
-    paymentError,
     setPaymentError,
     paymentInitialized,
     setPaymentInitialized,
@@ -119,21 +110,21 @@ export function useStep3() {
     totalPrice: pricing.totalPrice,
     chargeAmount: pricing.chargeAmount,
     quoteReady: pricing.quoteReady,
-    displaySubtotalAmount: pricing.displaySubtotalAmount,
-    taxAmount: pricing.taxAmount,
-    enableTax: pricing.enableTax,
-    taxPercentage: pricing.taxPercentage,
-    taxIncluded: pricing.taxIncluded,
   });
+
+  const contactValid = isStep3ContactValid(formData);
 
   const handleBack = () => {
     setCurrentStep(2);
   };
 
+  const promoAvailable = settings?.promoAvailable ?? false;
+
   return {
     // State
     stripeConfig,
     paymentSettings,
+    promoAvailable,
     selectedPaymentMethod,
     setSelectedPaymentMethod,
     clientSecret,
@@ -141,6 +132,7 @@ export function useStep3() {
     creatingPaymentIntent,
     paymentError,
     retryStripePayment: payments.retryStripePayment,
+    contactValid,
 
     // Map state
     mapLoaded,

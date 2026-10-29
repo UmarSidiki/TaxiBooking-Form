@@ -30,7 +30,7 @@ export async function settlePartner(
   const refreshed = await Partner.findById(partnerId).select("phone name balance payoutBalance remittanceBalance");
   queueAssigneeNotice({
     kind: "settlement",
-    recipients: [{ phone: refreshed?.phone, name: refreshed?.name }],
+    recipients: [{ phone: refreshed?.phone, name: refreshed?.name, audience: "partner" }],
     amount: input.amount,
     currency,
   });

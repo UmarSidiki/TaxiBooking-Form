@@ -1,5 +1,6 @@
 import { sendOrderConfirmationEmail } from "@/features/booking/email/order-confirmation";
 import { absoluteHttpBase } from "@/features/booking/lib/booking-mail-url";
+import { resolvePublicUrl } from "@/features/settings/lib/public-url";
 import {
   createBookingDocument,
   updateBookingFields,
@@ -42,6 +43,9 @@ export async function createDeskBooking(
   baseUrl?: string
 ): Promise<CreateDeskBookingResult> {
   await connectDB();
+
+  const resolvedBaseUrl =
+    absoluteHttpBase(baseUrl) ?? (await resolvePublicUrl()) ?? undefined;
 
   const vehicle = await Vehicle.findById(formData.selectedVehicle);
   if (!vehicle) {
@@ -99,12 +103,12 @@ export async function createDeskBooking(
     ? { depositDue: 0, balanceDue: 0 }
     : splitDeposit(total, priced.depositPercent);
 
-  if (isQuote && !absoluteHttpBase(baseUrl)) {
+  if (isQuote && !resolvedBaseUrl) {
     return {
       ok: false,
       status: 400,
       message:
-        "Cannot send pay link: set NEXT_PUBLIC_BASE_URL or call from a public origin",
+        "Cannot send pay link: set the public URL in settings or call from a public origin",
     };
   }
 
@@ -202,7 +206,7 @@ export async function createDeskBooking(
       action: "quote",
       booking: saved,
       paymentToken: paymentToken!.token,
-      baseUrl,
+      baseUrl: resolvedBaseUrl,
     });
 
     // The quote exists and its token is live, so a failed email is a warning
@@ -221,13 +225,13 @@ export async function createDeskBooking(
     };
   }
 
-  await initCashBookingPartners(bookingId, paymentMethod, total, baseUrl);
+  await initCashBookingPartners(bookingId, paymentMethod, total, resolvedBaseUrl);
 
   if (formData.notifyCustomer) {
     const emailData = buildBookingEmailDataFromBooking(saved, {
       paymentMethod,
       currency,
-      baseUrl,
+      baseUrl: resolvedBaseUrl,
     });
     const sent = await sendOrderConfirmationEmail(emailData);
     if (sent) {

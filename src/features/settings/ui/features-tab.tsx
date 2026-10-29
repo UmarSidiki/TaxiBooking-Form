@@ -7,6 +7,7 @@ import {
   Wrench,
   CalendarClock,
   CalendarPlus,
+  Percent,
   type LucideIcon,
 } from "lucide-react";
 import { useTranslations, useLocale } from "next-intl";
@@ -220,6 +221,16 @@ export default function FeaturesTab({
         checked={settings.enableFormBuilder ?? true}
         onCheckedChange={(checked) =>
           onSettingsChange("enableFormBuilder", checked)
+        }
+      />
+      <ModuleRow
+        id="promoCodesEnabled"
+        icon={Percent}
+        title={t("promos-module")}
+        description={t("enable-promo-codes")}
+        checked={settings.promoCodesEnabled ?? true}
+        onCheckedChange={(checked) =>
+          onSettingsChange("promoCodesEnabled", checked)
         }
       />
       <p className="text-sm text-muted-foreground">

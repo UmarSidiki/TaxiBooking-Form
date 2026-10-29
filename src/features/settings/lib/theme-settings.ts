@@ -4,6 +4,7 @@ import {
   toPublicSettings,
   type PublicSettings,
 } from "@/features/settings/lib/public-settings";
+import { isPromoAvailable } from "@/features/pricing/lib/is-promo-available";
 
 export type ThemeSettings = PublicSettings;
 
@@ -20,12 +21,18 @@ function withDefaults(settings: PublicSettings): PublicSettings {
 export async function getThemeSettings(): Promise<PublicSettings> {
   await connectDB();
 
-  const settingsDoc = await Setting.findOne().lean<ISetting>().exec();
+  const [settingsDoc, promoAvailable] = await Promise.all([
+    Setting.findOne().lean<ISetting>().exec(),
+    isPromoAvailable(),
+  ]);
 
   if (!settingsDoc) {
     const created = await Setting.create({});
-    return withDefaults(toPublicSettings(created.toObject() as ISetting));
+    return withDefaults({
+      ...toPublicSettings(created.toObject() as ISetting),
+      promoAvailable,
+    });
   }
 
-  return withDefaults(toPublicSettings(settingsDoc));
+  return withDefaults({ ...toPublicSettings(settingsDoc), promoAvailable });
 }

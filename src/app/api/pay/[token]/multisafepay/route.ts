@@ -3,7 +3,7 @@ import { connectDB } from "@/shared/db";
 import { findBookingByPaymentToken } from "@/features/booking/lib/find-booking-by-payment-token";
 import { updateBookingFields } from "@/features/booking/lib/booking.repo";
 import { Setting } from "@/features/settings/model";
-import { resolvePublicBaseUrl } from "@/features/payments/lib/resolve-base-url";
+import { resolvePublicUrl } from "@/features/settings/lib/public-url";
 import { jsonError } from "@/shared/http/json-error";
 import { bookingMailLocale } from "@/features/booking/lib/booking-mail-url";
 
@@ -33,7 +33,7 @@ export async function POST(
       return jsonError("payment_not_configured", 500);
     }
 
-    const baseUrl = resolvePublicBaseUrl(request);
+    const baseUrl = await resolvePublicUrl({ request });
     if (!baseUrl) {
       return jsonError("payment_not_configured", 500);
     }

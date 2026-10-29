@@ -47,7 +47,7 @@ test("admin partners page hides document file data", async ({ page }, testInfo) 
   await expect(page.getByText("Alpine Transfers")).toBeVisible();
 
   await openPath(page, "/en/dashboard/settings/whatsapp");
-  await expect(page.getByText("Assignee messages")).toBeVisible();
+  await expect(page.getByText("Sending rules")).toBeVisible();
   await page.screenshot({
     path: `${ARTIFACTS}/whatsapp-settings-${testInfo.project.name}.png`,
     fullPage: true,

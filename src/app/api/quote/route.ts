@@ -4,6 +4,7 @@ import { priceServerBooking } from "@/features/pricing/lib/price-server-booking"
 import { quoteRequestSchema } from "@/features/pricing/schema/quote-request.schema";
 import { fetchRouteDistanceKm } from "@/features/payments/lib/fare/route-distance";
 import { loadPaymentSettings } from "@/features/payments/lib/load-payment-settings";
+import { isPromoAvailable } from "@/features/pricing/lib/is-promo-available";
 import { connectDB } from "@/shared/db";
 import { limitSensitive } from "@/shared/http/sensitive-limit";
 
@@ -37,6 +38,7 @@ export async function POST(request: Request) {
   });
   if (!priced.ok) return NextResponse.json({ error: priced.error }, { status: 400 });
   return NextResponse.json({
+    promoAvailable: await isPromoAvailable(),
     total: priced.quote.total,
     subtotal: priced.quote.subtotal,
     taxAmount: priced.quote.taxAmount,

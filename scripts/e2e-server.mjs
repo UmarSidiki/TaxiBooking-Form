@@ -89,6 +89,7 @@ await db.collection("partners").insertOne({
   updatedAt: now,
 });
 
+await db.collection("promocodes").insertOne({ code: "E2E10", kind: "percent", amount: 10, active: true, expiresAt: null, maxUses: null, maxUsesPerCustomer: null, usedCount: 0, createdAt: now, updatedAt: now });
 await db.collection("settings").insertOne({
   enablePartners: true,
   enableDrivers: true,
@@ -283,6 +284,7 @@ const child = spawn("npx", ["next", "dev", "-H", "127.0.0.1", "-p", "3000"], {
     NEXTAUTH_SECRET: "e2e-secret-not-for-production",
     NEXTAUTH_URL: "http://127.0.0.1:3000",
     NEXT_PUBLIC_BASE_URL: "http://127.0.0.1:3000",
+    DISTANCE_MOCK: "1",
   },
 });
 

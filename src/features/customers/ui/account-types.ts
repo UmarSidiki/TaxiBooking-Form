@@ -3,6 +3,7 @@ export type Ride = {
   tripId: string;
   pickup: string;
   dropoff?: string;
+  selectedVehicle?: string;
   date: string;
   time: string;
   status?: string;

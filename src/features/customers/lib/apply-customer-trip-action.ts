@@ -123,6 +123,9 @@ export async function applyCustomerTripAction(input: {
   action: CustomerTripAction;
   date?: string;
   time?: string;
+  pickup?: string;
+  dropoff?: string;
+  selectedVehicle?: string;
   passengers?: number;
   childSeats?: number;
   babySeats?: number;
@@ -172,6 +175,9 @@ export async function applyCustomerTripAction(input: {
     {
       date,
       time,
+      pickup: input.pickup,
+      dropoff: input.dropoff,
+      selectedVehicle: input.selectedVehicle,
       passengers: input.passengers,
       childSeats: input.childSeats,
       babySeats: input.babySeats,
@@ -344,7 +350,7 @@ async function cancelTrip(
 
 async function changeTrip(
   booking: IBooking,
-  input: { date: string; time: string; passengers?: number; childSeats?: number; babySeats?: number; meetAndGreet?: boolean },
+  input: { date: string; time: string; pickup?: string; dropoff?: string; selectedVehicle?: string; passengers?: number; childSeats?: number; babySeats?: number; meetAndGreet?: boolean },
   baseUrl?: string,
   dryRun = false,
 ): Promise<CustomerTripActionResult> {

@@ -5,7 +5,7 @@ import { Button } from "@/shared/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/shared/ui/dialog";
 import type { Ride } from "./account-types";
 
-type Quote = { feePercent: number; feeAmount: number; refundAmount: number; totalAmount: number };
+type Quote = { feePercent: number; feeAmount: number; refundAmount: number; totalAmount: number; paid?: number };
 
 export function CancelTripDialog({
   open,
@@ -19,7 +19,7 @@ export function CancelTripDialog({
   open: boolean;
   onOpenChange: (v: boolean) => void;
   ride: Ride | null;
-  t: (k: string) => string;
+  t: (k: string, vars?: Record<string, string | number>) => string;
   locale: string;
   onConfirm: () => void;
   submitting: boolean;
@@ -41,6 +41,7 @@ export function CancelTripDialog({
             feeAmount: data.feeAmount,
             refundAmount: data.refundAmount,
             totalAmount: data.totalAmount,
+            paid: data.paid ?? data.totalAmount,
           });
         }
       })
@@ -52,6 +53,8 @@ export function CancelTripDialog({
     };
   }, [open, ride]);
 
+  const fmt = (n?: number) => (typeof n === "number" ? n.toFixed(2) : "—");
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
@@ -60,10 +63,16 @@ export function CancelTripDialog({
         </DialogHeader>
         {loading ? <p>{t("loading")}…</p> : null}
         {quote ? (
-          <div className="space-y-2 text-sm">
-            <p>{t("cancel-total")}: {quote.totalAmount.toFixed(2)}</p>
-            <p>{t("cancel-fee")}: {quote.feePercent}% ({quote.feeAmount.toFixed(2)})</p>
-            <p>{t("cancel-refund")}: {quote.refundAmount.toFixed(2)}</p>
+          <div className="space-y-2 text-sm" aria-live="polite">
+            <p>{t("cancel-paid")}: {fmt(quote.paid)}</p>
+            <p>{t("cancel-total")}: {fmt(quote.totalAmount)}</p>
+            <p>{t("cancel-fee")}: {quote.feePercent}% ({fmt(quote.feeAmount)})</p>
+            <p>
+              {quote.refundAmount > 0
+                ? `${t("cancel-refund")}: ${fmt(quote.refundAmount)}`
+                : t("cancel-nothing-refund")}
+            </p>
+            <p className="text-muted-foreground">{t("cancel-pending-paylink")}</p>
           </div>
         ) : null}
         <DialogFooter>

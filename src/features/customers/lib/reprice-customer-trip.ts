@@ -8,6 +8,9 @@ import { zonedRideInstant } from "@/features/booking/lib/send-pickup-reminders";
 export type RepriceCustomerTripInput = {
   date?: string;
   time?: string;
+  pickup?: string;
+  dropoff?: string;
+  selectedVehicle?: string;
   passengers?: number;
   childSeats?: number;
   babySeats?: number;
@@ -34,7 +37,10 @@ export async function repriceCustomerTrip(
   const date = input.date ?? booking.date;
   const timeValue = input.time ?? booking.time;
 
-  const vehicle = await Vehicle.findById(booking.selectedVehicle);
+  const pickup = input.pickup ?? booking.pickup;
+  const dropoff = input.dropoff ?? booking.dropoff;
+  const vehicleId = input.selectedVehicle ?? booking.selectedVehicle;
+  const vehicle = await Vehicle.findById(vehicleId);
   if (!vehicle) return null;
 
   const { settings } = await loadPaymentSettings();
@@ -42,8 +48,8 @@ export async function repriceCustomerTrip(
     booking.bookingType === "hourly"
       ? undefined
       : await fetchRouteDistanceKm({
-          pickup: booking.pickup,
-          dropoff: booking.dropoff || "",
+          pickup,
+          dropoff: dropoff || "",
           stops: booking.stops,
         });
 
@@ -59,8 +65,8 @@ export async function repriceCustomerTrip(
     bookingType: booking.bookingType,
     tripType: booking.tripType,
     duration: booking.duration,
-    pickup: booking.pickup,
-    dropoff: booking.dropoff,
+    pickup,
+    dropoff,
     stops: booking.stops,
     childSeats: input.childSeats ?? booking.childSeats,
     babySeats: input.babySeats ?? booking.babySeats,
@@ -100,6 +106,9 @@ export async function repriceCustomerTrip(
   return {
     date,
     time: timeValue,
+    pickup,
+    dropoff,
+    selectedVehicle: vehicleId,
     passengers: input.passengers ?? booking.passengers,
     childSeats: input.childSeats ?? booking.childSeats,
     babySeats: input.babySeats ?? booking.babySeats,

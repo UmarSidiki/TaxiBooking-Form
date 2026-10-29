@@ -40,11 +40,22 @@ export async function GET(
   const total = typeof booking.totalAmount === "number" ? booking.totalAmount : 0;
   const { feePercent, feeAmount, refundAmount } = computeCancelFee(policy, total, hoursUntil);
 
+  // net paid
+  const isCard = booking.paymentMethod === "stripe" || booking.paymentMethod === "multisafepay";
+  const amountPaidCents = booking.amountPaidCents ?? (isCard && booking.paymentStatus === "completed" ? Math.round(total * 100) : 0);
+  const amountRefundedCents = booking.amountRefundedCents ?? Math.round((booking.refundAmount ?? 0) * 100);
+  const { RefundRequest } = await import("@/features/booking/model");
+  const pending = await RefundRequest.find({ bookingId: booking._id, status: "pending" }).lean();
+  const pendingCents = pending.reduce((s: number, r: any) => s + Math.round((r.amount ?? 0) * 100), 0);
+  const netPaidCents = amountPaidCents - amountRefundedCents - pendingCents;
+  const paid = netPaidCents / 100;
+
   return NextResponse.json({
     ok: true,
     tripId: booking.tripId,
     status: booking.status,
     totalAmount: total,
+    paid,
     feePercent,
     feeAmount,
     refundAmount,

@@ -40,12 +40,15 @@ test("account portal tabs, cancel fee, change price, completed ride", async ({ p
   await expect(page.getByText(/Cancellation fee/)).toBeVisible();
   await page.getByRole("button", { name: "Close" }).first().click();
 
-  // Change shows new price
+  // Change shows preview summary then confirms
   await page.getByRole("button", { name: "Details" }).first().click();
   await expect(page.getByRole("dialog")).toBeVisible();
   await page.getByRole("button", { name: "Change" }).click();
-  await page.getByRole("button", { name: "Save changes" }).click();
-  await expect(page.getByText(/New price/)).toBeVisible();
+  await page.getByRole("button", { name: "Review change" }).click();
+  await expect(page.getByText(/Current total/)).toBeVisible();
+  await expect(page.getByText(/New total/)).toBeVisible();
+  await expect(page.getByText(/Already paid/)).toBeVisible();
+  await page.getByRole("button", { name: "Confirm change" }).click();
 
   // Completed ride has no actions
   const token2 = signToken("grace@example.com");

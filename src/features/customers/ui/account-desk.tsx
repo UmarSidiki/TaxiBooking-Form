@@ -32,7 +32,7 @@ export function AccountDesk() {
   const [changeOpen, setChangeOpen] = useState(false);
   const [cancelOpen, setCancelOpen] = useState(false);
   const [submitting, setSubmitting] = useState(false);
-  const [changeResult, setChangeResult] = useState<{ totalAmount?: number; payUrl?: string; refundRequestId?: string } | null>(null);
+  const [changeResult, setChangeResult] = useState<{ totalAmount?: number; payUrl?: string; refundRequestId?: string; currentTotal?: number; newTotal?: number; paid?: number; difference?: number; action?: "pay" | "refund" | "none" | "balance_due"; amount?: number } | null>(null);
   const [profile, setProfile] = useState<CustomerProfile | null>(null);
   const [settings, setSettings] = useState<any>(null);
   const [customerName, setCustomerName] = useState("");
@@ -112,7 +112,7 @@ export function AccountDesk() {
     setDetailOpen(false);
   };
 
-  const handleChange = async (data: { date: string; time: string; passengers: number; childSeats: number; babySeats: number; meetAndGreet: boolean }) => {
+  const handleChange = async (data: { date: string; time: string; passengers: number; childSeats: number; babySeats: number; meetAndGreet: boolean; pickup?: string; dropoff?: string; selectedVehicle?: string }) => {
     if (!selected) return;
     setSubmitting(true);
     try {
@@ -123,8 +123,12 @@ export function AccountDesk() {
       });
       const body = await response.json().catch(() => null);
       if (response.ok && body?.ok) {
-        setChangeResult({ totalAmount: body.totalAmount, payUrl: body.payUrl, refundRequestId: body.refundRequestId });
+        setChangeResult({ totalAmount: body.totalAmount, payUrl: body.payUrl, refundRequestId: body.refundRequestId, currentTotal: body.currentTotal, newTotal: body.newTotal, paid: body.paid, difference: body.difference, action: body.action, amount: body.amount } as any);
         setNotice(t("updated"));
+        if (body.payUrl) {
+          window.location.href = body.payUrl;
+          return;
+        }
         await load();
       } else {
         setNotice(t("cutoff"));

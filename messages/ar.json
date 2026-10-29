@@ -2212,6 +2212,8 @@
     "whatsappTplAssigned": "تم تعيين الرحلة",
     "whatsappTplAvailable": "رحلة متاحة للقبول",
     "whatsappTplChanged": "رحلة تغيّرت أو أُلغيت",
+    "whatsappTplCancelled": "تم إلغاء الرحلة",
+    "whatsappTplCancelled-help": "يتلقى السائق أو الشريك المعيّن إشعارًا بإلغاء الرحلة.",
     "whatsappTplReminder": "تذكير بالالتقاط",
     "whatsappTplSettlement": "تم تسجيل التسوية",
     "whatsappTplAssigned-help": "Driver or partner gets a message when a ride is assigned to them.",

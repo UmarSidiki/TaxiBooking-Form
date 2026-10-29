@@ -3,11 +3,16 @@ import { Booking } from "@/features/booking/model";
 import { Setting } from "@/features/settings/model";
 import { DEFAULT_BOOKING_TIMEZONE } from "@/features/rides/lib/ride-constants";
 import {
-  messagesFor,
+  deliverAssigneeNotice,
   phonesForAssignees,
+  type NoticeRecipient,
   type WhatsAppSend,
 } from "@/features/settings/lib/assignee-whatsapp";
 import { readWhatsAppLinked } from "@/features/settings/lib/whatsapp-mongo-auth";
+import {
+  isNotificationEnabled,
+  notificationTiming,
+} from "@/features/notifications/lib/notification-resolution";
 
 function dayStamp(date: Date, timeZone: string) {
   return new Intl.DateTimeFormat("en-CA", {
@@ -16,12 +21,6 @@ function dayStamp(date: Date, timeZone: string) {
     month: "2-digit",
     day: "2-digit",
   }).format(date);
-}
-
-function addDays(stamp: string, days: number) {
-  const [year, month, day] = stamp.split("-").map(Number);
-  const date = new Date(Date.UTC(year, month - 1, day + days));
-  return date.toISOString().slice(0, 10);
 }
 
 /** Interpret the stored clock time in the operator timezone. */
@@ -38,17 +37,20 @@ export async function sendPickupReminders(
 ) {
   try {
     await connectDB();
-    const settings = await Setting.findOne().select("whatsappTplReminder timezone").lean();
-    if (!settings?.whatsappTplReminder) return { success: true, sent: 0, failed: 0 };
+    const [timing, driverOn, partnerOn, settings] = await Promise.all([
+      notificationTiming("pickup_reminder"),
+      isNotificationEnabled("pickup_reminder", "whatsapp", "driver"),
+      isNotificationEnabled("pickup_reminder", "whatsapp", "partner"),
+      Setting.findOne().select("timezone").lean<{ timezone?: string }>(),
+    ]);
+    if (!driverOn && !partnerOn) return { success: true, sent: 0, failed: 0 };
 
-    const timeZone = settings.timezone || DEFAULT_BOOKING_TIMEZONE;
-    const today = dayStamp(now, timeZone);
-    const tomorrow = addDays(today, 1);
-    const horizon = now.getTime() + 24 * 60 * 60 * 1000;
+    const timeZone = settings?.timezone || DEFAULT_BOOKING_TIMEZONE;
+    const horizon = new Date(now.getTime() + timing.hoursBefore * 60 * 60 * 1000);
     const candidates = await Booking.find({
       status: "upcoming",
       pickupReminderSent: { $ne: true },
-      date: { $gte: today, $lte: tomorrow },
+      date: { $gte: dayStamp(now, timeZone), $lte: dayStamp(horizon, timeZone) },
       $or: [
         { "assignedDriver._id": { $exists: true } },
         { "assignedPartner._id": { $exists: true } },
@@ -60,7 +62,7 @@ export async function sendPickupReminders(
 
     const due = candidates.filter((ride) => {
       const instant = zonedRideInstant(ride.date, ride.time, timeZone);
-      return instant && instant.getTime() >= now.getTime() && instant.getTime() <= horizon;
+      return instant && instant.getTime() >= now.getTime() && instant.getTime() <= horizon.getTime();
     });
 
     const claimed: typeof due = [];
@@ -75,44 +77,39 @@ export async function sendPickupReminders(
 
     const linked = deps?.linked ?? readWhatsAppLinked;
     if (!(await linked())) {
-      await Booking.updateMany({ _id: { $in: claimed.map((ride) => ride._id) } }, { $set: { pickupReminderSent: false } });
+      await Booking.updateMany(
+        { _id: { $in: claimed.map((ride) => ride._id) } },
+        { $set: { pickupReminderSent: false } },
+      );
       console.info("WhatsApp pickup reminders skipped: session not linked");
       return { success: true, sent: 0, failed: claimed.length };
     }
 
-    const messages = [];
-    const sentIds = [];
+    let sent = 0;
+    let failed = 0;
     for (const ride of claimed) {
       const people = await phonesForAssignees({
         driverId: ride.assignedDriver?._id ? String(ride.assignedDriver._id) : undefined,
         partnerId: ride.assignedPartner?._id ? String(ride.assignedPartner._id) : undefined,
       });
-      const built = messagesFor(
-        "reminder",
-        [people.driver, people.partner].filter(Boolean) as { phone?: string | null }[],
-        { tripId: ride.tripId, pickup: ride.pickup, date: ride.date, time: ride.time },
+      const recipients = [people.driver, people.partner].filter(Boolean) as NoticeRecipient[];
+      const result = await deliverAssigneeNotice(
+        {
+          kind: "reminder",
+          recipients,
+          ride: { tripId: ride.tripId, pickup: ride.pickup, date: ride.date, time: ride.time },
+        },
+        deps,
       );
-      if (!built.length) {
-        await Booking.updateOne({ _id: ride._id }, { $set: { pickupReminderSent: false } });
+      if (result.reason === "sent") {
+        sent += result.sent;
         continue;
       }
-      messages.push(...built);
-      sentIds.push(ride._id);
+      failed += 1;
+      await Booking.updateOne({ _id: ride._id }, { $set: { pickupReminderSent: false } });
     }
-    if (!messages.length) return { success: true, sent: 0, failed: 0 };
 
-    const send = deps?.send ?? (async (batch) => {
-      const { sendWhatsAppTexts } = await import("@/features/settings/lib/whatsapp-session");
-      return sendWhatsAppTexts(batch);
-    });
-    const result = await send(messages);
-    if (!result.ok) {
-      await Booking.updateMany({ _id: { $in: sentIds } }, { $set: { pickupReminderSent: false } });
-      console.error("WhatsApp pickup reminders failed");
-      return { success: true, sent: 0, failed: sentIds.length };
-    }
-    console.info("WhatsApp pickup reminders", messages.map((message) => message.jid));
-    return { success: true, sent: messages.length, failed: 0 };
+    return { success: true, sent, failed };
   } catch (error) {
     console.error("Pickup reminders failed:", error);
     return { success: false, sent: 0, failed: 0 };

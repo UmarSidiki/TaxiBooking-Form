@@ -2212,6 +2212,8 @@
     "whatsappTplAssigned": "Fahrt zugewiesen",
     "whatsappTplAvailable": "Fahrt zu übernehmen",
     "whatsappTplChanged": "Fahrt geändert oder storniert",
+    "whatsappTplCancelled": "Fahrt storniert",
+    "whatsappTplCancelled-help": "Der zugewiesene Fahrer oder Partner wird über die Stornierung informiert.",
     "whatsappTplReminder": "Abholerinnerung",
     "whatsappTplSettlement": "Ausgleich gebucht",
     "whatsappTplAssigned-help": "Driver or partner gets a message when a ride is assigned to them.",

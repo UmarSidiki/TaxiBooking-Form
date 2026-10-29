@@ -1,6 +1,11 @@
 import mongoose from "mongoose";
+import { migrateNotifications } from "@/features/pricing/lib/migrate-notification-settings";
 
-type LegacySetting = { _id: unknown; promoCodesEnabled?: boolean };
+type LegacySetting = {
+  _id: unknown;
+  promoCodesEnabled?: boolean;
+  [key: string]: unknown;
+};
 
 const DRAFT_INDEXES = [
   {
@@ -39,9 +44,9 @@ async function ensureDraftIndexes(
 }
 
 /**
- * Booking-fixes migration: turns promo codes on in settings when any active code
- * exists, and backfills `active: true` on promo codes created before the field
- * existed. Idempotent; `dryRun` writes nothing.
+ * Booking-fixes migration: promo settings/backfill, draft indexes, and a copy of
+ * the legacy WhatsApp templates/toggles into the notification registry.
+ * Idempotent; `dryRun` writes nothing.
  */
 export async function migrateBookingFixes({ dryRun }: { dryRun: boolean }) {
   const db = mongoose.connection.db;
@@ -54,6 +59,7 @@ export async function migrateBookingFixes({ dryRun }: { dryRun: boolean }) {
   const settingsUpdated = setting && setting.promoCodesEnabled !== promoCodesEnabled ? 1 : 0;
   const promosMissingActive = await promos.countDocuments({ active: { $exists: false } });
   const indexesCreated = await ensureDraftIndexes(db, dryRun);
+  const notifications = await migrateNotifications(db, setting, dryRun);
 
   if (!dryRun) {
     if (setting) {
@@ -70,5 +76,7 @@ export async function migrateBookingFixes({ dryRun }: { dryRun: boolean }) {
     settingsUpdated,
     promosActivated: promosMissingActive,
     indexesCreated,
+    notificationTemplates: notifications.notificationTemplates,
+    notificationToggles: notifications.notificationToggles,
   };
 }

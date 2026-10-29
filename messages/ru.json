@@ -2212,6 +2212,8 @@
     "whatsappTplAssigned": "Поездка назначена",
     "whatsappTplAvailable": "Поездку можно взять",
     "whatsappTplChanged": "Поездка изменена или отменена",
+    "whatsappTplCancelled": "Поездка отменена",
+    "whatsappTplCancelled-help": "Назначенный водитель или партнёр получает уведомление об отмене.",
     "whatsappTplReminder": "Напоминание о подаче",
     "whatsappTplSettlement": "Расчёт записан",
     "whatsappTplAssigned-help": "Driver or partner gets a message when a ride is assigned to them.",

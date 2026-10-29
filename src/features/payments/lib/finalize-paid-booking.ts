@@ -111,7 +111,7 @@ export async function finalizePaidBooking(
   });
 
   if (existingBooking) {
-    const baseUrl = input.baseUrl || (await resolvePublicUrl()) || '';
+    const baseUrl = input.baseUrl || (await resolvePublicUrl()) || undefined;
 
     if (existingBooking.status === 'awaiting_payment') {
       const { finalizeQuoteBooking } = await import(

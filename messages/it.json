@@ -2212,6 +2212,8 @@
     "whatsappTplAssigned": "Corsa assegnata",
     "whatsappTplAvailable": "Corsa da prendere",
     "whatsappTplChanged": "Corsa modificata o annullata",
+    "whatsappTplCancelled": "Corsa annullata",
+    "whatsappTplCancelled-help": "Il conducente o partner assegnato viene avvisato dell’annullamento.",
     "whatsappTplReminder": "Promemoria ritiro",
     "whatsappTplSettlement": "Regolamento registrato",
     "whatsappTplAssigned-help": "Driver or partner gets a message when a ride is assigned to them.",

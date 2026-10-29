@@ -62,7 +62,7 @@ export async function createBookingFromPending(
 
   try {
     const newBooking = await Booking.create(bookingPayload);
-    const baseUrl = input.baseUrl || (await resolvePublicUrl()) || '';
+    const baseUrl = input.baseUrl || (await resolvePublicUrl()) || undefined;
 
     const emailData = buildBookingEmailData(orderId, pendingBooking, vehicle, {
       bookingId: newBooking._id.toString(),

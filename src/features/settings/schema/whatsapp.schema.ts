@@ -10,10 +10,20 @@ export const whatsappVariables = [
   "date",
   "time",
   "vehicle",
+  "plate",
+  "driver",
   "total",
+  "currency",
   "passengers",
   "companyPhone",
   "portal",
+  "portalUrl",
+  "statusUrl",
+  "payUrl",
+  "reviewUrl",
+  "invoiceNumber",
+  "documents",
+  "reason",
 ] as const;
 
 export const whatsappConfigWriteSchema = z.object({
@@ -22,6 +32,14 @@ export const whatsappConfigWriteSchema = z.object({
   notifyNumbers: z.array(z.string().trim().min(1).max(32)).max(5),
   companyPhone: z.string().trim().max(32),
   defaultLocale: z.enum(whatsappLocales),
+  quietHours: z
+    .object({
+      enabled: z.boolean(),
+      startHour: z.number().int().min(0).max(23),
+      endHour: z.number().int().min(0).max(23),
+    })
+    .optional(),
+  requireOptIn: z.boolean().optional(),
 });
 
 export const customerWhatsAppEvents = [
@@ -30,6 +48,15 @@ export const customerWhatsAppEvents = [
   "on_the_way",
   "arrived",
   "completed",
+  "booking_cancelled",
+  "booking_changed",
+  "request_received",
+  "request_declined",
+  "quote_pay_link",
+  "thank_you",
+  "customer_pickup_reminder",
+  "invoice_notice",
+  "sign_in_otp",
 ] as const;
 
 export const whatsappTemplateWriteSchema = z.object({

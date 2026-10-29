@@ -8,6 +8,7 @@ import { startRideCheckout } from "@/features/invoices/lib/start-ride-checkout";
 import { clearQaMail, readQaMail } from "@/features/settings/lib/email-outbox";
 import { clearWhatsAppOutbox, readWhatsAppOutbox } from "@/features/settings/lib/whatsapp-outbox";
 import { createRide, createVehicle } from "./helpers/fixtures";
+import NotificationSetting from "@/features/notifications/model/NotificationSetting";
 
 describe("invoices", () => {
   it("keeps one sequential number and renders a localized PDF", async () => {
@@ -58,7 +59,15 @@ describe("invoices", () => {
       depositDue: 20,
       balanceDue: 60,
       paymentStatus: "pending",
+      whatsappOptIn: true,
       fareLines: [{ code: "vehicle", amount: 80 }],
+    });
+    await NotificationSetting.create({
+      event: "invoice_notice",
+      channel: "whatsapp",
+      audience: "customer",
+      enabled: true,
+      templates: {},
     });
     const preview = await buildInvoicePdf(ride.tripId);
     writeFileSync("/opt/cursor/artifacts/qa/m8-invoice-en.pdf", preview!.pdf);

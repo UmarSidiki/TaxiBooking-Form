@@ -2212,6 +2212,8 @@
     "whatsappTplAssigned": "Ride assigned",
     "whatsappTplAvailable": "Ride available to claim",
     "whatsappTplChanged": "Ride changed or cancelled",
+    "whatsappTplCancelled": "Ride cancelled",
+    "whatsappTplCancelled-help": "The assigned driver or partner hears when a ride is cancelled.",
     "whatsappTplReminder": "Pickup reminder",
     "whatsappTplSettlement": "Settlement recorded",
     "whatsappTplAssigned-help": "Driver or partner gets a message when a ride is assigned to them.",

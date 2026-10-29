@@ -99,7 +99,11 @@ export async function notifyEligiblePartners(
 
   queueAssigneeNotice({
     kind: "available",
-    recipients: eligiblePartners.map((partner) => ({ phone: partner.phone, name: partner.name })),
+    recipients: eligiblePartners.map((partner) => ({
+      phone: partner.phone,
+      name: partner.name,
+      audience: "partner",
+    })),
     ride: {
       tripId: booking.tripId,
       pickup: booking.pickup,

@@ -2212,6 +2212,8 @@
     "whatsappTplAssigned": "Course assignée",
     "whatsappTplAvailable": "Course à prendre",
     "whatsappTplChanged": "Course modifiée ou annulée",
+    "whatsappTplCancelled": "Course annulée",
+    "whatsappTplCancelled-help": "Le chauffeur ou partenaire assigné est informé de l’annulation.",
     "whatsappTplReminder": "Rappel de prise en charge",
     "whatsappTplSettlement": "Règlement enregistré",
     "whatsappTplAssigned-help": "Driver or partner gets a message when a ride is assigned to them.",

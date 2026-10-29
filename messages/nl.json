@@ -2212,6 +2212,8 @@
     "whatsappTplAssigned": "Rit toegewezen",
     "whatsappTplAvailable": "Rit te claimen",
     "whatsappTplChanged": "Rit gewijzigd of geannuleerd",
+    "whatsappTplCancelled": "Rit geannuleerd",
+    "whatsappTplCancelled-help": "De toegewezen chauffeur of partner hoort dat de rit is geannuleerd.",
     "whatsappTplReminder": "Ophaalherinnering",
     "whatsappTplSettlement": "Afrekening vastgelegd",
     "whatsappTplAssigned-help": "Driver or partner gets a message when a ride is assigned to them.",

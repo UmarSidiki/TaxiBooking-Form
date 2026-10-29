@@ -48,7 +48,7 @@ export async function sendThankYouEmails() {
 
     let sentCount = 0;
     let failedCount = 0;
-    const baseUrl = (await resolvePublicUrl()) ?? "";
+    const baseUrl = (await resolvePublicUrl()) ?? undefined;
 
     for (const booking of completedBookings) {
       try {

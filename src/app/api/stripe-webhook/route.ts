@@ -69,7 +69,7 @@ export async function POST(request: NextRequest) {
           provider: 'stripe',
           paymentIntentId: paymentIntent.id,
           draftId: paymentIntent.metadata?.draft_id,
-          baseUrl: (await resolvePublicUrl()) ?? '',
+          baseUrl: (await resolvePublicUrl({ request })) ?? undefined,
         });
 
         if (!result.success) {

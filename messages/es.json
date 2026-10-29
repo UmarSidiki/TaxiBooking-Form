@@ -2212,6 +2212,8 @@
     "whatsappTplAssigned": "Viaje asignado",
     "whatsappTplAvailable": "Viaje disponible",
     "whatsappTplChanged": "Viaje cambiado o cancelado",
+    "whatsappTplCancelled": "Viaje cancelado",
+    "whatsappTplCancelled-help": "El conductor o socio asignado recibe aviso de la cancelación.",
     "whatsappTplReminder": "Recordatorio de recogida",
     "whatsappTplSettlement": "Liquidación registrada",
     "whatsappTplAssigned-help": "Driver or partner gets a message when a ride is assigned to them.",

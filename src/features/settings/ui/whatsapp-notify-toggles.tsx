@@ -9,6 +9,7 @@ const KEYS = [
   "whatsappTplAssigned",
   "whatsappTplAvailable",
   "whatsappTplChanged",
+  "whatsappTplCancelled",
   "whatsappTplReminder",
   "whatsappTplSettlement",
 ] as const;

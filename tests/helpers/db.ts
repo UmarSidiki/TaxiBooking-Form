@@ -14,7 +14,13 @@ import CustomerOtp from "@/features/customers/model/CustomerOtp";
 import CorporateAccount from "@/features/corporate/model/CorporateAccount";
 import RecurringRide from "@/features/corporate/model/RecurringRide";
 import RideCharge from "@/features/invoices/model/RideCharge";
-import { Setting } from "@/features/settings/model";
+import {
+  Setting,
+  WhatsAppConfig,
+  WhatsAppDelivery,
+  WhatsAppTemplate,
+} from "@/features/settings/model";
+import NotificationSetting from "@/features/notifications/model/NotificationSetting";
 
 export async function resetTestDb() {
   await connectDB();
@@ -36,5 +42,9 @@ export async function resetTestDb() {
     CorporateAccount.deleteMany({}),
     RecurringRide.deleteMany({}),
     RideCharge.deleteMany({}),
+    NotificationSetting.deleteMany({}),
+    WhatsAppConfig.deleteMany({}),
+    WhatsAppTemplate.deleteMany({}),
+    WhatsAppDelivery.deleteMany({}),
   ]);
 }

@@ -56,7 +56,9 @@ function headersOf(
   request?: RequestHeadersLike | null
 ): HeadersLike | null {
   if (!request) return null;
-  return "headers" in request ? request.headers : request;
+  if (typeof (request as HeadersLike).get === "function") return request as HeadersLike;
+  const nested = (request as { headers?: HeadersLike }).headers;
+  return nested && typeof nested.get === "function" ? nested : null;
 }
 
 function header(

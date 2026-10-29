@@ -35,16 +35,18 @@ function LanguageSwitcherComponent() {
     });
   };
 
-  const languages: { [key: string]: string } = {
-    en: "English",
-    es: "Español",
-    fr: "Français",
-    de: "Deutsch",
-    nl: "Nederlands",
-    it: "Italiano",
-    ru: "Русский",
-    ar: "العربية"
+  const languages: Record<string, { name: string; code: string }> = {
+    en: { name: "English", code: "EN" },
+    de: { name: "Deutsch", code: "DE" },
+    fr: { name: "Français", code: "FR" },
+    it: { name: "Italiano", code: "IT" },
+    es: { name: "Español", code: "ES" },
+    nl: { name: "Nederlands", code: "NL" },
+    ru: { name: "Русский", code: "RU" },
+    ar: { name: "العربية", code: "AR" },
   };
+
+  const current = languages[locale] ?? languages.en;
 
   return (
     <DropdownMenu>
@@ -53,31 +55,24 @@ function LanguageSwitcherComponent() {
           variant="outline"
           size="default"
           disabled={isPending}
-          className="max-w-[200px] h-12 justify-start gap-3 px-4 bg-background hover:bg-accent border-border/50"
-          aria-label="Switch Language"
+          className="h-10 min-w-10 gap-2 px-3 bg-[var(--sheet)] border-[var(--rule2)]"
+          aria-label="Switch language"
         >
-          <Globe className="h-5 w-5 text-primary" />
-          <span className="font-medium">{languages[locale]}</span>
-          <div className="ml-auto rounded bg-muted px-2 py-1 text-sm text-foreground">
-            {locale.toUpperCase()}
-          </div>
+          <Globe className="h-4 w-4" />
+          <span className="font-medium">{current.code}</span>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="start" className="w-48">
+      <DropdownMenuContent align="end" className="w-56">
         {Object.keys(languages).map((lang) => (
           <DropdownMenuItem
             key={lang}
             onClick={() => onSelectLocale(lang)}
-            disabled={locale === lang ? true : false}
-            className={`cursor-pointer py-3 px-4 ${
-              locale === lang ? "bg-accent font-semibold" : "font-normal"
-            }`}
+            className={`cursor-pointer py-2 px-3 ${locale === lang ? "font-semibold" : "font-normal"}`}
+            aria-current={locale === lang}
           >
-            <div className="flex items-center justify-between w-full">
-              <span>{languages[lang]}</span>
-              {locale === lang && (
-                <div className="h-2 w-2 bg-primary rounded-full"></div>
-              )}
+            <div className="flex items-center justify-between w-full gap-3">
+              <span>{languages[lang].name}</span>
+              <span className="text-xs font-mono text-muted-foreground">{languages[lang].code}</span>
             </div>
           </DropdownMenuItem>
         ))}

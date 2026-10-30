@@ -6,7 +6,6 @@ import "./riviera/riviera.css";
 import { useTranslations } from "next-intl";
 import dynamic from "next/dynamic";
 import { LanguageSwitcher } from "@/shared/ui/riviera/language-switcher";
-import { TripStrip } from "./riviera/trip-strip";
 import { RivieraThemeToggle } from "@/shared/ui/riviera/theme-toggle";
 import { useBookingFormContainer } from "@/features/booking/hooks/form-container/useBookingFormContainer";
 import { useBookingForm } from "@/features/booking/context/booking-form-context";

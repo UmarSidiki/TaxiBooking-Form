@@ -6,7 +6,7 @@ import { Input } from "@/shared/ui/input";
 import type { FormData, FormErrors } from "@/features/booking/context/booking-form-context";
 import { STOP_WAIT_OPTIONS_15_MIN } from "@/features/booking/lib/stop-wait-duration-options";
 import type { useTranslations } from "next-intl";
-import { Clock, Flag, Loader2, MapPin, X } from "lucide-react";
+import { Clock, Loader2, MapPin, X } from "lucide-react";
 import { PickupCurrentLocationButton } from "@/features/booking/ui/steps/pickup-current-location-button";
 import type { Dispatch, RefObject, SetStateAction } from "react";
 

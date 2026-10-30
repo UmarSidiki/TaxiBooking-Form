@@ -4,7 +4,6 @@ import { Input } from "@/shared/ui/input";
 import type { FormData, FormErrors } from "@/features/booking/context/booking-form-context";
 import type { useTranslations } from "next-intl";
 import { MAX_PASSENGERS, MIN_PASSENGERS } from "@/features/booking/lib/passenger-limits";
-import { CalendarDays, Clock, Users } from "lucide-react";
 import type { ChangeEvent } from "react";
 
 type TFn = ReturnType<typeof useTranslations>;

@@ -7,10 +7,15 @@ import { IFormLayout } from '@/features/form-builder/model';
 import { useSearchParams } from 'next/navigation';
 import { useBookingVehicles } from "@/features/booking/hooks/use-booking-vehicles";
 
+export type LatLngLiteral = { lat: number; lng: number };
+
 export interface FormData {
   bookingType: "destination" | "hourly";
   pickup: string;
   dropoff: string;
+  /** Coordinates of the picked Places suggestion. null = typed but not picked; undefined = prefilled (URL/session). */
+  pickupLatLng?: LatLngLiteral | null;
+  dropoffLatLng?: LatLngLiteral | null;
   stops: Array<{
     location: string;
     order: number;

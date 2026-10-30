@@ -59,7 +59,7 @@ export function Step1LocationFields({
                 } focus:border-[var(--ink)]-500 focus:ring-primary-500`}
                 value={formData.pickup}
                 onChange={(e) => {
-                  setFormData((prev) => ({ ...prev, pickup: e.target.value }));
+                  setFormData((prev) => ({ ...prev, pickup: e.target.value, pickupLatLng: null }));
                 }}
                 onBlur={() => {
                   if (formData.pickup && formData.dropoff) {
@@ -161,7 +161,7 @@ export function Step1LocationFields({
                 } focus:border-[var(--ink)]-500 focus:ring-primary-500`}
                 value={formData.dropoff}
                 onChange={(e) => {
-                  setFormData((prev) => ({ ...prev, dropoff: e.target.value }));
+                  setFormData((prev) => ({ ...prev, dropoff: e.target.value, dropoffLatLng: null }));
                 }}
                 onBlur={() => {
                   if (formData.pickup && formData.dropoff) {

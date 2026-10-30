@@ -4,7 +4,7 @@ import { importLibrary, setOptions } from "@googlemaps/js-api-loader";
 import { useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
 
-import { useBookingForm } from "@/features/booking/context/booking-form-context";
+import { useBookingForm, type LatLngLiteral } from "@/features/booking/context/booking-form-context";
 import { DEFAULT_MAP_CENTER, DEFAULT_MAP_ZOOM } from "@/features/booking/lib/maps/map-defaults";
 import { rivieraDarkStyle, rivieraLightStyle } from "./map-styles";
 
@@ -33,6 +33,13 @@ function markerIcons(el: Element) {
     pickup: svgIcon(`<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"><circle cx="9" cy="9" r="6" fill="${sheet}" stroke="${ink}" stroke-width="3"/></svg>`, 18),
     dropoff: svgIcon(`<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"><circle cx="9" cy="9" r="7" fill="${ink}" stroke="${sheet}" stroke-width="2"/></svg>`, 18),
   };
+}
+
+/** A routable end: picked coordinates, or prefilled text that was never edited. */
+function routeEnd(text: string, latLng: LatLngLiteral | null | undefined): LatLngLiteral | string | null {
+  if (latLng) return latLng;
+  if (latLng === undefined && text.trim()) return text;
+  return null;
 }
 
 /** Step 1 route map. Renders a compact text summary when Google Maps is unavailable. */
@@ -77,38 +84,48 @@ export function RivieraMap() {
     };
   }, []);
 
-  // Draw the driving route whenever the addresses change.
+  // Draw the driving route once both ends are real places: a picked suggestion
+  // (coordinates) or an address that arrived prefilled. Half-typed text never routes.
   useEffect(() => {
     const map = mapRef.current;
     const route = routeRef.current;
     const el = ref.current;
     if (!ready || !map || !route || !el) return;
-    markersRef.current.forEach((m) => m.setMap(null));
-    markersRef.current = [];
-    if (!formData.pickup || !formData.dropoff) {
+    const clear = () => {
+      markersRef.current.forEach((m) => m.setMap(null));
+      markersRef.current = [];
       route.renderer.set("directions", null);
-      return;
-    }
+    };
+    clear();
+    const origin = routeEnd(formData.pickup, formData.pickupLatLng);
+    const destination = routeEnd(formData.dropoff, formData.dropoffLatLng);
+    if (!origin || !destination) return;
+    let stale = false;
     const waypoints = formData.stops
       .filter((s) => s.location)
       .sort((a, b) => a.order - b.order)
       .map((s) => ({ location: s.location, stopover: true }));
-    route.service.route(
-      { origin: formData.pickup, destination: formData.dropoff, waypoints, travelMode: google.maps.TravelMode.DRIVING },
-      (result, status) => {
-        if (status !== google.maps.DirectionsStatus.OK || !result) return;
+    route.service
+      .route({ origin, destination, waypoints, travelMode: google.maps.TravelMode.DRIVING })
+      .then((result) => {
+        const legs = result.routes[0]?.legs;
+        if (stale || !legs?.length) return;
         route.renderer.setOptions({ polylineOptions: { strokeColor: token(el, "--ink"), strokeWeight: 4, strokeOpacity: 1 } });
         route.renderer.setDirections(result);
-        const leg = result.routes[0]?.legs;
-        if (!leg?.length) return;
         const icons = markerIcons(el);
         markersRef.current = [
-          new google.maps.Marker({ map, position: leg[0].start_location, icon: icons.pickup, clickable: false }),
-          new google.maps.Marker({ map, position: leg[leg.length - 1].end_location, icon: icons.dropoff, clickable: false }),
+          new google.maps.Marker({ map, position: legs[0].start_location, icon: icons.pickup, clickable: false }),
+          new google.maps.Marker({ map, position: legs[legs.length - 1].end_location, icon: icons.dropoff, clickable: false }),
         ];
-      },
-    );
-  }, [ready, formData.pickup, formData.dropoff, formData.stops]);
+      })
+      // NOT_FOUND / ZERO_RESULTS: no drivable route, so the map simply shows none.
+      .catch(() => {
+        if (!stale) clear();
+      });
+    return () => {
+      stale = true;
+    };
+  }, [ready, formData.pickup, formData.dropoff, formData.pickupLatLng, formData.dropoffLatLng, formData.stops]);
 
   // Follow the Riviera light/dark toggle.
   useEffect(() => {

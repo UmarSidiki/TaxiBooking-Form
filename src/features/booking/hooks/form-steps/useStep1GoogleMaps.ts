@@ -108,11 +108,6 @@ export function useStep1GoogleMaps({
           pickupAutocompleteListenerRef.current = autocompletePickup.addListener("place_changed", () => {
             const place = autocompletePickup.getPlace();
             
-            console.log("Pickup autocomplete - settings available:", {
-              hasPolygon: !!settings?.mapPolygonPoints,
-              polygonLength: settings?.mapPolygonPoints?.length
-            });
-            
             // Validate against polygon bounds if defined
             if (!validatePlaceInBounds(place)) {
               if (pickupInputRef.current) pickupInputRef.current.value = "";
@@ -124,7 +119,12 @@ export function useStep1GoogleMaps({
             }
 
             const newPickup = place.formatted_address || place.name || "";
-            setFormData((prev) => ({ ...prev, pickup: newPickup }));
+            const loc = place.geometry?.location;
+            setFormData((prev) => ({
+              ...prev,
+              pickup: newPickup,
+              pickupLatLng: loc ? { lat: loc.lat(), lng: loc.lng() } : null,
+            }));
             // Distance calculation will be triggered by the useEffect
           });
         }
@@ -154,7 +154,12 @@ export function useStep1GoogleMaps({
             }
 
             const newDropoff = place.formatted_address || place.name || "";
-            setFormData((prev) => ({ ...prev, dropoff: newDropoff }));
+            const loc = place.geometry?.location;
+            setFormData((prev) => ({
+              ...prev,
+              dropoff: newDropoff,
+              dropoffLatLng: loc ? { lat: loc.lat(), lng: loc.lng() } : null,
+            }));
             // Distance calculation will be triggered by the useEffect
           });
         }

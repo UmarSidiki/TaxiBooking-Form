@@ -1,61 +1,35 @@
-import { Badge } from '@/shared/ui/badge';
-import { Calendar, CheckCircle, Clock, Inbox, X } from 'lucide-react';
-import { useTranslations } from 'next-intl';
-import type { IBooking } from '@/features/booking/model';
-
-const BADGE_CLASSES =
-  'font-semibold flex items-center gap-1.5 px-3 py-1 rounded-full text-xs';
+import { Calendar, CheckCircle, Clock, Inbox, X } from "lucide-react";
+import { useTranslations } from "next-intl";
+import type { IBooking } from "@/features/booking/model";
+import { StatusMark } from "@/features/dashboard/ui/riviera/status-mark";
 
 type RideStatusBadgeProps = {
-  booking: Pick<IBooking, 'status' | 'date'>;
+  booking: Pick<IBooking, "status" | "date">;
   isCompleted?: boolean;
 };
 
-export function RideStatusBadge({
-  booking,
-  isCompleted,
-}: RideStatusBadgeProps) {
+export function RideStatusBadge({ booking, isCompleted }: RideStatusBadgeProps) {
   const t = useTranslations();
 
-  if (booking.status === 'canceled') {
-    return (
-      <Badge variant="destructive" className={BADGE_CLASSES}>
-        <X className="w-3 h-3" /> {t('Dashboard.Rides.Canceled')}
-      </Badge>
-    );
+  if (booking.status === "canceled") {
+    return <StatusMark tone="err" label={t("Dashboard.Rides.Canceled")} />;
   }
 
-  if (booking.status === 'requested') {
-    return (
-      <Badge variant="secondary" className={BADGE_CLASSES}>
-        <Inbox className="w-3 h-3" /> {t('Dashboard.Rides.status-requested')}
-      </Badge>
-    );
+  if (booking.status === "requested") {
+    return <StatusMark tone="info" label={t("Dashboard.Rides.status-requested")} />;
   }
 
-  if (booking.status === 'awaiting_payment') {
-    return (
-      <Badge variant="secondary" className={BADGE_CLASSES}>
-        <Clock className="w-3 h-3" /> {t('Dashboard.Rides.status-awaiting-payment')}
-      </Badge>
-    );
+  if (booking.status === "awaiting_payment") {
+    return <StatusMark tone="info" label={t("Dashboard.Rides.status-awaiting-payment")} />;
   }
 
   const completed =
     isCompleted ??
-    (booking.status === 'completed' || new Date(booking.date) < new Date());
+    (booking.status === "completed" || new Date(booking.date) < new Date());
 
-  if (completed || booking.status === 'completed') {
-    return (
-      <Badge variant="outline" className={`${BADGE_CLASSES} bg-muted text-foreground`}>
-        <CheckCircle className="w-3 h-3" /> {t('Dashboard.Rides.Completed')}
-      </Badge>
-    );
+  if (completed || booking.status === "completed") {
+    return <StatusMark tone="ok" label={t("Dashboard.Rides.Completed")} />;
   }
 
-  return (
-    <Badge variant="default" className={BADGE_CLASSES}>
-      <Calendar className="w-3 h-3" /> {t('Dashboard.Rides.Upcoming')}
-    </Badge>
-  );
+  return <StatusMark tone="info" label={t("Dashboard.Rides.Upcoming")} />;
 }

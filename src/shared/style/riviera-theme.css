@@ -27,8 +27,19 @@
   --rule2: #BDB3A1;
   --sig: #A3381A;
   --sig-on: #FFF8F2;
-  --brand-multisafepay: var(--brand-multisafepay);
+  --brand-multisafepay: #00ABEE;
   --sig-tint: #F6E1D5;
+  --warn: #B8860B;
+  --info: #2F5B8F;
+  --destructive: var(--err);
+  /* sidebar */
+  --sidebar: var(--sheet);
+  --sidebar-foreground: var(--ink);
+  --sidebar-border: var(--rule);
+  --sidebar-accent: var(--well);
+  --sidebar-accent-foreground: var(--ink);
+  --sidebar-primary: var(--sig);
+  --sidebar-primary-foreground: var(--sig-on);
   --ok: #2F6B3F;
   --err: #A3261B;
   --err-tint: #F8E0DC;
@@ -75,8 +86,18 @@
   --rule2: #4A453C;
   --sig: #F08A5D;
   --sig-on: #1B0E07;
-  --brand-multisafepay: var(--brand-multisafepay);
+  --brand-multisafepay: #00ABEE;
   --sig-tint: #3A2318;
+  --warn: #D4A017;
+  --info: #6FA3E0;
+  --destructive: var(--err);
+  --sidebar: var(--sheet);
+  --sidebar-foreground: var(--ink);
+  --sidebar-border: var(--rule);
+  --sidebar-accent: var(--well);
+  --sidebar-accent-foreground: var(--ink);
+  --sidebar-primary: var(--sig);
+  --sidebar-primary-foreground: var(--sig-on);
   --ok: #7CC48D;
   --err: #FF8F82;
   --err-tint: #3B1D19;
@@ -92,6 +113,7 @@
   --body: var(--font-riviera-arabic), sans-serif;
   --display: var(--font-riviera-arabic), sans-serif;
 }
+.riviera h1, .riviera h2, .riviera h3 { font-family: var(--display); }
 .riviera * { box-sizing: border-box; }
 .riviera .num { unicode-bidi: isolate; direction: ltr; font-family: var(--mono); font-variant-numeric: tabular-nums; }
 .riviera :focus-visible { outline: 2px solid var(--sig); outline-offset: 2px; border-radius: 2px; }

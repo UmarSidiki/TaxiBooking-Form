@@ -1,4 +1,4 @@
 "use client";
 
-export { LanguageSwitcher } from "@/features/booking/ui/riviera/language-switcher";
-export { LanguageSwitcher as default } from "@/features/booking/ui/riviera/language-switcher";
+export { LanguageSwitcher } from "@/shared/ui/riviera/language-switcher";
+export { LanguageSwitcher as default } from "@/shared/ui/riviera/language-switcher";

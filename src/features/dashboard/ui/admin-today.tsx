@@ -30,27 +30,27 @@ export function AdminToday() {
 
   return (
     <div className="grid gap-4 lg:grid-cols-3">
-      <section className="rounded-md border border-border bg-card p-4">
+      <section className="rounded-md border border-border bg-[var(--sheet)] p-4">
         <h2 className="font-semibold">{t("unassigned")}</h2>
-        {data.unassigned.length === 0 ? <p className="mt-2 text-sm text-muted-foreground">{t("empty")}</p> : null}
+        {data.unassigned.length === 0 ? <p className="mt-2 text-sm text-[var(--ink2)]">{t("empty")}</p> : null}
         <ul className="mt-2 flex flex-col gap-2">
           {data.unassigned.map((ride) => (
-            <li key={ride._id} className="text-sm">{ride.time} {ride.pickup}</li>
+            <li key={ride._id} className="text-sm"><span className="font-mono">{ride.time}</span> {ride.pickup}</li>
           ))}
         </ul>
       </section>
-      <section className="rounded-md border border-border bg-card p-4">
+      <section className="rounded-md border border-border bg-[var(--sheet)] p-4">
         <h2 className="font-semibold">{t("deadlines")}</h2>
-        {data.deadlines.length === 0 ? <p className="mt-2 text-sm text-muted-foreground">{t("empty")}</p> : null}
+        {data.deadlines.length === 0 ? <p className="mt-2 text-sm text-[var(--ink2)]">{t("empty")}</p> : null}
         <ul className="mt-2 flex flex-col gap-2">
           {data.deadlines.map((ride) => (
-            <li key={ride._id} className="text-sm">{ride.time} {ride.pickup}</li>
+            <li key={ride._id} className="text-sm"><span className="font-mono">{ride.time}</span> {ride.pickup}</li>
           ))}
         </ul>
       </section>
-      <section className="rounded-md border border-border bg-card p-4">
+      <section className="rounded-md border border-border bg-[var(--sheet)] p-4">
         <h2 className="font-semibold">{t("balances")}</h2>
-        {data.balances.length === 0 ? <p className="mt-2 text-sm text-muted-foreground">{t("empty")}</p> : null}
+        {data.balances.length === 0 ? <p className="mt-2 text-sm text-[var(--ink2)]">{t("empty")}</p> : null}
         <ul className="mt-2 flex flex-col gap-2">
           {data.balances.map((partner) => (
             <li key={partner._id} className="text-sm">{partner.name} {partner.balance}</li>

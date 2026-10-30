@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { headers } from "next/headers";
 import { Geist, Geist_Mono, Libre_Franklin, Bricolage_Grotesque, IBM_Plex_Sans, IBM_Plex_Mono, IBM_Plex_Sans_Arabic } from "next/font/google";
 import "@/shared/style/globals.css";
+import "@/shared/style/riviera-theme.css";
 import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { notFound } from "next/navigation";
 import AuthSessionProvider from "@/features/auth/ui/session-provider";

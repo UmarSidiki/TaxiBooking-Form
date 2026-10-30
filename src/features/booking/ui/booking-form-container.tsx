@@ -2,7 +2,6 @@
 
 import React, { lazy, Suspense, useEffect } from "react";
 import { Loader2 } from "lucide-react";
-import "@/shared/style/riviera-theme.css";
 import "./riviera/riviera.css";
 import { useTranslations } from "next-intl";
 import dynamic from "next/dynamic";

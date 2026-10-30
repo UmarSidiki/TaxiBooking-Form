@@ -5,7 +5,8 @@ import { usePathname } from "next/navigation";
 
 import { deskHeaderTitleKey } from "@/features/dashboard/lib/desk-header-title";
 import { useDeskPageChrome } from "@/features/dashboard/ui/desk-page-chrome";
-import { LanguageSwitcher } from "@/shared/chrome/language-switcher";
+import { LanguageSwitcher } from "@/shared/ui/riviera/language-switcher";
+import { RivieraThemeToggle } from "@/shared/ui/riviera/theme-toggle";
 import { Separator } from "@/shared/ui/separator";
 import { SidebarTrigger } from "@/shared/ui/sidebar";
 
@@ -36,6 +37,7 @@ export function DeskChromeHeader() {
         </div>
         <div className="ms-auto flex shrink-0 items-center gap-2">
           <LanguageSwitcher />
+          <RivieraThemeToggle />
         </div>
       </div>
     </header>

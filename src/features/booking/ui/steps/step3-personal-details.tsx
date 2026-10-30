@@ -41,7 +41,7 @@ export function Step3PersonalDetails({
                   {t('Step3.first-name')} </label>
                 <Input
                   placeholder={t('Step3.john')}
-                  className={errors.firstName ? "border-red-500" : ""}
+                  className={errors.firstName ? "border-[var(--err)]" : ""}
                   value={formData.firstName}
                   aria-invalid={!!errors.firstName}
                   aria-describedby={errors.firstName ? "first-name-error" : undefined}
@@ -53,7 +53,7 @@ export function Step3PersonalDetails({
                   }}
                 />
                 {errors.firstName && (
-                  <p id="first-name-error" className="text-red-500 text-xs mt-1">
+                  <p id="first-name-error" className="text-[color:var(--err)] text-xs mt-1">
                     {errors.firstName}
                   </p>
                 )}
@@ -63,7 +63,7 @@ export function Step3PersonalDetails({
                   {t('Step3.last-name')} </label>
                 <Input
                   placeholder={t('Step3.doe')}
-                  className={errors.lastName ? "border-red-500" : ""}
+                  className={errors.lastName ? "border-[var(--err)]" : ""}
                   value={formData.lastName}
                   aria-invalid={!!errors.lastName}
                   aria-describedby={errors.lastName ? "last-name-error" : undefined}
@@ -75,7 +75,7 @@ export function Step3PersonalDetails({
                   }}
                 />
                 {errors.lastName && (
-                  <p id="last-name-error" className="text-red-500 text-xs mt-1">{errors.lastName}</p>
+                  <p id="last-name-error" className="text-[color:var(--err)] text-xs mt-1">{errors.lastName}</p>
                 )}
               </div>
             </div>
@@ -85,7 +85,7 @@ export function Step3PersonalDetails({
               <Input
                 type="email"
                 placeholder="john.doe@example.com"
-                className={errors.email ? "border-red-500" : ""}
+                className={errors.email ? "border-[var(--err)]" : ""}
                 value={formData.email}
                 aria-invalid={!!errors.email}
                 aria-describedby={errors.email ? "email-error" : undefined}
@@ -94,7 +94,7 @@ export function Step3PersonalDetails({
                 }}
               />
               {errors.email && (
-                <p id="email-error" className="text-red-500 text-xs mt-1">{errors.email}</p>
+                <p id="email-error" className="text-[color:var(--err)] text-xs mt-1">{errors.email}</p>
               )}
             </div>
             <div>
@@ -104,7 +104,7 @@ export function Step3PersonalDetails({
                 type="tel"
                 autoComplete="tel"
                 placeholder="+41 76 123 4567"
-                className={errors.phone ? "border-red-500" : ""}
+                className={errors.phone ? "border-[var(--err)]" : ""}
                 value={formData.phone}
                 aria-invalid={!!errors.phone}
                 aria-describedby={errors.phone ? "phone-error" : undefined}
@@ -113,7 +113,7 @@ export function Step3PersonalDetails({
                 }}
               />
               {errors.phone && (
-                <p id="phone-error" className="text-red-500 text-xs mt-1">{errors.phone}</p>
+                <p id="phone-error" className="text-[color:var(--err)] text-xs mt-1">{errors.phone}</p>
               )}
             </div>
             <p className="text-sm text-muted-foreground">

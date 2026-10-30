@@ -6,8 +6,7 @@ import { Loader2 } from "lucide-react";
 import "./riviera/riviera.css";
 import { useTranslations } from "next-intl";
 import dynamic from "next/dynamic";
-import { LanguageSwitcher } from "@/shared/ui/riviera/language-switcher";
-import { RivieraThemeToggle } from "@/shared/ui/riviera/theme-toggle";
+import { ControlDock } from "./riviera/control-dock";
 import { useBookingFormContainer } from "@/features/booking/hooks/form-container/useBookingFormContainer";
 import { useBookingForm } from "@/features/booking/context/booking-form-context";
 import { useGeo } from "@/features/geo/context/geo-context";
@@ -50,37 +49,23 @@ export default function BookingFormContainer() {
   if (countryRestricted && isLoading) return <StepLoader />;
 
 
-  const stepLabels = [t("FormContainer.trip-details"), t("FormContainer.select-vehicle"), t("FormContainer.payment-and-details")];
+
+  const withMap = currentStep === 1 && HAS_MAP;
+  const dock = <ControlDock brand={brandName(settings) || t("Riviera.brandFallback")} />;
 
   return (
-    <div className={`riviera min-h-screen ${currentStep > 1 || !HAS_MAP ? "no-map" : ""}`}>
-      <header className="top">
-        <span className="brand">
-          <b></b>
-          {brandName(settings) || t("Riviera.brandFallback")}
-        </span>
-        <div className="lang">
-          <LanguageSwitcher />
-        </div>
-        <RivieraThemeToggle />
-      </header>
-
-      {currentStep === 1 && HAS_MAP && (
+    <div className={`riviera min-h-screen ${withMap ? "" : "no-map"}`}>
+      {withMap && (
         <div className="map">
           <Suspense fallback={<StepLoader />}>
             <RivieraMap />
           </Suspense>
+          {dock}
         </div>
       )}
 
       <main className="sheet">
-        <nav className="steps" aria-label="Progress">
-          {stepLabels.map((s, i) => (
-            <span key={s} className={i + 1 === currentStep ? "on" : i + 1 < currentStep ? "done" : ""} aria-current={i + 1 === currentStep ? "step" : undefined}>
-              {s}
-            </span>
-          ))}
-        </nav>
+        <p className="step-count">{t("FormContainer.StepIndicator", { currentStep })}</p>
 
         <Suspense fallback={<StepLoader />}>
           {currentStep === 1 && <Step1TripDetails />}
@@ -88,6 +73,7 @@ export default function BookingFormContainer() {
           {currentStep === 3 && <Step3Payment />}
         </Suspense>
       </main>
+      {!withMap && dock}
     </div>
   );
 }

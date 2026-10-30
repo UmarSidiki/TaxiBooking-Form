@@ -57,7 +57,8 @@
     "price-based-on-distance-traveled": "Цена зависит от пройденного расстояния",
     "price-based-on-hourly-rate": "Цена основана на почасовом тарифе",
     "stop": "Остановка",
-    "AddStop": "Добавить остановку"
+    "AddStop": "Добавить остановку",
+    "TripType": "Тип поездки"
   },
   "Step2": {
     "select-your-vehicle": "Выберите автомобиль",
@@ -116,7 +117,8 @@
     "included": "Включено",
     "incl-tax": "(Вкл. налог)",
     "no-vehicles": "Сейчас нет доступных автомобилей.",
-    "vehicles-load-error": "Не удалось загрузить автомобили. Попробуйте снова."
+    "vehicles-load-error": "Не удалось загрузить автомобили. Попробуйте снова.",
+    "price-unavailable": "Цена недоступна"
   },
   "not-set": "Не задано",
   "Step3": {
@@ -2744,6 +2746,11 @@
     "total": "Итого",
     "passengers": "{count, plural, one {# пассажир} few {# пассажира} many {# пассажиров} other {# пассажира}}",
     "brandFallback": "RideNow",
-    "mapLabel": "Карта маршрута"
+    "mapLabel": "Карта маршрута",
+    "account": "Ваш аккаунт",
+    "siteControls": "Управление сайтом",
+    "lightMode": "Светлая тема",
+    "darkMode": "Тёмная тема",
+    "language": "Язык"
   }
 }

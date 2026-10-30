@@ -57,7 +57,8 @@
     "price-based-on-distance-traveled": "Prezzo basato sulla distanza percorsa",
     "price-based-on-hourly-rate": "Prezzo basato sulla tariffa oraria",
     "stop": "Fermata",
-    "AddStop": "Aggiungi una fermata"
+    "AddStop": "Aggiungi una fermata",
+    "TripType": "Tipo di viaggio"
   },
   "Step2": {
     "select-your-vehicle": "Seleziona il tuo Veicolo",
@@ -116,7 +117,8 @@
     "included": "Incluso",
     "incl-tax": "(Tasse Incl.)",
     "no-vehicles": "Nessun veicolo disponibile al momento.",
-    "vehicles-load-error": "Impossibile caricare i veicoli. Riprova."
+    "vehicles-load-error": "Impossibile caricare i veicoli. Riprova.",
+    "price-unavailable": "Prezzo non disponibile"
   },
   "not-set": "Non Impostato",
   "Step3": {
@@ -2744,6 +2746,11 @@
     "total": "Totale",
     "passengers": "{count, plural, one {# passeggero} other {# passeggeri}}",
     "brandFallback": "RideNow",
-    "mapLabel": "Mappa del percorso"
+    "mapLabel": "Mappa del percorso",
+    "account": "Il tuo account",
+    "siteControls": "Controlli del sito",
+    "lightMode": "Modalità chiara",
+    "darkMode": "Modalità scura",
+    "language": "Lingua"
   }
 }

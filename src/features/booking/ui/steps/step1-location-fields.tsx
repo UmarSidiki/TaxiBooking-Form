@@ -46,7 +46,6 @@ export function Step1LocationFields({
           {/* Pickup Location */}
           <div>
             <label htmlFor="booking-pickup" className="mb-1.5 block text-sm font-medium text-foreground">
-              <MapPin className="inline h-4 w-4 mr-1 text-primary" />
               {t("Step1.PickupLocation")} *
             </label>
             <div className="relative">
@@ -56,7 +55,7 @@ export function Step1LocationFields({
                 ref={pickupInputRef}
                 placeholder={t("Step1.PickupPlaceholder")}
                 className={`h-11 pe-12 ${
-                  errors.pickup ? "border-red-500" : "border-[var(--rule2)]"
+                  errors.pickup ? "border-[var(--err)]" : "border-[var(--rule2)]"
                 } focus:border-[var(--ink)]-500 focus:ring-primary-500`}
                 value={formData.pickup}
                 onChange={(e) => {
@@ -71,7 +70,7 @@ export function Step1LocationFields({
               <PickupCurrentLocationButton />
             </div>
             {errors.pickup && (
-              <p className="text-red-500 text-xs mt-1">{errors.pickup}</p>
+              <p className="text-[color:var(--err)] text-xs mt-1">{errors.pickup}</p>
             )}
           </div>
 
@@ -128,7 +127,7 @@ export function Step1LocationFields({
                     variant="outline"
                     size="icon"
                     onClick={() => handleRemoveStop(index)}
-                    className="flex-shrink-0 h-9 w-9 hover:bg-red-50 hover:text-red-600 hover:border-red-200 transition-colors"
+                    className="flex-shrink-0 h-9 w-9 hover:text-[color:var(--err)] hover:border-[var(--err)] transition-colors"
                   >
                     <X className="h-4 w-4" />
                   </Button>
@@ -142,13 +141,12 @@ export function Step1LocationFields({
             <div>
               <div className="flex items-center justify-between mb-1.5">
                 <label htmlFor="booking-dropoff" className="text-sm font-medium text-foreground">
-                  <Flag className="inline h-4 w-4 mr-1 text-primary" />
                   {t("Step1.DropoffLocation")} *
                 </label>
                 <button
                   type="button"
                   onClick={handleAddStop}
-                  className="inline-flex min-h-11 items-center text-sm text-primary underline hover:text-primary/80"
+                  className="inline-flex min-h-11 items-center text-sm text-[color:var(--link)] hover:underline"
                 >
                   {t("embeddable.add-a-stop")}
                 </button>
@@ -159,7 +157,7 @@ export function Step1LocationFields({
                 ref={dropoffInputRef}
                 placeholder={t("Step1.DropoffPlaceholder")}
                 className={`${
-                  errors.dropoff ? "border-red-500" : "border-[var(--rule2)]"
+                  errors.dropoff ? "border-[var(--err)]" : "border-[var(--rule2)]"
                 } focus:border-[var(--ink)]-500 focus:ring-primary-500`}
                 value={formData.dropoff}
                 onChange={(e) => {
@@ -172,7 +170,7 @@ export function Step1LocationFields({
                 }}
               />
               {errors.dropoff && (
-                <p className="text-red-500 text-xs mt-1">{errors.dropoff}</p>
+                <p className="text-[color:var(--err)] text-xs mt-1">{errors.dropoff}</p>
               )}
               {calculatingDistance && (
                 <p className="text-xs text-[color:var(--ink2)] mt-1 flex items-center">

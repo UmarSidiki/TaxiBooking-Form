@@ -34,7 +34,6 @@ export function Step1ScheduleFields({
           <div className="grid grid-cols-2 gap-3">
             <div className="min-w-0">
               <label htmlFor="booking-date" className="mb-1.5 block text-sm font-medium text-foreground">
-                <CalendarDays className="inline h-4 w-4 mr-1" />
                 {formData.tripType === "roundtrip"
                   ? t("Step1.DepartureDate")
                   : t("Step1.Date")}{" "}
@@ -45,7 +44,7 @@ export function Step1ScheduleFields({
                 type="date"
                 min={today}
                 className={`${
-                  errors.date ? "border-red-500" : "border-[var(--rule2)]"
+                  errors.date ? "border-[var(--err)]" : "border-[var(--rule2)]"
                 } focus:border-[var(--ink)]-500 focus:ring-primary-500`}
                 value={formData.date}
                 onChange={(e) => {
@@ -53,12 +52,11 @@ export function Step1ScheduleFields({
                 }}
               />
               {errors.date && (
-                <p className="text-red-500 text-xs mt-1">{errors.date}</p>
+                <p className="text-[color:var(--err)] text-xs mt-1">{errors.date}</p>
               )}
             </div>
             <div className="min-w-0">
               <label htmlFor="booking-time" className="mb-1.5 block text-sm font-medium text-foreground">
-                <Clock className="inline h-4 w-4 mr-1" />
                 {formData.tripType === "roundtrip"
                   ? t("Step1.DepartureTime")
                   : t("Step1.Time")}{" "}
@@ -68,7 +66,7 @@ export function Step1ScheduleFields({
                 id="booking-time"
                 type="time"
                 className={`${
-                  errors.time ? "border-red-500" : "border-[var(--rule2)]"
+                  errors.time ? "border-[var(--err)]" : "border-[var(--rule2)]"
                 } focus:border-[var(--ink)]-500 focus:ring-primary-500`}
                 value={formData.time}
                 onChange={(e) => {
@@ -76,7 +74,7 @@ export function Step1ScheduleFields({
                 }}
               />
               {errors.time && (
-                <p className="text-red-500 text-xs mt-1">{errors.time}</p>
+                <p className="text-[color:var(--err)] text-xs mt-1">{errors.time}</p>
               )}
             </div>
           </div>
@@ -86,14 +84,13 @@ export function Step1ScheduleFields({
             <div className="grid grid-cols-2 gap-3">
               <div className="min-w-0">
                 <label className="block text-sm font-medium mb-1.5 text-[color:var(--ink)]">
-                  <CalendarDays className="inline h-4 w-4 mr-1" />
                   {t("Step1.ReturnDate")} *
                 </label>
                 <Input
                   type="date"
                   min={formData.date || today}
                   className={`${
-                    errors.returnDate ? "border-red-500" : "border-[var(--rule2)]"
+                    errors.returnDate ? "border-[var(--err)]" : "border-[var(--rule2)]"
                   } focus:border-[var(--ink)]-500 focus:ring-primary-500`}
                   value={formData.returnDate}
                   onChange={(e) => {
@@ -101,20 +98,19 @@ export function Step1ScheduleFields({
                   }}
                 />
                 {errors.returnDate && (
-                  <p className="text-red-500 text-xs mt-1">
+                  <p className="text-[color:var(--err)] text-xs mt-1">
                     {errors.returnDate}
                   </p>
                 )}
               </div>
               <div className="min-w-0">
                 <label className="block text-sm font-medium mb-1.5 text-[color:var(--ink)]">
-                  <Clock className="inline h-4 w-4 mr-1" />
                   {t("Step1.ReturnTime")} *
                 </label>
                 <Input
                   type="time"
                   className={`${
-                    errors.returnTime ? "border-red-500" : "border-[var(--rule2)]"
+                    errors.returnTime ? "border-[var(--err)]" : "border-[var(--rule2)]"
                   } focus:border-[var(--ink)]-500 focus:ring-primary-500`}
                   value={formData.returnTime}
                   onChange={(e) => {
@@ -122,7 +118,7 @@ export function Step1ScheduleFields({
                   }}
                 />
                 {errors.returnTime && (
-                  <p className="text-red-500 text-xs mt-1">
+                  <p className="text-[color:var(--err)] text-xs mt-1">
                     {errors.returnTime}
                   </p>
                 )}
@@ -133,7 +129,6 @@ export function Step1ScheduleFields({
           {/* Passengers */}
           <div>
             <label className="block text-sm font-medium mb-1.5 text-[color:var(--ink)]">
-              <Users className="inline h-4 w-4 mr-1" />
               {t("Step1.Passengers")}
             </label>
             <Input

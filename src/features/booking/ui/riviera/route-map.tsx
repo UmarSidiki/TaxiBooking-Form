@@ -29,10 +29,9 @@ function svgIcon(svg: string, size: number): google.maps.Icon {
 function markerIcons(el: Element) {
   const ink = token(el, "--ink");
   const sheet = token(el, "--sheet");
-  const sig = token(el, "--sig");
   return {
     pickup: svgIcon(`<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"><circle cx="9" cy="9" r="6" fill="${sheet}" stroke="${ink}" stroke-width="3"/></svg>`, 18),
-    dropoff: svgIcon(`<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"><rect x="2" y="2" width="14" height="14" rx="2" fill="${sig}" stroke="${sheet}" stroke-width="2"/></svg>`, 18),
+    dropoff: svgIcon(`<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"><circle cx="9" cy="9" r="7" fill="${ink}" stroke="${sheet}" stroke-width="2"/></svg>`, 18),
   };
 }
 

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { Loader2, Shield, Users } from "lucide-react";
+import { Briefcase, Users } from "lucide-react";
 import { Button } from "@/shared/ui/button";
 import { DEFAULT_VEHICLE_MINIMUM_HOURS } from "@/features/fleet/lib/vehicle-form-defaults";
 import type { DistanceData, FormData } from "@/features/booking/context/booking-form-context";
@@ -54,80 +54,59 @@ export function VehicleCard({
             alt={vehicle.name}
             width={200}
             height={150}
-            style={{ height: 72, width: "auto", objectFit: "cover" }}
             onError={() => setImgFailed(true)}
           />
         ) : (
-          <VehicleArt kind={kind} style={{ height: 72 }} />
+          <VehicleArt kind={kind} />
         )}
       </div>
 
-      <h3>{vehicle.name}</h3>
-      <span className="price num">
-        {currencySymbol}
-        {calculatedPrice.toFixed(2)}
-      </span>
-      <span className="mdl">{vehicle.description}</span>
-      {isBestPrice && (
-        <span className="inc" style={{ color: "var(--ink2)" }}>
-          Best price
-        </span>
-      )}
+      <div className="info">
+        <h3>
+          {vehicle.name}
+          {isBestPrice && <span className="tag">{t("Step2.best-price")}</span>}
+        </h3>
+        {vehicle.description && <span className="mdl">{vehicle.description}</span>}
+        <div className="specs">
+          <span>
+            <Users aria-hidden="true" />
+            <span className="num">{vehicle.persons}</span>
+          </span>
+          <span>
+            <Briefcase aria-hidden="true" />
+            <span className="num">{vehicle.baggages}</span>
+          </span>
+        </div>
+      </div>
 
-      <div className="specs" style={{ display: "flex", gap: 16, alignItems: "center" }}>
-        <span className="inline-flex items-center gap-1.5">
-          <UsersIcon />
-          {vehicle.persons}
-        </span>
-        <span className="inline-flex items-center gap-1.5">
-          <BagIcon />
-          {vehicle.baggages}
-        </span>
+      <div className="end">
         {originalPrice > calculatedPrice && (
-          <span className="line-through text-xs">
+          <s className="was num">
             {currencySymbol}
             {originalPrice.toFixed(2)}
-          </span>
+          </s>
         )}
-      </div>
-
-      <div style={{ gridColumn: "1 / -1", marginTop: 10 }}>
+        <span className="price num">
+          {currencySymbol}
+          {calculatedPrice.toFixed(2)}
+        </span>
         <Button
-          onClick={() => handleVehicleSelect(vehicle._id as string)}
-          aria-pressed={isSelected}
-          className="w-full py-2 text-base font-medium"
-          style={{
-            background: isSelected ? "var(--sig)" : "var(--sheet)",
-            color: isSelected ? "var(--sig-on)" : "var(--ink)",
-            border: "1px solid var(--rule2)",
+          type="button"
+          variant="outline"
+          onClick={(e) => {
+            e.stopPropagation();
+            handleVehicleSelect(vehicle._id as string);
           }}
+          aria-pressed={isSelected}
+          className={isSelected ? "pick is-on" : "pick"}
         >
           {isSelected ? t("Step2.selected") : t("Step2.select")}
         </Button>
       </div>
 
       {(formData.bookingType === "destination" && !distanceData) || calculatingDistance ? (
-        <div style={{ gridColumn: "1 / -1", fontSize: 12, color: "var(--ink2)" }}>
-          {calculatingDistance ? "Calculating..." : "Price unavailable"}
-        </div>
+        <p className="note">{calculatingDistance ? t("Step1.CalculatingDistance") : t("Step2.price-unavailable")}</p>
       ) : null}
     </div>
-  );
-}
-
-function UsersIcon() {
-  return (
-    <svg className="h-4 w-4" style={{ color: "var(--ink2)" }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
-    </svg>
-  );
-}
-
-function BagIcon() {
-  return (
-    <svg className="h-4 w-4" style={{ color: "var(--ink2)" }} fill="currentColor" viewBox="0 0 20 20">
-      <path d="M8 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM15 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z" />
-      <path d="M3 4a1 1 0 00-1 1v10a1 1 0 001 1h1.05a2.5 2.5 0 014.9 0H10a1 1 0 001-1V5a1 1 0 00-1-1H3zM14 7a1 1 0 00-1 1v6.05A2.5 2.5 0 0115.95 16H17a1 1 0 001-1v-5a1 1 0 00-.293-.707l-2-2A1 1 0 0015 7h-1z" />
-    </svg>
   );
 }

@@ -1,8 +1,7 @@
 "use client";
 
-import { Button } from "@/shared/ui/button";
+import { Segmented } from "@/shared/ui/riviera/segmented";
 import type { FormData } from "@/features/booking/context/booking-form-context";
-import { Clock, MapPin } from "lucide-react";
 import type { useTranslations } from "next-intl";
 
 type TFn = ReturnType<typeof useTranslations>;
@@ -21,34 +20,15 @@ export function Step1BookingTypeFields({
             <label className="block text-sm font-medium mb-1.5 text-[color:var(--ink)]">
               {t("Step1.BookingType")}
             </label>
-            <div className="grid grid-cols-2 gap-2">
-              <Button
-                type="button"
-                onClick={() => handleBookingTypeChange("destination")}
-                variant="outline"
-                className={`${
-                  formData.bookingType === "destination"
-                    ? "bg-[var(--sheet)] text-[color:var(--ink)] border-2 border-[var(--ink)]"
-                    : "bg-[var(--sheet)] hover:bg-[var(--well)]"
-                }`}
-              >
-                <MapPin className="h-4 w-4" />
-                {t("Step1.DestinationBased")}
-              </Button>
-              <Button
-                type="button"
-                onClick={() => handleBookingTypeChange("hourly")}
-                variant="outline"
-                className={`${
-                  formData.bookingType === "hourly"
-                    ? "bg-[var(--sheet)] text-[color:var(--ink)] border-2 border-[var(--ink)]"
-                    : "bg-[var(--sheet)] hover:bg-[var(--well)]"
-                }`}
-              >
-                <Clock className="h-4 w-4" />
-                {t("Step1.TimeBased")}
-              </Button>
-            </div>
+            <Segmented
+              label={t("Step1.BookingType")}
+              value={formData.bookingType}
+              options={[
+                { value: "destination", label: t("Step1.DestinationBased") },
+                { value: "hourly", label: t("Step1.TimeBased") },
+              ]}
+              onChange={handleBookingTypeChange}
+            />
             <p className="text-xs text-[color:var(--ink2)] mt-1">
               {formData.bookingType === "destination"
                 ? t("Step1.price-based-on-distance-traveled")

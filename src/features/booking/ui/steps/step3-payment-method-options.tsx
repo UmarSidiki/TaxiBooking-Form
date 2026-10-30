@@ -1,8 +1,10 @@
 "use client";
 
 import type { Step3PaymentMethodsProps } from "@/features/booking/ui/steps/step3-payment-methods.types";
-import { Building2, CheckCircle2, CreditCard, Wallet } from "lucide-react";
 
+type Method = string;
+
+/** Payment methods as a radio list (styles: .pay-list in riviera.css). */
 export function Step3PaymentMethodOptions({
   t,
   paymentSettings,
@@ -17,184 +19,33 @@ export function Step3PaymentMethodOptions({
   | "selectedPaymentMethod"
   | "setSelectedPaymentMethod"
 >) {
+  const accepted = paymentSettings?.acceptedPaymentMethods ?? [];
+  const options: Array<{ id: Method; title: string; hint: string; show: boolean }> = [
+    { id: "card", title: t("Step3.credit-debit-card"), hint: "Visa, Mastercard, Amex", show: accepted.includes("card") && stripeConfig.enabled },
+    { id: "multisafepay", title: `${t("Step3.pay-online")} ${t("Step3.via-multisafepay")}`, hint: t("Step3.ideal-bancontact-paypal-and-more"), show: accepted.includes("multisafepay") },
+    { id: "cash", title: t("Step3.cash-payment"), hint: t("Step3.pay-in-cash-to-the-driver"), show: accepted.includes("cash") },
+    { id: "bank_transfer", title: t("Step3.bank-transfer"), hint: t("Step3.transfer-to-our-bank-account"), show: accepted.includes("bank_transfer") },
+  ];
+
   return (
-              <div className="grid grid-cols-1 gap-3">
-                {paymentSettings?.acceptedPaymentMethods.includes("card") &&
-                  stripeConfig.enabled && (
-                    <button
-                      type="button"
-                      onClick={() => setSelectedPaymentMethod("card")}
-                      className={`p-4 border-2 rounded text-left transition-all relative overflow-hidden ${
-                        selectedPaymentMethod === "card"
-                          ? "border-blue-500 bg-blue-50 shadow-md"
-                          : "border-[var(--rule2)] hover:border-[var(--rule2)] hover:shadow-sm"
-                      }`}
-                    >
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                          <div
-                            className={`p-2 rounded ${
-                              selectedPaymentMethod === "card"
-                                ? "bg-blue-100"
-                                : "bg-[var(--well)]"
-                            }`}
-                          >
-                            <CreditCard
-                              className={`h-5 w-5 ${
-                                selectedPaymentMethod === "card"
-                                  ? "text-[color:var(--ink2)]"
-                                  : "text-[color:var(--ink2)]"
-                              }`}
-                            />
-                          </div>
-                          <div>
-                            <p className="font-semibold text-[color:var(--ink)]">
-                              {t('Step3.credit-debit-card')} </p>
-                            <p className="text-xs text-[color:var(--ink2)]">
-                              Visa, Mastercard, Amex
-                            </p>
-                          </div>
-                        </div>
-                        {selectedPaymentMethod === "card" && (
-                          <div className="flex items-center gap-1 text-[color:var(--ink2)] text-sm font-medium">
-                            <CheckCircle2 className="h-4 w-4" />
-                          </div>
-                        )}
-                      </div>
-                    </button>
-                  )}
-
-                {paymentSettings?.acceptedPaymentMethods.includes("multisafepay") && (
-                  <button
-                    type="button"
-                    onClick={() => setSelectedPaymentMethod("multisafepay")}
-                    className={`p-4 border-2 rounded text-left transition-all ${
-                      selectedPaymentMethod === "multisafepay"
-                        ? "border-[var(--brand-multisafepay)] bg-[var(--brand-multisafepay)]/10 shadow-md"
-                        : "border-[var(--rule2)] hover:border-[var(--rule2)] hover:shadow-sm"
-                    }`}
-                  >
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <div
-                          className={`p-2 rounded ${
-                            selectedPaymentMethod === "multisafepay"
-                              ? "bg-[var(--brand-multisafepay)]/10"
-                              : "bg-[var(--well)]"
-                          }`}
-                        >
-                          <CreditCard
-                            className={`h-5 w-5 ${
-                              selectedPaymentMethod === "multisafepay"
-                                ? "text-[var(--brand-multisafepay)]"
-                                : "text-[color:var(--ink2)]"
-                            }`}
-                          />
-                        </div>
-                        <div>
-                          <p className="font-semibold text-[color:var(--ink)]">
-                            {t('Step3.pay-online')} <span className="text-sm font-normal">{t('Step3.via-multisafepay')}</span>
-                          </p>
-                          <p className="text-xs text-[color:var(--ink2)]">
-                            {t('Step3.ideal-bancontact-paypal-and-more')} </p>
-                        </div>
-                      </div>
-                      {selectedPaymentMethod === "multisafepay" && (
-                        <div className="flex items-center gap-1 text-[var(--brand-multisafepay)] text-sm font-medium">
-                          <CheckCircle2 className="h-4 w-4" />
-                        </div>
-                      )}
-                    </div>
-                  </button>
-                )}
-
-                {paymentSettings?.acceptedPaymentMethods.includes("cash") && (
-                  <button
-                    type="button"
-                    onClick={() => setSelectedPaymentMethod("cash")}
-                    className={`p-4 border-2 rounded text-left transition-all ${
-                      selectedPaymentMethod === "cash"
-                        ? "border-green-500 bg-green-50 shadow-md"
-                        : "border-[var(--rule2)] hover:border-[var(--rule2)] hover:shadow-sm"
-                    }`}
-                  >
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <div
-                          className={`p-2 rounded ${
-                            selectedPaymentMethod === "cash"
-                              ? "bg-[var(--sig-tint)]"
-                              : "bg-[var(--well)]"
-                          }`}
-                        >
-                          <Wallet
-                            className={`h-5 w-5 ${
-                              selectedPaymentMethod === "cash"
-                                ? "text-[color:var(--ok)]"
-                                : "text-[color:var(--ink2)]"
-                            }`}
-                          />
-                        </div>
-                        <div>
-                          <p className="font-semibold text-[color:var(--ink)]">
-                            {t('Step3.cash-payment')} </p>
-                          <p className="text-xs text-[color:var(--ink2)]">
-                            {t('Step3.pay-in-cash-to-the-driver')} </p>
-                        </div>
-                      </div>
-                      {selectedPaymentMethod === "cash" && (
-                        <div className="flex items-center gap-1 text-[color:var(--ok)] text-sm font-medium">
-                          <CheckCircle2 className="h-4 w-4" />
-                        </div>
-                      )}
-                    </div>
-                  </button>
-                )}
-
-                {paymentSettings?.acceptedPaymentMethods.includes(
-                  "bank_transfer"
-                ) && (
-                  <button
-                    type="button"
-                    onClick={() => setSelectedPaymentMethod("bank_transfer")}
-                    className={`p-4 border-2 rounded text-left transition-all ${
-                      selectedPaymentMethod === "bank_transfer"
-                        ? "border-indigo-500 bg-indigo-50 shadow-md"
-                        : "border-[var(--rule2)] hover:border-[var(--rule2)] hover:shadow-sm"
-                    }`}
-                  >
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <div
-                          className={`p-2 rounded ${
-                            selectedPaymentMethod === "bank_transfer"
-                              ? "bg-indigo-100"
-                              : "bg-[var(--well)]"
-                          }`}
-                        >
-                          <Building2
-                            className={`h-5 w-5 ${
-                              selectedPaymentMethod === "bank_transfer"
-                                ? "text-indigo-600"
-                                : "text-[color:var(--ink2)]"
-                            }`}
-                          />
-                        </div>
-                        <div>
-                          <p className="font-semibold text-[color:var(--ink)]">
-                            {t('Step3.bank-transfer')} </p>
-                          <p className="text-xs text-[color:var(--ink2)]">
-                            {t('Step3.transfer-to-our-bank-account')} </p>
-                        </div>
-                      </div>
-                      {selectedPaymentMethod === "bank_transfer" && (
-                        <div className="flex items-center gap-1 text-indigo-600 text-sm font-medium">
-                          <CheckCircle2 className="h-4 w-4" />
-                        </div>
-                      )}
-                    </div>
-                  </button>
-                )}
-              </div>
+    <div className="pay-list" role="radiogroup" aria-label={t("Step3.payment-method")}>
+      {options
+        .filter((o) => o.show)
+        .map((o) => (
+          <button
+            key={o.id}
+            type="button"
+            role="radio"
+            aria-checked={selectedPaymentMethod === o.id}
+            onClick={() => setSelectedPaymentMethod(o.id)}
+          >
+            <span className="dot" aria-hidden="true" />
+            <span className="t">
+              <b>{o.title}</b>
+              <small>{o.hint}</small>
+            </span>
+          </button>
+        ))}
+    </div>
   );
 }

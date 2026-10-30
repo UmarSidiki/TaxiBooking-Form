@@ -27,13 +27,13 @@ export function Step3BankPanel({
   }
 
   return (
-                <div className="mt-4 bg-blue-50 border border-blue-200 rounded p-4">
+                <div className="mt-4 bg-[var(--well)] border border-[var(--rule)] rounded p-4">
                   <div className="flex items-start gap-3 mb-4">
                     <Building2 className="h-5 w-5 text-[color:var(--ink2)] flex-shrink-0 mt-0.5" />
                     <div>
-                      <p className="font-medium text-blue-900 mb-1">
+                      <p className="font-medium text-[color:var(--ink)] mb-1">
                         {t('Step3.bank-transfer-instructions')} </p>
-                      <p className="text-sm text-blue-800">
+                      <p className="text-sm text-[color:var(--ink2)]">
                         {t('Step3.please-transfer-eur')}{currencySymbol}{totalPrice.toFixed(2)} {t('Step3.to-the-account-below-your-booking-will-be-confirmed-once-payment-is-received')} </p>
                     </div>
                   </div>

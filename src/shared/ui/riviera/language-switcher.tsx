@@ -6,7 +6,6 @@ import { useLocale } from "next-intl";
 import { usePathname, useRouter } from "next/navigation";
 import { useTransition } from "react";
 
-import { Button } from "@/shared/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,9 +13,9 @@ import {
   DropdownMenuTrigger,
 } from "@/shared/ui/dropdown-menu";
 
-import { Globe } from "lucide-react";
+import { Check, Globe } from "lucide-react";
 
-function LanguageSwitcherComponent() {
+function LanguageSwitcherComponent({ menuSide = "bottom" }: { menuSide?: "top" | "bottom" }) {
   const [isPending, startTransition] = useTransition();
 
   const locale = useLocale();
@@ -51,28 +50,27 @@ function LanguageSwitcherComponent() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button
-          variant="outline"
-          size="default"
+        <button
+          type="button"
           disabled={isPending}
-          className="h-10 min-w-10 gap-2 px-3 bg-[var(--sheet)] border-[var(--rule2)]"
-          aria-label="Switch language"
+          className="dock-btn dock-lang"
+          aria-label={`Language: ${current.name}`}
         >
-          <Globe className="h-4 w-4" />
-          <span className="font-medium">{current.code}</span>
-        </Button>
+          <Globe aria-hidden="true" />
+          <span>{current.code}</span>
+        </button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-56">
+      <DropdownMenuContent align={menuSide === "top" ? "center" : "end"} side={menuSide} sideOffset={8} className="w-48 rounded-[var(--radius)] shadow-md">
         {Object.keys(languages).map((lang) => (
           <DropdownMenuItem
             key={lang}
             onClick={() => onSelectLocale(lang)}
-            className={`cursor-pointer py-2 px-3 ${locale === lang ? "font-semibold" : "font-normal"}`}
+            className="cursor-pointer py-2 px-3"
             aria-current={locale === lang}
           >
             <div className="flex items-center justify-between w-full gap-3">
               <span>{languages[lang].name}</span>
-              <span className="text-xs font-mono text-muted-foreground">{languages[lang].code}</span>
+              {locale === lang && <Check className="h-4 w-4" aria-hidden="true" />}
             </div>
           </DropdownMenuItem>
         ))}

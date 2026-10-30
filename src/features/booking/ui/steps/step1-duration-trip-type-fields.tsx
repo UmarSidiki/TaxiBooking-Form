@@ -1,9 +1,8 @@
 "use client";
 
-import { Button } from "@/shared/ui/button";
+import { Segmented } from "@/shared/ui/riviera/segmented";
 import { Input } from "@/shared/ui/input";
 import type { FormData } from "@/features/booking/context/booking-form-context";
-import { Clock } from "lucide-react";
 import type { useTranslations } from "next-intl";
 
 type TFn = ReturnType<typeof useTranslations>;
@@ -27,7 +26,6 @@ export function Step1DurationTripTypeFields({
           {formData.bookingType === "hourly" && (
             <div>
               <label className="block text-sm font-medium mb-1.5 text-[color:var(--ink)]">
-                <Clock className="inline h-4 w-4 mr-1" />
                 {t("Step1.Duration")} *
               </label>
               <Input
@@ -51,44 +49,22 @@ export function Step1DurationTripTypeFields({
           {formData.bookingType === "destination" && (
             <div>
               <label className="block text-sm font-medium mb-1.5 text-[color:var(--ink)]">
-                Trip Type
+                {t("Step1.TripType")}
               </label>
-              <div className="grid grid-cols-2 gap-2">
-                <Button
-                  type="button"
-                  onClick={() => {
-                    handleTripTypeChange("oneway");
-                    if (formData.pickup && formData.dropoff) {
-                      handleInputBlur("pickup");
-                    }
-                  }}
-                  variant="outline"
-                  className={`${
-                    formData.tripType === "oneway"
-                      ? "bg-[var(--sheet)] text-[color:var(--ink)] border-2 border-[var(--ink)]"
-                      : "bg-[var(--sheet)] hover:bg-[var(--well)]"
-                  }`}
-                >
-                  {t("Step1.OneWay")}
-                </Button>
-                <Button
-                  type="button"
-                  onClick={() => {
-                    handleTripTypeChange("roundtrip");
-                    if (formData.pickup && formData.dropoff) {
-                      handleInputBlur("pickup");
-                    }
-                  }}
-                  variant="outline"
-                  className={`${
-                    formData.tripType === "roundtrip"
-                      ? "bg-[var(--sheet)] text-[color:var(--ink)] border-2 border-[var(--ink)]"
-                      : "bg-[var(--sheet)] hover:bg-[var(--well)]"
-                  }`}
-                >
-                  {t("Step1.RoundTrip")}
-                </Button>
-              </div>
+              <Segmented
+                label={t("Step1.TripType")}
+                value={formData.tripType}
+                options={[
+                  { value: "oneway", label: t("Step1.OneWay") },
+                  { value: "roundtrip", label: t("Step1.RoundTrip") },
+                ]}
+                onChange={(type) => {
+                  handleTripTypeChange(type);
+                  if (formData.pickup && formData.dropoff) {
+                    handleInputBlur("pickup");
+                  }
+                }}
+              />
             </div>
           )}
     </>

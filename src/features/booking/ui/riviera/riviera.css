@@ -1,88 +1,117 @@
-/* Component styles ported from mockup, scoped under .riviera */
+/* Public booking form layout. Tokens (colour, type, radius) live in shared/style/riviera-theme.css. */
 html:has(.riviera), body:has(.riviera) { background-color: var(--paper); }
-.riviera .app { display: grid; min-height: 100dvh; }
-.riviera .top { display: flex; align-items: center; gap: 10px; padding: calc(10px + env(safe-area-inset-top)) 16px 10px; position: sticky; top: 0; z-index: 5; background: color-mix(in srgb, var(--paper) 92%, transparent); border-bottom: 1px solid var(--rule); }
-.riviera .brand { font: 700 19px/1 var(--display); letter-spacing: -.02em; display: flex; align-items: center; gap: 8px; margin-inline-end: auto; }
-.riviera .brand b { width: 22px; height: 22px; border-radius: 50%; border: 2px solid var(--ink); display: grid; place-items: center; }
-.riviera .brand b::after { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--sig); }
-.riviera .ctl { height: 40px; min-width: 40px; padding: 0 10px; border: 1px solid var(--rule2); border-radius: 6px; background: var(--sheet); display: inline-flex; align-items: center; gap: 6px; cursor: pointer; font-size: 14px; font-weight: 500; }
-.riviera .ctl:hover { border-color: var(--ink); }
-.riviera .lang { position: relative; }
-.riviera .map { position: relative; height: 42dvh; min-height: 280px; overflow: hidden; background: var(--well); }
-.riviera .attr { position: absolute; inset-inline-end: 6px; bottom: 22px; font-size: 11px; background: color-mix(in srgb, var(--sheet) 85%, transparent); color: var(--ink2); padding: 2px 6px; border-radius: 2px; z-index: 500; }
-.riviera .attr a { color: inherit; }
-.riviera .sheet { background: var(--sheet); margin-top: 0; position: relative; padding: 8px 16px calc(110px + env(safe-area-inset-bottom)); }
-.riviera .steps { display: flex; gap: 6px; margin: 14px 0 18px; }
-.riviera .steps span { flex: 1; font-size: 12.5px; font-weight: 500; color: var(--ink2); padding-top: 8px; border-top: 2px solid var(--rule); }
-.riviera .steps span.on { color: var(--ink); border-color: var(--ink); }
-.riviera .steps span.done { border-color: var(--sig); color: var(--ink); }
-.riviera h1 { font: 600 clamp(26px, 6vw, 34px)/1.08 var(--display); letter-spacing: -.025em; margin-bottom: 6px; }
-.riviera .lede { color: var(--ink2); font-size: 15px; margin-bottom: 18px; max-width: 46ch; }
-.riviera .trip { display: grid; grid-template-columns: auto 1fr auto; gap: 4px 12px; align-items: center; padding: 14px; border-radius: 4px; background: var(--well); margin-bottom: 20px; }
-.riviera .trip .rail { grid-row: span 2; display: flex; flex-direction: column; align-items: center; gap: 3px; height: 100%; padding: 5px 0; }
-.riviera .trip .rail i { flex: 1; width: 2px; background: repeating-linear-gradient(var(--ink2) 0 3px, transparent 3px 6px); }
-.riviera .trip .rail .dot { width: 12px; height: 12px; border-radius: 50%; border: 3px solid var(--ink); background: var(--sheet); flex: none; }
-.riviera .trip .rail .dot.to { border-radius: 2px; background: var(--sig); border-color: var(--sig); }
-.riviera .trip b { font-weight: 500; font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.riviera .trip .meta { grid-row: span 2; text-align: end; font-size: 13px; color: var(--ink2); line-height: 1.5; }
-.riviera .trip .meta .num { color: var(--ink); font-size: 14px; white-space: nowrap; }
-.riviera .trip .when { grid-column: 1 / -1; border-top: 1px solid var(--rule2); margin-top: 8px; padding-top: 8px; font-size: 13.5px; color: var(--ink2); display: flex; justify-content: space-between; }
-.riviera .trip .edit { color: var(--sig); font-weight: 600; background: none; border: 0; cursor: pointer; padding: 0; min-height: 24px; }
-.riviera .bar { position: fixed; inset-inline: 0; bottom: 0; z-index: 6; background: var(--sheet); border-top: 1px solid var(--rule); padding: 12px 16px calc(12px + env(safe-area-inset-bottom)); display: flex; align-items: center; gap: 12px; }
-.riviera .bar .sum { flex: 1; line-height: 1.2; }
-.riviera .bar .sum small { color: var(--ink2); font-size: 12.5px; display: block; }
-.riviera .bar .sum .num { font-size: 20px; font-weight: 600; }
-.riviera .go { height: 52px; border-radius: 6px; border: 0; background: var(--sig); color: var(--sig-on); font-weight: 600; font-size: 16px; padding: 0 22px; display: flex; align-items: center; gap: 8px; cursor: pointer; }
-.riviera .go:hover { filter: brightness(1.06); }
-.riviera .go:disabled { opacity: .45; cursor: not-allowed; }
-.riviera .back { width: 52px; height: 52px; border-radius: 4px; border: 1px solid var(--rule2); background: none; display: grid; place-items: center; cursor: pointer; }
-.riviera .veh { display: grid; grid-template-columns: 1fr auto; gap: 2px 12px; border: 1px solid var(--rule2); border-radius: 4px; padding: 14px; cursor: pointer; background: var(--sheet); position: relative; text-align: start; width: 100%; }
-.riviera .veh:hover { border-color: var(--ink2); }
-.riviera .veh.is-selected { border: 2px solid var(--ink); padding: 13px; }
-.riviera .veh .art { grid-column: 1 / -1; height: 74px; border-bottom: 1px solid var(--rule); padding-bottom: 6px; display: flex; align-items: flex-end; justify-content: center; margin-bottom: 6px; color: var(--ink); }
-.riviera .veh .art svg { height: 72px; width: auto; }
-.riviera [dir="rtl"] .veh .art svg { transform: scaleX(-1); }
-.riviera .veh h3 { font: 600 20px/1.1 var(--display); letter-spacing: -.015em; }
-.riviera .veh .price { font-size: 20px; font-weight: 600; text-align: end; }
-.riviera .veh .mdl { color: var(--ink2); font-size: 14px; }
-.riviera .veh .inc { color: var(--ink2); font-size: 13px; text-align: end; }
-.riviera .veh .specs { grid-column: 1 / -1; display: flex; gap: 16px; margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--rule2); font-size: 13.5px; color: var(--ink2); }
-.riviera .tag { position: absolute; top: 12px; inset-inline-end: 12px; font-size: 12px; font-weight: 600; background: var(--sig-tint); color: var(--ink); padding: 3px 8px; border-radius: 6px; }
-.riviera .in { display: block; border: 1px solid var(--rule2); border-radius: 4px; padding: 8px 14px; margin-bottom: 10px; background: var(--sheet); }
-.riviera .in:focus-within { border-color: var(--ink); }
-.riviera .in span { font-size: 12.5px; color: var(--ink2); font-weight: 500; }
-.riviera .in input { display: block; width: 100%; border: 0; background: none; font-size: 16px; padding: 2px 0; outline: none; }
-.riviera .in.bad { border-color: var(--err); }
-.riviera .in .e { color: var(--err); font-size: 13px; display: flex; gap: 6px; align-items: center; }
-.riviera .opt { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--rule); }
-.riviera .opt .t { flex: 1; }
-.riviera .opt .t b { font-weight: 500; display: block; }
-.riviera .opt .t small { color: var(--ink2); font-size: 13px; }
-.riviera .pay { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-.riviera .pay button { border: 1px solid var(--rule2); border-radius: 4px; background: var(--sheet); padding: 12px; display: flex; gap: 8px; align-items: center; min-height: 52px; cursor: pointer; font-weight: 500; }
-.riviera .pay button[aria-checked="true"] { border: 2px solid var(--ink); padding: 11px; }
-.riviera .promo { background: none; border: 0; color: var(--sig); font-weight: 600; padding: 12px 0; cursor: pointer; display: flex; gap: 6px; align-items: center; }
-.riviera .total { margin-top: 14px; border-top: 1px solid var(--rule2); padding-top: 12px; font-size: 14px; color: var(--ink2); }
-.riviera .total div { display: flex; justify-content: space-between; padding: 3px 0; }
-.riviera .total .g { color: var(--ink); font-weight: 600; font-size: 17px; padding-top: 8px; }
-.riviera .side { display: none; }
-.riviera .fine { font-size: 12.5px; color: var(--ink2); margin-top: 14px; }
-@media (min-width: 1024px) {
-  .riviera:not(.no-map) { display: grid; grid-template-columns: minmax(480px, 560px) 1fr; grid-template-rows: auto 1fr; }
-  .riviera .top { grid-column: 1 / -1; padding: 18px 32px; border-bottom: 1px solid var(--rule); }
-  .riviera .map { grid-column: 2; grid-row: 2; height: auto; position: sticky; top: 77px; height: calc(100dvh - 77px); }
-  .riviera .sheet { grid-column: 1; grid-row: 2; margin: 0; border-radius: 0; padding: 12px 40px 140px; background: var(--paper); }
-  .riviera .bar { position: fixed; inset-inline-start: 0; inset-inline-end: auto; width: min(560px, 100%); background: var(--paper); padding: 16px 40px; }
-  .riviera.no-map { display: block; max-width: none; margin: 0; background: var(--paper); min-height: 100dvh; }
-  .riviera.no-map .top { padding-inline: 32px; }
-  .riviera.no-map .sheet { max-width: 1180px; margin-inline: auto; display: block; padding: 28px 32px 140px; background: var(--paper); }
-  .riviera.no-map .bar { position: sticky; top: 96px; inset: auto; width: auto; grid-column: 2; grid-row: 2; align-self: start; flex-wrap: wrap; border: 1px solid var(--rule); border-radius: 6px; padding: 20px; background: var(--sheet); flex-direction: column; align-items: stretch; }
-  .riviera.no-map .bar .go { justify-content: center; }
-  .riviera.no-map .bar .back { display: none; }
-  .riviera.no-map .sheet { padding-top: 28px; }
+
+/* ---------- Floating control dock ---------- */
+.riviera .dock {
+  position: fixed; z-index: 40;
+  inset-inline-start: 50%; transform: translateX(-50%);
+  bottom: calc(12px + env(safe-area-inset-bottom));
+  display: flex; align-items: center; gap: 2px; padding: 4px;
+  border: 1px solid var(--rule); border-radius: var(--radius-dock);
+  background: var(--dock);
+  -webkit-backdrop-filter: blur(12px) saturate(1.4); backdrop-filter: blur(12px) saturate(1.4);
+  box-shadow: var(--dock-shadow);
 }
-.riviera.no-map .cars { grid-template-columns: repeat(3, 1fr); }
-.riviera .btn-primary, .riviera .btn-primary:hover { background: var(--sig); color: var(--sig-on); border-radius: 4px; font-weight: 600; }
-.riviera .btn-primary:hover { filter: brightness(1.08); }
-.riviera .map-fallback { height: 100%; display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: var(--space-1, 4px); padding: var(--space-4, 16px); background: var(--well); color: var(--ink2); font-size: var(--text-sm, 14px); text-align: center; }
+[dir="rtl"] .riviera .dock { transform: translateX(50%); }
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .riviera .dock { background: var(--sheet); }
+}
+.riviera .dock-brand {
+  width: 32px; height: 32px; margin: 2px; display: grid; place-items: center;
+  border-radius: var(--radius); background: var(--ink); color: var(--paper);
+  font-size: 14px; font-weight: 600;
+}
+.riviera .dock-sep { width: 1px; align-self: stretch; margin: 6px 2px; background: var(--rule); }
+
+/* ---------- Page frame ---------- */
+.riviera .map { position: relative; height: 34dvh; min-height: 220px; overflow: hidden; background: var(--well); border-bottom: 1px solid var(--rule); }
+.riviera .attr { position: absolute; inset-inline-end: 6px; bottom: 22px; font-size: 11px; background: var(--sheet); color: var(--ink2); padding: 2px 6px; border-radius: var(--radius-sm); z-index: 5; }
+.riviera .attr a { color: inherit; }
+.riviera .sheet { background: var(--paper); padding: 20px 16px calc(88px + env(safe-area-inset-bottom)); }
+.riviera .step-count { font-size: 13px; color: var(--ink2); margin-bottom: 6px; }
+.riviera h1, .riviera h2 { font-size: var(--text-xl); font-weight: 600; letter-spacing: -.01em; line-height: 1.2; }
+.riviera h3 { font-weight: 600; }
+.riviera label { font-weight: 500; }
+
+/* ---------- Segmented control ---------- */
+.riviera .seg { display: flex; gap: 2px; padding: 3px; background: var(--well); border-radius: var(--radius); }
+.riviera .seg button {
+  flex: 1; min-height: 36px; padding: 6px 10px; border: 0; border-radius: var(--radius-sm);
+  background: none; color: var(--ink2); font-size: 14px; cursor: pointer;
+}
+.riviera .seg button[aria-checked="true"] { background: var(--sheet); color: var(--ink); font-weight: 500; box-shadow: 0 0 0 1px var(--rule), 0 1px 2px rgb(0 0 0 / .06); }
+
+/* ---------- Primary button ---------- */
+.riviera .btn-primary, .riviera .btn-primary:hover {
+  background: var(--sig); color: var(--sig-on); border-radius: var(--radius); font-weight: 600; min-height: 48px;
+}
+.riviera .btn-primary:hover { opacity: .9; }
+
+/* ---------- Trip summary strip ---------- */
+.riviera .trip {
+  display: grid; grid-template-columns: 1fr auto; gap: 2px 12px; align-items: baseline;
+  padding: 14px; border: 1px solid var(--rule); border-radius: var(--radius); background: var(--sheet); margin-bottom: 16px;
+}
+.riviera .trip .lbl { grid-column: 1; font-size: 12px; color: var(--ink2); }
+.riviera .trip b { grid-column: 1; font-weight: 500; font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 6px; }
+.riviera .trip .meta { grid-column: 2; grid-row: 1 / span 4; align-self: start; text-align: end; font-size: 13px; color: var(--ink2); line-height: 1.5; }
+.riviera .trip .when { grid-column: 1 / -1; border-top: 1px solid var(--rule); margin-top: 4px; padding-top: 10px; font-size: 13.5px; color: var(--ink2); display: flex; justify-content: space-between; gap: 12px; }
+.riviera .trip .edit { color: var(--link); font-weight: 500; background: none; border: 0; cursor: pointer; padding: 0; min-height: 24px; }
+
+/* ---------- Vehicle rows ---------- */
+.riviera .veh-list { display: flex; flex-direction: column; gap: 8px; }
+.riviera .veh {
+  display: grid; grid-template-columns: 88px minmax(0, 1fr) auto; gap: 4px 14px; align-items: center;
+  padding: 12px; border: 1px solid var(--rule2); border-radius: var(--radius); background: var(--sheet); cursor: pointer; text-align: start;
+}
+.riviera .veh:hover { border-color: var(--ink2); }
+.riviera .veh.is-selected { border-color: var(--ink); box-shadow: 0 0 0 1px var(--ink); }
+.riviera .veh .art { width: 88px; height: 56px; display: grid; place-items: center; color: var(--ink); }
+.riviera .veh .art img, .riviera .veh .art svg { max-width: 100%; max-height: 56px; width: auto; height: auto; object-fit: contain; }
+[dir="rtl"] .riviera .veh .art svg { transform: scaleX(-1); }
+.riviera .veh .info { min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.riviera .veh h3 { font-size: 16px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.riviera .veh .mdl { color: var(--ink2); font-size: 13px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.riviera .veh .specs { display: flex; gap: 14px; font-size: 13px; color: var(--ink2); }
+.riviera .veh .specs > span { display: inline-flex; align-items: center; gap: 4px; }
+.riviera .veh .specs svg { width: 14px; height: 14px; stroke-width: 1.5; }
+.riviera .veh .end { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; }
+.riviera .veh .price { font-size: 17px; font-weight: 600; }
+.riviera .veh .was { font-size: 12px; color: var(--ink2); }
+.riviera .veh .pick { height: 32px; padding: 0 12px; font-size: 13px; border-radius: var(--radius); }
+.riviera .veh .pick.is-on { background: var(--sig); color: var(--sig-on); border-color: var(--sig); }
+.riviera .veh .note { grid-column: 1 / -1; font-size: 12px; color: var(--ink2); }
+.riviera .tag { font-size: 12px; font-weight: 500; color: var(--ink2); border: 1px solid var(--rule2); padding: 0 6px; border-radius: var(--radius-sm); line-height: 18px; }
+@media (max-width: 479px) {
+  .riviera .veh { grid-template-columns: 64px minmax(0, 1fr) auto; gap: 4px 10px; }
+  .riviera .veh .art { width: 64px; height: 44px; }
+}
+
+/* ---------- Payment radio rows ---------- */
+.riviera .pay-list { display: flex; flex-direction: column; border: 1px solid var(--rule2); border-radius: var(--radius); overflow: hidden; }
+.riviera .pay-list button {
+  display: flex; align-items: center; gap: 12px; min-height: 56px; padding: 12px 14px; text-align: start;
+  background: var(--sheet); border: 0; border-top: 1px solid var(--rule); cursor: pointer;
+}
+.riviera .pay-list button:first-child { border-top: 0; }
+.riviera .pay-list button:hover { background: var(--well); }
+.riviera .pay-list .dot { width: 16px; height: 16px; flex: none; border-radius: 50%; border: 1px solid var(--rule2); background: var(--sheet); }
+.riviera .pay-list [aria-checked="true"] .dot { border: 5px solid var(--ink); }
+.riviera .pay-list .t { display: flex; flex-direction: column; }
+.riviera .pay-list .t b { font-weight: 500; }
+.riviera .pay-list .t small { font-size: 13px; color: var(--ink2); }
+
+.riviera .fine { font-size: 12.5px; color: var(--ink2); margin-top: 14px; }
+.riviera .map-fallback { height: 100%; display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: var(--space-1); padding: var(--space-4); background: var(--well); color: var(--ink2); font-size: var(--text-sm); text-align: center; }
 .riviera .map-fallback b { color: var(--ink); font-weight: 500; }
+
+/* ---------- Desktop ---------- */
+@media (min-width: 1024px) {
+  .riviera:not(.no-map) { display: grid; grid-template-columns: minmax(480px, 560px) 1fr; }
+  .riviera:not(.no-map) .map { grid-column: 2; grid-row: 1; position: sticky; top: 0; height: 100dvh; border-bottom: 0; border-inline-start: 1px solid var(--rule); }
+  .riviera:not(.no-map) .sheet { grid-column: 1; grid-row: 1; padding: 32px 40px 48px; }
+  /* On step 1 the dock sits at the bottom of the map panel instead of the viewport. */
+  .riviera .map .dock { position: absolute; bottom: 16px; }
+  .riviera.no-map .sheet { max-width: 1180px; margin-inline: auto; padding: 32px 32px 96px; }
+  .riviera .dock { bottom: 16px; }
+}

@@ -57,7 +57,8 @@
     "price-based-on-distance-traveled": "السعر بناءً على المسافة المقطوعة",
     "price-based-on-hourly-rate": "السعر بناءً على المعدل بالساعة",
     "stop": "توقف",
-    "AddStop": "إضافة نقطة توقف"
+    "AddStop": "إضافة نقطة توقف",
+    "TripType": "نوع الرحلة"
   },
   "Step2": {
     "select-your-vehicle": "اختر مركبتك",
@@ -116,7 +117,8 @@
     "included": "مشمول",
     "incl-tax": "(شامل الضريبة)",
     "no-vehicles": "لا توجد مركبات متاحة الآن.",
-    "vehicles-load-error": "تعذر تحميل المركبات. أعد المحاولة."
+    "vehicles-load-error": "تعذر تحميل المركبات. أعد المحاولة.",
+    "price-unavailable": "السعر غير متاح"
   },
   "not-set": "غير محدد",
   "Step3": {
@@ -2744,6 +2746,11 @@
     "total": "الإجمالي",
     "passengers": "{count, plural, one {# راكب} other {# ركاب}}",
     "brandFallback": "RideNow",
-    "mapLabel": "خريطة المسار"
+    "mapLabel": "خريطة المسار",
+    "account": "حسابك",
+    "siteControls": "عناصر التحكم",
+    "lightMode": "الوضع الفاتح",
+    "darkMode": "الوضع الداكن",
+    "language": "اللغة"
   }
 }

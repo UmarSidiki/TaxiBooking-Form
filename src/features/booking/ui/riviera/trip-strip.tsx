@@ -12,18 +12,15 @@ export function TripStrip() {
     : "";
   return (
     <section className="trip" aria-label="Trip summary">
-      <div className="rail">
-        <span className="dot" />
-        <i />
-        <span className="dot to" />
-      </div>
-      <b>{formData.pickup || t("pickup")}</b>
+      <span className="lbl">{t("pickup")}</span>
+      <b>{formData.pickup || "—"}</b>
       <div className="meta">
         <span className="num">{distanceData ? `${distanceData.distance.text}` : ""}</span>
         <br />
         <span className="num">{distanceData ? `${distanceData.duration.text}` : ""}</span>
       </div>
-      <b>{formData.dropoff || t("dropoff")}</b>
+      <span className="lbl">{t("dropoff")}</span>
+      <b>{formData.dropoff || "—"}</b>
       <div className="when">
         <span>
           {formattedDate} &middot; <span className="num">{formData.time}</span> &middot; {t("passengers", { count: formData.passengers })}

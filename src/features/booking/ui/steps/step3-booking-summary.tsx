@@ -73,7 +73,7 @@ export function Step3BookingSummary({
       {/* Sidebar - Booking Summary */}
       <div className="lg:col-span-1">
         <Card className="sticky top-4 p-5 space-y-4">
-          <h3 className="font-bold text-lg border-b pb-2">{t('Step3.booking-summary')}</h3>
+          <h3 className="font-semibold text-lg border-b pb-2">{t('Step3.booking-summary')}</h3>
 
           {/* Map */}
           {mapLoaded && (

@@ -21,7 +21,6 @@ export function Step3PaymentMethods(props: Step3PaymentMethodsProps) {
         {/* Payment Details */}
         <Card className="p-5">
           <h3 className="font-semibold mb-4 text-lg flex items-center gap-2">
-            <CreditCard className="h-5 w-5" />
             {t('Step3.payment-method')} </h3>
 
           {/* Payment Method Selection */}
@@ -37,7 +36,7 @@ export function Step3PaymentMethods(props: Step3PaymentMethodsProps) {
               />
 
               {props.selectedPaymentMethod && !props.contactValid && (
-                <p className="text-sm text-amber-700">
+                <p className="text-sm text-[color:var(--warn)]">
                   {t('Step3.complete-contact-details-to-continue')}
                 </p>
               )}

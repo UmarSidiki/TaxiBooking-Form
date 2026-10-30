@@ -57,7 +57,8 @@
     "price-based-on-distance-traveled": "Prijs gebaseerd op afgelegde afstand",
     "price-based-on-hourly-rate": "Prijs gebaseerd op uurtarief",
     "stop": "Stop",
-    "AddStop": "Tussenstop toevoegen"
+    "AddStop": "Tussenstop toevoegen",
+    "TripType": "Type rit"
   },
   "Step2": {
     "select-your-vehicle": "Selecteer Uw Voertuig",
@@ -116,7 +117,8 @@
     "included": "Inbegrepen",
     "incl-tax": "(Incl. BTW)",
     "no-vehicles": "Er zijn nu geen voertuigen beschikbaar.",
-    "vehicles-load-error": "Voertuigen konden niet worden geladen. Probeer opnieuw."
+    "vehicles-load-error": "Voertuigen konden niet worden geladen. Probeer opnieuw.",
+    "price-unavailable": "Prijs niet beschikbaar"
   },
   "not-set": "Niet ingesteld",
   "Step3": {
@@ -2744,6 +2746,11 @@
     "total": "Totaal",
     "passengers": "{count, plural, one {# passagier} other {# passagiers}}",
     "brandFallback": "RideNow",
-    "mapLabel": "Routekaart"
+    "mapLabel": "Routekaart",
+    "account": "Je account",
+    "siteControls": "Site-instellingen",
+    "lightMode": "Lichte modus",
+    "darkMode": "Donkere modus",
+    "language": "Taal"
   }
 }

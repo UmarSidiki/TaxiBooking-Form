@@ -516,7 +516,16 @@
       "activity-approved": "وُوفق عليها للشركاء",
       "activity-quoted": "تم التسعير",
       "activity-confirmed": "أُكدت نقدًا",
-      "activity-declined": "رُفضت"
+      "activity-declined": "رُفضت",
+      "table-label": "الرحلات",
+      "assign-driver-action": "تعيين سائق",
+      "assign-partner-action": "تعيين شريك",
+      "col-ref": "المرجع / الموعد",
+      "col-route": "المسار",
+      "col-customer": "العميل",
+      "col-price": "السعر",
+      "col-status": "الحالة",
+      "col-actions": "الإجراءات"
     },
     "Home": {
       "failed-to-fetch-dashboard-stats": "فشل جلب إحصائيات لوحة التحكم",

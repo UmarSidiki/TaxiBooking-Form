@@ -1,0 +1,27 @@
+/* Dashboard-only Riviera layout rules. Tokens live in shared/style/riviera-theme.css. */
+
+/* Rides list: one dense line per booking. Rows are subgrids of one table grid so
+   every column lines up; the actions track sizes to its buttons and never clips,
+   the route column absorbs the squeeze. */
+.riviera .ride-table {
+  display: grid;
+  grid-template-columns: 7rem minmax(8rem, 1fr) minmax(6rem, 0.7fr) auto auto max-content;
+  column-gap: var(--sp-4, 16px);
+}
+.riviera .ride-table > [role="row"] {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: subgrid;
+  align-items: center;
+  border-bottom: 1px solid var(--rule);
+}
+.riviera .ride-table [role="columnheader"] {
+  padding: 8px 0;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--ink2);
+}
+.riviera .ride-table .ride-row {
+  padding: 10px 0;
+  font-size: 14px;
+}

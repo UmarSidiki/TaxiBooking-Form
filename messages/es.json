@@ -516,7 +516,16 @@
       "activity-approved": "Aprobado para socios",
       "activity-quoted": "Presupuestado",
       "activity-confirmed": "Confirmado en efectivo",
-      "activity-declined": "Rechazado"
+      "activity-declined": "Rechazado",
+      "table-label": "Viajes",
+      "assign-driver-action": "Asignar conductor",
+      "assign-partner-action": "Asignar socio",
+      "col-ref": "Ref. / cuándo",
+      "col-route": "Ruta",
+      "col-customer": "Cliente",
+      "col-price": "Precio",
+      "col-status": "Estado",
+      "col-actions": "Acciones"
     },
     "Home": {
       "failed-to-fetch-dashboard-stats": "Error al obtener estadísticas del tablero",

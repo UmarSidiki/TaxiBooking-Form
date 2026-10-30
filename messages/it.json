@@ -516,7 +516,16 @@
       "activity-approved": "Approvata per i partner",
       "activity-quoted": "Preventivata",
       "activity-confirmed": "Confermata in contanti",
-      "activity-declined": "Rifiutata"
+      "activity-declined": "Rifiutata",
+      "table-label": "Corse",
+      "assign-driver-action": "Assegna autista",
+      "assign-partner-action": "Assegna partner",
+      "col-ref": "Rif. / quando",
+      "col-route": "Percorso",
+      "col-customer": "Cliente",
+      "col-price": "Prezzo",
+      "col-status": "Stato",
+      "col-actions": "Azioni"
     },
     "Home": {
       "failed-to-fetch-dashboard-stats": "Impossibile recuperare statistiche dashboard",

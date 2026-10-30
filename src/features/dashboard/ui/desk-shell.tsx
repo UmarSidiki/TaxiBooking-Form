@@ -1,5 +1,6 @@
 "use client";
 
+import "./riviera/riviera-desk.css";
 import type { CSSProperties, ReactNode } from "react";
 
 import { DeskChromeHeader } from "@/features/dashboard/ui/desk-chrome-header";

@@ -29,6 +29,7 @@ export function AdminRideCardAssignActions({
   setBookingReviews,
   handleCancelClick,
   cancelingId,
+  compact = false,
 }: {
   booking: IBooking;
   t: TFn;
@@ -50,6 +51,8 @@ export function AdminRideCardAssignActions({
   >;
   handleCancelClick: (booking: IBooking) => void;
   cancelingId: string | null;
+  /** Single-line ghost buttons for the desktop ride rows. */
+  compact?: boolean;
 }) {
   const upcoming =
     booking.status !== "canceled" &&
@@ -66,6 +69,85 @@ export function AdminRideCardAssignActions({
   const showPartnerChip =
     enablePartners &&
     (!exclusive || !booking.assignedDriver || Boolean(booking.assignedPartner));
+
+  const openDetails = async () => {
+    setDetailBooking(booking);
+    if (
+      booking._id &&
+      (booking.status === "canceled" ||
+        isBookingPassed(booking.date, booking.time))
+    ) {
+      try {
+        const response = await fetch(`/api/reviews?bookingId=${booking._id}`);
+        const data = await response.json();
+        if (data.success && data.review) {
+          setBookingReviews((prev) => ({
+            ...prev,
+            [booking._id!.toString()]: data.review,
+          }));
+        }
+      } catch (error) {
+        console.error("Error fetching review:", error);
+      }
+    }
+  };
+  const openAssignPartner = () => {
+    setAssignPartnerMargin(booking.partnerMarginPercentage || defaultPartnerMargin);
+    setShowAssignPartnerModal(true);
+  };
+  const isCanceling = cancelingId === bookingId;
+
+  if (compact) {
+    const viewLabel = t("Dashboard.Rides.ViewDetails");
+    const cancelLabel = isCanceling ? t("Dashboard.Rides.Canceling") : t("Dashboard.Rides.Cancel");
+    return (
+      <div className="flex flex-col items-end gap-0.5">
+        {needsReview && isPartnerReviewPending ? (
+          <Button
+            size="sm"
+            variant="ghost"
+            className="h-8 px-2"
+            onClick={() => {
+              setPartnerMargin(booking.partnerMarginPercentage ?? 0);
+              setShowPartnerApprovalModal(true);
+            }}
+          >
+            {t("Dashboard.Rides.approve-for-partners")}
+          </Button>
+        ) : null}
+        {showDriverChip && upcoming ? (
+          <Button size="sm" variant="ghost" className="h-8 px-2" onClick={() => setShowAssignDriverModal(true)}>
+            <UserCheck className="size-4" aria-hidden="true" />
+            {booking.assignedDriver?.name ?? t("Dashboard.Rides.assign-driver-action")}
+          </Button>
+        ) : null}
+        {showPartnerChip && upcoming ? (
+          <Button size="sm" variant="ghost" className="h-8 px-2" onClick={openAssignPartner}>
+            <Users className="size-4" aria-hidden="true" />
+            {booking.assignedPartner?.name ?? t("Dashboard.Rides.assign-partner-action")}
+          </Button>
+        ) : null}
+        <div className="flex gap-0.5">
+          <Button size="icon" variant="ghost" className="size-8" onClick={openDetails} aria-label={viewLabel} title={viewLabel}>
+            <Eye className="size-4" aria-hidden="true" />
+          </Button>
+          {upcoming ? (
+            <Button
+              size="icon"
+              variant="ghost"
+              className="size-8 text-[color:var(--err)] hover:text-[color:var(--err)]"
+              onClick={() => handleCancelClick(booking)}
+              disabled={isCanceling}
+              aria-label={cancelLabel}
+              title={cancelLabel}
+            >
+              {isCanceling ? <Loader2 className="size-4 animate-spin" aria-hidden="true" /> : <Ban className="size-4" aria-hidden="true" />}
+            </Button>
+          ) : null}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col gap-2 border-t border-border/60 pt-3">
@@ -100,12 +182,7 @@ export function AdminRideCardAssignActions({
               assignLabel={t("Dashboard.Rides.assign")}
               reassignLabel={t("Dashboard.Rides.reassign")}
               icon={booking.assignedPartner ? Edit : Users}
-              onClick={() => {
-                setAssignPartnerMargin(
-                  booking.partnerMarginPercentage || defaultPartnerMargin
-                );
-                setShowAssignPartnerModal(true);
-              }}
+              onClick={openAssignPartner}
             />
           ) : null}
         </div>
@@ -115,29 +192,7 @@ export function AdminRideCardAssignActions({
         <Button
           variant="outline"
           className="h-10 flex-1 rounded"
-          onClick={async () => {
-            setDetailBooking(booking);
-            if (
-              booking._id &&
-              (booking.status === "canceled" ||
-                isBookingPassed(booking.date, booking.time))
-            ) {
-              try {
-                const response = await fetch(
-                  `/api/reviews?bookingId=${booking._id}`
-                );
-                const data = await response.json();
-                if (data.success && data.review) {
-                  setBookingReviews((prev) => ({
-                    ...prev,
-                    [booking._id!.toString()]: data.review,
-                  }));
-                }
-              } catch (error) {
-                console.error("Error fetching review:", error);
-              }
-            }
-          }}
+          onClick={openDetails}
         >
           <Eye className="size-4" aria-hidden="true" />
           {t("Dashboard.Rides.ViewDetails")}
@@ -147,14 +202,14 @@ export function AdminRideCardAssignActions({
             onClick={() => handleCancelClick(booking)}
             variant="destructive"
             className="h-10 rounded sm:w-auto"
-            disabled={cancelingId === bookingId}
+            disabled={isCanceling}
           >
-            {cancelingId === bookingId ? (
+            {isCanceling ? (
               <Loader2 className="size-4 animate-spin" aria-hidden="true" />
             ) : (
               <Ban className="size-4" aria-hidden="true" />
             )}
-            {cancelingId === bookingId
+            {isCanceling
               ? t("Dashboard.Rides.Canceling")
               : t("Dashboard.Rides.Cancel")}
           </Button>

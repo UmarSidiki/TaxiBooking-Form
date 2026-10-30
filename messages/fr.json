@@ -516,7 +516,16 @@
       "activity-approved": "Approuvée pour les partenaires",
       "activity-quoted": "Devis envoyé",
       "activity-confirmed": "Confirmée en espèces",
-      "activity-declined": "Refusée"
+      "activity-declined": "Refusée",
+      "table-label": "Courses",
+      "assign-driver-action": "Attribuer un chauffeur",
+      "assign-partner-action": "Attribuer un partenaire",
+      "col-ref": "Réf. / date",
+      "col-route": "Trajet",
+      "col-customer": "Client",
+      "col-price": "Prix",
+      "col-status": "Statut",
+      "col-actions": "Actions"
     },
     "Home": {
       "failed-to-fetch-dashboard-stats": "Échec de la récupération des stats",

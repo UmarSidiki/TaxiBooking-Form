@@ -516,7 +516,16 @@
       "activity-approved": "Goedgekeurd voor partners",
       "activity-quoted": "Geoffreerd",
       "activity-confirmed": "Bevestigd als contant",
-      "activity-declined": "Geweigerd"
+      "activity-declined": "Geweigerd",
+      "table-label": "Ritten",
+      "assign-driver-action": "Chauffeur toewijzen",
+      "assign-partner-action": "Partner toewijzen",
+      "col-ref": "Ref. / wanneer",
+      "col-route": "Route",
+      "col-customer": "Klant",
+      "col-price": "Prijs",
+      "col-status": "Status",
+      "col-actions": "Acties"
     },
     "Home": {
       "failed-to-fetch-dashboard-stats": "Ophalen dashboardstatistieken mislukt",

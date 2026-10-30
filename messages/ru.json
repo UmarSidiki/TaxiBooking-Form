@@ -516,7 +516,16 @@
       "activity-approved": "Одобрена для партнёров",
       "activity-quoted": "Предложение",
       "activity-confirmed": "Подтверждена наличными",
-      "activity-declined": "Отклонена"
+      "activity-declined": "Отклонена",
+      "table-label": "Поездки",
+      "assign-driver-action": "Назначить водителя",
+      "assign-partner-action": "Назначить партнёра",
+      "col-ref": "Номер / время",
+      "col-route": "Маршрут",
+      "col-customer": "Клиент",
+      "col-price": "Цена",
+      "col-status": "Статус",
+      "col-actions": "Действия"
     },
     "Home": {
       "failed-to-fetch-dashboard-stats": "Не удалось получить статистику дашборда",

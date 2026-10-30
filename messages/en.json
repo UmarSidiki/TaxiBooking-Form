@@ -516,7 +516,16 @@
       "activity-approved": "Approved for partners",
       "activity-quoted": "Quoted",
       "activity-confirmed": "Confirmed as cash",
-      "activity-declined": "Declined"
+      "activity-declined": "Declined",
+      "table-label": "Rides",
+      "assign-driver-action": "Assign driver",
+      "assign-partner-action": "Assign partner",
+      "col-ref": "Ref / when",
+      "col-route": "Route",
+      "col-customer": "Customer",
+      "col-price": "Price",
+      "col-status": "Status",
+      "col-actions": "Actions"
     },
     "Home": {
       "failed-to-fetch-dashboard-stats": "Failed to fetch dashboard stats",

@@ -36,7 +36,8 @@ for (const scheme of ["light", "dark"] as const) {
     await page.getByRole("button", { name: "Sign in" }).click();
     await page.waitForURL((url) => !url.pathname.includes("signin"), { timeout: 120_000 });
     const issues: string[] = [];
-    for (const [name, path] of PAGES) {
+    const only = process.env.DASH_ONLY?.split(",");
+    for (const [name, path] of PAGES.filter(([n]) => !only || only.includes(n))) {
       await go(page, path);
       await page.waitForTimeout(2500);
       await page.screenshot({ path: `${SHOTS}/dash-${view}-${scheme}-${name}.png` });

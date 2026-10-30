@@ -516,7 +516,16 @@
       "activity-approved": "Für Partner freigegeben",
       "activity-quoted": "Angeboten",
       "activity-confirmed": "Als bar bestätigt",
-      "activity-declined": "Abgelehnt"
+      "activity-declined": "Abgelehnt",
+      "table-label": "Fahrten",
+      "assign-driver-action": "Fahrer zuweisen",
+      "assign-partner-action": "Partner zuweisen",
+      "col-ref": "Ref. / Zeit",
+      "col-route": "Route",
+      "col-customer": "Kunde",
+      "col-price": "Preis",
+      "col-status": "Status",
+      "col-actions": "Aktionen"
     },
     "Home": {
       "failed-to-fetch-dashboard-stats": "Dashboard-Statistiken konnten nicht abgerufen werden",

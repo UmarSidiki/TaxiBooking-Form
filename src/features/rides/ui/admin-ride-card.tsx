@@ -11,6 +11,8 @@ import { AdminRideCardSchedule } from "@/features/rides/ui/admin-ride-card-sched
 import { AdminRideRequestActionsDialog } from "@/features/rides/ui/admin-ride-request-actions-dialog";
 import { Button } from "@/shared/ui/button";
 import { Inbox } from "lucide-react";
+import { RideStatusBadge } from "@/features/rides/ui/ride-status-badge";
+import { RidePaymentStatusBadge } from "@/features/rides/ui/ride-payment-status-badge";
 import type { IBooking } from "@/features/booking/model";
 import type { IDriver } from "@/features/drivers/model";
 import type { IPartner } from "@/features/partners/model";
@@ -50,6 +52,8 @@ export type AdminRideCardProps = {
     SetStateAction<Record<string, AdminRideReview | null>>
   >;
   cancelingId: string | null;
+  /** "row" renders one dense desktop line inside the rides list grid. */
+  layout?: "card" | "row";
 };
 
 export function AdminRideCard({
@@ -76,6 +80,7 @@ export function AdminRideCard({
   setDetailBooking,
   setBookingReviews,
   cancelingId,
+  layout = "card",
 }: AdminRideCardProps) {
   const [selectedDriver, setSelectedDriver] = useState(
     booking.assignedDriver?._id || ""
@@ -123,6 +128,116 @@ export function AdminRideCard({
       booking.partnerMarginPercentage ?? defaultPartnerMargin
     );
   }, [booking.partnerMarginPercentage, defaultPartnerMargin]);
+
+  const isRequest = booking.status === "requested" || booking.status === "awaiting_payment";
+  const dialogs = (
+    <>
+      <AdminRideRequestActionsDialog
+        t={t}
+        booking={booking}
+        open={showRequestActions}
+        onOpenChange={setShowRequestActions}
+        currencySymbol={currencySymbol}
+        onQuote={(amount) => handleQuoteRequest(bookingId, amount)}
+        onConfirmCash={() => handleConfirmCashRequest(bookingId)}
+        onDecline={(reason) => handleDeclineRequest(bookingId, reason)}
+      />
+
+      <AdminRideCardDialogs
+        t={t}
+        booking={booking}
+        bookingId={bookingId}
+        currencySymbol={currencySymbol}
+        totalAmountValue={totalAmountValue}
+        partnerMargin={partnerMargin}
+        setPartnerMargin={setPartnerMargin}
+        marginPreviewAmount={marginPreviewAmount}
+        partnerPayoutPreview={partnerPayoutPreview}
+        approvalButtonLabel={approvalButtonLabel}
+        isApprovingThisBooking={isApprovingThisBooking}
+        isPartnerReviewPending={isPartnerReviewPending}
+        showPartnerApprovalModal={showPartnerApprovalModal}
+        setShowPartnerApprovalModal={setShowPartnerApprovalModal}
+        showAssignDriverModal={showAssignDriverModal}
+        setShowAssignDriverModal={setShowAssignDriverModal}
+        showAssignPartnerModal={showAssignPartnerModal}
+        setShowAssignPartnerModal={setShowAssignPartnerModal}
+        selectedDriver={selectedDriver}
+        setSelectedDriver={setSelectedDriver}
+        selectedPartner={selectedPartner}
+        setSelectedPartner={setSelectedPartner}
+        assignPartnerMargin={assignPartnerMargin}
+        setAssignPartnerMargin={setAssignPartnerMargin}
+        drivers={drivers}
+        partners={partners}
+        assigningId={assigningId}
+        approvingPartnerId={approvingPartnerId}
+        handleApprovePartnerReview={handleApprovePartnerReview}
+        handleAssignDriver={handleAssignDriver}
+        handleAssignPartner={handleAssignPartner}
+      />
+    </>
+  );
+
+  if (layout === "row") {
+    const ref = String(booking.tripId ?? "");
+    return (
+      <div role="row" className="ride-row">
+        <div role="cell" className="min-w-0">
+          <p className="font-mono text-xs" title={ref}>{ref.slice(0, 10)}</p>
+          <p className="font-mono text-xs text-[color:var(--ink2)]">{booking.date} {booking.time}</p>
+        </div>
+        <div role="cell" className="min-w-0">
+          <p className="truncate" title={booking.pickup}>{booking.pickup}</p>
+          <p className="truncate text-[color:var(--ink2)]" title={booking.dropoff}>→ {booking.dropoff}</p>
+        </div>
+        <div role="cell" className="min-w-0 text-xs">
+          <p className="truncate">{booking.firstName} {booking.lastName}</p>
+          <p className="truncate text-[color:var(--ink2)]">{booking.vehicleDetails?.name ?? booking.selectedVehicle}</p>
+        </div>
+        <div role="cell" className="text-right font-mono text-xs tabular-nums">
+          {currencySymbol}{totalAmountValue.toFixed(2)}
+        </div>
+        <div role="cell" className="flex flex-col items-start gap-1">
+          <RideStatusBadge booking={booking} />
+          <RidePaymentStatusBadge status={booking.paymentStatus ?? "pending"} />
+        </div>
+        <div role="cell">
+          {isRequest ? (
+            <div className="flex justify-end">
+              <Button size="sm" variant="ghost" className="h-8 px-2" onClick={() => setShowRequestActions(true)}>
+                <Inbox className="size-4" aria-hidden="true" />
+                {t("Dashboard.Rides.review-request")}
+              </Button>
+            </div>
+          ) : (
+          <AdminRideCardAssignActions
+            booking={booking}
+            t={t}
+            enablePartners={enablePartners}
+            enableDrivers={enableDrivers}
+            partnerCashSettlement={partnerCashSettlement}
+            dispatchAssigneeMode={dispatchAssigneeMode}
+            defaultPartnerMargin={defaultPartnerMargin}
+            isPartnerReviewPending={isPartnerReviewPending}
+            isBookingPassed={isBookingPassed}
+            setPartnerMargin={setPartnerMargin}
+            setShowPartnerApprovalModal={setShowPartnerApprovalModal}
+            setShowAssignDriverModal={setShowAssignDriverModal}
+            setAssignPartnerMargin={setAssignPartnerMargin}
+            setShowAssignPartnerModal={setShowAssignPartnerModal}
+            setDetailBooking={setDetailBooking}
+            setBookingReviews={setBookingReviews}
+            handleCancelClick={handleCancelClick}
+            cancelingId={cancelingId}
+            compact
+          />
+          )}
+        </div>
+        {dialogs}
+      </div>
+    );
+  }
 
   return (
     <article className="overflow-hidden rounded border border-border/60 bg-card transition-shadow duration-200 hover:">
@@ -189,50 +304,7 @@ export function AdminRideCard({
         )}
       </div>
 
-      <AdminRideRequestActionsDialog
-        t={t}
-        booking={booking}
-        open={showRequestActions}
-        onOpenChange={setShowRequestActions}
-        currencySymbol={currencySymbol}
-        onQuote={(amount) => handleQuoteRequest(bookingId, amount)}
-        onConfirmCash={() => handleConfirmCashRequest(bookingId)}
-        onDecline={(reason) => handleDeclineRequest(bookingId, reason)}
-      />
-
-      <AdminRideCardDialogs
-        t={t}
-        booking={booking}
-        bookingId={bookingId}
-        currencySymbol={currencySymbol}
-        totalAmountValue={totalAmountValue}
-        partnerMargin={partnerMargin}
-        setPartnerMargin={setPartnerMargin}
-        marginPreviewAmount={marginPreviewAmount}
-        partnerPayoutPreview={partnerPayoutPreview}
-        approvalButtonLabel={approvalButtonLabel}
-        isApprovingThisBooking={isApprovingThisBooking}
-        isPartnerReviewPending={isPartnerReviewPending}
-        showPartnerApprovalModal={showPartnerApprovalModal}
-        setShowPartnerApprovalModal={setShowPartnerApprovalModal}
-        showAssignDriverModal={showAssignDriverModal}
-        setShowAssignDriverModal={setShowAssignDriverModal}
-        showAssignPartnerModal={showAssignPartnerModal}
-        setShowAssignPartnerModal={setShowAssignPartnerModal}
-        selectedDriver={selectedDriver}
-        setSelectedDriver={setSelectedDriver}
-        selectedPartner={selectedPartner}
-        setSelectedPartner={setSelectedPartner}
-        assignPartnerMargin={assignPartnerMargin}
-        setAssignPartnerMargin={setAssignPartnerMargin}
-        drivers={drivers}
-        partners={partners}
-        assigningId={assigningId}
-        approvingPartnerId={approvingPartnerId}
-        handleApprovePartnerReview={handleApprovePartnerReview}
-        handleAssignDriver={handleAssignDriver}
-        handleAssignPartner={handleAssignPartner}
-      />
+      {dialogs}
     </article>
   );
 }

@@ -58,7 +58,8 @@
     "price-based-on-hourly-rate": "Prijs gebaseerd op uurtarief",
     "stop": "Stop",
     "AddStop": "Tussenstop toevoegen",
-    "TripType": "Type rit"
+    "TripType": "Type rit",
+    "pick-address-from-suggestions": "Kies het adres uit de suggesties."
   },
   "Step2": {
     "select-your-vehicle": "Selecteer Uw Voertuig",
@@ -2314,7 +2315,9 @@
     "payment_not_configured": "Kaartbetalingen zijn nog niet geconfigureerd.",
     "price_changed": "Het tarief is gewijzigd. Vernieuw en probeer opnieuw.",
     "distance_failed": "De route kon niet worden berekend. Controleer de adressen.",
-    "country_blocked": "Boekingen zijn niet beschikbaar vanaf uw locatie."
+    "country_blocked": "Boekingen zijn niet beschikbaar vanaf uw locatie.",
+    "outside_service_area": "Dit adres ligt buiten ons servicegebied.",
+    "location_required": "Kies elk adres uit de suggesties."
   },
   "Pay": {
     "by-appointment": "Op afspraak",

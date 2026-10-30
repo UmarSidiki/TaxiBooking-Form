@@ -71,6 +71,7 @@ export async function POST(request: NextRequest) {
     }
 
     const serverPrice = await priceServerBooking({
+    enforceServiceArea: true,
       vehicle,
       booking: bookingData,
       distanceKm,

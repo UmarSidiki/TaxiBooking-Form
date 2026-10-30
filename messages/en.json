@@ -58,7 +58,8 @@
     "price-based-on-hourly-rate": "Price based on hourly rate",
     "stop": "Stop",
     "AddStop": "Add a stop",
-    "TripType": "Trip type"
+    "TripType": "Trip type",
+    "pick-address-from-suggestions": "Choose the address from the suggestions."
   },
   "Step2": {
     "select-your-vehicle": "Select your vehicle",
@@ -2314,7 +2315,9 @@
     "payment_not_configured": "Card payments are not configured yet.",
     "price_changed": "The fare changed. Refresh and try again.",
     "distance_failed": "We could not calculate the route. Check the addresses.",
-    "country_blocked": "Bookings aren't available from your location."
+    "country_blocked": "Bookings aren't available from your location.",
+    "outside_service_area": "This address is outside our service area.",
+    "location_required": "Choose each address from the suggestions."
   },
   "Pay": {
     "by-appointment": "By appointment",

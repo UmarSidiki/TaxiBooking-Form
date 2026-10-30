@@ -6,6 +6,7 @@ import { resolvePublicUrl } from "@/features/settings/lib/public-url";
 import { parseCashBookingInput } from "@/features/booking/schema/cash-booking.schema";
 import { blockIfCountryNotAllowed } from "@/features/geo/lib/booking-country-policy";
 import { jsonError, jsonErrorFromStatus } from "@/shared/http/json-error";
+import { isApiErrorCode } from "@/shared/lib/api-error-copy";
 import { limitSensitive } from "@/shared/http/sensitive-limit";
 import { readIdempotencyKey } from "@/shared/http/read-idempotency-key";
 
@@ -39,7 +40,9 @@ export async function POST(request: NextRequest) {
       : await createCashBooking(parsed.data, baseUrl, draftId);
 
     if (!result.ok) {
-      return jsonErrorFromStatus(result.status);
+      return result.status === 400 && isApiErrorCode(result.message)
+        ? jsonError(result.message, 400)
+        : jsonErrorFromStatus(result.status);
     }
 
     return NextResponse.json(

@@ -58,7 +58,8 @@
     "price-based-on-hourly-rate": "السعر بناءً على المعدل بالساعة",
     "stop": "توقف",
     "AddStop": "إضافة نقطة توقف",
-    "TripType": "نوع الرحلة"
+    "TripType": "نوع الرحلة",
+    "pick-address-from-suggestions": "اختر العنوان من الاقتراحات."
   },
   "Step2": {
     "select-your-vehicle": "اختر مركبتك",
@@ -2314,7 +2315,9 @@
     "payment_not_configured": "مدفوعات البطاقة غير مُعدّة بعد.",
     "price_changed": "تغير السعر. حدّث الصفحة ثم أعد المحاولة.",
     "distance_failed": "تعذر حساب المسار. راجع العناوين.",
-    "country_blocked": "الحجوزات غير متاحة من موقعك."
+    "country_blocked": "الحجوزات غير متاحة من موقعك.",
+    "outside_service_area": "هذا العنوان خارج منطقة الخدمة الخاصة بنا.",
+    "location_required": "اختر كل عنوان من الاقتراحات."
   },
   "Pay": {
     "by-appointment": "بالموعد",

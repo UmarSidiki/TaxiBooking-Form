@@ -58,7 +58,8 @@
     "price-based-on-hourly-rate": "Prix basé sur le taux horaire",
     "stop": "Arrêt",
     "AddStop": "Ajouter un arrêt",
-    "TripType": "Type de trajet"
+    "TripType": "Type de trajet",
+    "pick-address-from-suggestions": "Choisissez l’adresse dans les suggestions."
   },
   "Step2": {
     "select-your-vehicle": "Sélectionnez votre véhicule",
@@ -2314,7 +2315,9 @@
     "payment_not_configured": "Les paiements par carte ne sont pas encore configurés.",
     "price_changed": "Le tarif a changé. Actualisez et réessayez.",
     "distance_failed": "Impossible de calculer l’itinéraire. Vérifiez les adresses.",
-    "country_blocked": "Les réservations ne sont pas disponibles depuis votre localisation."
+    "country_blocked": "Les réservations ne sont pas disponibles depuis votre localisation.",
+    "outside_service_area": "Cette adresse est en dehors de notre zone de service.",
+    "location_required": "Choisissez chaque adresse dans les suggestions."
   },
   "Pay": {
     "by-appointment": "Sur rendez-vous",

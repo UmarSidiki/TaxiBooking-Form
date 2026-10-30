@@ -58,7 +58,8 @@
     "price-based-on-hourly-rate": "Preis basierend auf Stundensatz",
     "stop": "Zwischenstopp",
     "AddStop": "Zwischenstopp hinzufügen",
-    "TripType": "Fahrtart"
+    "TripType": "Fahrtart",
+    "pick-address-from-suggestions": "Wählen Sie die Adresse aus den Vorschlägen."
   },
   "Step2": {
     "select-your-vehicle": "Fahrzeug auswählen",
@@ -2314,7 +2315,9 @@
     "payment_not_configured": "Kartenzahlungen sind noch nicht konfiguriert.",
     "price_changed": "Der Preis hat sich geändert. Aktualisieren und erneut versuchen.",
     "distance_failed": "Die Route konnte nicht berechnet werden. Adressen prüfen.",
-    "country_blocked": "Buchungen sind von Ihrem Standort aus nicht möglich."
+    "country_blocked": "Buchungen sind von Ihrem Standort aus nicht möglich.",
+    "outside_service_area": "Diese Adresse liegt außerhalb unseres Servicegebiets.",
+    "location_required": "Wählen Sie jede Adresse aus den Vorschlägen."
   },
   "Pay": {
     "by-appointment": "Nach Termin",

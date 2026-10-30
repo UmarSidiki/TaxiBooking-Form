@@ -3,6 +3,8 @@
 import { Button } from "@/shared/ui/button";
 import { DataList } from "@/features/dashboard/ui/riviera/data-list";
 import { AdminRideCard } from "@/features/rides/ui/admin-ride-card";
+import { RideStatusBadge } from "@/features/rides/ui/ride-status-badge";
+import { RidePaymentStatusBadge } from "@/features/rides/ui/ride-payment-status-badge";
 import type { useAdminRides } from "@/features/rides/hooks/useAdminRides";
 
 type Rides = ReturnType<typeof useAdminRides>;
@@ -12,7 +14,10 @@ export function AdminRideCardList({ rides }: { rides: Rides }) {
     {
       key: "ref",
       header: "Ref",
-      render: (booking: any) => <span className="font-mono text-xs">{booking.tripId}</span>,
+      render: (booking: any) => {
+        const ref = String(booking.tripId ?? "");
+        return <span className="font-mono text-xs whitespace-nowrap" title={ref}>{ref.slice(0, 10)}</span>;
+      },
     },
     {
       key: "when",
@@ -40,7 +45,7 @@ export function AdminRideCardList({ rides }: { rides: Rides }) {
     {
       key: "vehicle",
       header: "Vehicle",
-      render: (booking: any) => <span className="text-xs">{booking.selectedVehicle?.name ?? booking.vehicleName}</span>,
+      render: (booking: any) => <span className="text-xs">{booking.vehicleDetails?.name || booking.selectedVehicle}</span>,
     },
     {
       key: "price",
@@ -51,7 +56,12 @@ export function AdminRideCardList({ rides }: { rides: Rides }) {
     {
       key: "status",
       header: "Status",
-      render: (booking: any) => <span className="text-xs">{booking.status}</span>,
+      render: (booking: any) => (
+        <div className="flex flex-col gap-1">
+          <RideStatusBadge booking={booking} />
+          <RidePaymentStatusBadge status={booking.paymentStatus ?? "pending"} />
+        </div>
+      ),
     },
     {
       key: "actions",

@@ -11,12 +11,12 @@ import { operatorAccent } from "@/features/settings/lib/operator-accent";
 export function AppearancePreview({ settings }: { settings: Partial<ISetting> }) {
   const t = useTranslations();
   const accent = operatorAccent(settings.primaryColor);
-  const style = accent.kind === "custom" ? ({ "--operator-accent": accent.color } as CSSProperties) : undefined;
+  const style = accent.kind === "custom" ? ({ "--preview-accent": accent.color } as CSSProperties) : undefined;
   const name = brandName(settings) || t("Riviera.brandFallback");
 
   return (
     <figure className="flex flex-col gap-2" aria-label={t("Dashboard.Settings.preview-title")}>
-      <div className="riviera appearance-preview" style={style} aria-hidden="true">
+      <div className="appearance-preview" style={style} data-accent={accent.kind === "custom" ? "" : undefined} aria-hidden="true">
         <p className="appearance-preview__brand">{name}</p>
         <div className="appearance-preview__field">
           <span>{t("Riviera.pickup")}</span>

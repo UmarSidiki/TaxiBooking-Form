@@ -40,6 +40,10 @@
   border-radius: var(--radius);
   color: var(--ink);
 }
+/* Mirrors riviera-theme.css: the operator accent replaces --sig in light mode only. */
+:root:not([data-riviera-theme="dark"]) .riviera .appearance-preview[data-accent] {
+  --sig: var(--preview-accent);
+}
 .riviera .appearance-preview__brand {
   font-family: var(--display);
   font-size: 18px;

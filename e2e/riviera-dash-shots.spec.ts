@@ -39,7 +39,8 @@ for (const scheme of ["light", "dark"] as const) {
     const only = process.env.DASH_ONLY?.split(",");
     for (const [name, path] of PAGES.filter(([n]) => !only || only.includes(n))) {
       await go(page, path);
-      await page.waitForTimeout(2500);
+      await page.waitForLoadState("networkidle").catch(() => {});
+      await page.waitForTimeout(1500);
       await page.screenshot({ path: `${SHOTS}/dash-${view}-${scheme}-${name}.png` });
       const r = await new AxeBuilder({ page }).exclude("nextjs-portal").withTags(["wcag2a", "wcag2aa"]).analyze();
       for (const v of r.violations.filter((x) => x.impact === "serious" || x.impact === "critical")) {

@@ -2372,7 +2372,11 @@
     "balances": "أرصدة مستحقة",
     "empty": "لا شيء هنا.",
     "loading": "جارٍ التحميل…",
-    "load-error": "تعذر تحميل اليوم. حاول مرة أخرى."
+    "load-error": "تعذر تحميل اليوم. حاول مرة أخرى.",
+    "timeline": "ساعة بساعة",
+    "ride-count": "{count, plural, =0 {لا رحلات اليوم} one {رحلة واحدة} two {رحلتان} few {# رحلات} many {# رحلة} other {# رحلة}}",
+    "now": "الآن",
+    "unassigned-mark": "غير معيّنة"
   },
   "WhatsAppNotify": {
     "title": "رسائل المعيّنين",

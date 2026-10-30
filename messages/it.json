@@ -2372,7 +2372,11 @@
     "balances": "Saldi dovuti",
     "empty": "Niente qui.",
     "loading": "Caricamento…",
-    "load-error": "Impossibile caricare oggi. Riprova."
+    "load-error": "Impossibile caricare oggi. Riprova.",
+    "timeline": "Ora per ora",
+    "ride-count": "{count, plural, =0 {Nessuna corsa oggi} one {# corsa} other {# corse}}",
+    "now": "Adesso",
+    "unassigned-mark": "Non assegnata"
   },
   "WhatsAppNotify": {
     "title": "Messaggi agli assegnatari",

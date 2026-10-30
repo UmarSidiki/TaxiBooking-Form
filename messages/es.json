@@ -2372,7 +2372,11 @@
     "balances": "Saldos pendientes",
     "empty": "Nada aquí.",
     "loading": "Cargando…",
-    "load-error": "No se pudo cargar hoy. Inténtalo de nuevo."
+    "load-error": "No se pudo cargar hoy. Inténtalo de nuevo.",
+    "timeline": "Hora a hora",
+    "ride-count": "{count, plural, =0 {Sin viajes hoy} one {# viaje} other {# viajes}}",
+    "now": "Ahora",
+    "unassigned-mark": "Sin asignar"
   },
   "WhatsAppNotify": {
     "title": "Mensajes a asignados",

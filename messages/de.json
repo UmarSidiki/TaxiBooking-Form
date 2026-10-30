@@ -2372,7 +2372,11 @@
     "balances": "Offene Salden",
     "empty": "Nichts hier.",
     "loading": "Laden…",
-    "load-error": "Heute konnte nicht geladen werden. Erneut versuchen."
+    "load-error": "Heute konnte nicht geladen werden. Erneut versuchen.",
+    "timeline": "Stunde für Stunde",
+    "ride-count": "{count, plural, =0 {Heute keine Fahrten} one {# Fahrt} other {# Fahrten}}",
+    "now": "Jetzt",
+    "unassigned-mark": "Nicht zugewiesen"
   },
   "WhatsAppNotify": {
     "title": "Nachrichten an Zugewiesene",

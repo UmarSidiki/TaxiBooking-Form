@@ -2372,7 +2372,11 @@
     "balances": "Soldes dus",
     "empty": "Rien ici.",
     "loading": "Chargement…",
-    "load-error": "Impossible de charger aujourd'hui. Réessayez."
+    "load-error": "Impossible de charger aujourd'hui. Réessayez.",
+    "timeline": "Heure par heure",
+    "ride-count": "{count, plural, =0 {Aucune course aujourd'hui} one {# course} other {# courses}}",
+    "now": "Maintenant",
+    "unassigned-mark": "Non attribuée"
   },
   "WhatsAppNotify": {
     "title": "Messages aux assignés",

@@ -2372,7 +2372,11 @@
     "balances": "Openstaande saldi",
     "empty": "Niets hier.",
     "loading": "Laden…",
-    "load-error": "Vandaag kon niet worden geladen. Probeer opnieuw."
+    "load-error": "Vandaag kon niet worden geladen. Probeer opnieuw.",
+    "timeline": "Uur voor uur",
+    "ride-count": "{count, plural, =0 {Vandaag geen ritten} one {# rit} other {# ritten}}",
+    "now": "Nu",
+    "unassigned-mark": "Niet toegewezen"
   },
   "WhatsAppNotify": {
     "title": "Berichten aan toegewezenen",

@@ -2372,7 +2372,11 @@
     "balances": "Balances due",
     "empty": "Nothing here.",
     "loading": "Loading…",
-    "load-error": "Could not load today. Try again."
+    "load-error": "Could not load today. Try again.",
+    "timeline": "Hour by hour",
+    "ride-count": "{count, plural, =0 {No rides today} one {# ride} other {# rides}}",
+    "now": "Now",
+    "unassigned-mark": "Unassigned"
   },
   "WhatsAppNotify": {
     "title": "Driver & partner alerts",

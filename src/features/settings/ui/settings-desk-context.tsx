@@ -155,3 +155,8 @@ export function useSettingsDesk() {
   }
   return value;
 }
+
+/** Same as useSettingsDesk, but returns null outside the admin desk (driver and partner portals). */
+export function useOptionalSettingsDesk() {
+  return useContext(SettingsDeskContext);
+}

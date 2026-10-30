@@ -4,7 +4,7 @@ import type { ComponentProps, ReactNode } from "react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 
-import { useSettingsDesk } from "@/features/settings/ui/settings-desk-context";
+import { useOptionalSettingsDesk } from "@/features/settings/ui/settings-desk-context";
 import { DeskNavUser } from "@/features/dashboard/ui/desk-nav-user";
 import {
   Sidebar,
@@ -31,7 +31,7 @@ export function DeskPlaqueSidebar({
   children: ReactNode;
 } & ComponentProps<typeof Sidebar>) {
   const t = useTranslations();
-  const { settings } = useSettingsDesk();
+  const settings = useOptionalSettingsDesk()?.settings;
   const name = settings?.companyName || process.env.NEXT_PUBLIC_WEBSITE_NAME || t("Auth.Desk.fallback_name");
   const href = homeHref ?? `/${locale}/dashboard/home`;
 

@@ -9,9 +9,6 @@ html:has(.riviera), body:has(.riviera) { background-color: var(--paper); }
 .riviera .ctl:hover { border-color: var(--ink); }
 .riviera .lang { position: relative; }
 .riviera .map { position: relative; height: 42dvh; min-height: 280px; overflow: hidden; background: var(--well); }
-.riviera .map .leaflet-container { height: 100%; width: 100%; }
-.riviera .leaflet-tile-pane { filter: grayscale(1) brightness(1.02) contrast(.95); }
-:root[data-riviera-theme="dark"] .riviera .leaflet-tile-pane { filter: grayscale(1) invert(1) brightness(.85) contrast(.9); }
 .riviera .attr { position: absolute; inset-inline-end: 6px; bottom: 22px; font-size: 11px; background: color-mix(in srgb, var(--sheet) 85%, transparent); color: var(--ink2); padding: 2px 6px; border-radius: 2px; z-index: 500; }
 .riviera .attr a { color: inherit; }
 .riviera .sheet { background: var(--sheet); margin-top: 0; position: relative; padding: 8px 16px calc(110px + env(safe-area-inset-bottom)); }
@@ -85,6 +82,5 @@ html:has(.riviera), body:has(.riviera) { background-color: var(--paper); }
   .riviera.no-map .sheet { padding-top: 28px; }
 }
 .riviera.no-map .cars { grid-template-columns: repeat(3, 1fr); }
-.riviera .num { unicode-bidi: isolate; direction: ltr; font-family: var(--mono); font-variant-numeric: tabular-nums; letter-spacing: -.01em; }.riviera .leaflet-control-attribution a { text-decoration: underline; text-underline-offset: 2px; color: inherit; }
 .riviera .btn-primary, .riviera .btn-primary:hover { background: var(--sig); color: var(--sig-on); border-radius: 4px; font-weight: 600; }
 .riviera .btn-primary:hover { filter: brightness(1.08); }

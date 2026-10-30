@@ -1,71 +1,114 @@
 "use client";
 
-import "leaflet/dist/leaflet.css";
-import { useEffect, useState } from "react";
-import { MapContainer, TileLayer, Marker, Polyline, useMap, AttributionControl } from "react-leaflet";
-import L from "leaflet";
-import { fetchOsrmRoute } from "@/features/booking/lib/maps/osrm-route";
+import { useEffect, useRef, useState } from "react";
+import { setOptions, importLibrary } from "@googlemaps/js-api-loader";
+import { rivieraLightStyle, rivieraDarkStyle } from "./map-styles";
 
-const pickup: [number, number] = [46.2381, 6.109];
-const dropoff: [number, number] = [46.2, 6.15];
+const pickup = { lat: 46.2381, lng: 6.109 };
+const dropoff = { lat: 46.2, lng: 6.15 };
 
-function FitBounds({ positions }: { positions: [number, number][] }) {
-  const map = useMap();
-  useEffect(() => {
-    const bounds = L.latLngBounds(positions);
-    map.fitBounds(bounds, { padding: [40, 40] });
-  }, [map, positions]);
-  return null;
+function pickupIcon() {
+  if (typeof google === "undefined") return undefined;
+  return {
+    url:
+      "data:image/svg+xml;charset=UTF-8," +
+      encodeURIComponent(
+        '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"><circle cx="9" cy="9" r="6" fill="#FBF9F5" stroke="#1C1A16" stroke-width="3"/></svg>',
+      ),
+    scaledSize: new google.maps.Size(18, 18),
+  };
 }
 
-const pickupIcon = L.divIcon({
-  className: "",
-  html: `<span style="display:block;width:16px;height:16px;border-radius:50%;background:var(--sheet);border:3px solid var(--ink);box-shadow:0 0 0 1px var(--rule2)"></span>`,
-  iconSize: [16, 16],
-  iconAnchor: [8, 8],
-});
-
-const dropoffIcon = L.divIcon({
-  className: "",
-  html: `<span style="display:block;width:16px;height:16px;border-radius:3px;background:var(--sig);border:2px solid var(--sheet);box-shadow:0 0 0 1px var(--rule2)"></span>`,
-  iconSize: [16, 16],
-  iconAnchor: [8, 8],
-});
+function dropoffIcon() {
+  if (typeof google === "undefined") return undefined;
+  return {
+    url:
+      "data:image/svg+xml;charset=UTF-8," +
+      encodeURIComponent(
+        '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"><rect x="2" y="2" width="14" height="14" rx="3" fill="#A3381A" stroke="#FBF9F5" stroke-width="2"/></svg>',
+      ),
+    scaledSize: new google.maps.Size(18, 18),
+  };
+}
 
 export function RivieraMap({ theme }: { theme?: "light" | "dark" }) {
-  const tiles = process.env.NEXT_PUBLIC_MAP_TILE_URL || "https://tile.openstreetmap.org/{z}/{x}/{y}.png";
-  const [positions, setPositions] = useState<[number, number][]>([pickup, dropoff]);
+  const ref = useRef<HTMLDivElement | null>(null);
+  const mapRef = useRef<google.maps.Map | null>(null);
+  const [failed, setFailed] = useState(false);
 
   useEffect(() => {
-    let active = true;
-    fetchOsrmRoute(pickup, dropoff).then((route) => {
-      if (active && route && route.length > 1) setPositions(route);
-    });
+    const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
+    if (!apiKey || !ref.current) {
+      setFailed(true);
+      return;
+    }
+    let cancelled = false;
+    (async () => {
+      try {
+        setOptions({ key: apiKey, v: "weekly" });
+        const [mapsLib, routesLib] = await Promise.all([
+          importLibrary("maps"),
+          importLibrary("routes"),
+        ]);
+        if (cancelled || !ref.current) return;
+        const isDark = document.documentElement.dataset.rivieraTheme === "dark";
+        const map = new mapsLib.Map(ref.current, {
+          center: pickup,
+          zoom: 12,
+          disableDefaultUI: true,
+          zoomControl: window.matchMedia("(min-width: 1024px)").matches,
+          gestureHandling: "cooperative",
+          styles: isDark ? rivieraDarkStyle : rivieraLightStyle,
+        });
+        mapRef.current = map;
+
+        new google.maps.Marker({ position: pickup, map, icon: pickupIcon() });
+        new google.maps.Marker({ position: dropoff, map, icon: dropoffIcon() });
+
+        const renderer = new routesLib.DirectionsRenderer({
+          map,
+          suppressMarkers: true,
+          polylineOptions: { strokeColor: "#1C1A16", strokeWeight: 4 },
+        });
+
+        const service = new routesLib.DirectionsService();
+        service.route(
+          { origin: pickup, destination: dropoff, travelMode: google.maps.TravelMode.DRIVING },
+          (result, status) => {
+            if (status === "OK" && result) renderer.setDirections(result);
+          },
+        );
+      } catch {
+        if (!cancelled) setFailed(true);
+      }
+    })();
     return () => {
-      active = false;
+      cancelled = true;
     };
   }, []);
 
-  return (
-    <MapContainer
-      center={pickup}
-      zoom={12}
-      style={{ height: "100%", width: "100%" }}
-      scrollWheelZoom={false}
-      zoomControl={false}
-      attributionControl={false}
-    >
-      <TileLayer attribution={process.env.NEXT_PUBLIC_MAP_TILE_ATTRIBUTION || "© OpenStreetMap contributors"} url={tiles} />
-      <AttributionControl prefix={false} />
-      <Marker position={pickup} icon={pickupIcon} interactive={false} keyboard={false}>
-        <span>Pick-up</span>
-      </Marker>
-      <Marker position={dropoff} icon={dropoffIcon} interactive={false} keyboard={false}>
-        <span>Drop-off</span>
-      </Marker>
-      <Polyline positions={positions} color="var(--sheet)" weight={8} />
-      <Polyline positions={positions} color="var(--ink)" weight={4} />
-      <FitBounds positions={positions} />
-    </MapContainer>
-  );
+  useEffect(() => {
+    const apply = () => {
+      const map = mapRef.current;
+      if (!map) return;
+      const isDark = document.documentElement.dataset.rivieraTheme === "dark";
+      map.setOptions({ styles: isDark ? rivieraDarkStyle : rivieraLightStyle });
+    };
+    const observer = new MutationObserver(apply);
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ["data-riviera-theme"] });
+    return () => observer.disconnect();
+  }, []);
+
+  if (failed) {
+    return (
+      <div className="flex h-full w-full items-center justify-center bg-[var(--well)] p-4 text-sm text-[var(--ink2)]">
+        <div>
+          <div className="font-medium text-[var(--ink)]">Pick-up → Drop-off</div>
+          <div className="mt-1">Trip summary</div>
+        </div>
+      </div>
+    );
+  }
+
+  return <div ref={ref} className="h-full w-full" />;
 }

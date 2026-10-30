@@ -54,6 +54,7 @@ export function VehicleCard({
             alt={vehicle.name}
             width={200}
             height={150}
+            sizes="(max-width: 479px) 64px, 88px"
             onError={() => setImgFailed(true)}
           />
         ) : (

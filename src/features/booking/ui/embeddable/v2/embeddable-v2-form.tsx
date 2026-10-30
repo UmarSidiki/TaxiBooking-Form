@@ -104,12 +104,12 @@ export function EmbeddableV2Form() {
       >
         {/* Map container - only show if map is loaded */}
         {mapLoaded && (
-          <div className="mb-3 rounded-lg overflow-hidden h-24 sm:h-32 md:h-48">
+          <div className="mb-3 rounded overflow-hidden h-24 sm:h-32 md:h-48">
             <div ref={mapRef} className="w-full h-full" />
           </div>
         )}
         {/* Compact Form Card */}
-        <Card className="rounded-xl bg-white/90 backdrop-blur-md p-2 sm:p-3 md:p-4 border-0 h-full flex flex-col shimmer-container">
+        <Card className="rounded bg-white/90 backdrop-blur-md p-2 sm:p-3 md:p-4 border-0 h-full flex flex-col shimmer-container">
           <header className="mb-1 text-center">
             <h1 className="text-sm sm:text-base md:text-lg font-bold text-slate-800 flex items-center justify-center gap-2">
               {t("embeddable.trip-booking")}

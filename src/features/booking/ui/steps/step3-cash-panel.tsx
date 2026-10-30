@@ -16,7 +16,7 @@ export function Step3CashPanel({
   "t" | "currencySymbol" | "totalPrice" | "handleCashBooking" | "isLoading" | "contactValid"
 >) {
   return (
-                <div className="mt-4 bg-green-50 border border-green-200 rounded-lg p-4">
+                <div className="mt-4 bg-green-50 border border-green-200 rounded p-4">
                   <div className="flex items-start gap-3">
                     <CheckCircle2 className="h-5 w-5 text-[color:var(--ok)] flex-shrink-0 mt-0.5" />
                     <div>

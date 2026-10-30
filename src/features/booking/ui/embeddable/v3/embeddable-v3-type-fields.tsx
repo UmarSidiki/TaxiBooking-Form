@@ -15,7 +15,7 @@ export function EmbeddableV3TypeFields({
   setBookingType: (type: FormData["bookingType"]) => void;
 }) {
   return (
-          <div className="flex rounded-lg border border-gray-200 bg-gray-50 p-1 text-xs sm:text-sm font-medium">
+          <div className="flex rounded border border-gray-200 bg-gray-50 p-1 text-xs sm:text-sm font-medium">
             <button
               type="button"
               onClick={() => setBookingType("destination")}

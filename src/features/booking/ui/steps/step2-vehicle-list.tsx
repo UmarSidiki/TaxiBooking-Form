@@ -63,7 +63,7 @@ export function Step2VehicleList({
   }
 
   return (
-          <div className="space-y-2">
+          <div className={sortedVehicles.length >= 3 ? "grid grid-cols-1 md:grid-cols-3 gap-4" : "space-y-2"}>
             {sortedVehicles.map((vehicle, index) => {
               const calculatedPrice = calculatePrice(vehicle);
               const originalPrice = calculateOriginalPrice(vehicle);

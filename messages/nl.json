@@ -2719,6 +2719,7 @@
     "dropoff": "Bestemming",
     "change": "Wijzigen",
     "total": "Totaal",
-    "passengers": "{count, plural, one {# passagier} other {# passagiers}}"
+    "passengers": "{count, plural, one {# passagier} other {# passagiers}}",
+    "brandFallback": "RideNow"
   }
 }

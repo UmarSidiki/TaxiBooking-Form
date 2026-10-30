@@ -119,7 +119,7 @@ export function createLocationFieldRenderers(ctx: Ctx) {
                 onChange={(e) =>
                   handleStopDurationChange(index, parseInt(e.target.value))
                 }
-                className="w-full rounded-lg border pl-6 sm:pl-7 pr-6 sm:pr-7 py-2 sm:py-2.5 text-xs font-medium cursor-pointer appearance-none"
+                className="w-full rounded border pl-6 sm:pl-7 pr-6 sm:pr-7 py-2 sm:py-2.5 text-xs font-medium cursor-pointer appearance-none"
                 style={{
                   ...inputStyle,
                   backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%2394a3b8' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`,
@@ -139,7 +139,7 @@ export function createLocationFieldRenderers(ctx: Ctx) {
           <button
             type="button"
             onClick={() => handleRemoveStop(index)}
-            className="flex-shrink-0 p-1 sm:p-1.5 rounded-lg hover:text-red-500 hover:bg-red-50 transition-all duration-200"
+            className="flex-shrink-0 p-1 sm:p-1.5 rounded hover:text-red-500 hover:bg-red-50 transition-all duration-200"
             style={{ color: style.textColor }}
           >
             <X className="h-3 w-3 sm:h-3.5 sm:w-3.5 md:h-4 md:w-4" />

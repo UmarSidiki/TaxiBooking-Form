@@ -1,19 +1,20 @@
 "use client";
 
 import "leaflet/dist/leaflet.css";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { MapContainer, TileLayer, Marker, Polyline, useMap, AttributionControl } from "react-leaflet";
 import L from "leaflet";
+import { fetchOsrmRoute } from "@/features/booking/lib/maps/osrm-route";
 
 const pickup: [number, number] = [46.2381, 6.109];
 const dropoff: [number, number] = [46.2, 6.15];
 
-function FitBounds() {
+function FitBounds({ positions }: { positions: [number, number][] }) {
   const map = useMap();
   useEffect(() => {
-    const bounds = L.latLngBounds([pickup, dropoff]);
+    const bounds = L.latLngBounds(positions);
     map.fitBounds(bounds, { padding: [40, 40] });
-  }, [map]);
+  }, [map, positions]);
   return null;
 }
 
@@ -32,7 +33,18 @@ const dropoffIcon = L.divIcon({
 });
 
 export function RivieraMap({ theme }: { theme?: "light" | "dark" }) {
-  const tiles = "https://tile.openstreetmap.org/{z}/{x}/{y}.png";
+  const tiles = process.env.NEXT_PUBLIC_MAP_TILE_URL || "https://tile.openstreetmap.org/{z}/{x}/{y}.png";
+  const [positions, setPositions] = useState<[number, number][]>([pickup, dropoff]);
+
+  useEffect(() => {
+    let active = true;
+    fetchOsrmRoute(pickup, dropoff).then((route) => {
+      if (active && route && route.length > 1) setPositions(route);
+    });
+    return () => {
+      active = false;
+    };
+  }, []);
 
   return (
     <MapContainer
@@ -43,7 +55,7 @@ export function RivieraMap({ theme }: { theme?: "light" | "dark" }) {
       zoomControl={false}
       attributionControl={false}
     >
-      <TileLayer attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' url={tiles} />
+      <TileLayer attribution={process.env.NEXT_PUBLIC_MAP_TILE_ATTRIBUTION || "© OpenStreetMap contributors"} url={tiles} />
       <AttributionControl prefix={false} />
       <Marker position={pickup} icon={pickupIcon} interactive={false} keyboard={false}>
         <span>Pick-up</span>
@@ -51,9 +63,9 @@ export function RivieraMap({ theme }: { theme?: "light" | "dark" }) {
       <Marker position={dropoff} icon={dropoffIcon} interactive={false} keyboard={false}>
         <span>Drop-off</span>
       </Marker>
-      <Polyline positions={[pickup, dropoff]} color="var(--sheet)" weight={8} />
-      <Polyline positions={[pickup, dropoff]} color="var(--ink)" weight={4} />
-      <FitBounds />
+      <Polyline positions={positions} color="var(--sheet)" weight={8} />
+      <Polyline positions={positions} color="var(--ink)" weight={4} />
+      <FitBounds positions={positions} />
     </MapContainer>
   );
 }

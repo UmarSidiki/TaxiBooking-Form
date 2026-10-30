@@ -2719,6 +2719,7 @@
     "dropoff": "Destino",
     "change": "Cambiar",
     "total": "Total",
-    "passengers": "{count, plural, one {# pasajero} other {# pasajeros}}"
+    "passengers": "{count, plural, one {# pasajero} other {# pasajeros}}",
+    "brandFallback": "RideNow"
   }
 }

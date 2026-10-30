@@ -18,7 +18,7 @@ export function EmbeddableV3Submit({
           <div className="mt-auto pt-2 sm:pt-3">
             <Button
               type="submit"
-              className="w-full rounded-lg py-2 sm:py-3 text-xs sm:text-sm font-semibold text-white transition-all duration-200 shadow-md hover:shadow-lg disabled:opacity-70 disabled:cursor-not-allowed bg-gradient-to-r from-primary via-primary/90 to-primary/70 hover:from-primary/95 hover:via-primary/85 hover:to-primary/65"
+              className="w-full rounded py-2 sm:py-3 text-xs sm:text-sm font-semibold text-white transition-all duration-200 shadow-md hover:shadow-lg disabled:opacity-70 disabled:cursor-not-allowed bg-gradient-to-r from-primary via-primary/90 to-primary/70 hover:from-primary/95 hover:via-primary/85 hover:to-primary/65"
               disabled={isLoading || calculatingDistance}
             >
               {isLoading || calculatingDistance ? (

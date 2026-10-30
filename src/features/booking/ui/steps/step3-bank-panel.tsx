@@ -27,7 +27,7 @@ export function Step3BankPanel({
   }
 
   return (
-                <div className="mt-4 bg-blue-50 border border-blue-200 rounded-lg p-4">
+                <div className="mt-4 bg-blue-50 border border-blue-200 rounded p-4">
                   <div className="flex items-start gap-3 mb-4">
                     <Building2 className="h-5 w-5 text-[color:var(--ink2)] flex-shrink-0 mt-0.5" />
                     <div>
@@ -38,7 +38,7 @@ export function Step3BankPanel({
                     </div>
                   </div>
 
-                  <div className="bg-[var(--sheet)] rounded-lg p-4 space-y-3 text-sm">
+                  <div className="bg-[var(--sheet)] rounded p-4 space-y-3 text-sm">
                     {paymentSettings.bankName && (
                       <div>
                         <p className="text-[color:var(--ink2)] text-xs">{t('Step3.bank-name')}</p>

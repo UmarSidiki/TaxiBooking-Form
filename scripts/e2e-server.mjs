@@ -36,6 +36,46 @@ await db.collection("vehicles").insertOne({
   updatedAt: now,
 });
 
+const businessVehicleId = new mongoose.Types.ObjectId();
+await db.collection("vehicles").insertOne({
+  _id: businessVehicleId,
+  name: "Business",
+  description: "Business class",
+  image: "/placeholder-car.jpg",
+  persons: 3,
+  baggages: 2,
+  price: 15,
+  pricePerKm: 3,
+  pricePerHour: 40,
+  minimumFare: 20,
+  minimumHours: 2,
+  returnPricePercentage: 100,
+  category: "business",
+  isActive: true,
+  createdAt: now,
+  updatedAt: now,
+});
+
+const vanVehicleId = new mongoose.Types.ObjectId();
+await db.collection("vehicles").insertOne({
+  _id: vanVehicleId,
+  name: "Van",
+  description: "Van",
+  image: "/placeholder-car.jpg",
+  persons: 7,
+  baggages: 6,
+  price: 20,
+  pricePerKm: 3.5,
+  pricePerHour: 45,
+  minimumFare: 20,
+  minimumHours: 2,
+  returnPricePercentage: 100,
+  category: "van",
+  isActive: true,
+  createdAt: now,
+  updatedAt: now,
+});
+
 const driverId = new mongoose.Types.ObjectId();
 await db.collection("drivers").insertOne({
   _id: driverId,

@@ -48,7 +48,7 @@ export function EmbeddableV3ScheduleFields({
                     onChange={(e) =>
                       handleInputChange("date", e.target.value)
                     }
-                    className={`rounded-lg border bg-white pl-8 sm:pl-10 pr-2 sm:pr-3 py-2 sm:py-2.5 text-xs sm:text-sm transition-all duration-200 ${
+                    className={`rounded border bg-white pl-8 sm:pl-10 pr-2 sm:pr-3 py-2 sm:py-2.5 text-xs sm:text-sm transition-all duration-200 ${
                       errors.date
                         ? "border-red-400 focus:border-red-500 focus:ring-red-100"
                         : "border-gray-300 focus:border-primary focus:ring-primary/20"
@@ -77,7 +77,7 @@ export function EmbeddableV3ScheduleFields({
                     onChange={(e) =>
                       handleInputChange("time", e.target.value)
                     }
-                    className={`rounded-lg border bg-white pl-8 sm:pl-10 pr-2 sm:pr-3 py-2 sm:py-2.5 text-xs sm:text-sm transition-all duration-200 ${
+                    className={`rounded border bg-white pl-8 sm:pl-10 pr-2 sm:pr-3 py-2 sm:py-2.5 text-xs sm:text-sm transition-all duration-200 ${
                       errors.time
                         ? "border-red-400 focus:border-red-500 focus:ring-red-100"
                         : "border-gray-300 focus:border-primary focus:ring-primary/20"
@@ -125,7 +125,7 @@ export function EmbeddableV3ScheduleFields({
                     }
                     handleInputBlur("passengers");
                   }}
-                  className={`rounded-lg border bg-white pl-8 sm:pl-10 pr-2 sm:pr-3 py-2 sm:py-2.5 text-xs sm:text-sm transition-all duration-200 ${
+                  className={`rounded border bg-white pl-8 sm:pl-10 pr-2 sm:pr-3 py-2 sm:py-2.5 text-xs sm:text-sm transition-all duration-200 ${
                     errors.passengers
                       ? "border-red-400 focus:border-red-500 focus:ring-red-100"
                       : "border-gray-300 focus:border-primary focus:ring-primary/20"

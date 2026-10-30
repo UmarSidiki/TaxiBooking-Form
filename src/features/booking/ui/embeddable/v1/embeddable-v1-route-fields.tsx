@@ -54,7 +54,7 @@ export function EmbeddableV1RouteFields({
   return (
     <>
               {/* Compact Booking Type Toggle */}
-              <div className="flex rounded-lg border border-slate-200 bg-slate-50 p-1 text-xs md:text-sm font-medium mb-3">
+              <div className="flex rounded border border-slate-200 bg-slate-50 p-1 text-xs md:text-sm font-medium mb-3">
                 {(["destination", "hourly"] as const).map((type) => (
                   <button
                     key={type}
@@ -94,7 +94,7 @@ export function EmbeddableV1RouteFields({
                     }}
                     onBlur={() => handleInputBlur("pickup")}
                     onFocus={() => setFocusedField("pickup")}
-                    className={`rounded-lg border bg-white ps-9 md:ps-10 pe-12 py-2 md:py-2.5 text-sm transition-all duration-200 ${
+                    className={`rounded border bg-white ps-9 md:ps-10 pe-12 py-2 md:py-2.5 text-sm transition-all duration-200 ${
                       errors.pickup
                         ? "border-red-400 focus:border-red-500 focus:ring-red-100"
                         : focusedField === "pickup"
@@ -137,7 +137,7 @@ export function EmbeddableV1RouteFields({
                               onChange={(e) =>
                                 handleStopChange(index, e.target.value)
                               }
-                              className="rounded-lg border bg-white pl-9 md:pl-10 pr-3 py-2 md:py-2.5 text-sm border-slate-200 hover:border-slate-300 focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all duration-200"
+                              className="rounded border bg-white pl-9 md:pl-10 pr-3 py-2 md:py-2.5 text-sm border-slate-200 hover:border-slate-300 focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all duration-200"
                             />
                           </div>
                           <div className="relative flex-1 min-w-[90px]">
@@ -152,7 +152,7 @@ export function EmbeddableV1RouteFields({
                                   parseInt(e.target.value)
                                 )
                               }
-                              className="w-full rounded-lg border bg-white pl-7 pr-7 py-2 md:py-2.5 text-xs font-medium text-slate-700 border-slate-200 hover:border-slate-300 focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none transition-all duration-200 cursor-pointer appearance-none"
+                              className="w-full rounded border bg-white pl-7 pr-7 py-2 md:py-2.5 text-xs font-medium text-slate-700 border-slate-200 hover:border-slate-300 focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none transition-all duration-200 cursor-pointer appearance-none"
                               style={{
                                 backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%2394a3b8' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`,
                                 backgroundPosition: "right 0.25rem center",
@@ -171,7 +171,7 @@ export function EmbeddableV1RouteFields({
                         <button
                           type="button"
                           onClick={() => handleRemoveStop(index)}
-                          className="flex-shrink-0 p-1.5 rounded-lg text-slate-400 hover:text-red-500 hover:bg-red-50 transition-all duration-200"
+                          className="flex-shrink-0 p-1.5 rounded text-slate-400 hover:text-red-500 hover:bg-red-50 transition-all duration-200"
                         >
                           <X className="h-3.5 w-3.5 md:h-4 md:w-4" />
                         </button>
@@ -205,7 +205,7 @@ export function EmbeddableV1RouteFields({
                         }}
                         onBlur={() => handleInputBlur("dropoff")}
                         onFocus={() => setFocusedField("dropoff")}
-                        className={`rounded-lg border bg-white pl-9 md:pl-10 pr-3 py-2 md:py-2.5 text-sm transition-all duration-200 ${
+                        className={`rounded border bg-white pl-9 md:pl-10 pr-3 py-2 md:py-2.5 text-sm transition-all duration-200 ${
                           errors.dropoff
                             ? "border-red-400 focus:border-red-500 focus:ring-red-100"
                             : focusedField === "dropoff"
@@ -235,14 +235,14 @@ export function EmbeddableV1RouteFields({
                       min={1}
                       value={formData.duration}
                       onChange={(e) => setDuration(Number(e.target.value))}
-                      className="rounded-lg border bg-white pl-9 md:pl-10 pr-3 py-2 md:py-2.5 text-sm border-slate-200 focus:border-primary focus:ring-primary/20 transition-all duration-200"
+                      className="rounded border bg-white pl-9 md:pl-10 pr-3 py-2 md:py-2.5 text-sm border-slate-200 focus:border-primary focus:ring-primary/20 transition-all duration-200"
                     />
                   </div>
                 )}
 
                 {/* Compact One-way / Round-trip Toggle */}
                 {!isHourly && (
-                  <div className="flex rounded-lg border bg-slate-200 p-1 text-xs md:text-sm font-medium">
+                  <div className="flex rounded border bg-slate-200 p-1 text-xs md:text-sm font-medium">
                     <button
                       type="button"
                       onClick={() => setTripType("oneway")}

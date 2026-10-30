@@ -57,7 +57,7 @@ export default function BookingFormContainer() {
       <header className="top">
         <span className="brand">
           <b></b>
-          {settings?.companyName || process.env.NEXT_PUBLIC_WEBSITE_NAME || t("FormContainer.Title")}
+          {settings?.companyName || process.env.NEXT_PUBLIC_WEBSITE_NAME || t("Riviera.brandFallback")}
         </span>
         <div className="lang">
           <LanguageSwitcher />

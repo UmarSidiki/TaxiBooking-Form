@@ -2719,6 +2719,7 @@
     "dropoff": "الوجهة",
     "change": "تغيير",
     "total": "الإجمالي",
-    "passengers": "{count, plural, one {# راكب} other {# ركاب}}"
+    "passengers": "{count, plural, one {# راكب} other {# ركاب}}",
+    "brandFallback": "RideNow"
   }
 }

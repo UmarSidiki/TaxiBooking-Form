@@ -102,6 +102,6 @@ export function VehicleArt({
 export function vehicleKindFromVehicle(vehicle: { category?: string; name?: string }): VehicleArtKind {
   const text = `${vehicle.category ?? ""} ${vehicle.name ?? ""}`.toLowerCase();
   if (text.includes("van") || text.includes("suv") || text.includes("bus")) return "van";
-  if (text.includes("limo") || text.includes("lux") || text.includes("premium") || text.includes("business")) return "limo";
+  if (text.includes("limo") || text.includes("lux") || text.includes("premium") || text.includes("business") || text.includes("first")) return "limo";
   return "sedan";
 }

@@ -24,7 +24,7 @@ export function Step3PaymentMethodOptions({
                     <button
                       type="button"
                       onClick={() => setSelectedPaymentMethod("card")}
-                      className={`p-4 border-2 rounded-xl text-left transition-all relative overflow-hidden ${
+                      className={`p-4 border-2 rounded text-left transition-all relative overflow-hidden ${
                         selectedPaymentMethod === "card"
                           ? "border-blue-500 bg-blue-50 shadow-md"
                           : "border-[var(--rule2)] hover:border-[var(--rule2)] hover:shadow-sm"
@@ -33,7 +33,7 @@ export function Step3PaymentMethodOptions({
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
                           <div
-                            className={`p-2 rounded-lg ${
+                            className={`p-2 rounded ${
                               selectedPaymentMethod === "card"
                                 ? "bg-blue-100"
                                 : "bg-[var(--well)]"
@@ -68,25 +68,25 @@ export function Step3PaymentMethodOptions({
                   <button
                     type="button"
                     onClick={() => setSelectedPaymentMethod("multisafepay")}
-                    className={`p-4 border-2 rounded-xl text-left transition-all ${
+                    className={`p-4 border-2 rounded text-left transition-all ${
                       selectedPaymentMethod === "multisafepay"
-                        ? "border-[#00ABEE] bg-[#00ABEE]/10 shadow-md"
+                        ? "border-[var(--brand-multisafepay)] bg-[var(--brand-multisafepay)]/10 shadow-md"
                         : "border-[var(--rule2)] hover:border-[var(--rule2)] hover:shadow-sm"
                     }`}
                   >
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-3">
                         <div
-                          className={`p-2 rounded-lg ${
+                          className={`p-2 rounded ${
                             selectedPaymentMethod === "multisafepay"
-                              ? "bg-[#00ABEE]/10"
+                              ? "bg-[var(--brand-multisafepay)]/10"
                               : "bg-[var(--well)]"
                           }`}
                         >
                           <CreditCard
                             className={`h-5 w-5 ${
                               selectedPaymentMethod === "multisafepay"
-                                ? "text-[#00ABEE]"
+                                ? "text-[var(--brand-multisafepay)]"
                                 : "text-[color:var(--ink2)]"
                             }`}
                           />
@@ -100,7 +100,7 @@ export function Step3PaymentMethodOptions({
                         </div>
                       </div>
                       {selectedPaymentMethod === "multisafepay" && (
-                        <div className="flex items-center gap-1 text-[#00ABEE] text-sm font-medium">
+                        <div className="flex items-center gap-1 text-[var(--brand-multisafepay)] text-sm font-medium">
                           <CheckCircle2 className="h-4 w-4" />
                         </div>
                       )}
@@ -112,7 +112,7 @@ export function Step3PaymentMethodOptions({
                   <button
                     type="button"
                     onClick={() => setSelectedPaymentMethod("cash")}
-                    className={`p-4 border-2 rounded-xl text-left transition-all ${
+                    className={`p-4 border-2 rounded text-left transition-all ${
                       selectedPaymentMethod === "cash"
                         ? "border-green-500 bg-green-50 shadow-md"
                         : "border-[var(--rule2)] hover:border-[var(--rule2)] hover:shadow-sm"
@@ -121,7 +121,7 @@ export function Step3PaymentMethodOptions({
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-3">
                         <div
-                          className={`p-2 rounded-lg ${
+                          className={`p-2 rounded ${
                             selectedPaymentMethod === "cash"
                               ? "bg-[var(--sig-tint)]"
                               : "bg-[var(--well)]"
@@ -157,7 +157,7 @@ export function Step3PaymentMethodOptions({
                   <button
                     type="button"
                     onClick={() => setSelectedPaymentMethod("bank_transfer")}
-                    className={`p-4 border-2 rounded-xl text-left transition-all ${
+                    className={`p-4 border-2 rounded text-left transition-all ${
                       selectedPaymentMethod === "bank_transfer"
                         ? "border-indigo-500 bg-indigo-50 shadow-md"
                         : "border-[var(--rule2)] hover:border-[var(--rule2)] hover:shadow-sm"
@@ -166,7 +166,7 @@ export function Step3PaymentMethodOptions({
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-3">
                         <div
-                          className={`p-2 rounded-lg ${
+                          className={`p-2 rounded ${
                             selectedPaymentMethod === "bank_transfer"
                               ? "bg-indigo-100"
                               : "bg-[var(--well)]"

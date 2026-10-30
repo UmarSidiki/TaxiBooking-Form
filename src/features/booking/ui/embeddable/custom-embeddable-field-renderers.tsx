@@ -164,8 +164,8 @@ export function useCustomEmbeddableFieldRenderers(
           type="submit"
           className={`font-semibold tracking-wide transition-all duration-200 shadow-md hover:shadow-lg disabled:opacity-70 disabled:cursor-not-allowed w-full ${
             style.buttonSize === 'small' ? 'py-1.5 text-xs rounded' :
-            style.buttonSize === 'large' ? 'py-3.5 text-base sm:py-4 sm:text-lg rounded-lg' :
-            'py-2 sm:py-2.5 text-xs sm:text-sm rounded-lg'
+            style.buttonSize === 'large' ? 'py-3.5 text-base sm:py-4 sm:text-lg rounded' :
+            'py-2 sm:py-2.5 text-xs sm:text-sm rounded'
           }`}
           style={{
             backgroundColor: style.buttonColor || style.primaryColor,

@@ -77,7 +77,7 @@ export function Step3BookingSummary({
 
           {/* Map */}
           {mapLoaded && (
-            <div className="border rounded-lg overflow-hidden">
+            <div className="border rounded overflow-hidden">
               <div
                 ref={mapRef}
                 className="w-full h-48 bg-[var(--well)]"
@@ -93,7 +93,7 @@ export function Step3BookingSummary({
                 <Car className="h-4 w-4" style={{ color: "var(--ink2)" }} />
                 <span className="font-semibold text-sm">{t('Step3.selected-vehicle')}</span>
               </div>
-              <div className="bg-[var(--well)] p-3 rounded-lg">
+              <div className="bg-[var(--well)] p-3 rounded">
                 <p className="font-medium">{selectedVehicle.name}</p>
                 <p className="text-xs text-[color:var(--ink2)] mt-1">
                   {selectedVehicle.description}

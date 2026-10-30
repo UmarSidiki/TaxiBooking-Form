@@ -90,7 +90,7 @@
   --sig-tint: #3A2318;
   --warn: #D4A017;
   --info: #6FA3E0;
-  --destructive: var(--err);
+  --destructive: #A3261B; /* fill keeps white text at AA; --err stays the text colour */
   --sidebar: var(--sheet);
   --sidebar-foreground: var(--ink);
   --sidebar-border: var(--rule);

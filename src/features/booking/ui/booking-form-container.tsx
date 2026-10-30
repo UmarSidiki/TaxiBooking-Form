@@ -1,4 +1,5 @@
 "use client";
+import { brandName } from "@/features/settings/lib/brand-name";
 
 import React, { lazy, Suspense, useEffect } from "react";
 import { Loader2 } from "lucide-react";
@@ -56,7 +57,7 @@ export default function BookingFormContainer() {
       <header className="top">
         <span className="brand">
           <b></b>
-          {settings?.companyName || process.env.NEXT_PUBLIC_WEBSITE_NAME || t("Riviera.brandFallback")}
+          {brandName(settings) || t("Riviera.brandFallback")}
         </span>
         <div className="lang">
           <LanguageSwitcher />

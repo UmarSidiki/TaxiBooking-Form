@@ -1,3 +1,4 @@
+import { brandName } from "@/features/settings/lib/brand-name";
 import { connectDB } from "@/shared/db";
 import { Setting, WhatsAppConfig } from "@/features/settings/model";
 import type { ISetting } from "@/features/settings/model";
@@ -13,11 +14,7 @@ export function brandFromSettings(
   companyPhone?: string | null,
   websiteUrl?: string | null,
 ): EmailBrand {
-  const name =
-    clean(settings?.companyName) ||
-    clean(settings?.smtpSenderName) ||
-    clean(process.env.NEXT_PUBLIC_WEBSITE_NAME) ||
-    "Booking";
+  const name = brandName(settings) || "Booking";
   return {
     name,
     logoUrl: clean(settings?.companyLogoUrl) || null,

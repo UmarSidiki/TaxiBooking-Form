@@ -1,4 +1,5 @@
 "use client";
+import { brandName } from "@/features/settings/lib/brand-name";
 
 import type { ComponentProps, ReactNode } from "react";
 import Link from "next/link";
@@ -32,7 +33,7 @@ export function DeskPlaqueSidebar({
 } & ComponentProps<typeof Sidebar>) {
   const t = useTranslations();
   const settings = useOptionalSettingsDesk()?.settings;
-  const name = settings?.companyName || process.env.NEXT_PUBLIC_WEBSITE_NAME || t("Auth.Desk.fallback_name");
+  const name = brandName(settings) || t("Auth.Desk.fallback_name");
   const href = homeHref ?? `/${locale}/dashboard/home`;
 
   return (

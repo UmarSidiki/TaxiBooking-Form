@@ -131,6 +131,7 @@ await db.collection("partners").insertOne({
 
 await db.collection("promocodes").insertOne({ code: "E2E10", kind: "percent", amount: 10, active: true, expiresAt: null, maxUses: null, maxUsesPerCustomer: null, usedCount: 0, createdAt: now, updatedAt: now });
 await db.collection("settings").insertOne({
+  companyName: "Lakeside Chauffeurs",
   enablePartners: true,
   enableDrivers: true,
   partnerCashSettlement: "keep_cash",

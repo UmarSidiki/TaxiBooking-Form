@@ -1,6 +1,5 @@
 import { importLibrary, setOptions } from "@googlemaps/js-api-loader";
-import { MIN_POLYGON_POINTS } from "@/features/booking/lib/maps/map-defaults";
-import { isPointInPolygon } from "@/features/booking/lib/maps/is-place-in-service-area";
+import { isInServiceArea, serviceAreaFrom, type ServiceAreaSettings } from "@/features/booking/lib/service-area";
 
 export type CurrentPickupFailure =
   | "permission-denied"
@@ -8,28 +7,27 @@ export type CurrentPickupFailure =
   | "outside-service-area";
 
 export type CurrentPickupResult =
-  | { ok: true; address: string }
+  | { ok: true; address: string; coords: { lat: number; lng: number } }
   | { ok: false; reason: CurrentPickupFailure };
 
-type Polygon = Array<{ lat: number; lng: number }> | undefined;
 type Coords = { lat: number; lng: number };
 
 const POSITION_TIMEOUT_MS = 10_000;
 
 /** Reads the device position, checks the service area, then reverse-geocodes it. */
 export async function reverseGeocodePickup(
-  polygonPoints: Polygon,
+  areaSettings: ServiceAreaSettings,
 ): Promise<CurrentPickupResult> {
   const point = await readCurrentPoint();
   if (!point.ok) return point;
 
-  if (!isInsideServiceArea(point.coords, polygonPoints)) {
+  if (!isInServiceArea(point.coords, serviceAreaFrom(areaSettings))) {
     return { ok: false, reason: "outside-service-area" };
   }
 
   const address = await lookupAddress(point.coords);
   if (!address) return { ok: false, reason: "unavailable" };
-  return { ok: true, address };
+  return { ok: true, address, coords: point.coords };
 }
 
 async function readCurrentPoint(): Promise<
@@ -62,10 +60,6 @@ async function readCurrentPoint(): Promise<
   }
 }
 
-function isInsideServiceArea(point: Coords, polygonPoints: Polygon) {
-  if (!polygonPoints || polygonPoints.length < MIN_POLYGON_POINTS) return true;
-  return isPointInPolygon(point, polygonPoints);
-}
 
 async function lookupAddress(coords: Coords) {
   const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;

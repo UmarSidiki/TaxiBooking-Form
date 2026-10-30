@@ -26,7 +26,7 @@ export function PickupCurrentLocationButton() {
     if (locating) return;
     setLocating(true);
     try {
-      const result = await reverseGeocodePickup(settings?.mapPolygonPoints);
+      const result = await reverseGeocodePickup(settings);
       if (!result.ok) {
         setErrors((prev) => ({
           ...prev,
@@ -34,7 +34,7 @@ export function PickupCurrentLocationButton() {
         }));
         return;
       }
-      setFormData((prev) => ({ ...prev, pickup: result.address }));
+      setFormData((prev) => ({ ...prev, pickup: result.address, pickupLatLng: result.coords }));
       setErrors((prev) => ({ ...prev, pickup: undefined }));
     } finally {
       setLocating(false);

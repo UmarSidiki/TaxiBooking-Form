@@ -129,7 +129,7 @@ export default async function RootLayout({ children, params }: Props) {
   } as CSSProperties;
 
   return (
-    <html lang={locale} dir={locale === "ar" ? "rtl" : "ltr"}>
+    <html lang={locale} dir={locale === "ar" ? "rtl" : "ltr"} suppressHydrationWarning>
       <head>
         {/* Preconnect to external services for faster loading */}
         <link rel="preconnect" href="https://maps.googleapis.com" />

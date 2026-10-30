@@ -44,9 +44,7 @@ export function VehicleCard({
 
   return (
     <div
-      role="radio"
-      aria-checked={isSelected}
-      className="veh"
+      className={isSelected ? "veh is-selected" : "veh"}
       onClick={() => handleVehicleSelect(vehicle._id as string)}
     >
       <div className="art">
@@ -96,6 +94,7 @@ export function VehicleCard({
       <div style={{ gridColumn: "1 / -1", marginTop: 10 }}>
         <Button
           onClick={() => handleVehicleSelect(vehicle._id as string)}
+          aria-pressed={isSelected}
           className="w-full py-2 text-base font-medium"
           style={{
             background: isSelected ? "var(--sig)" : "var(--sheet)",

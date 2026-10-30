@@ -41,7 +41,7 @@ html:has(.riviera), body:has(.riviera) { background-color: var(--paper); }
 .riviera .back { width: 52px; height: 52px; border-radius: 4px; border: 1px solid var(--rule2); background: none; display: grid; place-items: center; cursor: pointer; }
 .riviera .veh { display: grid; grid-template-columns: 1fr auto; gap: 2px 12px; border: 1px solid var(--rule2); border-radius: 4px; padding: 14px; cursor: pointer; background: var(--sheet); position: relative; text-align: start; width: 100%; }
 .riviera .veh:hover { border-color: var(--ink2); }
-.riviera .veh[aria-checked="true"] { border: 2px solid var(--ink); padding: 13px; }
+.riviera .veh.is-selected { border: 2px solid var(--ink); padding: 13px; }
 .riviera .veh .art { grid-column: 1 / -1; height: 74px; border-bottom: 1px solid var(--rule); padding-bottom: 6px; display: flex; align-items: flex-end; justify-content: center; margin-bottom: 6px; color: var(--ink); }
 .riviera .veh .art svg { height: 72px; width: auto; }
 .riviera [dir="rtl"] .veh .art svg { transform: scaleX(-1); }

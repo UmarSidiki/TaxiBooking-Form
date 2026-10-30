@@ -97,6 +97,7 @@ export async function createCashBooking(
         });
 
   const serverPrice = await priceServerBooking({
+    enforceServiceArea: true,
     vehicle,
     booking: formData,
     distanceKm,

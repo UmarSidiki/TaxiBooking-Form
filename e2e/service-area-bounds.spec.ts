@@ -10,6 +10,7 @@ test("service area bounds save, reload and clear", async ({ page }, info) => {
   await page.locator("#password").fill("e2e-password");
   await page.getByRole("button", { name: "Sign in" }).click();
   await page.waitForURL((u) => !u.pathname.includes("signin"));
+  await page.waitForLoadState("networkidle");
   await page.goto("/en/dashboard/settings/map");
   const map = page.locator(".gm-style").first();
   await expect(map).toBeVisible({ timeout: 60_000 });

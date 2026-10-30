@@ -35,7 +35,7 @@ export function useBookingStops(
     setFormData((prev) => ({
       ...prev,
       stops: prev.stops.map((stop, i) =>
-        i === index ? { ...stop, location } : stop
+        i === index ? { ...stop, location, latLng: null } : stop
       ),
     }));
   };

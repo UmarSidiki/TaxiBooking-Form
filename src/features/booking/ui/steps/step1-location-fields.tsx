@@ -137,6 +137,9 @@ export function Step1LocationFields({
           )}
 
           {/* Dropoff Location - Only for destination-based bookings */}
+          {errors.stops && (
+            <p role="alert" className="text-[color:var(--err)] text-xs">{errors.stops}</p>
+          )}
           {formData.bookingType === "destination" && (
             <div>
               <div className="flex items-center justify-between mb-1.5">

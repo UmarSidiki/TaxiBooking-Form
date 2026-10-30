@@ -44,11 +44,6 @@ export function useStep1StopAutocomplete({
       const listener = autocomplete.addListener("place_changed", () => {
         const place = autocomplete.getPlace();
         
-        console.log("Stop autocomplete - settings available:", {
-          hasPolygon: !!settings?.mapPolygonPoints,
-          polygonLength: settings?.mapPolygonPoints?.length
-        });
-        
         // Validate against polygon bounds if defined
         if (!validatePlaceInBounds(place)) {
           inputRef.value = "";
@@ -60,10 +55,12 @@ export function useStep1StopAutocomplete({
         }
 
         const newLocation = place.formatted_address || place.name || "";
+        const loc = place.geometry?.location;
+        const latLng = loc ? { lat: loc.lat(), lng: loc.lng() } : null;
         setFormData((prev) => ({
           ...prev,
           stops: prev.stops.map((stop, i) =>
-            i === index ? { ...stop, location: newLocation } : stop
+            i === index ? { ...stop, location: newLocation, latLng } : stop
           ),
         }));
         // Distance calculation will be triggered by the useEffect that monitors stops

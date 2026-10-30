@@ -18,6 +18,7 @@ export interface FormData {
   dropoffLatLng?: LatLngLiteral | null;
   stops: Array<{
     location: string;
+    latLng?: LatLngLiteral | null;
     order: number;
     duration?: number; // Duration in minutes (0-120)
   }>;
@@ -60,6 +61,7 @@ export interface DistanceData {
 
 export interface FormErrors {
   pickup?: string;
+  stops?: string;
   dropoff?: string;
   date?: string;
   time?: string;

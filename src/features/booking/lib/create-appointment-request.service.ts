@@ -82,6 +82,7 @@ export async function createAppointmentRequest(
         });
 
   const serverPrice = await priceServerBooking({
+    enforceServiceArea: true,
     vehicle,
     booking: formData,
     distanceKm,

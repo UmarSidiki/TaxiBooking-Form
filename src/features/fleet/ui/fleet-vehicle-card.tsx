@@ -80,9 +80,9 @@ export function FleetVehicleCard({
         <div className="absolute top-3 right-3 flex gap-1.5 sm:opacity-0 sm:translate-y-[-4px] sm:transition-all sm:duration-200 sm:group-hover:opacity-100 sm:group-hover:translate-y-0 sm:group-focus-within:opacity-100 sm:group-focus-within:translate-y-0">
           <Button
             size="icon"
-            variant="secondary"
+            variant="outline"
             onClick={() => onEdit(vehicle)}
-            className="size-9 rounded bg-white/90 text-foreground backdrop-blur-sm  hover:bg-white transition-all duration-150"
+            className="size-9 rounded bg-background/95"
             aria-label={`${t("Dashboard.Fleet.edit-vehicle")}: ${vehicle.name}`}
             id={`edit-vehicle-${vehicle._id}`}
           >
@@ -90,8 +90,9 @@ export function FleetVehicleCard({
           </Button>
           <Button
             size="icon"
+            variant="destructive"
             onClick={() => onDelete(vehicle._id!)}
-            className="size-9 rounded bg-destructive/90 text-white backdrop-blur-sm  hover:bg-destructive transition-all duration-150"
+            className="size-9 rounded bg-background/95"
             aria-label={`${t("FormBuilder.ui.delete")}: ${vehicle.name}`}
             id={`delete-vehicle-${vehicle._id}`}
           >

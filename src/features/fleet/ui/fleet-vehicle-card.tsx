@@ -82,7 +82,7 @@ export function FleetVehicleCard({
             size="icon"
             variant="secondary"
             onClick={() => onEdit(vehicle)}
-            className="size-9 rounded-xl bg-white/90 text-foreground backdrop-blur-sm shadow-md hover:bg-white transition-all duration-150"
+            className="size-9 rounded bg-white/90 text-foreground backdrop-blur-sm  hover:bg-white transition-all duration-150"
             aria-label={`${t("Dashboard.Fleet.edit-vehicle")}: ${vehicle.name}`}
             id={`edit-vehicle-${vehicle._id}`}
           >
@@ -91,7 +91,7 @@ export function FleetVehicleCard({
           <Button
             size="icon"
             onClick={() => onDelete(vehicle._id!)}
-            className="size-9 rounded-xl bg-destructive/90 text-white backdrop-blur-sm shadow-md hover:bg-destructive transition-all duration-150"
+            className="size-9 rounded bg-destructive/90 text-white backdrop-blur-sm  hover:bg-destructive transition-all duration-150"
             aria-label={`${t("FormBuilder.ui.delete")}: ${vehicle.name}`}
             id={`delete-vehicle-${vehicle._id}`}
           >

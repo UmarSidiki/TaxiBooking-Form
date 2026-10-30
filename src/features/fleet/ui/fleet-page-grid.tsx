@@ -10,7 +10,7 @@ type AdminFleetState = ReturnType<typeof useAdminFleet>;
 function SkeletonCard() {
   return (
     <div
-      className="animate-pulse overflow-hidden rounded-2xl border border-border/60 bg-card"
+      className="animate-pulse overflow-hidden rounded border border-border/60 bg-card"
       aria-hidden="true"
     >
       {/* Photo placeholder */}
@@ -66,8 +66,8 @@ export function FleetPageGrid({
 
   if (filteredVehicles.length === 0) {
     return (
-      <div className="desk-card flex min-h-72 flex-col items-center justify-center gap-4 rounded-2xl border border-dashed border-border/70 bg-card p-10 text-center">
-        <div className="flex size-14 items-center justify-center rounded-2xl bg-muted shadow-inner">
+      <div className="desk-card flex min-h-72 flex-col items-center justify-center gap-4 rounded border border-dashed border-border/70 bg-card p-10 text-center">
+        <div className="flex size-14 items-center justify-center rounded bg-muted shadow-inner">
           <Car className="size-7 text-muted-foreground/60" aria-hidden="true" />
         </div>
         <div>
@@ -85,7 +85,7 @@ export function FleetPageGrid({
         {vehicles.length === 0 && (
           <Button
             onClick={() => setShowForm(true)}
-            className="mt-1 h-10 rounded-xl gap-1.5 px-5"
+            className="mt-1 h-10 rounded gap-1.5 px-5"
             id="fleet-add-first-vehicle"
           >
             <Plus className="size-4" aria-hidden="true" />

@@ -24,7 +24,7 @@ export function DataList<T extends { id?: string; _id?: string }>({
   return (
     <>
       <div className="hidden md:block overflow-x-auto">
-        <table className="w-full text-sm">
+        <table className="w-full text-sm" style={{ tableLayout: "auto" }}>
           <thead>
             <tr className="border-b border-[var(--rule)]">
               {columns.map((c) => (

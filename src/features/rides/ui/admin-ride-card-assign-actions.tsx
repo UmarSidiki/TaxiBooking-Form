@@ -114,7 +114,7 @@ export function AdminRideCardAssignActions({
       <div className="flex flex-col gap-2 sm:flex-row">
         <Button
           variant="outline"
-          className="h-10 flex-1 rounded-xl"
+          className="h-10 flex-1 rounded"
           onClick={async () => {
             setDetailBooking(booking);
             if (
@@ -146,7 +146,7 @@ export function AdminRideCardAssignActions({
           <Button
             onClick={() => handleCancelClick(booking)}
             variant="destructive"
-            className="h-10 rounded-xl sm:w-auto"
+            className="h-10 rounded sm:w-auto"
             disabled={cancelingId === bookingId}
           >
             {cancelingId === bookingId ? (
@@ -182,7 +182,7 @@ function AssignChip({
   onClick: () => void;
 }) {
   return (
-    <div className="flex min-w-0 flex-1 items-center justify-between gap-2 rounded-xl border border-border/60 bg-muted/30 px-3 py-2">
+    <div className="flex min-w-0 flex-1 items-center justify-between gap-2 rounded border border-border/60 bg-muted/30 px-3 py-2">
       <div className="min-w-0">
         <p className="text-xs text-muted-foreground">{label}</p>
         {value ? (

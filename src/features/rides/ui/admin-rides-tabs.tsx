@@ -21,7 +21,7 @@ export function AdminRidesTabs({ rides }: { rides: Rides }) {
       className="flex w-full flex-col gap-4"
     >
       <TabsList
-        className="flex h-auto w-full justify-start gap-1 overflow-x-auto rounded-xl border border-border/60 bg-muted/40 p-1"
+        className="flex h-auto w-full justify-start gap-1 overflow-x-auto rounded border border-border/60 bg-muted/40 p-1"
       >
         {enableAppointmentRequest ? (
           <>
@@ -118,7 +118,7 @@ function RideTab({
       value={value}
       className={cn(
         "h-11 min-h-11 w-auto shrink-0 flex-none gap-1.5 rounded-lg px-3 text-sm text-foreground transition-colors duration-200",
-        "data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm"
+        "data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:"
       )}
     >
       <Icon className="size-4 shrink-0" aria-hidden="true" />

@@ -126,7 +126,7 @@ export function FleetVehicleDrawer({
                   aria-current={isActive ? "true" : undefined}
                   className={`relative flex shrink-0 items-center gap-1.5 rounded-lg px-3 py-2 text-xs font-medium transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring min-h-[44px] ${
                     isActive
-                      ? "bg-background text-foreground shadow-sm"
+                      ? "bg-background text-foreground "
                       : "text-muted-foreground hover:bg-background/60 hover:text-foreground"
                   }`}
                   id={`fleet-tab-mobile-${id}`}
@@ -167,7 +167,7 @@ export function FleetVehicleDrawer({
                   aria-current={isActive ? "true" : undefined}
                   className={`group relative flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 text-left text-sm font-medium transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
                     isActive
-                      ? "bg-background text-foreground shadow-sm"
+                      ? "bg-background text-foreground "
                       : "text-muted-foreground hover:bg-background/60 hover:text-foreground"
                   }`}
                   id={`fleet-tab-${id}`}
@@ -288,7 +288,7 @@ export function FleetVehicleDrawer({
                   type="submit"
                   form="fleet-vehicle-form"
                   disabled={isLoading}
-                  className="w-full sm:flex-1 h-11 sm:h-10 rounded-xl gap-1.5 font-semibold"
+                  className="w-full sm:flex-1 h-11 sm:h-10 rounded gap-1.5 font-semibold"
                   id="fleet-save-btn"
                 >
                   {isLoading ? (
@@ -309,7 +309,7 @@ export function FleetVehicleDrawer({
                   type="button"
                   variant="outline"
                   onClick={onCancel}
-                  className="w-full sm:w-auto h-11 sm:h-10 rounded-xl px-4"
+                  className="w-full sm:w-auto h-11 sm:h-10 rounded px-4"
                   id="fleet-cancel-btn"
                 >
                   {t("Dashboard.Fleet.cancel")}

@@ -12,18 +12,18 @@ export function AdminHomeLoading({ t }: { t: TFn }) {
       <AdminHomeHeader t={t} />
       <div className="flex flex-wrap gap-2">
         {[0, 1, 2, 3].map((i) => (
-          <div key={i} className="h-11 w-36 animate-pulse rounded-xl bg-muted" />
+          <div key={i} className="h-11 w-36 animate-pulse rounded bg-muted" />
         ))}
       </div>
       <div className="grid grid-cols-2 gap-3 xl:grid-cols-4">
         {[0, 1, 2, 3].map((i) => (
           <div
             key={i}
-            className="h-16 animate-pulse rounded-xl border border-border/60 bg-card"
+            className="h-16 animate-pulse rounded border border-border/60 bg-card"
           />
         ))}
       </div>
-      <div className="h-64 animate-pulse rounded-xl border border-border/60 bg-card" />
+      <div className="h-64 animate-pulse rounded border border-border/60 bg-card" />
     </div>
   );
 }

@@ -35,7 +35,7 @@ export function DeskFilterBar({
   return (
     <div
       className={cn(
-        "desk-card w-full rounded-2xl border border-border/60 bg-card px-4 py-3.5 xl:flex-1",
+        "desk-card w-full rounded border border-border/60 bg-card px-4 py-3.5 xl:flex-1",
         className
       )}
     >
@@ -47,7 +47,7 @@ export function DeskFilterBar({
 }
 
 export const deskControlClassName =
-  "h-10 rounded-xl border-border/50 bg-muted/40 text-sm transition-colors focus-visible:bg-background";
+  "h-10 rounded border-border/50 bg-muted/40 text-sm transition-colors focus-visible:bg-background";
 
 export const deskSearchInputClassName =
-  "h-10 w-full rounded-xl border-border/50 bg-muted/40 ps-10 placeholder:text-muted-foreground/60 transition-colors focus-visible:bg-background";
+  "h-10 w-full rounded border-border/50 bg-muted/40 ps-10 placeholder:text-muted-foreground/60 transition-colors focus-visible:bg-background";

@@ -35,7 +35,7 @@ export function PartnerDrawerTabButton({
           ? "min-h-11 shrink-0 gap-1.5 px-3 py-2 text-xs"
           : "min-h-11 w-full gap-2.5 px-2.5 py-2",
         active
-          ? "bg-background text-foreground shadow-sm"
+          ? "bg-background text-foreground "
           : "text-muted-foreground hover:bg-background/60 hover:text-foreground"
       )}
     >

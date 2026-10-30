@@ -104,7 +104,7 @@ export function AdminDriverDrawer({
                 type="submit"
                 form="admin-driver-form"
                 disabled={isLoading}
-                className="h-11 w-full gap-1.5 rounded-xl font-semibold sm:h-10 sm:flex-1"
+                className="h-11 w-full gap-1.5 rounded font-semibold sm:h-10 sm:flex-1"
               >
                 {isLoading ? (
                   <>
@@ -124,7 +124,7 @@ export function AdminDriverDrawer({
                 type="button"
                 variant="outline"
                 onClick={onCancel}
-                className="h-11 w-full rounded-xl px-4 sm:h-10 sm:w-auto"
+                className="h-11 w-full rounded px-4 sm:h-10 sm:w-auto"
               >
                 {t("Driver.cancel")}
               </Button>

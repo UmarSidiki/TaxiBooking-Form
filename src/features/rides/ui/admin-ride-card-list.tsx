@@ -32,7 +32,7 @@ export function AdminRideCardList({ rides }: { rides: Rides }) {
       key: "route",
       header: "Route",
       render: (booking: any) => (
-        <span className="truncate max-w-[200px] inline-block">
+        <span className="truncate inline-block" style={{ maxWidth: "28ch" }}>
           {booking.pickup} → {booking.dropoff}
         </span>
       ),

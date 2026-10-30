@@ -52,7 +52,7 @@ export function FleetPageHeader({
             resetForm();
             setShowForm(true);
           }}
-          className="h-10 w-full shrink-0 rounded-xl gap-1.5 px-4 font-semibold xl:w-auto"
+          className="h-10 w-full shrink-0 rounded gap-1.5 px-4 font-semibold xl:w-auto"
           id="fleet-add-vehicle-btn"
         >
           <Plus className="size-4" aria-hidden="true" />

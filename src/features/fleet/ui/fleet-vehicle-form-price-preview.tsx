@@ -39,7 +39,7 @@ export function FleetVehicleFormPricePreview({
   const hasTiers = (priceTiers?.length ?? 0) > 0;
 
   return (
-    <div className="rounded-xl border border-border/60 bg-muted/30 p-4">
+    <div className="rounded border border-border/60 bg-muted/30 p-4">
       <div className="flex items-center gap-2 mb-3">
         <TrendingUp className="size-3.5 text-muted-foreground" aria-hidden="true" />
         <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">

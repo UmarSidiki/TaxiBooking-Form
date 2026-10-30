@@ -125,7 +125,7 @@ export function AdminRideCard({
   }, [booking.partnerMarginPercentage, defaultPartnerMargin]);
 
   return (
-    <article className="overflow-hidden rounded-2xl border border-border/60 bg-card transition-shadow duration-200 hover:shadow-md">
+    <article className="overflow-hidden rounded border border-border/60 bg-card transition-shadow duration-200 hover:">
       <div className="flex flex-col gap-3 p-4 sm:p-5">
         <AdminRideCardHeader booking={booking} t={t} />
         <AdminRideCardSchedule

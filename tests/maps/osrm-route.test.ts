@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { fetchOsrmRoute } from "./osrm-route";
+import { fetchOsrmRoute } from "@/features/booking/lib/maps/osrm-route";
 
 describe("fetchOsrmRoute", () => {
   it("returns geometry coordinates", async () => {

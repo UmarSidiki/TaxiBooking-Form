@@ -117,5 +117,7 @@
 .riviera * { box-sizing: border-box; }
 .riviera .num { unicode-bidi: isolate; direction: ltr; font-family: var(--mono); font-variant-numeric: tabular-nums; }
 .riviera :focus-visible { outline: 2px solid var(--sig); outline-offset: 2px; border-radius: 2px; }
-.riviera button, .riviera input, .riviera select { font: inherit; color: inherit; }
+@layer base {
+  .riviera button, .riviera input, .riviera select { font: inherit; color: inherit; }
+}
 .riviera input { font-size: 16px; }

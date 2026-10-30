@@ -1526,7 +1526,17 @@
       "cancel-policy-hours-before": "Hours before",
       "cancel-policy-fee-percent": "Fee %",
       "cancel-policy-add": "Add tier",
-      "cancel-policy-remove": "Remove tier"
+      "cancel-policy-remove": "Remove tier",
+      "group-brand": "Бренд",
+      "group-brand-help": "Акцентный цвет задаёт кнопки формы бронирования в светлой теме.",
+      "group-region": "Регион и время",
+      "preview-title": "Предпросмотр",
+      "preview-help": "Обновляется при изменении. Сохраните, чтобы опубликовать.",
+      "preview-pickup": "Аэропорт Женевы",
+      "preview-dropoff": "Отель Beau-Rivage, Лозанна",
+      "preview-continue": "Выбрать автомобиль",
+      "accent-too-light": "Цвет слишком светлый для белого текста, поэтому форма сохраняет стандартный акцент.",
+      "corner-sharpness-scope": "Действует для встраиваемого виджета; форма бронирования сохраняет тонкие углы."
     },
     "Refunds": {
       "title": "Refund Requests",

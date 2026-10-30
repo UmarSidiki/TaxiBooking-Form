@@ -1526,7 +1526,17 @@
       "cancel-policy-hours-before": "Hours before",
       "cancel-policy-fee-percent": "Fee %",
       "cancel-policy-add": "Add tier",
-      "cancel-policy-remove": "Remove tier"
+      "cancel-policy-remove": "Remove tier",
+      "group-brand": "Marchio",
+      "group-brand-help": "Il colore d'accento definisce i pulsanti del modulo di prenotazione in modalità chiara.",
+      "group-region": "Regione e orario",
+      "preview-title": "Anteprima dal vivo",
+      "preview-help": "Si aggiorna mentre modifichi. Salva per pubblicare.",
+      "preview-pickup": "Aeroporto di Ginevra",
+      "preview-dropoff": "Hotel Beau-Rivage, Losanna",
+      "preview-continue": "Vedi i veicoli",
+      "accent-too-light": "Questo colore è troppo chiaro per il testo bianco, quindi il modulo mantiene l'accento predefinito.",
+      "corner-sharpness-scope": "Vale per il widget incorporabile; il modulo mantiene i suoi angoli sottili."
     },
     "Refunds": {
       "title": "Refund Requests",

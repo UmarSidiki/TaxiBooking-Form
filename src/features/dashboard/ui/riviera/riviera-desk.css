@@ -25,3 +25,45 @@
   padding: 10px 0;
   font-size: 14px;
 }
+
+/* Appearance: miniature of booking step 1, drawn with the live Riviera tokens. */
+.riviera .appearance-preview {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px;
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  color: var(--ink);
+}
+.riviera .appearance-preview__brand {
+  font-family: var(--display);
+  font-size: 18px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--rule);
+}
+.riviera .appearance-preview__field {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 8px 10px;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+}
+.riviera .appearance-preview__field span {
+  font-size: 11px;
+  color: var(--ink2);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.riviera .appearance-preview__go {
+  margin-top: 4px;
+  padding: 10px;
+  text-align: center;
+  font-weight: 500;
+  background: var(--sig);
+  color: var(--sig-on);
+  border-radius: var(--radius-sm);
+}

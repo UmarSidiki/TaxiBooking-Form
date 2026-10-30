@@ -3,7 +3,6 @@
 import { Input } from "@/shared/ui/input";
 import { ISetting } from "@/features/settings/model";
 import { useTranslations } from "next-intl";
-import { AppearanceTimezoneField } from "@/features/settings/ui/appearance-tab-timezone";
 
 interface AppearanceTabProps {
   settings: Partial<ISetting>;
@@ -12,25 +11,18 @@ interface AppearanceTabProps {
     value: string
   ) => void;
   handleBorderRadiusChange: (value: number) => void;
-  handleTimezoneChange: (value: string) => void;
 }
 
+/** Brand colours and corner sharpness. */
 export default function AppearanceTab({
   settings,
   handleColorChange,
   handleBorderRadiusChange,
-  handleTimezoneChange,
 }: AppearanceTabProps) {
   const t = useTranslations();
 
   return (
     <div className="space-y-6">
-      <AppearanceTimezoneField
-        value={settings.timezone || "Europe/Zurich"}
-        onChange={handleTimezoneChange}
-        label={t("Dashboard.Settings.timezone")}
-        help={t("Dashboard.Settings.timezone_help")}
-      />
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <ColorField
           id="appearance-primary-color"
@@ -65,7 +57,8 @@ export default function AppearanceTab({
           onChange={(e) => handleBorderRadiusChange(parseFloat(e.target.value) || 0)}
         />
         <p className="text-xs text-muted-foreground">
-          {t("Dashboard.Settings.controls-the-roundness-of-buttons-inputs-and-cards")}
+          {t("Dashboard.Settings.controls-the-roundness-of-buttons-inputs-and-cards")}{" "}
+          {t("Dashboard.Settings.corner-sharpness-scope")}
         </p>
       </div>
     </div>

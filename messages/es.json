@@ -1526,7 +1526,17 @@
       "cancel-policy-hours-before": "Hours before",
       "cancel-policy-fee-percent": "Fee %",
       "cancel-policy-add": "Add tier",
-      "cancel-policy-remove": "Remove tier"
+      "cancel-policy-remove": "Remove tier",
+      "group-brand": "Marca",
+      "group-brand-help": "El color de acento define los botones del formulario de reserva en modo claro.",
+      "group-region": "Región y hora",
+      "preview-title": "Vista previa en vivo",
+      "preview-help": "Se actualiza al editar. Guarda para publicar.",
+      "preview-pickup": "Aeropuerto de Ginebra",
+      "preview-dropoff": "Hotel Beau-Rivage, Lausana",
+      "preview-continue": "Ver vehículos",
+      "accent-too-light": "Este color es demasiado claro para texto blanco, así que el formulario mantiene su acento predeterminado.",
+      "corner-sharpness-scope": "Se aplica al widget integrable; el formulario mantiene sus esquinas finas."
     },
     "Refunds": {
       "title": "Refund Requests",

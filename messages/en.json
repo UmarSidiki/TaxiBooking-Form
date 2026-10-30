@@ -1526,7 +1526,17 @@
       "cancel-policy-hours-before": "Hours before",
       "cancel-policy-fee-percent": "Fee %",
       "cancel-policy-add": "Add tier",
-      "cancel-policy-remove": "Remove tier"
+      "cancel-policy-remove": "Remove tier",
+      "group-brand": "Brand",
+      "group-brand-help": "The accent colour drives buttons on the booking form in light mode.",
+      "group-region": "Region and time",
+      "preview-title": "Live preview",
+      "preview-help": "Updates as you edit. Save to publish.",
+      "preview-pickup": "Geneva Airport",
+      "preview-dropoff": "Hotel Beau-Rivage, Lausanne",
+      "preview-continue": "See vehicles",
+      "accent-too-light": "This colour is too light for white button text, so the booking form keeps its default accent.",
+      "corner-sharpness-scope": "Applies to the embeddable widget; the booking form keeps its fine corners."
     },
     "Refunds": {
       "title": "Refund Requests",

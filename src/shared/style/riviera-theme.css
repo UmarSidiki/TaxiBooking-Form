@@ -25,7 +25,7 @@
   --ink2: #5B554B;
   --rule: #D9D1C2;
   --rule2: #BDB3A1;
-  --sig: #A3381A;
+  --sig: var(--operator-accent, #A3381A); /* operator colour only when it keeps AA, see operator-accent.ts */
   --sig-on: #FFF8F2;
   --brand-multisafepay: #00ABEE;
   --sig-tint: #F6E1D5;

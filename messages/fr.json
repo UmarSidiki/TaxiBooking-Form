@@ -1526,7 +1526,17 @@
       "cancel-policy-hours-before": "Hours before",
       "cancel-policy-fee-percent": "Fee %",
       "cancel-policy-add": "Add tier",
-      "cancel-policy-remove": "Remove tier"
+      "cancel-policy-remove": "Remove tier",
+      "group-brand": "Marque",
+      "group-brand-help": "La couleur d'accent définit les boutons du formulaire de réservation en mode clair.",
+      "group-region": "Région et heure",
+      "preview-title": "Aperçu en direct",
+      "preview-help": "Se met à jour pendant la saisie. Enregistrez pour publier.",
+      "preview-pickup": "Aéroport de Genève",
+      "preview-dropoff": "Hôtel Beau-Rivage, Lausanne",
+      "preview-continue": "Voir les véhicules",
+      "accent-too-light": "Cette couleur est trop claire pour un texte blanc ; le formulaire garde son accent par défaut.",
+      "corner-sharpness-scope": "S'applique au widget intégrable ; le formulaire garde ses angles fins."
     },
     "Refunds": {
       "title": "Refund Requests",

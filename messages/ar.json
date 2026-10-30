@@ -1526,7 +1526,17 @@
       "cancel-policy-hours-before": "Hours before",
       "cancel-policy-fee-percent": "Fee %",
       "cancel-policy-add": "Add tier",
-      "cancel-policy-remove": "Remove tier"
+      "cancel-policy-remove": "Remove tier",
+      "group-brand": "العلامة التجارية",
+      "group-brand-help": "يحدد لون التمييز أزرار نموذج الحجز في الوضع الفاتح.",
+      "group-region": "المنطقة والوقت",
+      "preview-title": "معاينة مباشرة",
+      "preview-help": "تتحدث أثناء التعديل. احفظ للنشر.",
+      "preview-pickup": "مطار جنيف",
+      "preview-dropoff": "فندق بو ريفاج، لوزان",
+      "preview-continue": "عرض السيارات",
+      "accent-too-light": "هذا اللون فاتح جدًا للنص الأبيض، لذا يحتفظ نموذج الحجز بلونه الافتراضي.",
+      "corner-sharpness-scope": "ينطبق على الأداة القابلة للتضمين؛ يحتفظ نموذج الحجز بزواياه الدقيقة."
     },
     "Refunds": {
       "title": "Refund Requests",

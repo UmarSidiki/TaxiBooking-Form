@@ -18,7 +18,7 @@ export function Step1BookingTypeFields({
 }) {
   return (
           <div>
-            <label className="block text-sm font-medium mb-1.5 text-[var(--ink)]">
+            <label className="block text-sm font-medium mb-1.5 text-[color:var(--ink)]">
               {t("Step1.BookingType")}
             </label>
             <div className="grid grid-cols-2 gap-2">
@@ -28,7 +28,7 @@ export function Step1BookingTypeFields({
                 variant="outline"
                 className={`${
                   formData.bookingType === "destination"
-                    ? "bg-[var(--sheet)] text-[var(--ink)] border-2 border-[var(--ink)]"
+                    ? "bg-[var(--sheet)] text-[color:var(--ink)] border-2 border-[var(--ink)]"
                     : "bg-[var(--sheet)] hover:bg-[var(--well)]"
                 }`}
               >
@@ -41,7 +41,7 @@ export function Step1BookingTypeFields({
                 variant="outline"
                 className={`${
                   formData.bookingType === "hourly"
-                    ? "bg-[var(--sheet)] text-[var(--ink)] border-2 border-[var(--ink)]"
+                    ? "bg-[var(--sheet)] text-[color:var(--ink)] border-2 border-[var(--ink)]"
                     : "bg-[var(--sheet)] hover:bg-[var(--well)]"
                 }`}
               >
@@ -49,7 +49,7 @@ export function Step1BookingTypeFields({
                 {t("Step1.TimeBased")}
               </Button>
             </div>
-            <p className="text-xs text-[var(--ink2)] mt-1">
+            <p className="text-xs text-[color:var(--ink2)] mt-1">
               {formData.bookingType === "destination"
                 ? t("Step1.price-based-on-distance-traveled")
                 : t("Step1.price-based-on-hourly-rate")}

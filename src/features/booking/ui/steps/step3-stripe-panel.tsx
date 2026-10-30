@@ -80,10 +80,10 @@ export function Step3StripePanel({
                         </div>
                       </div>
                     ) : !clientSecret ? (
-                      <div className="flex flex-col items-center justify-center py-8 text-sm text-[var(--ink2)]">
+                      <div className="flex flex-col items-center justify-center py-8 text-sm text-[color:var(--ink2)]">
                         <Loader2 className="mb-3 h-8 w-8 animate-spin text-primary" />
                         <p>{t('Step3.loading-payment-options')}</p>
-                        <p className="text-xs text-[var(--ink2)] mt-2">
+                        <p className="text-xs text-[color:var(--ink2)] mt-2">
                           {t('Step3.this-may-take-a-few-seconds')} </p>
                       </div>
                     ) : (

@@ -45,10 +45,10 @@ export function RivieraMap({ theme }: { theme?: "light" | "dark" }) {
     >
       <TileLayer attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' url={tiles} />
       <AttributionControl prefix={false} />
-      <Marker position={pickup} icon={pickupIcon}>
+      <Marker position={pickup} icon={pickupIcon} interactive={false} keyboard={false}>
         <span>Pick-up</span>
       </Marker>
-      <Marker position={dropoff} icon={dropoffIcon}>
+      <Marker position={dropoff} icon={dropoffIcon} interactive={false} keyboard={false}>
         <span>Drop-off</span>
       </Marker>
       <Polyline positions={[pickup, dropoff]} color="var(--sheet)" weight={8} />

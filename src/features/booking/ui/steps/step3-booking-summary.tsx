@@ -95,15 +95,15 @@ export function Step3BookingSummary({
               </div>
               <div className="bg-[var(--well)] p-3 rounded-lg">
                 <p className="font-medium">{selectedVehicle.name}</p>
-                <p className="text-xs text-[var(--ink2)] mt-1">
+                <p className="text-xs text-[color:var(--ink2)] mt-1">
                   {selectedVehicle.description}
                 </p>
                 <div className="flex justify-between items-center mt-2">
-                  <span className="text-xs text-[var(--ink2)]">{t('Step3.base-fare')}</span>
+                  <span className="text-xs text-[color:var(--ink2)]">{t('Step3.base-fare')}</span>
                   <div className="text-right">
                     {discount > 0 ? (
                       <>
-                        <span className="text-xs text-[var(--ink2)] line-through mr-2">
+                        <span className="text-xs text-[color:var(--ink2)] line-through mr-2">
                           {currencySymbol}{vehiclePrice.toFixed(2)}
                         </span>
                         <span className="font-semibold">
@@ -128,7 +128,7 @@ export function Step3BookingSummary({
               <div className="space-y-1 text-sm">
                 {formData.childSeats > 0 && (
                   <div className="flex justify-between">
-                    <span className="text-[var(--ink2)]">
+                    <span className="text-[color:var(--ink2)]">
                       {t('Step3.child-seatsx')} {formData.childSeats}
                     </span>
                     <span className="font-medium">
@@ -138,7 +138,7 @@ export function Step3BookingSummary({
                 )}
                 {formData.babySeats > 0 && (
                   <div className="flex justify-between">
-                    <span className="text-[var(--ink2)]">
+                    <span className="text-[color:var(--ink2)]">
                       {t('Step3.baby-seatsx')} {formData.babySeats}
                     </span>
                     <span className="font-medium">
@@ -154,14 +154,14 @@ export function Step3BookingSummary({
                   return (
                     <div>
                       <div className="flex justify-between font-medium">
-                        <span className="text-[var(--ink2)]">
+                        <span className="text-[color:var(--ink2)]">
                           {t('Dashboard.Rides.Stops')} ({validStops.length})
                         </span>
                         <span>
                           {currencySymbol}{stopsTotalPrice.toFixed(2)}
                         </span>
                       </div>
-                      <div className="ml-2 mt-1 space-y-0.5 text-xs text-[var(--ink2)]">
+                      <div className="ml-2 mt-1 space-y-0.5 text-xs text-[color:var(--ink2)]">
                         {validStops.map((stop, index) => {
                           const baseCost = basePrice;
                           let durationCost = 0;
@@ -197,13 +197,13 @@ export function Step3BookingSummary({
           <div className="border-t pt-3">
             {enableTax && taxPercentage > 0 ? (
               <>
-                <div className="flex justify-between items-center text-sm text-[var(--ink2)] mb-1">
+                <div className="flex justify-between items-center text-sm text-[color:var(--ink2)] mb-1">
                   <span>{t("Step3.subtotal")}</span>
                   <span>
                     {currencySymbol}{displaySubtotalAmount.toFixed(2)}
                   </span>
                 </div>
-                <div className="flex justify-between items-center text-sm text-[var(--ink2)] mb-2">
+                <div className="flex justify-between items-center text-sm text-[color:var(--ink2)] mb-2">
                   <span>{t("Step3.tax", { 0: taxPercentage })}{taxIncluded ? ` - ${t("Step3.included")}` : ''}</span>
                   <span>
                     {currencySymbol}{taxAmount.toFixed(2)}
@@ -237,25 +237,25 @@ export function Step3BookingSummary({
           {/* Benefits */}
           <div className="border-t pt-3 space-y-2">
             <h4 className="font-semibold text-sm mb-2">{t('Step3.what-and-apos-s-included')}</h4>
-            <div className="space-y-2 text-xs text-[var(--ink)]">
+            <div className="space-y-2 text-xs text-[color:var(--ink)]">
               <div className="flex items-center gap-2">
-                <CheckCircle2 className="h-4 w-4 text-[var(--ok)]" />
+                <CheckCircle2 className="h-4 w-4 text-[color:var(--ok)]" />
                 <span>{t('Step3.door-to-door-service')}</span>
               </div>
               <div className="flex items-center gap-2">
-                <CheckCircle2 className="h-4 w-4 text-[var(--ok)]" />
+                <CheckCircle2 className="h-4 w-4 text-[color:var(--ok)]" />
                 <span>{t('Step3.meet-and-greet')}</span>
               </div>
               <div className="flex items-center gap-2">
-                <CheckCircle2 className="h-4 w-4 text-[var(--ok)]" />
+                <CheckCircle2 className="h-4 w-4 text-[color:var(--ok)]" />
                 <span>{t('Step3.instant-confirmation')}</span>
               </div>
               <div className="flex items-center gap-2">
-                <Shield className="h-4 w-4 text-[var(--ok)]" />
+                <Shield className="h-4 w-4 text-[color:var(--ok)]" />
                 <span>{t('Step3.secure-payment')}</span>
               </div>
               <div className="flex items-center gap-2">
-                <CheckCircle2 className="h-4 w-4 text-[var(--ok)]" />
+                <CheckCircle2 className="h-4 w-4 text-[color:var(--ok)]" />
                 <span>{t('Step3.free-cancellation-24h')}</span>
               </div>
             </div>
@@ -264,7 +264,7 @@ export function Step3BookingSummary({
           {/* Support */}
           <div className="border-t pt-3 space-y-2 text-xs">
             <div className="flex items-center gap-2 font-semibold">
-              <CreditCard className="h-4 w-4 text-[var(--ink2)]" />
+              <CreditCard className="h-4 w-4 text-[color:var(--ink2)]" />
               <span>{t('Step3.24-7-customer-support')}</span>
             </div>
             {process.env.NEXT_PUBLIC_SUPPORT_EMAIL ? (

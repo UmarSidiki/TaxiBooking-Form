@@ -85,7 +85,7 @@ export function Step1ScheduleFields({
           {formData.tripType === "roundtrip" && (
             <div className="grid grid-cols-2 gap-3">
               <div className="min-w-0">
-                <label className="block text-sm font-medium mb-1.5 text-[var(--ink)]">
+                <label className="block text-sm font-medium mb-1.5 text-[color:var(--ink)]">
                   <CalendarDays className="inline h-4 w-4 mr-1" />
                   {t("Step1.ReturnDate")} *
                 </label>
@@ -107,7 +107,7 @@ export function Step1ScheduleFields({
                 )}
               </div>
               <div className="min-w-0">
-                <label className="block text-sm font-medium mb-1.5 text-[var(--ink)]">
+                <label className="block text-sm font-medium mb-1.5 text-[color:var(--ink)]">
                   <Clock className="inline h-4 w-4 mr-1" />
                   {t("Step1.ReturnTime")} *
                 </label>
@@ -132,7 +132,7 @@ export function Step1ScheduleFields({
 
           {/* Passengers */}
           <div>
-            <label className="block text-sm font-medium mb-1.5 text-[var(--ink)]">
+            <label className="block text-sm font-medium mb-1.5 text-[color:var(--ink)]">
               <Users className="inline h-4 w-4 mr-1" />
               {t("Step1.Passengers")}
             </label>

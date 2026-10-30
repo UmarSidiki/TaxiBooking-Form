@@ -107,7 +107,7 @@ export function Step1LocationFields({
                             parseInt(e.target.value)
                           )
                         }
-                        className="w-full h-9 pl-8 pr-2 rounded-md border border-input bg-background text-xs font-medium text-[var(--ink)] cursor-pointer hover:border-[var(--ink)]/50 focus:border-[var(--ink)] focus:ring-2 focus:ring-primary/20 focus:outline-none transition-all appearance-none"
+                        className="w-full h-9 pl-8 pr-2 rounded-md border border-input bg-background text-xs font-medium text-[color:var(--ink)] cursor-pointer hover:border-[var(--ink)]/50 focus:border-[var(--ink)] focus:ring-2 focus:ring-primary/20 focus:outline-none transition-all appearance-none"
                         style={{
                           backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`,
                           backgroundPosition: "right 0.25rem center",
@@ -175,7 +175,7 @@ export function Step1LocationFields({
                 <p className="text-red-500 text-xs mt-1">{errors.dropoff}</p>
               )}
               {calculatingDistance && (
-                <p className="text-xs text-[var(--ink2)] mt-1 flex items-center">
+                <p className="text-xs text-[color:var(--ink2)] mt-1 flex items-center">
                   <Loader2 className="inline h-3 w-3 animate-spin mr-1" />
                   {t("Step1.CalculatingDistance")}
                 </p>

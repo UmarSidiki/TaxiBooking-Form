@@ -101,10 +101,10 @@ export function Step3PaymentMethods(props: Step3PaymentMethodsProps) {
             </div>
           ) : (
             <div className="text-center py-8">
-              <CreditCard className="h-12 w-12 mx-auto text-[var(--ink2)] mb-3" />
-              <p className="text-[var(--ink2)] mb-2">
+              <CreditCard className="h-12 w-12 mx-auto text-[color:var(--ink2)] mb-3" />
+              <p className="text-[color:var(--ink2)] mb-2">
                 {t('Step3.no-payment-methods-configured')} </p>
-              <p className="text-sm text-[var(--ink2)]">
+              <p className="text-sm text-[color:var(--ink2)]">
                 {t('Step3.please-contact-the-administrator-to-set-up-payment-processing')} </p>
             </div>
           )}

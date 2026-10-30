@@ -86,7 +86,7 @@ function Step1TripDetails() {
       <div className="space-y-4">
           <div>
             <h2 className="text-xl font-semibold mb-2">{t("Step1.Title")}</h2>
-            <p className="text-sm text-[var(--ink2)]">{t("Step1.Description")}</p>
+            <p className="text-sm text-[color:var(--ink2)]">{t("Step1.Description")}</p>
           </div>
 
           <Step1BookingTypeFields

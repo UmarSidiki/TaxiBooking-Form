@@ -26,7 +26,7 @@ export function Step1DurationTripTypeFields({
           {/* Duration - Only for hourly bookings */}
           {formData.bookingType === "hourly" && (
             <div>
-              <label className="block text-sm font-medium mb-1.5 text-[var(--ink)]">
+              <label className="block text-sm font-medium mb-1.5 text-[color:var(--ink)]">
                 <Clock className="inline h-4 w-4 mr-1" />
                 {t("Step1.Duration")} *
               </label>
@@ -41,7 +41,7 @@ export function Step1DurationTripTypeFields({
                   handleInputChange("duration", parseInt(e.target.value) || 1);
                 }}
               />
-              <p className="text-xs text-[var(--ink2)] mt-1">
+              <p className="text-xs text-[color:var(--ink2)] mt-1">
                 {t("Step1.DurationDescription")}
               </p>
             </div>
@@ -50,7 +50,7 @@ export function Step1DurationTripTypeFields({
           {/* Trip Type - Only for destination-based bookings */}
           {formData.bookingType === "destination" && (
             <div>
-              <label className="block text-sm font-medium mb-1.5 text-[var(--ink)]">
+              <label className="block text-sm font-medium mb-1.5 text-[color:var(--ink)]">
                 Trip Type
               </label>
               <div className="grid grid-cols-2 gap-2">
@@ -65,7 +65,7 @@ export function Step1DurationTripTypeFields({
                   variant="outline"
                   className={`${
                     formData.tripType === "oneway"
-                      ? "bg-[var(--sheet)] text-[var(--ink)] border-2 border-[var(--ink)]"
+                      ? "bg-[var(--sheet)] text-[color:var(--ink)] border-2 border-[var(--ink)]"
                       : "bg-[var(--sheet)] hover:bg-[var(--well)]"
                   }`}
                 >
@@ -82,7 +82,7 @@ export function Step1DurationTripTypeFields({
                   variant="outline"
                   className={`${
                     formData.tripType === "roundtrip"
-                      ? "bg-[var(--sheet)] text-[var(--ink)] border-2 border-[var(--ink)]"
+                      ? "bg-[var(--sheet)] text-[color:var(--ink)] border-2 border-[var(--ink)]"
                       : "bg-[var(--sheet)] hover:bg-[var(--well)]"
                   }`}
                 >

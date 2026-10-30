@@ -52,7 +52,7 @@ function Step2VehicleSelection() {
           <h2 className="text-xl font-semibold mb-2">
             {t("Step2.select-your-vehicle")}
           </h2>
-          <p className="text-[var(--ink2)] text-sm">
+          <p className="text-[color:var(--ink2)] text-sm">
             {t("Step2.choose-the-perfect-vehicle-for-your-journey")}
           </p>
         </div>

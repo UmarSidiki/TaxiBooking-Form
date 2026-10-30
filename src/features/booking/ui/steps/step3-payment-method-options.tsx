@@ -42,21 +42,21 @@ export function Step3PaymentMethodOptions({
                             <CreditCard
                               className={`h-5 w-5 ${
                                 selectedPaymentMethod === "card"
-                                  ? "text-[var(--ink2)]"
-                                  : "text-[var(--ink2)]"
+                                  ? "text-[color:var(--ink2)]"
+                                  : "text-[color:var(--ink2)]"
                               }`}
                             />
                           </div>
                           <div>
-                            <p className="font-semibold text-[var(--ink)]">
+                            <p className="font-semibold text-[color:var(--ink)]">
                               {t('Step3.credit-debit-card')} </p>
-                            <p className="text-xs text-[var(--ink2)]">
+                            <p className="text-xs text-[color:var(--ink2)]">
                               Visa, Mastercard, Amex
                             </p>
                           </div>
                         </div>
                         {selectedPaymentMethod === "card" && (
-                          <div className="flex items-center gap-1 text-[var(--ink2)] text-sm font-medium">
+                          <div className="flex items-center gap-1 text-[color:var(--ink2)] text-sm font-medium">
                             <CheckCircle2 className="h-4 w-4" />
                           </div>
                         )}
@@ -87,15 +87,15 @@ export function Step3PaymentMethodOptions({
                             className={`h-5 w-5 ${
                               selectedPaymentMethod === "multisafepay"
                                 ? "text-[#00ABEE]"
-                                : "text-[var(--ink2)]"
+                                : "text-[color:var(--ink2)]"
                             }`}
                           />
                         </div>
                         <div>
-                          <p className="font-semibold text-[var(--ink)]">
+                          <p className="font-semibold text-[color:var(--ink)]">
                             {t('Step3.pay-online')} <span className="text-sm font-normal">{t('Step3.via-multisafepay')}</span>
                           </p>
-                          <p className="text-xs text-[var(--ink2)]">
+                          <p className="text-xs text-[color:var(--ink2)]">
                             {t('Step3.ideal-bancontact-paypal-and-more')} </p>
                         </div>
                       </div>
@@ -130,20 +130,20 @@ export function Step3PaymentMethodOptions({
                           <Wallet
                             className={`h-5 w-5 ${
                               selectedPaymentMethod === "cash"
-                                ? "text-[var(--ok)]"
-                                : "text-[var(--ink2)]"
+                                ? "text-[color:var(--ok)]"
+                                : "text-[color:var(--ink2)]"
                             }`}
                           />
                         </div>
                         <div>
-                          <p className="font-semibold text-[var(--ink)]">
+                          <p className="font-semibold text-[color:var(--ink)]">
                             {t('Step3.cash-payment')} </p>
-                          <p className="text-xs text-[var(--ink2)]">
+                          <p className="text-xs text-[color:var(--ink2)]">
                             {t('Step3.pay-in-cash-to-the-driver')} </p>
                         </div>
                       </div>
                       {selectedPaymentMethod === "cash" && (
-                        <div className="flex items-center gap-1 text-[var(--ok)] text-sm font-medium">
+                        <div className="flex items-center gap-1 text-[color:var(--ok)] text-sm font-medium">
                           <CheckCircle2 className="h-4 w-4" />
                         </div>
                       )}
@@ -176,14 +176,14 @@ export function Step3PaymentMethodOptions({
                             className={`h-5 w-5 ${
                               selectedPaymentMethod === "bank_transfer"
                                 ? "text-indigo-600"
-                                : "text-[var(--ink2)]"
+                                : "text-[color:var(--ink2)]"
                             }`}
                           />
                         </div>
                         <div>
-                          <p className="font-semibold text-[var(--ink)]">
+                          <p className="font-semibold text-[color:var(--ink)]">
                             {t('Step3.bank-transfer')} </p>
-                          <p className="text-xs text-[var(--ink2)]">
+                          <p className="text-xs text-[color:var(--ink2)]">
                             {t('Step3.transfer-to-our-bank-account')} </p>
                         </div>
                       </div>

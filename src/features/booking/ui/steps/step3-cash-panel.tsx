@@ -18,7 +18,7 @@ export function Step3CashPanel({
   return (
                 <div className="mt-4 bg-green-50 border border-green-200 rounded-lg p-4">
                   <div className="flex items-start gap-3">
-                    <CheckCircle2 className="h-5 w-5 text-[var(--ok)] flex-shrink-0 mt-0.5" />
+                    <CheckCircle2 className="h-5 w-5 text-[color:var(--ok)] flex-shrink-0 mt-0.5" />
                     <div>
                       <p className="font-medium text-green-900 mb-1">
                         {t('Step3.cash-payment-selected')} </p>
@@ -29,7 +29,7 @@ export function Step3CashPanel({
                   <Button
                     onClick={handleCashBooking}
                     disabled={isLoading || !contactValid}
-                    className="w-full mt-4 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold py-6"
+                    className="btn-primary w-full mt-4 py-6"
                   >
                     {isLoading ? (
                       <>

@@ -4,9 +4,12 @@
    every column lines up; the actions track sizes to its buttons and never clips,
    the route column absorbs the squeeze. */
 .riviera .ride-table {
-  display: grid;
+  display: none;
   grid-template-columns: 7rem minmax(8rem, 1fr) minmax(6rem, 0.7fr) auto auto max-content;
   column-gap: var(--sp-4, 16px);
+}
+@media (min-width: 1024px) {
+  .riviera .ride-table { display: grid; }
 }
 .riviera .ride-table > [role="row"] {
   grid-column: 1 / -1;

@@ -35,7 +35,7 @@ export function AdminRideCardList({ rides }: { rides: Rides }) {
 
   return (
     <>
-      <div role="table" aria-label={rides.t("Dashboard.Rides.table-label")} className="ride-table hidden lg:grid">
+      <div role="table" aria-label={rides.t("Dashboard.Rides.table-label")} className="ride-table">
         <div role="row">
           {HEADERS.map((key) => (
             <div key={key} role="columnheader" className={key === "col-price" ? "text-right" : undefined}>

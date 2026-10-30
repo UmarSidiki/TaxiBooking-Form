@@ -1,83 +1,74 @@
 "use client";
 
+import { importLibrary, setOptions } from "@googlemaps/js-api-loader";
+import { useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
-import { setOptions, importLibrary } from "@googlemaps/js-api-loader";
-import { rivieraLightStyle, rivieraDarkStyle } from "./map-styles";
 
-const pickup = { lat: 46.2381, lng: 6.109 };
-const dropoff = { lat: 46.2, lng: 6.15 };
+import { useBookingForm } from "@/features/booking/context/booking-form-context";
+import { DEFAULT_MAP_CENTER, DEFAULT_MAP_ZOOM } from "@/features/booking/lib/maps/map-defaults";
+import { rivieraDarkStyle, rivieraLightStyle } from "./map-styles";
 
-function pickupIcon() {
-  if (typeof google === "undefined") return undefined;
+export const GOOGLE_MAPS_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY ?? "";
+
+const isDarkTheme = () => document.documentElement.dataset.rivieraTheme === "dark";
+
+/** Reads a Riviera token from the nearest .riviera element so the map follows theme.css. */
+function token(el: Element, name: string) {
+  const scope = el.closest(".riviera") ?? document.documentElement;
+  return getComputedStyle(scope).getPropertyValue(name).trim();
+}
+
+function svgIcon(svg: string, size: number): google.maps.Icon {
   return {
-    url:
-      "data:image/svg+xml;charset=UTF-8," +
-      encodeURIComponent(
-        '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"><circle cx="9" cy="9" r="6" fill="#FBF9F5" stroke="#1C1A16" stroke-width="3"/></svg>',
-      ),
-    scaledSize: new google.maps.Size(18, 18),
+    url: `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`,
+    scaledSize: new google.maps.Size(size, size),
+    anchor: new google.maps.Point(size / 2, size / 2),
   };
 }
 
-function dropoffIcon() {
-  if (typeof google === "undefined") return undefined;
+function markerIcons(el: Element) {
+  const ink = token(el, "--ink");
+  const sheet = token(el, "--sheet");
+  const sig = token(el, "--sig");
   return {
-    url:
-      "data:image/svg+xml;charset=UTF-8," +
-      encodeURIComponent(
-        '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"><rect x="2" y="2" width="14" height="14" rx="3" fill="#A3381A" stroke="#FBF9F5" stroke-width="2"/></svg>',
-      ),
-    scaledSize: new google.maps.Size(18, 18),
+    pickup: svgIcon(`<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"><circle cx="9" cy="9" r="6" fill="${sheet}" stroke="${ink}" stroke-width="3"/></svg>`, 18),
+    dropoff: svgIcon(`<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"><rect x="2" y="2" width="14" height="14" rx="2" fill="${sig}" stroke="${sheet}" stroke-width="2"/></svg>`, 18),
   };
 }
 
-export function RivieraMap({ theme }: { theme?: "light" | "dark" }) {
+/** Step 1 route map. Renders a compact text summary when Google Maps is unavailable. */
+export function RivieraMap() {
+  const t = useTranslations("Riviera");
+  const { formData, distanceData } = useBookingForm();
   const ref = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<google.maps.Map | null>(null);
-  const [failed, setFailed] = useState(false);
+  const routeRef = useRef<{ renderer: google.maps.DirectionsRenderer; service: google.maps.DirectionsService } | null>(null);
+  const markersRef = useRef<google.maps.Marker[]>([]);
+  const [failed, setFailed] = useState(!GOOGLE_MAPS_KEY);
+  const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
-    if (!apiKey || !ref.current) {
-      setFailed(true);
-      return;
-    }
+    if (!GOOGLE_MAPS_KEY || !ref.current) return;
     let cancelled = false;
     (async () => {
       try {
-        setOptions({ key: apiKey, v: "weekly" });
-        const [mapsLib, routesLib] = await Promise.all([
-          importLibrary("maps"),
-          importLibrary("routes"),
-        ]);
+        setOptions({ key: GOOGLE_MAPS_KEY, v: "weekly" });
+        const [maps, routes] = await Promise.all([importLibrary("maps"), importLibrary("routes")]);
         if (cancelled || !ref.current) return;
-        const isDark = document.documentElement.dataset.rivieraTheme === "dark";
-        const map = new mapsLib.Map(ref.current, {
-          center: pickup,
-          zoom: 12,
+        const map = new maps.Map(ref.current, {
+          center: DEFAULT_MAP_CENTER,
+          zoom: DEFAULT_MAP_ZOOM,
           disableDefaultUI: true,
           zoomControl: window.matchMedia("(min-width: 1024px)").matches,
           gestureHandling: "cooperative",
-          styles: isDark ? rivieraDarkStyle : rivieraLightStyle,
+          styles: isDarkTheme() ? rivieraDarkStyle : rivieraLightStyle,
         });
         mapRef.current = map;
-
-        new google.maps.Marker({ position: pickup, map, icon: pickupIcon() });
-        new google.maps.Marker({ position: dropoff, map, icon: dropoffIcon() });
-
-        const renderer = new routesLib.DirectionsRenderer({
-          map,
-          suppressMarkers: true,
-          polylineOptions: { strokeColor: "#1C1A16", strokeWeight: 4 },
-        });
-
-        const service = new routesLib.DirectionsService();
-        service.route(
-          { origin: pickup, destination: dropoff, travelMode: google.maps.TravelMode.DRIVING },
-          (result, status) => {
-            if (status === "OK" && result) renderer.setDirections(result);
-          },
-        );
+        routeRef.current = {
+          service: new routes.DirectionsService(),
+          renderer: new routes.DirectionsRenderer({ map, suppressMarkers: true, preserveViewport: false }),
+        };
+        setReady(true);
       } catch {
         if (!cancelled) setFailed(true);
       }
@@ -87,28 +78,60 @@ export function RivieraMap({ theme }: { theme?: "light" | "dark" }) {
     };
   }, []);
 
+  // Draw the driving route whenever the addresses change.
   useEffect(() => {
-    const apply = () => {
-      const map = mapRef.current;
-      if (!map) return;
-      const isDark = document.documentElement.dataset.rivieraTheme === "dark";
-      map.setOptions({ styles: isDark ? rivieraDarkStyle : rivieraLightStyle });
-    };
-    const observer = new MutationObserver(apply);
+    const map = mapRef.current;
+    const route = routeRef.current;
+    const el = ref.current;
+    if (!ready || !map || !route || !el) return;
+    markersRef.current.forEach((m) => m.setMap(null));
+    markersRef.current = [];
+    if (!formData.pickup || !formData.dropoff) {
+      route.renderer.set("directions", null);
+      return;
+    }
+    const waypoints = formData.stops
+      .filter((s) => s.location)
+      .sort((a, b) => a.order - b.order)
+      .map((s) => ({ location: s.location, stopover: true }));
+    route.service.route(
+      { origin: formData.pickup, destination: formData.dropoff, waypoints, travelMode: google.maps.TravelMode.DRIVING },
+      (result, status) => {
+        if (status !== google.maps.DirectionsStatus.OK || !result) return;
+        route.renderer.setOptions({ polylineOptions: { strokeColor: token(el, "--ink"), strokeWeight: 4, strokeOpacity: 1 } });
+        route.renderer.setDirections(result);
+        const leg = result.routes[0]?.legs;
+        if (!leg?.length) return;
+        const icons = markerIcons(el);
+        markersRef.current = [
+          new google.maps.Marker({ map, position: leg[0].start_location, icon: icons.pickup, clickable: false }),
+          new google.maps.Marker({ map, position: leg[leg.length - 1].end_location, icon: icons.dropoff, clickable: false }),
+        ];
+      },
+    );
+  }, [ready, formData.pickup, formData.dropoff, formData.stops]);
+
+  // Follow the Riviera light/dark toggle.
+  useEffect(() => {
+    const observer = new MutationObserver(() => {
+      mapRef.current?.setOptions({ styles: isDarkTheme() ? rivieraDarkStyle : rivieraLightStyle });
+    });
     observer.observe(document.documentElement, { attributes: true, attributeFilter: ["data-riviera-theme"] });
     return () => observer.disconnect();
   }, []);
 
   if (failed) {
     return (
-      <div className="flex h-full w-full items-center justify-center bg-[var(--well)] p-4 text-sm text-[var(--ink2)]">
-        <div>
-          <div className="font-medium text-[var(--ink)]">Pick-up → Drop-off</div>
-          <div className="mt-1">Trip summary</div>
-        </div>
+      <div className="map-fallback" role="status">
+        <b>{formData.pickup || t("pickup")}</b>
+        <span aria-hidden="true"> → </span>
+        <b>{formData.dropoff || t("dropoff")}</b>
+        {distanceData ? (
+          <span className="num"> · {distanceData.distance.text} · {distanceData.duration.text}</span>
+        ) : null}
       </div>
     );
   }
 
-  return <div ref={ref} className="h-full w-full" />;
+  return <div ref={ref} className="h-full w-full" aria-label={t("mapLabel")} role="img" />;
 }

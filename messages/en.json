@@ -2720,6 +2720,7 @@
     "change": "Change",
     "total": "Total",
     "passengers": "{count, plural, one {# passenger} other {# passengers}}",
-    "brandFallback": "RideNow"
+    "brandFallback": "RideNow",
+    "mapLabel": "Route map"
   }
 }

@@ -2720,6 +2720,7 @@
     "change": "Изменить",
     "total": "Итого",
     "passengers": "{count, plural, one {# пассажир} few {# пассажира} many {# пассажиров} other {# пассажира}}",
-    "brandFallback": "RideNow"
+    "brandFallback": "RideNow",
+    "mapLabel": "Карта маршрута"
   }
 }

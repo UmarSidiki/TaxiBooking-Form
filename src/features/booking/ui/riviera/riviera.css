@@ -84,3 +84,5 @@ html:has(.riviera), body:has(.riviera) { background-color: var(--paper); }
 .riviera.no-map .cars { grid-template-columns: repeat(3, 1fr); }
 .riviera .btn-primary, .riviera .btn-primary:hover { background: var(--sig); color: var(--sig-on); border-radius: 4px; font-weight: 600; }
 .riviera .btn-primary:hover { filter: brightness(1.08); }
+.riviera .map-fallback { height: 100%; display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: var(--space-1, 4px); padding: var(--space-4, 16px); background: var(--well); color: var(--ink2); font-size: var(--text-sm, 14px); text-align: center; }
+.riviera .map-fallback b { color: var(--ink); font-weight: 500; }

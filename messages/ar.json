@@ -2720,6 +2720,7 @@
     "change": "تغيير",
     "total": "الإجمالي",
     "passengers": "{count, plural, one {# راكب} other {# ركاب}}",
-    "brandFallback": "RideNow"
+    "brandFallback": "RideNow",
+    "mapLabel": "خريطة المسار"
   }
 }

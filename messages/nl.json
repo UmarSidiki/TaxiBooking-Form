@@ -2720,6 +2720,7 @@
     "change": "Wijzigen",
     "total": "Totaal",
     "passengers": "{count, plural, one {# passagier} other {# passagiers}}",
-    "brandFallback": "RideNow"
+    "brandFallback": "RideNow",
+    "mapLabel": "Routekaart"
   }
 }

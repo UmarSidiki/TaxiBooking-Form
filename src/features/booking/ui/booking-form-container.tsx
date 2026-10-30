@@ -13,6 +13,7 @@ import { useBookingForm } from "@/features/booking/context/booking-form-context"
 import { useGeo } from "@/features/geo/context/geo-context";
 import { useTheme } from "@/features/settings/context/theme-context";
 
+const HAS_MAP = Boolean(process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY);
 const RivieraMap = dynamic(() => import("./riviera/route-map").then((m) => m.RivieraMap), { ssr: false });
 
 // Lazy load steps to reduce initial bundle size
@@ -52,7 +53,7 @@ export default function BookingFormContainer() {
   const stepLabels = [t("FormContainer.trip-details"), t("FormContainer.select-vehicle"), t("FormContainer.payment-and-details")];
 
   return (
-    <div className={`riviera min-h-screen ${currentStep > 1 ? "no-map" : ""}`}>
+    <div className={`riviera min-h-screen ${currentStep > 1 || !HAS_MAP ? "no-map" : ""}`}>
       <header className="top">
         <span className="brand">
           <b></b>
@@ -64,7 +65,7 @@ export default function BookingFormContainer() {
         <RivieraThemeToggle />
       </header>
 
-      {currentStep === 1 && (
+      {currentStep === 1 && HAS_MAP && (
         <div className="map">
           <Suspense fallback={<StepLoader />}>
             <RivieraMap />

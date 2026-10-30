@@ -4,7 +4,7 @@ import { expect, test, type Page } from "@playwright/test";
 async function go(page: Page, path: string) {
   for (let i = 0; i < 4; i += 1) {
     try {
-      await go(page, path);
+      await page.goto(path, { waitUntil: "domcontentloaded", timeout: 180_000 });
       return;
     } catch (error) {
       if (i === 3) throw error;

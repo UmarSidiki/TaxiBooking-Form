@@ -211,7 +211,7 @@ export function Step3BookingSummary({
                 </div>
                 <div className="flex justify-between items-center text-lg font-bold">
                   <span>{t("Step3.total-incl-tax")}</span>
-                  <span className="text-2xl font-mono" style={{ color: "var(--ink)" }}>
+                  <span className="num text-2xl font-semibold" style={{ color: "var(--ink)" }}>
                     {currencySymbol}{totalPrice.toFixed(2)}
                   </span>
                 </div>
@@ -219,7 +219,7 @@ export function Step3BookingSummary({
             ) : (
               <div className="flex justify-between items-center text-lg font-bold">
                 <span>{t("Step2.total")}</span>
-                <span className="text-2xl font-mono" style={{ color: "var(--ink)" }}>
+                <span className="num text-2xl font-semibold" style={{ color: "var(--ink)" }}>
                   {currencySymbol}{totalPrice.toFixed(2)}
                 </span>
               </div>
@@ -239,23 +239,23 @@ export function Step3BookingSummary({
             <h4 className="font-semibold text-sm mb-2">{t('Step3.what-and-apos-s-included')}</h4>
             <div className="space-y-2 text-xs text-[color:var(--ink)]">
               <div className="flex items-center gap-2">
-                <CheckCircle2 className="h-4 w-4 text-[color:var(--ok)]" />
+                <CheckCircle2 className="h-4 w-4 text-[color:var(--ink2)]" />
                 <span>{t('Step3.door-to-door-service')}</span>
               </div>
               <div className="flex items-center gap-2">
-                <CheckCircle2 className="h-4 w-4 text-[color:var(--ok)]" />
+                <CheckCircle2 className="h-4 w-4 text-[color:var(--ink2)]" />
                 <span>{t('Step3.meet-and-greet')}</span>
               </div>
               <div className="flex items-center gap-2">
-                <CheckCircle2 className="h-4 w-4 text-[color:var(--ok)]" />
+                <CheckCircle2 className="h-4 w-4 text-[color:var(--ink2)]" />
                 <span>{t('Step3.instant-confirmation')}</span>
               </div>
               <div className="flex items-center gap-2">
-                <Shield className="h-4 w-4 text-[color:var(--ok)]" />
+                <Shield className="h-4 w-4 text-[color:var(--ink2)]" />
                 <span>{t('Step3.secure-payment')}</span>
               </div>
               <div className="flex items-center gap-2">
-                <CheckCircle2 className="h-4 w-4 text-[color:var(--ok)]" />
+                <CheckCircle2 className="h-4 w-4 text-[color:var(--ink2)]" />
                 <span>{t('Step3.free-cancellation-24h')}</span>
               </div>
             </div>

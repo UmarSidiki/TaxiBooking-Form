@@ -54,6 +54,7 @@
   --body: var(--display);
   --mono: var(--body); /* numbers use tabular figures, not a mono face */
   --link: #2563EB;
+  --seg-on: #FFFFFF;
   --dock: rgb(255 255 255 / 0.72);
   --dock-shadow: 0 2px 8px rgb(0 0 0 / 0.06);
   --space-1: 4px;
@@ -91,6 +92,7 @@
   --sig: #EDEDED;
   --sig-on: #111111;
   --link: #60A5FA;
+  --seg-on: #363636;
   --dock: rgb(26 26 26 / 0.68);
   --brand-multisafepay: #00ABEE;
   --sig-tint: #262626;

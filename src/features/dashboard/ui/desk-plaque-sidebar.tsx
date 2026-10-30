@@ -51,8 +51,8 @@ export function DeskPlaqueSidebar({
               className="data-[slot=sidebar-menu-button]:p-1.5!"
             >
               <Link href={href}>
-                <span className="relative size-8 shrink-0 rounded-full border-2 border-[var(--ink)] bg-[var(--sheet)]">
-                  <span className="absolute inset-0 m-auto size-2 rounded-full bg-[var(--sig)]" />
+                <span aria-hidden="true" className="grid size-8 shrink-0 place-items-center rounded-md bg-[var(--ink)] text-sm font-semibold text-[color:var(--paper)]">
+                  {name.trim().charAt(0).toUpperCase()}
                 </span>
                 <span className="text-base font-semibold text-sidebar-foreground">
                   {name}

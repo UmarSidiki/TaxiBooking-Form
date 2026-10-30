@@ -45,7 +45,7 @@ export function createDeskDrawController(input: {
   const teardown = () => {
     listeners.forEach((listener) => google.maps.event.removeListener(listener));
     listeners = [];
-    map.setOptions({ draggableCursor: null });
+    map.setOptions({ draggableCursor: null, disableDoubleClickZoom: false });
   };
 
   const render = () => {
@@ -61,6 +61,9 @@ export function createDeskDrawController(input: {
       ...DESK_MAP_POLYGON,
       editable: false,
       draggable: false,
+      // While drawing, the shape must not swallow clicks: the closing click on
+      // the first vertex (and any point inside the shape) has to reach the map.
+      clickable: false,
     });
   };
 
@@ -75,7 +78,7 @@ export function createDeskDrawController(input: {
       poly?.setMap(null);
       polygonRef.current = null;
     } else {
-      poly.setOptions(DESK_MAP_POLYGON);
+      poly.setOptions({ ...DESK_MAP_POLYGON, clickable: true });
       attachPolygonListeners(poly, onPolygonChange);
       onPolygonChange(poly);
     }
@@ -98,7 +101,7 @@ export function createDeskDrawController(input: {
     polygonRef.current = null;
     vertices = [];
     active = true;
-    map.setOptions({ draggableCursor: "crosshair" });
+    map.setOptions({ draggableCursor: "crosshair", disableDoubleClickZoom: true });
 
     listeners.push(
       map.addListener("click", (event: google.maps.MapMouseEvent) => {

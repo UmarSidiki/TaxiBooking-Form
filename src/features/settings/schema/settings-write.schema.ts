@@ -21,8 +21,11 @@ export const settingsWriteSchema = z.object({
     })
     .nullable()
     .optional(),
+  // "Clear bounds" sends null; it is stored as an empty list (no service area).
   mapPolygonPoints: z
     .array(z.object({ lat: z.number(), lng: z.number() }))
+    .nullable()
+    .transform((points) => points ?? [])
     .optional(),
   stripePublishableKey: z.string().optional(),
   stripeSecretKey: z.string().optional(),

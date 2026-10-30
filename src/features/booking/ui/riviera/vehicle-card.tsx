@@ -8,7 +8,7 @@ import { DEFAULT_VEHICLE_MINIMUM_HOURS } from "@/features/fleet/lib/vehicle-form
 import type { DistanceData, FormData } from "@/features/booking/context/booking-form-context";
 import type { IVehicle } from "@/features/fleet/model";
 import type { useTranslations } from "next-intl";
-import { VehicleArt, vehicleKindFromVehicle } from "./vehicle-art";
+import { VehicleArt, vehicleKindFromVehicle } from "@/shared/ui/riviera/vehicle-art";
 
 type TFn = ReturnType<typeof useTranslations>;
 

@@ -4,7 +4,7 @@ import type { ComponentProps, ReactNode } from "react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 
-import { DeskMark } from "@/features/auth/ui/desk-mark";
+import { useSettingsDesk } from "@/features/settings/ui/settings-desk-context";
 import { DeskNavUser } from "@/features/dashboard/ui/desk-nav-user";
 import {
   Sidebar,
@@ -31,7 +31,8 @@ export function DeskPlaqueSidebar({
   children: ReactNode;
 } & ComponentProps<typeof Sidebar>) {
   const t = useTranslations();
-  const name = process.env.NEXT_PUBLIC_WEBSITE_NAME ?? t("Auth.Desk.fallback_name");
+  const { settings } = useSettingsDesk();
+  const name = settings?.companyName || process.env.NEXT_PUBLIC_WEBSITE_NAME || t("Auth.Desk.fallback_name");
   const href = homeHref ?? `/${locale}/dashboard/home`;
 
   return (
@@ -49,7 +50,9 @@ export function DeskPlaqueSidebar({
               className="data-[slot=sidebar-menu-button]:p-1.5!"
             >
               <Link href={href}>
-                <DeskMark className="size-8" />
+                <span className="relative size-8 shrink-0 rounded-full border-2 border-[var(--ink)] bg-[var(--sheet)]">
+                  <span className="absolute inset-0 m-auto size-2 rounded-full bg-[var(--sig)]" />
+                </span>
                 <span className="text-base font-semibold text-sidebar-foreground">
                   {name}
                 </span>

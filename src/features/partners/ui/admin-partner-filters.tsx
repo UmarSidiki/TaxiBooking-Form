@@ -30,7 +30,7 @@ export function AdminPartnerFilters({
               type="button"
               role="tab"
               aria-selected={selected}
-              className={`h-11 rounded-md border px-4 text-sm font-medium ${selected ? "border-primary bg-primary text-primary-foreground" : "border-border bg-card text-foreground"}`}
+              className={`h-11 rounded-md border px-4 text-sm font-medium ${selected ? "border-[var(--ink)] bg-[var(--sig)] text-[var(--sig-on)]" : "border-[var(--rule2)] bg-[var(--sheet)] text-[var(--ink)]"}`}
               onClick={() => setStatusFilter(tab)}
             >
               {t(`tab-${tab}`)}

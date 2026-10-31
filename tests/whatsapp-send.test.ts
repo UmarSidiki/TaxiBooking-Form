@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import { WhatsAppConfig, WhatsAppSendLog } from "@/features/settings/model";
+import { WhatsAppConfig } from "@/features/settings/model";
 
 const h = vi.hoisted(() => {
   const sock = {
@@ -28,6 +28,14 @@ vi.mock("@/features/settings/lib/whatsapp-socket", () => ({
 }));
 
 import { sendWhatsAppTexts, type WhatsAppSendResult } from "@/features/settings/lib/whatsapp-send";
+import {
+  claimWhatsAppSend,
+  listRecentWhatsAppSends,
+  markWhatsAppFallback,
+  markWhatsAppSend,
+  maskWhatsAppJid,
+} from "@/features/settings/lib/whatsapp-send-log";
+import WhatsAppSendLog from "@/features/settings/model/WhatsAppSendLog";
 
 const messages = [
   { jid: "14155552671@s.whatsapp.net", text: "first" },
@@ -105,6 +113,65 @@ describe("WhatsApp batch sending", () => {
     await sendWhatsAppTexts(messages, { kind: "notification", rng: () => 0, sleep });
     expect(sleeps).toEqual([400, 400]);
     expect(h.sock.sendMessage).toHaveBeenCalledTimes(4);
+  });
+
+  it("claims an idempotency key so a retry never sends twice", async () => {
+    const keys = ["otp:row-1", "otp:row-2"];
+    const first = await sendWhatsAppTexts(messages, {
+      idempotencyKeys: keys,
+      sleep: async () => undefined,
+    });
+    const second = await sendWhatsAppTexts(messages, {
+      idempotencyKeys: keys,
+      sleep: async () => undefined,
+    });
+
+    expect(h.sock.sendMessage).toHaveBeenCalledTimes(2);
+    expect(first.ok).toBe(true);
+    expect(second.ok).toBe(true);
+    if (!second.ok) return;
+    expect(second.results.map((row) => row.status)).toEqual(["sent", "sent"]);
+    expect(await WhatsAppSendLog.countDocuments({})).toBe(2);
+  });
+
+  it("marks an email fallback without overwriting a capped status", async () => {
+    await claimWhatsAppSend({
+      idempotencyKey: "otp:fallback",
+      jid: "14155552671@s.whatsapp.net",
+      kind: "otp",
+    });
+    await markWhatsAppSend("otp:fallback", "failed", { error: "send_failed" });
+    await markWhatsAppFallback("otp:fallback");
+    expect(
+      (await WhatsAppSendLog.findOne({ idempotencyKey: "otp:fallback" }))?.status,
+    ).toBe("fallback");
+
+    await claimWhatsAppSend({
+      idempotencyKey: "otp:capped",
+      jid: "14155552671@s.whatsapp.net",
+      kind: "otp",
+    });
+    await markWhatsAppSend("otp:capped", "capped");
+    await markWhatsAppFallback("otp:capped");
+    expect(
+      (await WhatsAppSendLog.findOne({ idempotencyKey: "otp:capped" }))?.status,
+    ).toBe("capped");
+  });
+
+  it("masks numbers in the recent send list", async () => {
+    await claimWhatsAppSend({
+      idempotencyKey: "otp:listed",
+      jid: "14155552671@s.whatsapp.net",
+      kind: "otp",
+    });
+    await markWhatsAppSend("otp:listed", "sent");
+    const rows = await listRecentWhatsAppSends();
+    expect(rows[0]).toMatchObject({
+      number: maskWhatsAppJid("14155552671@s.whatsapp.net"),
+      kind: "otp",
+      status: "sent",
+    });
+    expect(rows[0]?.number).toBe("••••2671");
   });
 
   it("stops at the daily cap counted from the send log", async () => {

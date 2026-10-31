@@ -14,6 +14,7 @@ import { WhatsAppDeliveryList } from "@/features/settings/ui/whatsapp-delivery-l
 import { WhatsAppEventSheet } from "@/features/settings/ui/whatsapp-event-sheet";
 import { WhatsAppGlobalCard } from "@/features/settings/ui/whatsapp-global-card";
 import { WhatsAppRegistryList } from "@/features/settings/ui/whatsapp-registry-list";
+import { WhatsAppSendLogTable } from "@/features/settings/ui/whatsapp-send-log-table";
 import type { WhatsAppDeskConfig } from "@/features/settings/ui/whatsapp-desk-types";
 import { apiGet } from "@/shared/http/api";
 import { Button } from "@/shared/ui/button";
@@ -96,6 +97,12 @@ export function SettingsPageWhatsapp() {
         description={t("whatsapp_deliveries_help")}
       >
         <WhatsAppDeliveryList deliveries={data.deliveries} />
+      </SettingsSection>
+      <SettingsSection
+        title={t("whatsapp_send_log")}
+        description={t("whatsapp_send_log_help")}
+      >
+        <WhatsAppSendLogTable />
       </SettingsSection>
       {editing ? (
         <WhatsAppEventSheet

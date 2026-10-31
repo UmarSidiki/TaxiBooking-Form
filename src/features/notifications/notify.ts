@@ -115,9 +115,12 @@ export async function notify(
     if (whatsapp.length > 0) {
       const send =
         deps.send ?? ((messages, options) => sendWhatsAppTexts(messages, options));
+      const idempotencyKeys = whatsapp.map((message) =>
+        ctx.bookingId ? `${eventKey}:${ctx.bookingId}:${message.jid}` : undefined,
+      );
       const result = await send(
         whatsapp.map(({ jid, text, document }) => ({ jid, text, document })),
-        { deadlineMs: deps.deadlineMs, kind: "notification" },
+        { deadlineMs: deps.deadlineMs, kind: "notification", idempotencyKeys },
       );
       ok = result.ok;
       if (ctx.bookingId) await settleDeliveries(ctx.bookingId, whatsapp, result);

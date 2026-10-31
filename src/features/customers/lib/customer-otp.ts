@@ -27,9 +27,14 @@ async function verifiedPhoneFor(email: string) {
   return profile?.verifiedPhone?.trim() || null;
 }
 
-async function deliverCode(code: string, email: string, channel: CustomerOtpChannel) {
+async function deliverCode(
+  code: string,
+  email: string,
+  channel: CustomerOtpChannel,
+  idempotencyKey: string,
+) {
   const verifiedPhone = channel === "whatsapp" ? await verifiedPhoneFor(email) : null;
-  await deliverCustomerCode({ email, code, verifiedPhone });
+  await deliverCustomerCode({ email, code, verifiedPhone, idempotencyKey });
 }
 
 async function hasBooking(email: string) {
@@ -69,7 +74,7 @@ export async function sendCustomerOtp(
     .sort({ sentAt: -1 })
     .lean<{ attempts?: number }>();
   const code = generateOtpCode();
-  await CustomerOtp.create({
+  const row = await CustomerOtp.create({
     email,
     codeHash: hashOtpCode(email, code),
     expiresAt: new Date(Date.now() + TTL_MS),
@@ -77,7 +82,10 @@ export async function sendCustomerOtp(
     sentAt: new Date(),
   });
 
-  return { ok: true as const, delivery: () => deliverCode(code, email, channel) };
+  return {
+    ok: true as const,
+    delivery: () => deliverCode(code, email, channel, String(row._id)),
+  };
 }
 
 export async function verifyCustomerOtp(emailRaw: string, code: string) {

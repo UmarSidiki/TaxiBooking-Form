@@ -136,6 +136,7 @@ export async function sendWhatsAppTest(input: WhatsAppTestSendInput) {
   const sent = await sendWhatsAppTexts([{ jid: toWhatsAppJid(digits), text }], {
     deadlineMs: whatsappBudgetMs(WHATSAPP_SETTINGS_MAX_DURATION_SECONDS),
     kind: "test",
+    idempotencyKeys: [`test:${digits}:${Date.now()}`],
   });
   if (!sent.ok) return { ok: false as const, error: sent.reason };
   if (!findSendResult(sent.results, toWhatsAppJid(digits))?.ok) {

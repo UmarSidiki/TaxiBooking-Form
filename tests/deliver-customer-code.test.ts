@@ -1,4 +1,6 @@
 import { afterAll, beforeEach, describe, expect, it, vi } from "vitest";
+import WhatsAppSendLog from "@/features/settings/model/WhatsAppSendLog";
+import { claimWhatsAppSend } from "@/features/settings/lib/whatsapp-send-log";
 
 const mocks = vi.hoisted(() => ({ send: vi.fn(), notify: vi.fn() }));
 
@@ -14,7 +16,12 @@ afterAll(() => {
 const input = { email: "ada@example.com", code: "123456", verifiedPhone: "+14155552671" };
 
 async function deliver(
-  payload: { email: string; code: string; verifiedPhone?: string | null },
+  payload: {
+    email: string;
+    code: string;
+    verifiedPhone?: string | null;
+    idempotencyKey?: string;
+  },
   deps?: { timeoutMs?: number },
 ) {
   const { deliverCustomerCode } = await import("@/features/customers/lib/deliver-customer-code");
@@ -57,6 +64,20 @@ describe("customer code delivery", () => {
     mocks.send.mockReturnValue(new Promise(() => undefined));
     expect(await deliver(input, { timeoutMs: 5 })).toBe("email");
     expect(mocks.notify).toHaveBeenCalledTimes(1);
+  });
+
+  it("marks the send log fallback when email is used", async () => {
+    await claimWhatsAppSend({
+      idempotencyKey: "otp-row-1",
+      jid: "14155552671@s.whatsapp.net",
+      kind: "otp",
+    });
+    mocks.send.mockResolvedValue({ ok: false, reason: "failed" });
+
+    expect(await deliver({ ...input, idempotencyKey: "otp-row-1" })).toBe("email");
+
+    const row = await WhatsAppSendLog.findOne({ idempotencyKey: "otp-row-1" });
+    expect(row?.status).toBe("fallback");
   });
 
   it("goes straight to email without a verified phone", async () => {

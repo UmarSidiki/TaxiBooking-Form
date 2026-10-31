@@ -10,6 +10,7 @@ import {
   whatsappBudgetMs,
   WHATSAPP_OTP_MAX_DURATION_SECONDS,
 } from "@/features/settings/lib/whatsapp-deadline";
+import { markWhatsAppFallback } from "@/features/settings/lib/whatsapp-send-log";
 
 export const CUSTOMER_CODE_WHATSAPP_TIMEOUT_MS = whatsappBudgetMs(
   WHATSAPP_OTP_MAX_DURATION_SECONDS,
@@ -23,6 +24,13 @@ type SendFn = (
 export type DeliverCustomerCodeDeps = {
   send?: SendFn;
   timeoutMs?: number;
+};
+
+export type DeliverCustomerCodeInput = {
+  email: string;
+  code: string;
+  verifiedPhone?: string | null;
+  idempotencyKey?: string;
 };
 
 function withTimeout<T>(work: Promise<T>, ms: number) {
@@ -48,19 +56,30 @@ async function resolveDigits(phone: string) {
   return toWhatsAppDigits(phone, config?.defaultCallingCode ?? "");
 }
 
-async function sendOnWhatsApp(phone: string, text: string, deps: DeliverCustomerCodeDeps) {
+async function sendOnWhatsApp(
+  phone: string,
+  text: string,
+  idempotencyKey: string | undefined,
+  deps: DeliverCustomerCodeDeps,
+): Promise<{ ok: boolean; jid?: string }> {
   const digits = await resolveDigits(phone);
-  if (!digits) return false;
+  if (!digits) return { ok: false };
+  const jid = toWhatsAppJid(digits);
   try {
     const send = deps.send ?? sendWhatsAppTexts;
     const timeoutMs = deps.timeoutMs ?? CUSTOMER_CODE_WHATSAPP_TIMEOUT_MS;
     const result = await withTimeout(
-      send([{ jid: toWhatsAppJid(digits), text }], { deadlineMs: timeoutMs, kind: "otp" }),
+      send([{ jid, text }], {
+        deadlineMs: timeoutMs,
+        kind: "otp",
+        idempotencyKeys: [idempotencyKey],
+      }),
       timeoutMs + 1_000,
     );
-    return result.ok && result.results.length > 0 && result.results.every((row) => row.ok);
+    const ok = result.ok && result.results.length > 0 && result.results.every((row) => row.ok);
+    return { ok, jid };
   } catch {
-    return false;
+    return { ok: false, jid };
   }
 }
 
@@ -70,13 +89,16 @@ async function sendOnWhatsApp(phone: string, text: string, deps: DeliverCustomer
  * socket, and a login attempt must answer or fall back once. Never log the code.
  */
 export async function deliverCustomerCode(
-  input: { email: string; code: string; verifiedPhone?: string | null },
+  input: DeliverCustomerCodeInput,
   deps: DeliverCustomerCodeDeps = {},
 ): Promise<"whatsapp" | "email"> {
   const phone = input.verifiedPhone?.trim();
+  let jid: string | undefined;
   if (phone) {
     const text = `Your sign-in code is ${input.code}. It expires in 10 minutes.`;
-    if (await sendOnWhatsApp(phone, text, deps)) return "whatsapp";
+    const attempt = await sendOnWhatsApp(phone, text, input.idempotencyKey, deps);
+    if (attempt.ok) return "whatsapp";
+    jid = attempt.jid;
   }
 
   await notify("sign_in_otp", {
@@ -84,5 +106,8 @@ export async function deliverCustomerCode(
     channels: ["email"],
     recipients: { customer: [{ email: input.email }] },
   });
+  if (input.idempotencyKey && jid) {
+    await markWhatsAppFallback(input.idempotencyKey).catch(() => undefined);
+  }
   return "email";
 }

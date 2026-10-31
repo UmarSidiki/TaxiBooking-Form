@@ -34,7 +34,7 @@ async function resolveDigits(phone: string, callingCode?: string) {
   return toWhatsAppDigits(phone, callingCode ?? config?.defaultCallingCode ?? "");
 }
 
-async function deliverOnWhatsApp(digits: string, code: string) {
+async function deliverOnWhatsApp(digits: string, code: string, idempotencyKey: string) {
   const result = await sendWhatsAppTexts(
     [
       { jid: toWhatsAppJid(digits), text: `Your verification code is ${code}. It expires in 10 minutes.` },
@@ -42,6 +42,7 @@ async function deliverOnWhatsApp(digits: string, code: string) {
     {
       deadlineMs: whatsappBudgetMs(WHATSAPP_PHONE_MAX_DURATION_SECONDS),
       kind: "verification",
+      idempotencyKeys: [idempotencyKey],
     },
   );
   if (!result.ok) return false;
@@ -71,7 +72,7 @@ export async function requestPhoneVerification(
     sentAt: new Date(),
   });
 
-  if (!(await deliverOnWhatsApp(digits, code))) {
+  if (!(await deliverOnWhatsApp(digits, code, String(row._id)))) {
     await CustomerPhoneOtp.updateOne({ _id: row._id }, { $set: { consumedAt: new Date() } });
     return { ok: false, error: "whatsapp_failed" };
   }

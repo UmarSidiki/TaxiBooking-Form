@@ -5,6 +5,7 @@ const nextConfig: NextConfig = {
     // Performance optimizations
     compress: true,
     poweredByHeader: false,
+    devIndicators: false,
     
     // Enable React optimizations
     reactStrictMode: true,

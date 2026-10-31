@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useReducer, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { Button } from "@/shared/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs";
@@ -12,6 +12,10 @@ import { CancelTripDialog } from "./cancel-trip-dialog";
 import { AccountProfile } from "./account-profile";
 import type { Ride, CustomerProfile } from "./account-types";
 import { setPortalMoneyFormat } from "./portal-money";
+import {
+  accountLoginFeedbackReducer,
+  initialAccountLoginFeedback,
+} from "@/features/customers/lib/account-login-feedback";
 
 export function AccountDesk({
   expiredLink = false,
@@ -25,9 +29,11 @@ export function AccountDesk({
   const [email, setEmail] = useState(prefilledEmail);
   const [code, setCode] = useState("");
   const [phase, setPhase] = useState<"login" | "code" | "trips">("login");
-  const [notice, setNotice] = useState<string | null>(null);
-  const [noBooking, setNoBooking] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [feedback, dispatchFeedback] = useReducer(
+    accountLoginFeedbackReducer,
+    initialAccountLoginFeedback,
+  );
+  const { notice, error, noBooking } = feedback;
   const [upcoming, setUpcoming] = useState<Ride[]>([]);
   const [past, setPast] = useState<Ride[]>([]);
   const [canceled, setCanceled] = useState<Ride[]>([]);
@@ -84,8 +90,7 @@ export function AccountDesk({
   }, [expiredLink]);
 
   const send = async () => {
-    setError(null);
-    setNoBooking(false);
+    dispatchFeedback({ type: "send-started" });
     const response = await fetch("/api/account/otp", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -93,14 +98,14 @@ export function AccountDesk({
     });
     const data = await response.json().catch(() => null);
     if (!response.ok) {
-      setError(t("send-failed"));
+      dispatchFeedback({ type: "send-failed", error: t("send-failed") });
       return;
     }
     if (data?.code === "no_booking") {
-      setNoBooking(true);
+      dispatchFeedback({ type: "send-no-booking" });
       return;
     }
-    setNotice(t("code-sent"));
+    dispatchFeedback({ type: "send-succeeded", notice: t("code-sent") });
     setPhase("code");
   };
 
@@ -111,10 +116,22 @@ export function AccountDesk({
       body: JSON.stringify({ email, code }),
     });
     if (!response.ok) {
-      setError(t("code-invalid"));
+      dispatchFeedback({ type: "verify-failed", error: t("code-invalid") });
       return;
     }
+    dispatchFeedback({ type: "signed-in" });
     await load();
+  };
+
+  const editEmail = (value: string) => {
+    setEmail(value);
+    dispatchFeedback({ type: "email-edited" });
+  };
+
+  const useDifferentEmail = () => {
+    setEmail("");
+    setCode("");
+    dispatchFeedback({ type: "use-different-email" });
   };
 
   const openDetail = (ride: Ride) => {
@@ -145,14 +162,14 @@ export function AccountDesk({
       const body = await response.json().catch(() => null);
       if (response.ok && body?.ok) {
         setChangeResult({ totalAmount: body.totalAmount, payUrl: body.payUrl, refundRequestId: body.refundRequestId, currentTotal: body.currentTotal, newTotal: body.newTotal, paid: body.paid, difference: body.difference, action: body.action, amount: body.amount } as any);
-        setNotice(t("updated"));
+        dispatchFeedback({ type: "set-notice", notice: t("updated") });
         if (body.payUrl) {
           window.location.href = body.payUrl;
           return;
         }
         await load();
       } else {
-        setNotice(t("cutoff"));
+        dispatchFeedback({ type: "set-notice", notice: t("cutoff") });
       }
     } finally {
       setSubmitting(false);
@@ -169,12 +186,12 @@ export function AccountDesk({
         body: JSON.stringify({ action: "cancel" }),
       });
       if (response.ok) {
-        setNotice(t("updated"));
+        dispatchFeedback({ type: "set-notice", notice: t("updated") });
         setCancelOpen(false);
         setSelected(null);
         await load();
       } else {
-        setNotice(t("cutoff"));
+        dispatchFeedback({ type: "set-notice", notice: t("cutoff") });
       }
     } finally {
       setSubmitting(false);
@@ -189,6 +206,8 @@ export function AccountDesk({
     setProfile(null);
     setCustomerName("");
     setEmail("");
+    setCode("");
+    dispatchFeedback({ type: "reset" });
   };
 
   const logout = async () => {
@@ -206,7 +225,7 @@ export function AccountDesk({
       <AccountLogin
         t={t as any}
         email={email}
-        setEmail={setEmail}
+        onEmailChange={editEmail}
         code={code}
         setCode={setCode}
         phase={phase === "code" ? "code" : "login"}
@@ -216,6 +235,7 @@ export function AccountDesk({
         notice={notice}
         onSend={send}
         onVerify={verify}
+        onUseDifferentEmail={useDifferentEmail}
       />
     );
   }

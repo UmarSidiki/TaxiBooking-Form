@@ -10,7 +10,7 @@ type T = ReturnType<typeof useTranslations>;
 export function AccountLogin({
   t,
   email,
-  setEmail,
+  onEmailChange,
   code,
   setCode,
   phase,
@@ -20,10 +20,11 @@ export function AccountLogin({
   notice,
   onSend,
   onVerify,
+  onUseDifferentEmail,
 }: {
   t: T;
   email: string;
-  setEmail: (v: string) => void;
+  onEmailChange: (v: string) => void;
   code: string;
   setCode: (v: string) => void;
   phase: "login" | "code";
@@ -33,6 +34,7 @@ export function AccountLogin({
   notice: string | null;
   onSend: () => void;
   onVerify: () => void;
+  onUseDifferentEmail: () => void;
 }) {
   const locale = useLocale();
   return (
@@ -47,7 +49,7 @@ export function AccountLogin({
       {error ? <p role="alert" className="text-sm text-destructive">{error}</p> : null}
       {notice ? <p role="status" className="text-sm">{notice}</p> : null}
       <label className="text-sm" htmlFor="account-email">{t("email")}</label>
-      <Input id="account-email" className="h-11 text-base" value={email} onChange={(e) => setEmail(e.target.value)} />
+      <Input id="account-email" className="h-11 text-base" value={email} onChange={(e) => onEmailChange(e.target.value)} />
       {phase === "code" ? (
         <>
           <label className="text-sm" htmlFor="account-code">{t("code")}</label>
@@ -59,6 +61,14 @@ export function AccountLogin({
           <p className="text-sm text-foreground">{t("no-booking")}</p>
           <Button asChild className="h-11">
             <Link href={`/${locale}`}>{t("book-a-ride")}</Link>
+          </Button>
+          <Button
+            className="h-11 self-start px-0 text-sm"
+            type="button"
+            variant="link"
+            onClick={onUseDifferentEmail}
+          >
+            {t("use-different-email")}
           </Button>
         </div>
       ) : (

@@ -13,6 +13,7 @@ import {
   SelectValue,
 } from "@/shared/ui/select";
 import type { CustomerProfile } from "./account-types";
+import { AccountPhone } from "./account-phone";
 
 const LOCALES = ["en", "fr", "es", "de", "nl", "it", "ru", "ar"];
 
@@ -26,7 +27,6 @@ export function AccountProfile({
   onSaved: (p: CustomerProfile) => void;
 }) {
   const [name, setName] = useState(profile?.name ?? "");
-  const [phone, setPhone] = useState(profile?.phone ?? "");
   const [whatsappOptIn, setWhatsappOptIn] = useState(profile?.whatsappOptIn ?? false);
   const [home, setHome] = useState(profile?.savedAddresses?.home ?? "");
   const [work, setWork] = useState(profile?.savedAddresses?.work ?? "");
@@ -36,7 +36,6 @@ export function AccountProfile({
 
   useEffect(() => {
     setName(profile?.name ?? "");
-    setPhone(profile?.phone ?? "");
     setWhatsappOptIn(profile?.whatsappOptIn ?? false);
     setHome(profile?.savedAddresses?.home ?? "");
     setWork(profile?.savedAddresses?.work ?? "");
@@ -52,7 +51,6 @@ export function AccountProfile({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           name,
-          phone,
           whatsappOptIn,
           savedAddresses: { home, work, airport },
           language,
@@ -75,8 +73,7 @@ export function AccountProfile({
         <Input id="profile-name" className="h-11 text-base" value={name} onChange={(e) => setName(e.target.value)} />
       </div>
       <div>
-        <Label htmlFor="profile-phone">{t("phone")}</Label>
-        <Input id="profile-phone" className="h-11 text-base" value={phone} onChange={(e) => setPhone(e.target.value)} />
+        <AccountPhone t={t} phone={profile?.verifiedPhone ?? ""} onSaved={(verifiedPhone) => onSaved({ ...(profile ?? {}), verifiedPhone })} />
       </div>
       <label className="flex items-center gap-2 text-sm">
         <Switch checked={whatsappOptIn} onCheckedChange={setWhatsappOptIn} />

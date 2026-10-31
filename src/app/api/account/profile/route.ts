@@ -7,7 +7,6 @@ import { readCustomerToken } from "@/features/customers/lib/customer-token";
 
 const profileSchema = z.object({
   name: z.string().trim().max(120).optional(),
-  phone: z.string().trim().max(32).optional(),
   whatsappOptIn: z.boolean().optional(),
   savedAddresses: z
     .object({
@@ -43,7 +42,6 @@ export async function PATCH(request: Request) {
   await connectDB();
   const update: Record<string, unknown> = {};
   if (parsed.data.name !== undefined) update.name = parsed.data.name;
-  if (parsed.data.phone !== undefined) update.phone = parsed.data.phone;
   if (parsed.data.whatsappOptIn !== undefined) update.whatsappOptIn = parsed.data.whatsappOptIn;
   if (parsed.data.savedAddresses !== undefined) update.savedAddresses = parsed.data.savedAddresses;
   if (parsed.data.language !== undefined) update.language = parsed.data.language;

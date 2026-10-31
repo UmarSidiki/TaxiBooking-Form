@@ -31,6 +31,7 @@ export type Ride = {
 export type CustomerProfile = {
   name?: string;
   phone?: string;
+  verifiedPhone?: string;
   whatsappOptIn?: boolean;
   savedAddresses?: { home?: string; work?: string; airport?: string };
   language?: string;

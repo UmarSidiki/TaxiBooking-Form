@@ -12,7 +12,11 @@ import { useTheme } from "@/features/settings/context/theme-context";
 
 const ERROR_KEYS: Record<CurrentPickupFailure, string> = {
   "permission-denied": "Step1.location-permission-denied",
-  unavailable: "Step1.location-unavailable",
+  "position-unavailable": "Step1.location-unavailable",
+  timeout: "Step1.location-timeout",
+  "insecure-context": "Step1.location-insecure",
+  unsupported: "Step1.location-unsupported",
+  "address-not-found": "Step1.location-address-not-found",
   "outside-service-area": "Step1.location-outside-service-area",
 };
 

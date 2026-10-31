@@ -52,14 +52,18 @@
     "location-outside-service-area": "This location is outside our service area",
     "use-current-location": "Use current location",
     "locating": "Locating…",
-    "location-permission-denied": "Allow location access, or type the pickup address.",
-    "location-unavailable": "Current location is unavailable. Type the pickup address.",
+    "location-permission-denied": "Location is blocked for this site. Allow it in your browser settings, or type the pickup address.",
+    "location-unavailable": "Couldn't get a location fix. Try again near a window, or type the pickup address.",
     "price-based-on-distance-traveled": "Price based on distance traveled",
     "price-based-on-hourly-rate": "Price based on hourly rate",
     "stop": "Stop",
     "AddStop": "Add a stop",
     "TripType": "Trip type",
-    "pick-address-from-suggestions": "Choose the address from the suggestions."
+    "pick-address-from-suggestions": "Choose the address from the suggestions.",
+    "location-timeout": "Locating took too long. Try again, or type the pickup address.",
+    "location-insecure": "Location needs a secure (https) page. Type the pickup address.",
+    "location-unsupported": "This browser can't share location. Type the pickup address.",
+    "location-address-not-found": "We found you, but not a street address. Type the pickup address."
   },
   "Step2": {
     "select-your-vehicle": "Select your vehicle",

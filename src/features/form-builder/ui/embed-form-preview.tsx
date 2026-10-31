@@ -33,7 +33,7 @@ export function EmbedFormPreview({
           src={path}
           className="h-[600px] w-full bg-background"
           title={previewLabel}
-          allow="payment *"
+          allow="payment *; geolocation"
         />
       </div>
       {showCode ? (

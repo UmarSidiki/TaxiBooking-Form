@@ -52,14 +52,18 @@
     "location-outside-service-area": "Ce lieu est en dehors de notre zone de service",
     "use-current-location": "Utiliser la position actuelle",
     "locating": "Localisation…",
-    "location-permission-denied": "Autorisez l’accès à la position, ou saisissez l’adresse de prise en charge.",
-    "location-unavailable": "La position actuelle est indisponible. Saisissez l’adresse de prise en charge.",
+    "location-permission-denied": "La localisation est bloquée pour ce site. Autorisez-la dans les réglages du navigateur ou saisissez l'adresse de prise en charge.",
+    "location-unavailable": "Impossible d'obtenir votre position. Réessayez ou saisissez l'adresse de prise en charge.",
     "price-based-on-distance-traveled": "Prix basé sur la distance parcourue",
     "price-based-on-hourly-rate": "Prix basé sur le taux horaire",
     "stop": "Arrêt",
     "AddStop": "Ajouter un arrêt",
     "TripType": "Type de trajet",
-    "pick-address-from-suggestions": "Choisissez l’adresse dans les suggestions."
+    "pick-address-from-suggestions": "Choisissez l’adresse dans les suggestions.",
+    "location-timeout": "La localisation a pris trop de temps. Réessayez ou saisissez l'adresse de prise en charge.",
+    "location-insecure": "La localisation nécessite une page sécurisée (https). Saisissez l'adresse de prise en charge.",
+    "location-unsupported": "Ce navigateur ne peut pas partager la position. Saisissez l'adresse de prise en charge.",
+    "location-address-not-found": "Position trouvée, mais pas d'adresse. Saisissez l'adresse de prise en charge."
   },
   "Step2": {
     "select-your-vehicle": "Sélectionnez votre véhicule",

@@ -52,14 +52,18 @@
     "location-outside-service-area": "Questa località è fuori dalla nostra area di servizio",
     "use-current-location": "Usa la posizione attuale",
     "locating": "Localizzazione…",
-    "location-permission-denied": "Consenti l’accesso alla posizione oppure inserisci l’indirizzo di ritiro.",
-    "location-unavailable": "La posizione attuale non è disponibile. Inserisci l’indirizzo di ritiro.",
+    "location-permission-denied": "La posizione è bloccata per questo sito. Consentila nelle impostazioni del browser o digita l'indirizzo di partenza.",
+    "location-unavailable": "Impossibile rilevare la posizione. Riprova o digita l'indirizzo di partenza.",
     "price-based-on-distance-traveled": "Prezzo basato sulla distanza percorsa",
     "price-based-on-hourly-rate": "Prezzo basato sulla tariffa oraria",
     "stop": "Fermata",
     "AddStop": "Aggiungi una fermata",
     "TripType": "Tipo di viaggio",
-    "pick-address-from-suggestions": "Scegli l’indirizzo dai suggerimenti."
+    "pick-address-from-suggestions": "Scegli l’indirizzo dai suggerimenti.",
+    "location-timeout": "Il rilevamento ha richiesto troppo tempo. Riprova o digita l'indirizzo di partenza.",
+    "location-insecure": "La posizione richiede una pagina sicura (https). Digita l'indirizzo di partenza.",
+    "location-unsupported": "Questo browser non può condividere la posizione. Digita l'indirizzo di partenza.",
+    "location-address-not-found": "Ti abbiamo trovato, ma non un indirizzo. Digita l'indirizzo di partenza."
   },
   "Step2": {
     "select-your-vehicle": "Seleziona il tuo Veicolo",

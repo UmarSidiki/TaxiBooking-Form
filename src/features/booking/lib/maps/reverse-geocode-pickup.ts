@@ -1,24 +1,22 @@
 import { importLibrary, setOptions } from "@googlemaps/js-api-loader";
+import { readDevicePosition, type Coords, type PositionFailure } from "./read-device-position";
 import { isInServiceArea, serviceAreaFrom, type ServiceAreaSettings } from "@/features/booking/lib/service-area";
 
 export type CurrentPickupFailure =
-  | "permission-denied"
-  | "unavailable"
+  | PositionFailure
+  | "address-not-found"
   | "outside-service-area";
 
 export type CurrentPickupResult =
   | { ok: true; address: string; coords: { lat: number; lng: number } }
   | { ok: false; reason: CurrentPickupFailure };
 
-type Coords = { lat: number; lng: number };
-
-const POSITION_TIMEOUT_MS = 10_000;
 
 /** Reads the device position, checks the service area, then reverse-geocodes it. */
 export async function reverseGeocodePickup(
   areaSettings: ServiceAreaSettings,
 ): Promise<CurrentPickupResult> {
-  const point = await readCurrentPoint();
+  const point = await readDevicePosition();
   if (!point.ok) return point;
 
   if (!isInServiceArea(point.coords, serviceAreaFrom(areaSettings))) {
@@ -26,40 +24,9 @@ export async function reverseGeocodePickup(
   }
 
   const address = await lookupAddress(point.coords);
-  if (!address) return { ok: false, reason: "unavailable" };
+  if (!address) return { ok: false, reason: "address-not-found" };
   return { ok: true, address, coords: point.coords };
 }
-
-async function readCurrentPoint(): Promise<
-  { ok: true; coords: Coords } | { ok: false; reason: CurrentPickupFailure }
-> {
-  if (typeof navigator === "undefined" || !navigator.geolocation) {
-    return { ok: false, reason: "unavailable" };
-  }
-
-  try {
-    const position = await new Promise<GeolocationPosition>((resolve, reject) => {
-      navigator.geolocation.getCurrentPosition(resolve, reject, {
-        enableHighAccuracy: true,
-        timeout: POSITION_TIMEOUT_MS,
-        maximumAge: 60_000,
-      });
-    });
-    return {
-      ok: true,
-      coords: {
-        lat: position.coords.latitude,
-        lng: position.coords.longitude,
-      },
-    };
-  } catch (error) {
-    const denied =
-      error instanceof GeolocationPositionError &&
-      error.code === error.PERMISSION_DENIED;
-    return { ok: false, reason: denied ? "permission-denied" : "unavailable" };
-  }
-}
-
 
 async function lookupAddress(coords: Coords) {
   const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;

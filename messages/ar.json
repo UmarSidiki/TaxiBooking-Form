@@ -52,14 +52,18 @@
     "location-outside-service-area": "هذا الموقع خارج منطقة الخدمة الخاصة بنا",
     "use-current-location": "استخدم الموقع الحالي",
     "locating": "جارٍ تحديد الموقع…",
-    "location-permission-denied": "اسمح بالوصول إلى الموقع، أو اكتب عنوان الالتقاط.",
-    "location-unavailable": "الموقع الحالي غير متاح. اكتب عنوان الالتقاط.",
+    "location-permission-denied": "الوصول إلى الموقع محظور لهذا الموقع. اسمح به من إعدادات المتصفح أو اكتب عنوان الانطلاق.",
+    "location-unavailable": "تعذّر تحديد موقعك. حاول مرة أخرى أو اكتب عنوان الانطلاق.",
     "price-based-on-distance-traveled": "السعر بناءً على المسافة المقطوعة",
     "price-based-on-hourly-rate": "السعر بناءً على المعدل بالساعة",
     "stop": "توقف",
     "AddStop": "إضافة نقطة توقف",
     "TripType": "نوع الرحلة",
-    "pick-address-from-suggestions": "اختر العنوان من الاقتراحات."
+    "pick-address-from-suggestions": "اختر العنوان من الاقتراحات.",
+    "location-timeout": "استغرق تحديد الموقع وقتًا طويلاً. حاول مرة أخرى أو اكتب عنوان الانطلاق.",
+    "location-insecure": "يتطلب الموقع صفحة آمنة (https). اكتب عنوان الانطلاق.",
+    "location-unsupported": "هذا المتصفح لا يمكنه مشاركة الموقع. اكتب عنوان الانطلاق.",
+    "location-address-not-found": "وجدنا موقعك ولكن ليس عنوانًا. اكتب عنوان الانطلاق."
   },
   "Step2": {
     "select-your-vehicle": "اختر مركبتك",

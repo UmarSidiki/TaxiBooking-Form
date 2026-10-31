@@ -52,14 +52,18 @@
     "location-outside-service-area": "Esta ubicación está fuera de nuestra zona de servicio",
     "use-current-location": "Usar la ubicación actual",
     "locating": "Localizando…",
-    "location-permission-denied": "Permite el acceso a la ubicación o escribe la dirección de recogida.",
-    "location-unavailable": "La ubicación actual no está disponible. Escribe la dirección de recogida.",
+    "location-permission-denied": "La ubicación está bloqueada para este sitio. Permítela en los ajustes del navegador o escribe la dirección de recogida.",
+    "location-unavailable": "No se pudo obtener tu ubicación. Inténtalo de nuevo o escribe la dirección de recogida.",
     "price-based-on-distance-traveled": "Precio basado en la distancia recorrida",
     "price-based-on-hourly-rate": "Precio basado en tarifa por hora",
     "stop": "Parada",
     "AddStop": "Añadir una parada",
     "TripType": "Tipo de viaje",
-    "pick-address-from-suggestions": "Elija la dirección de las sugerencias."
+    "pick-address-from-suggestions": "Elija la dirección de las sugerencias.",
+    "location-timeout": "La ubicación tardó demasiado. Inténtalo de nuevo o escribe la dirección de recogida.",
+    "location-insecure": "La ubicación requiere una página segura (https). Escribe la dirección de recogida.",
+    "location-unsupported": "Este navegador no puede compartir la ubicación. Escribe la dirección de recogida.",
+    "location-address-not-found": "Te encontramos, pero no una dirección. Escribe la dirección de recogida."
   },
   "Step2": {
     "select-your-vehicle": "Seleccione su Vehículo",

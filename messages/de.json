@@ -52,14 +52,18 @@
     "location-outside-service-area": "Dieser Ort liegt außerhalb unseres Servicegebiets",
     "use-current-location": "Aktuellen Standort verwenden",
     "locating": "Standort wird ermittelt…",
-    "location-permission-denied": "Erlauben Sie den Standortzugriff oder geben Sie die Abholadresse ein.",
-    "location-unavailable": "Der aktuelle Standort ist nicht verfügbar. Geben Sie die Abholadresse ein.",
+    "location-permission-denied": "Standortzugriff ist für diese Seite blockiert. Erlauben Sie ihn in den Browsereinstellungen oder geben Sie die Abholadresse ein.",
+    "location-unavailable": "Standort konnte nicht ermittelt werden. Versuchen Sie es erneut oder geben Sie die Abholadresse ein.",
     "price-based-on-distance-traveled": "Preis basierend auf zurückgelegter Strecke",
     "price-based-on-hourly-rate": "Preis basierend auf Stundensatz",
     "stop": "Zwischenstopp",
     "AddStop": "Zwischenstopp hinzufügen",
     "TripType": "Fahrtart",
-    "pick-address-from-suggestions": "Wählen Sie die Adresse aus den Vorschlägen."
+    "pick-address-from-suggestions": "Wählen Sie die Adresse aus den Vorschlägen.",
+    "location-timeout": "Die Standortsuche dauerte zu lange. Versuchen Sie es erneut oder geben Sie die Abholadresse ein.",
+    "location-insecure": "Der Standort erfordert eine sichere (https) Seite. Geben Sie die Abholadresse ein.",
+    "location-unsupported": "Dieser Browser kann den Standort nicht teilen. Geben Sie die Abholadresse ein.",
+    "location-address-not-found": "Standort gefunden, aber keine Straßenadresse. Geben Sie die Abholadresse ein."
   },
   "Step2": {
     "select-your-vehicle": "Fahrzeug auswählen",

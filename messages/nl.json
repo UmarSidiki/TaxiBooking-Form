@@ -52,14 +52,18 @@
     "location-outside-service-area": "Deze locatie valt buiten ons servicegebied",
     "use-current-location": "Huidige locatie gebruiken",
     "locating": "Locatie ophalen…",
-    "location-permission-denied": "Sta locatietoegang toe, of typ het ophaaladres.",
-    "location-unavailable": "Huidige locatie is niet beschikbaar. Typ het ophaaladres.",
+    "location-permission-denied": "Locatie is geblokkeerd voor deze site. Sta het toe in je browserinstellingen of typ het ophaaladres.",
+    "location-unavailable": "Locatie kon niet worden bepaald. Probeer opnieuw of typ het ophaaladres.",
     "price-based-on-distance-traveled": "Prijs gebaseerd op afgelegde afstand",
     "price-based-on-hourly-rate": "Prijs gebaseerd op uurtarief",
     "stop": "Stop",
     "AddStop": "Tussenstop toevoegen",
     "TripType": "Type rit",
-    "pick-address-from-suggestions": "Kies het adres uit de suggesties."
+    "pick-address-from-suggestions": "Kies het adres uit de suggesties.",
+    "location-timeout": "Locatie bepalen duurde te lang. Probeer opnieuw of typ het ophaaladres.",
+    "location-insecure": "Locatie vereist een beveiligde (https) pagina. Typ het ophaaladres.",
+    "location-unsupported": "Deze browser kan geen locatie delen. Typ het ophaaladres.",
+    "location-address-not-found": "We vonden je, maar geen straatadres. Typ het ophaaladres."
   },
   "Step2": {
     "select-your-vehicle": "Selecteer Uw Voertuig",

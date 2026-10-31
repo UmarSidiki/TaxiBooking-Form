@@ -1,7 +1,6 @@
 import { afterAll, beforeEach, describe, expect, it, vi } from "vitest";
 import mongoose from "mongoose";
 import { NextRequest } from "next/server";
-import { signCustomerToken } from "@/features/customers/lib/customer-token";
 import { Booking, RefundRequest } from "@/features/booking/model";
 import { Vehicle } from "@/features/fleet/model";
 import { createRide, createVehicle } from "./helpers/fixtures";

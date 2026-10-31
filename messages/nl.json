@@ -2534,6 +2534,7 @@
     "cancelled": "Cancelled",
     "empty-canceled": "No cancelled trips.",
     "logout": "Log out",
+    "link-expired": "Deze link is verlopen. Voer je e-mailadres in en we sturen je een nieuwe inlogcode.",
     "details": "Details",
     "total": "Total",
     "status-requested": "Requested",

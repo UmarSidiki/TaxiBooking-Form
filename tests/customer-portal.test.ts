@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 import mongoose from "mongoose";
-import { readCustomerToken, signCustomerToken } from "@/features/customers/lib/customer-token";
+import { legacyCustomerEmail } from "@/features/customers/lib/legacy-customer-token";
+import { signLegacyToken } from "./helpers/legacy-token";
 import { sendCustomerOtp, verifyCustomerOtp } from "@/features/customers/lib/customer-otp";
 import { changeAllowed } from "@/features/customers/lib/customer-rides";
 import PricingRule from "@/features/pricing/model/PricingRule";
@@ -11,11 +12,10 @@ vi.mock("@/features/notifications/notify", () => ({
 }));
 
 describe("customer portal", () => {
-  it("signs a magic link and rejects a bad token", () => {
+  it("decodes an old link email for prefill only when the signature is valid", () => {
     process.env.NEXTAUTH_SECRET = "test-secret";
-    const token = signCustomerToken("ada@example.com", 60);
-    expect(readCustomerToken(token)).toBe("ada@example.com");
-    expect(readCustomerToken("nope")).toBeNull();
+    expect(legacyCustomerEmail(signLegacyToken("ada@example.com"))).toBe("ada@example.com");
+    expect(legacyCustomerEmail("nope")).toBeNull();
   });
 
   it("limits OTP sends to five an hour and rejects a wrong code", async () => {

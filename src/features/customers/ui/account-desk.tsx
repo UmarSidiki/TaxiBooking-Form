@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useSearchParams } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { Button } from "@/shared/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs";
@@ -14,11 +13,16 @@ import { AccountProfile } from "./account-profile";
 import type { Ride, CustomerProfile } from "./account-types";
 import { setPortalMoneyFormat } from "./portal-money";
 
-export function AccountDesk() {
+export function AccountDesk({
+  expiredLink = false,
+  prefilledEmail = "",
+}: {
+  expiredLink?: boolean;
+  prefilledEmail?: string;
+}) {
   const t = useTranslations("Account");
   const locale = useLocale();
-  const params = useSearchParams();
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState(prefilledEmail);
   const [code, setCode] = useState("");
   const [phase, setPhase] = useState<"login" | "code" | "trips">("login");
   const [notice, setNotice] = useState<string | null>(null);
@@ -38,8 +42,8 @@ export function AccountDesk() {
   const [settings, setSettings] = useState<any>(null);
   const [customerName, setCustomerName] = useState("");
 
-  const load = async (token?: string | null) => {
-    const response = await fetch(token ? `/api/account/trips?token=${encodeURIComponent(token)}` : "/api/account/trips");
+  const load = async () => {
+    const response = await fetch("/api/account/trips");
     if (!response.ok) return false;
     const data = await response.json();
     setUpcoming(data.upcoming ?? []);
@@ -54,7 +58,12 @@ export function AccountDesk() {
   };
 
   useEffect(() => {
-    const token = params.get("token");
+    if (expiredLink) {
+      const url = new URL(window.location.href);
+      url.searchParams.delete("token");
+      url.searchParams.delete("link");
+      window.history.replaceState(null, "", url.toString());
+    }
     fetch("/api/settings")
       .then((r) => r.json())
       .then((d) => {
@@ -62,9 +71,7 @@ export function AccountDesk() {
         setSettings(d?.data ?? null);
       })
       .catch(() => null);
-    // Load the profile only after the trips call, which swaps the session
-    // cookie when a magic-link token is in the URL.
-    void load(token).then((ok) => {
+    void load().then((ok) => {
       if (!ok) return;
       fetch("/api/account/profile")
         .then((r) => (r.ok ? r.json() : null))
@@ -74,7 +81,7 @@ export function AccountDesk() {
         })
         .catch(() => null);
     });
-  }, [params]);
+  }, [expiredLink]);
 
   const send = async () => {
     setError(null);
@@ -194,6 +201,7 @@ export function AccountDesk() {
         code={code}
         setCode={setCode}
         phase={phase === "code" ? "code" : "login"}
+        expired={expiredLink}
         noBooking={noBooking}
         error={error}
         notice={notice}

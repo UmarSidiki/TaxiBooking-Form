@@ -4,8 +4,8 @@ import {
   customerSessionCookie,
   revokeCustomerSession,
 } from "@/features/customers/lib/customer-session";
-import { signCustomerToken } from "@/features/customers/lib/customer-token";
 import CustomerSession from "@/features/customers/model/CustomerSession";
+import { signLegacyToken } from "./helpers/legacy-token";
 
 const mocks = vi.hoisted(() => ({ cookie: null as string | null, cookieName: "cs" }));
 
@@ -74,12 +74,10 @@ describe("customer sessions", () => {
     expect((await GET(tripsRequest())).status).toBe(401);
   });
 
-  it("still reads the legacy HMAC cookie", async () => {
+  it("rejects the legacy HMAC cookie", async () => {
     mocks.cookieName = "customer_session";
-    mocks.cookie = signCustomerToken("ada@example.com");
+    mocks.cookie = signLegacyToken("ada@example.com");
     const { GET } = await import("@/app/api/account/trips/route");
-    const response = await GET(tripsRequest());
-    expect(response.status).toBe(200);
-    expect((await response.json()).email).toBe("ada@example.com");
+    expect((await GET(tripsRequest())).status).toBe(401);
   });
 });

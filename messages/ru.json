@@ -2534,6 +2534,7 @@
     "cancelled": "Cancelled",
     "empty-canceled": "No cancelled trips.",
     "logout": "Log out",
+    "link-expired": "Срок действия ссылки истёк. Введите адрес электронной почты, и мы отправим новый код для входа.",
     "details": "Details",
     "total": "Total",
     "status-requested": "Requested",

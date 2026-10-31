@@ -14,6 +14,7 @@ export function AccountLogin({
   code,
   setCode,
   phase,
+  expired,
   noBooking,
   error,
   notice,
@@ -26,6 +27,7 @@ export function AccountLogin({
   code: string;
   setCode: (v: string) => void;
   phase: "login" | "code";
+  expired: boolean;
   noBooking: boolean;
   error: string | null;
   notice: string | null;
@@ -37,6 +39,11 @@ export function AccountLogin({
     <div className="mx-auto flex max-w-md flex-col gap-4 p-4">
       <h1 className="text-2xl font-semibold">{t("sign-in")}</h1>
       <p className="text-sm text-muted-foreground">{t("sign-in-help")}</p>
+      {expired ? (
+        <p role="alert" className="rounded-md border border-border bg-muted/40 p-4 text-sm text-foreground">
+          {t("link-expired")}
+        </p>
+      ) : null}
       {error ? <p role="alert" className="text-sm text-destructive">{error}</p> : null}
       {notice ? <p role="status" className="text-sm">{notice}</p> : null}
       <label className="text-sm" htmlFor="account-email">{t("email")}</label>

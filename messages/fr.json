@@ -2534,6 +2534,7 @@
     "cancelled": "Cancelled",
     "empty-canceled": "No cancelled trips.",
     "logout": "Log out",
+    "link-expired": "Ce lien a expiré. Saisissez votre e-mail et nous vous enverrons un nouveau code de connexion.",
     "details": "Details",
     "total": "Total",
     "status-requested": "Requested",

@@ -3,7 +3,6 @@ import { cookies } from "next/headers";
 import { connectDB } from "@/shared/db";
 import { clientIp } from "@/shared/http/client-ip";
 import CustomerSession from "@/features/customers/model/CustomerSession";
-import { readCustomerToken } from "@/features/customers/lib/customer-token";
 
 const IDLE_MS = 30 * 24 * 60 * 60 * 1000;
 const ABSOLUTE_MS = 90 * 24 * 60 * 60 * 1000;
@@ -104,14 +103,10 @@ function cookieFromHeader(request: Request | undefined, name: string) {
 export async function readCustomerSession(request?: Request) {
   const jar = await cookieJar();
   const { name } = customerSessionCookie();
-  const id = jar?.get(name)?.value ?? cookieFromHeader(request, name);
-  if (id) return touchSession(id);
-
-  // Legacy HMAC tokens stay readable until M2 removes them.
-  const legacy =
-    new URL(request?.url ?? "http://local").searchParams.get("token") ||
-    jar?.get(LEGACY_COOKIE)?.value;
-  return readCustomerToken(legacy);
+  if (jar?.get(LEGACY_COOKIE)) jar.delete(LEGACY_COOKIE);
+  const id = cookieFromHeader(request, name) ?? jar?.get(name)?.value;
+  if (!id) return null;
+  return touchSession(id);
 }
 
 export async function revokeCustomerSession() {

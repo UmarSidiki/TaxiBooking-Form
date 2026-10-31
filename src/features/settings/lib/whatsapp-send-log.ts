@@ -5,6 +5,7 @@ import WhatsAppSendLog, {
 } from "@/features/settings/model/WhatsAppSendLog";
 
 export const DEFAULT_WHATSAPP_DAILY_CAP = 300;
+export const WHATSAPP_QUEUED_STALE_MS = 5 * 60 * 1000;
 
 export type WhatsAppSendClaim =
   | { claimed: true }
@@ -41,7 +42,11 @@ export async function countWhatsAppSendsToday(now = new Date()) {
   });
 }
 
-/** Insert on the unique key wins the right to send; a duplicate reports the earlier status. */
+/**
+ * Insert on the unique key wins the right to send; a duplicate reports the earlier status.
+ * A queued entry older than the stale window is reclaimed atomically so a crashed attempt
+ * can be retried instead of blocking the key forever. Sent entries stay idempotent.
+ */
 export async function claimWhatsAppSend(input: {
   idempotencyKey: string;
   jid: string;
@@ -59,6 +64,20 @@ export async function claimWhatsAppSend(input: {
     return { claimed: true };
   } catch (error) {
     if (!isDuplicateKey(error)) throw error;
+    const now = new Date();
+    const reclaimed = await WhatsAppSendLog.findOneAndUpdate(
+      {
+        idempotencyKey: input.idempotencyKey,
+        status: "queued",
+        createdAt: { $lt: new Date(now.getTime() - WHATSAPP_QUEUED_STALE_MS) },
+      },
+      {
+        $set: { status: "queued", error: "stale_queued", createdAt: now },
+        $inc: { attempts: 1 },
+      },
+      { new: true, projection: { _id: 1 } },
+    ).lean();
+    if (reclaimed) return { claimed: true };
     const previous = await WhatsAppSendLog.findOne({
       idempotencyKey: input.idempotencyKey,
     })

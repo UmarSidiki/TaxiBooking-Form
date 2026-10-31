@@ -34,6 +34,7 @@ import {
   markWhatsAppFallback,
   markWhatsAppSend,
   maskWhatsAppJid,
+  WHATSAPP_QUEUED_STALE_MS,
 } from "@/features/settings/lib/whatsapp-send-log";
 import WhatsAppSendLog from "@/features/settings/model/WhatsAppSendLog";
 
@@ -52,6 +53,66 @@ beforeEach(() => {
     linked: true,
     flushCreds: h.flushCreds,
   }));
+});
+
+describe("WhatsApp send log claims", () => {
+  const key = "otp:claim";
+  const jid = "14155552671@s.whatsapp.net";
+
+  it("skips a fresh queued entry", async () => {
+    await claimWhatsAppSend({ idempotencyKey: key, jid, kind: "otp" });
+
+    const again = await claimWhatsAppSend({ idempotencyKey: key, jid, kind: "otp" });
+
+    expect(again).toEqual({ claimed: false, status: "queued" });
+    const row = await WhatsAppSendLog.findOne({ idempotencyKey: key }).lean();
+    expect(row?.attempts).toBe(1);
+    expect(row?.createdAt.getTime()).toBeLessThanOrEqual(Date.now());
+  });
+
+  it("reclaims a stale queued entry exactly once across concurrent claims", async () => {
+    const createdAt = new Date(Date.now() - WHATSAPP_QUEUED_STALE_MS - 1_000);
+    await WhatsAppSendLog.create({
+      idempotencyKey: key,
+      jid,
+      kind: "otp",
+      status: "queued",
+      attempts: 1,
+      createdAt,
+    });
+
+    const claims = await Promise.all(
+      Array.from({ length: 5 }, () =>
+        claimWhatsAppSend({ idempotencyKey: key, jid, kind: "otp" }),
+      ),
+    );
+
+    expect(claims.filter((claim) => claim.claimed)).toHaveLength(1);
+    expect(
+      claims.filter((claim) => !claim.claimed && claim.status === "queued"),
+    ).toHaveLength(4);
+    const row = await WhatsAppSendLog.findOne({ idempotencyKey: key }).lean();
+    expect(row).toMatchObject({ status: "queued", attempts: 2, error: "stale_queued" });
+    expect(row?.createdAt.getTime()).toBeGreaterThan(createdAt.getTime());
+  });
+
+  it("never reclaims a sent entry", async () => {
+    const createdAt = new Date(Date.now() - WHATSAPP_QUEUED_STALE_MS * 2);
+    await WhatsAppSendLog.create({
+      idempotencyKey: key,
+      jid,
+      kind: "otp",
+      status: "sent",
+      attempts: 1,
+      createdAt,
+    });
+
+    const again = await claimWhatsAppSend({ idempotencyKey: key, jid, kind: "otp" });
+
+    expect(again).toEqual({ claimed: false, status: "sent" });
+    const row = await WhatsAppSendLog.findOne({ idempotencyKey: key }).lean();
+    expect(row).toMatchObject({ status: "sent", attempts: 1 });
+  });
 });
 
 describe("WhatsApp batch sending", () => {

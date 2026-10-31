@@ -1,4 +1,5 @@
 import { spawn } from "node:child_process";
+import { writeFileSync } from "node:fs";
 import bcrypt from "bcryptjs";
 import { MongoMemoryServer } from "mongodb-memory-server";
 import mongoose from "mongoose";
@@ -8,6 +9,7 @@ const FILE_SENTINEL = `data:application/pdf;base64,${"E2EFILEDATA".repeat(800)}`
 
 const mongod = await MongoMemoryServer.create();
 const uri = mongod.getUri();
+writeFileSync("/tmp/e2e-mongo-uri.txt", uri);
 await mongoose.connect(uri);
 const db = mongoose.connection.db;
 if (!db) throw new Error("Memory database did not connect");

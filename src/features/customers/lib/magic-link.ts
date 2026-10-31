@@ -37,7 +37,7 @@ export async function createMagicLink(email: string, options: MagicLinkOptions) 
   });
 
   const locale = safeLocale(options.locale);
-  return `${base}/api/account/link?t=${encodeURIComponent(token)}&l=${locale}`;
+  return `${base}/${locale}/account/link#t=${encodeURIComponent(token)}`;
 }
 
 /** Atomically consumes a login token. Returns the email only for the winning caller. */

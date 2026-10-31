@@ -10,15 +10,45 @@ import CustomerLoginToken from "@/features/customers/model/CustomerLoginToken";
 import CustomerSession from "@/features/customers/model/CustomerSession";
 
 function tokenOf(url: string) {
-  return new URL(url).searchParams.get("t") ?? "";
+  const parsed = new URL(url);
+  return new URLSearchParams(parsed.hash.replace(/^#/, "")).get("t") ?? "";
 }
 
-function linkRequest(url: string) {
-  const token = tokenOf(url);
-  return new Request(`http://local/api/account/link?t=${encodeURIComponent(token)}&l=${new URL(url).searchParams.get("l")}`);
+function legacyApiUrl(token: string, locale = "en") {
+  return `http://local/api/account/link?t=${encodeURIComponent(token)}&l=${locale}`;
+}
+
+function postRequest(
+  token: string,
+  options: { origin?: string; contentType?: string } = {},
+) {
+  return new Request("http://local/api/account/link", {
+    method: "POST",
+    headers: {
+      "content-type": options.contentType ?? "application/json",
+      ...(options.origin
+        ? { origin: options.origin, "sec-fetch-site": "cross-site" }
+        : {}),
+    },
+    body: JSON.stringify({ token }),
+  });
 }
 
 describe("customer magic links", () => {
+  it("builds a page link with the token in the fragment", async () => {
+    const url = await createMagicLink("ada@example.com", {
+      baseUrl: "http://local",
+      locale: "en",
+    });
+    expect(url).toBeTruthy();
+    const parsed = new URL(url!);
+    const token = tokenOf(url!);
+    expect(parsed.pathname).toBe("/en/account/link");
+    expect(parsed.search).toBe("");
+    expect(parsed.hash).toBe(`#t=${token}`);
+    expect(token).not.toBe("");
+  });
+
   it("stores only a hash and marks the token used", async () => {
     const url = await createMagicLink("ada@example.com", {
       baseUrl: "http://local",
@@ -37,38 +67,49 @@ describe("customer magic links", () => {
     expect(used?.usedAt).toBeInstanceOf(Date);
   });
 
-  it("signs in once and redirects to a clean account URL", async () => {
+  it("redirects GET to the page fragment without consuming the token", async () => {
     const url = await createMagicLink("ada@example.com", {
       baseUrl: "http://local",
       locale: "fr",
     });
+    const token = tokenOf(url!);
     const { GET } = await import("@/app/api/account/link/route");
-    const response = await GET(linkRequest(url!));
+    const response = await GET(new Request(legacyApiUrl(token, "fr")));
 
     expect(response.status).toBe(303);
-    const location = response.headers.get("location") ?? "";
-    expect(new URL(location).pathname).toBe("/fr/account");
-    expect(location).not.toContain("t=");
+    const location = new URL(response.headers.get("location") ?? "");
+    expect(location.pathname).toBe("/fr/account/link");
+    expect(location.search).toBe("");
+    expect(location.hash).toBe(`#t=${encodeURIComponent(token)}`);
     expect(response.headers.get("referrer-policy")).toBe("no-referrer");
+    expect(response.headers.get("cache-control")).toBe("no-store");
+    expect(response.headers.get("set-cookie")).toBeNull();
+
+    const row = await CustomerLoginToken.findOne({ emailLower: "ada@example.com" });
+    expect(row?.usedAt).toBeNull();
+    expect(await CustomerSession.countDocuments()).toBe(0);
+    expect(await consumeMagicLink(token)).toEqual({ emailLower: "ada@example.com" });
+  });
+
+  it("signs in once with POST", async () => {
+    const url = await createMagicLink("ada@example.com", {
+      baseUrl: "http://local",
+      locale: "fr",
+    });
+    const token = tokenOf(url!);
+    const { POST } = await import("@/app/api/account/link/route");
+
+    const response = await POST(postRequest(token));
+    expect(response.status).toBe(200);
+    expect(await response.json()).toEqual({ ok: true });
     expect(response.headers.get("cache-control")).toBe("no-store");
     expect(response.headers.get("set-cookie")).toContain(customerSessionCookie().name);
     expect(await CustomerSession.countDocuments({ emailLower: "ada@example.com" })).toBe(1);
-  });
 
-  it("rejects a reused link without creating another session", async () => {
-    const url = await createMagicLink("ada@example.com", {
-      baseUrl: "http://local",
-      locale: "en",
-    });
-    const { GET } = await import("@/app/api/account/link/route");
-    await GET(linkRequest(url!));
-    const response = await GET(linkRequest(url!));
-
-    expect(response.status).toBe(303);
-    const location = response.headers.get("location") ?? "";
-    expect(new URL(location).searchParams.get("link")).toBe("expired");
-    expect(location).not.toContain("t=");
-    expect(response.headers.get("set-cookie")).toBeNull();
+    const reused = await POST(postRequest(token));
+    expect(reused.status).toBe(400);
+    expect(await reused.json()).toEqual({ code: "expired" });
+    expect(reused.headers.get("set-cookie")).toBeNull();
     expect(await CustomerSession.countDocuments({ emailLower: "ada@example.com" })).toBe(1);
   });
 
@@ -81,14 +122,46 @@ describe("customer magic links", () => {
       { emailLower: "ada@example.com" },
       { $set: { expiresAt: new Date(Date.now() - 1000) } },
     );
-    const { GET } = await import("@/app/api/account/link/route");
-    const response = await GET(linkRequest(url!));
+    const { POST } = await import("@/app/api/account/link/route");
+    const response = await POST(postRequest(tokenOf(url!)));
 
-    expect(response.status).toBe(303);
-    expect(new URL(response.headers.get("location") ?? "").searchParams.get("link")).toBe(
-      "expired",
+    expect(response.status).toBe(400);
+    expect(await response.json()).toEqual({ code: "expired" });
+    expect(await CustomerSession.countDocuments()).toBe(0);
+  });
+
+  it("rejects a cross-origin POST without consuming the token", async () => {
+    const url = await createMagicLink("ada@example.com", {
+      baseUrl: "http://local",
+      locale: "en",
+    });
+    const token = tokenOf(url!);
+    const { POST } = await import("@/app/api/account/link/route");
+    const response = await POST(
+      postRequest(token, { origin: "https://evil.example" }),
     );
-    expect(await CustomerSession.countDocuments({ emailLower: "ada@example.com" })).toBe(0);
+
+    expect(response.status).toBe(403);
+    expect(response.headers.get("set-cookie")).toBeNull();
+    expect(await CustomerSession.countDocuments()).toBe(0);
+
+    const row = await CustomerLoginToken.findOne({ emailLower: "ada@example.com" });
+    expect(row?.usedAt).toBeNull();
+    expect(await consumeMagicLink(token)).toEqual({ emailLower: "ada@example.com" });
+  });
+
+  it("requires a JSON content type", async () => {
+    const url = await createMagicLink("ada@example.com", {
+      baseUrl: "http://local",
+      locale: "en",
+    });
+    const token = tokenOf(url!);
+    const { POST } = await import("@/app/api/account/link/route");
+    const response = await POST(postRequest(token, { contentType: "text/plain" }));
+
+    expect(response.status).toBe(415);
+    expect(await CustomerSession.countDocuments()).toBe(0);
+    expect(await consumeMagicLink(token)).toEqual({ emailLower: "ada@example.com" });
   });
 
   it("creates exactly one session when the same link is used twice at once", async () => {
@@ -96,11 +169,16 @@ describe("customer magic links", () => {
       baseUrl: "http://local",
       locale: "en",
     });
-    const { GET } = await import("@/app/api/account/link/route");
-    const responses = await Promise.all([GET(linkRequest(url!)), GET(linkRequest(url!))]);
+    const token = tokenOf(url!);
+    const { POST } = await import("@/app/api/account/link/route");
+    const responses = await Promise.all([
+      POST(postRequest(token)),
+      POST(postRequest(token)),
+    ]);
 
     const withCookie = responses.filter((response) => response.headers.get("set-cookie"));
     expect(withCookie).toHaveLength(1);
+    expect(withCookie[0].status).toBe(200);
     expect(await CustomerSession.countDocuments({ emailLower: "ada@example.com" })).toBe(1);
   });
 });

@@ -1,15 +1,6 @@
-import { createHmac } from "node:crypto";
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
-
-const SECRET = process.env.NEXTAUTH_SECRET || "e2e-secret-not-for-production";
-
-function signToken(email: string) {
-  const exp = Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 7;
-  const body = Buffer.from(`${email.trim().toLowerCase()}|${exp}`).toString("base64url");
-  const sig = createHmac("sha256", SECRET).update(body).digest("base64url");
-  return `${body}.${sig}`;
-}
+import { seedLoginToken } from "./helpers/login-token";
 
 async function go(page: any, path: string) {
   for (let i = 0; i < 4; i += 1) {
@@ -30,8 +21,8 @@ test("account portal tabs, cancel fee, change price, completed ride", async ({ p
       ? page.screenshot({ path: `${process.env.SHOTS_DIR}/bf-portal-${name}-${testInfo.project.name}.png`, fullPage: true })
       : Promise.resolve();
 
-  const token = signToken("ada@example.com");
-  await go(page, `/en/account?token=${token}`);
+  const token = await seedLoginToken("ada@example.com");
+  await go(page, token);
   await expect(page.getByRole("heading", { name: "Your trips" })).toBeVisible();
   await expect(page.getByRole("tab", { name: "Upcoming" })).toBeVisible();
   await expect(page.getByRole("tab", { name: "Past" })).toBeVisible();
@@ -60,8 +51,8 @@ test("account portal tabs, cancel fee, change price, completed ride", async ({ p
   await page.getByRole("button", { name: "Confirm change" }).click();
 
   // Completed ride has no actions
-  const token2 = signToken("grace@example.com");
-  await go(page, `/en/account?token=${token2}`);
+  const token2 = await seedLoginToken("grace@example.com");
+  await go(page, token2);
   await page.getByRole("tab", { name: "Past" }).click();
   await page.getByRole("button", { name: "Details" }).first().click();
   await expect(page.getByRole("dialog")).toBeVisible();

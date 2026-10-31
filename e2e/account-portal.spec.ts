@@ -29,7 +29,7 @@ async function go(page: Page, path: string) {
 async function magicLinkSignIn(page: Page, email: string) {
   await go(page, await seedMagicLink(email));
   await expect(page).toHaveURL(/\/en\/account$/);
-  await expect(page.getByRole("heading", { name: "Your trips" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Past rides" })).toBeVisible();
 }
 
 async function latestSignInCode(page: Page, email: string) {
@@ -65,9 +65,9 @@ test("email-only sign-in code reaches the inbox and opens the portal", async ({ 
   expect(whatsapp.some((message) => message.text?.includes(code))).toBe(false);
 
   await page.locator("#account-code").pressSequentially(code);
-  await page.getByRole("button", { name: "Verify" }).click();
-  await expect(page.getByRole("heading", { name: "Your trips" })).toBeVisible();
-  await expect(page.getByRole("tab", { name: "Upcoming" })).toBeVisible();
+  await page.getByRole("button", { name: "Verify and sign in" }).click();
+  await expect(page.getByText("Upcoming ride")).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Past rides" })).toBeVisible();
 });
 
 test("magic link opens tabs, cancel fee, change price and completed ride", async ({ page }, testInfo) => {
@@ -78,39 +78,40 @@ test("magic link opens tabs, cancel fee, change price and completed ride", async
       : Promise.resolve();
 
   await magicLinkSignIn(page, "ada@example.com");
-  await expect(page.getByRole("tab", { name: "Upcoming" })).toBeVisible();
-  await expect(page.getByRole("tab", { name: "Past" })).toBeVisible();
-  await expect(page.getByRole("tab", { name: "Cancelled" })).toBeVisible();
+  const upcoming = page.getByRole("article").filter({ hasText: "e2e-upcoming" });
+  await expect(upcoming).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Past rides" })).toBeVisible();
   await shot("list");
 
   // Cancel fee preview shown
-  await page.getByRole("button", { name: "Details" }).first().click();
-  await expect(page.getByRole("dialog")).toBeVisible();
-  await page.getByRole("button", { name: "Cancel" }).click();
-  await expect(page.getByText(/Cancellation fee/)).toBeVisible();
+  await upcoming.getByRole("button", { name: "Cancel" }).click();
+  const cancelDialog = page.getByRole("dialog");
+  await expect(cancelDialog).toBeVisible();
+  await expect(cancelDialog.getByText(/Cancellation fee/)).toBeVisible();
   await shot("cancel");
-  await page.getByRole("button", { name: "Close" }).first().click();
+  await cancelDialog.getByRole("button", { name: "Close" }).first().click();
+  await expect(cancelDialog).toBeHidden();
 
   // Change shows preview summary then confirms
-  await page.getByRole("button", { name: "Details" }).first().click();
-  await expect(page.getByRole("dialog")).toBeVisible();
-  await page.getByRole("button", { name: "Change" }).click();
-  await page.getByRole("button", { name: "Review change" }).click();
-  await expect(page.getByText(/Current total/)).toBeVisible();
-  await expect(page.getByText(/New total/)).toBeVisible();
-  await expect(page.getByText(/Already paid/)).toBeVisible();
+  await upcoming.getByRole("button", { name: "Change" }).click();
+  const changeDialog = page.getByRole("dialog");
+  await expect(changeDialog).toBeVisible();
+  await changeDialog.getByRole("button", { name: "Review change" }).click();
+  await expect(changeDialog.getByText(/Current total/)).toBeVisible();
+  await expect(changeDialog.getByText(/New total/)).toBeVisible();
+  await expect(changeDialog.getByText(/Already paid/)).toBeVisible();
   await shot("change-review");
   const axe = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21aa"]).analyze();
   expect(axe.violations.filter((v) => v.impact === "serious" || v.impact === "critical").map((v) => v.id)).toEqual([]);
-  await page.getByRole("button", { name: "Confirm change" }).click();
+  await changeDialog.getByRole("button", { name: "Confirm change" }).click();
 
-  // Completed ride has no actions
+  // Completed rides live in Past rides with no change/cancel actions
   await magicLinkSignIn(page, "grace@example.com");
-  await page.getByRole("tab", { name: "Past" }).click();
-  await page.getByRole("button", { name: "Details" }).first().click();
-  await expect(page.getByRole("dialog")).toBeVisible();
-  await expect(page.getByRole("button", { name: "Change" })).toHaveCount(0);
-  await expect(page.getByRole("button", { name: "Cancel" })).toHaveCount(0);
+  const pastRides = page.getByRole("region", { name: "Past rides" });
+  await expect(pastRides).toBeVisible();
+  await expect(pastRides.getByText("Trip e2e-history")).toBeVisible();
+  await expect(pastRides.getByRole("button", { name: "Change" })).toHaveCount(0);
+  await expect(pastRides.getByRole("button", { name: "Cancel" })).toHaveCount(0);
 
   // Axe check
   const result = await new AxeBuilder({ page })

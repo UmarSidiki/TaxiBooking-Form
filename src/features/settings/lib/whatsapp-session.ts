@@ -90,15 +90,16 @@ export function sendWhatsAppTexts(messages: WhatsAppOutbound[]) {
     });
   }
   return withWhatsAppLock(async (): Promise<SendResult> => {
-    const { sock, linked } = await openWhatsAppSocket();
+    const { sock, linked, flushCreds } = await openWhatsAppSocket();
     if (!linked) {
+      await flushCreds().catch(() => undefined);
       await sock.end(undefined).catch(() => undefined);
       await publish({ status: "needs_scan", qrDataUrl: null });
       return { ok: false, reason: "needs_scan" };
     }
 
     try {
-      await waitForOpen(sock, 20_000);
+      await waitForOpen(sock);
       const config = await WhatsAppConfig.findOne()
         .select("sendRateLimit")
         .lean<{ sendRateLimit?: number }>();
@@ -130,6 +131,7 @@ export function sendWhatsAppTexts(messages: WhatsAppOutbound[]) {
       }
       return { ok: false, reason: isLoggedOut(error) ? "needs_scan" : "failed" };
     } finally {
+      await flushCreds().catch(() => undefined);
       await sock.end(undefined).catch(() => undefined);
     }
   });
@@ -138,13 +140,14 @@ export function sendWhatsAppTexts(messages: WhatsAppOutbound[]) {
 export function unlinkWhatsApp() {
   return withWhatsAppLock(async () => {
     if (await readWhatsAppLinked()) {
-      const { sock } = await openWhatsAppSocket();
+      const { sock, flushCreds } = await openWhatsAppSocket();
       try {
-        await waitForOpen(sock, 20_000);
+        await waitForOpen(sock);
         await sock.logout();
       } catch (error) {
         console.error("WhatsApp unlink failed:", error);
       } finally {
+        await flushCreds().catch(() => undefined);
         await sock.end(undefined).catch(() => undefined);
       }
     }

@@ -6,12 +6,12 @@ import { limitSensitive } from "@/shared/http/sensitive-limit";
 
 const emailSchema = z.string().trim().regex(/^[^\s@]+@[^\s@]+\.[^\s@]+$/);
 
-const sendSchema = z.object({
+const sendSchema = z.strictObject({
   email: emailSchema,
-  phone: z.string().trim().max(32).optional(),
+  channel: z.enum(["email", "whatsapp"]).optional(),
 });
 
-const verifySchema = z.object({
+const verifySchema = z.strictObject({
   email: emailSchema,
   code: z.string().trim().regex(/^\d{6}$/),
 });
@@ -19,28 +19,42 @@ const verifySchema = z.object({
 export async function POST(request: Request) {
   const limited = await limitSensitive(request, "otp");
   if (limited) return limited;
+
   const body = await request.json().catch(() => null);
   const verify = verifySchema.safeParse(body);
   if (verify.success) {
     const result = await verifyCustomerOtp(verify.data.email, verify.data.code);
     if (!result.ok) {
-      return NextResponse.json({ error: result.error }, { status: result.error === "rate_limited" ? 429 : 400 });
+      return NextResponse.json(
+        { error: result.error },
+        { status: result.error === "rate_limited" ? 429 : 400 },
+      );
     }
     const token = signCustomerToken(result.email);
     const response = NextResponse.json({ ok: true });
     if (token) {
-      response.cookies.set("customer_session", token, { httpOnly: true, sameSite: "lax", path: "/", maxAge: 60 * 60 * 24 * 7 });
+      response.cookies.set("customer_session", token, {
+        httpOnly: true,
+        sameSite: "lax",
+        path: "/",
+        maxAge: 60 * 60 * 24 * 7,
+      });
     }
     return response;
   }
+
   const parsed = sendSchema.safeParse(body);
   if (!parsed.success) return NextResponse.json({ error: "invalid_body" }, { status: 400 });
-  const sent = await sendCustomerOtp(parsed.data.email, parsed.data.phone);
+
+  const sent = await sendCustomerOtp(parsed.data.email, parsed.data.channel);
   if (!sent.ok) {
     return NextResponse.json(
       { error: sent.error },
-      { status: sent.error === "rate_limited" ? 429 : 400, headers: sent.retryAfter ? { "Retry-After": String(sent.retryAfter) } : undefined },
+      {
+        status: sent.error === "rate_limited" ? 429 : 400,
+        headers: sent.retryAfter ? { "Retry-After": String(sent.retryAfter) } : undefined,
+      },
     );
   }
-  return NextResponse.json({ ok: true, channel: sent.channel });
+  return NextResponse.json({ ok: true });
 }

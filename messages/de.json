@@ -2505,7 +2505,7 @@
   "Account": {
     "title": "Ihre Fahrten",
     "sign-in": "Anmelden",
-    "sign-in-help": "Wir senden einen Code per WhatsApp, dann per E-Mail.",
+    "sign-in-help": "Wir senden Ihnen einen Anmeldecode per E-Mail.",
     "email": "E-Mail",
     "phone": "Telefon",
     "code": "Code",

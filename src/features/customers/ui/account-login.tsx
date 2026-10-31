@@ -10,8 +10,6 @@ export function AccountLogin({
   t,
   email,
   setEmail,
-  phone,
-  setPhone,
   code,
   setCode,
   phase,
@@ -23,8 +21,6 @@ export function AccountLogin({
   t: T;
   email: string;
   setEmail: (v: string) => void;
-  phone: string;
-  setPhone: (v: string) => void;
   code: string;
   setCode: (v: string) => void;
   phase: "login" | "code";
@@ -41,8 +37,6 @@ export function AccountLogin({
       {notice ? <p role="status" className="text-sm">{notice}</p> : null}
       <label className="text-sm" htmlFor="account-email">{t("email")}</label>
       <Input id="account-email" className="h-11 text-base" value={email} onChange={(e) => setEmail(e.target.value)} />
-      <label className="text-sm" htmlFor="account-phone">{t("phone")}</label>
-      <Input id="account-phone" className="h-11 text-base" value={phone} onChange={(e) => setPhone(e.target.value)} />
       {phase === "code" ? (
         <>
           <label className="text-sm" htmlFor="account-code">{t("code")}</label>

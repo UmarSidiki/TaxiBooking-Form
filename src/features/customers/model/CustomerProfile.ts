@@ -5,6 +5,7 @@ const CustomerProfileSchema = new Schema(
     email: { type: String, required: true, unique: true, index: true },
     name: { type: String, default: "" },
     phone: { type: String, default: "" },
+    verifiedPhone: { type: String, default: "" },
     whatsappOptIn: { type: Boolean, default: false },
     savedAddresses: {
       home: { type: String, default: "" },

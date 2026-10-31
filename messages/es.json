@@ -2505,7 +2505,7 @@
   "Account": {
     "title": "Tus viajes",
     "sign-in": "Entrar",
-    "sign-in-help": "Enviamos un código por WhatsApp y luego por correo.",
+    "sign-in-help": "Te enviamos un código de acceso por correo electrónico.",
     "email": "Correo",
     "phone": "Teléfono",
     "code": "Código",

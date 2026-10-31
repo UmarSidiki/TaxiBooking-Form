@@ -2505,7 +2505,7 @@
   "Account": {
     "title": "Uw ritten",
     "sign-in": "Inloggen",
-    "sign-in-help": "We sturen een code via WhatsApp, daarna per e-mail.",
+    "sign-in-help": "We sturen u een inlogcode per e-mail.",
     "email": "E-mail",
     "phone": "Telefoon",
     "code": "Code",

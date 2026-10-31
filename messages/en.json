@@ -2505,7 +2505,7 @@
   "Account": {
     "title": "Your trips",
     "sign-in": "Sign in",
-    "sign-in-help": "We send a code on WhatsApp, then email.",
+    "sign-in-help": "We email you a sign-in code.",
     "email": "Email",
     "phone": "Phone",
     "code": "Code",

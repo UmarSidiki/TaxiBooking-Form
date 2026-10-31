@@ -19,7 +19,6 @@ export function AccountDesk() {
   const locale = useLocale();
   const params = useSearchParams();
   const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
   const [code, setCode] = useState("");
   const [phase, setPhase] = useState<"login" | "code" | "trips">("login");
   const [notice, setNotice] = useState<string | null>(null);
@@ -81,7 +80,7 @@ export function AccountDesk() {
     const response = await fetch("/api/account/otp", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, phone }),
+      body: JSON.stringify({ email }),
     });
     if (!response.ok) {
       setError(t("send-failed"));
@@ -185,8 +184,6 @@ export function AccountDesk() {
         t={t as any}
         email={email}
         setEmail={setEmail}
-        phone={phone}
-        setPhone={setPhone}
         code={code}
         setCode={setCode}
         phase={phase === "code" ? "code" : "login"}

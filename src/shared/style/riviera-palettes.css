@@ -26,6 +26,7 @@
   --info-tint: #EFF4FD;
   --sidebar: #FAFAFA;
   --dock: rgb(255 255 255 / 0.72);
+  --logo-plate: #FFFFFF;
 }
 
 :root[data-riviera-theme="dark"],
@@ -53,6 +54,7 @@
   --info-tint: #15203A;
   --sidebar: #1A1A1A;
   --dock: rgb(26 26 26 / 0.68);
+  --logo-plate: #F4F4F4;
 }
 
 :root[data-palette="slate"]:not([data-riviera-theme="dark"]),
@@ -80,6 +82,7 @@
   --info-tint: #EEF0FD;
   --sidebar: #F6F7F9;
   --dock: rgb(255 255 255 / 0.74);
+  --logo-plate: #FFFFFF;
 }
 
 :root[data-palette="slate"][data-riviera-theme="dark"],
@@ -107,6 +110,7 @@
   --info-tint: #1E2242;
   --sidebar: #171A22;
   --dock: rgb(23 26 34 / 0.70);
+  --logo-plate: #F3F4F7;
 }
 
 :root[data-palette="heritage"]:not([data-riviera-theme="dark"]),
@@ -134,6 +138,7 @@
   --info-tint: #EDF2F8;
   --sidebar: #F8F5F0;
   --dock: rgb(255 255 255 / 0.74);
+  --logo-plate: #FFFFFF;
 }
 
 :root[data-palette="heritage"][data-riviera-theme="dark"],
@@ -161,6 +166,7 @@
   --info-tint: #18222E;
   --sidebar: #1E1A17;
   --dock: rgb(30 26 23 / 0.70);
+  --logo-plate: #F6F1EA;
 }
 
 :root[data-palette="navy"]:not([data-riviera-theme="dark"]),
@@ -188,6 +194,7 @@
   --info-tint: #EAF3FC;
   --sidebar: #F6F9FC;
   --dock: rgb(255 255 255 / 0.74);
+  --logo-plate: #FFFFFF;
 }
 
 :root[data-palette="navy"][data-riviera-theme="dark"],
@@ -215,6 +222,7 @@
   --info-tint: #133556;
   --sidebar: #0E2540;
   --dock: rgb(14 37 64 / 0.72);
+  --logo-plate: #EEF3F8;
 }
 
 /* The page itself paints the palette, so nothing flashes between streamed chunks and hydration. */

@@ -15,6 +15,13 @@ PAL={
  "light":L(paper="#F6F9FC",sheet="#FFFFFF",well="#EDF2F7",ink="#0A2540",ink2="#4A5C74",rule="#DCE3EC",rule2="#7C8CA3",sig="#533AFD",sig_on="#FFFFFF",sig_tint="#EFECFF",link="#0064C8",info="#0064C8",ok="#0E7C55",warn="#985700",err="#BE2F57",ok_tint="#EAF6F1",warn_tint="#FBF3E5",err_tint="#FCEEF2",info_tint="#EAF3FC",sidebar="#F6F9FC",dock="rgb(255 255 255 / 0.74)"),
  "dark":L(paper="#071A2F",sheet="#0E2540",well="#15304F",ink="#EAF1F8",ink2="#A4B6CC",rule="#1F3A5A",rule2="#5C7898",sig="#9A8CFF",sig_on="#071A2F",sig_tint="#24305E",link="#6CB8FF",info="#6CB8FF",ok="#3FD39A",warn="#F2B553",err="#FF8AA6",ok_tint="#0D3036",warn_tint="#2A2E2C",err_tint="#2E2440",info_tint="#133556",sidebar="#0E2540",dock="rgb(14 37 64 / 0.72)")},
 }
+# Logo plate behind uploaded brand images. Light surfaces match the sheet; dark
+# mode keeps a light plate so dark wordmarks stay readable without hardcoding a
+# colour in the component.
+LOGO_PLATE_DARK={"neutral":"#F4F4F4","slate":"#F3F4F7","heritage":"#F6F1EA","navy":"#EEF3F8"}
+for _pid,_pal in PAL.items():
+    _pal["light"]["logo_plate"]=_pal["light"]["sheet"]
+    _pal["dark"]["logo_plate"]=LOGO_PLATE_DARK[_pid]
 def lum(h):
   c=[int(h[i:i+2],16)/255 for i in (1,3,5)]
   c=[x/12.92 if x<=.03928 else ((x+.055)/1.055)**2.4 for x in c]

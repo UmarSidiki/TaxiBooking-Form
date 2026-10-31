@@ -1,6 +1,11 @@
 "use client";
 
-import { useState, type ComponentProps, type ReactNode } from "react";
+import {
+  useState,
+  type ComponentProps,
+  type CSSProperties,
+  type ReactNode,
+} from "react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 
@@ -38,7 +43,15 @@ export function DeskPlaqueSidebar({
   const href = homeHref ?? `/${locale}/dashboard/home`;
   const logoUrl = settings?.companyLogoUrl?.trim() ?? "";
   const [failedLogoUrl, setFailedLogoUrl] = useState<string | null>(null);
+  const [logoRatio, setLogoRatio] = useState<{
+    url: string;
+    value: number;
+  } | null>(null);
   const showLogo = Boolean(logoUrl) && failedLogoUrl !== logoUrl;
+  const ratio = logoRatio?.url === logoUrl ? logoRatio.value : null;
+  const plateStyle = ratio
+    ? ({ "--desk-logo-ratio": ratio } as CSSProperties)
+    : undefined;
 
   return (
     <Sidebar
@@ -52,14 +65,27 @@ export function DeskPlaqueSidebar({
           <SidebarMenuItem>
             <SidebarMenuButton asChild className="desk-brand min-h-11 p-1.5 text-start">
               <Link href={href}>
-                <span aria-hidden="true" className="desk-brand__logo" data-letter={showLogo ? undefined : ""}>
+                <span
+                  aria-hidden="true"
+                  className="desk-brand__logo"
+                  data-letter={showLogo ? undefined : ""}
+                  style={plateStyle}
+                >
                   {showLogo ? (
                     // eslint-disable-next-line @next/next/no-img-element
                     <img
                       src={logoUrl}
                       alt=""
-                      width={32}
-                      height={32}
+                      onLoad={(event) => {
+                        const { naturalWidth, naturalHeight } =
+                          event.currentTarget;
+                        if (naturalWidth > 0 && naturalHeight > 0) {
+                          setLogoRatio({
+                            url: logoUrl,
+                            value: naturalWidth / naturalHeight,
+                          });
+                        }
+                      }}
                       onError={() => setFailedLogoUrl(logoUrl)}
                     />
                   ) : (

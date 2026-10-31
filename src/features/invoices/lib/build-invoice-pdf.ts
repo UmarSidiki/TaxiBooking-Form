@@ -1,36 +1,12 @@
-import { readFile } from "node:fs/promises";
-import { join } from "node:path";
 import QRCode from "qrcode";
 import { Booking } from "@/features/booking/model";
 import { renderInvoicePdf } from "@/features/booking/lib/render-invoice-pdf";
 import { ridePayUrl } from "@/features/invoices/lib/ride-pay-link";
 import { allocateInvoiceNumber } from "@/features/invoices/lib/allocate-invoice-number";
+import { logoDataUrl } from "@/features/invoices/lib/invoice-logo";
 import { Setting } from "@/features/settings/model";
 import { getCurrencySymbol } from "@/shared/lib/utils";
 import { resolvePublicUrl } from "@/features/settings/lib/public-url";
-
-async function logoDataUrl(settings: { companyLogoUrl?: string } | null) {
-  const url = settings?.companyLogoUrl?.trim();
-  if (url) {
-    try {
-      if (url.startsWith("data:")) return url;
-      const res = await fetch(url);
-      if (res.ok) {
-        const buf = Buffer.from(await res.arrayBuffer());
-        const type = res.headers.get("content-type") || "image/png";
-        return `data:${type};base64,${buf.toString("base64")}`;
-      }
-    } catch {
-      // fall through
-    }
-  }
-  try {
-    const bytes = await readFile(join(process.cwd(), "public/icon.png"));
-    return `data:image/png;base64,${bytes.toString("base64")}`;
-  } catch {
-    return undefined;
-  }
-}
 
 export async function buildInvoicePdf(tripId: string) {
   const booking = await Booking.findOne({ tripId });

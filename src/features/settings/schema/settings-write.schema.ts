@@ -3,6 +3,27 @@ import { COLOR_PALETTES } from "@/features/settings/lib/color-palettes";
 
 const hexOrRgb = z.string().max(64);
 
+const LOGO_DATA_URL = /^data:image\/(png|jpeg|webp|gif|svg\+xml);base64,[A-Za-z0-9+/]+={0,2}$/;
+
+function isCompanyLogoUrl(value: string) {
+  if (value === "") return true;
+  if (/\s/.test(value)) return false;
+  if (LOGO_DATA_URL.test(value)) return true;
+  if (value.startsWith("/")) return !value.startsWith("//") && !value.startsWith("/\\");
+  try {
+    const protocol = new URL(value).protocol;
+    return protocol === "http:" || protocol === "https:";
+  } catch {
+    return false;
+  }
+}
+
+export const companyLogoUrlSchema = z
+  .string()
+  .trim()
+  .max(400_000)
+  .refine(isCompanyLogoUrl, { message: "Invalid company logo URL" });
+
 export const settingsWriteSchema = z.object({
   primaryColor: hexOrRgb.optional(),
   secondaryColor: hexOrRgb.optional(),
@@ -68,6 +89,7 @@ export const settingsWriteSchema = z.object({
   adminEmail: z.string().optional(),
   publicBaseUrl: z.string().trim().max(300).optional(),
   timezone: z.string().optional(),
+  companyLogoUrl: companyLogoUrlSchema.optional(),
   legalName: z.string().optional(),
   address: z.string().optional(),
   taxId: z.string().optional(),

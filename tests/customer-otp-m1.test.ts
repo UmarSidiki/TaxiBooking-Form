@@ -4,6 +4,7 @@ import { sendCustomerOtp, verifyCustomerOtp } from "@/features/customers/lib/cus
 import { padOtpSend } from "@/features/customers/lib/otp-send-timing";
 import CustomerOtp from "@/features/customers/model/CustomerOtp";
 import CustomerProfile from "@/features/customers/model/CustomerProfile";
+import { clearWhatsAppOutbox, readWhatsAppOutbox } from "@/features/settings/lib/whatsapp-outbox";
 import { createRide } from "./helpers/fixtures";
 
 const mocks = vi.hoisted(() => ({ notify: vi.fn() }));
@@ -152,13 +153,12 @@ describe("customer OTP (M1)", () => {
   });
 
   it("delivers the whatsapp channel to the verified phone of that email", async () => {
+    process.env.QA_MOCK_WHATSAPP = "1";
+    clearWhatsAppOutbox();
     await knownCustomer("verified@example.com");
     await CustomerProfile.create({ email: "verified@example.com", verifiedPhone: "+14155552671" });
     await sendCustomerOtp("verified@example.com", "whatsapp");
-    expect(lastChannels()).toEqual(["whatsapp"]);
-    const ctx = mocks.notify.mock.calls.at(-1)?.[1] as {
-      recipients?: { customer?: { phone?: string }[] };
-    };
-    expect(ctx.recipients?.customer?.[0]?.phone).toBe("+14155552671");
+    expect(readWhatsAppOutbox().at(-1)?.jid).toBe("14155552671@s.whatsapp.net");
+    expect(mocks.notify).not.toHaveBeenCalled();
   });
 });

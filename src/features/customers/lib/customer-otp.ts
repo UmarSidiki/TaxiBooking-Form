@@ -2,7 +2,7 @@ import { connectDB } from "@/shared/db";
 import { Booking } from "@/features/booking/model";
 import CustomerOtp from "@/features/customers/model/CustomerOtp";
 import CustomerProfile from "@/features/customers/model/CustomerProfile";
-import { notify } from "@/features/notifications/notify";
+import { deliverCustomerCode } from "@/features/customers/lib/deliver-customer-code";
 import { generateOtpCode, hashOtpCode, otpCodeMatches } from "@/features/customers/lib/otp-code";
 
 export type CustomerOtpChannel = "email" | "whatsapp";
@@ -25,25 +25,8 @@ async function verifiedPhoneFor(email: string) {
 }
 
 async function deliverCode(code: string, email: string, channel: CustomerOtpChannel) {
-  const variables = { code, ttlMinutes: String(TTL_MS / 60000) };
-  if (channel === "whatsapp") {
-    const verifiedPhone = await verifiedPhoneFor(email);
-    if (verifiedPhone) {
-      const result = await notify("sign_in_otp", {
-        variables,
-        channels: ["whatsapp"],
-        recipients: { customer: [{ phone: verifiedPhone, email, whatsappOptIn: true }] },
-      });
-      if (result.ok && result.deliveries.some((delivery) => delivery.channel === "whatsapp")) {
-        return;
-      }
-    }
-  }
-  await notify("sign_in_otp", {
-    variables,
-    channels: ["email"],
-    recipients: { customer: [{ email }] },
-  });
+  const verifiedPhone = channel === "whatsapp" ? await verifiedPhoneFor(email) : null;
+  await deliverCustomerCode({ email, code, verifiedPhone });
 }
 
 async function hasBooking(email: string) {

@@ -86,11 +86,7 @@ describe("verified WhatsApp number", () => {
     await createRide({ selectedVehicle: new mongoose.Types.ObjectId(), email: "ada@example.com" });
     await CustomerProfile.create({ email: "ada@example.com", verifiedPhone: "14155552671" });
     await sendCustomerOtp("ada@example.com", "whatsapp");
-    const ctx = mocks.notify.mock.calls.at(-1)?.[1] as {
-      channels?: string[];
-      recipients?: { customer?: { phone?: string }[] };
-    };
-    expect(ctx.channels).toEqual(["whatsapp"]);
-    expect(ctx.recipients?.customer?.[0]?.phone).toBe("14155552671");
+    expect(readWhatsAppOutbox().at(-1)?.jid).toBe("14155552671@s.whatsapp.net");
+    expect(mocks.notify).not.toHaveBeenCalled();
   });
 });

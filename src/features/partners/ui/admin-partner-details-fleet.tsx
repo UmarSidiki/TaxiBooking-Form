@@ -56,7 +56,7 @@ export function AdminPartnerDetailsFleet({
           validFleetRequests.length === 0 ? (
             <div className="rounded-lg border border-border bg-muted/30 p-4">
               <div className="mb-2 flex items-center justify-between">
-                <p className="text-sm font-medium">
+                <p className="min-w-0 break-words text-sm font-medium">
                   {vehicles.find((v) => v._id === selectedPartner.requestedFleet)?.name ||
                     selectedPartner.requestedFleet ||
                     t("vehicle-requested")}

@@ -31,7 +31,10 @@ export function PartnerDrawerFooter({
   if (!pending && !canSuspend) return null;
 
   return (
-    <div className="flex-none border-t border-border/60 bg-card/50 px-4 py-3 sm:px-6 sm:py-4">
+    <div
+      data-drawer-footer
+      className="riviera-drawer__footer flex-none border-t border-border/60"
+    >
       <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end sm:gap-2.5">
         {pending ? (
           <>

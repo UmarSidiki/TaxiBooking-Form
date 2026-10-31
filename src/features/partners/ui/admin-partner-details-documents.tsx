@@ -76,10 +76,13 @@ export function AdminPartnerDetailsDocuments({
               <div className="flex min-w-0 flex-1 items-center gap-3">
                 <FileText className="size-5 shrink-0 text-primary" />
                 <div className="min-w-0 flex-1">
-                  <p className="truncate font-medium capitalize">
+                  <p className="truncate font-medium capitalize" title={doc.type}>
                     {doc.type.replace("_", " ")}
                   </p>
-                  <p className="truncate text-sm text-muted-foreground">
+                  <p
+                    className="truncate text-sm text-muted-foreground"
+                    title={doc.fileName}
+                  >
                     {doc.fileName} • {(doc.fileSize / 1024).toFixed(0)} KB
                   </p>
                 </div>

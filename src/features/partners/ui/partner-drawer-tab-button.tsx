@@ -27,13 +27,14 @@ export function PartnerDrawerTabButton({
     <button
       type="button"
       onClick={() => onSelect(id)}
+      title={label}
       aria-selected={active}
       aria-current={active ? "true" : undefined}
       className={cn(
-        "flex items-center rounded-lg text-left text-sm font-medium transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+        "flex items-center rounded-lg text-start text-sm font-medium transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
         mobile
-          ? "min-h-11 shrink-0 gap-1.5 px-3 py-2 text-xs"
-          : "min-h-11 w-full gap-2.5 px-2.5 py-2",
+          ? "min-h-11 shrink-0 gap-1.5 ps-3 pe-3 py-2 text-xs"
+          : "min-h-11 w-full gap-2.5 ps-2.5 pe-2.5 py-2",
         active
           ? "bg-background text-foreground "
           : "text-muted-foreground hover:bg-background/60 hover:text-foreground"

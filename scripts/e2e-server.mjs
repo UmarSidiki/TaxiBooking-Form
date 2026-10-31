@@ -129,6 +129,71 @@ await db.collection("partners").insertOne({
   updatedAt: now,
 });
 
+// Long-field records for the drawer layout matrix. They are inserted after the
+// base records with a later createdAt so the admin lists show them first
+// (both APIs sort by createdAt descending); names, emails and phone numbers are
+// deliberately long so wrapping and truncation are exercised.
+const longPartnerId = new mongoose.Types.ObjectId();
+const longPartnerCreatedAt = new Date(now.getTime() + 60_000);
+await db.collection("partners").insertOne({
+  _id: longPartnerId,
+  name: "Aurelia-Montreux-International-Chauffeur-Services-and-Private-Aviation-Transfers-Sàrl",
+  email: "dispatch.operations.lausanne@extremely-long-domain-name-for-wrapping-tests.example",
+  password,
+  phone: "+41 79 123 4567 ext. 987654321 International",
+  address: "Avenue des Alpes 104, 1820 Montreux, Switzerland",
+  city: "Sankt-Gallen-Winkeln-Oberdorf",
+  country: "Swiss Confederation of Helvetic Regions",
+  status: "approved",
+  isActive: true,
+  registeredAt: longPartnerCreatedAt,
+  currentFleet: businessVehicleId,
+  fleetStatus: "none",
+  fleetRequests: [],
+  documents: [
+    {
+      _id: new mongoose.Types.ObjectId(),
+      type: "license",
+      fileName: "international-chauffeur-license-and-aviation-security-clearance.pdf",
+      fileData: FILE_SENTINEL,
+      mimeType: "application/pdf",
+      fileSize: FILE_SENTINEL.length,
+      status: "approved",
+      uploadedAt: longPartnerCreatedAt,
+    },
+    {
+      _id: new mongoose.Types.ObjectId(),
+      type: "insurance",
+      fileName: "fleet-commercial-passenger-liability-insurance-certificate.pdf",
+      fileData: FILE_SENTINEL,
+      mimeType: "application/pdf",
+      fileSize: FILE_SENTINEL.length,
+      status: "approved",
+      uploadedAt: longPartnerCreatedAt,
+    },
+  ],
+  totalEarnings: 123456.78,
+  onlineEarnings: 100000.5,
+  cashEarnings: 23456.28,
+  payoutBalance: 123456.78,
+  balance: 123456.78,
+  createdAt: longPartnerCreatedAt,
+  updatedAt: longPartnerCreatedAt,
+});
+
+const longDriverId = new mongoose.Types.ObjectId();
+const longDriverCreatedAt = new Date(now.getTime() + 60_000);
+await db.collection("drivers").insertOne({
+  _id: longDriverId,
+  name: "Maximiliana-Alexandrina von Bergström-Zimmermann",
+  email: "maximiliana.alexandrina.von.bergstrom-zimmermann.driver@extremely-long-domain-name-for-wrapping-tests.example",
+  password,
+  status: "approved",
+  isActive: true,
+  createdAt: longDriverCreatedAt,
+  updatedAt: longDriverCreatedAt,
+});
+
 await db.collection("promocodes").insertOne({ code: "E2E10", kind: "percent", amount: 10, active: true, expiresAt: null, maxUses: null, maxUsesPerCustomer: null, usedCount: 0, createdAt: now, updatedAt: now });
 await db.collection("settings").insertOne({
   companyName: "Lakeside Chauffeurs",

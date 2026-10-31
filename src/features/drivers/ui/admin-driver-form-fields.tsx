@@ -17,7 +17,7 @@ export function AdminDriverFormFields({
   const t = useTranslations();
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="drawer-grid">
       <div className="flex flex-col gap-2">
         <Label htmlFor="driver-name">{t("Driver.name")}</Label>
         <Input
@@ -49,7 +49,7 @@ export function AdminDriverFormFields({
           }
         />
       </div>
-      <div className="flex flex-col gap-2">
+      <div className="drawer-span-2 flex flex-col gap-2">
         <Label htmlFor="driver-password">{t("Driver.password")}</Label>
         <Input
           id="driver-password"

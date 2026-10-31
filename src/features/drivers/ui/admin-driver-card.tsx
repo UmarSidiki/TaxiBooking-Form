@@ -34,17 +34,24 @@ export function AdminDriverCard({
 
   return (
     <Card className={`desk-card border-border ${turnedOff ? "opacity-60" : ""}`}>
-      <CardHeader className="pb-3">
-        <div className="flex items-start justify-between gap-3">
+      <CardHeader className="grid-cols-1 pb-3">
+        <div className="flex min-w-0 items-start justify-between gap-3">
           <div className="min-w-0 flex-1">
-            <CardTitle className="truncate text-base text-foreground">{driver.name}</CardTitle>
-            <p className="truncate text-sm text-muted-foreground">{driver.email}</p>
+            <CardTitle className="truncate text-base text-foreground" title={driver.name}>
+              {driver.name}
+            </CardTitle>
+            <p className="truncate text-sm text-muted-foreground" title={driver.email}>
+              {driver.email}
+            </p>
           </div>
-          <div className="flex gap-1">
+          <div className="flex shrink-0 gap-1">
             <Button
               size="sm"
               variant="outline"
-              onClick={() => onEdit(driver)}
+              onClick={(event) => {
+                event.currentTarget.focus();
+                onEdit(driver);
+              }}
               className="size-11"
               aria-label={`${t("Driver.edit-driver")}: ${driver.name}`}
             >

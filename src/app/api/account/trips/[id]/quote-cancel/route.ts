@@ -1,9 +1,8 @@
-import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import { connectDB } from "@/shared/db";
 import { Booking } from "@/features/booking/model";
 import { Setting } from "@/features/settings/model";
-import { readCustomerToken } from "@/features/customers/lib/customer-token";
+import { readCustomerSession } from "@/features/customers/lib/customer-session";
 import { changeAllowed } from "@/features/customers/lib/customer-rides";
 import { zonedRideInstant } from "@/features/booking/lib/send-pickup-reminders";
 import { normalizeCancelPolicy, computeCancelFee } from "@/features/customers/lib/cancel-policy";
@@ -17,11 +16,7 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> }
 ) {
   await connectDB();
-  const jar = await cookies();
-  const email = readCustomerToken(
-    new URL(request.url).searchParams.get("token") ||
-      jar.get("customer_session")?.value
-  );
+  const email = await readCustomerSession(request);
   if (!email) {
     return NextResponse.json({ error: "unauthorized" }, { status: 401 });
   }

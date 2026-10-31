@@ -1,7 +1,6 @@
-import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import { readCustomerToken } from "@/features/customers/lib/customer-token";
+import { readCustomerSession } from "@/features/customers/lib/customer-session";
 import {
   confirmPhoneVerification,
   removeVerifiedPhone,
@@ -19,10 +18,7 @@ const codeSchema = z.strictObject({
 });
 
 async function emailFromRequest(request: Request) {
-  const jar = await cookies();
-  return readCustomerToken(
-    new URL(request.url).searchParams.get("token") || jar.get("customer_session")?.value,
-  );
+  return readCustomerSession(request);
 }
 
 export async function POST(request: Request) {

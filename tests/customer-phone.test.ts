@@ -1,19 +1,22 @@
 import { afterAll, beforeEach, describe, expect, it, vi } from "vitest";
 import mongoose from "mongoose";
-import { signCustomerToken } from "@/features/customers/lib/customer-token";
+import { createCustomerSession, customerSessionCookie } from "@/features/customers/lib/customer-session";
 import { sendCustomerOtp } from "@/features/customers/lib/customer-otp";
 import CustomerProfile from "@/features/customers/model/CustomerProfile";
 import { clearWhatsAppOutbox, readWhatsAppOutbox } from "@/features/settings/lib/whatsapp-outbox";
 import { createRide } from "./helpers/fixtures";
 
 const mocks = vi.hoisted(() => ({
-  token: null as string | null,
+  cookie: null as string | null,
+  cookieName: "cs",
   notify: vi.fn(),
 }));
 
 vi.mock("next/headers", () => ({
   cookies: async () =>
-    new Map(mocks.token ? [["customer_session", { name: "customer_session", value: mocks.token }]] : []),
+    new Map(
+      mocks.cookie ? [[mocks.cookieName, { name: mocks.cookieName, value: mocks.cookie }]] : [],
+    ),
 }));
 
 vi.mock("@/features/notifications/notify", () => ({ notify: mocks.notify }));
@@ -42,7 +45,8 @@ function lastCode() {
 beforeEach(() => {
   process.env.NEXTAUTH_SECRET = "test-secret";
   process.env.QA_MOCK_WHATSAPP = "1";
-  mocks.token = null;
+  mocks.cookieName = customerSessionCookie().name;
+  mocks.cookie = null;
   mocks.notify.mockReset();
   mocks.notify.mockImplementation(async (_event: string, ctx: { channels?: readonly string[] }) => ({
     ok: true,
@@ -61,7 +65,7 @@ describe("verified WhatsApp number", () => {
   });
 
   it("does not verify with a wrong code", async () => {
-    mocks.token = signCustomerToken("ada@example.com");
+    mocks.cookie = await createCustomerSession("ada@example.com");
     const { POST } = await import("@/app/api/account/phone/route");
     expect((await POST(request({ phone: "+14155552671" }))).status).toBe(200);
     const wrong = lastCode() === "000000" ? "111111" : "000000";
@@ -72,7 +76,7 @@ describe("verified WhatsApp number", () => {
   });
 
   it("sets verifiedPhone with the right code", async () => {
-    mocks.token = signCustomerToken("ada@example.com");
+    mocks.cookie = await createCustomerSession("ada@example.com");
     const { POST } = await import("@/app/api/account/phone/route");
     expect((await POST(request({ phone: "+14155552671" }))).status).toBe(200);
     const response = await POST(request({ code: lastCode() }));

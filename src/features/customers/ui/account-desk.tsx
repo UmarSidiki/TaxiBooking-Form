@@ -174,8 +174,8 @@ export function AccountDesk() {
     }
   };
 
-  const logout = () => {
-    document.cookie = "customer_session=; Max-Age=0; path=/";
+  const logout = async () => {
+    await fetch("/api/account/logout", { method: "POST" }).catch(() => null);
     setPhase("login");
     setUpcoming([]);
     setPast([]);

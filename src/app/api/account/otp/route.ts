@@ -2,7 +2,11 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { sendCustomerOtp, verifyCustomerOtp } from "@/features/customers/lib/customer-otp";
 import { padOtpSend } from "@/features/customers/lib/otp-send-timing";
-import { signCustomerToken } from "@/features/customers/lib/customer-token";
+import {
+  createCustomerSession,
+  customerSessionCookie,
+  sessionMeta,
+} from "@/features/customers/lib/customer-session";
 import { limitSensitive } from "@/shared/http/sensitive-limit";
 
 const emailSchema = z.string().trim().regex(/^[^\s@]+@[^\s@]+\.[^\s@]+$/);
@@ -31,16 +35,13 @@ export async function POST(request: Request) {
         { status: result.error === "rate_limited" ? 429 : 400 },
       );
     }
-    const token = signCustomerToken(result.email);
+    const id = await createCustomerSession(result.email, sessionMeta(request));
+    const cookie = customerSessionCookie();
     const response = NextResponse.json({ ok: true });
-    if (token) {
-      response.cookies.set("customer_session", token, {
-        httpOnly: true,
-        sameSite: "lax",
-        path: "/",
-        maxAge: 60 * 60 * 24 * 7,
-      });
-    }
+    response.cookies.set(cookie.name, id, {
+      ...cookie.options,
+      maxAge: 60 * 60 * 24 * 30,
+    });
     return response;
   }
 

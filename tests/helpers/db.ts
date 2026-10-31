@@ -13,6 +13,7 @@ import PromoRedemption from "@/features/pricing/model/PromoRedemption";
 import CustomerOtp from "@/features/customers/model/CustomerOtp";
 import CustomerPhoneOtp from "@/features/customers/model/CustomerPhoneOtp";
 import CustomerProfile from "@/features/customers/model/CustomerProfile";
+import CustomerSession from "@/features/customers/model/CustomerSession";
 import CorporateAccount from "@/features/corporate/model/CorporateAccount";
 import RecurringRide from "@/features/corporate/model/RecurringRide";
 import RideCharge from "@/features/invoices/model/RideCharge";
@@ -43,6 +44,7 @@ export async function resetTestDb() {
     CustomerOtp.deleteMany({}),
     CustomerPhoneOtp.deleteMany({}),
     CustomerProfile.deleteMany({}),
+    CustomerSession.deleteMany({}),
     CorporateAccount.deleteMany({}),
     RecurringRide.deleteMany({}),
     RideCharge.deleteMany({}),

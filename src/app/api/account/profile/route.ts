@@ -1,9 +1,8 @@
-import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { connectDB } from "@/shared/db";
 import CustomerProfile from "@/features/customers/model/CustomerProfile";
-import { readCustomerToken } from "@/features/customers/lib/customer-token";
+import { readCustomerSession } from "@/features/customers/lib/customer-session";
 
 const profileSchema = z.object({
   name: z.string().trim().max(120).optional(),
@@ -19,11 +18,7 @@ const profileSchema = z.object({
 });
 
 async function emailFromRequest(request: Request) {
-  const jar = await cookies();
-  return readCustomerToken(
-    new URL(request.url).searchParams.get("token") ||
-      jar.get("customer_session")?.value,
-  );
+  return readCustomerSession(request);
 }
 
 export async function GET(request: Request) {

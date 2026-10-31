@@ -2,9 +2,9 @@
 
 import { Button } from "@/shared/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/shared/ui/dialog";
-import { Badge } from "@/shared/ui/badge";
 import type { Ride } from "./account-types";
 import { formatPortalMoney } from "./portal-money";
+import { rebookHref } from "../lib/rebook-href";
 
 const TIMELINE = ["booked", "assigned", "on-the-way", "arrived", "completed"] as const;
 
@@ -35,7 +35,7 @@ export function TripDetailDialog({
   locale: string;
   onChange: () => void;
   onCancel: () => void;
-  settings: any;
+  settings: { companyPhone?: string; adminEmail?: string } | null;
 }) {
   if (!ride) return null;
   const completed = stepIndex(ride);
@@ -98,8 +98,8 @@ export function TripDetailDialog({
               </>
             ) : null}
             <a className="inline-flex h-11 items-center rounded-md border border-border px-4" href={`/api/invoice/${ride.tripId}`}>{t("invoice")}</a>
-            <Button className="h-11" type="button" variant="outline" onClick={() => downloadIcs(ride, t)}>{t("add-calendar")}</Button>
-            <a className="inline-flex h-11 items-center rounded-md border border-border px-4" href={rebookUrl(ride, locale)}>{t("rebook")}</a>
+            <Button className="h-11" type="button" variant="outline" onClick={() => downloadIcs(ride)}>{t("add-calendar")}</Button>
+            <a className="inline-flex h-11 items-center rounded-md border border-border px-4" href={rebookHref(ride, locale)}>{t("rebook")}</a>
           </div>
 
           {(settings?.companyPhone || settings?.adminEmail) ? (
@@ -122,19 +122,7 @@ export function TripDetailDialog({
   );
 }
 
-function rebookUrl(ride: Ride, locale: string) {
-  const params = new URLSearchParams();
-  if (ride.pickup) params.set("pickup", ride.pickup);
-  if (ride.dropoff) params.set("dropoff", ride.dropoff);
-  if (ride.date) params.set("date", ride.date);
-  if (ride.time) params.set("time", ride.time);
-  if (ride.passengers) params.set("passengers", String(ride.passengers));
-  if (ride.bookingType) params.set("bookingType", ride.bookingType);
-  if (ride.duration) params.set("duration", String(ride.duration));
-  return `/${locale}?${params.toString()}`;
-}
-
-function downloadIcs(ride: Ride, t: (k: string) => string) {
+function downloadIcs(ride: Ride) {
   const start = `${ride.date}T${ride.time}:00`;
   const lines = [
     "BEGIN:VCALENDAR",

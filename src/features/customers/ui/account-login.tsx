@@ -51,6 +51,7 @@ export function AccountLogin({
           name={name}
           tagline={t("brand-tagline")}
           logoUrl={logoUrl}
+          className="mb-[26px]"
         />
 
         <div className="sm:rounded-[var(--radius)] sm:border sm:border-[var(--rule)] sm:bg-[var(--sheet)] sm:p-[30px]">

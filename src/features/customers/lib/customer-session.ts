@@ -119,7 +119,13 @@ function cookieFromHeader(request: Request | undefined, name: string) {
 export async function readCustomerSession(request?: Request): Promise<CustomerSessionHit | null> {
   const jar = await cookieJar();
   const { name } = customerSessionCookie();
-  if (jar?.get(LEGACY_COOKIE)) jar.delete(LEGACY_COOKIE);
+  if (jar?.get(LEGACY_COOKIE)) {
+    try {
+      jar.delete(LEGACY_COOKIE);
+    } catch {
+      // Server Components can read cookies but not mutate them.
+    }
+  }
   const id = cookieFromHeader(request, name) ?? jar?.get(name)?.value;
   if (!id) return null;
   return touchSession(id);

@@ -6,16 +6,20 @@ export function AccountBrandPlate({
   name,
   tagline,
   logoUrl,
+  className = "",
 }: {
   name: string;
   tagline: string;
   logoUrl: string;
+  className?: string;
 }) {
   const [failedUrl, setFailedUrl] = useState<string | null>(null);
   const showLogo = Boolean(logoUrl) && failedUrl !== logoUrl;
 
   return (
-    <div className="mb-[26px] inline-flex h-[38px] items-center gap-[9px] rounded-[var(--radius)] border border-[var(--rule)] bg-[var(--sheet)] px-[10px] text-start">
+    <div
+      className={`inline-flex h-[38px] items-center gap-[9px] rounded-[var(--radius)] border border-[var(--rule)] bg-[var(--sheet)] px-[10px] text-start ${className}`}
+    >
       {showLogo ? (
         // eslint-disable-next-line @next/next/no-img-element
         <img
@@ -33,10 +37,10 @@ export function AccountBrandPlate({
             {name.charAt(0).toUpperCase()}
           </span>
           <span className="flex min-w-0 flex-col leading-none">
-            <b className="max-w-[210px] truncate text-[11.5px] font-semibold uppercase tracking-[0.18em]">
+            <b className="max-w-full truncate text-[11.5px] font-semibold uppercase tracking-[0.18em] md:max-w-[210px]">
               {name}
             </b>
-            <small className="mt-[3px] truncate text-[9px] font-medium uppercase tracking-[0.2em] text-[var(--ink2)]">
+            <small className="mt-[3px] max-w-full truncate text-[9px] font-medium uppercase tracking-[0.2em] text-[var(--ink2)]">
               {tagline}
             </small>
           </span>

@@ -72,7 +72,7 @@ export function AccountProfile({
         <Label htmlFor="profile-name">{t("name")}</Label>
         <Input id="profile-name" className="h-11 text-base" value={name} onChange={(e) => setName(e.target.value)} />
       </div>
-      <div>
+      <div id="phone" className="scroll-mt-24">
         <AccountPhone t={t} phone={profile?.verifiedPhone ?? ""} onSaved={(verifiedPhone) => onSaved({ ...(profile ?? {}), verifiedPhone })} />
       </div>
       <label className="flex items-center gap-2 text-sm">
@@ -92,9 +92,9 @@ export function AccountProfile({
         <Input id="addr-airport" className="h-11 text-base" value={airport} onChange={(e) => setAirport(e.target.value)} />
       </div>
       <div>
-        <Label>{t("language")}</Label>
+        <Label htmlFor="profile-language">{t("language")}</Label>
         <Select value={language} onValueChange={setLanguage}>
-          <SelectTrigger className="h-11">
+          <SelectTrigger id="profile-language" aria-label={t("language")} className="h-11">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>

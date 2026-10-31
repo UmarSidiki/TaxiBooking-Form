@@ -1,323 +1,95 @@
 "use client";
 
-import { useEffect, useReducer, useState } from "react";
-import { useLocale, useTranslations } from "next-intl";
-import { Button } from "@/shared/ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs";
 import { AccountLogin } from "./account-login";
-import { TripCard } from "./trip-card";
-import { TripDetailDialog } from "./trip-detail-dialog";
-import { ChangeTripDialog } from "./change-trip-dialog";
-import { CancelTripDialog } from "./cancel-trip-dialog";
-import { AccountProfile } from "./account-profile";
-import type { Ride, CustomerProfile } from "./account-types";
-import { setPortalMoneyFormat } from "./portal-money";
+import { AccountHome } from "./account-home";
+import type {
+  AccountRides,
+  CancelPolicyTier,
+  CustomerProfile,
+} from "./account-types";
+import type { GreetingKey } from "../lib/account-greeting";
 import {
-  accountLoginFeedbackReducer,
-  initialAccountLoginFeedback,
-} from "@/features/customers/lib/account-login-feedback";
-import { compactOtp } from "@/features/customers/lib/otp-entry";
+  EMPTY_ACCOUNT_RIDES,
+  useAccountDesk,
+} from "../hooks/use-account-desk";
 
 export function AccountDesk({
   expiredLink = false,
   prefilledEmail = "",
   brandName = "",
   logoUrl = "",
+  initialEmail = "",
+  initialRides = EMPTY_ACCOUNT_RIDES,
+  initialProfile = null,
+  initialGreeting = "afternoon",
+  currency = "EUR",
+  timezone = "Europe/Zurich",
+  companyPhone = "",
+  cancelPolicy = null,
 }: {
   expiredLink?: boolean;
   prefilledEmail?: string;
   brandName?: string;
   logoUrl?: string;
+  initialEmail?: string;
+  initialRides?: AccountRides;
+  initialProfile?: CustomerProfile | null;
+  initialGreeting?: GreetingKey;
+  currency?: string;
+  timezone?: string;
+  companyPhone?: string;
+  cancelPolicy?: CancelPolicyTier[] | null;
 }) {
-  const t = useTranslations("Account");
-  const locale = useLocale();
-  const [email, setEmail] = useState(prefilledEmail);
-  const [code, setCode] = useState("");
-  const [phase, setPhase] = useState<"login" | "code" | "trips">("login");
-  const [feedback, dispatchFeedback] = useReducer(
-    accountLoginFeedbackReducer,
-    initialAccountLoginFeedback,
-  );
-  const { notice, error, noBooking } = feedback;
-  const [upcoming, setUpcoming] = useState<Ride[]>([]);
-  const [past, setPast] = useState<Ride[]>([]);
-  const [canceled, setCanceled] = useState<Ride[]>([]);
-  const [tab, setTab] = useState("upcoming");
-  const [selected, setSelected] = useState<Ride | null>(null);
-  const [detailOpen, setDetailOpen] = useState(false);
-  const [changeOpen, setChangeOpen] = useState(false);
-  const [cancelOpen, setCancelOpen] = useState(false);
-  const [submitting, setSubmitting] = useState(false);
-  const [changeResult, setChangeResult] = useState<{ totalAmount?: number; payUrl?: string; refundRequestId?: string; currentTotal?: number; newTotal?: number; paid?: number; difference?: number; action?: "pay" | "refund" | "none" | "balance_due"; amount?: number } | null>(null);
-  const [profile, setProfile] = useState<CustomerProfile | null>(null);
-  const [settings, setSettings] = useState<any>(null);
-  const [customerName, setCustomerName] = useState("");
+  const desk = useAccountDesk({
+    expiredLink,
+    initialEmail,
+    prefilledEmail,
+    initialRides,
+    initialProfile,
+    initialGreeting,
+    currency,
+    timezone,
+  });
+  const { notice, error, noBooking } = desk.feedback;
 
-  const load = async () => {
-    const response = await fetch("/api/account/trips");
-    if (!response.ok) return false;
-    const data = await response.json();
-    setUpcoming(data.upcoming ?? []);
-    setPast(data.past ?? []);
-    setCanceled(data.canceled ?? []);
-    if (data.email) {
-      setEmail(data.email);
-      setCustomerName(data.email);
-    }
-    setPhase("trips");
-    return true;
-  };
-
-  useEffect(() => {
-    if (expiredLink) {
-      const url = new URL(window.location.href);
-      url.searchParams.delete("token");
-      url.searchParams.delete("link");
-      window.history.replaceState(null, "", url.toString());
-    }
-    fetch("/api/settings")
-      .then((r) => r.json())
-      .then((d) => {
-        setPortalMoneyFormat({ currency: d?.data?.stripeCurrency, locale });
-        setSettings(d?.data ?? null);
-      })
-      .catch(() => null);
-    void load().then((ok) => {
-      if (!ok) return;
-      fetch("/api/account/profile")
-        .then((r) => (r.ok ? r.json() : null))
-        .then((d) => {
-          setProfile(d?.profile ?? null);
-          if (d?.profile?.name) setCustomerName(d.profile.name);
-        })
-        .catch(() => null);
-    });
-  }, [expiredLink]);
-
-  const send = async () => {
-    dispatchFeedback({ type: "send-started" });
-    const response = await fetch("/api/account/otp", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email }),
-    });
-    const data = await response.json().catch(() => null);
-    if (!response.ok) {
-      dispatchFeedback({ type: "send-failed", error: t("send-failed") });
-      return;
-    }
-    if (data?.code === "no_booking") {
-      dispatchFeedback({ type: "send-no-booking" });
-      return;
-    }
-    dispatchFeedback({ type: "send-succeeded", notice: t("code-sent") });
-    setPhase("code");
-  };
-
-  const verify = async () => {
-    const response = await fetch("/api/account/otp", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, code: compactOtp(code) }),
-    });
-    if (!response.ok) {
-      dispatchFeedback({ type: "verify-failed", error: t("code-invalid") });
-      return;
-    }
-    dispatchFeedback({ type: "signed-in" });
-    await load();
-  };
-
-  const editEmail = (value: string) => {
-    setEmail(value);
-    dispatchFeedback({ type: "email-edited" });
-  };
-
-  const useDifferentEmail = () => {
-    setEmail("");
-    setCode("");
-    dispatchFeedback({ type: "use-different-email" });
-  };
-
-  const openDetail = (ride: Ride) => {
-    setSelected(ride);
-    setDetailOpen(true);
-  };
-
-  const openChange = () => {
-    setChangeResult(null);
-    setChangeOpen(true);
-    setDetailOpen(false);
-  };
-
-  const openCancel = () => {
-    setCancelOpen(true);
-    setDetailOpen(false);
-  };
-
-  const handleChange = async (data: { date: string; time: string; passengers: number; childSeats: number; babySeats: number; meetAndGreet: boolean; pickup?: string; dropoff?: string; selectedVehicle?: string }) => {
-    if (!selected) return;
-    setSubmitting(true);
-    try {
-      const response = await fetch(`/api/account/trips/${selected.tripId}`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ action: "change", ...data }),
-      });
-      const body = await response.json().catch(() => null);
-      if (response.ok && body?.ok) {
-        setChangeResult({ totalAmount: body.totalAmount, payUrl: body.payUrl, refundRequestId: body.refundRequestId, currentTotal: body.currentTotal, newTotal: body.newTotal, paid: body.paid, difference: body.difference, action: body.action, amount: body.amount } as any);
-        dispatchFeedback({ type: "set-notice", notice: t("updated") });
-        if (body.payUrl) {
-          window.location.href = body.payUrl;
-          return;
-        }
-        await load();
-      } else {
-        dispatchFeedback({ type: "set-notice", notice: t("cutoff") });
-      }
-    } finally {
-      setSubmitting(false);
-    }
-  };
-
-  const handleCancel = async () => {
-    if (!selected) return;
-    setSubmitting(true);
-    try {
-      const response = await fetch(`/api/account/trips/${selected.tripId}`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ action: "cancel" }),
-      });
-      if (response.ok) {
-        dispatchFeedback({ type: "set-notice", notice: t("updated") });
-        setCancelOpen(false);
-        setSelected(null);
-        await load();
-      } else {
-        dispatchFeedback({ type: "set-notice", notice: t("cutoff") });
-      }
-    } finally {
-      setSubmitting(false);
-    }
-  };
-
-  const resetToLogin = () => {
-    setPhase("login");
-    setUpcoming([]);
-    setPast([]);
-    setCanceled([]);
-    setProfile(null);
-    setCustomerName("");
-    setEmail("");
-    setCode("");
-    dispatchFeedback({ type: "reset" });
-  };
-
-  const logout = async () => {
-    await fetch("/api/account/logout", { method: "POST" }).catch(() => null);
-    resetToLogin();
-  };
-
-  const signOutEverywhere = async () => {
-    await fetch("/api/account/sessions/revoke-all", { method: "POST" }).catch(() => null);
-    resetToLogin();
-  };
-
-  if (phase !== "trips") {
+  if (desk.phase !== "trips") {
     return (
       <AccountLogin
-        t={t as any}
-        email={email}
-        onEmailChange={editEmail}
-        code={code}
-        setCode={setCode}
-        phase={phase === "code" ? "code" : "login"}
+        t={desk.t}
+        email={desk.email}
+        onEmailChange={desk.editEmail}
+        code={desk.code}
+        setCode={desk.setCode}
+        phase={desk.phase === "code" ? "code" : "login"}
         expired={expiredLink}
         noBooking={noBooking}
         error={error}
         notice={notice}
         brandName={brandName}
         logoUrl={logoUrl}
-        onSend={send}
-        onVerify={verify}
-        onUseDifferentEmail={useDifferentEmail}
+        onSend={desk.send}
+        onVerify={desk.verify}
+        onUseDifferentEmail={desk.useDifferentEmail}
       />
     );
   }
 
-  const listForTab = tab === "upcoming" ? upcoming : tab === "past" ? past : canceled;
-
   return (
-    <div className="mx-auto flex max-w-3xl flex-col gap-6 p-4 pb-24">
-      <header className="flex items-center justify-between gap-2">
-        <div>
-          <h1 className="text-2xl font-semibold">{t("title")}</h1>
-          {customerName ? <p className="text-sm text-muted-foreground">{customerName}</p> : null}
-        </div>
-        <div className="flex flex-wrap items-center justify-end gap-2">
-          <Button className="h-11" type="button" variant="outline" onClick={signOutEverywhere}>
-            {t("sign-out-everywhere")}
-          </Button>
-          <Button className="h-11" type="button" variant="outline" onClick={logout}>{t("logout")}</Button>
-        </div>
-      </header>
-      {notice ? <p role="status" className="text-sm">{notice}</p> : null}
-
-      <Tabs value={tab} onValueChange={setTab}>
-        <TabsList className="flex h-auto w-full justify-start gap-1 overflow-x-auto rounded-xl border border-border/60 bg-muted/40 p-1">
-          <TabsTrigger value="upcoming" className="h-11">{t("upcoming")}</TabsTrigger>
-          <TabsTrigger value="past" className="h-11">{t("past")}</TabsTrigger>
-          <TabsTrigger value="canceled" className="h-11">{t("cancelled")}</TabsTrigger>
-        </TabsList>
-        <TabsContent value={tab} className="mt-3">
-          {listForTab.length === 0 ? (
-            <p className="text-sm text-muted-foreground">
-              {tab === "upcoming" ? t("empty-upcoming") : tab === "past" ? t("empty-past") : t("empty-canceled")}
-            </p>
-          ) : (
-            listForTab.map((ride) => (
-              <TripCard key={ride.tripId} ride={ride} t={t as any} onView={() => openDetail(ride)} />
-            ))
-          )}
-        </TabsContent>
-      </Tabs>
-
-      <section className="rounded-lg border border-border p-4">
-        <AccountProfile t={t as any} profile={profile} onSaved={(p) => setProfile(p)} />
-      </section>
-
-      <TripDetailDialog
-        open={detailOpen}
-        onOpenChange={setDetailOpen}
-        ride={selected}
-        t={t as any}
-        locale={locale}
-        onChange={openChange}
-        onCancel={openCancel}
-        settings={settings}
-      />
-
-      <ChangeTripDialog
-        open={changeOpen}
-        onOpenChange={setChangeOpen}
-        ride={selected}
-        t={t as any}
-        onSubmit={handleChange}
-        submitting={submitting}
-        result={changeResult}
-      />
-
-      <CancelTripDialog
-        open={cancelOpen}
-        onOpenChange={setCancelOpen}
-        ride={selected}
-        t={t as any}
-        locale={locale}
-        onConfirm={handleCancel}
-        submitting={submitting}
-      />
-    </div>
+    <AccountHome
+      email={desk.email || initialEmail}
+      profile={desk.profile}
+      greeting={desk.greeting}
+      rides={desk.rides}
+      locale={desk.locale}
+      currency={currency}
+      companyPhone={companyPhone}
+      cancelPolicy={cancelPolicy}
+      brandName={brandName}
+      logoUrl={logoUrl}
+      onRefresh={desk.refresh}
+      onProfileSaved={desk.setProfile}
+      onLogout={desk.logout}
+      onSignOutEverywhere={desk.signOutEverywhere}
+    />
   );
 }

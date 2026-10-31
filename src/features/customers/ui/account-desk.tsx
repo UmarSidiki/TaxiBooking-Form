@@ -67,6 +67,7 @@ export function AccountDesk({
         notice={notice}
         brandName={brandName}
         logoUrl={logoUrl}
+        whatsapp={desk.whatsapp}
         onSend={desk.send}
         onVerify={desk.verify}
         onUseDifferentEmail={desk.useDifferentEmail}

@@ -2690,7 +2690,20 @@
     "past-empty-copy": "Ihre abgeschlossenen Fahrten und Belege erscheinen hier.",
     "ride-meta": "{vehicle} · Fahrt {id}",
     "security": "Sicherheit",
-    "security-copy": "Sie sind auf diesem Gerät angemeldet. Melden Sie sich überall ab, um alle Sitzungen zu beenden, auch E-Mail-Links."
+    "security-copy": "Sie sind auf diesem Gerät angemeldet. Melden Sie sich überall ab, um alle Sitzungen zu beenden, auch E-Mail-Links.",
+    "whatsapp-sign-in": "Mit WhatsApp anmelden",
+    "whatsapp-title": "Mit WhatsApp anmelden",
+    "whatsapp-help": "Gib die Mobilnummer ein, die du bei uns bestätigt hast. Wir senden dir einen sechsstelligen Code per WhatsApp.",
+    "whatsapp-calling-code": "Ländervorwahl",
+    "whatsapp-phone": "WhatsApp-Nummer",
+    "whatsapp-phone-placeholder": "79 123 45 67",
+    "whatsapp-send-code": "Code per WhatsApp senden",
+    "whatsapp-sending": "Wird gesendet…",
+    "whatsapp-not-verified": "Wir konnten keine verifizierte WhatsApp-Nummer finden. Melde dich stattdessen mit deiner E-Mail-Adresse an.",
+    "whatsapp-code-title": "Prüfe dein WhatsApp",
+    "whatsapp-code-help": "Wir haben einen sechsstelligen Code an {phone} gesendet.",
+    "sign-in-with-email": "Stattdessen mit E-Mail anmelden",
+    "whatsapp-send-failed": "Der Code konnte nicht gesendet werden."
   },
   "Emails": {
     "brand_fallback": "Buchung",

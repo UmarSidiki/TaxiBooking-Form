@@ -28,15 +28,15 @@ export async function applyDriverRideAction(
   );
   if (updated) {
     if (action.action === "completed") {
-      void import("@/features/invoices/lib/send-invoice-notice").then((mod) =>
-        mod.sendInvoiceNotice(updated.tripId),
-      );
+      void import("@/features/invoices/lib/send-invoice-notice")
+        .then((mod) => mod.sendInvoiceNotice(updated.tripId))
+        .catch(() => undefined);
     }
     const rideEvent = action.action === "started" ? "on_the_way" : action.action === "arrived" ? "arrived" : action.action === "completed" ? "completed" : null;
     if (rideEvent) {
-      void import("@/features/customers/lib/send-customer-ride-update").then((mod) =>
-        mod.sendCustomerRideUpdate(String(updated._id), rideEvent),
-      );
+      void import("@/features/customers/lib/send-customer-ride-update")
+        .then((mod) => mod.sendCustomerRideUpdate(String(updated._id), rideEvent))
+        .catch(() => undefined);
     }
     await recordRideActivity({
       bookingId: rideId,

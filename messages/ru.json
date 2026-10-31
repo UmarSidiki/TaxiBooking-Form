@@ -2690,7 +2690,20 @@
     "past-empty-copy": "Завершённые поездки и квитанции появятся здесь.",
     "ride-meta": "{vehicle} · Поездка {id}",
     "security": "Безопасность",
-    "security-copy": "Вы вошли на этом устройстве. Выйдите на всех устройствах, чтобы закрыть все сеансы, включая ссылки из писем."
+    "security-copy": "Вы вошли на этом устройстве. Выйдите на всех устройствах, чтобы закрыть все сеансы, включая ссылки из писем.",
+    "whatsapp-sign-in": "Вход через WhatsApp",
+    "whatsapp-title": "Вход через WhatsApp",
+    "whatsapp-help": "Введите номер мобильного телефона, который вы подтвердили у нас. Мы отправим шестизначный код в WhatsApp.",
+    "whatsapp-calling-code": "Код страны",
+    "whatsapp-phone": "Номер WhatsApp",
+    "whatsapp-phone-placeholder": "79 123 45 67",
+    "whatsapp-send-code": "Отправить код в WhatsApp",
+    "whatsapp-sending": "Отправка…",
+    "whatsapp-not-verified": "Мы не нашли подтверждённый номер WhatsApp. Войдите с помощью электронной почты.",
+    "whatsapp-code-title": "Проверьте WhatsApp",
+    "whatsapp-code-help": "Мы отправили шестизначный код на {phone}.",
+    "sign-in-with-email": "Войти с помощью электронной почты",
+    "whatsapp-send-failed": "Не удалось отправить код."
   },
   "Emails": {
     "brand_fallback": "Бронирование",

@@ -2690,7 +2690,20 @@
     "past-empty-copy": "Tus viajes completados y recibos aparecerán aquí.",
     "ride-meta": "{vehicle} · Viaje {id}",
     "security": "Seguridad",
-    "security-copy": "Has iniciado sesión en este dispositivo. Cierra la sesión en todas partes para cerrar todas las sesiones, incluidos los enlaces de correo."
+    "security-copy": "Has iniciado sesión en este dispositivo. Cierra la sesión en todas partes para cerrar todas las sesiones, incluidos los enlaces de correo.",
+    "whatsapp-sign-in": "Iniciar sesión con WhatsApp",
+    "whatsapp-title": "Inicia sesión con WhatsApp",
+    "whatsapp-help": "Introduce el número de móvil que verificaste con nosotros. Te enviaremos un código de seis dígitos por WhatsApp.",
+    "whatsapp-calling-code": "Prefijo",
+    "whatsapp-phone": "Número de WhatsApp",
+    "whatsapp-phone-placeholder": "79 123 45 67",
+    "whatsapp-send-code": "Envía el código por WhatsApp",
+    "whatsapp-sending": "Enviando…",
+    "whatsapp-not-verified": "No encontramos un número de WhatsApp verificado. Inicia sesión con tu correo electrónico.",
+    "whatsapp-code-title": "Revisa tu WhatsApp",
+    "whatsapp-code-help": "Enviamos un código de seis dígitos al {phone}.",
+    "sign-in-with-email": "Inicia sesión con tu correo electrónico",
+    "whatsapp-send-failed": "No se pudo enviar el código."
   },
   "Emails": {
     "brand_fallback": "Reserva",

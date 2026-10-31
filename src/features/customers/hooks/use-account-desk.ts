@@ -14,6 +14,7 @@ import {
   initialAccountLoginFeedback,
 } from "../lib/account-login-feedback";
 import { compactOtp } from "../lib/otp-entry";
+import { useWhatsAppLogin } from "./use-whatsapp-login";
 
 export const EMPTY_ACCOUNT_RIDES: AccountRides = {
   upcoming: [],
@@ -84,6 +85,20 @@ export function useAccountDesk({
     setProfile(data?.profile ?? null);
   };
 
+  const completeSignIn = async () => {
+    dispatchFeedback({ type: "signed-in" });
+    if (!(await refresh())) {
+      dispatchFeedback({ type: "verify-failed", error: t("code-invalid") });
+      return false;
+    }
+    await loadProfile();
+    setGreeting(greetingKeyInTimeZone(new Date(), timezone));
+    setPhase("trips");
+    return true;
+  };
+
+  const whatsapp = useWhatsAppLogin({ t, onSignedIn: completeSignIn });
+
   const send = async () => {
     dispatchFeedback({ type: "send-started" });
     const response = await fetch("/api/account/otp", {
@@ -114,14 +129,7 @@ export function useAccountDesk({
       dispatchFeedback({ type: "verify-failed", error: t("code-invalid") });
       return;
     }
-    dispatchFeedback({ type: "signed-in" });
-    if (!(await refresh())) {
-      dispatchFeedback({ type: "verify-failed", error: t("code-invalid") });
-      return;
-    }
-    await loadProfile();
-    setGreeting(greetingKeyInTimeZone(new Date(), timezone));
-    setPhase("trips");
+    await completeSignIn();
   };
 
   const editEmail = (value: string) => {
@@ -170,6 +178,7 @@ export function useAccountDesk({
     profile,
     setProfile,
     greeting,
+    whatsapp,
     refresh,
     send,
     verify,

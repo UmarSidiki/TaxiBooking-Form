@@ -5,6 +5,8 @@ import { type useTranslations } from "next-intl";
 import { AccountBrandPlate, AccountLoginFooter } from "./account-login-brand";
 import { AccountLoginCodeStep } from "./account-login-code-step";
 import { AccountLoginEmailStep } from "./account-login-email-step";
+import { AccountLoginWhatsAppStep } from "./account-login-whatsapp-step";
+import type { WhatsAppLogin } from "../hooks/use-whatsapp-login";
 
 type T = ReturnType<typeof useTranslations>;
 
@@ -21,6 +23,7 @@ export function AccountLogin({
   notice,
   brandName,
   logoUrl,
+  whatsapp,
   onSend,
   onVerify,
   onUseDifferentEmail,
@@ -37,6 +40,7 @@ export function AccountLogin({
   notice: string | null;
   brandName: string;
   logoUrl: string;
+  whatsapp: WhatsAppLogin;
   onSend: () => void;
   onVerify: () => void;
   onUseDifferentEmail: () => void;
@@ -55,10 +59,36 @@ export function AccountLogin({
         />
 
         <div className="sm:rounded-[var(--radius)] sm:border sm:border-[var(--rule)] sm:bg-[var(--sheet)] sm:p-[30px]">
-          {phase === "code" ? (
+          {whatsapp.mode === "code" ? (
             <AccountLoginCodeStep
               t={t}
-              email={email}
+              recipient={whatsapp.phoneDisplay}
+              channel="whatsapp"
+              code={whatsapp.code}
+              setCode={whatsapp.setCode}
+              error={whatsapp.error}
+              notice={whatsapp.notice}
+              onVerify={whatsapp.verify}
+              onUseDifferentEmail={whatsapp.backToEmail}
+            />
+          ) : whatsapp.mode === "phone" ? (
+            <AccountLoginWhatsAppStep
+              t={t}
+              phone={whatsapp.phone}
+              callingCode={whatsapp.callingCode}
+              onPhoneChange={whatsapp.setPhone}
+              onCallingCodeChange={whatsapp.setCallingCode}
+              onSend={whatsapp.send}
+              notVerified={whatsapp.notVerified}
+              busy={whatsapp.busy}
+              error={whatsapp.error}
+              onBackToEmail={whatsapp.backToEmail}
+            />
+          ) : phase === "code" ? (
+            <AccountLoginCodeStep
+              t={t}
+              recipient={email}
+              channel="email"
               code={code}
               setCode={setCode}
               error={error}
@@ -72,6 +102,7 @@ export function AccountLogin({
               email={email}
               onEmailChange={onEmailChange}
               onSend={onSend}
+              onWhatsApp={whatsapp.open}
               noBooking={noBooking}
               expired={expired}
               error={error}

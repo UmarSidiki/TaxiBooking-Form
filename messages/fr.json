@@ -2690,7 +2690,20 @@
     "past-empty-copy": "Vos trajets terminés et vos reçus apparaîtront ici.",
     "ride-meta": "{vehicle} · Course {id}",
     "security": "Sécurité",
-    "security-copy": "Vous êtes connecté sur cet appareil. Déconnectez-vous partout pour fermer toutes les sessions, y compris les liens reçus par e-mail."
+    "security-copy": "Vous êtes connecté sur cet appareil. Déconnectez-vous partout pour fermer toutes les sessions, y compris les liens reçus par e-mail.",
+    "whatsapp-sign-in": "Connexion via WhatsApp",
+    "whatsapp-title": "Connexion avec WhatsApp",
+    "whatsapp-help": "Saisissez le numéro de mobile que vous avez vérifié chez nous. Nous vous enverrons un code à six chiffres sur WhatsApp.",
+    "whatsapp-calling-code": "Indicatif",
+    "whatsapp-phone": "Numéro WhatsApp",
+    "whatsapp-phone-placeholder": "79 123 45 67",
+    "whatsapp-send-code": "Envoyer le code sur WhatsApp",
+    "whatsapp-sending": "Envoi…",
+    "whatsapp-not-verified": "Nous n’avons pas trouvé de numéro WhatsApp vérifié. Connectez-vous plutôt avec votre e-mail.",
+    "whatsapp-code-title": "Vérifiez votre WhatsApp",
+    "whatsapp-code-help": "Nous avons envoyé un code à six chiffres au {phone}.",
+    "sign-in-with-email": "Connectez-vous plutôt avec votre e-mail",
+    "whatsapp-send-failed": "Impossible d’envoyer le code."
   },
   "Emails": {
     "brand_fallback": "Réservation",

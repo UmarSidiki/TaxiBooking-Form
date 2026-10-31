@@ -9,7 +9,8 @@ type T = ReturnType<typeof useTranslations>;
 
 export function AccountLoginCodeStep({
   t,
-  email,
+  recipient,
+  channel,
   code,
   setCode,
   error,
@@ -18,7 +19,8 @@ export function AccountLoginCodeStep({
   onUseDifferentEmail,
 }: {
   t: T;
-  email: string;
+  recipient: string;
+  channel: "email" | "whatsapp";
   code: string;
   setCode: (value: string) => void;
   error: string | null;
@@ -26,13 +28,21 @@ export function AccountLoginCodeStep({
   onVerify: () => void;
   onUseDifferentEmail: () => void;
 }) {
+  const title = channel === "whatsapp" ? t("whatsapp-code-title") : t("code-title");
+  const help =
+    channel === "whatsapp"
+      ? t("whatsapp-code-help", { phone: recipient })
+      : t("code-help", { email: recipient });
+  const switchLabel =
+    channel === "whatsapp" ? t("sign-in-with-email") : t("use-different-email");
+
   return (
     <>
       <h1 className="mb-[6px] text-[25px] font-semibold leading-[1.15] tracking-[-0.025em]">
-        {t("code-title")}
+        {title}
       </h1>
       <p className="mb-6 text-[13.5px] leading-[1.55] text-[var(--ink2)]">
-        {t("code-help", { email })}
+        {help}
       </p>
 
       {error ? (
@@ -72,7 +82,7 @@ export function AccountLoginCodeStep({
           onClick={onUseDifferentEmail}
           className="inline-flex min-h-11 items-center text-[var(--link)]"
         >
-          {t("use-different-email")}
+          {switchLabel}
         </button>
       </div>
     </>

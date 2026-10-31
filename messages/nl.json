@@ -2690,7 +2690,20 @@
     "past-empty-copy": "Je afgeronde ritten en bonnen verschijnen hier.",
     "ride-meta": "{vehicle} · Rit {id}",
     "security": "Beveiliging",
-    "security-copy": "Je bent ingelogd op dit apparaat. Log overal uit om alle sessies te sluiten, ook e-maillinks."
+    "security-copy": "Je bent ingelogd op dit apparaat. Log overal uit om alle sessies te sluiten, ook e-maillinks.",
+    "whatsapp-sign-in": "Inloggen via WhatsApp",
+    "whatsapp-title": "Inloggen met WhatsApp",
+    "whatsapp-help": "Voer het mobiele nummer in dat je bij ons hebt geverifieerd. We sturen je een zescijferige code via WhatsApp.",
+    "whatsapp-calling-code": "Landcode",
+    "whatsapp-phone": "WhatsApp-nummer",
+    "whatsapp-phone-placeholder": "79 123 45 67",
+    "whatsapp-send-code": "Code via WhatsApp versturen",
+    "whatsapp-sending": "Versturen…",
+    "whatsapp-not-verified": "We konden geen geverifieerd WhatsApp-nummer vinden. Log in met je e-mailadres.",
+    "whatsapp-code-title": "Controleer je WhatsApp",
+    "whatsapp-code-help": "We hebben een zescijferige code naar {phone} gestuurd.",
+    "sign-in-with-email": "Log in met je e-mailadres",
+    "whatsapp-send-failed": "De code kon niet worden verstuurd."
   },
   "Emails": {
     "brand_fallback": "Boeking",

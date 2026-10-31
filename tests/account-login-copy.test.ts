@@ -24,6 +24,19 @@ const REQUIRED_KEYS = [
   "use-different-email",
   "link-expired",
   "copyright",
+  "whatsapp-sign-in",
+  "whatsapp-title",
+  "whatsapp-help",
+  "whatsapp-calling-code",
+  "whatsapp-phone",
+  "whatsapp-phone-placeholder",
+  "whatsapp-send-code",
+  "whatsapp-sending",
+  "whatsapp-not-verified",
+  "whatsapp-code-title",
+  "whatsapp-code-help",
+  "sign-in-with-email",
+  "whatsapp-send-failed",
 ] as const;
 
 type AccountMessages = Record<string, string>;
@@ -50,6 +63,7 @@ describe("account login copy", () => {
       const account = accountMessages(locale);
 
       expect(account["code-help"]).toContain("{email}");
+      expect(account["whatsapp-code-help"]).toContain("{phone}");
       expect(account["code-digit-label"]).toContain("{number}");
       expect(account["copyright"]).toContain("{year}");
       expect(account["copyright"]).toContain("{name}");

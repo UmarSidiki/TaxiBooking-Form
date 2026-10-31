@@ -2690,7 +2690,20 @@
     "past-empty-copy": "Le corse completate e le ricevute appariranno qui.",
     "ride-meta": "{vehicle} · Corsa {id}",
     "security": "Sicurezza",
-    "security-copy": "Hai effettuato l'accesso su questo dispositivo. Esci ovunque per chiudere tutte le sessioni, inclusi i link via email."
+    "security-copy": "Hai effettuato l'accesso su questo dispositivo. Esci ovunque per chiudere tutte le sessioni, inclusi i link via email.",
+    "whatsapp-sign-in": "Accedi con WhatsApp",
+    "whatsapp-title": "Accedi con WhatsApp",
+    "whatsapp-help": "Inserisci il numero di cellulare che hai verificato con noi. Ti invieremo un codice a sei cifre su WhatsApp.",
+    "whatsapp-calling-code": "Prefisso",
+    "whatsapp-phone": "Numero WhatsApp",
+    "whatsapp-phone-placeholder": "79 123 45 67",
+    "whatsapp-send-code": "Invia il codice su WhatsApp",
+    "whatsapp-sending": "Invio…",
+    "whatsapp-not-verified": "Non abbiamo trovato un numero WhatsApp verificato. Accedi invece con la tua email.",
+    "whatsapp-code-title": "Controlla WhatsApp",
+    "whatsapp-code-help": "Abbiamo inviato un codice a sei cifre a {phone}.",
+    "sign-in-with-email": "Accedi invece con la tua email",
+    "whatsapp-send-failed": "Impossibile inviare il codice."
   },
   "Emails": {
     "brand_fallback": "Prenotazione",

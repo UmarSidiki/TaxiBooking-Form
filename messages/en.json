@@ -2690,7 +2690,20 @@
     "past-empty-copy": "Your completed trips and receipts will appear here.",
     "ride-meta": "{vehicle} · Trip {id}",
     "security": "Security",
-    "security-copy": "You're signed in on this device. Sign out everywhere to close every session, including email links."
+    "security-copy": "You're signed in on this device. Sign out everywhere to close every session, including email links.",
+    "whatsapp-sign-in": "Login via WhatsApp",
+    "whatsapp-title": "Sign in with WhatsApp",
+    "whatsapp-help": "Enter the mobile number you verified with us. We'll send a six-digit code on WhatsApp.",
+    "whatsapp-calling-code": "Calling code",
+    "whatsapp-phone": "WhatsApp number",
+    "whatsapp-phone-placeholder": "79 123 45 67",
+    "whatsapp-send-code": "Send code on WhatsApp",
+    "whatsapp-sending": "Sending…",
+    "whatsapp-not-verified": "We could not find a verified WhatsApp number. Sign in with your email instead.",
+    "whatsapp-code-title": "Check your WhatsApp",
+    "whatsapp-code-help": "We sent a six-digit code to {phone}.",
+    "sign-in-with-email": "Sign in with your email instead",
+    "whatsapp-send-failed": "Could not send the code."
   },
   "Emails": {
     "brand_fallback": "Booking",

@@ -13,6 +13,7 @@ export function AccountLoginEmailStep({
   email,
   onEmailChange,
   onSend,
+  onWhatsApp,
   noBooking,
   expired,
   error,
@@ -22,6 +23,7 @@ export function AccountLoginEmailStep({
   email: string;
   onEmailChange: (value: string) => void;
   onSend: () => void;
+  onWhatsApp: () => void;
   noBooking: boolean;
   expired: boolean;
   error: string | null;
@@ -87,8 +89,16 @@ export function AccountLoginEmailStep({
         )}
       </form>
 
-      {/* Reserved slot for the secondary sign-in action (WhatsApp). */}
-      <div data-account-secondary-action="" />
+      <div data-account-secondary-action="">
+        <Button
+          type="button"
+          variant="outline"
+          className="mt-2 h-11 w-full rounded-[var(--radius)] border-[var(--rule2)] bg-transparent text-[var(--ink)] hover:bg-[var(--well)] hover:text-[var(--ink)]"
+          onClick={onWhatsApp}
+        >
+          {t("whatsapp-sign-in")}
+        </Button>
+      </div>
 
       <p className="mt-5 text-[11.5px] leading-[1.6] text-[var(--ink2)]">
         {t("sign-in-note")}

@@ -2786,6 +2786,17 @@
     "payment_pay_on_pickup": "Betalen bij ophalen",
     "payment_status_pay_on_pickup": "Betalen bij ophalen"
   },
+  "RideStatus": {
+    "title": "Rit {tripId}",
+    "expired-title": "Link verlopen",
+    "not-found": "Rit niet gevonden.",
+    "hourly": "Per uur",
+    "status": "Status: {status}",
+    "pickup": "Ophalen op {date} om {time}. Dit is de geplande tijd, geen live locatie.",
+    "driver": "Chauffeur: {name}",
+    "no-driver": "Chauffeur nog niet toegewezen.",
+    "car": "Auto: {name}"
+  },
   "Riviera": {
     "pickup": "Ophalen",
     "dropoff": "Bestemming",

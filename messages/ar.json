@@ -2786,6 +2786,17 @@
     "payment_pay_on_pickup": "الدفع عند الالتقاط",
     "payment_status_pay_on_pickup": "الدفع عند الالتقاط"
   },
+  "RideStatus": {
+    "title": "الرحلة {tripId}",
+    "expired-title": "انتهت صلاحية الرابط",
+    "not-found": "لم يتم العثور على الرحلة.",
+    "hourly": "بالساعة",
+    "status": "الحالة: {status}",
+    "pickup": "الاصطحاب في {date} الساعة {time}. هذا هو الوقت المحدد، وليس موقعًا مباشرًا.",
+    "driver": "السائق: {name}",
+    "no-driver": "لم يتم تعيين سائق بعد.",
+    "car": "السيارة: {name}"
+  },
   "Riviera": {
     "pickup": "نقطة الانطلاق",
     "dropoff": "الوجهة",

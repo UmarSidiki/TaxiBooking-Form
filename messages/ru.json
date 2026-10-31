@@ -2786,6 +2786,17 @@
     "payment_pay_on_pickup": "Оплата при посадке",
     "payment_status_pay_on_pickup": "Оплата при посадке"
   },
+  "RideStatus": {
+    "title": "Поездка {tripId}",
+    "expired-title": "Ссылка истекла",
+    "not-found": "Поездка не найдена.",
+    "hourly": "Почасовой",
+    "status": "Статус: {status}",
+    "pickup": "Подача {date} в {time}. Это запланированное время, а не местоположение в реальном времени.",
+    "driver": "Водитель: {name}",
+    "no-driver": "Водитель ещё не назначен.",
+    "car": "Автомобиль: {name}"
+  },
   "Riviera": {
     "pickup": "Подача",
     "dropoff": "Назначение",

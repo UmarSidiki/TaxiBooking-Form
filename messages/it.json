@@ -2786,6 +2786,17 @@
     "payment_pay_on_pickup": "Pagamento al ritiro",
     "payment_status_pay_on_pickup": "Pagamento al ritiro"
   },
+  "RideStatus": {
+    "title": "Corsa {tripId}",
+    "expired-title": "Link scaduto",
+    "not-found": "Corsa non trovata.",
+    "hourly": "A ore",
+    "status": "Stato: {status}",
+    "pickup": "Prelievo il {date} alle {time}. È l'orario programmato, non una posizione in tempo reale.",
+    "driver": "Autista: {name}",
+    "no-driver": "Autista non ancora assegnato.",
+    "car": "Auto: {name}"
+  },
   "Riviera": {
     "pickup": "Prelievo",
     "dropoff": "Destinazione",

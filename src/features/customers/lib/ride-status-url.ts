@@ -1,9 +1,12 @@
 import { absoluteHttpBase } from "@/features/booking/lib/booking-mail-url";
 import { resolvePublicUrl } from "@/features/settings/lib/public-url";
 import {
-  readRideStatusTokenPayload,
-  signRideStatusToken,
-} from "@/features/customers/lib/ride-status-token";
+  readCustomerToken,
+  signCustomerToken,
+} from "@/features/customers/lib/customer-token";
+
+const RIDE_STATUS_PURPOSE = "ride_status";
+const RIDE_STATUS_TTL_SECONDS = 60 * 60 * 24 * 14;
 
 export async function rideStatusUrl(
   locale: string,
@@ -11,14 +14,16 @@ export async function rideStatusUrl(
   baseUrl?: string | null,
 ): Promise<string> {
   const base = absoluteHttpBase(baseUrl ?? (await resolvePublicUrl()));
-  const token = signRideStatusToken(`${locale}|${tripId}`, 60 * 60 * 24 * 14);
+  const token = signCustomerToken(
+    RIDE_STATUS_PURPOSE,
+    { l: locale, t: tripId },
+    RIDE_STATUS_TTL_SECONDS,
+  );
   if (!base || !token) return "";
   return `${base}/${locale}/ride-status?token=${encodeURIComponent(token)}`;
 }
 
 export function readRideStatusToken(token: string | null) {
-  const raw = token ? readRideStatusTokenPayload(token) : null;
-  if (!raw || !raw.includes("|")) return null;
-  const [locale, tripId] = raw.split("|");
-  return locale && tripId ? { locale, tripId } : null;
+  const payload = readCustomerToken(token, RIDE_STATUS_PURPOSE);
+  return payload ? { locale: payload.l, tripId: payload.t } : null;
 }

@@ -2786,6 +2786,17 @@
     "payment_pay_on_pickup": "Pay on pickup",
     "payment_status_pay_on_pickup": "Pay on pickup"
   },
+  "RideStatus": {
+    "title": "Trip {tripId}",
+    "expired-title": "Link expired",
+    "not-found": "Ride not found.",
+    "hourly": "Hourly",
+    "status": "Status: {status}",
+    "pickup": "Pickup {date} at {time}. This is the scheduled time, not a live location.",
+    "driver": "Driver: {name}",
+    "no-driver": "Driver not assigned yet.",
+    "car": "Car: {name}"
+  },
   "Riviera": {
     "pickup": "Pick-up",
     "dropoff": "Drop-off",

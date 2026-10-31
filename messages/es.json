@@ -2786,6 +2786,17 @@
     "payment_pay_on_pickup": "Pago al recoger",
     "payment_status_pay_on_pickup": "Pago al recoger"
   },
+  "RideStatus": {
+    "title": "Viaje {tripId}",
+    "expired-title": "Enlace caducado",
+    "not-found": "Viaje no encontrado.",
+    "hourly": "Por hora",
+    "status": "Estado: {status}",
+    "pickup": "Recogida el {date} a las {time}. Es la hora programada, no una ubicación en directo.",
+    "driver": "Conductor: {name}",
+    "no-driver": "Conductor aún no asignado.",
+    "car": "Coche: {name}"
+  },
   "Riviera": {
     "pickup": "Recogida",
     "dropoff": "Destino",

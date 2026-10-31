@@ -2786,6 +2786,17 @@
     "payment_pay_on_pickup": "Zahlung bei Abholung",
     "payment_status_pay_on_pickup": "Zahlung bei Abholung"
   },
+  "RideStatus": {
+    "title": "Fahrt {tripId}",
+    "expired-title": "Link abgelaufen",
+    "not-found": "Fahrt nicht gefunden.",
+    "hourly": "Stündlich",
+    "status": "Status: {status}",
+    "pickup": "Abholung am {date} um {time}. Dies ist die geplante Zeit, kein Live-Standort.",
+    "driver": "Fahrer: {name}",
+    "no-driver": "Fahrer noch nicht zugewiesen.",
+    "car": "Fahrzeug: {name}"
+  },
   "Riviera": {
     "pickup": "Abholung",
     "dropoff": "Ziel",

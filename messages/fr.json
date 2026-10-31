@@ -2786,6 +2786,17 @@
     "payment_pay_on_pickup": "Paiement à la prise en charge",
     "payment_status_pay_on_pickup": "Paiement à la prise en charge"
   },
+  "RideStatus": {
+    "title": "Trajet {tripId}",
+    "expired-title": "Lien expiré",
+    "not-found": "Trajet introuvable.",
+    "hourly": "À l'heure",
+    "status": "Statut : {status}",
+    "pickup": "Prise en charge le {date} à {time}. Il s'agit de l'heure prévue, pas d'une position en direct.",
+    "driver": "Chauffeur : {name}",
+    "no-driver": "Chauffeur pas encore assigné.",
+    "car": "Voiture : {name}"
+  },
   "Riviera": {
     "pickup": "Départ",
     "dropoff": "Arrivée",

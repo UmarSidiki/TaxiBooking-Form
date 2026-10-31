@@ -1,11 +1,24 @@
 import { WhatsAppConfig } from "@/features/settings/model";
-import { sendWhatsAppTexts, type WhatsAppOutbound } from "@/features/settings/lib/whatsapp-session";
+import {
+  sendWhatsAppTexts,
+  type WhatsAppOutbound,
+  type WhatsAppSendOptions,
+} from "@/features/settings/lib/whatsapp-send";
 import { toWhatsAppDigits, toWhatsAppJid } from "@/features/settings/lib/whatsapp-phone";
 import { notify } from "@/features/notifications/notify";
+import {
+  whatsappBudgetMs,
+  WHATSAPP_OTP_MAX_DURATION_SECONDS,
+} from "@/features/settings/lib/whatsapp-deadline";
 
-export const CUSTOMER_CODE_WHATSAPP_TIMEOUT_MS = 25_000;
+export const CUSTOMER_CODE_WHATSAPP_TIMEOUT_MS = whatsappBudgetMs(
+  WHATSAPP_OTP_MAX_DURATION_SECONDS,
+);
 
-type SendFn = (messages: WhatsAppOutbound[]) => ReturnType<typeof sendWhatsAppTexts>;
+type SendFn = (
+  messages: WhatsAppOutbound[],
+  options?: WhatsAppSendOptions,
+) => ReturnType<typeof sendWhatsAppTexts>;
 
 export type DeliverCustomerCodeDeps = {
   send?: SendFn;
@@ -40,9 +53,10 @@ async function sendOnWhatsApp(phone: string, text: string, deps: DeliverCustomer
   if (!digits) return false;
   try {
     const send = deps.send ?? sendWhatsAppTexts;
+    const timeoutMs = deps.timeoutMs ?? CUSTOMER_CODE_WHATSAPP_TIMEOUT_MS;
     const result = await withTimeout(
-      send([{ jid: toWhatsAppJid(digits), text }]),
-      deps.timeoutMs ?? CUSTOMER_CODE_WHATSAPP_TIMEOUT_MS,
+      send([{ jid: toWhatsAppJid(digits), text }], { deadlineMs: timeoutMs }),
+      timeoutMs + 1_000,
     );
     return result.ok && result.results.length > 0 && result.results.every((row) => row.ok);
   } catch {

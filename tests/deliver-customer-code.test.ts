@@ -2,11 +2,11 @@ import { afterAll, beforeEach, describe, expect, it, vi } from "vitest";
 
 const mocks = vi.hoisted(() => ({ send: vi.fn(), notify: vi.fn() }));
 
-vi.mock("@/features/settings/lib/whatsapp-session", () => ({ sendWhatsAppTexts: mocks.send }));
+vi.mock("@/features/settings/lib/whatsapp-send", () => ({ sendWhatsAppTexts: mocks.send }));
 vi.mock("@/features/notifications/notify", () => ({ notify: mocks.notify }));
 
 afterAll(() => {
-  vi.doUnmock("@/features/settings/lib/whatsapp-session");
+  vi.doUnmock("@/features/settings/lib/whatsapp-send");
   vi.doUnmock("@/features/notifications/notify");
   vi.resetModules();
 });

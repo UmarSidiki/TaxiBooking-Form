@@ -3,6 +3,9 @@ import { isValidObjectId } from "mongoose";
 import { z } from "zod";
 import { applyCustomerTripAction } from "@/features/customers/lib/apply-customer-trip-action";
 import { readCustomerSession } from "@/features/customers/lib/customer-session";
+import { WHATSAPP_NOTIFICATION_MAX_DURATION_SECONDS } from "@/features/settings/lib/whatsapp-deadline";
+
+export const maxDuration = WHATSAPP_NOTIFICATION_MAX_DURATION_SECONDS;
 
 const changeSchema = z.object({
   date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),

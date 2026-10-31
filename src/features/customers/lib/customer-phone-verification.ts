@@ -1,7 +1,11 @@
 import { connectDB } from "@/shared/db";
 import { WhatsAppConfig } from "@/features/settings/model";
-import { sendWhatsAppTexts } from "@/features/settings/lib/whatsapp-session";
+import { sendWhatsAppTexts } from "@/features/settings/lib/whatsapp-send";
 import { toWhatsAppDigits, toWhatsAppJid } from "@/features/settings/lib/whatsapp-phone";
+import {
+  whatsappBudgetMs,
+  WHATSAPP_PHONE_MAX_DURATION_SECONDS,
+} from "@/features/settings/lib/whatsapp-deadline";
 import CustomerPhoneOtp from "@/features/customers/model/CustomerPhoneOtp";
 import CustomerProfile from "@/features/customers/model/CustomerProfile";
 import { generateOtpCode, hashOtpCode, otpCodeMatches } from "@/features/customers/lib/otp-code";
@@ -31,9 +35,12 @@ async function resolveDigits(phone: string, callingCode?: string) {
 }
 
 async function deliverOnWhatsApp(digits: string, code: string) {
-  const result = await sendWhatsAppTexts([
-    { jid: toWhatsAppJid(digits), text: `Your verification code is ${code}. It expires in 10 minutes.` },
-  ]);
+  const result = await sendWhatsAppTexts(
+    [
+      { jid: toWhatsAppJid(digits), text: `Your verification code is ${code}. It expires in 10 minutes.` },
+    ],
+    { deadlineMs: whatsappBudgetMs(WHATSAPP_PHONE_MAX_DURATION_SECONDS) },
+  );
   if (!result.ok) return false;
   return result.results.length > 0 && result.results.every((row) => row.ok);
 }

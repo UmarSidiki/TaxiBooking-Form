@@ -6,6 +6,9 @@ import {
   readWhatsAppToggleFlags,
   writeWhatsAppToggleFlags,
 } from "@/features/notifications/lib/legacy-whatsapp-toggles";
+import { WHATSAPP_SETTINGS_MAX_DURATION_SECONDS } from "@/features/settings/lib/whatsapp-deadline";
+
+export const maxDuration = WHATSAPP_SETTINGS_MAX_DURATION_SECONDS;
 
 const flag = z.boolean();
 const schema = z.object({

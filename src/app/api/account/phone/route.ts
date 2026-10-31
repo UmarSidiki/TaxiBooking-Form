@@ -7,6 +7,9 @@ import {
   requestPhoneVerification,
 } from "@/features/customers/lib/customer-phone-verification";
 import { limitSensitive } from "@/shared/http/sensitive-limit";
+import { WHATSAPP_PHONE_MAX_DURATION_SECONDS } from "@/features/settings/lib/whatsapp-deadline";
+
+export const maxDuration = WHATSAPP_PHONE_MAX_DURATION_SECONDS;
 
 const phoneSchema = z.strictObject({
   phone: z.string().trim().min(1).max(32),

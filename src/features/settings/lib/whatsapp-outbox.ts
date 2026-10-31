@@ -1,4 +1,4 @@
-import type { WhatsAppOutbound } from "@/features/settings/lib/whatsapp-session";
+import type { WhatsAppOutbound } from "@/features/settings/lib/whatsapp-send";
 
 type GlobalOutbox = { __qaWhatsAppOutbox?: WhatsAppOutbound[] };
 

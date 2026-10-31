@@ -3,6 +3,10 @@ import { Booking } from "@/features/booking/model";
 import { WhatsAppConfig } from "@/features/settings/model";
 import { whatsappLocales } from "@/features/settings/schema/whatsapp.schema";
 import { notify } from "@/features/notifications/notify";
+import {
+  whatsappBudgetMs,
+  WHATSAPP_BOOKING_MAX_DURATION_SECONDS,
+} from "@/features/settings/lib/whatsapp-deadline";
 
 function localeFor(value: string | undefined, fallback: string) {
   return whatsappLocales.includes(value as (typeof whatsappLocales)[number])
@@ -44,6 +48,8 @@ export async function sendBookingWhatsApp(bookingId: string) {
           whatsappOptIn: booking.whatsappOptIn,
         }],
       },
+    }, {
+      deadlineMs: whatsappBudgetMs(WHATSAPP_BOOKING_MAX_DURATION_SECONDS),
     });
   } catch (error) {
     console.error("WhatsApp confirmation failed:", error);

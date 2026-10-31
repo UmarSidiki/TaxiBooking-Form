@@ -2,6 +2,9 @@ import { NextResponse } from "next/server";
 import { requireAdmin } from "@/features/auth/lib/require-role";
 import { buildInvoicePdf } from "@/features/invoices/lib/build-invoice-pdf";
 import { sendInvoiceNotice } from "@/features/invoices/lib/send-invoice-notice";
+import { WHATSAPP_NOTIFICATION_MAX_DURATION_SECONDS } from "@/features/settings/lib/whatsapp-deadline";
+
+export const maxDuration = WHATSAPP_NOTIFICATION_MAX_DURATION_SECONDS;
 
 type Params = { params: Promise<{ tripId: string }> };
 

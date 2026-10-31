@@ -7,6 +7,9 @@ import { Driver } from "@/features/drivers/model";
 import { requireRole } from "@/features/auth/lib/require-role";
 import { jsonError } from "@/shared/http/json-error";
 import { creditPartnerAfterPayment } from "@/features/payments/lib/credit-partner-after-payment";
+import { WHATSAPP_NOTIFICATION_MAX_DURATION_SECONDS } from "@/features/settings/lib/whatsapp-deadline";
+
+export const maxDuration = WHATSAPP_NOTIFICATION_MAX_DURATION_SECONDS;
 
 export async function POST(
   request: NextRequest,

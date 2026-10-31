@@ -9,7 +9,7 @@ import { isAssignablePartner, partnerDeskOpen } from "@/features/partners/lib/pa
 import RideActivity from "@/features/rides/model/RideActivity";
 import { describeAssignment } from "@/features/rides/lib/assignment-notice";
 import { clearWhatsAppOutbox, readWhatsAppOutbox } from "@/features/settings/lib/whatsapp-outbox";
-import { sendWhatsAppTexts } from "@/features/settings/lib/whatsapp-session";
+import { sendWhatsAppTexts } from "@/features/settings/lib/whatsapp-send";
 import { toE164 } from "@/shared/schema/e164-phone";
 import { ApiError } from "@/shared/http/api";
 import { createDriver, createRide, createVehicle, saveDispatchSettings } from "./helpers/fixtures";

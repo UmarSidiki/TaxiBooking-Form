@@ -1,5 +1,8 @@
 import { WhatsAppDelivery } from "@/features/settings/model";
-import { sendWhatsAppTexts } from "@/features/settings/lib/whatsapp-session";
+import {
+  sendWhatsAppTexts,
+  type WhatsAppSendOptions,
+} from "@/features/settings/lib/whatsapp-send";
 import { readWhatsAppLinked } from "@/features/settings/lib/whatsapp-mongo-auth";
 import { sendEmail } from "@/features/settings/lib/email";
 import { notificationEvent } from "@/features/notifications/notification-events";
@@ -18,8 +21,10 @@ export type NotificationDeps = {
   linked?: () => Promise<boolean>;
   send?: (
     messages: { jid: string; text: string; document?: { base64: string; fileName: string } }[],
+    options?: WhatsAppSendOptions,
   ) => Promise<{ ok: boolean; results?: { jid: string; ok: boolean }[] }>;
   sendMail?: (mail: PlannedEmail) => Promise<boolean>;
+  deadlineMs?: number;
 };
 
 function isDuplicateKey(error: unknown) {
@@ -107,8 +112,12 @@ export async function notify(
 
     let ok = true;
     if (whatsapp.length > 0) {
-      const send = deps.send ?? ((messages) => sendWhatsAppTexts(messages));
-      const result = await send(whatsapp.map(({ jid, text, document }) => ({ jid, text, document })));
+      const send =
+        deps.send ?? ((messages, options) => sendWhatsAppTexts(messages, options));
+      const result = await send(
+        whatsapp.map(({ jid, text, document }) => ({ jid, text, document })),
+        { deadlineMs: deps.deadlineMs },
+      );
       ok = result.ok;
       if (ctx.bookingId) await settleDeliveries(ctx.bookingId, whatsapp, result);
     }

@@ -4,8 +4,10 @@ import { sendWhatsAppTest } from "@/features/settings/lib/whatsapp-desk";
 import { whatsappTestSendSchema } from "@/features/settings/schema/whatsapp.schema";
 import { jsonError } from "@/shared/http/json-error";
 import { parseJsonBody } from "@/shared/http/parse-json-body";
+import { WHATSAPP_SETTINGS_MAX_DURATION_SECONDS } from "@/features/settings/lib/whatsapp-deadline";
 
 export const dynamic = "force-dynamic";
+export const maxDuration = WHATSAPP_SETTINGS_MAX_DURATION_SECONDS;
 
 export async function POST(request: Request) {
   const access = await requireAdmin();

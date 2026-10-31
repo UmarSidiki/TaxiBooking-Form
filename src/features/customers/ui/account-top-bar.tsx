@@ -29,7 +29,7 @@ export function AccountTopBar({
           name={brandName}
           tagline={t("brand-tagline")}
           logoUrl={logoUrl}
-          className="min-w-0 max-w-[40vw] overflow-hidden md:max-w-none max-[379px]:[&_small]:hidden"
+          className="min-w-0 shrink [max-inline-size:40vw] overflow-hidden md:[max-inline-size:none] max-[399px]:[&_small]:hidden"
         />
 
         <nav

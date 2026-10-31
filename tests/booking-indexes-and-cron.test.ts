@@ -42,9 +42,10 @@ describe("booking indexes", () => {
 describe("cron authorization", () => {
   const secret = "secret";
 
-  function request(input: { authorization?: string; cronHeader?: string; key?: string }) {
+  function request(input: { authorization?: string; cronHeader?: string; key?: string; secret?: string }) {
     const url = new URL("http://127.0.0.1/api/cron");
     if (input.key) url.searchParams.set("key", input.key);
+    if (input.secret) url.searchParams.set("secret", input.secret);
     const headers = new Headers();
     if (input.authorization) headers.set("authorization", input.authorization);
     if (input.cronHeader) headers.set("x-cron-secret", input.cronHeader);
@@ -62,6 +63,13 @@ describe("cron authorization", () => {
     expect(isCronAuthorized(request({ cronHeader: secret }), secret)).toBe(true);
     expect(isCronAuthorized(request({ key: secret }), secret)).toBe(true);
     expect(isCronAuthorized(request({ key: "nope" }), secret)).toBe(false);
+  });
+
+  it("accepts ?secret= and ignores stray whitespace in the configured secret", () => {
+    expect(isCronAuthorized(request({ secret }), secret)).toBe(true);
+    expect(isCronAuthorized(request({ secret: "nope" }), secret)).toBe(false);
+    expect(isCronAuthorized(request({ authorization: "Bearer secret" }), "secret\n")).toBe(true);
+    expect(isCronAuthorized(request({ authorization: "Bearer secret" }), "  \n")).toBe(false);
   });
 });
 

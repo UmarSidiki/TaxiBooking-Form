@@ -9,6 +9,11 @@ import {
   WHATSAPP_OPEN_TIMEOUT_MS,
 } from "@/features/settings/lib/whatsapp-socket";
 import { WHATSAPP_DEFAULT_SEND_BUDGET_MS } from "@/features/settings/lib/whatsapp-deadline";
+import {
+  jidMatches,
+  normaliseJid,
+  resolveJidAliases,
+} from "@/features/settings/lib/whatsapp-jid";
 
 export type WhatsAppOutbound = {
   jid: string;
@@ -16,7 +21,21 @@ export type WhatsAppOutbound = {
   document?: { base64: string; fileName: string };
 };
 
-export type WhatsAppSendResult = { jid: string; ok: boolean; error?: string };
+export type WhatsAppSendResult = {
+  jid: string;
+  ok: boolean;
+  error?: string;
+  aliases?: string[];
+};
+
+/** Send results may come back under a LID or a device-suffixed JID. */
+export function findSendResult(results: WhatsAppSendResult[], jid: string) {
+  return results.find(
+    (row) =>
+      jidMatches(row.jid, jid) ||
+      row.aliases?.some((alias) => jidMatches(alias, jid)) === true,
+  );
+}
 
 export type WhatsAppSendOptions = {
   /** Wall-clock budget for the whole batch, measured from the call. */
@@ -27,8 +46,8 @@ export type WhatsAppSendOutcome =
   | { ok: true; results: WhatsAppSendResult[] }
   | { ok: false; reason: "needs_scan" | "failed" };
 
-function failure(jid: string, error: string): WhatsAppSendResult {
-  return { jid, ok: false, error };
+function failure(jid: string, error: string, aliases: string[] = [jid]): WhatsAppSendResult {
+  return { jid, ok: false, error, aliases };
 }
 
 export function sendWhatsAppTexts(
@@ -59,14 +78,16 @@ export function sendWhatsAppTexts(
         .lean<{ sendRateLimit?: number }>();
       const results: WhatsAppSendResult[] = [];
       for (const message of messages) {
+        const jid = normaliseJid(message.jid);
+        const aliases = await resolveJidAliases(sock, jid);
         if (Date.now() >= deadline) {
-          results.push(failure(message.jid, "deadline"));
+          results.push(failure(jid, "deadline", aliases));
           continue;
         }
         await waitForSendSlot(config?.sendRateLimit ?? 0);
         try {
-          await sock.sendMessage(
-            message.jid,
+          const sent = await sock.sendMessage(
+            jid,
             message.document
               ? {
                   document: Buffer.from(message.document.base64, "base64"),
@@ -76,9 +97,11 @@ export function sendWhatsAppTexts(
                 }
               : { text: message.text },
           );
-          results.push({ jid: message.jid, ok: true });
+          const receiptJid = sent?.key?.remoteJid;
+          if (receiptJid) aliases.push(normaliseJid(receiptJid));
+          results.push({ jid, ok: true, aliases });
         } catch {
-          results.push(failure(message.jid, "send_failed"));
+          results.push(failure(jid, "send_failed", aliases));
         }
       }
       return { ok: true, results };

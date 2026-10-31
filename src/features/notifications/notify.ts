@@ -1,5 +1,6 @@
 import { WhatsAppDelivery } from "@/features/settings/model";
 import {
+  findSendResult,
   sendWhatsAppTexts,
   type WhatsAppSendOptions,
 } from "@/features/settings/lib/whatsapp-send";
@@ -68,7 +69,7 @@ async function settleDeliveries(
     messages
       .filter((message) => message.audience === "customer" || message.audience === "desk")
       .map((message) => {
-        const perMessage = send.results?.find((item) => item.jid === message.jid);
+        const perMessage = findSendResult(send.results ?? [], message.jid);
         const ok = perMessage ? perMessage.ok : send.ok;
         return WhatsAppDelivery.updateOne(
           { bookingId, audience: message.audience, to: message.to },

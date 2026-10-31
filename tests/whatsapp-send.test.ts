@@ -46,8 +46,17 @@ describe("WhatsApp batch sending", () => {
     expect(result.ok).toBe(true);
     if (!result.ok) return;
     expect(result.results).toEqual([
-      { jid: "14155552671@s.whatsapp.net", ok: true },
-      { jid: "14155552672@s.whatsapp.net", ok: false, error: "deadline" },
+      {
+        jid: "14155552671@s.whatsapp.net",
+        ok: true,
+        aliases: ["14155552671@s.whatsapp.net"],
+      },
+      {
+        jid: "14155552672@s.whatsapp.net",
+        ok: false,
+        error: "deadline",
+        aliases: ["14155552672@s.whatsapp.net"],
+      },
     ]);
   });
 

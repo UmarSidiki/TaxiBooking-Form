@@ -12,7 +12,7 @@ import type {
 import { resolveNotificationTemplate } from "@/features/notifications/lib/notification-resolution";
 import { renderWhatsAppTemplate, whatsappSampleValues } from "@/features/settings/lib/whatsapp-template-text";
 import { toWhatsAppDigits, toWhatsAppJid } from "@/features/settings/lib/whatsapp-phone";
-import { sendWhatsAppTexts } from "@/features/settings/lib/whatsapp-send";
+import { findSendResult, sendWhatsAppTexts } from "@/features/settings/lib/whatsapp-send";
 import {
   whatsappBudgetMs,
   WHATSAPP_SETTINGS_MAX_DURATION_SECONDS,
@@ -136,6 +136,8 @@ export async function sendWhatsAppTest(input: WhatsAppTestSendInput) {
     deadlineMs: whatsappBudgetMs(WHATSAPP_SETTINGS_MAX_DURATION_SECONDS),
   });
   if (!sent.ok) return { ok: false as const, error: sent.reason };
-  if (!sent.results[0]?.ok) return { ok: false as const, error: "failed" as const };
+  if (!findSendResult(sent.results, toWhatsAppJid(digits))?.ok) {
+    return { ok: false as const, error: "failed" as const };
+  }
   return { ok: true as const };
 }

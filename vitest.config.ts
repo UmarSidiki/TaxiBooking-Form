@@ -8,7 +8,7 @@ export default defineConfig({
     globalSetup: ["./tests/global-setup.ts"],
     include: ["tests/**/*.test.{ts,tsx}"],
     fileParallelism: false,
-    isolate: false,
+    isolate: true,
     maxWorkers: 1,
     hookTimeout: 120_000,
     testTimeout: 30_000,

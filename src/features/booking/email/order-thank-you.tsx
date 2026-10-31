@@ -2,7 +2,7 @@ import {
   absoluteHttpBase,
   bookingMailLocale,
 } from "@/features/booking/lib/booking-mail-url";
-import { customerPortalUrl } from "@/features/customers/lib/customer-token";
+import { createMagicLink } from "@/features/customers/lib/magic-link";
 import { prepareEventEmail, sendPreparedEmail } from "@/features/emails/lib/send-event-email";
 import { ThankYouEmail } from "@/features/emails/templates/thank-you-email";
 import type { EmailTrip } from "@/features/emails/types";
@@ -99,11 +99,10 @@ export async function sendOrderThankYouEmail(bookingData: BookingData) {
       bookingData.bookingId && base
         ? `${base}/${bookingMailLocale(bookingData.locale)}/review?bookingId=${encodeURIComponent(bookingData.bookingId)}`
         : null;
-    const manageUrl = customerPortalUrl(
-      base,
-      prepared.locale,
-      bookingData.email,
-    );
+    const manageUrl = await createMagicLink(bookingData.email, {
+      baseUrl: base,
+      locale: prepared.locale,
+    });
 
     return sendPreparedEmail({
       prepared,

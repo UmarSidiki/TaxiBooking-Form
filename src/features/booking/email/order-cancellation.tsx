@@ -1,7 +1,7 @@
 import { getMongoDb } from "@/shared/db/mongodb";
 import { getCurrencySymbol } from "@/shared/lib/utils";
 import { resolvePublicUrl } from "@/features/settings/lib/public-url";
-import { customerPortalUrl } from "@/features/customers/lib/customer-token";
+import { createMagicLink } from "@/features/customers/lib/magic-link";
 import { absoluteHttpBase } from "@/features/booking/lib/booking-mail-url";
 import { prepareEventEmail, sendPreparedEmail } from "@/features/emails/lib/send-event-email";
 import { NoticeEmail } from "@/features/emails/templates/notice-email";
@@ -93,7 +93,10 @@ export async function sendOrderCancellationEmail(bookingData: BookingData) {
     const symbol = getCurrencySymbol(prepared.settings?.stripeCurrency || "EUR");
     const refundAmount = bookingData.refundAmount ?? 0;
     const base = await baseUrlFor(bookingData);
-    const manageUrl = customerPortalUrl(base, prepared.locale, bookingData.email);
+    const manageUrl = await createMagicLink(bookingData.email, {
+      baseUrl: base,
+      locale: prepared.locale,
+    });
     const canceledAt = bookingData.canceledAt
       ? new Date(bookingData.canceledAt).toLocaleString(prepared.locale)
       : new Date().toLocaleString(prepared.locale);

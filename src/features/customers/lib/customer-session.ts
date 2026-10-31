@@ -80,16 +80,37 @@ async function touchSession(id: string) {
   return row.emailLower;
 }
 
+async function cookieJar() {
+  try {
+    return await cookies();
+  } catch {
+    return null;
+  }
+}
+
+function cookieFromHeader(request: Request | undefined, name: string) {
+  const header = request?.headers.get("cookie");
+  if (!header) return null;
+  for (const entry of header.split(";")) {
+    const index = entry.indexOf("=");
+    if (index === -1) continue;
+    if (entry.slice(0, index).trim() === name) {
+      return decodeURIComponent(entry.slice(index + 1).trim());
+    }
+  }
+  return null;
+}
+
 export async function readCustomerSession(request?: Request) {
-  const jar = await cookies();
+  const jar = await cookieJar();
   const { name } = customerSessionCookie();
-  const id = jar.get(name)?.value;
+  const id = jar?.get(name)?.value ?? cookieFromHeader(request, name);
   if (id) return touchSession(id);
 
   // Legacy HMAC tokens stay readable until M2 removes them.
   const legacy =
     new URL(request?.url ?? "http://local").searchParams.get("token") ||
-    jar.get(LEGACY_COOKIE)?.value;
+    jar?.get(LEGACY_COOKIE)?.value;
   return readCustomerToken(legacy);
 }
 

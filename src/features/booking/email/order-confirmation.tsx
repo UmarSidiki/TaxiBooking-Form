@@ -1,6 +1,6 @@
 import { getCurrencySymbol } from "@/shared/lib/utils";
 import { absoluteHttpBase, invoiceDownloadUrl } from "@/features/booking/lib/booking-mail-url";
-import { customerPortalUrl } from "@/features/customers/lib/customer-token";
+import { createMagicLink } from "@/features/customers/lib/magic-link";
 import { buildInvoicePdf } from "@/features/invoices/lib/build-invoice-pdf";
 import type { BookingEmailData } from "@/features/payments/lib/booking-email-data";
 import { bookingPriceRows, bookingTrip } from "@/features/emails/lib/booking-rows";
@@ -37,11 +37,10 @@ export async function sendOrderConfirmationEmail(bookingData: BookingEmailData) 
     if (!prepared) return false;
 
     const invoiceUrl = invoiceDownloadUrl(bookingData.baseUrl, bookingData.tripId);
-    const portalUrl = customerPortalUrl(
-      absoluteHttpBase(bookingData.baseUrl),
-      prepared.locale,
-      bookingData.email,
-    );
+    const portalUrl = await createMagicLink(bookingData.email, {
+      baseUrl: absoluteHttpBase(bookingData.baseUrl),
+      locale: prepared.locale,
+    });
     const currencySymbol = getCurrencySymbol(
       prepared.settings?.stripeCurrency || "EUR",
     );

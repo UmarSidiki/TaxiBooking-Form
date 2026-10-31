@@ -1,5 +1,5 @@
 import { absoluteHttpBase } from "@/features/booking/lib/booking-mail-url";
-import { customerPortalUrl } from "@/features/customers/lib/customer-token";
+import { createMagicLink } from "@/features/customers/lib/magic-link";
 import { rideStatusUrl } from "@/features/customers/lib/ride-status-url";
 import { resolvePublicUrl } from "@/features/settings/lib/public-url";
 
@@ -23,7 +23,10 @@ export async function notificationUrlVariables(
   const portalUrl = `${base}/${input.locale}/account`;
   const portal =
     (input.customerEmail
-      ? customerPortalUrl(base, input.locale, input.customerEmail)
+      ? await createMagicLink(input.customerEmail, {
+          baseUrl: base,
+          locale: input.locale,
+        })
       : null) ?? portalUrl;
   return {
     portal,

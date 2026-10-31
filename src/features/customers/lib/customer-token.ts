@@ -24,9 +24,3 @@ export function readCustomerToken(token: string | null | undefined) {
   if (!email || Number(exp) < Math.floor(Date.now() / 1000)) return null;
   return email;
 }
-
-export function customerPortalUrl(base: string | null, locale: string, email: string) {
-  const token = signCustomerToken(email);
-  if (!base || !token) return null;
-  return `${base.replace(/\/$/, "")}/${locale}/account?token=${encodeURIComponent(token)}`;
-}

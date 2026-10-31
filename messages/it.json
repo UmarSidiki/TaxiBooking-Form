@@ -1270,7 +1270,7 @@
       "smtp": "SMTP",
       "features": "Funzioni",
       "saving": "Salvataggio…",
-      "appearance_scope": "Questi colori e raggi valgono per il modulo pubblico, non per questo banco.",
+      "appearance_scope": "La tavolozza vale ovunque, anche in questa dashboard. Colori del brand e angoli valgono per il modulo pubblico e i widget.",
       "timezone_help": "Per orari di prenotazione ed e-mail.",
       "loading": "Caricamento…",
       "draw_hint": "Clicca i punti. Clicca il primo punto o fai doppio clic per finire.",
@@ -1543,7 +1543,17 @@
       "preview-dropoff": "Hotel Beau-Rivage, Losanna",
       "preview-continue": "Vedi i veicoli",
       "accent-too-light": "Questo colore è troppo chiaro per il testo bianco, quindi il modulo mantiene l'accento predefinito.",
-      "corner-sharpness-scope": "Vale per il widget incorporabile; il modulo mantiene i suoi angoli sottili."
+      "corner-sharpness-scope": "Vale per il widget incorporabile; il modulo mantiene i suoi angoli sottili.",
+      "palette-title": "Tavolozza colori",
+      "palette-help": "Vale per il modulo, i widget e questa dashboard. Ogni tavolozza rispetta WCAG AA in chiaro e scuro.",
+      "palette-neutral": "Neutro",
+      "palette-neutral-note": "Bianco e antracite, predefinito",
+      "palette-slate": "Ardesia e indaco",
+      "palette-slate-note": "Grigi freddi, azioni indaco",
+      "palette-heritage": "Avorio e rosso sangue",
+      "palette-heritage-note": "Avorio caldo, rosso profondo",
+      "palette-navy": "Blu navy e viola",
+      "palette-navy-note": "Blu navy, azioni viola"
     },
     "Refunds": {
       "title": "Refund Requests",

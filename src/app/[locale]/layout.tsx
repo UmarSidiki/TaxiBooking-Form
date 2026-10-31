@@ -4,6 +4,8 @@ import { headers } from "next/headers";
 import { Geist, Geist_Mono, IBM_Plex_Sans_Arabic } from "next/font/google";
 import "@/shared/style/globals.css";
 import "@/shared/style/riviera-theme.css";
+import "@/shared/style/riviera-palettes.css";
+import { resolveColorPalette } from "@/features/settings/lib/color-palettes";
 import { operatorAccent } from "@/features/settings/lib/operator-accent";
 import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { notFound } from "next/navigation";
@@ -106,7 +108,12 @@ export default async function RootLayout({ children, params }: Props) {
   } as CSSProperties;
 
   return (
-    <html lang={locale} dir={locale === "ar" ? "rtl" : "ltr"} suppressHydrationWarning>
+    <html
+      lang={locale}
+      dir={locale === "ar" ? "rtl" : "ltr"}
+      data-palette={resolveColorPalette(themeSettings.colorPalette)}
+      suppressHydrationWarning
+    >
       <head>
         {/* Preconnect to external services for faster loading */}
         <link rel="preconnect" href="https://maps.googleapis.com" />

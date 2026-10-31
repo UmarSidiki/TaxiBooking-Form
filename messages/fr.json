@@ -1270,7 +1270,7 @@
       "smtp": "SMTP",
       "features": "Fonctions",
       "saving": "Enregistrement…",
-      "appearance_scope": "Ces couleurs et coins s’appliquent au formulaire public, pas à ce bureau.",
+      "appearance_scope": "La palette s'applique partout, y compris ce tableau de bord. Les couleurs de marque et les coins s'appliquent au formulaire public et aux widgets.",
       "timezone_help": "Utilisé pour les horaires de course et les e-mails.",
       "loading": "Chargement…",
       "draw_hint": "Cliquez pour tracer. Cliquez le premier point ou double-cliquez pour terminer.",
@@ -1543,7 +1543,17 @@
       "preview-dropoff": "Hôtel Beau-Rivage, Lausanne",
       "preview-continue": "Voir les véhicules",
       "accent-too-light": "Cette couleur est trop claire pour un texte blanc ; le formulaire garde son accent par défaut.",
-      "corner-sharpness-scope": "S'applique au widget intégrable ; le formulaire garde ses angles fins."
+      "corner-sharpness-scope": "S'applique au widget intégrable ; le formulaire garde ses angles fins.",
+      "palette-title": "Palette de couleurs",
+      "palette-help": "S'applique au formulaire, aux widgets et à ce tableau de bord. Chaque palette respecte WCAG AA en clair et sombre.",
+      "palette-neutral": "Neutre",
+      "palette-neutral-note": "Blanc et anthracite, par défaut",
+      "palette-slate": "Ardoise et indigo",
+      "palette-slate-note": "Gris froids, actions indigo",
+      "palette-heritage": "Ivoire et sang-de-bœuf",
+      "palette-heritage-note": "Ivoire chaud, rouge profond",
+      "palette-navy": "Marine et violet",
+      "palette-navy-note": "Bleu marine, actions violettes"
     },
     "Refunds": {
       "title": "Refund Requests",

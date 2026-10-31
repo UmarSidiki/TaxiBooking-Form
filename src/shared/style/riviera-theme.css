@@ -1,6 +1,7 @@
 /* Riviera public booking form tokens (scoped) */
 .riviera {
   /* Bridge to Tailwind/shadcn variables so legacy components adopt Riviera tokens */
+  /* Colour values live in riviera-palettes.css, keyed by data-palette. */
   --background: var(--paper);
   --foreground: var(--ink);
   --card: var(--sheet);
@@ -18,31 +19,15 @@
   --border: var(--rule);
   --input: var(--rule2);
   --ring: var(--sig);
-  --paper: #FFFFFF;
-  --sheet: #FFFFFF;
-  --well: #F5F5F5;
-  --ink: #171717;
-  --ink2: #5C5C5C;
-  --rule: #E5E5E5;
-  --rule2: #D4D4D4;
-  --sig: var(--operator-accent, #171717); /* operator colour only when it keeps AA, see operator-accent.ts */
-  --sig-on: #FFFFFF;
   --brand-multisafepay: #00ABEE;
-  --sig-tint: #F5F5F5;
-  --warn: #B45309;
-  --info: #2563EB;
   --destructive: var(--err);
   /* sidebar */
-  --sidebar: #FAFAFA;
   --sidebar-foreground: var(--ink);
   --sidebar-border: var(--rule);
   --sidebar-accent: var(--well);
   --sidebar-accent-foreground: var(--ink);
   --sidebar-primary: var(--sig);
   --sidebar-primary-foreground: var(--sig-on);
-  --ok: #15803D;
-  --err: #B91C1C;
-  --err-tint: #FEF2F2;
   --car-body: #262626;
   --car-glass: #A3A3A3;
   --car-line: #525252;
@@ -53,9 +38,7 @@
   --display: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
   --body: var(--display);
   --mono: var(--body); /* numbers use tabular figures, not a mono face */
-  --link: #2563EB;
   --seg-on: #FFFFFF;
-  --dock: rgb(255 255 255 / 0.72);
   --dock-shadow: 0 2px 8px rgb(0 0 0 / 0.06);
   --space-1: 4px;
   --space-2: 8px;
@@ -82,33 +65,15 @@
   min-height: 100dvh;
 }
 :root[data-riviera-theme="dark"] .riviera {
-  --paper: #111111;
-  --sheet: #1A1A1A;
-  --well: #222222;
-  --ink: #EDEDED;
-  --ink2: #A1A1A1;
-  --rule: #2A2A2A;
-  --rule2: #3A3A3A;
-  --sig: #EDEDED;
-  --sig-on: #111111;
-  --link: #60A5FA;
-  --seg-on: #363636;
-  --dock: rgb(26 26 26 / 0.68);
+  --seg-on: color-mix(in srgb, var(--ink) 14%, var(--sheet));
   --brand-multisafepay: #00ABEE;
-  --sig-tint: #262626;
-  --warn: #FBBF24;
-  --info: #60A5FA;
   --destructive: #B91C1C; /* fill keeps white text at AA; --err stays the text colour */
-  --sidebar: var(--sheet);
   --sidebar-foreground: var(--ink);
   --sidebar-border: var(--rule);
   --sidebar-accent: var(--well);
   --sidebar-accent-foreground: var(--ink);
   --sidebar-primary: var(--sig);
   --sidebar-primary-foreground: var(--sig-on);
-  --ok: #4ADE80;
-  --err: #F87171;
-  --err-tint: #2A1515;
   --car-body: #D4D4D4;
   --car-glass: #404040;
   --car-line: #A3A3A3;
@@ -139,3 +104,17 @@
 .riviera .dock-btn:hover { background: var(--well); }
 .riviera .dock-btn svg { width: 16px; height: 16px; stroke-width: 1.5; }
 .riviera .dock-btn:disabled { opacity: .5; }
+/* Status badge: tinted fill, tone text (AA on its tint, checked in tests/palette-contrast.test.ts). */
+.riviera .status-mark {
+  --tone: var(--ink2); --tone-tint: var(--well);
+  display: inline-flex; align-items: center; gap: 6px; padding: 2px 8px;
+  border-radius: var(--radius-sm); font-size: 12px; font-weight: 600; line-height: 20px;
+  color: var(--tone); background: var(--tone-tint);
+  border: 1px solid color-mix(in srgb, var(--tone) 28%, transparent);
+  white-space: nowrap;
+}
+.riviera .status-mark[data-tone="ok"] { --tone: var(--ok); --tone-tint: var(--ok-tint); }
+.riviera .status-mark[data-tone="warn"] { --tone: var(--warn); --tone-tint: var(--warn-tint); }
+.riviera .status-mark[data-tone="err"] { --tone: var(--err); --tone-tint: var(--err-tint); }
+.riviera .status-mark[data-tone="info"] { --tone: var(--info); --tone-tint: var(--info-tint); }
+.riviera .status-mark__dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }

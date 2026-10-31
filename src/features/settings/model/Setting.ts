@@ -1,10 +1,12 @@
 import { Schema, model, models } from "mongoose";
+import { COLOR_PALETTES, DEFAULT_COLOR_PALETTE, type ColorPalette } from "@/features/settings/lib/color-palettes";
 
 export interface ISetting {
   _id?: string;
   primaryColor: string;
   secondaryColor: string;
   borderRadius: number;
+  colorPalette?: ColorPalette;
   redirectUrl?: string;
   thankYouStaySeconds?: number;
   redirectImmediatelyAfterBooking?: boolean;
@@ -96,6 +98,11 @@ const SettingSchema = new Schema<ISetting>(
     secondaryColor: {
       type: String,
       default: "#111827", // Default: gray-900
+    },
+    colorPalette: {
+      type: String,
+      enum: COLOR_PALETTES,
+      default: DEFAULT_COLOR_PALETTE,
     },
     borderRadius: {
       type: Number,

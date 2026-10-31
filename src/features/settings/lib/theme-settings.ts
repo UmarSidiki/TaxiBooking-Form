@@ -4,6 +4,7 @@ import {
   toPublicSettings,
   type PublicSettings,
 } from "@/features/settings/lib/public-settings";
+import { resolveColorPalette } from "@/features/settings/lib/color-palettes";
 import { isPromoAvailable } from "@/features/pricing/lib/is-promo-available";
 
 export type ThemeSettings = PublicSettings;
@@ -13,6 +14,7 @@ function withDefaults(settings: PublicSettings): PublicSettings {
     ...settings,
     primaryColor: settings.primaryColor || "#B45309",
     secondaryColor: settings.secondaryColor || "#111827",
+    colorPalette: resolveColorPalette(settings.colorPalette),
     borderRadius:
       typeof settings.borderRadius === "number" ? settings.borderRadius : 0.5,
   };

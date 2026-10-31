@@ -1270,7 +1270,7 @@
       "smtp": "SMTP",
       "features": "Funktionen",
       "saving": "Speichern…",
-      "appearance_scope": "Farben und Ecken gelten für das öffentliche Formular, nicht für diesen Schalter.",
+      "appearance_scope": "Die Farbpalette gilt überall, auch in diesem Dashboard. Markenfarben und Ecken gelten für das öffentliche Buchungsformular und die Widgets.",
       "timezone_help": "Für Buchungszeiten und E-Mails.",
       "loading": "Laden…",
       "draw_hint": "Klicken Sie Punkte. Ersten Punkt erneut klicken oder doppelklicken zum Beenden.",
@@ -1543,7 +1543,17 @@
       "preview-dropoff": "Hotel Beau-Rivage, Lausanne",
       "preview-continue": "Fahrzeuge ansehen",
       "accent-too-light": "Diese Farbe ist zu hell für weiße Schrift, daher behält das Buchungsformular seinen Standardakzent.",
-      "corner-sharpness-scope": "Gilt für das einbettbare Widget; das Buchungsformular behält seine feinen Ecken."
+      "corner-sharpness-scope": "Gilt für das einbettbare Widget; das Buchungsformular behält seine feinen Ecken.",
+      "palette-title": "Farbpalette",
+      "palette-help": "Gilt für Buchungsformular, Einbettungen und dieses Dashboard. Jede Palette erfüllt WCAG AA hell und dunkel.",
+      "palette-neutral": "Neutral",
+      "palette-neutral-note": "Weiß und Anthrazit, Standard",
+      "palette-slate": "Schiefer & Indigo",
+      "palette-slate-note": "Kühle Grautöne, Indigo-Aktionen",
+      "palette-heritage": "Elfenbein & Ochsenblut",
+      "palette-heritage-note": "Warmes Elfenbein, tiefes Rot",
+      "palette-navy": "Navy & Violett",
+      "palette-navy-note": "Tiefes Marineblau, violette Aktionen"
     },
     "Refunds": {
       "title": "Refund Requests",

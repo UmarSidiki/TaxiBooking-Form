@@ -8,9 +8,9 @@ export function RidePaymentStatusBadge({ status }: { status: string }) {
     case "completed":
       return <StatusMark tone="ok" label={t("Dashboard.Rides.Paid")} />;
     case "pending":
-      return <StatusMark tone="info" label={t("Dashboard.Rides.Pending")} />;
+      return <StatusMark tone="warn" label={t("Dashboard.Rides.Pending")} />;
     case "refunded":
-      return <StatusMark tone="ok" label={t("Dashboard.Rides.Refunded")} />;
+      return <StatusMark tone="muted" label={t("Dashboard.Rides.Refunded")} />;
     case "failed":
       return <StatusMark tone="err" label={t("Dashboard.Rides.Failed")} />;
     default:

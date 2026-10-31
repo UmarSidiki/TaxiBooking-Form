@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { COLOR_PALETTES } from "@/features/settings/lib/color-palettes";
 
 const hexOrRgb = z.string().max(64);
 
@@ -6,6 +7,7 @@ export const settingsWriteSchema = z.object({
   primaryColor: hexOrRgb.optional(),
   secondaryColor: hexOrRgb.optional(),
   borderRadius: z.number().optional(),
+  colorPalette: z.enum(COLOR_PALETTES).optional(),
   redirectUrl: z.string().optional(),
   thankYouStaySeconds: z.number().optional(),
   redirectImmediatelyAfterBooking: z.boolean().optional(),

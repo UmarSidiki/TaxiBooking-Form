@@ -2,6 +2,7 @@
 
 import { useTranslations } from "next-intl";
 
+import { PalettePicker } from "@/features/settings/ui/palette-picker";
 import AppearanceTab from "@/features/settings/ui/appearance-tab";
 import { AppearancePreview } from "@/features/settings/ui/appearance-preview";
 import { AppearanceTimezoneField } from "@/features/settings/ui/appearance-tab-timezone";
@@ -31,6 +32,10 @@ export function SettingsPageAppearance({
             title={t("Dashboard.Settings.group-brand")}
             description={t("Dashboard.Settings.group-brand-help")}
           >
+            <PalettePicker
+              value={settings.colorPalette}
+              onChange={(value) => patch("colorPalette", value)}
+            />
             <AppearanceTab
               settings={settings}
               handleColorChange={(key, value) => patch(key, value)}

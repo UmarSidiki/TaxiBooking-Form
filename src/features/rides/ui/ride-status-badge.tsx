@@ -16,11 +16,11 @@ export function RideStatusBadge({ booking, isCompleted }: RideStatusBadgeProps) 
   }
 
   if (booking.status === "requested") {
-    return <StatusMark tone="info" label={t("Dashboard.Rides.status-requested")} />;
+    return <StatusMark tone="warn" label={t("Dashboard.Rides.status-requested")} />;
   }
 
   if (booking.status === "awaiting_payment") {
-    return <StatusMark tone="info" label={t("Dashboard.Rides.status-awaiting-payment")} />;
+    return <StatusMark tone="warn" label={t("Dashboard.Rides.status-awaiting-payment")} />;
   }
 
   const completed =

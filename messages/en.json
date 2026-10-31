@@ -1270,7 +1270,7 @@
       "smtp": "SMTP",
       "features": "Features",
       "saving": "Saving…",
-      "appearance_scope": "These colors and corners apply to the public booking form and embeddable widgets, not this desk.",
+      "appearance_scope": "The colour palette applies everywhere, including this desk. Brand colours and corners apply to the public booking form and embeddable widgets.",
       "timezone_help": "Used for booking times and email timestamps.",
       "loading": "Loading…",
       "draw_hint": "Click points to draw. Click the first point or double-click to finish.",
@@ -1543,7 +1543,17 @@
       "preview-dropoff": "Hotel beau-Rivage, lausanne",
       "preview-continue": "See vehicles",
       "accent-too-light": "This colour is too light for white button text, so the booking form keeps its default accent.",
-      "corner-sharpness-scope": "Applies to the embeddable widget; the booking form keeps its fine corners."
+      "corner-sharpness-scope": "Applies to the embeddable widget; the booking form keeps its fine corners.",
+      "palette-title": "Colour palette",
+      "palette-help": "Applies to the booking form, embeds and this desk. Every palette meets WCAG AA in light and dark.",
+      "palette-neutral": "Neutral",
+      "palette-neutral-note": "White and charcoal, the default",
+      "palette-slate": "Slate & Indigo",
+      "palette-slate-note": "Cool greys, indigo actions",
+      "palette-heritage": "Ivory & Oxblood",
+      "palette-heritage-note": "Warm ivory, deep red",
+      "palette-navy": "Navy & Blurple",
+      "palette-navy-note": "Deep navy, violet actions"
     },
     "Refunds": {
       "title": "Refund requests",

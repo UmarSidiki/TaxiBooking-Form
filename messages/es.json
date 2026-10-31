@@ -1270,7 +1270,7 @@
       "smtp": "SMTP",
       "features": "Funciones",
       "saving": "Guardando…",
-      "appearance_scope": "Estos colores y radios aplican al formulario público, no a este escritorio.",
+      "appearance_scope": "La paleta se aplica en todas partes, incluido este panel. Los colores de marca y las esquinas se aplican al formulario público y a los widgets.",
       "timezone_help": "Se usa para horarios de reserva y correos.",
       "loading": "Cargando…",
       "draw_hint": "Haga clic para dibujar. Pulse el primer punto o haga doble clic para terminar.",
@@ -1543,7 +1543,17 @@
       "preview-dropoff": "Hotel Beau-Rivage, Lausana",
       "preview-continue": "Ver vehículos",
       "accent-too-light": "Este color es demasiado claro para texto blanco, así que el formulario mantiene su acento predeterminado.",
-      "corner-sharpness-scope": "Se aplica al widget integrable; el formulario mantiene sus esquinas finas."
+      "corner-sharpness-scope": "Se aplica al widget integrable; el formulario mantiene sus esquinas finas.",
+      "palette-title": "Paleta de colores",
+      "palette-help": "Se aplica al formulario, los widgets y este panel. Todas cumplen WCAG AA en claro y oscuro.",
+      "palette-neutral": "Neutro",
+      "palette-neutral-note": "Blanco y carbón, predeterminado",
+      "palette-slate": "Pizarra e índigo",
+      "palette-slate-note": "Grises fríos, acciones índigo",
+      "palette-heritage": "Marfil y burdeos",
+      "palette-heritage-note": "Marfil cálido, rojo intenso",
+      "palette-navy": "Marino y violeta",
+      "palette-navy-note": "Azul marino, acciones violeta"
     },
     "Refunds": {
       "title": "Refund Requests",

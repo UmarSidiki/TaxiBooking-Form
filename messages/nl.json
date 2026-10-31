@@ -1270,7 +1270,7 @@
       "smtp": "SMTP",
       "features": "Functies",
       "saving": "Opslaan…",
-      "appearance_scope": "Deze kleuren en hoeken gelden voor het publieke formulier, niet voor deze balie.",
+      "appearance_scope": "Het kleurenpalet geldt overal, ook in dit dashboard. Merkkleuren en hoeken gelden voor het openbare boekingsformulier en de widgets.",
       "timezone_help": "Voor rit tijden en e-mails.",
       "loading": "Laden…",
       "draw_hint": "Klik punten. Klik het eerste punt of dubbelklik om te eindigen.",
@@ -1543,7 +1543,17 @@
       "preview-dropoff": "Hotel Beau-Rivage, Lausanne",
       "preview-continue": "Voertuigen bekijken",
       "accent-too-light": "Deze kleur is te licht voor witte tekst, dus het formulier houdt zijn standaardaccent.",
-      "corner-sharpness-scope": "Geldt voor de insluitbare widget; het boekingsformulier houdt zijn fijne hoeken."
+      "corner-sharpness-scope": "Geldt voor de insluitbare widget; het boekingsformulier houdt zijn fijne hoeken.",
+      "palette-title": "Kleurenpalet",
+      "palette-help": "Geldt voor het boekingsformulier, embeds en dit dashboard. Elk palet voldoet aan WCAG AA in licht en donker.",
+      "palette-neutral": "Neutraal",
+      "palette-neutral-note": "Wit en antraciet, standaard",
+      "palette-slate": "Leisteen & indigo",
+      "palette-slate-note": "Koele grijzen, indigo acties",
+      "palette-heritage": "Ivoor & ossenbloed",
+      "palette-heritage-note": "Warm ivoor, diep rood",
+      "palette-navy": "Marine & violet",
+      "palette-navy-note": "Diep marineblauw, violette acties"
     },
     "Refunds": {
       "title": "Refund Requests",

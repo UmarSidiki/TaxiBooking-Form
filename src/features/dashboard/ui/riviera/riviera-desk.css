@@ -130,3 +130,21 @@
   .riviera .today-timeline__ride { grid-template-columns: 3.25rem minmax(0, 1fr); }
   .riviera .today-timeline__ride > :last-child { grid-column: 2; }
 }
+
+/* Appearance: palette picker. Each option sets data-palette-scope, so its swatches read that palette's tokens. */
+.riviera .palette-picker { border: 0; padding: 0; margin: 0 0 24px; min-width: 0; }
+.riviera .palette-picker__legend { font-size: 14px; font-weight: 500; color: var(--ink); }
+.riviera .palette-picker__help { margin: 4px 0 12px; font-size: 12px; color: var(--ink2); }
+.riviera .palette-picker__grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(10.5rem, 1fr)); gap: 8px; }
+.riviera .palette-picker__option {
+  position: relative; display: flex; flex-direction: column; gap: 6px; padding: 12px;
+  min-height: 44px; cursor: pointer; border-radius: var(--radius);
+  background: var(--sheet); color: var(--ink); border: 1px solid var(--rule2);
+}
+.riviera .palette-picker__option[data-selected] { outline: 2px solid var(--sig); outline-offset: 1px; }
+.riviera .palette-picker__option:has(:focus-visible) { outline: 2px solid var(--sig); outline-offset: 3px; }
+.riviera .palette-picker__radio { position: absolute; opacity: 0; inset: 0; margin: 0; cursor: pointer; }
+.riviera .palette-picker__swatches { display: flex; gap: 4px; }
+.riviera .palette-picker__swatches span { width: 22px; height: 22px; border-radius: var(--radius-sm); border: 1px solid var(--rule2); }
+.riviera .palette-picker__name { font-size: 14px; font-weight: 600; }
+.riviera .palette-picker__note { font-size: 12px; color: var(--ink2); }

@@ -91,7 +91,7 @@ function Step3Payment() {
           <Button
             onClick={handleBack}
             variant="outline"
-            className="flex-1"
+            className="w-full sm:flex-1"
             disabled={isLoading || step.creatingPaymentIntent}
           >
             <ArrowLeft className="mr-2 h-4 w-4" /> {t("Step3.back-to-vehicles")}

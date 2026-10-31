@@ -57,7 +57,7 @@ export function EmbeddableV1Progress({ t }: { t: TFn }) {
                 </div>
                 <span
                   className={`mt-1 text-xs font-medium ${
-                    index === 0 ? "text-primary font-bold" : "text-neutral-600"
+                    index === 0 ? "text-primary font-bold" : "text-[color:var(--ink2)]"
                   }`}
                 >
                   {label}

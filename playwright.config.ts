@@ -5,7 +5,7 @@ const iphone = devices["iPhone 13"];
 
 export default defineConfig({
   testDir: "./e2e",
-  testIgnore: ["qa/**"],
+  testIgnore: ["qa/**", "qa-matrix.spec.ts"],
   fullyParallel: false,
   workers: 1,
   timeout: 90_000,

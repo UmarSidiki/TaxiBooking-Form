@@ -62,6 +62,82 @@ describe("customer sessions", () => {
     expect((await GET(tripsRequest())).status).toBe(401);
   });
 
+  it("slides an idle session and extends the cookie", async () => {
+    const id = await createCustomerSession("ada@example.com");
+    const stale = new Date(Date.now() - 2 * 60 * 60 * 1000);
+    await CustomerSession.updateOne(
+      {},
+      {
+        $set: {
+          lastSeenAt: stale,
+          expiresAt: new Date(Date.now() + 60 * 60 * 1000),
+        },
+      },
+    );
+    const { GET } = await import("@/app/api/account/me/route");
+    const response = await GET(
+      new Request("http://local/api/account/me", {
+        headers: { cookie: `${mocks.cookieName}=${id}` },
+      }),
+    );
+    expect(response.status).toBe(200);
+
+    const row = await CustomerSession.findOne({});
+    expect(row?.lastSeenAt.getTime()).toBeGreaterThan(stale.getTime());
+    expect(row?.expiresAt.getTime()).toBeGreaterThan(
+      Date.now() + 29 * 24 * 60 * 60 * 1000,
+    );
+
+    const maxAge = /Max-Age=(\d+)/i.exec(response.headers.get("set-cookie") ?? "");
+    expect(Number(maxAge?.[1])).toBeGreaterThan(29 * 24 * 60 * 60);
+  });
+
+  it("caps the sliding expiry at 90 days after creation", async () => {
+    const id = await createCustomerSession("ada@example.com");
+    const createdAt = new Date(Date.now() - 89 * 24 * 60 * 60 * 1000);
+    await CustomerSession.updateOne(
+      {},
+      {
+        $set: {
+          createdAt,
+          lastSeenAt: new Date(Date.now() - 2 * 60 * 60 * 1000),
+          expiresAt: new Date(Date.now() + 60 * 60 * 1000),
+        },
+      },
+    );
+    const { GET } = await import("@/app/api/account/me/route");
+    const response = await GET(
+      new Request("http://local/api/account/me", {
+        headers: { cookie: `${mocks.cookieName}=${id}` },
+      }),
+    );
+    expect(response.status).toBe(200);
+
+    const row = await CustomerSession.findOne({});
+    expect(row?.expiresAt.getTime()).toBe(
+      createdAt.getTime() + 90 * 24 * 60 * 60 * 1000,
+    );
+  });
+
+  it("does not touch a session seen within the last hour", async () => {
+    const id = await createCustomerSession("ada@example.com");
+    const seen = new Date(Date.now() - 5 * 60 * 1000);
+    const expiresAt = new Date(Date.now() + 20 * 24 * 60 * 60 * 1000);
+    await CustomerSession.updateOne({}, { $set: { lastSeenAt: seen, expiresAt } });
+    const { GET } = await import("@/app/api/account/me/route");
+    const response = await GET(
+      new Request("http://local/api/account/me", {
+        headers: { cookie: `${mocks.cookieName}=${id}` },
+      }),
+    );
+    expect(response.status).toBe(200);
+
+    const row = await CustomerSession.findOne({});
+    expect(row?.lastSeenAt.getTime()).toBe(seen.getTime());
+    expect(row?.expiresAt.getTime()).toBe(expiresAt.getTime());
+    expect(response.headers.get("set-cookie")).toBeNull();
+  });
+
   it("revokes on logout and clears the cookie", async () => {
     const id = await createCustomerSession("ada@example.com");
     mocks.cookie = id;

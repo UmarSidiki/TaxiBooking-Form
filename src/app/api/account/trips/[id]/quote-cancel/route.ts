@@ -2,7 +2,10 @@ import { NextResponse } from "next/server";
 import { connectDB } from "@/shared/db";
 import { Booking } from "@/features/booking/model";
 import { Setting } from "@/features/settings/model";
-import { readCustomerSession } from "@/features/customers/lib/customer-session";
+import {
+  applyCustomerSessionCookie,
+  readCustomerSession,
+} from "@/features/customers/lib/customer-session";
 import { changeAllowed } from "@/features/customers/lib/customer-rides";
 import { zonedRideInstant } from "@/features/booking/lib/send-pickup-reminders";
 import { normalizeCancelPolicy, computeCancelFee } from "@/features/customers/lib/cancel-policy";
@@ -16,13 +19,13 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> }
 ) {
   await connectDB();
-  const email = await readCustomerSession(request);
-  if (!email) {
+  const session = await readCustomerSession(request);
+  if (!session) {
     return NextResponse.json({ error: "unauthorized" }, { status: 401 });
   }
 
   const { id } = await params;
-  const booking = await Booking.findOne({ tripId: id, email: emailPattern(email) });
+  const booking = await Booking.findOne({ tripId: id, email: emailPattern(session.email) });
   if (!booking) {
     return NextResponse.json({ error: "not_found" }, { status: 404 });
   }
@@ -47,18 +50,21 @@ export async function GET(
   const feeCents = Math.round(feeAmount * 100);
   const refundCents = Math.max(0, netPaidCents - feeCents);
 
-  return NextResponse.json({
-    ok: true,
-    tripId: booking.tripId,
-    status: booking.status,
-    totalAmount: total,
-    paid,
-    feePercent,
-    feeAmount,
-    refundAmount: refundCents / 100,
-    listRefundAmount: refundAmount,
-    hoursUntil,
-    cancelPolicy: policy,
-    modifiable: (await changeAllowed(booking)) && ["requested", "awaiting_payment", "upcoming"].includes(booking.status ?? ""),
-  });
+  return applyCustomerSessionCookie(
+    NextResponse.json({
+      ok: true,
+      tripId: booking.tripId,
+      status: booking.status,
+      totalAmount: total,
+      paid,
+      feePercent,
+      feeAmount,
+      refundAmount: refundCents / 100,
+      listRefundAmount: refundAmount,
+      hoursUntil,
+      cancelPolicy: policy,
+      modifiable: (await changeAllowed(booking)) && ["requested", "awaiting_payment", "upcoming"].includes(booking.status ?? ""),
+    }),
+    session,
+  );
 }

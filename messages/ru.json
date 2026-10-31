@@ -2809,6 +2809,9 @@
     "siteControls": "Управление сайтом",
     "lightMode": "Светлая тема",
     "darkMode": "Тёмная тема",
-    "language": "Язык"
+    "language": "Язык",
+    "signedInAs": "Вы вошли как",
+    "switchAccount": "Сменить аккаунт",
+    "signOut": "Выйти"
   }
 }

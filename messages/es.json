@@ -2809,6 +2809,9 @@
     "siteControls": "Controles del sitio",
     "lightMode": "Modo claro",
     "darkMode": "Modo oscuro",
-    "language": "Idioma"
+    "language": "Idioma",
+    "signedInAs": "Sesión iniciada como",
+    "switchAccount": "Cambiar de cuenta",
+    "signOut": "Cerrar sesión"
   }
 }

@@ -2,7 +2,10 @@ import { NextResponse } from "next/server";
 import { isValidObjectId } from "mongoose";
 import { z } from "zod";
 import { applyCustomerTripAction } from "@/features/customers/lib/apply-customer-trip-action";
-import { readCustomerSession } from "@/features/customers/lib/customer-session";
+import {
+  applyCustomerSessionCookie,
+  readCustomerSession,
+} from "@/features/customers/lib/customer-session";
 import { WHATSAPP_NOTIFICATION_MAX_DURATION_SECONDS } from "@/features/settings/lib/whatsapp-deadline";
 
 export const maxDuration = WHATSAPP_NOTIFICATION_MAX_DURATION_SECONDS;
@@ -24,18 +27,15 @@ const changeSchema = z.object({
   dryRun: z.boolean().optional(),
 });
 
-async function emailFromRequest(request: Request) {
-  return readCustomerSession(request);
-}
-
 export async function POST(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const email = await emailFromRequest(request);
-  if (!email) {
+  const session = await readCustomerSession(request);
+  if (!session) {
     return NextResponse.json({ error: "unauthorized" }, { status: 401 });
   }
+  const email = session.email;
 
   const parsed = changeSchema.safeParse(await request.json().catch(() => null));
   if (!parsed.success) {
@@ -66,21 +66,24 @@ export async function POST(
     );
   }
 
-  return NextResponse.json({
-    ok: true,
-    status: result.status,
-    date: result.date,
-    time: result.time,
-    totalAmount: result.totalAmount,
-    payUrl: result.payUrl,
-    refundRequestId: result.refundRequestId,
-    fee: result.fee,
-    refundAmount: result.refundAmount,
-    currentTotal: result.currentTotal,
-    newTotal: result.newTotal,
-    paid: result.paid,
-    difference: result.difference,
-    action: result.action,
-    amount: result.amount,
-  });
+  return applyCustomerSessionCookie(
+    NextResponse.json({
+      ok: true,
+      status: result.status,
+      date: result.date,
+      time: result.time,
+      totalAmount: result.totalAmount,
+      payUrl: result.payUrl,
+      refundRequestId: result.refundRequestId,
+      fee: result.fee,
+      refundAmount: result.refundAmount,
+      currentTotal: result.currentTotal,
+      newTotal: result.newTotal,
+      paid: result.paid,
+      difference: result.difference,
+      action: result.action,
+      amount: result.amount,
+    }),
+    session,
+  );
 }

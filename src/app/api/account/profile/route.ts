@@ -2,7 +2,10 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { connectDB } from "@/shared/db";
 import CustomerProfile from "@/features/customers/model/CustomerProfile";
-import { readCustomerSession } from "@/features/customers/lib/customer-session";
+import {
+  applyCustomerSessionCookie,
+  readCustomerSession,
+} from "@/features/customers/lib/customer-session";
 
 const profileSchema = z.object({
   name: z.string().trim().max(120).optional(),
@@ -17,21 +20,20 @@ const profileSchema = z.object({
   language: z.string().trim().min(2).max(8).optional(),
 });
 
-async function emailFromRequest(request: Request) {
-  return readCustomerSession(request);
-}
-
 export async function GET(request: Request) {
-  const email = await emailFromRequest(request);
-  if (!email) return NextResponse.json({ error: "unauthorized" }, { status: 401 });
+  const session = await readCustomerSession(request);
+  if (!session) return NextResponse.json({ error: "unauthorized" }, { status: 401 });
   await connectDB();
-  const doc = await CustomerProfile.findOne({ email }).lean();
-  return NextResponse.json({ email, profile: doc ?? null });
+  const doc = await CustomerProfile.findOne({ email: session.email }).lean();
+  return applyCustomerSessionCookie(
+    NextResponse.json({ email: session.email, profile: doc ?? null }),
+    session,
+  );
 }
 
 export async function PATCH(request: Request) {
-  const email = await emailFromRequest(request);
-  if (!email) return NextResponse.json({ error: "unauthorized" }, { status: 401 });
+  const session = await readCustomerSession(request);
+  if (!session) return NextResponse.json({ error: "unauthorized" }, { status: 401 });
   const parsed = profileSchema.safeParse(await request.json().catch(() => null));
   if (!parsed.success) return NextResponse.json({ error: "invalid_body" }, { status: 400 });
   await connectDB();
@@ -41,9 +43,12 @@ export async function PATCH(request: Request) {
   if (parsed.data.savedAddresses !== undefined) update.savedAddresses = parsed.data.savedAddresses;
   if (parsed.data.language !== undefined) update.language = parsed.data.language;
   const doc = await CustomerProfile.findOneAndUpdate(
-    { email },
-    { $set: { email, ...update } },
+    { email: session.email },
+    { $set: { email: session.email, ...update } },
     { upsert: true, new: true },
   ).lean();
-  return NextResponse.json({ ok: true, profile: doc });
+  return applyCustomerSessionCookie(
+    NextResponse.json({ ok: true, profile: doc }),
+    session,
+  );
 }

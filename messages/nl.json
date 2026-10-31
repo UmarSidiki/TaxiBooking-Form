@@ -2809,6 +2809,9 @@
     "siteControls": "Site-instellingen",
     "lightMode": "Lichte modus",
     "darkMode": "Donkere modus",
-    "language": "Taal"
+    "language": "Taal",
+    "signedInAs": "Aangemeld als",
+    "switchAccount": "Wisselen van account",
+    "signOut": "Afmelden"
   }
 }

@@ -2809,6 +2809,9 @@
     "siteControls": "عناصر التحكم",
     "lightMode": "الوضع الفاتح",
     "darkMode": "الوضع الداكن",
-    "language": "اللغة"
+    "language": "اللغة",
+    "signedInAs": "تم تسجيل الدخول باسم",
+    "switchAccount": "تبديل الحساب",
+    "signOut": "تسجيل الخروج"
   }
 }

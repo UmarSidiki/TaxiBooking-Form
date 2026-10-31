@@ -1,6 +1,9 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import { readCustomerSession } from "@/features/customers/lib/customer-session";
+import {
+  applyCustomerSessionCookie,
+  readCustomerSession,
+} from "@/features/customers/lib/customer-session";
 import {
   confirmPhoneVerification,
   removeVerifiedPhone,
@@ -20,16 +23,13 @@ const codeSchema = z.strictObject({
   code: z.string().trim().regex(/^\d{6}$/),
 });
 
-async function emailFromRequest(request: Request) {
-  return readCustomerSession(request);
-}
-
 export async function POST(request: Request) {
   const limited = await limitSensitive(request, "otp");
   if (limited) return limited;
 
-  const email = await emailFromRequest(request);
-  if (!email) return NextResponse.json({ error: "unauthorized" }, { status: 401 });
+  const session = await readCustomerSession(request);
+  if (!session) return NextResponse.json({ error: "unauthorized" }, { status: 401 });
+  const email = session.email;
 
   const body = await request.json().catch(() => null);
 
@@ -39,7 +39,10 @@ export async function POST(request: Request) {
     if (!result.ok) {
       return NextResponse.json({ error: result.error }, { status: result.error === "rate_limited" ? 429 : 400 });
     }
-    return NextResponse.json({ ok: true, phone: result.phone });
+    return applyCustomerSessionCookie(
+      NextResponse.json({ ok: true, phone: result.phone }),
+      session,
+    );
   }
 
   const phone = phoneSchema.safeParse(body);
@@ -56,12 +59,15 @@ export async function POST(request: Request) {
       },
     );
   }
-  return NextResponse.json({ ok: true, phone: result.phone });
+  return applyCustomerSessionCookie(
+    NextResponse.json({ ok: true, phone: result.phone }),
+    session,
+  );
 }
 
 export async function DELETE(request: Request) {
-  const email = await emailFromRequest(request);
-  if (!email) return NextResponse.json({ error: "unauthorized" }, { status: 401 });
-  await removeVerifiedPhone(email);
-  return NextResponse.json({ ok: true });
+  const session = await readCustomerSession(request);
+  if (!session) return NextResponse.json({ error: "unauthorized" }, { status: 401 });
+  await removeVerifiedPhone(session.email);
+  return applyCustomerSessionCookie(NextResponse.json({ ok: true }), session);
 }

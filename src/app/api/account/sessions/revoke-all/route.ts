@@ -10,10 +10,10 @@ export async function POST(request: Request) {
   if (!isSameSiteRequest(request)) {
     return NextResponse.json({ error: "forbidden" }, { status: 403 });
   }
-  const email = await readCustomerSession(request);
-  if (!email) return NextResponse.json({ error: "unauthorized" }, { status: 401 });
+  const session = await readCustomerSession(request);
+  if (!session) return NextResponse.json({ error: "unauthorized" }, { status: 401 });
 
-  await revokeAllCustomerSessions(email);
+  await revokeAllCustomerSessions(session.email);
   const response = NextResponse.json({ ok: true });
   clearCustomerSessionCookie(response);
   return response;

@@ -2809,6 +2809,9 @@
     "siteControls": "Site controls",
     "lightMode": "Light mode",
     "darkMode": "Dark mode",
-    "language": "Language"
+    "language": "Language",
+    "signedInAs": "Signed in as",
+    "switchAccount": "Switch account",
+    "signOut": "Sign out"
   }
 }

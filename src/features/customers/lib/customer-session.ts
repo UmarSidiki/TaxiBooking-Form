@@ -7,12 +7,22 @@ import CustomerSession from "@/features/customers/model/CustomerSession";
 
 const IDLE_MS = 30 * 24 * 60 * 60 * 1000;
 const ABSOLUTE_MS = 90 * 24 * 60 * 60 * 1000;
+const SLIDE_MS = 60 * 60 * 1000;
 const LEGACY_COOKIE = "customer_session";
 
 type SessionRow = {
   _id: unknown;
   emailLower: string;
   createdAt: Date;
+  lastSeenAt: Date;
+  expiresAt: Date;
+};
+
+export type CustomerSessionHit = {
+  id: string;
+  email: string;
+  expiresAt: Date;
+  slid: boolean;
 };
 
 function usesSecureCookie() {
@@ -59,9 +69,8 @@ export async function createCustomerSession(
   return id;
 }
 
-async function touchSession(id: string) {
+async function touchSession(id: string, now = new Date()): Promise<CustomerSessionHit | null> {
   await connectDB();
-  const now = new Date();
   const row = await CustomerSession.findOne({
     idHash: hashId(id),
     revokedAt: null,
@@ -72,12 +81,18 @@ async function touchSession(id: string) {
   const absoluteEnd = new Date(row.createdAt.getTime() + ABSOLUTE_MS);
   if (now.getTime() >= absoluteEnd.getTime()) return null;
 
+  const lastSeenAt = row.lastSeenAt ?? row.createdAt;
+  if (now.getTime() - lastSeenAt.getTime() < SLIDE_MS) {
+    return { id, email: row.emailLower, expiresAt: row.expiresAt, slid: false };
+  }
+
   const idleEnd = new Date(now.getTime() + IDLE_MS);
+  const expiresAt = idleEnd < absoluteEnd ? idleEnd : absoluteEnd;
   await CustomerSession.updateOne(
     { _id: row._id },
-    { $set: { lastSeenAt: now, expiresAt: idleEnd < absoluteEnd ? idleEnd : absoluteEnd } },
+    { $set: { lastSeenAt: now, expiresAt } },
   );
-  return row.emailLower;
+  return { id, email: row.emailLower, expiresAt, slid: true };
 }
 
 async function cookieJar() {
@@ -101,13 +116,25 @@ function cookieFromHeader(request: Request | undefined, name: string) {
   return null;
 }
 
-export async function readCustomerSession(request?: Request) {
+export async function readCustomerSession(request?: Request): Promise<CustomerSessionHit | null> {
   const jar = await cookieJar();
   const { name } = customerSessionCookie();
   if (jar?.get(LEGACY_COOKIE)) jar.delete(LEGACY_COOKIE);
   const id = cookieFromHeader(request, name) ?? jar?.get(name)?.value;
   if (!id) return null;
   return touchSession(id);
+}
+
+/** Keep the browser cookie alive for as long as the slid database session. */
+export function applyCustomerSessionCookie(
+  response: NextResponse,
+  session: CustomerSessionHit | null,
+) {
+  if (!session?.slid) return response;
+  const cookie = customerSessionCookie();
+  const maxAge = Math.max(0, Math.floor((session.expiresAt.getTime() - Date.now()) / 1000));
+  response.cookies.set(cookie.name, session.id, { ...cookie.options, maxAge });
+  return response;
 }
 
 export async function revokeCustomerSession(request?: Request) {

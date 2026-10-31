@@ -7,8 +7,10 @@ import { generateOtpCode, hashOtpCode, otpCodeMatches } from "@/features/custome
 
 export type CustomerOtpChannel = "email" | "whatsapp";
 
+export type CustomerOtpDelivery = () => Promise<void>;
+
 export type SendCustomerOtpResult =
-  | { ok: true }
+  | { ok: true; delivery: CustomerOtpDelivery }
   | { ok: false; error: "invalid_body" | "rate_limited"; retryAfter?: number }
   | { ok: false; code: "no_booking" };
 
@@ -16,6 +18,7 @@ const TTL_MS = 10 * 60 * 1000;
 const SEND_WINDOW_MS = 60 * 60 * 1000;
 const MAX_SENDS_PER_WINDOW = 5;
 const MAX_ATTEMPTS = 5;
+const CODE_ROW_FILTER = { codeHash: { $type: "string" } } as const;
 
 async function verifiedPhoneFor(email: string) {
   const profile = await CustomerProfile.findOne({ email })
@@ -34,6 +37,15 @@ async function hasBooking(email: string) {
   return Boolean(booking);
 }
 
+/** Count a no_booking probe as a send so one email cannot be probed across many IPs. */
+async function recordProbe(email: string) {
+  await CustomerOtp.create({
+    email,
+    expiresAt: new Date(Date.now() + TTL_MS),
+    sentAt: new Date(),
+  });
+}
+
 export async function sendCustomerOtp(
   emailRaw: string,
   channel: CustomerOtpChannel = "email",
@@ -48,9 +60,12 @@ export async function sendCustomerOtp(
     return { ok: false, error: "rate_limited", retryAfter: 3600 };
   }
 
-  if (!(await hasBooking(email))) return { ok: false, code: "no_booking" };
+  if (!(await hasBooking(email))) {
+    await recordProbe(email);
+    return { ok: false, code: "no_booking" };
+  }
 
-  const live = await CustomerOtp.findOne({ email, consumedAt: null, sentAt: { $gte: since } })
+  const live = await CustomerOtp.findOne({ email, consumedAt: null, sentAt: { $gte: since }, ...CODE_ROW_FILTER })
     .sort({ sentAt: -1 })
     .lean<{ attempts?: number }>();
   const code = generateOtpCode();
@@ -62,22 +77,39 @@ export async function sendCustomerOtp(
     sentAt: new Date(),
   });
 
-  await deliverCode(code, email, channel);
-  return { ok: true as const };
+  return { ok: true as const, delivery: () => deliverCode(code, email, channel) };
 }
 
 export async function verifyCustomerOtp(emailRaw: string, code: string) {
   const email = emailRaw.trim().toLowerCase();
   await connectDB();
 
-  const row = await CustomerOtp.findOne({ email, consumedAt: null }).sort({ sentAt: -1 });
-  if (!row || row.expiresAt.getTime() <= Date.now()) return { ok: false as const, error: "expired" };
-  if ((row.attempts ?? 0) >= MAX_ATTEMPTS) return { ok: false as const, error: "rate_limited" };
+  const latest = await CustomerOtp.findOne({ email, consumedAt: null, ...CODE_ROW_FILTER })
+    .sort({ sentAt: -1 })
+    .select("_id expiresAt")
+    .lean<{ _id: unknown; expiresAt: Date }>();
+  if (!latest || latest.expiresAt.getTime() <= Date.now()) {
+    return { ok: false as const, error: "expired" };
+  }
+
+  const row = await CustomerOtp.findOneAndUpdate(
+    { _id: latest._id, consumedAt: null, attempts: { $lt: MAX_ATTEMPTS } },
+    { $inc: { attempts: 1 } },
+    { new: true },
+  );
+  if (!row || typeof row.codeHash !== "string") {
+    return { ok: false as const, error: "rate_limited" };
+  }
   if (!otpCodeMatches(email, code.trim(), row.codeHash)) {
-    await CustomerOtp.updateOne({ _id: row._id }, { $inc: { attempts: 1 } });
     return { ok: false as const, error: "invalid_code" };
   }
 
-  await CustomerOtp.updateOne({ _id: row._id }, { $set: { consumedAt: new Date() } });
+  const consumed = await CustomerOtp.findOneAndUpdate(
+    { _id: row._id, consumedAt: null },
+    { $set: { consumedAt: new Date() } },
+    { new: true },
+  );
+  if (!consumed) return { ok: false as const, error: "invalid_code" };
+
   return { ok: true as const, email };
 }

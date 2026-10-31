@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { after, NextResponse } from "next/server";
 import { z } from "zod";
 import { sendCustomerOtp, verifyCustomerOtp } from "@/features/customers/lib/customer-otp";
 import { padOtpSend } from "@/features/customers/lib/otp-send-timing";
@@ -20,6 +20,15 @@ const verifySchema = z.strictObject({
   email: emailSchema,
   code: z.string().trim().regex(/^\d{6}$/),
 });
+
+/** Run delivery after the response; tests have no request scope for `after`. */
+function deferDelivery(task: () => Promise<void>) {
+  try {
+    after(task);
+  } catch {
+    void task().catch(() => undefined);
+  }
+}
 
 export async function POST(request: Request) {
   const limited = await limitSensitive(request, "otp");
@@ -62,5 +71,6 @@ export async function POST(request: Request) {
       },
     );
   }
+  deferDelivery(sent.delivery);
   return NextResponse.json({ ok: true });
 }

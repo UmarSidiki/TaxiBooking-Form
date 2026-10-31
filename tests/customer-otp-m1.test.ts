@@ -36,6 +36,12 @@ async function knownCustomer(email: string) {
   await createRide({ selectedVehicle: new mongoose.Types.ObjectId(), email });
 }
 
+async function send(email: string, channel?: "email" | "whatsapp") {
+  const result = await sendCustomerOtp(email, channel);
+  if (result.ok) await result.delivery();
+  return result;
+}
+
 let ipSeq = 0;
 function sendRequest(body: unknown) {
   ipSeq += 1;
@@ -71,7 +77,7 @@ describe("customer OTP (M1)", () => {
 
   it("emails a code to a known customer", async () => {
     await knownCustomer("known@example.com");
-    const result = await sendCustomerOtp("known@example.com");
+    const result = await send("known@example.com");
     expect(result.ok).toBe(true);
     expect(lastChannels()).toEqual(["email"]);
     expect(lastCode()).toMatch(/^\d{6}$/);
@@ -79,7 +85,7 @@ describe("customer OTP (M1)", () => {
 
   it("falls back to email for the whatsapp channel when no verified phone exists", async () => {
     await knownCustomer("nophone@example.com");
-    const result = await sendCustomerOtp("nophone@example.com", "whatsapp");
+    const result = await send("nophone@example.com", "whatsapp");
     expect(result.ok).toBe(true);
     expect(lastChannels()).toEqual(["email"]);
     expect(mocks.notify.mock.calls.every(([, ctx]) => !(ctx as { channels?: string[] }).channels?.includes("whatsapp"))).toBe(true);
@@ -87,7 +93,7 @@ describe("customer OTP (M1)", () => {
 
   it("accepts a code only once", async () => {
     await knownCustomer("once@example.com");
-    await sendCustomerOtp("once@example.com");
+    await send("once@example.com");
     const code = lastCode();
     expect((await verifyCustomerOtp("once@example.com", code)).ok).toBe(true);
     expect((await verifyCustomerOtp("once@example.com", code)).ok).toBe(false);
@@ -95,7 +101,7 @@ describe("customer OTP (M1)", () => {
 
   it("rejects an expired code", async () => {
     await knownCustomer("expired@example.com");
-    await sendCustomerOtp("expired@example.com");
+    await send("expired@example.com");
     const code = lastCode();
     await CustomerOtp.updateMany({ email: "expired@example.com" }, { $set: { expiresAt: new Date(Date.now() - 1000) } });
     const result = await verifyCustomerOtp("expired@example.com", code);
@@ -105,7 +111,7 @@ describe("customer OTP (M1)", () => {
 
   it("blocks the sixth wrong guess", async () => {
     await knownCustomer("guess@example.com");
-    await sendCustomerOtp("guess@example.com");
+    await send("guess@example.com");
     const right = lastCode();
     const wrong = right === "000000" ? "111111" : "000000";
     for (let attempt = 0; attempt < 5; attempt += 1) {
@@ -120,10 +126,10 @@ describe("customer OTP (M1)", () => {
 
   it("blocks the sixth send within an hour", async () => {
     await knownCustomer("many@example.com");
-    for (let send = 0; send < 5; send += 1) {
-      expect((await sendCustomerOtp("many@example.com")).ok).toBe(true);
+    for (let round = 0; round < 5; round += 1) {
+      expect((await send("many@example.com")).ok).toBe(true);
     }
-    const blocked = await sendCustomerOtp("many@example.com");
+    const blocked = await send("many@example.com");
     expect(blocked.ok).toBe(false);
     if (!blocked.ok && "error" in blocked) {
       expect(blocked.error).toBe("rate_limited");
@@ -157,7 +163,7 @@ describe("customer OTP (M1)", () => {
     clearWhatsAppOutbox();
     await knownCustomer("verified@example.com");
     await CustomerProfile.create({ email: "verified@example.com", verifiedPhone: "+14155552671" });
-    await sendCustomerOtp("verified@example.com", "whatsapp");
+    await send("verified@example.com", "whatsapp");
     expect(readWhatsAppOutbox().at(-1)?.jid).toBe("14155552671@s.whatsapp.net");
     expect(mocks.notify).not.toHaveBeenCalled();
   });

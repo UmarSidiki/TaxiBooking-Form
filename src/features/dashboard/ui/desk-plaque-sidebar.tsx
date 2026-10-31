@@ -1,10 +1,10 @@
 "use client";
-import { brandName } from "@/features/settings/lib/brand-name";
 
-import type { ComponentProps, ReactNode } from "react";
+import { useState, type ComponentProps, type ReactNode } from "react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 
+import { brandName } from "@/features/settings/lib/brand-name";
 import { useOptionalSettingsDesk } from "@/features/settings/ui/settings-desk-context";
 import { DeskNavUser } from "@/features/dashboard/ui/desk-nav-user";
 import {
@@ -34,7 +34,11 @@ export function DeskPlaqueSidebar({
   const t = useTranslations();
   const settings = useOptionalSettingsDesk()?.settings;
   const name = brandName(settings) || t("Auth.Desk.fallback_name");
+  const subtitle = t(subtitleKey);
   const href = homeHref ?? `/${locale}/dashboard/home`;
+  const logoUrl = settings?.companyLogoUrl?.trim() ?? "";
+  const [failedLogoUrl, setFailedLogoUrl] = useState<string | null>(null);
+  const showLogo = Boolean(logoUrl) && failedLogoUrl !== logoUrl;
 
   return (
     <Sidebar
@@ -46,24 +50,34 @@ export function DeskPlaqueSidebar({
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton
-              asChild
-              className="data-[slot=sidebar-menu-button]:p-1.5!"
-            >
+            <SidebarMenuButton asChild className="desk-brand min-h-11 p-1.5 text-start">
               <Link href={href}>
-                <span aria-hidden="true" className="grid size-8 shrink-0 place-items-center rounded-md bg-[var(--ink)] text-sm font-semibold text-[color:var(--paper)]">
-                  {name.trim().charAt(0).toUpperCase()}
+                <span aria-hidden="true" className="desk-brand__logo" data-letter={showLogo ? undefined : ""}>
+                  {showLogo ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={logoUrl}
+                      alt=""
+                      width={32}
+                      height={32}
+                      onError={() => setFailedLogoUrl(logoUrl)}
+                    />
+                  ) : (
+                    name.trim().charAt(0).toUpperCase()
+                  )}
                 </span>
-                <span className="text-base font-semibold text-sidebar-foreground">
-                  {name}
+                <span className="desk-brand__text group-data-[collapsible=icon]:hidden">
+                  <span className="desk-brand__name" title={name}>
+                    {name}
+                  </span>
+                  <span className="desk-brand__sub" title={subtitle}>
+                    {subtitle}
+                  </span>
                 </span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
-        <p className="truncate px-2 text-xs text-sidebar-foreground/70 group-data-[collapsible=icon]:hidden">
-          {t(subtitleKey)}
-        </p>
       </SidebarHeader>
       <SidebarContent>{children}</SidebarContent>
       <SidebarFooter>

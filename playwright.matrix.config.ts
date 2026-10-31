@@ -21,6 +21,7 @@ export default defineConfig({
     "drawer-matrix.spec.ts",
     "sidebar-brand.spec.ts",
     "palette-first-paint.spec.ts",
+    "route-line.spec.ts",
   ],
   fullyParallel: false,
   workers: 1,

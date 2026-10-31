@@ -6,7 +6,7 @@ import { mongoWindowLimit } from "@/shared/http/rate-window";
 const LIMITS: Record<string, number> = {
   booking: 10,
   quote: 30,
-  otp: 5,
+  otp: 20,
   login: 10,
   contact: 5,
   agent: 60,

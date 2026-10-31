@@ -9,7 +9,7 @@ const intl = createMiddleware(routing);
 const SENSITIVE: { prefix: string; bucket: string; limit: number }[] = [
   { prefix: "/api/booking", bucket: "booking", limit: 20 },
   { prefix: "/api/quote", bucket: "quote", limit: 60 },
-  { prefix: "/api/account", bucket: "otp", limit: 15 },
+  { prefix: "/api/account", bucket: "otp", limit: 20 },
   { prefix: "/api/partners/register", bucket: "login", limit: 15 },
   { prefix: "/api/drivers/register", bucket: "login", limit: 15 },
   { prefix: "/api/auth", bucket: "login", limit: 30 },

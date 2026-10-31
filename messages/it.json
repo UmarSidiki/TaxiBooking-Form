@@ -147,6 +147,8 @@
     "last-name": "Cognome *",
     "doe": "Rossi",
     "email-address": "Indirizzo Email *",
+    "signed-in": "Accesso effettuato",
+    "not-you": "Non sei tu?",
     "phone-number": "Numero di Telefono *",
     "whatsapp_opt_in": "Invia la conferma su WhatsApp",
     "payment-method": "Metodo di Pagamento",

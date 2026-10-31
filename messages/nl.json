@@ -147,6 +147,8 @@
     "last-name": "Achternaam *",
     "doe": "Jansen",
     "email-address": "E-mailadres *",
+    "signed-in": "Aangemeld",
+    "not-you": "Niet u?",
     "phone-number": "Telefoonnummer *",
     "whatsapp_opt_in": "Stuur mijn bevestiging via WhatsApp",
     "payment-method": "Betaalmethode",

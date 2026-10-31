@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import Link from "next/link";
+import { useLocale } from "next-intl";
 import { Input } from "@/shared/ui/input";
 import { Card } from "@/shared/ui/card";
 import { useGeo } from "@/features/geo/context/geo-context";
@@ -14,11 +16,16 @@ export function Step3PersonalDetails({
   formData,
   setFormData,
   errors,
-}: Pick<Step, "formData" | "setFormData" | "errors"> & {
+  signedInEmail,
+}: Pick<Step, "formData" | "setFormData" | "errors" | "signedInEmail"> & {
   t: ReturnType<typeof useTranslations>;
 }) {
   const { geo } = useGeo();
+  const locale = useLocale();
   const prefilledRef = useRef(false);
+  const emailLocked =
+    Boolean(signedInEmail) &&
+    formData.email.trim().toLowerCase() === signedInEmail.trim().toLowerCase();
 
   // Seed the visitor's dial code once, and never overwrite what they typed.
   useEffect(() => {
@@ -80,21 +87,41 @@ export function Step3PersonalDetails({
               </div>
             </div>
             <div>
-              <label className="text-sm font-medium block mb-2">
-                {t('Step3.email-address')} </label>
+              <div className="flex items-center justify-between gap-2 mb-2">
+                <label className="text-sm font-medium">
+                  {t('Step3.email-address')} </label>
+                {emailLocked && (
+                  <span id="email-signed-in" className="text-xs text-muted-foreground">
+                    {t('Step3.signed-in')}
+                  </span>
+                )}
+              </div>
               <Input
                 type="email"
                 placeholder="john.doe@example.com"
-                className={errors.email ? "border-[var(--err)]" : ""}
+                className={`${errors.email ? "border-[var(--err)]" : ""} ${emailLocked ? "bg-muted text-muted-foreground" : ""}`}
                 value={formData.email}
+                readOnly={emailLocked}
                 aria-invalid={!!errors.email}
-                aria-describedby={errors.email ? "email-error" : undefined}
+                aria-describedby={
+                  errors.email ? "email-error" : emailLocked ? "email-signed-in" : undefined
+                }
                 onChange={(e) => {
                   setFormData((prev) => ({ ...prev, email: e.target.value }));
                 }}
               />
               {errors.email && (
                 <p id="email-error" className="text-[color:var(--err)] text-xs mt-1">{errors.email}</p>
+              )}
+              {emailLocked && (
+                <p className="text-xs text-muted-foreground mt-1">
+                  <Link
+                    href={`/${locale}/account`}
+                    className="underline underline-offset-2 rounded-sm hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  >
+                    {t('Step3.not-you')}
+                  </Link>
+                </p>
               )}
             </div>
             <div>

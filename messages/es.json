@@ -147,6 +147,8 @@
     "last-name": "Apellido *",
     "doe": "Pérez",
     "email-address": "Dirección de Email *",
+    "signed-in": "Sesión iniciada",
+    "not-you": "¿No eres tú?",
     "phone-number": "Número de Teléfono *",
     "whatsapp_opt_in": "Enviar mi confirmación por WhatsApp",
     "payment-method": "Método de Pago",

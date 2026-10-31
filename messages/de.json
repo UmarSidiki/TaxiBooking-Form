@@ -147,6 +147,8 @@
     "last-name": "Nachname *",
     "doe": "Mustermann",
     "email-address": "E-Mail-Adresse *",
+    "signed-in": "Angemeldet",
+    "not-you": "Nicht Sie?",
     "phone-number": "Telefonnummer *",
     "whatsapp_opt_in": "Bestätigung per WhatsApp senden",
     "payment-method": "Zahlungsmethode",

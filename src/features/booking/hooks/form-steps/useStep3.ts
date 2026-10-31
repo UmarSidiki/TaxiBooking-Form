@@ -27,6 +27,7 @@ export function useStep3() {
     isLoading,
     setIsLoading,
     resetForm,
+    signedInEmail,
   } = useBookingForm();
 
   // Map state
@@ -145,6 +146,7 @@ export function useStep3() {
     selectedVehicle,
     distanceData,
     isLoading,
+    signedInEmail,
 
     // Calculated values
     ...pricing,

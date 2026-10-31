@@ -147,6 +147,8 @@
     "last-name": "Nom *",
     "doe": "Dupont",
     "email-address": "Adresse email *",
+    "signed-in": "Connecté",
+    "not-you": "Pas vous ?",
     "phone-number": "Numéro de téléphone *",
     "whatsapp_opt_in": "Envoyer ma confirmation sur WhatsApp",
     "payment-method": "Méthode de paiement",

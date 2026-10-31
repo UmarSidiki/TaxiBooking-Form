@@ -147,6 +147,8 @@
     "last-name": "Фамилия *",
     "doe": "Иванов",
     "email-address": "Email адрес *",
+    "signed-in": "Вы вошли",
+    "not-you": "Не вы?",
     "phone-number": "Номер телефона *",
     "whatsapp_opt_in": "Отправить подтверждение в WhatsApp",
     "payment-method": "Способ оплаты",

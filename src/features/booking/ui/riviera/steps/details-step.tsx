@@ -37,6 +37,7 @@ function Step3Payment() {
           formData={step.formData}
           setFormData={step.setFormData}
           errors={step.errors}
+          signedInEmail={step.signedInEmail}
         />
         <Step3Extras
           t={t}

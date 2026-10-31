@@ -147,6 +147,8 @@
     "last-name": "اسم العائلة *",
     "doe": "أحمد",
     "email-address": "البريد الإلكتروني *",
+    "signed-in": "تم تسجيل الدخول",
+    "not-you": "لست أنت؟",
     "phone-number": "رقم الهاتف *",
     "whatsapp_opt_in": "أرسل التأكيد عبر واتساب",
     "payment-method": "طريقة الدفع",

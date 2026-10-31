@@ -1,10 +1,9 @@
 import { NextResponse } from "next/server";
 import { isCronAuthorized } from "@/shared/http/is-cron-authorized";
 import { limitSensitive } from "@/shared/http/sensitive-limit";
-import { WHATSAPP_CRON_MAX_DURATION_SECONDS } from "@/features/settings/lib/whatsapp-deadline";
 
 export const dynamic = "force-dynamic";
-export const maxDuration = WHATSAPP_CRON_MAX_DURATION_SECONDS;
+export const maxDuration = 60;
 
 async function handle(req: Request) {
   if (!isCronAuthorized(req)) {

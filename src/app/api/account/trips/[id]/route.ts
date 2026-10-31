@@ -6,9 +6,8 @@ import {
   applyCustomerSessionCookie,
   readCustomerSession,
 } from "@/features/customers/lib/customer-session";
-import { WHATSAPP_NOTIFICATION_MAX_DURATION_SECONDS } from "@/features/settings/lib/whatsapp-deadline";
 
-export const maxDuration = WHATSAPP_NOTIFICATION_MAX_DURATION_SECONDS;
+export const maxDuration = 30;
 
 const changeSchema = z.object({
   date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),

@@ -8,9 +8,8 @@ import {
   sessionMeta,
 } from "@/features/customers/lib/customer-session";
 import { limitSensitive } from "@/shared/http/sensitive-limit";
-import { WHATSAPP_OTP_MAX_DURATION_SECONDS } from "@/features/settings/lib/whatsapp-deadline";
 
-export const maxDuration = WHATSAPP_OTP_MAX_DURATION_SECONDS;
+export const maxDuration = 30;
 
 const emailSchema = z.string().trim().regex(/^[^\s@]+@[^\s@]+\.[^\s@]+$/);
 

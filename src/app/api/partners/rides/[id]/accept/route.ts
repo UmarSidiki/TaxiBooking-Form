@@ -11,9 +11,8 @@ import {
   partnerApprovedVehicleIds,
   partnerHasApprovedFleet,
 } from "@/features/partners/lib/partner-fleet-eligibility";
-import { WHATSAPP_NOTIFICATION_MAX_DURATION_SECONDS } from "@/features/settings/lib/whatsapp-deadline";
 
-export const maxDuration = WHATSAPP_NOTIFICATION_MAX_DURATION_SECONDS;
+export const maxDuration = 30;
 
 export async function POST(
   _request: NextRequest,

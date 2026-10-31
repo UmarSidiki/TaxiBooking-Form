@@ -9,9 +9,8 @@ import { jsonError, jsonErrorFromStatus } from "@/shared/http/json-error";
 import { isApiErrorCode } from "@/shared/lib/api-error-copy";
 import { limitSensitive } from "@/shared/http/sensitive-limit";
 import { readIdempotencyKey } from "@/shared/http/read-idempotency-key";
-import { WHATSAPP_BOOKING_MAX_DURATION_SECONDS } from "@/features/settings/lib/whatsapp-deadline";
 
-export const maxDuration = WHATSAPP_BOOKING_MAX_DURATION_SECONDS;
+export const maxDuration = 60;
 
 export async function POST(request: NextRequest) {
   const limited = await limitSensitive(request, "booking");

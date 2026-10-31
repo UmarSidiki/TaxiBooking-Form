@@ -1,7 +1,9 @@
 /* Generated palette tokens. One block per palette and mode; components read only these variables.
    Neutral is the default. Light/dark follows data-riviera-theme, the palette follows data-palette on <html>. */
 
+:root:not([data-riviera-theme="dark"]),
 :root:not([data-riviera-theme="dark"]) .riviera,
+:root:not([data-riviera-theme="dark"]) .riviera-embed,
 :root:not([data-riviera-theme="dark"]) .riviera [data-palette-scope="neutral"] {
   --paper: #FFFFFF;
   --sheet: #FFFFFF;
@@ -26,7 +28,9 @@
   --dock: rgb(255 255 255 / 0.72);
 }
 
+:root[data-riviera-theme="dark"],
 :root[data-riviera-theme="dark"] .riviera,
+:root[data-riviera-theme="dark"] .riviera-embed,
 :root[data-riviera-theme="dark"] .riviera [data-palette-scope="neutral"] {
   --paper: #111111;
   --sheet: #1A1A1A;
@@ -51,7 +55,9 @@
   --dock: rgb(26 26 26 / 0.68);
 }
 
+:root[data-palette="slate"]:not([data-riviera-theme="dark"]),
 :root[data-palette="slate"]:not([data-riviera-theme="dark"]) .riviera,
+:root[data-palette="slate"]:not([data-riviera-theme="dark"]) .riviera-embed,
 :root:not([data-riviera-theme="dark"]) .riviera [data-palette-scope="slate"] {
   --paper: #F6F7F9;
   --sheet: #FFFFFF;
@@ -76,7 +82,9 @@
   --dock: rgb(255 255 255 / 0.74);
 }
 
+:root[data-palette="slate"][data-riviera-theme="dark"],
 :root[data-palette="slate"][data-riviera-theme="dark"] .riviera,
+:root[data-palette="slate"][data-riviera-theme="dark"] .riviera-embed,
 :root[data-riviera-theme="dark"] .riviera [data-palette-scope="slate"] {
   --paper: #0E1016;
   --sheet: #171A22;
@@ -101,7 +109,9 @@
   --dock: rgb(23 26 34 / 0.70);
 }
 
+:root[data-palette="heritage"]:not([data-riviera-theme="dark"]),
 :root[data-palette="heritage"]:not([data-riviera-theme="dark"]) .riviera,
+:root[data-palette="heritage"]:not([data-riviera-theme="dark"]) .riviera-embed,
 :root:not([data-riviera-theme="dark"]) .riviera [data-palette-scope="heritage"] {
   --paper: #F8F5F0;
   --sheet: #FFFFFF;
@@ -126,7 +136,9 @@
   --dock: rgb(255 255 255 / 0.74);
 }
 
+:root[data-palette="heritage"][data-riviera-theme="dark"],
 :root[data-palette="heritage"][data-riviera-theme="dark"] .riviera,
+:root[data-palette="heritage"][data-riviera-theme="dark"] .riviera-embed,
 :root[data-riviera-theme="dark"] .riviera [data-palette-scope="heritage"] {
   --paper: #14110F;
   --sheet: #1E1A17;
@@ -151,7 +163,9 @@
   --dock: rgb(30 26 23 / 0.70);
 }
 
+:root[data-palette="navy"]:not([data-riviera-theme="dark"]),
 :root[data-palette="navy"]:not([data-riviera-theme="dark"]) .riviera,
+:root[data-palette="navy"]:not([data-riviera-theme="dark"]) .riviera-embed,
 :root:not([data-riviera-theme="dark"]) .riviera [data-palette-scope="navy"] {
   --paper: #F6F9FC;
   --sheet: #FFFFFF;
@@ -176,7 +190,9 @@
   --dock: rgb(255 255 255 / 0.74);
 }
 
+:root[data-palette="navy"][data-riviera-theme="dark"],
 :root[data-palette="navy"][data-riviera-theme="dark"] .riviera,
+:root[data-palette="navy"][data-riviera-theme="dark"] .riviera-embed,
 :root[data-riviera-theme="dark"] .riviera [data-palette-scope="navy"] {
   --paper: #071A2F;
   --sheet: #0E2540;
@@ -199,4 +215,10 @@
   --info-tint: #133556;
   --sidebar: #0E2540;
   --dock: rgb(14 37 64 / 0.72);
+}
+
+/* The page itself paints the palette, so nothing flashes between streamed chunks and hydration. */
+:root body {
+  background: var(--paper);
+  color: var(--ink);
 }

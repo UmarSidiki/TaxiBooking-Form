@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { connectDB } from "@/shared/db";
 import { Setting, type ISetting } from "@/features/settings/model";
 import { requireAdmin } from "@/features/auth/lib/require-role";
@@ -55,11 +56,13 @@ export async function POST(request: Request) {
     if (existing) {
       Object.assign(existing, parsed.data);
       await existing.save();
+      revalidatePath("/", "layout");
       clearPromoAvailabilityCache();
       return NextResponse.json({ success: true, data: existing });
     }
     const newSettings = new Setting(parsed.data);
     await newSettings.save();
+    revalidatePath("/", "layout");
     clearPromoAvailabilityCache();
     return NextResponse.json({ success: true, data: newSettings });
   } catch (error) {

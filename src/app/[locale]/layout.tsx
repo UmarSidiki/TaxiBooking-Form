@@ -1,6 +1,7 @@
 import type { CSSProperties } from "react";
 import type { Metadata } from "next";
 import { headers } from "next/headers";
+import { connection } from "next/server";
 import { Geist, Geist_Mono, IBM_Plex_Sans_Arabic } from "next/font/google";
 import "@/shared/style/globals.css";
 import "@/shared/style/riviera-theme.css";
@@ -93,6 +94,8 @@ export default async function RootLayout({ children, params }: Props) {
   if (!hasLocale(routing.locales, locale)) {
     notFound();
   }
+  // Theme tokens come from the live settings document; never prerender this layout.
+  await connection();
 
   const themeSettings = await getThemeSettings();
   const serializedThemeSettings = JSON.parse(

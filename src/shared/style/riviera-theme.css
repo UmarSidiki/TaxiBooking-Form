@@ -118,3 +118,28 @@
 .riviera .status-mark[data-tone="err"] { --tone: var(--err); --tone-tint: var(--err-tint); }
 .riviera .status-mark[data-tone="info"] { --tone: var(--info); --tone-tint: var(--info-tint); }
 .riviera .status-mark__dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+/* Embeddable widgets: same palette tokens as the form, bridged to the shadcn and legacy brand variables they use. */
+.riviera-embed {
+  --background: var(--paper);
+  --foreground: var(--ink);
+  --card: var(--sheet);
+  --card-foreground: var(--ink);
+  --popover: var(--sheet);
+  --popover-foreground: var(--ink);
+  --primary: var(--sig);
+  --primary-foreground: var(--sig-on);
+  --secondary: var(--well);
+  --secondary-foreground: var(--ink);
+  --muted: var(--well);
+  --muted-foreground: var(--ink2);
+  --accent: var(--well);
+  --accent-foreground: var(--ink);
+  --border: var(--rule);
+  --input: var(--rule2);
+  --ring: var(--sig);
+  --destructive: var(--err);
+  --primary-color: var(--sig);
+  --secondary-color: var(--ink);
+  background: var(--paper);
+  color: var(--ink);
+}

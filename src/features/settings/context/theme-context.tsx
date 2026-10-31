@@ -1,5 +1,8 @@
 "use client";
 
+import { resolveColorPalette } from "@/features/settings/lib/color-palettes";
+import { operatorAccent } from "@/features/settings/lib/operator-accent";
+
 import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import { apiFetch } from "@/shared/http/api";
 import type { PublicSettings } from "@/features/settings/lib/public-settings";
@@ -73,6 +76,11 @@ export function ThemeProvider({ children, initialSettings = null }: ThemeProvide
       root.style.setProperty("--primary-color", primary);
       root.style.setProperty("--secondary-color", secondary);
       root.style.setProperty("--border-radius", `${radius}rem`);
+      // First paint already carries these from the server; this only follows saves made in this tab.
+      root.dataset.palette = resolveColorPalette(settings.colorPalette);
+      const accent = operatorAccent(settings.primaryColor);
+      if (accent.kind === "custom") document.body.style.setProperty("--operator-accent", accent.color);
+      else document.body.style.removeProperty("--operator-accent");
       if (isLoading) {
         setIsLoading(false);
       }

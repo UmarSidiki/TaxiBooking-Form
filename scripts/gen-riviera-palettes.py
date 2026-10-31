@@ -37,8 +37,11 @@ def block(sel,t):
   return sel+" {\n"+"".join(f"  --{k.replace('_','-')}: {v};\n" for k,v in t.items())+"}\n"
 out=["/* Generated palette tokens. One block per palette and mode; components read only these variables.\n   Neutral is the default. Light/dark follows data-riviera-theme, the palette follows data-palette on <html>. */\n"]
 for p,m in PAL.items():
-  light=(f':root[data-palette="{p}"]:not([data-riviera-theme="dark"]) .riviera' if p!="neutral" else ':root:not([data-riviera-theme="dark"]) .riviera')+f',\n:root:not([data-riviera-theme="dark"]) .riviera [data-palette-scope="{p}"]'
-  dark=(f':root[data-palette="{p}"][data-riviera-theme="dark"] .riviera' if p!="neutral" else ':root[data-riviera-theme="dark"] .riviera')+f',\n:root[data-riviera-theme="dark"] .riviera [data-palette-scope="{p}"]'
+  lroot=f':root[data-palette="{p}"]:not([data-riviera-theme="dark"])' if p!="neutral" else ':root:not([data-riviera-theme="dark"])'
+  droot=f':root[data-palette="{p}"][data-riviera-theme="dark"]' if p!="neutral" else ':root[data-riviera-theme="dark"]'
+  light=f'{lroot},\n{lroot} .riviera,\n{lroot} .riviera-embed'+f',\n:root:not([data-riviera-theme="dark"]) .riviera [data-palette-scope="{p}"]'
+  dark=f'{droot},\n{droot} .riviera,\n{droot} .riviera-embed'+f',\n:root[data-riviera-theme="dark"] .riviera [data-palette-scope="{p}"]'
   lt=dict(m["light"]); lt["sig"]=f'var(--operator-accent, {lt["sig"]})'
   out.append(block(light,lt)); out.append(block(dark,m["dark"]))
+out.append("/* The page itself paints the palette, so nothing flashes between streamed chunks and hydration. */\n:root body {\n  background: var(--paper);\n  color: var(--ink);\n}\n")
 if len(sys.argv)>1: open(sys.argv[1],"w").write("\n".join(out))

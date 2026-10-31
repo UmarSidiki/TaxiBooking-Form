@@ -181,8 +181,7 @@ export function AccountDesk({
     }
   };
 
-  const logout = async () => {
-    await fetch("/api/account/logout", { method: "POST" }).catch(() => null);
+  const resetToLogin = () => {
     setPhase("login");
     setUpcoming([]);
     setPast([]);
@@ -190,6 +189,16 @@ export function AccountDesk({
     setProfile(null);
     setCustomerName("");
     setEmail("");
+  };
+
+  const logout = async () => {
+    await fetch("/api/account/logout", { method: "POST" }).catch(() => null);
+    resetToLogin();
+  };
+
+  const signOutEverywhere = async () => {
+    await fetch("/api/account/sessions/revoke-all", { method: "POST" }).catch(() => null);
+    resetToLogin();
   };
 
   if (phase !== "trips") {
@@ -220,7 +229,12 @@ export function AccountDesk({
           <h1 className="text-2xl font-semibold">{t("title")}</h1>
           {customerName ? <p className="text-sm text-muted-foreground">{customerName}</p> : null}
         </div>
-        <Button className="h-11" type="button" variant="outline" onClick={logout}>{t("logout")}</Button>
+        <div className="flex flex-wrap items-center justify-end gap-2">
+          <Button className="h-11" type="button" variant="outline" onClick={signOutEverywhere}>
+            {t("sign-out-everywhere")}
+          </Button>
+          <Button className="h-11" type="button" variant="outline" onClick={logout}>{t("logout")}</Button>
+        </div>
       </header>
       {notice ? <p role="status" className="text-sm">{notice}</p> : null}
 

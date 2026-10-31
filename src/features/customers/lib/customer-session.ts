@@ -1,5 +1,6 @@
 import { createHash, randomBytes } from "node:crypto";
 import { cookies } from "next/headers";
+import type { NextResponse } from "next/server";
 import { connectDB } from "@/shared/db";
 import { clientIp } from "@/shared/http/client-ip";
 import CustomerSession from "@/features/customers/model/CustomerSession";
@@ -109,11 +110,29 @@ export async function readCustomerSession(request?: Request) {
   return touchSession(id);
 }
 
-export async function revokeCustomerSession() {
-  const jar = await cookies();
+export async function revokeCustomerSession(request?: Request) {
   const { name } = customerSessionCookie();
-  const id = jar.get(name)?.value;
+  const id = cookieFromHeader(request, name) ?? (await cookieJar())?.get(name)?.value;
   if (!id) return;
   await connectDB();
   await CustomerSession.updateOne({ idHash: hashId(id) }, { $set: { revokedAt: new Date() } });
+}
+
+export async function revokeAllCustomerSessions(email: string) {
+  await connectDB();
+  await CustomerSession.updateMany(
+    { emailLower: email.trim().toLowerCase(), revokedAt: null },
+    { $set: { revokedAt: new Date() } },
+  );
+}
+
+export function clearCustomerSessionCookie(response: NextResponse) {
+  const cookie = customerSessionCookie();
+  response.cookies.set(cookie.name, "", { ...cookie.options, maxAge: 0 });
+  response.cookies.set(LEGACY_COOKIE, "", {
+    httpOnly: true,
+    sameSite: "lax",
+    path: "/",
+    maxAge: 0,
+  });
 }

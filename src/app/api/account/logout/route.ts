@@ -1,19 +1,16 @@
 import { NextResponse } from "next/server";
+import { isSameSiteRequest } from "@/shared/http/same-site";
 import {
-  customerSessionCookie,
+  clearCustomerSessionCookie,
   revokeCustomerSession,
 } from "@/features/customers/lib/customer-session";
 
-export async function POST() {
-  await revokeCustomerSession();
+export async function POST(request: Request) {
+  if (!isSameSiteRequest(request)) {
+    return NextResponse.json({ error: "forbidden" }, { status: 403 });
+  }
+  await revokeCustomerSession(request);
   const response = NextResponse.json({ ok: true });
-  const cookie = customerSessionCookie();
-  response.cookies.set(cookie.name, "", { ...cookie.options, maxAge: 0 });
-  response.cookies.set("customer_session", "", {
-    httpOnly: true,
-    sameSite: "lax",
-    path: "/",
-    maxAge: 0,
-  });
+  clearCustomerSessionCookie(response);
   return response;
 }

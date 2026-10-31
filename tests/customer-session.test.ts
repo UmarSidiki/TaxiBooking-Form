@@ -66,11 +66,46 @@ describe("customer sessions", () => {
     const id = await createCustomerSession("ada@example.com");
     mocks.cookie = id;
     const { POST } = await import("@/app/api/account/logout/route");
-    const response = await POST();
+    const response = await POST(new Request("http://local/api/account/logout", { method: "POST" }));
     expect(response.status).toBe(200);
     expect(response.headers.get("set-cookie")).toContain(mocks.cookieName);
 
     const { GET } = await import("@/app/api/account/trips/route");
+    expect((await GET(tripsRequest())).status).toBe(401);
+  });
+
+  it("refuses a cross-site logout", async () => {
+    mocks.cookie = await createCustomerSession("ada@example.com");
+    const { POST } = await import("@/app/api/account/logout/route");
+    const response = await POST(
+      new Request("http://local/api/account/logout", {
+        method: "POST",
+        headers: { origin: "https://evil.example" },
+      }),
+    );
+    expect(response.status).toBe(403);
+
+    const { GET } = await import("@/app/api/account/trips/route");
+    expect((await GET(tripsRequest())).status).toBe(200);
+  });
+
+  it("revoke-all kills two sessions of the same email", async () => {
+    const first = await createCustomerSession("ada@example.com");
+    const second = await createCustomerSession("ada@example.com");
+    const { POST } = await import("@/app/api/account/sessions/revoke-all/route");
+    const response = await POST(
+      new Request("http://local/api/account/sessions/revoke-all", {
+        method: "POST",
+        headers: { cookie: `${mocks.cookieName}=${first}` },
+      }),
+    );
+    expect(response.status).toBe(200);
+    expect(response.headers.get("set-cookie")).toContain(mocks.cookieName);
+
+    const { GET } = await import("@/app/api/account/trips/route");
+    mocks.cookie = first;
+    expect((await GET(tripsRequest())).status).toBe(401);
+    mocks.cookie = second;
     expect((await GET(tripsRequest())).status).toBe(401);
   });
 

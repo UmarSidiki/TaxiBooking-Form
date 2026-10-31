@@ -102,6 +102,7 @@ export async function sendOrderThankYouEmail(bookingData: BookingData) {
     const manageUrl = await createMagicLink(bookingData.email, {
       baseUrl: base,
       locale: prepared.locale,
+      purpose: "email",
     });
 
     return sendPreparedEmail({

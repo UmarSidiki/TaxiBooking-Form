@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   consumeMagicLink,
   createMagicLink,
+  magicLinkTtlMs,
 } from "@/features/customers/lib/magic-link";
 import {
   customerSessionCookie,
@@ -47,6 +48,40 @@ describe("customer magic links", () => {
     expect(parsed.search).toBe("");
     expect(parsed.hash).toBe(`#t=${token}`);
     expect(token).not.toBe("");
+  });
+
+  it("expires login links after 15 minutes", async () => {
+    const before = Date.now();
+    await createMagicLink("ada@example.com", {
+      baseUrl: "http://local",
+      locale: "en",
+    });
+    const after = Date.now();
+
+    const row = await CustomerLoginToken.findOne({ emailLower: "ada@example.com" });
+    const expiresAt = row!.expiresAt.getTime();
+    expect(row?.purpose).toBe("login");
+    expect(magicLinkTtlMs("login")).toBe(15 * 60 * 1000);
+    expect(expiresAt).toBeGreaterThanOrEqual(before + magicLinkTtlMs("login"));
+    expect(expiresAt).toBeLessThanOrEqual(after + magicLinkTtlMs("login"));
+  });
+
+  it("expires email links after 24 hours and still signs in", async () => {
+    const before = Date.now();
+    const url = await createMagicLink("ada@example.com", {
+      baseUrl: "http://local",
+      locale: "en",
+      purpose: "email",
+    });
+    const after = Date.now();
+
+    const row = await CustomerLoginToken.findOne({ emailLower: "ada@example.com" });
+    const expiresAt = row!.expiresAt.getTime();
+    expect(row?.purpose).toBe("email");
+    expect(magicLinkTtlMs("email")).toBe(24 * 60 * 60 * 1000);
+    expect(expiresAt).toBeGreaterThanOrEqual(before + magicLinkTtlMs("email"));
+    expect(expiresAt).toBeLessThanOrEqual(after + magicLinkTtlMs("email"));
+    expect(await consumeMagicLink(tokenOf(url!))).toEqual({ emailLower: "ada@example.com" });
   });
 
   it("stores only a hash and marks the token used", async () => {

@@ -40,6 +40,7 @@ export async function sendOrderConfirmationEmail(bookingData: BookingEmailData) 
     const portalUrl = await createMagicLink(bookingData.email, {
       baseUrl: absoluteHttpBase(bookingData.baseUrl),
       locale: prepared.locale,
+      purpose: "email",
     });
     const currencySymbol = getCurrencySymbol(
       prepared.settings?.stripeCurrency || "EUR",

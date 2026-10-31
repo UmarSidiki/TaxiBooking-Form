@@ -31,6 +31,7 @@ export async function sendQuoteEmail(data: BookingEmailData & { payUrl: string }
     const manageUrl = await createMagicLink(data.email, {
       baseUrl: absoluteHttpBase(data.baseUrl),
       locale: prepared.locale,
+      purpose: "email",
     });
 
     return sendPreparedEmail({

@@ -96,6 +96,7 @@ export async function sendOrderCancellationEmail(bookingData: BookingData) {
     const manageUrl = await createMagicLink(bookingData.email, {
       baseUrl: base,
       locale: prepared.locale,
+      purpose: "email",
     });
     const canceledAt = bookingData.canceledAt
       ? new Date(bookingData.canceledAt).toLocaleString(prepared.locale)

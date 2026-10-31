@@ -40,6 +40,7 @@ export async function sendQuoteFollowUps(now = new Date()) {
     const manageUrl = await createMagicLink(ride.email, {
       baseUrl: base,
       locale: prepared.locale,
+      purpose: "email",
     });
     await sendPreparedEmail({
       prepared,

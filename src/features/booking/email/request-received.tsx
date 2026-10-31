@@ -29,6 +29,7 @@ export async function sendRequestReceivedEmail(data: BookingEmailData) {
     const manageUrl = await createMagicLink(data.email, {
       baseUrl: absoluteHttpBase(data.baseUrl),
       locale: prepared.locale,
+      purpose: "email",
     });
 
     return sendPreparedEmail({

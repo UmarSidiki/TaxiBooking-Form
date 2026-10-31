@@ -26,6 +26,7 @@ export async function notificationUrlVariables(
       ? await createMagicLink(input.customerEmail, {
           baseUrl: base,
           locale: input.locale,
+          purpose: "email",
         })
       : null) ?? portalUrl;
   return {

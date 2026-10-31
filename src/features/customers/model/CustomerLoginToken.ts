@@ -4,7 +4,7 @@ const CustomerLoginTokenSchema = new Schema(
   {
     tokenHash: { type: String, required: true, unique: true, index: true },
     emailLower: { type: String, required: true, index: true },
-    purpose: { type: String, required: true, enum: ["login"], default: "login" },
+    purpose: { type: String, required: true, enum: ["login", "email"], default: "login" },
     expiresAt: { type: Date, required: true },
     usedAt: { type: Date, default: null },
   },

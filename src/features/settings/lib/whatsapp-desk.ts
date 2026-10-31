@@ -60,6 +60,7 @@ export async function loadWhatsAppDesk() {
       quietHours: { enabled: false, startHour: 22, endHour: 7 },
       requireOptIn: true,
       sendRateLimit: 0,
+      dailyCap: 300,
     },
     templates: sortTemplates(templates),
     deliveries,
@@ -134,6 +135,7 @@ export async function sendWhatsAppTest(input: WhatsAppTestSendInput) {
   });
   const sent = await sendWhatsAppTexts([{ jid: toWhatsAppJid(digits), text }], {
     deadlineMs: whatsappBudgetMs(WHATSAPP_SETTINGS_MAX_DURATION_SECONDS),
+    kind: "test",
   });
   if (!sent.ok) return { ok: false as const, error: sent.reason };
   if (!findSendResult(sent.results, toWhatsAppJid(digits))?.ok) {

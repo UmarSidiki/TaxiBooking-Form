@@ -39,7 +39,10 @@ async function deliverOnWhatsApp(digits: string, code: string) {
     [
       { jid: toWhatsAppJid(digits), text: `Your verification code is ${code}. It expires in 10 minutes.` },
     ],
-    { deadlineMs: whatsappBudgetMs(WHATSAPP_PHONE_MAX_DURATION_SECONDS) },
+    {
+      deadlineMs: whatsappBudgetMs(WHATSAPP_PHONE_MAX_DURATION_SECONDS),
+      kind: "verification",
+    },
   );
   if (!result.ok) return false;
   return result.results.length > 0 && result.results.every((row) => row.ok);

@@ -28,17 +28,20 @@ export function WhatsAppGlobalCard({
   const uiLocale = useLocale();
   const [draft, setDraft] = useState(config);
   const [rateLimit, setRateLimit] = useState(String(config.sendRateLimit));
+  const [dailyCap, setDailyCap] = useState(String(config.dailyCap));
   const [saving, setSaving] = useState(false);
   const [notice, setNotice] = useState<string | null>(null);
 
   useEffect(() => {
     setDraft(config);
     setRateLimit(String(config.sendRateLimit));
+    setDailyCap(String(config.dailyCap));
   }, [config]);
 
   const next: WhatsAppDeskConfig = {
     ...payload(draft),
     sendRateLimit: Number(rateLimit) || 0,
+    dailyCap: Number(dailyCap) || 0,
   };
   const dirty = JSON.stringify(next) !== JSON.stringify(payload(config));
   const languageNames = new Intl.DisplayNames([uiLocale], { type: "language" });
@@ -136,6 +139,22 @@ export function WhatsAppGlobalCard({
           <p className="mt-1 text-xs text-muted-foreground">{t("notify_rate_limit_help")}</p>
         </div>
         <div>
+          <label htmlFor="whatsapp-daily-cap" className="mb-2 block text-sm font-medium">
+            {t("notify_daily_cap")}
+          </label>
+          <Input
+            id="whatsapp-daily-cap"
+            name="dailyCap"
+            type="number"
+            min={0}
+            max={2000}
+            inputMode="numeric"
+            value={dailyCap}
+            onChange={(event) => setDailyCap(event.target.value)}
+          />
+          <p className="mt-1 text-xs text-muted-foreground">{t("notify_daily_cap_help")}</p>
+        </div>
+        <div>
           <label htmlFor="whatsapp-company-phone" className="mb-2 block text-sm font-medium">
             {t("whatsapp_company_phone")}
           </label>
@@ -193,6 +212,7 @@ export function WhatsAppGlobalCard({
                 onClick={() => {
                   setDraft(config);
                   setRateLimit(String(config.sendRateLimit));
+                  setDailyCap(String(config.dailyCap));
                 }}
               >
                 {t("whatsapp_discard")}

@@ -22,6 +22,7 @@ import {
   Setting,
   WhatsAppConfig,
   WhatsAppDelivery,
+  WhatsAppSendLog,
   WhatsAppTemplate,
 } from "@/features/settings/model";
 import NotificationSetting from "@/features/notifications/model/NotificationSetting";
@@ -54,5 +55,6 @@ export async function resetTestDb() {
     WhatsAppConfig.deleteMany({}),
     WhatsAppTemplate.deleteMany({}),
     WhatsAppDelivery.deleteMany({}),
+    WhatsAppSendLog.deleteMany({}),
   ]);
 }

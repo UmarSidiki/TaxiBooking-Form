@@ -41,6 +41,7 @@ export type RegistryConfig = {
   quietHours: { enabled: boolean; startHour: number; endHour: number };
   requireOptIn: boolean;
   sendRateLimit: number;
+  dailyCap: number;
 };
 
 export type RegistryDelivery = {

@@ -1414,6 +1414,8 @@
       "notify_filter_empty": "Geen berichten voldoen aan deze filters.",
       "notify_rate_limit": "Berichten per minuut",
       "notify_rate_limit_help": "Spreidt uitgaande berichten. 0 betekent geen limiet.",
+      "notify_daily_cap": "Berichten per dag",
+      "notify_daily_cap_help": "Stopt met verzenden voor die dag na dit aantal berichten. 0 betekent geen limiet.",
       "notify_opt_in": "Toestemming vereisen",
       "notify_opt_in_help": "Bericht alleen passagiers die op het boekingsformulier toestemming gaven.",
       "notify_edit": "Bericht bewerken",

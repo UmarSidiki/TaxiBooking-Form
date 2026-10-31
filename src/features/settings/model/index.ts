@@ -6,6 +6,12 @@ export { default as WhatsAppTemplate } from './WhatsAppTemplate';
 export type { IWhatsAppTemplate } from './WhatsAppTemplate';
 export { default as WhatsAppDelivery } from './WhatsAppDelivery';
 export type { IWhatsAppDelivery } from './WhatsAppDelivery';
+export { default as WhatsAppSendLog } from './WhatsAppSendLog';
+export type {
+  IWhatsAppSendLog,
+  WhatsAppSendKind,
+  WhatsAppSendStatus,
+} from './WhatsAppSendLog';
 export { default as WhatsAppAuth } from './WhatsAppAuth';
 export type { IWhatsAppAuth } from './WhatsAppAuth';
 export { default as WhatsAppLink } from './WhatsAppLink';

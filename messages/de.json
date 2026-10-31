@@ -1414,6 +1414,8 @@
       "notify_filter_empty": "Keine Nachrichten passen zu diesen Filtern.",
       "notify_rate_limit": "Nachrichten pro Minute",
       "notify_rate_limit_help": "Verteilt ausgehende Nachrichten. 0 bedeutet kein Limit.",
+      "notify_daily_cap": "Nachrichten pro Tag",
+      "notify_daily_cap_help": "Stoppt den Versand für den Tag nach dieser Anzahl. 0 bedeutet kein Limit.",
       "notify_opt_in": "Zustimmung verlangen",
       "notify_opt_in_help": "Nur Fahrgäste anschreiben, die im Buchungsformular zugestimmt haben.",
       "notify_edit": "Nachricht bearbeiten",

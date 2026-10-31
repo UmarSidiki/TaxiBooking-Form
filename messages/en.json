@@ -1414,6 +1414,8 @@
       "notify_filter_empty": "No messages match these filters.",
       "notify_rate_limit": "Messages per minute",
       "notify_rate_limit_help": "Spaces outgoing messages. 0 means no limit.",
+      "notify_daily_cap": "Messages per day",
+      "notify_daily_cap_help": "Stops sending for the day after this many messages. 0 means no limit.",
       "notify_opt_in": "Require consent",
       "notify_opt_in_help": "Only message passengers who opted in on the booking form.",
       "notify_edit": "Edit message",

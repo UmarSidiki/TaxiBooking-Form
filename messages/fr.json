@@ -1414,6 +1414,8 @@
       "notify_filter_empty": "Aucun message ne correspond à ces filtres.",
       "notify_rate_limit": "Messages par minute",
       "notify_rate_limit_help": "Espace les envois. 0 signifie aucune limite.",
+      "notify_daily_cap": "Messages par jour",
+      "notify_daily_cap_help": "Arrête l’envoi pour la journée après ce nombre de messages. 0 signifie aucune limite.",
       "notify_opt_in": "Exiger le consentement",
       "notify_opt_in_help": "Écrire uniquement aux passagers ayant accepté sur le formulaire de réservation.",
       "notify_edit": "Modifier le message",

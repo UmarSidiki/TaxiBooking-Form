@@ -55,7 +55,7 @@ async function sendOnWhatsApp(phone: string, text: string, deps: DeliverCustomer
     const send = deps.send ?? sendWhatsAppTexts;
     const timeoutMs = deps.timeoutMs ?? CUSTOMER_CODE_WHATSAPP_TIMEOUT_MS;
     const result = await withTimeout(
-      send([{ jid: toWhatsAppJid(digits), text }], { deadlineMs: timeoutMs }),
+      send([{ jid: toWhatsAppJid(digits), text }], { deadlineMs: timeoutMs, kind: "otp" }),
       timeoutMs + 1_000,
     );
     return result.ok && result.results.length > 0 && result.results.every((row) => row.ok);

@@ -1414,6 +1414,8 @@
       "notify_filter_empty": "Nessun messaggio corrisponde a questi filtri.",
       "notify_rate_limit": "Messaggi al minuto",
       "notify_rate_limit_help": "Distanzia gli invii. 0 significa nessun limite.",
+      "notify_daily_cap": "Messaggi al giorno",
+      "notify_daily_cap_help": "Interrompe gli invii per la giornata dopo questo numero di messaggi. 0 significa nessun limite.",
       "notify_opt_in": "Richiedi consenso",
       "notify_opt_in_help": "Scrivi solo ai passeggeri che hanno acconsentito nel modulo di prenotazione.",
       "notify_edit": "Modifica messaggio",

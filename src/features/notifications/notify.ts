@@ -117,7 +117,7 @@ export async function notify(
         deps.send ?? ((messages, options) => sendWhatsAppTexts(messages, options));
       const result = await send(
         whatsapp.map(({ jid, text, document }) => ({ jid, text, document })),
-        { deadlineMs: deps.deadlineMs },
+        { deadlineMs: deps.deadlineMs, kind: "notification" },
       );
       ok = result.ok;
       if (ctx.bookingId) await settleDeliveries(ctx.bookingId, whatsapp, result);

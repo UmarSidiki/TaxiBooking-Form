@@ -16,13 +16,18 @@ import {
   accountLoginFeedbackReducer,
   initialAccountLoginFeedback,
 } from "@/features/customers/lib/account-login-feedback";
+import { compactOtp } from "@/features/customers/lib/otp-entry";
 
 export function AccountDesk({
   expiredLink = false,
   prefilledEmail = "",
+  brandName = "",
+  logoUrl = "",
 }: {
   expiredLink?: boolean;
   prefilledEmail?: string;
+  brandName?: string;
+  logoUrl?: string;
 }) {
   const t = useTranslations("Account");
   const locale = useLocale();
@@ -113,7 +118,7 @@ export function AccountDesk({
     const response = await fetch("/api/account/otp", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, code }),
+      body: JSON.stringify({ email, code: compactOtp(code) }),
     });
     if (!response.ok) {
       dispatchFeedback({ type: "verify-failed", error: t("code-invalid") });
@@ -233,6 +238,8 @@ export function AccountDesk({
         noBooking={noBooking}
         error={error}
         notice={notice}
+        brandName={brandName}
+        logoUrl={logoUrl}
         onSend={send}
         onVerify={verify}
         onUseDifferentEmail={useDifferentEmail}

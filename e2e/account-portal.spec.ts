@@ -64,7 +64,7 @@ test("email-only sign-in code reaches the inbox and opens the portal", async ({ 
   expect(code).toMatch(/^\d{6}$/);
   expect(whatsapp.some((message) => message.text?.includes(code))).toBe(false);
 
-  await page.locator("#account-code").fill(code);
+  await page.locator("#account-code").pressSequentially(code);
   await page.getByRole("button", { name: "Verify" }).click();
   await expect(page.getByRole("heading", { name: "Your trips" })).toBeVisible();
   await expect(page.getByRole("tab", { name: "Upcoming" })).toBeVisible();

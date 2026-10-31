@@ -1,9 +1,10 @@
 "use client";
 
-import Link from "next/link";
-import { Input } from "@/shared/ui/input";
-import { Button } from "@/shared/ui/button";
-import { useLocale, type useTranslations } from "next-intl";
+import { type useTranslations } from "next-intl";
+
+import { AccountBrandPlate, AccountLoginFooter } from "./account-login-brand";
+import { AccountLoginCodeStep } from "./account-login-code-step";
+import { AccountLoginEmailStep } from "./account-login-email-step";
 
 type T = ReturnType<typeof useTranslations>;
 
@@ -18,62 +19,70 @@ export function AccountLogin({
   noBooking,
   error,
   notice,
+  brandName,
+  logoUrl,
   onSend,
   onVerify,
   onUseDifferentEmail,
 }: {
   t: T;
   email: string;
-  onEmailChange: (v: string) => void;
+  onEmailChange: (value: string) => void;
   code: string;
-  setCode: (v: string) => void;
+  setCode: (value: string) => void;
   phase: "login" | "code";
   expired: boolean;
   noBooking: boolean;
   error: string | null;
   notice: string | null;
+  brandName: string;
+  logoUrl: string;
   onSend: () => void;
   onVerify: () => void;
   onUseDifferentEmail: () => void;
 }) {
-  const locale = useLocale();
+  const name = brandName.trim() || t("brand-fallback");
+  const year = new Date().getFullYear();
+
   return (
-    <div className="mx-auto flex max-w-md flex-col gap-4 p-4">
-      <h1 className="text-2xl font-semibold">{t("sign-in")}</h1>
-      <p className="text-sm text-muted-foreground">{t("sign-in-help")}</p>
-      {expired ? (
-        <p role="alert" className="rounded-md border border-border bg-muted/40 p-4 text-sm text-foreground">
-          {t("link-expired")}
-        </p>
-      ) : null}
-      {error ? <p role="alert" className="text-sm text-destructive">{error}</p> : null}
-      {notice ? <p role="status" className="text-sm">{notice}</p> : null}
-      <label className="text-sm" htmlFor="account-email">{t("email")}</label>
-      <Input id="account-email" className="h-11 text-base" value={email} onChange={(e) => onEmailChange(e.target.value)} />
-      {phase === "code" ? (
-        <>
-          <label className="text-sm" htmlFor="account-code">{t("code")}</label>
-          <Input id="account-code" className="h-11 text-base" value={code} onChange={(e) => setCode(e.target.value)} />
-          <Button className="h-11" type="button" onClick={onVerify}>{t("verify")}</Button>
-        </>
-      ) : noBooking ? (
-        <div className="flex flex-col gap-3 rounded-md border border-border bg-muted/40 p-4">
-          <p className="text-sm text-foreground">{t("no-booking")}</p>
-          <Button asChild className="h-11">
-            <Link href={`/${locale}`}>{t("book-a-ride")}</Link>
-          </Button>
-          <Button
-            className="h-11 self-start px-0 text-sm"
-            type="button"
-            variant="link"
-            onClick={onUseDifferentEmail}
-          >
-            {t("use-different-email")}
-          </Button>
+    <main className="riviera flex min-h-svh flex-col items-center justify-center bg-[var(--paper)] px-4 py-7 pb-10 text-[var(--ink)] sm:px-6 sm:py-12">
+      <div className="w-full max-w-[420px]">
+        <AccountBrandPlate
+          name={name}
+          tagline={t("brand-tagline")}
+          logoUrl={logoUrl}
+        />
+
+        <div className="sm:rounded-[var(--radius)] sm:border sm:border-[var(--rule)] sm:bg-[var(--sheet)] sm:p-[30px]">
+          {phase === "code" ? (
+            <AccountLoginCodeStep
+              t={t}
+              email={email}
+              code={code}
+              setCode={setCode}
+              error={error}
+              notice={notice}
+              onVerify={onVerify}
+              onUseDifferentEmail={onUseDifferentEmail}
+            />
+          ) : (
+            <AccountLoginEmailStep
+              t={t}
+              email={email}
+              onEmailChange={onEmailChange}
+              onSend={onSend}
+              noBooking={noBooking}
+              expired={expired}
+              error={error}
+              onUseDifferentEmail={onUseDifferentEmail}
+            />
+          )}
         </div>
-      ) : (
-        <Button className="h-11" type="button" onClick={onSend}>{t("send-code")}</Button>
-      )}
-    </div>
+
+        <AccountLoginFooter
+          text={t("copyright", { year, name })}
+        />
+      </div>
+    </main>
   );
 }

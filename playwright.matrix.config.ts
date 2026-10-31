@@ -16,7 +16,12 @@ if (process.env.QA_WEBKIT === "1") {
 
 export default defineConfig({
   testDir: "./e2e",
-  testMatch: ["qa-matrix.spec.ts", "drawer-matrix.spec.ts", "sidebar-brand.spec.ts"],
+  testMatch: [
+    "qa-matrix.spec.ts",
+    "drawer-matrix.spec.ts",
+    "sidebar-brand.spec.ts",
+    "palette-first-paint.spec.ts",
+  ],
   fullyParallel: false,
   workers: 1,
   timeout: 300_000,

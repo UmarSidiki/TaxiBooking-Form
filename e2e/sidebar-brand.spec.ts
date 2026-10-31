@@ -7,6 +7,7 @@ import {
   type BrowserContext,
   type Page,
 } from "@playwright/test";
+import { signInAdmin } from "./helpers/sign-in";
 
 /**
  * Sidebar brand lockup: logo + name over subtitle inside one link, at mobile
@@ -19,7 +20,6 @@ test.use({ trace: "off" });
 
 const SHOTS = "/workspace/shots";
 const BASE_URL = "http://127.0.0.1:3000";
-const ADMIN = { email: "admin@e2e.example", password: "e2e-password" };
 
 const MODES = ["light", "dark"] as const;
 type Mode = (typeof MODES)[number];
@@ -32,16 +32,7 @@ async function signIn(browser: Browser) {
   const context = await browser.newContext({ baseURL: BASE_URL });
   const page = await context.newPage();
   page.setDefaultTimeout(120_000);
-  await page.goto("/en/dashboard/signin", {
-    waitUntil: "domcontentloaded",
-    timeout: 180_000,
-  });
-  await page.locator("#email").fill(ADMIN.email);
-  await page.locator("#password").fill(ADMIN.password);
-  await page.getByRole("button", { name: "Sign in" }).click();
-  await page.waitForURL((url) => !url.pathname.includes("signin"), {
-    timeout: 120_000,
-  });
+  await signInAdmin(page);
   authCookies = await context.cookies();
   await context.close();
 }

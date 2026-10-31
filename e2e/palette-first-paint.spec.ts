@@ -1,4 +1,11 @@
-import { expect, test, type Page } from "@playwright/test";
+import {
+  expect,
+  test,
+  type Browser,
+  type BrowserContext,
+  type Page,
+} from "@playwright/test";
+import { signInAdmin } from "./helpers/sign-in";
 
 /** Selected palette primaries, light mode (riviera-palettes.css). */
 const SLATE_SIG = "#4652d6";
@@ -9,13 +16,37 @@ const SLATE_DARK_SIG = "#8b93f5";
 const SLATE_DARK_PAPER = "rgb(14, 16, 22)";
 
 async function signInAndPick(page: Page, palette: string) {
-  await page.goto("/en/dashboard/signin", { timeout: 180_000 });
-  await page.locator("#email").fill("admin@e2e.example");
-  await page.locator("#password").fill("e2e-password");
-  await page.getByRole("button", { name: "Sign in" }).click();
-  await page.waitForURL((url) => !url.pathname.includes("signin"), { timeout: 120_000 });
+  await signInAdmin(page);
   const res = await page.request.post("/api/settings", { data: { colorPalette: palette } });
   expect(res.ok()).toBe(true);
+}
+
+/**
+ * Slows the network so first-paint sampling can observe intermediate frames.
+ * CDP only exists in Chromium; WebKit gets the same 400ms latency injected at
+ * the routing layer, which delays every request before it leaves the page.
+ */
+async function emulateSlowNetwork(
+  browser: Browser,
+  context: BrowserContext,
+  page: Page,
+) {
+  if (browser.browserType().name() === "chromium") {
+    const cdp = await context.newCDPSession(page);
+    await cdp.send("Network.enable");
+    await cdp.send("Network.emulateNetworkConditions", {
+      offline: false,
+      latency: 400,
+      downloadThroughput: 50_000,
+      uploadThroughput: 20_000,
+    });
+    return;
+  }
+
+  await page.route("**/*", async (route) => {
+    await new Promise((resolve) => setTimeout(resolve, 400));
+    await route.continue();
+  });
 }
 
 test.describe.configure({ mode: "serial" });
@@ -46,11 +77,7 @@ test("on a throttled network the palette is right at DOMContentLoaded", async ({
   test.setTimeout(300_000);
   const ctx = await browser.newContext({ baseURL, colorScheme: "light" });
   const page = await ctx.newPage();
-  const cdp = await ctx.newCDPSession(page);
-  await cdp.send("Network.enable");
-  await cdp.send("Network.emulateNetworkConditions", {
-    offline: false, latency: 400, downloadThroughput: 50_000, uploadThroughput: 20_000,
-  });
+  await emulateSlowNetwork(browser, ctx, page);
   await page.addInitScript(() => {
     const w = window as unknown as { __frames: string[] };
     w.__frames = [];
@@ -79,11 +106,7 @@ test("dark mode first paint uses the selected palette dark tokens", async ({ pag
   await signInAndPick(page, "slate");
   const ctx = await browser.newContext({ baseURL, colorScheme: "dark" });
   const darkPage = await ctx.newPage();
-  const cdp = await ctx.newCDPSession(darkPage);
-  await cdp.send("Network.enable");
-  await cdp.send("Network.emulateNetworkConditions", {
-    offline: false, latency: 400, downloadThroughput: 50_000, uploadThroughput: 20_000,
-  });
+  await emulateSlowNetwork(browser, ctx, darkPage);
   await darkPage.addInitScript(() => {
     const w = window as unknown as { __frames: string[] };
     w.__frames = [];

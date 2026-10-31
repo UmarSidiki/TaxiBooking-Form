@@ -2506,6 +2506,8 @@
     "title": "Your trips",
     "sign-in": "Sign in",
     "sign-in-help": "We email you a sign-in code.",
+    "no-booking": "You have not booked a ride with us yet. Book your first ride and your account is created automatically.",
+    "book-a-ride": "Book a ride",
     "email": "Email",
     "phone": "Phone",
     "code": "Code",

@@ -2506,6 +2506,8 @@
     "title": "Uw ritten",
     "sign-in": "Inloggen",
     "sign-in-help": "We sturen u een inlogcode per e-mail.",
+    "no-booking": "U hebt nog geen rit bij ons geboekt. Boek uw eerste rit; uw account wordt automatisch aangemaakt.",
+    "book-a-ride": "Rit boeken",
     "email": "E-mail",
     "phone": "Telefoon",
     "code": "Code",

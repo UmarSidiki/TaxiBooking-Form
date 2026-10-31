@@ -1,8 +1,9 @@
 "use client";
 
+import Link from "next/link";
 import { Input } from "@/shared/ui/input";
 import { Button } from "@/shared/ui/button";
-import type { useTranslations } from "next-intl";
+import { useLocale, type useTranslations } from "next-intl";
 
 type T = ReturnType<typeof useTranslations>;
 
@@ -13,6 +14,7 @@ export function AccountLogin({
   code,
   setCode,
   phase,
+  noBooking,
   error,
   notice,
   onSend,
@@ -24,11 +26,13 @@ export function AccountLogin({
   code: string;
   setCode: (v: string) => void;
   phase: "login" | "code";
+  noBooking: boolean;
   error: string | null;
   notice: string | null;
   onSend: () => void;
   onVerify: () => void;
 }) {
+  const locale = useLocale();
   return (
     <div className="mx-auto flex max-w-md flex-col gap-4 p-4">
       <h1 className="text-2xl font-semibold">{t("sign-in")}</h1>
@@ -43,6 +47,13 @@ export function AccountLogin({
           <Input id="account-code" className="h-11 text-base" value={code} onChange={(e) => setCode(e.target.value)} />
           <Button className="h-11" type="button" onClick={onVerify}>{t("verify")}</Button>
         </>
+      ) : noBooking ? (
+        <div className="flex flex-col gap-3 rounded-md border border-border bg-muted/40 p-4">
+          <p className="text-sm text-foreground">{t("no-booking")}</p>
+          <Button asChild className="h-11">
+            <Link href={`/${locale}`}>{t("book-a-ride")}</Link>
+          </Button>
+        </div>
       ) : (
         <Button className="h-11" type="button" onClick={onSend}>{t("send-code")}</Button>
       )}

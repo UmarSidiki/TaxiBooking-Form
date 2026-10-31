@@ -2506,6 +2506,8 @@
     "title": "Vos trajets",
     "sign-in": "Connexion",
     "sign-in-help": "Nous vous envoyons un code de connexion par e-mail.",
+    "no-booking": "Vous n'avez pas encore réservé de course avec nous. Réservez votre première course : votre compte sera créé automatiquement.",
+    "book-a-ride": "Réserver une course",
     "email": "E-mail",
     "phone": "Téléphone",
     "code": "Code",

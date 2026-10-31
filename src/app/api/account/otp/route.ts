@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { sendCustomerOtp, verifyCustomerOtp } from "@/features/customers/lib/customer-otp";
+import { padOtpSend } from "@/features/customers/lib/otp-send-timing";
 import { signCustomerToken } from "@/features/customers/lib/customer-token";
 import { limitSensitive } from "@/shared/http/sensitive-limit";
 
@@ -46,8 +47,12 @@ export async function POST(request: Request) {
   const parsed = sendSchema.safeParse(body);
   if (!parsed.success) return NextResponse.json({ error: "invalid_body" }, { status: 400 });
 
+  const startedAt = Date.now();
   const sent = await sendCustomerOtp(parsed.data.email, parsed.data.channel);
+  await padOtpSend(startedAt);
+
   if (!sent.ok) {
+    if ("code" in sent) return NextResponse.json({ ok: false, code: sent.code });
     return NextResponse.json(
       { error: sent.error },
       {

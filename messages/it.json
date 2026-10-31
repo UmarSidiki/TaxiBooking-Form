@@ -2506,6 +2506,8 @@
     "title": "I tuoi viaggi",
     "sign-in": "Accedi",
     "sign-in-help": "Ti inviamo un codice di accesso via e-mail.",
+    "no-booking": "Non hai ancora prenotato una corsa con noi. Prenota la tua prima corsa e il tuo account verrà creato automaticamente.",
+    "book-a-ride": "Prenota una corsa",
     "email": "E-mail",
     "phone": "Telefono",
     "code": "Codice",

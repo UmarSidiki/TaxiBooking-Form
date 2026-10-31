@@ -22,6 +22,7 @@ export function AccountDesk() {
   const [code, setCode] = useState("");
   const [phase, setPhase] = useState<"login" | "code" | "trips">("login");
   const [notice, setNotice] = useState<string | null>(null);
+  const [noBooking, setNoBooking] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [upcoming, setUpcoming] = useState<Ride[]>([]);
   const [past, setPast] = useState<Ride[]>([]);
@@ -77,13 +78,19 @@ export function AccountDesk() {
 
   const send = async () => {
     setError(null);
+    setNoBooking(false);
     const response = await fetch("/api/account/otp", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email }),
     });
+    const data = await response.json().catch(() => null);
     if (!response.ok) {
       setError(t("send-failed"));
+      return;
+    }
+    if (data?.code === "no_booking") {
+      setNoBooking(true);
       return;
     }
     setNotice(t("code-sent"));
@@ -187,6 +194,7 @@ export function AccountDesk() {
         code={code}
         setCode={setCode}
         phase={phase === "code" ? "code" : "login"}
+        noBooking={noBooking}
         error={error}
         notice={notice}
         onSend={send}

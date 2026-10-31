@@ -1,10 +1,16 @@
 import { connectDB } from "@/shared/db";
+import { Booking } from "@/features/booking/model";
 import CustomerOtp from "@/features/customers/model/CustomerOtp";
 import CustomerProfile from "@/features/customers/model/CustomerProfile";
 import { notify } from "@/features/notifications/notify";
 import { generateOtpCode, hashOtpCode, otpCodeMatches } from "@/features/customers/lib/otp-code";
 
 export type CustomerOtpChannel = "email" | "whatsapp";
+
+export type SendCustomerOtpResult =
+  | { ok: true }
+  | { ok: false; error: "invalid_body" | "rate_limited"; retryAfter?: number }
+  | { ok: false; code: "no_booking" };
 
 const TTL_MS = 10 * 60 * 1000;
 const SEND_WINDOW_MS = 60 * 60 * 1000;
@@ -40,16 +46,26 @@ async function deliverCode(code: string, email: string, channel: CustomerOtpChan
   });
 }
 
-export async function sendCustomerOtp(emailRaw: string, channel: CustomerOtpChannel = "email") {
+async function hasBooking(email: string) {
+  const booking = await Booking.exists({ email }).collation({ locale: "en", strength: 2 });
+  return Boolean(booking);
+}
+
+export async function sendCustomerOtp(
+  emailRaw: string,
+  channel: CustomerOtpChannel = "email",
+): Promise<SendCustomerOtpResult> {
   const email = emailRaw.trim().toLowerCase();
-  if (!email.includes("@")) return { ok: false as const, error: "invalid_body" as const };
+  if (!email.includes("@")) return { ok: false, error: "invalid_body" };
   await connectDB();
 
   const since = new Date(Date.now() - SEND_WINDOW_MS);
   const sends = await CustomerOtp.countDocuments({ email, sentAt: { $gte: since } });
   if (sends >= MAX_SENDS_PER_WINDOW) {
-    return { ok: false as const, error: "rate_limited" as const, retryAfter: 3600 };
+    return { ok: false, error: "rate_limited", retryAfter: 3600 };
   }
+
+  if (!(await hasBooking(email))) return { ok: false, code: "no_booking" };
 
   const live = await CustomerOtp.findOne({ email, consumedAt: null, sentAt: { $gte: since } })
     .sort({ sentAt: -1 })

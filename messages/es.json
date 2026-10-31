@@ -2506,6 +2506,8 @@
     "title": "Tus viajes",
     "sign-in": "Entrar",
     "sign-in-help": "Te enviamos un código de acceso por correo electrónico.",
+    "no-booking": "Todavía no has reservado un viaje con nosotros. Reserva tu primer viaje y tu cuenta se creará automáticamente.",
+    "book-a-ride": "Reservar un viaje",
     "email": "Correo",
     "phone": "Teléfono",
     "code": "Código",

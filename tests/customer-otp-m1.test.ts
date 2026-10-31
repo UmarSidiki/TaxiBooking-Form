@@ -1,6 +1,7 @@
 import { afterAll, beforeEach, describe, expect, it, vi } from "vitest";
 import mongoose from "mongoose";
 import { sendCustomerOtp, verifyCustomerOtp } from "@/features/customers/lib/customer-otp";
+import { padOtpSend } from "@/features/customers/lib/otp-send-timing";
 import CustomerOtp from "@/features/customers/model/CustomerOtp";
 import CustomerProfile from "@/features/customers/model/CustomerProfile";
 import { createRide } from "./helpers/fixtures";
@@ -123,10 +124,31 @@ describe("customer OTP (M1)", () => {
     }
     const blocked = await sendCustomerOtp("many@example.com");
     expect(blocked.ok).toBe(false);
-    if (!blocked.ok) {
+    if (!blocked.ok && "error" in blocked) {
       expect(blocked.error).toBe("rate_limited");
       expect(blocked.retryAfter).toBeGreaterThan(0);
     }
+  });
+
+  it("returns no_booking for an email without a ride and sends nothing", async () => {
+    const { POST } = await import("@/app/api/account/otp/route");
+    const response = await POST(sendRequest({ email: "stranger@example.com" }));
+    expect(response.status).toBe(200);
+    expect(await response.json()).toEqual({ ok: false, code: "no_booking" });
+    expect(mocks.notify).not.toHaveBeenCalled();
+  });
+
+  it("applies the send timing floor", async () => {
+    const slept: number[] = [];
+    await padOtpSend(0, {
+      minMs: 800,
+      jitterMs: 0,
+      now: () => 300,
+      sleep: async (ms) => {
+        slept.push(ms);
+      },
+    });
+    expect(slept).toEqual([500]);
   });
 
   it("delivers the whatsapp channel to the verified phone of that email", async () => {

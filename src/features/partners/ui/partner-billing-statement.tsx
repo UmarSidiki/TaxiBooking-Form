@@ -60,7 +60,7 @@ export function PartnerBillingStatement({
                   {formatWhen(line.createdAt)}
                 </p>
               </div>
-              <p className="shrink-0 font-medium tabular-nums">
+              <p className="num shrink-0 font-medium">
                 {formatMoney(line.runningBalance)}
               </p>
             </div>
@@ -68,7 +68,7 @@ export function PartnerBillingStatement({
               {amounts.map(([label, read]) => (
                 <div key={label}>
                   <dt className="text-muted-foreground">{label}</dt>
-                  <dd className="tabular-nums">{formatMoney(read(line))}</dd>
+                  <dd className="num">{formatMoney(read(line))}</dd>
                 </div>
               ))}
             </dl>
@@ -100,11 +100,11 @@ export function PartnerBillingStatement({
                     {formatWhen(line.createdAt)}
                   </p>
                 </td>
-                <td className="px-3 py-3 tabular-nums">{formatMoney(line.fare)}</td>
-                <td className="px-3 py-3 tabular-nums">{formatMoney(line.margin)}</td>
-                <td className="px-3 py-3 tabular-nums">{formatMoney(line.partnerShare)}</td>
-                <td className="px-3 py-3 tabular-nums">{formatMoney(line.balanceDelta)}</td>
-                <td className="px-3 py-3 font-medium tabular-nums">{formatMoney(line.runningBalance)}</td>
+                <td className="num px-3 py-3">{formatMoney(line.fare)}</td>
+                <td className="num px-3 py-3">{formatMoney(line.margin)}</td>
+                <td className="num px-3 py-3">{formatMoney(line.partnerShare)}</td>
+                <td className="num px-3 py-3">{formatMoney(line.balanceDelta)}</td>
+                <td className="num px-3 py-3 font-medium">{formatMoney(line.runningBalance)}</td>
               </tr>
             ))}
           </tbody>

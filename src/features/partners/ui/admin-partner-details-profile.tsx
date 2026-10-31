@@ -55,12 +55,12 @@ export function AdminPartnerDetailsProfile({
               <PiggyBank className="size-5" aria-hidden="true" />
               {t("earnings-summary")}
             </h4>
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+            <div className="drawer-earnings-grid">
               <div className="text-center">
                 <p className="text-sm text-muted-foreground">
                   {t("total-earnings")}
                 </p>
-                <p className="text-xl font-bold tabular-nums text-foreground">
+                <p className="num text-xl font-bold text-foreground">
                   {formatCurrency(selectedPartner.totalEarnings)}
                 </p>
               </div>
@@ -68,7 +68,7 @@ export function AdminPartnerDetailsProfile({
                 <p className="text-sm text-muted-foreground">
                   {t("online-payment")}
                 </p>
-                <p className="text-lg font-semibold tabular-nums text-foreground">
+                <p className="num text-lg font-semibold text-foreground">
                   {formatCurrency(selectedPartner.onlineEarnings)}
                 </p>
               </div>
@@ -76,7 +76,7 @@ export function AdminPartnerDetailsProfile({
                 <p className="text-sm text-muted-foreground">
                   {t("cash-payment")}
                 </p>
-                <p className="text-lg font-semibold tabular-nums text-foreground">
+                <p className="num text-lg font-semibold text-foreground">
                   {formatCurrency(selectedPartner.cashEarnings)}
                 </p>
               </div>

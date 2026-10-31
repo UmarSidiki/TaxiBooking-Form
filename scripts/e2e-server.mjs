@@ -393,6 +393,9 @@ const child = spawn("npx", ["next", "dev", "-H", "127.0.0.1", "-p", "3000"], {
     NEXTAUTH_URL: "http://127.0.0.1:3000",
     NEXT_PUBLIC_BASE_URL: "http://127.0.0.1:3000",
     DISTANCE_MOCK: "1",
+    QA_MOCK_EMAIL: "1",
+    QA_MOCK_WHATSAPP: "1",
+    CRON_SECRET: process.env.CRON_SECRET ?? "e2e-cron-secret",
   },
 });
 

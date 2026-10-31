@@ -16,6 +16,7 @@ export async function GET(request: Request) {
     return {
       to: item.to,
       subject: item.subject,
+      text: typeof item.text === "string" ? item.text : "",
       attachments: attachments.map((file) => {
         const content = "content" in file ? file.content : undefined;
         const bytes = Buffer.isBuffer(content) ? content : Buffer.from([]);

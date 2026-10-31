@@ -1,8 +1,20 @@
 import AxeBuilder from "@axe-core/playwright";
-import { expect, test } from "@playwright/test";
-import { seedLoginToken } from "./helpers/login-token";
+import { expect, test, type Page } from "@playwright/test";
+import { seedMagicLink } from "./helpers/login-token";
 
-async function go(page: any, path: string) {
+const QA_KEY = process.env.CRON_SECRET ?? "e2e-cron-secret";
+const CLIENT_BASE: Record<string, number> = { desktop: 10, pixel: 30, iphone: 50 };
+let clientSeq = 0;
+
+test.beforeEach(async ({ page }, testInfo) => {
+  clientSeq += 1;
+  const octet = (CLIENT_BASE[testInfo.project.name] ?? 70) + clientSeq;
+  await page.context().setExtraHTTPHeaders({
+    "x-forwarded-for": `198.51.100.${octet}`,
+  });
+});
+
+async function go(page: Page, path: string) {
   for (let i = 0; i < 4; i += 1) {
     try {
       await page.goto(path, { waitUntil: "domcontentloaded" });
@@ -14,16 +26,58 @@ async function go(page: any, path: string) {
   }
 }
 
-test("account portal tabs, cancel fee, change price, completed ride", async ({ page }, testInfo) => {
+async function magicLinkSignIn(page: Page, email: string) {
+  await go(page, await seedMagicLink(email));
+  await expect(page).toHaveURL(/\/en\/account$/);
+  await expect(page.getByRole("heading", { name: "Your trips" })).toBeVisible();
+}
+
+async function latestSignInCode(page: Page, email: string) {
+  for (let attempt = 0; attempt < 40; attempt += 1) {
+    const response = await page.request.get("/api/qa/outbox", {
+      headers: { "x-qa-key": QA_KEY },
+    });
+    expect(response.ok(), await response.text()).toBeTruthy();
+    const body = (await response.json()) as {
+      mail: { to?: string | string[]; text?: string }[];
+      whatsapp?: { text?: string }[];
+    };
+    const mail = body.mail.filter((item) => {
+      const to = Array.isArray(item.to) ? item.to : [item.to];
+      return to.includes(email);
+    });
+    const code = (mail.at(-1)?.text ?? "").match(/\b\d{6}\b/)?.[0];
+    if (code) return { code, whatsapp: body.whatsapp ?? [] };
+    await page.waitForTimeout(250);
+  }
+  throw new Error(`Sign-in code for ${email} did not reach the mail outbox`);
+}
+
+test("email-only sign-in code reaches the inbox and opens the portal", async ({ page }) => {
+  await go(page, "/en/account");
+  await page.locator("#account-email").fill("ada@example.com");
+  await page.getByRole("button", { name: "Send code" }).click();
+  await expect(page.locator("#account-code")).toBeVisible();
+  await expect(page.getByRole("status")).toHaveText("Code sent.");
+
+  const { code, whatsapp } = await latestSignInCode(page, "ada@example.com");
+  expect(code).toMatch(/^\d{6}$/);
+  expect(whatsapp.some((message) => message.text?.includes(code))).toBe(false);
+
+  await page.locator("#account-code").fill(code);
+  await page.getByRole("button", { name: "Verify" }).click();
+  await expect(page.getByRole("heading", { name: "Your trips" })).toBeVisible();
+  await expect(page.getByRole("tab", { name: "Upcoming" })).toBeVisible();
+});
+
+test("magic link opens tabs, cancel fee, change price and completed ride", async ({ page }, testInfo) => {
   test.setTimeout(120_000);
   const shot = (name: string) =>
     process.env.SHOTS_DIR
       ? page.screenshot({ path: `${process.env.SHOTS_DIR}/bf-portal-${name}-${testInfo.project.name}.png`, fullPage: true })
       : Promise.resolve();
 
-  const token = await seedLoginToken("ada@example.com");
-  await go(page, token);
-  await expect(page.getByRole("heading", { name: "Your trips" })).toBeVisible();
+  await magicLinkSignIn(page, "ada@example.com");
   await expect(page.getByRole("tab", { name: "Upcoming" })).toBeVisible();
   await expect(page.getByRole("tab", { name: "Past" })).toBeVisible();
   await expect(page.getByRole("tab", { name: "Cancelled" })).toBeVisible();
@@ -51,8 +105,7 @@ test("account portal tabs, cancel fee, change price, completed ride", async ({ p
   await page.getByRole("button", { name: "Confirm change" }).click();
 
   // Completed ride has no actions
-  const token2 = await seedLoginToken("grace@example.com");
-  await go(page, token2);
+  await magicLinkSignIn(page, "grace@example.com");
   await page.getByRole("tab", { name: "Past" }).click();
   await page.getByRole("button", { name: "Details" }).first().click();
   await expect(page.getByRole("dialog")).toBeVisible();

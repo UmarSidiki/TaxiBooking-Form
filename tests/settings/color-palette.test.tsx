@@ -4,7 +4,7 @@ import { NextIntlClientProvider } from "next-intl";
 import messages from "../../messages/en.json";
 import { Setting } from "@/features/settings/model";
 import { settingsWriteSchema } from "@/features/settings/schema/settings-write.schema";
-import { COLOR_PALETTES, resolveColorPalette } from "@/features/settings/lib/color-palettes";
+import { COLOR_PALETTES, PRESET_PALETTES, resolveColorPalette } from "@/features/settings/lib/color-palettes";
 import { PalettePicker } from "@/features/settings/ui/palette-picker";
 import { StatusMark } from "@/features/dashboard/ui/riviera/status-mark";
 
@@ -30,7 +30,8 @@ describe("colour palette setting", () => {
         <PalettePicker value="heritage" onChange={() => {}} />
       </NextIntlClientProvider>,
     );
-    for (const id of COLOR_PALETTES) expect(html).toContain(`data-palette-scope="${id}"`);
+    for (const id of PRESET_PALETTES) expect(html).toContain(`data-palette-scope="${id}"`);
+    expect(html).toContain(`data-testid="palette-option-custom"`);
     expect(html).toMatch(/data-palette-scope="heritage" data-selected="true"/);
     expect(html).toContain("Ivory &amp; Oxblood");
   });

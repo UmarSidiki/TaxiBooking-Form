@@ -9,6 +9,7 @@ export const PUBLIC_SETTING_FIELDS = [
   "secondaryColor",
   "borderRadius",
   "colorPalette",
+  "customPalette",
   "redirectUrl",
   "thankYouStaySeconds",
   "redirectImmediatelyAfterBooking",

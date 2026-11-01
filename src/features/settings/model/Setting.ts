@@ -7,6 +7,7 @@ export interface ISetting {
   secondaryColor: string;
   borderRadius: number;
   colorPalette?: ColorPalette;
+  customPalette?: { brand: string; accent: string };
   redirectUrl?: string;
   thankYouStaySeconds?: number;
   redirectImmediatelyAfterBooking?: boolean;
@@ -117,6 +118,16 @@ const SettingSchema = new Schema<ISetting>(
       type: String,
       enum: COLOR_PALETTES,
       default: DEFAULT_COLOR_PALETTE,
+    },
+    customPalette: {
+      type: new Schema(
+        {
+          brand: { type: String, match: /^#[0-9a-fA-F]{6}$/ },
+          accent: { type: String, match: /^#[0-9a-fA-F]{6}$/ },
+        },
+        { _id: false },
+      ),
+      default: undefined,
     },
     borderRadius: {
       type: Number,

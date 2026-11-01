@@ -314,3 +314,32 @@
 .riviera .palette-picker__swatches span { width: 22px; height: 22px; border-radius: var(--radius-sm); border: 1px solid var(--rule2); }
 .riviera .palette-picker__name { font-size: 14px; font-weight: 600; }
 .riviera .palette-picker__note { font-size: 12px; color: var(--ink2); }
+/* Custom palette editor (Settings > Appearance). */
+.riviera .custom-palette { display: flex; flex-direction: column; gap: 16px; margin: 0 0 24px; padding: 16px; border: 1px solid var(--rule); border-radius: var(--radius); background: var(--well); min-width: 0; }
+.riviera .custom-palette__title { font-size: 15px; font-weight: 600; color: var(--ink); }
+.riviera .custom-palette__help { margin: 4px 0 0; font-size: 12px; color: var(--ink2); }
+.riviera .custom-palette__help[data-invalid] { color: var(--err); }
+.riviera .custom-palette__grid { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr)); }
+.riviera .custom-palette__field { min-width: 0; }
+.riviera .custom-palette__label { display: block; margin-bottom: 6px; font-size: 13px; font-weight: 500; color: var(--ink); }
+.riviera .custom-palette__inputs { display: flex; gap: 8px; align-items: stretch; }
+.riviera .custom-palette__swatch { flex: none; width: 44px; height: 44px; padding: 3px; border: 1px solid var(--rule2); border-radius: var(--radius); background: var(--field); cursor: pointer; }
+.riviera .custom-palette__swatch::-webkit-color-swatch-wrapper { padding: 0; }
+.riviera .custom-palette__swatch::-webkit-color-swatch { border: 0; border-radius: var(--radius-sm); }
+.riviera .custom-palette__swatch::-moz-color-swatch { border: 0; border-radius: var(--radius-sm); }
+.riviera .custom-palette__hex { flex: 1; min-width: 0; height: 44px; padding: 0 12px; border: 1px solid var(--rule2); border-radius: var(--radius); color: var(--ink); text-transform: uppercase; }
+.riviera .custom-palette__hex[aria-invalid] { border-color: var(--err); }
+.riviera .custom-palette__ratios { display: flex; flex-direction: column; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.riviera .custom-palette__ratio { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; font-size: 13px; color: var(--ink); }
+.riviera .custom-palette__warn { padding: 12px; border: 1px solid color-mix(in srgb, var(--warn) 35%, transparent); border-radius: var(--radius); background: var(--warn-tint); color: var(--warn); font-size: 13px; }
+.riviera .custom-palette__fixes { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+.riviera .custom-palette__fix { display: inline-flex; align-items: center; gap: 8px; min-height: 40px; padding: 6px 12px; border: 1px solid var(--rule2); border-radius: var(--radius); background: var(--field); color: var(--ink); font-size: 13px; cursor: pointer; text-align: start; }
+.riviera .custom-palette__fix span { flex: none; width: 16px; height: 16px; border-radius: var(--radius-sm); }
+.riviera .custom-palette__preview { margin: 0; padding: 16px; border: 1px solid var(--rule); border-radius: var(--radius); background: var(--paper); color: var(--ink); }
+.riviera .custom-palette__caption { margin-bottom: 8px; font-size: 12px; color: var(--ink2); }
+.riviera .custom-palette__card { display: flex; flex-direction: column; gap: 10px; padding: 14px; border: 1px solid var(--rule); border-radius: var(--radius); background: var(--sheet); box-shadow: var(--elev); }
+.riviera .custom-palette__mock-input { display: block; padding: 10px 12px; border: 1px solid var(--rule2); border-radius: var(--radius-sm); background: var(--field); color: var(--ink2); font-size: 13px; }
+.riviera .custom-palette__row { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
+.riviera .custom-palette__mock-btn { padding: 8px 14px; border-radius: var(--radius-sm); background: var(--sig); color: var(--sig-on); font-size: 13px; font-weight: 500; }
+.riviera .custom-palette__mock-link { color: var(--link); font-size: 13px; text-decoration: underline; }
+.riviera [data-palette-scope="draft"] { --operator-accent: initial; }

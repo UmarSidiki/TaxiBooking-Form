@@ -11,13 +11,14 @@ import { operatorAccent } from "@/features/settings/lib/operator-accent";
 /** A static, scaled-down step 1 of the public form that follows unsaved settings. */
 export function AppearancePreview({ settings }: { settings: Partial<ISetting> }) {
   const t = useTranslations();
-  const accent = operatorAccent(settings.primaryColor);
+  const palette = resolveColorPalette(settings.colorPalette);
+  const accent = palette === "custom" ? ({ kind: "default" } as const) : operatorAccent(settings.primaryColor);
   const style = accent.kind === "custom" ? ({ "--preview-accent": accent.color } as CSSProperties) : undefined;
   const name = brandName(settings) || t("Riviera.brandFallback");
 
   return (
     <figure className="flex flex-col gap-2" aria-label={t("Dashboard.Settings.preview-title")}>
-      <div className="appearance-preview" data-palette-scope={resolveColorPalette(settings.colorPalette)} style={style} data-accent={accent.kind === "custom" ? "" : undefined} aria-hidden="true">
+      <div className="appearance-preview" data-palette-scope={palette === "custom" ? "draft" : palette} style={style} data-accent={accent.kind === "custom" ? "" : undefined} aria-hidden="true">
         <p className="appearance-preview__brand">{name}</p>
         <div className="appearance-preview__field">
           <span>{t("Riviera.pickup")}</span>

@@ -27,7 +27,7 @@ export function PalettePicker({
       <p className="palette-picker__help">{t("palette-help")}</p>
       <div className="palette-picker__grid" role="radiogroup">
         {COLOR_PALETTES.map((id) => (
-          <label key={id} className="palette-picker__option" data-palette-scope={id} data-selected={id === selected || undefined}>
+          <label key={id} className="palette-picker__option" data-palette-scope={id === "custom" ? "draft" : id} data-selected={id === selected || undefined} data-testid={`palette-option-${id}`}>
             <input
               type="radio"
               name="color-palette"

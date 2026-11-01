@@ -1,5 +1,9 @@
 /** Colour palettes the operator can pick. Token values live in shared/style/riviera-palettes.css. */
-export const COLOR_PALETTES = ["neutral", "slate", "heritage", "navy", "forest", "ocean", "amber", "plum", "terracotta", "steel"] as const;
+/** Presets with a stylesheet block in riviera-palettes.css. */
+export const PRESET_PALETTES = ["neutral", "slate", "heritage", "navy", "forest", "ocean", "amber", "plum", "terracotta", "steel"] as const;
+
+/** Everything an operator can pick; "custom" is derived from their own colours at render time. */
+export const COLOR_PALETTES = [...PRESET_PALETTES, "custom"] as const;
 
 export type ColorPalette = (typeof COLOR_PALETTES)[number];
 

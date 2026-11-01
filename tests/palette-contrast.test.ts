@@ -1,6 +1,6 @@
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
-import { COLOR_PALETTES } from "@/features/settings/lib/color-palettes";
+import { PRESET_PALETTES } from "@/features/settings/lib/color-palettes";
 import { contrastFailures, luminance, type PaletteTokens } from "@/features/settings/lib/palette-tokens";
 
 const css = readFileSync("src/shared/style/riviera-palettes.css", "utf8");
@@ -24,13 +24,13 @@ describe("palette tokens meet WCAG AA", () => {
   const sets = blocks();
 
   it("defines light and dark for every palette", () => {
-    for (const id of COLOR_PALETTES) {
+    for (const id of PRESET_PALETTES) {
       expect(sets.has(`${id}-light`), `${id}-light`).toBe(true);
       expect(sets.has(`${id}-dark`), `${id}-dark`).toBe(true);
     }
   });
 
-  for (const id of COLOR_PALETTES) {
+  for (const id of PRESET_PALETTES) {
     for (const mode of ["light", "dark"]) {
       it(`${id} ${mode}`, () => {
         const tokens = sets.get(`${id}-${mode}`)!;
@@ -40,7 +40,7 @@ describe("palette tokens meet WCAG AA", () => {
     }
   }
 
-  for (const id of COLOR_PALETTES) {
+  for (const id of PRESET_PALETTES) {
     it(`${id} keeps page, cards and inputs visibly apart`, () => {
       const l = sets.get(`${id}-light`)!;
       const d = sets.get(`${id}-dark`)!;

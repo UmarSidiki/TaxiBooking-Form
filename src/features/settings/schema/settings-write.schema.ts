@@ -29,6 +29,14 @@ export const settingsWriteSchema = z.object({
   secondaryColor: hexOrRgb.optional(),
   borderRadius: z.number().optional(),
   colorPalette: z.enum(COLOR_PALETTES).optional(),
+  // Strict #RRGGBB only: these values are turned into CSS on the server.
+  customPalette: z
+    .object({
+      brand: z.string().regex(/^#[0-9a-fA-F]{6}$/),
+      accent: z.string().regex(/^#[0-9a-fA-F]{6}$/),
+    })
+    .strict()
+    .optional(),
   redirectUrl: z.string().optional(),
   thankYouStaySeconds: z.number().optional(),
   redirectImmediatelyAfterBooking: z.boolean().optional(),

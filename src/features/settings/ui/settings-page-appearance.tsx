@@ -2,6 +2,7 @@
 
 import { useTranslations } from "next-intl";
 
+import { CustomPaletteEditor, DraftPaletteStyle } from "@/features/settings/ui/custom-palette-editor";
 import { PalettePicker } from "@/features/settings/ui/palette-picker";
 import AppearanceTab from "@/features/settings/ui/appearance-tab";
 import { AppearancePreview } from "@/features/settings/ui/appearance-preview";
@@ -22,6 +23,7 @@ export function SettingsPageAppearance({
 
   return (
     <div className="flex flex-col gap-6">
+      <DraftPaletteStyle value={settings.customPalette} />
       <SettingsDeskSave
         title={t("Dashboard.Settings.nav_appearance")}
         help={t("Dashboard.Settings.appearance_scope")}
@@ -36,6 +38,12 @@ export function SettingsPageAppearance({
               value={settings.colorPalette}
               onChange={(value) => patch("colorPalette", value)}
             />
+            {settings.colorPalette === "custom" ? (
+              <CustomPaletteEditor
+                value={settings.customPalette}
+                onChange={(value) => patch("customPalette", value)}
+              />
+            ) : null}
             <AppearanceTab
               settings={settings}
               handleColorChange={(key, value) => patch(key, value)}

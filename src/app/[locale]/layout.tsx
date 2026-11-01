@@ -7,6 +7,7 @@ import "@/shared/style/globals.css";
 import "@/shared/style/riviera-theme.css";
 import "@/shared/style/riviera-palettes.css";
 import { resolveColorPalette } from "@/features/settings/lib/color-palettes";
+import { customPaletteCss } from "@/features/settings/lib/custom-palette";
 import { operatorAccent } from "@/features/settings/lib/operator-accent";
 import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { notFound } from "next/navigation";
@@ -102,7 +103,9 @@ export default async function RootLayout({ children, params }: Props) {
     JSON.stringify(themeSettings)
   ) as ThemeSettings;
 
-  const accent = operatorAccent(themeSettings.primaryColor);
+  const palette = resolveColorPalette(themeSettings.colorPalette);
+  // The custom palette carries its own brand colour, so the legacy accent override stays off.
+  const accent = palette === "custom" ? ({ kind: "default" } as const) : operatorAccent(themeSettings.primaryColor);
   const cssVariables = {
     "--primary-color": themeSettings.primaryColor,
     "--secondary-color": themeSettings.secondaryColor,
@@ -114,7 +117,7 @@ export default async function RootLayout({ children, params }: Props) {
     <html
       lang={locale}
       dir={locale === "ar" ? "rtl" : "ltr"}
-      data-palette={resolveColorPalette(themeSettings.colorPalette)}
+      data-palette={palette}
       suppressHydrationWarning
     >
       <head>
@@ -122,6 +125,9 @@ export default async function RootLayout({ children, params }: Props) {
         <link rel="preconnect" href="https://maps.googleapis.com" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        {palette === "custom" ? (
+          <style id="custom-palette" dangerouslySetInnerHTML={{ __html: customPaletteCss(themeSettings.customPalette) }} />
+        ) : null}
         <script
           dangerouslySetInnerHTML={{
             __html: `(function(){try{var s=localStorage.getItem('riviera-theme');var d=s||(window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.dataset.rivieraTheme=d;}catch(e){document.documentElement.dataset.rivieraTheme='light';}})();`,

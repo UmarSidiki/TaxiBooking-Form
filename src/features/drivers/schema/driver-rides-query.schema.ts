@@ -21,7 +21,9 @@ export const DRIVER_RIDE_PAGE_SIZE = 50;
 export const DRIVER_RIDE_FIELDS = [
   "tripId",
   "pickup",
+  "pickupLatLng",
   "dropoff",
+  "dropoffLatLng",
   "stops",
   "tripType",
   "bookingType",

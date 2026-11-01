@@ -3310,7 +3310,10 @@
     "status_pay_on_pickup": "Pay on pickup",
     "status_cash": "Pay on pickup",
     "payment_pay_on_pickup": "Pay on pickup",
-    "payment_status_pay_on_pickup": "Pay on pickup"
+    "payment_status_pay_on_pickup": "Pay on pickup",
+    "map_links": "Map links",
+    "open_in_maps": "Open in Maps",
+    "navigate": "Navigate"
   },
   "RideStatus": {
     "title": "Trip {tripId}",
@@ -3537,5 +3540,12 @@
     "cancel-confirm": "Cancel campaign",
     "send-at-local": "That's {time} on this device.",
     "show-more-page": "Load more ({shown} shown)"
+  },
+  "RideLocations": {
+    "pickup": "Pickup",
+    "stop": "Stop {number}",
+    "dropoff": "Drop-off",
+    "open": "Open in Maps",
+    "navigate": "Navigate"
   }
 }

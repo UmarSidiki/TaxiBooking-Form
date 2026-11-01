@@ -3310,7 +3310,10 @@
     "status_pay_on_pickup": "Betalen bij ophalen",
     "status_cash": "Betalen bij ophalen",
     "payment_pay_on_pickup": "Betalen bij ophalen",
-    "payment_status_pay_on_pickup": "Betalen bij ophalen"
+    "payment_status_pay_on_pickup": "Betalen bij ophalen",
+    "map_links": "Kaartlinks",
+    "open_in_maps": "Openen in Maps",
+    "navigate": "Navigeren"
   },
   "RideStatus": {
     "title": "Rit {tripId}",
@@ -3537,5 +3540,12 @@
     "cancel-confirm": "Campagne annuleren",
     "send-at-local": "Dat is {time} op dit apparaat.",
     "show-more-page": "Meer laden ({shown} getoond)"
+  },
+  "RideLocations": {
+    "pickup": "Ophalen",
+    "stop": "Stop {number}",
+    "dropoff": "Afzetten",
+    "open": "Openen in Maps",
+    "navigate": "Navigeren"
   }
 }

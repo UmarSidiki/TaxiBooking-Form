@@ -3310,7 +3310,10 @@
     "status_pay_on_pickup": "الدفع عند الالتقاط",
     "status_cash": "الدفع عند الالتقاط",
     "payment_pay_on_pickup": "الدفع عند الالتقاط",
-    "payment_status_pay_on_pickup": "الدفع عند الالتقاط"
+    "payment_status_pay_on_pickup": "الدفع عند الالتقاط",
+    "map_links": "روابط الخريطة",
+    "open_in_maps": "فتح في الخرائط",
+    "navigate": "الاتجاهات"
   },
   "RideStatus": {
     "title": "الرحلة {tripId}",
@@ -3537,5 +3540,12 @@
     "cancel-confirm": "إلغاء الحملة",
     "send-at-local": "أي {time} على هذا الجهاز.",
     "show-more-page": "تحميل المزيد (معروض {shown})"
+  },
+  "RideLocations": {
+    "pickup": "نقطة الالتقاط",
+    "stop": "توقف {number}",
+    "dropoff": "نقطة الإنزال",
+    "open": "فتح في الخرائط",
+    "navigate": "الاتجاهات"
   }
 }

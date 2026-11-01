@@ -3310,7 +3310,10 @@
     "status_pay_on_pickup": "Paiement à la prise en charge",
     "status_cash": "Paiement à la prise en charge",
     "payment_pay_on_pickup": "Paiement à la prise en charge",
-    "payment_status_pay_on_pickup": "Paiement à la prise en charge"
+    "payment_status_pay_on_pickup": "Paiement à la prise en charge",
+    "map_links": "Liens de carte",
+    "open_in_maps": "Ouvrir dans Maps",
+    "navigate": "Itinéraire"
   },
   "RideStatus": {
     "title": "Trajet {tripId}",
@@ -3537,5 +3540,12 @@
     "cancel-confirm": "Annuler la campagne",
     "send-at-local": "Soit {time} sur cet appareil.",
     "show-more-page": "Charger plus ({shown} affichés)"
+  },
+  "RideLocations": {
+    "pickup": "Prise en charge",
+    "stop": "Arrêt {number}",
+    "dropoff": "Dépose",
+    "open": "Ouvrir dans Maps",
+    "navigate": "Itinéraire"
   }
 }

@@ -3310,7 +3310,10 @@
     "status_pay_on_pickup": "Pagamento al ritiro",
     "status_cash": "Pagamento al ritiro",
     "payment_pay_on_pickup": "Pagamento al ritiro",
-    "payment_status_pay_on_pickup": "Pagamento al ritiro"
+    "payment_status_pay_on_pickup": "Pagamento al ritiro",
+    "map_links": "Link mappa",
+    "open_in_maps": "Apri in Maps",
+    "navigate": "Naviga"
   },
   "RideStatus": {
     "title": "Corsa {tripId}",
@@ -3537,5 +3540,12 @@
     "cancel-confirm": "Annulla campagna",
     "send-at-local": "Sono le {time} su questo dispositivo.",
     "show-more-page": "Carica altri ({shown} mostrati)"
+  },
+  "RideLocations": {
+    "pickup": "Ritiro",
+    "stop": "Fermata {number}",
+    "dropoff": "Destinazione",
+    "open": "Apri in Maps",
+    "navigate": "Naviga"
   }
 }

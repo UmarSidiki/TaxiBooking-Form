@@ -123,7 +123,9 @@ export async function createDeskBooking(
   const bookingData = {
     tripId,
     pickup: formData.pickup,
+    pickupLatLng: formData.pickupLatLng ?? undefined,
     dropoff: formData.dropoff || "",
+    dropoffLatLng: formData.dropoffLatLng ?? undefined,
     stops: formData.stops || [],
     tripType: formData.tripType,
     bookingType: formData.bookingType,

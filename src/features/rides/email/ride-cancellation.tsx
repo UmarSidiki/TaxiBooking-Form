@@ -1,6 +1,7 @@
 import { getCurrencySymbol } from "@/shared/lib/utils";
 import { prepareEventEmail, sendPreparedEmail } from "@/features/emails/lib/send-event-email";
 import { AssigneeEmail } from "@/features/emails/templates/assignee-email";
+import type { RideLocation } from "@/features/rides/lib/ride-locations";
 import type { EmailTrip } from "@/features/emails/types";
 
 interface RideCancellationData {
@@ -31,6 +32,8 @@ interface RideCancellationData {
   driverEmail: string;
   baseUrl?: string;
   audience?: "driver" | "partner";
+  /** Map links and coordinates per place, built with rideLocationsOf. */
+  locations?: RideLocation[];
 }
 
 function isValidEmail(email: string): boolean {
@@ -89,6 +92,7 @@ export async function sendRideCancellationEmail(data: RideCancellationData) {
           subject={prepared.copy.subject}
           intro={prepared.copy.intro}
           trip={tripOf(data)}
+          locations={data.locations}
           status={{ label: prepared.t("status_cancelled"), tone: "danger" }}
           details={[
             {

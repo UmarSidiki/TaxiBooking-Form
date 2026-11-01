@@ -2,8 +2,11 @@ export interface PartnerRideBooking {
   _id: string;
   tripId: string;
   pickup: string;
+  pickupLatLng?: { lat: number; lng: number } | null;
   dropoff: string;
-  stops?: Array<{ location: string; order: number; duration?: number }>;
+  dropoffLatLng?: { lat: number; lng: number } | null;
+  stops?: Array<{ location: string; order: number; duration?: number; latLng?: { lat: number; lng: number } | null }>;
+  bookingType?: string;
   date: string;
   time: string;
   returnDate?: string;

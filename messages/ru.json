@@ -3310,7 +3310,10 @@
     "status_pay_on_pickup": "Оплата при посадке",
     "status_cash": "Оплата при посадке",
     "payment_pay_on_pickup": "Оплата при посадке",
-    "payment_status_pay_on_pickup": "Оплата при посадке"
+    "payment_status_pay_on_pickup": "Оплата при посадке",
+    "map_links": "Ссылки на карту",
+    "open_in_maps": "Открыть в Картах",
+    "navigate": "Маршрут"
   },
   "RideStatus": {
     "title": "Поездка {tripId}",
@@ -3537,5 +3540,12 @@
     "cancel-confirm": "Отменить кампанию",
     "send-at-local": "На этом устройстве это {time}.",
     "show-more-page": "Загрузить ещё (показано {shown})"
+  },
+  "RideLocations": {
+    "pickup": "Подача",
+    "stop": "Остановка {number}",
+    "dropoff": "Высадка",
+    "open": "Открыть в Картах",
+    "navigate": "Маршрут"
   }
 }

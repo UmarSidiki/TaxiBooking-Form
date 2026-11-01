@@ -2,6 +2,7 @@
 
 import type { useDriverDashboard } from "@/features/drivers/hooks/useDriverDashboard";
 import { DeskOverlaySection } from "@/features/rides/ui/desk-overlay-section";
+import { RideLocationList } from "@/features/rides/ui/ride-location-list";
 import { RideMapLine } from "@/features/rides/ui/ride-map-line";
 import { Baby } from "lucide-react";
 
@@ -22,16 +23,7 @@ export function DriverRideDetailJourney({
         start={detailBooking.pickup}
         end={detailBooking.dropoff || t("Dashboard.Rides.NotSpecified")}
       />
-      {detailBooking.stops && detailBooking.stops.length > 0 ? (
-        <ul className="space-y-1 text-sm text-muted-foreground">
-          {detailBooking.stops
-            .slice()
-            .sort((a, b) => a.order - b.order)
-            .map((stop) => (
-              <li key={`${stop.order}-${stop.location}`}>{stop.location}</li>
-            ))}
-        </ul>
-      ) : null}
+      <RideLocationList ride={detailBooking} />
       <dl className="grid grid-cols-2 gap-3 text-sm">
         <div>
           <dt className="text-xs font-medium text-muted-foreground">

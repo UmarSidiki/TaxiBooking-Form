@@ -1,3 +1,4 @@
+import { rideLocationsOf } from "@/features/rides/lib/ride-locations";
 import { connectDB } from "@/shared/db";
 import { Booking } from "@/features/booking/model";
 import { Setting } from "@/features/settings/model";
@@ -56,7 +57,7 @@ export async function sendPickupReminders(
         { "assignedPartner._id": { $exists: true } },
       ],
     })
-      .select("tripId date time pickup assignedDriver assignedPartner")
+      .select("tripId date time pickup pickupLatLng dropoff dropoffLatLng stops bookingType assignedDriver assignedPartner")
       .limit(200)
       .lean();
 
@@ -97,7 +98,13 @@ export async function sendPickupReminders(
         {
           kind: "reminder",
           recipients,
-          ride: { tripId: ride.tripId, pickup: ride.pickup, date: ride.date, time: ride.time },
+          ride: {
+            tripId: ride.tripId,
+            pickup: ride.pickup,
+            date: ride.date,
+            time: ride.time,
+            locations: rideLocationsOf(ride),
+          },
         },
         deps,
       );

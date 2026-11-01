@@ -3,6 +3,8 @@ import { CTA } from "@/features/emails/ui/cta";
 import { DetailList } from "@/features/emails/ui/detail-list";
 import { PriceTable } from "@/features/emails/ui/price-table";
 import { StatusBadge } from "@/features/emails/ui/status-badge";
+import { LocationLinks } from "@/features/emails/ui/location-links";
+import type { RideLocation } from "@/features/rides/lib/ride-locations";
 import { TripCard } from "@/features/emails/ui/trip-card";
 import type {
   EmailBrand,
@@ -24,6 +26,7 @@ export function AssigneeEmail({
   details,
   priceRows,
   cta,
+  locations,
 }: {
   t: EmailTranslator;
   brand: EmailBrand;
@@ -35,6 +38,7 @@ export function AssigneeEmail({
   details?: EmailDetail[];
   priceRows?: EmailPriceRow[];
   cta?: { url?: string | null; label: string } | null;
+  locations?: RideLocation[] | null;
 }) {
   return (
     <BrandLayout
@@ -47,6 +51,7 @@ export function AssigneeEmail({
     >
       <StatusBadge label={status.label} tone={status.tone} />
       <TripCard trip={trip} t={t} />
+      <LocationLinks locations={locations} t={t} color={brand.primaryColor} />
       {details?.length ? <DetailList rows={details} /> : null}
       {priceRows?.length ? <PriceTable rows={priceRows} t={t} /> : null}
       {cta?.url ? (

@@ -1,6 +1,8 @@
 import { Driver } from "@/features/drivers/model";
 import { Partner } from "@/features/partners/model";
 import { notify } from "@/features/notifications/notify";
+import { sendWhatsAppTexts } from "@/features/settings/lib/whatsapp-send";
+import { rideLocationsText, type RideLocation } from "@/features/rides/lib/ride-locations";
 import type { NotificationAudience } from "@/features/notifications/notification-types";
 
 export type RideNotice = {
@@ -8,6 +10,8 @@ export type RideNotice = {
   pickup: string;
   date: string;
   time: string;
+  /** Pickup, stops and drop-off with coordinates and map links, appended to the message. */
+  locations?: RideLocation[];
 };
 
 export type NoticeKind =
@@ -78,6 +82,17 @@ function variablesFor(
   };
 }
 
+type NotifySend = NonNullable<Parameters<typeof notify>[2]>["send"];
+
+/** Appends the map-link block so drivers get it whatever the operator's template says. */
+export function withLocations(ride: RideNotice | undefined, send?: WhatsAppSend | NotifySend): NotifySend {
+  const block = ride?.locations?.length ? rideLocationsText(ride.locations) : "";
+  if (!block) return send as NotifySend;
+  const base = (send ?? sendWhatsAppTexts) as NonNullable<NotifySend>;
+  return (messages, options) =>
+    base(messages.map((message) => ({ ...message, text: `${message.text}\n\n${block}` })), options);
+}
+
 export async function deliverAssigneeNotice(input: {
   kind: NoticeKind;
   recipients: NoticeRecipient[];
@@ -93,7 +108,7 @@ export async function deliverAssigneeNotice(input: {
         recipients: groupRecipients(input.kind, input.recipients),
         channels: ["whatsapp"],
       },
-      { linked: deps?.linked, send: deps?.send },
+      { linked: deps?.linked, send: withLocations(input.ride, deps?.send) },
     );
 
     if (result.skipped === "not_linked") {

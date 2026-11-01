@@ -13,6 +13,7 @@ import {
 import type { useDriverDashboard } from "@/features/drivers/hooks/useDriverDashboard";
 import { Button } from "@/shared/ui/button";
 import { MapPin } from "lucide-react";
+import { mapsDirectionsUrl } from "@/features/rides/lib/ride-locations";
 import { useLocale } from "next-intl";
 
 type DriverDashboardState = ReturnType<typeof useDriverDashboard>;
@@ -29,7 +30,7 @@ export function DriverRideDetailDialog({
 >) {
   const locale = useLocale();
   const mapsUrl = detailBooking
-    ? `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(detailBooking.pickup)}`
+    ? mapsDirectionsUrl(detailBooking.pickup, detailBooking.pickupLatLng)
     : "";
 
   return (

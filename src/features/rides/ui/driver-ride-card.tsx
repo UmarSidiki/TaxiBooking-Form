@@ -3,18 +3,18 @@
 import { Button } from "@/shared/ui/button";
 import { Card, CardContent } from "@/shared/ui/card";
 import type { IBooking } from "@/features/booking/model";
+import { RideLocationList } from "@/features/rides/ui/ride-location-list";
+import { mapsDirectionsUrl, validCoords } from "@/features/rides/lib/ride-locations";
 import { RideMapLine } from "@/features/rides/ui/ride-map-line";
 import { RideStatusBadge } from "@/features/rides/ui/ride-status-badge";
 import { MapPin, Phone } from "lucide-react";
 import { useLocale, type useTranslations } from "next-intl";
 
-function mapsUrl(address: string) {
-  const destination = encodeURIComponent(address);
-  return `https://www.google.com/maps/dir/?api=1&destination=${destination}`;
-}
-
-function appleMapsUrl(address: string) {
-  return `https://maps.apple.com/?daddr=${encodeURIComponent(address)}`;
+function appleMapsUrl(address: string, coords?: { lat: number; lng: number } | null) {
+  const point = validCoords(coords);
+  return point
+    ? `https://maps.apple.com/?daddr=${point.lat.toFixed(6)},${point.lng.toFixed(6)}`
+    : `https://maps.apple.com/?daddr=${encodeURIComponent(address)}`;
 }
 
 export function DriverRideCard({
@@ -77,18 +77,19 @@ export function DriverRideCard({
           </p>
         </div>
         <RideMapLine start={booking.pickup} end={booking.dropoff || "—"} />
+        <RideLocationList ride={booking} compact />
         <div className="flex flex-col gap-2 sm:flex-row">
           <Button className="h-11 flex-1" onClick={() => setDetailBooking(booking)}>
             {t("Dashboard.Rides.ViewDetails")}
           </Button>
           <Button className="h-11 flex-1" variant="outline" asChild>
-            <a href={mapsUrl(booking.pickup)} target="_blank" rel="noreferrer">
+            <a href={mapsDirectionsUrl(booking.pickup, booking.pickupLatLng)} target="_blank" rel="noreferrer">
               <MapPin className="size-4" />
               {t("Drivers.navigate")}
             </a>
           </Button>
           <Button className="h-11 flex-1" variant="outline" asChild>
-            <a href={appleMapsUrl(booking.pickup)} target="_blank" rel="noreferrer">
+            <a href={appleMapsUrl(booking.pickup, booking.pickupLatLng)} target="_blank" rel="noreferrer">
               {t("Drivers.apple-maps")}
             </a>
           </Button>

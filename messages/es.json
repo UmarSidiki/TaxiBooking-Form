@@ -3310,7 +3310,10 @@
     "status_pay_on_pickup": "Pago al recoger",
     "status_cash": "Pago al recoger",
     "payment_pay_on_pickup": "Pago al recoger",
-    "payment_status_pay_on_pickup": "Pago al recoger"
+    "payment_status_pay_on_pickup": "Pago al recoger",
+    "map_links": "Enlaces de mapa",
+    "open_in_maps": "Abrir en Maps",
+    "navigate": "Cómo llegar"
   },
   "RideStatus": {
     "title": "Viaje {tripId}",
@@ -3537,5 +3540,12 @@
     "cancel-confirm": "Cancelar campaña",
     "send-at-local": "Son las {time} en este dispositivo.",
     "show-more-page": "Cargar más ({shown} mostrados)"
+  },
+  "RideLocations": {
+    "pickup": "Recogida",
+    "stop": "Parada {number}",
+    "dropoff": "Destino",
+    "open": "Abrir en Maps",
+    "navigate": "Cómo llegar"
   }
 }

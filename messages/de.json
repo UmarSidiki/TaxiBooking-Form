@@ -3310,7 +3310,10 @@
     "status_pay_on_pickup": "Zahlung bei Abholung",
     "status_cash": "Zahlung bei Abholung",
     "payment_pay_on_pickup": "Zahlung bei Abholung",
-    "payment_status_pay_on_pickup": "Zahlung bei Abholung"
+    "payment_status_pay_on_pickup": "Zahlung bei Abholung",
+    "map_links": "Kartenlinks",
+    "open_in_maps": "In Maps öffnen",
+    "navigate": "Navigation"
   },
   "RideStatus": {
     "title": "Fahrt {tripId}",
@@ -3537,5 +3540,12 @@
     "cancel-confirm": "Kampagne abbrechen",
     "send-at-local": "Das ist {time} auf diesem Gerät.",
     "show-more-page": "Mehr laden ({shown} angezeigt)"
+  },
+  "RideLocations": {
+    "pickup": "Abholung",
+    "stop": "Stopp {number}",
+    "dropoff": "Ziel",
+    "open": "In Maps öffnen",
+    "navigate": "Navigation"
   }
 }

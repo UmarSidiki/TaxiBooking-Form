@@ -9,9 +9,12 @@ export interface IPendingBooking {
   draftId?: string;
   bookingData: {
     pickup: string;
+    pickupLatLng?: { lat: number; lng: number } | null;
     dropoff?: string;
+    dropoffLatLng?: { lat: number; lng: number } | null;
     stops?: Array<{
       location: string;
+      latLng?: { lat: number; lng: number } | null;
       order: number;
       duration?: number;
     }>;

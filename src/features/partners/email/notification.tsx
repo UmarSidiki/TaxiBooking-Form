@@ -1,6 +1,8 @@
 import { absoluteHttpBase, bookingMailLocale } from "@/features/booking/lib/booking-mail-url";
 import { prepareEventEmail, sendPreparedEmail } from "@/features/emails/lib/send-event-email";
 import { NoticeEmail } from "@/features/emails/templates/notice-email";
+import { LocationLinks } from "@/features/emails/ui/location-links";
+import type { RideLocation } from "@/features/rides/lib/ride-locations";
 import type { EmailTrip } from "@/features/emails/types";
 
 interface PartnerData {
@@ -23,6 +25,7 @@ interface RideNotificationData {
   baseUrl?: string;
   partnerAmount?: number;
   currencySymbol?: string;
+  locations?: RideLocation[];
 }
 
 function isValidEmail(email: string): boolean {
@@ -185,6 +188,7 @@ export async function sendRideNotificationEmail(data: RideNotificationData) {
                 ]
               : []
           }
+          extra={<LocationLinks locations={data.locations} t={prepared.t} color={prepared.brand.primaryColor} />}
           cta={url ? { url, label: prepared.t("view_ride") } : null}
         />
       ),

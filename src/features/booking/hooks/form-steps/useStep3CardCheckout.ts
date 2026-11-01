@@ -110,8 +110,6 @@ export function useStep3CardCheckout({
             email: formData.email,
             phone: formData.phone,
             whatsappOptIn: formData.whatsappOptIn,
-            marketingEmailOptIn: formData.marketingEmailOptIn,
-            marketingWhatsappOptIn: formData.marketingWhatsappOptIn,
             locale,
           },
         }),

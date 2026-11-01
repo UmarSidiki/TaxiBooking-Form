@@ -1890,10 +1890,6 @@
     }
   },
   "Marketing": {
-    "checkout-title": "Ride offers (optional)",
-    "checkout-email": "Email me offers, news and promotions.",
-    "checkout-whatsapp": "Message me offers on WhatsApp.",
-    "checkout-whatsapp-hint": "WhatsApp offers start after you verify this number in your account.",
     "account-title": "Ride offers",
     "account-note": "Optional marketing messages. You can change this any time.",
     "account-email": "Email offers and news",

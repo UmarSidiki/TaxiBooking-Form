@@ -45,8 +45,6 @@ export interface FormData {
   email: string;
   phone: string;
   whatsappOptIn: boolean;
-  marketingEmailOptIn: boolean;
-  marketingWhatsappOptIn: boolean;
   cardNumber: string;
   expiry: string;
   cvv: string;
@@ -145,8 +143,6 @@ const defaultFormData: FormData = {
   email: "",
   phone: "",
   whatsappOptIn: true,
-  marketingEmailOptIn: false,
-  marketingWhatsappOptIn: false,
   cardNumber: "",
   expiry: "",
   cvv: "",
@@ -313,8 +309,6 @@ export function BookingFormProvider({ children }: { children: ReactNode }) {
             ...defaultFormData,
             ...parsed,
             whatsappOptIn: parsed.whatsappOptIn === true,
-            marketingEmailOptIn: parsed.marketingEmailOptIn === true,
-            marketingWhatsappOptIn: parsed.marketingWhatsappOptIn === true,
           });
         }
         if (savedDistance) setDistanceData(JSON.parse(savedDistance));

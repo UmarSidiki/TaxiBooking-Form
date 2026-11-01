@@ -70,8 +70,6 @@ export async function createBookingFromPending(
       await recordCheckoutMarketingConsent({
         email: pendingBooking.bookingData.email,
         phone: pendingBooking.bookingData.phone,
-        marketingEmailOptIn: pendingBooking.bookingData.marketingEmailOptIn,
-        marketingWhatsappOptIn: pendingBooking.bookingData.marketingWhatsappOptIn,
       });
     } catch {
       // Consent capture must never fail a paid booking.

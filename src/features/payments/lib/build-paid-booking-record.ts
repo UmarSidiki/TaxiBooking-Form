@@ -48,8 +48,6 @@ export function buildPaidBookingRecord(
     email: data.email,
     phone: data.phone,
     whatsappOptIn: data.whatsappOptIn ?? false,
-    marketingEmailOptIn: data.marketingEmailOptIn ?? false,
-    marketingWhatsappOptIn: data.marketingWhatsappOptIn ?? false,
     locale: data.locale,
     paymentMethod: options.paymentMethod,
     paymentStatus: 'completed' as const,

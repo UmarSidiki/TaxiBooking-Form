@@ -51,8 +51,6 @@ export const cashBookingBaseSchema = z.object({
   email: z.string().trim().refine(isValidEmail),
   phone: z.string().trim().refine(isValidPhone),
   whatsappOptIn: z.boolean().optional().default(false),
-  marketingEmailOptIn: z.boolean().optional().default(false),
-  marketingWhatsappOptIn: z.boolean().optional().default(false),
   locale: z.string().trim().max(8).optional(),
   /** Public cash/bank path only — provider fields are ignored by the service. */
   paymentMethod: z.enum(["cash", "bank_transfer"]).optional(),

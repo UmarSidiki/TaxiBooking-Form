@@ -157,8 +157,10 @@ scan.
   `CustomerStats.emailConsent` / `whatsappConsent` mirror the same values for
   the list filters and CSV export. Past customers default to `none`; consent is
   never inferred from `Booking.whatsappOptIn`.
-- Checkout shows two unticked boxes (email and WhatsApp). They are stored on the
-  booking and recorded as `booking_checkbox` grants after a confirmed booking.
+- Every confirmed booking auto-grants email and WhatsApp as `checkout_auto`
+  while the Marketing module is on (operator decision; no checkout boxes).
+  A channel the customer ever withdrew, unsubscribed from or is suppressed on
+  is never re-granted. Older grants keep their `booking_checkbox` source.
   Account toggles record `account` grants/withdrawals. WhatsApp consent is
   stored as intent, but eligibility also requires `verifiedPhone`.
 - The profile **Marketing** tab shows both channel states and the consent

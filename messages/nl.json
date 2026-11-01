@@ -1890,10 +1890,6 @@
     }
   },
   "Marketing": {
-    "checkout-title": "Ritaanbiedingen (optioneel)",
-    "checkout-email": "Ontvang aanbiedingen, nieuws en promoties per e-mail.",
-    "checkout-whatsapp": "Ontvang aanbiedingen via WhatsApp.",
-    "checkout-whatsapp-hint": "WhatsApp-aanbiedingen starten nadat u dit nummer in uw account hebt geverifieerd.",
     "account-title": "Ritaanbiedingen",
     "account-note": "Optionele marketingberichten. U kunt dit altijd wijzigen.",
     "account-email": "Aanbiedingen en nieuws per e-mail",

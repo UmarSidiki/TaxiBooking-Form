@@ -1890,10 +1890,6 @@
     }
   },
   "Marketing": {
-    "checkout-title": "Offerte di viaggio (facoltativo)",
-    "checkout-email": "Ricevi offerte, novità e promozioni via e-mail.",
-    "checkout-whatsapp": "Ricevi offerte su WhatsApp.",
-    "checkout-whatsapp-hint": "Le offerte WhatsApp iniziano dopo la verifica di questo numero nel tuo account.",
     "account-title": "Offerte di viaggio",
     "account-note": "Messaggi di marketing facoltativi. Puoi modificarli in qualsiasi momento.",
     "account-email": "Offerte e novità via e-mail",

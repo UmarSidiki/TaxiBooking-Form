@@ -5,7 +5,6 @@ import Link from "next/link";
 import { useLocale } from "next-intl";
 import { Input } from "@/shared/ui/input";
 import { Card } from "@/shared/ui/card";
-import { Checkbox } from "@/shared/ui/checkbox";
 import { useGeo } from "@/features/geo/context/geo-context";
 import type { useStep3 } from "@/features/booking/hooks/form-steps/useStep3";
 import { useTranslations } from "next-intl";
@@ -23,7 +22,6 @@ export function Step3PersonalDetails({
 }) {
   const { geo } = useGeo();
   const locale = useLocale();
-  const marketing = useTranslations("Marketing");
   const prefilledRef = useRef(false);
   const emailLocked =
     Boolean(signedInEmail) &&
@@ -145,42 +143,6 @@ export function Step3PersonalDetails({
                 <p id="phone-error" className="text-[color:var(--err)] text-xs mt-1">{errors.phone}</p>
               )}
             </div>
-            <fieldset className="space-y-1 rounded-md border border-border/60 p-3">
-              <legend className="px-1 text-sm font-medium">
-                {marketing("checkout-title")}
-              </legend>
-              <label className="flex min-h-11 cursor-pointer items-start gap-3 rounded-sm text-sm">
-                <Checkbox
-                  className="mt-0.5"
-                  checked={formData.marketingEmailOptIn}
-                  onCheckedChange={(checked) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      marketingEmailOptIn: checked === true,
-                    }))
-                  }
-                />
-                <span>{marketing("checkout-email")}</span>
-              </label>
-              <label className="flex min-h-11 cursor-pointer items-start gap-3 rounded-sm text-sm">
-                <Checkbox
-                  className="mt-0.5"
-                  checked={formData.marketingWhatsappOptIn}
-                  onCheckedChange={(checked) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      marketingWhatsappOptIn: checked === true,
-                    }))
-                  }
-                />
-                <span>
-                  {marketing("checkout-whatsapp")}
-                  <span className="mt-0.5 block text-xs text-muted-foreground">
-                    {marketing("checkout-whatsapp-hint")}
-                  </span>
-                </span>
-              </label>
-            </fieldset>
             <p className="text-sm text-muted-foreground">
               {t("Step3.whatsapp_confirmation-note")}
             </p>

@@ -1890,10 +1890,6 @@
     }
   },
   "Marketing": {
-    "checkout-title": "Fahrtangebote (optional)",
-    "checkout-email": "Angebote, Neuigkeiten und Aktionen per E-Mail erhalten.",
-    "checkout-whatsapp": "Angebote per WhatsApp erhalten.",
-    "checkout-whatsapp-hint": "WhatsApp-Angebote starten, sobald Sie diese Nummer in Ihrem Konto bestätigen.",
     "account-title": "Fahrtangebote",
     "account-note": "Optionale Marketing-Nachrichten. Sie können dies jederzeit ändern.",
     "account-email": "Angebote und Neuigkeiten per E-Mail",

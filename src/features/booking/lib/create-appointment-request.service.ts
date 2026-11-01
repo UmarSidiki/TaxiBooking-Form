@@ -143,8 +143,6 @@ export async function createAppointmentRequest(
     email: formData.email,
     phone: formData.phone,
     whatsappOptIn: formData.whatsappOptIn ?? false,
-    marketingEmailOptIn: formData.marketingEmailOptIn ?? false,
-    marketingWhatsappOptIn: formData.marketingWhatsappOptIn ?? false,
     locale: formData.locale,
     paymentMethod: "unpaid",
     paymentStatus: "pending" as const,
@@ -186,8 +184,6 @@ export async function createAppointmentRequest(
     await recordCheckoutMarketingConsent({
       email: formData.email,
       phone: formData.phone,
-      marketingEmailOptIn: formData.marketingEmailOptIn,
-      marketingWhatsappOptIn: formData.marketingWhatsappOptIn,
     });
   } catch {
     // Consent capture must never fail a received request.

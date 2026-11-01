@@ -1890,10 +1890,6 @@
     }
   },
   "Marketing": {
-    "checkout-title": "Offres de trajet (facultatif)",
-    "checkout-email": "Recevoir par e-mail des offres, actualités et promotions.",
-    "checkout-whatsapp": "Recevoir des offres sur WhatsApp.",
-    "checkout-whatsapp-hint": "Les offres WhatsApp commencent après vérification de ce numéro dans votre compte.",
     "account-title": "Offres de trajet",
     "account-note": "Messages marketing facultatifs. Vous pouvez modifier ce choix à tout moment.",
     "account-email": "Offres et actualités par e-mail",

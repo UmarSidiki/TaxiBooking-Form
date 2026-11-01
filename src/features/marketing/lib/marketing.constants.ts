@@ -12,6 +12,7 @@ export type MarketingEventStatus = (typeof MARKETING_EVENT_STATUSES)[number];
 
 export const MARKETING_SOURCES = [
   "booking_checkbox",
+  "checkout_auto",
   "account",
   "admin_offline",
   "unsubscribe_link",

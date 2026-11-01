@@ -167,8 +167,6 @@ export async function createCashBooking(
     email: formData.email,
     phone: formData.phone,
     whatsappOptIn: formData.whatsappOptIn ?? false,
-    marketingEmailOptIn: formData.marketingEmailOptIn ?? false,
-    marketingWhatsappOptIn: formData.marketingWhatsappOptIn ?? false,
     locale: formData.locale,
     paymentMethod,
     paymentStatus: 'pending' as const,
@@ -207,8 +205,6 @@ export async function createCashBooking(
     await recordCheckoutMarketingConsent({
       email: formData.email,
       phone: formData.phone,
-      marketingEmailOptIn: formData.marketingEmailOptIn,
-      marketingWhatsappOptIn: formData.marketingWhatsappOptIn,
     });
   } catch {
     // Consent capture must never fail a confirmed booking.

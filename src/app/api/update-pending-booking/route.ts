@@ -11,8 +11,6 @@ const CONTACT_FIELDS = [
   "email",
   "phone",
   "whatsappOptIn",
-  "marketingEmailOptIn",
-  "marketingWhatsappOptIn",
   "notes",
   "flightNumber",
 ] as const;

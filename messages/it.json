@@ -1978,7 +1978,10 @@
     "customers": "Clienti",
     "customer_audit": "Registro di controllo",
     "marketing": "Marketing",
-    "campaigns": "Campagne"
+    "campaigns": "Campagne",
+    "customer_list": "Tutti i clienti",
+    "marketing_overview": "Panoramica",
+    "marketing_settings": "Impostazioni marketing"
   },
   "FormBuilder": {
     "title": "Costruttore Moduli",

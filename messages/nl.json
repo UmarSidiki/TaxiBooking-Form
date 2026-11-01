@@ -1978,7 +1978,10 @@
     "customers": "Klanten",
     "customer_audit": "Auditlogboek",
     "marketing": "Marketing",
-    "campaigns": "Campagnes"
+    "campaigns": "Campagnes",
+    "customer_list": "Alle klanten",
+    "marketing_overview": "Overzicht",
+    "marketing_settings": "Marketinginstellingen"
   },
   "FormBuilder": {
     "title": "Formulierbouwer",

@@ -1978,7 +1978,10 @@
     "customers": "Kunden",
     "customer_audit": "Auditprotokoll",
     "marketing": "Marketing",
-    "campaigns": "Kampagnen"
+    "campaigns": "Kampagnen",
+    "customer_list": "Alle Kunden",
+    "marketing_overview": "Übersicht",
+    "marketing_settings": "Marketing-Einstellungen"
   },
   "FormBuilder": {
     "title": "Formular-Builder",

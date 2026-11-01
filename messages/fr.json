@@ -1978,7 +1978,10 @@
     "customers": "Clients",
     "customer_audit": "Journal d’audit",
     "marketing": "Marketing",
-    "campaigns": "Campagnes"
+    "campaigns": "Campagnes",
+    "customer_list": "Tous les clients",
+    "marketing_overview": "Vue d’ensemble",
+    "marketing_settings": "Paramètres marketing"
   },
   "FormBuilder": {
     "title": "Éditeur de Formulaire",

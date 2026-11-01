@@ -1978,7 +1978,10 @@
     "customers": "Клиенты",
     "customer_audit": "Журнал аудита",
     "marketing": "Маркетинг",
-    "campaigns": "Кампании"
+    "campaigns": "Кампании",
+    "customer_list": "Все клиенты",
+    "marketing_overview": "Обзор",
+    "marketing_settings": "Настройки маркетинга"
   },
   "FormBuilder": {
     "title": "Конструктор форм",

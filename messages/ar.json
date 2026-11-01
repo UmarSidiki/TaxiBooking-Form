@@ -1978,7 +1978,10 @@
     "customers": "العملاء",
     "customer_audit": "سجل التدقيق",
     "marketing": "التسويق",
-    "campaigns": "الحملات"
+    "campaigns": "الحملات",
+    "customer_list": "كل العملاء",
+    "marketing_overview": "نظرة عامة",
+    "marketing_settings": "إعدادات التسويق"
   },
   "FormBuilder": {
     "title": "منشئ النماذج",

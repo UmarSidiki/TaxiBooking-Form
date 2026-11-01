@@ -85,7 +85,13 @@ export async function writeCustomerStatsRows(
       batch.map((row) => ({
         updateOne: {
           filter: { emailLower: row.emailLower },
-          update: { $set: { ...row, rebuiltAt } },
+          update: {
+            $set: {
+              ...row,
+              nameLower: row.name.trim().toLowerCase(),
+              rebuiltAt,
+            },
+          },
           upsert: true,
         },
       })),

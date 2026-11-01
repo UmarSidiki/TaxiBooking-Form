@@ -29,3 +29,27 @@ Semantics: `rideCount` counts confirmed rides (`upcoming` + `completed`),
 `completedCount` counts `completed`, and `totalSpendMinor` sums captured money
 (minor units, refunds deducted). `firstRideAt` / `lastRideAt` use completed
 rides; `hasUpcoming` tracks `upcoming`.
+
+## Customers list (C2)
+
+- `GET /api/admin/customers` — `requireAdmin()` (admin/superadmin only; other
+  roles get 403). Query schema: `schema/customer-list.schema.ts`.
+- Search matches **prefixes only** on indexed `emailLower`, `nameLower` and
+  `phoneDigits` using range queries (`$gte` / `$lt`). There is no substring
+  matching and no regex anywhere in this feature.
+- Filters: rides range, spend range (major units in the API), last ride
+  (within/before N days or never), verified WhatsApp, email/WhatsApp consent,
+  locale, has upcoming ride. Sort: name, email, rides, spend, last ride,
+  created.
+- Pagination is cursor-based, 50 rows per page, with `emailLower` as the
+  stable tie-break. The base64 cursor is bound to the sort field + direction;
+  a malformed or mismatched cursor returns `400 invalid_cursor`.
+- `nameLower` is written by `writeCustomerStatsRows`. Rows created before C2
+  stay searchable by email/phone until the next nightly rebuild; run
+  `npm run stats:backfill` to populate names immediately.
+- Consent columns default to `none` on purpose: past customers are **not**
+  consented (opt-in only). C6 will maintain the `MarketingConsent` event log
+  and update these caches; never infer consent from `Booking.whatsappOptIn`.
+- The dashboard page `/dashboard/customers` renders a desktop table, mobile
+  cards, and a filter drawer. All list strings live in `Dashboard.Customers`
+  and `Sidebar.customers` across the 8 locales.

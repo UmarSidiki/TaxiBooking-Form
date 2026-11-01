@@ -14,6 +14,7 @@ type Props = {
   inputRef?: Ref<HTMLInputElement>;
   locate?: boolean;
   invalid?: boolean;
+  errorId?: string;
   removeLabel?: string;
   onChange: (value: string) => void;
   onBlur?: () => void;
@@ -28,6 +29,7 @@ export function RouteRailField({
   inputRef,
   locate,
   invalid,
+  errorId,
   removeLabel,
   onChange,
   onBlur,
@@ -52,6 +54,7 @@ export function RouteRailField({
         placeholder={placeholder}
         value={value}
         aria-invalid={invalid ? true : undefined}
+        aria-describedby={invalid && errorId ? errorId : undefined}
         onChange={(event) => onChange(event.target.value)}
         onBlur={onBlur}
       />

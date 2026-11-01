@@ -125,6 +125,7 @@ export function useStep1GoogleMaps({
               pickup: newPickup,
               pickupLatLng: loc ? { lat: loc.lat(), lng: loc.lng() } : null,
             }));
+            setErrors((prev) => ({ ...prev, pickup: undefined }));
             // Distance calculation will be triggered by the useEffect
           });
         }
@@ -160,6 +161,7 @@ export function useStep1GoogleMaps({
               dropoff: newDropoff,
               dropoffLatLng: loc ? { lat: loc.lat(), lng: loc.lng() } : null,
             }));
+            setErrors((prev) => ({ ...prev, dropoff: undefined }));
             // Distance calculation will be triggered by the useEffect
           });
         }

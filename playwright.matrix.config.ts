@@ -22,6 +22,7 @@ export default defineConfig({
     "sidebar-brand.spec.ts",
     "palette-first-paint.spec.ts",
     "route-line.spec.ts",
+    "step1-location-behaviour.spec.ts",
   ],
   fullyParallel: false,
   workers: 1,

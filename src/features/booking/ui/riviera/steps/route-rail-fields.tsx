@@ -67,6 +67,7 @@ export function RouteRailFields({
             inputRef={pickupInputRef}
             locate
             invalid={Boolean(errors.pickup)}
+            errorId="route-error-pickup"
             onChange={(value) =>
               setFormData((previous) => ({
                 ...previous,
@@ -82,7 +83,9 @@ export function RouteRailFields({
           />
         </div>
         {errors.pickup ? (
-          <p className="route-rail__error">{errors.pickup}</p>
+          <p id="route-error-pickup" role="alert" className="route-rail__error">
+            {errors.pickup}
+          </p>
         ) : null}
 
         {hasRoute
@@ -133,7 +136,7 @@ export function RouteRailFields({
           : null}
 
         {hasRoute && errors.stops ? (
-          <p role="alert" className="route-rail__error">
+          <p id="route-error-stops" role="alert" className="route-rail__error">
             {errors.stops}
           </p>
         ) : null}
@@ -148,6 +151,7 @@ export function RouteRailFields({
               value={formData.dropoff}
               inputRef={dropoffInputRef}
               invalid={Boolean(errors.dropoff)}
+              errorId="route-error-dropoff"
               onChange={(value) =>
                 setFormData((previous) => ({
                   ...previous,
@@ -163,6 +167,16 @@ export function RouteRailFields({
             />
           </div>
         ) : null}
+
+        {errors.dropoff ? (
+          <p
+            id="route-error-dropoff"
+            role="alert"
+            className="route-rail__error route-rail__error--after"
+          >
+            {errors.dropoff}
+          </p>
+        ) : null}
       </div>
 
       {hasRoute ? (
@@ -177,12 +191,6 @@ export function RouteRailFields({
           </span>
           {t("embeddable.add-a-stop")}
         </button>
-      ) : null}
-
-      {errors.dropoff ? (
-        <p className="route-rail__error route-rail__error--after">
-          {errors.dropoff}
-        </p>
       ) : null}
     </>
   );

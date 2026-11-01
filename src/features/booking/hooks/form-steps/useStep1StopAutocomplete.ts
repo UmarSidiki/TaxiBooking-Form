@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import type { Dispatch, MutableRefObject, SetStateAction } from "react";
 import type { FormData, FormErrors } from "@/features/booking/context/booking-form-context";
 import { buildAutocompleteOptions } from "@/features/booking/lib/maps/place-autocomplete";
@@ -26,14 +26,20 @@ export function useStep1StopAutocomplete({
   setFormData: Dispatch<SetStateAction<FormData>>;
   t: TFn;
 }) {
+  // Every stop keeps its own Autocomplete listener; adding another stop must not
+  // unbind the ones above it.
+  const boundInputsRef = useRef<Set<HTMLInputElement>>(new Set());
+  const cleanupsRef = useRef<Map<HTMLInputElement, () => void>>(new Map());
+
   const setupStopAutocomplete = useCallback(
     (index: number) => {
       if (!window.google || !window.google.maps || !window.google.maps.places)
-        return null;
+        return;
 
       const inputRef = stopInputRefs.current[index];
-      if (!inputRef) return null;
+      if (!inputRef || boundInputsRef.current.has(inputRef)) return;
 
+      boundInputsRef.current.add(inputRef);
       const autocompleteOptions = buildAutocompleteOptions(settings);
 
       const autocomplete = new window.google.maps.places.Autocomplete(
@@ -42,8 +48,13 @@ export function useStep1StopAutocomplete({
       );
 
       const listener = autocomplete.addListener("place_changed", () => {
+        // Removing a stop renumbers the ones below it, so the index captured when
+        // this listener was bound can be stale. Resolve it against the live refs.
+        const currentIndex = stopInputRefs.current.indexOf(inputRef);
+        if (currentIndex === -1) return;
+
         const place = autocomplete.getPlace();
-        
+
         // Validate against polygon bounds if defined
         if (!validatePlaceInBounds(place)) {
           inputRef.value = "";
@@ -60,33 +71,46 @@ export function useStep1StopAutocomplete({
         setFormData((prev) => ({
           ...prev,
           stops: prev.stops.map((stop, i) =>
-            i === index ? { ...stop, location: newLocation, latLng } : stop
+            i === currentIndex ? { ...stop, location: newLocation, latLng } : stop
           ),
         }));
+        setErrors((prev) => ({ ...prev, stops: undefined }));
         // Distance calculation will be triggered by the useEffect that monitors stops
       });
 
-      // Return cleanup function
-      return () => {
+      cleanupsRef.current.set(inputRef, () => {
         if (listener) {
-          google.maps.event.removeListener(listener);
+          window.google?.maps?.event?.removeListener(listener);
         }
-      };
+      });
     },
     [setFormData, settings?.mapPolygonPoints, settings?.mapBounds, validatePlaceInBounds, setErrors, t]
   );
 
-  // Effect to setup autocomplete for stops when they change
+  // Bind each stop input once, including inputs that arrive after the first render.
+  // Inputs React detached (removed stop) are unbound so their listeners cannot
+  // outlive the row.
   useEffect(() => {
-    if (formData.stops.length === 0) {
-      return;
+    for (const [input, cleanup] of cleanupsRef.current) {
+      if (input.isConnected) continue;
+      cleanup();
+      cleanupsRef.current.delete(input);
+      boundInputsRef.current.delete(input);
     }
 
-    const lastIndex = formData.stops.length - 1;
-    if (stopInputRefs.current[lastIndex]) {
-      const cleanup = setupStopAutocomplete(lastIndex);
-      // Return cleanup function
-      return cleanup || undefined;
+    for (let index = 0; index < formData.stops.length; index += 1) {
+      setupStopAutocomplete(index);
     }
   }, [formData.stops.length, setupStopAutocomplete]);
+
+  // Autocomplete lives as long as the step; drop the listeners on unmount.
+  useEffect(() => {
+    const cleanups = cleanupsRef.current;
+    const boundInputs = boundInputsRef.current;
+    return () => {
+      cleanups.forEach((cleanup) => cleanup());
+      cleanups.clear();
+      boundInputs.clear();
+    };
+  }, []);
 }

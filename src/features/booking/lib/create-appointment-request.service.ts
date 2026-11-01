@@ -19,6 +19,7 @@ import { fetchRouteDistanceKm } from "@/features/payments/lib/fare/route-distanc
 import { loadPaymentSettings } from "@/features/payments/lib/load-payment-settings";
 import type { CashBookingInput } from "@/features/booking/schema/cash-booking.schema";
 import { Vehicle } from "@/features/fleet/model";
+import { recordCheckoutMarketingConsent } from "@/features/marketing/lib/checkout/record-checkout-consent";
 
 export type CreateAppointmentRequestResult =
   | { ok: true; tripId: string; totalAmount: number; message: string }
@@ -142,6 +143,8 @@ export async function createAppointmentRequest(
     email: formData.email,
     phone: formData.phone,
     whatsappOptIn: formData.whatsappOptIn ?? false,
+    marketingEmailOptIn: formData.marketingEmailOptIn ?? false,
+    marketingWhatsappOptIn: formData.marketingWhatsappOptIn ?? false,
     locale: formData.locale,
     paymentMethod: "unpaid",
     paymentStatus: "pending" as const,
@@ -177,6 +180,17 @@ export async function createAppointmentRequest(
 
   if (draftId) {
     await PendingBooking.updateOne({ draftId }, { $set: { status: "abandoned" } });
+  }
+
+  try {
+    await recordCheckoutMarketingConsent({
+      email: formData.email,
+      phone: formData.phone,
+      marketingEmailOptIn: formData.marketingEmailOptIn,
+      marketingWhatsappOptIn: formData.marketingWhatsappOptIn,
+    });
+  } catch {
+    // Consent capture must never fail a received request.
   }
 
   const emailData = await createCashBookingEmailData(

@@ -1,6 +1,7 @@
 # Customers admin
 
-Admin-only customer list, profile, notes, audit, and CSV export (spec milestones C1–C5).
+Admin-only customer list, profile, notes, audit, CSV export, and marketing
+consent (spec milestones C1–C6).
 
 ## Scope
 
@@ -145,3 +146,32 @@ scan.
   stream finaliser, so an aborted download is still recorded.
 - Single-tenant: the export reads every `CustomerStats` row because the
   deployment owns all customer data; there is no tenant id to add here.
+
+## Marketing consent (C6)
+
+- `src/features/marketing/` owns the append-only `MarketingConsent` ledger, the
+  `Suppression` do-not-contact list, eligibility, purpose-signed unsubscribe
+  tokens, List-Unsubscribe headers, and the marketing sender.
+- `CustomerProfile.marketing.{email,whatsapp}` caches the latest status
+  (`none` / `granted` / `withdrawn`), source and consent text version.
+  `CustomerStats.emailConsent` / `whatsappConsent` mirror the same values for
+  the list filters and CSV export. Past customers default to `none`; consent is
+  never inferred from `Booking.whatsappOptIn`.
+- Checkout shows two unticked boxes (email and WhatsApp). They are stored on the
+  booking and recorded as `booking_checkbox` grants after a confirmed booking.
+  Account toggles record `account` grants/withdrawals. WhatsApp consent is
+  stored as intent, but eligibility also requires `verifiedPhone`.
+- The profile **Marketing** tab shows both channel states and the consent
+  history. Admins can only withdraw, or record documented offline consent with
+  a required reason; both actions write `AdminAuditLog`.
+- `POST /api/admin/customers/[id]/marketing` — admin/superadmin only (403 for
+  other roles); `GET` returns the same snapshot used by the tab.
+- Public flow: `/[locale]/u/[token]` and
+  `/api/marketing/unsubscribe?token=…` (one-click POST) accept an
+  `unsubscribe`-purpose token with no login, write a `withdrawn` event plus a
+  suppression entry, and offer re-subscribe. The purpose is part of the signing
+  key, so tokens from other flows are rejected.
+- Copies live in the `Marketing`, `MarketingAdmin`, `MarketingSettings`, and
+  `Unsubscribe` message namespaces across all 8 locales (RTL included).
+- Single-tenant: the marketing ledger is keyed by lowercased email and has no
+  tenant id because the deployment owns all customer data.

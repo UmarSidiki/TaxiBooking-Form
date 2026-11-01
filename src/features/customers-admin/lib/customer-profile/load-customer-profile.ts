@@ -26,6 +26,7 @@ import type {
   CustomerWhatsAppInfo,
 } from "@/features/customers-admin/lib/customer-profile/customer-profile.types";
 import type { ProfileCustomerDoc } from "@/features/customers-admin/lib/customer-profile/customer-profile.repo";
+import { loadMarketingSnapshot } from "@/features/marketing/lib/consent/marketing-consent.repo";
 
 async function whatsappFor(
   profile: ProfileCustomerDoc | null,
@@ -72,10 +73,11 @@ export async function loadCustomerProfile(
   const tripIds = bookings.map((booking) => booking.tripId).filter(Boolean);
   const header = headerFor(emailLower, stats, profile, bookings);
 
-  const [sessions, charges, whatsapp] = await Promise.all([
+  const [sessions, charges, whatsapp, marketing] = await Promise.all([
     findCustomerSessions(emailLower),
     findRideCharges(tripIds),
     whatsappFor(profile, header.whatsappConsent),
+    loadMarketingSnapshot(emailLower, profile),
   ]);
 
   const payments = [...bookingPayments(bookings), ...chargePayments(charges)];
@@ -88,5 +90,6 @@ export async function loadCustomerProfile(
     payments,
     sessions: toSessionRows(sessions),
     whatsapp,
+    marketing,
   };
 }

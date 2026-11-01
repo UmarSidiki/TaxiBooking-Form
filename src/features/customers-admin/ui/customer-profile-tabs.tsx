@@ -5,9 +5,9 @@ import { useTranslations } from "next-intl";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs";
 import { CustomerActivityTab } from "@/features/customers-admin/ui/customer-activity-tab";
 import { CustomerBookingsTab } from "@/features/customers-admin/ui/customer-bookings-tab";
+import { CustomerMarketingTab } from "@/features/customers-admin/ui/customer-marketing-tab";
 import { CustomerNotesTab } from "@/features/customers-admin/ui/customer-notes-tab";
 import { CustomerPaymentsTab } from "@/features/customers-admin/ui/customer-payments-tab";
-import { CustomerPlaceholderTab } from "@/features/customers-admin/ui/customer-placeholder-tab";
 import { CustomerSessionsTab } from "@/features/customers-admin/ui/customer-sessions-tab";
 import { CustomerWhatsAppTab } from "@/features/customers-admin/ui/customer-whatsapp-tab";
 import type { CustomerProfilePayload } from "@/features/customers-admin/lib/customer-profile/customer-profile.types";
@@ -16,10 +16,12 @@ export function CustomerProfileTabs({
   data,
   onRevoke,
   onRevokeAll,
+  onMarketingChanged,
 }: {
   data: CustomerProfilePayload;
   onRevoke: (sessionId: string) => Promise<void>;
   onRevokeAll: () => Promise<void>;
+  onMarketingChanged: () => void;
 }) {
   const t = useTranslations("Dashboard.CustomerProfile");
 
@@ -58,7 +60,11 @@ export function CustomerProfileTabs({
         <CustomerWhatsAppTab whatsapp={data.whatsapp} />
       </TabsContent>
       <TabsContent value="marketing">
-        <CustomerPlaceholderTab message={t("marketing-placeholder")} />
+        <CustomerMarketingTab
+          email={data.header.email}
+          marketing={data.marketing}
+          onChanged={onMarketingChanged}
+        />
       </TabsContent>
       <TabsContent value="notes">
         <CustomerNotesTab email={data.header.email} />

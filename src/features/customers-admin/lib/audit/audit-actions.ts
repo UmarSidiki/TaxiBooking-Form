@@ -10,6 +10,7 @@ export const ADMIN_AUDIT_ACTIONS = [
   "customer.sessions.revoke",
   "customer.sessions.revoke_all",
   "customer.consent.withdraw",
+  "customer.consent.record_offline",
   "campaign.create",
   "campaign.schedule",
   "campaign.send",

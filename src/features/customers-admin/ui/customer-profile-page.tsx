@@ -37,6 +37,7 @@ export function CustomerProfilePage({ id }: { id: string }) {
             data={data}
             onRevoke={profile.revokeSession}
             onRevokeAll={profile.revokeAllSessions}
+            onMarketingChanged={profile.reload}
           />
         </>
       ) : blocked ? (

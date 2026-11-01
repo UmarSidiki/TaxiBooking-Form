@@ -6,10 +6,14 @@ import {
   applyCustomerSessionCookie,
   readCustomerSession,
 } from "@/features/customers/lib/customer-session";
+import { applyMarketingConsent } from "@/features/marketing/lib/consent/apply-marketing-consent";
+import { auditIpPrefix } from "@/features/customers-admin/lib/audit/record-admin-audit";
 
 const profileSchema = z.object({
   name: z.string().trim().max(120).optional(),
   whatsappOptIn: z.boolean().optional(),
+  marketingEmailOptIn: z.boolean().optional(),
+  marketingWhatsappOptIn: z.boolean().optional(),
   savedAddresses: z
     .object({
       home: z.string().trim().max(240).optional(),
@@ -47,8 +51,39 @@ export async function PATCH(request: Request) {
     { $set: { email: session.email, ...update } },
     { upsert: true, new: true },
   ).lean();
+
+  const ipPrefix = auditIpPrefix(request);
+  const consentChanges: Array<{ channel: "email" | "whatsapp"; granted: boolean }> = [];
+  if (parsed.data.marketingEmailOptIn !== undefined) {
+    consentChanges.push({
+      channel: "email",
+      granted: parsed.data.marketingEmailOptIn,
+    });
+  }
+  if (parsed.data.marketingWhatsappOptIn !== undefined) {
+    consentChanges.push({
+      channel: "whatsapp",
+      granted: parsed.data.marketingWhatsappOptIn,
+    });
+  }
+
+  for (const change of consentChanges) {
+    await applyMarketingConsent({
+      email: session.email,
+      channel: change.channel,
+      status: change.granted ? "granted" : "withdrawn",
+      source: "account",
+      ipPrefix,
+    });
+  }
+
+  const current =
+    consentChanges.length > 0
+      ? await CustomerProfile.findOne({ email: session.email }).lean()
+      : doc;
+
   return applyCustomerSessionCookie(
-    NextResponse.json({ ok: true, profile: doc }),
+    NextResponse.json({ ok: true, profile: current }),
     session,
   );
 }

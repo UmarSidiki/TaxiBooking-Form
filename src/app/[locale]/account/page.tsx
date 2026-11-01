@@ -38,6 +38,10 @@ type ProfileLean = {
   verifiedPhone?: string;
   language?: string;
   whatsappOptIn?: boolean;
+  marketing?: {
+    email?: { status?: "none" | "granted" | "withdrawn" } | null;
+    whatsapp?: { status?: "none" | "granted" | "withdrawn" } | null;
+  } | null;
   savedAddresses?: { home?: string; work?: string; airport?: string };
 };
 
@@ -53,6 +57,10 @@ function toProfile(row: ProfileLean | null): CustomerProfile | null {
     verifiedPhone: row.verifiedPhone ?? "",
     language: row.language ?? "en",
     whatsappOptIn: row.whatsappOptIn ?? false,
+    marketing: {
+      email: { status: row.marketing?.email?.status ?? "none" },
+      whatsapp: { status: row.marketing?.whatsapp?.status ?? "none" },
+    },
     savedAddresses: {
       home: row.savedAddresses?.home ?? "",
       work: row.savedAddresses?.work ?? "",

@@ -1,4 +1,5 @@
 import type { CustomerConsentValue } from "@/features/customers-admin/lib/customer-list/customer-list.types";
+import type { MarketingSnapshot } from "@/features/marketing/lib/consent/marketing-consent.types";
 
 /** Fields the customer profile API returns. Dates are ISO strings. */
 export type CustomerProfileHeader = {
@@ -77,6 +78,7 @@ export type CustomerProfilePayload = {
   payments: CustomerPaymentRow[];
   sessions: CustomerSessionRow[];
   whatsapp: CustomerWhatsAppInfo;
+  marketing: MarketingSnapshot;
 };
 
 export type CustomerProfileResponse = {

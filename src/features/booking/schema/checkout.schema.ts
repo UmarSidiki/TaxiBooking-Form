@@ -9,6 +9,8 @@ export const pendingBookingDataSchema = z.object({
   email: z.string().optional(),
   phone: z.string().optional(),
   whatsappOptIn: z.boolean().optional(),
+  marketingEmailOptIn: z.boolean().optional(),
+  marketingWhatsappOptIn: z.boolean().optional(),
   locale: z.string().optional(),
   notes: z.string().optional(),
   flightNumber: z.string().optional(),
@@ -45,6 +47,8 @@ export const checkoutBookingDataSchema = z.object({
   email: z.string().optional(),
   phone: z.string().optional(),
   whatsappOptIn: z.boolean().optional(),
+  marketingEmailOptIn: z.boolean().optional(),
+  marketingWhatsappOptIn: z.boolean().optional(),
   locale: z.string().optional(),
 });
 

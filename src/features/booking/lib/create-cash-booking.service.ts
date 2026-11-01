@@ -21,6 +21,7 @@ import { loadPaymentSettings } from '@/features/payments/lib/load-payment-settin
 import type { CashBookingInput } from '@/features/booking/schema/cash-booking.schema';
 import { Vehicle } from '@/features/fleet/model';
 import { sendBookingWhatsApp } from '@/features/settings/lib/send-booking-whatsapp';
+import { recordCheckoutMarketingConsent } from '@/features/marketing/lib/checkout/record-checkout-consent';
 
 export type CreateCashBookingResult =
   | {
@@ -166,6 +167,8 @@ export async function createCashBooking(
     email: formData.email,
     phone: formData.phone,
     whatsappOptIn: formData.whatsappOptIn ?? false,
+    marketingEmailOptIn: formData.marketingEmailOptIn ?? false,
+    marketingWhatsappOptIn: formData.marketingWhatsappOptIn ?? false,
     locale: formData.locale,
     paymentMethod,
     paymentStatus: 'pending' as const,
@@ -198,6 +201,17 @@ export async function createCashBooking(
 
   if (draftId) {
     await PendingBooking.updateOne({ draftId }, { $set: { status: "abandoned" } });
+  }
+
+  try {
+    await recordCheckoutMarketingConsent({
+      email: formData.email,
+      phone: formData.phone,
+      marketingEmailOptIn: formData.marketingEmailOptIn,
+      marketingWhatsappOptIn: formData.marketingWhatsappOptIn,
+    });
+  } catch {
+    // Consent capture must never fail a confirmed booking.
   }
 
   await initCashBookingPartners(

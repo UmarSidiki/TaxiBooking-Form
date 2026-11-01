@@ -29,6 +29,8 @@ import {
   WhatsAppTemplate,
 } from "@/features/settings/model";
 import NotificationSetting from "@/features/notifications/model/NotificationSetting";
+import MarketingConsent from "@/features/marketing/model/MarketingConsent";
+import Suppression from "@/features/marketing/model/Suppression";
 
 export async function resetTestDb() {
   await connectDB();
@@ -58,6 +60,8 @@ export async function resetTestDb() {
     RecurringRide.deleteMany({}),
     RideCharge.deleteMany({}),
     NotificationSetting.deleteMany({}),
+    MarketingConsent.deleteMany({}),
+    Suppression.deleteMany({}),
     WhatsAppConfig.deleteMany({}),
     WhatsAppTemplate.deleteMany({}),
     WhatsAppDelivery.deleteMany({}),

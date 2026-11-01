@@ -9,6 +9,7 @@ const ACTION_KEYS: Record<AdminAuditAction, string> = {
   "customer.sessions.revoke": "action-customer-sessions-revoke",
   "customer.sessions.revoke_all": "action-customer-sessions-revoke-all",
   "customer.consent.withdraw": "action-customer-consent-withdraw",
+  "customer.consent.record_offline": "action-customer-consent-record-offline",
   "campaign.create": "action-campaign-create",
   "campaign.schedule": "action-campaign-schedule",
   "campaign.send": "action-campaign-send",

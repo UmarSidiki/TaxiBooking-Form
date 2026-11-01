@@ -17,6 +17,7 @@ export const settingsDeskNavGroups: SettingsDeskNavGroup[] = [
       { href: "checkout", titleKey: "Dashboard.Settings.nav_checkout" },
       { href: "modules", titleKey: "Dashboard.Settings.nav_modules" },
       { href: "email", titleKey: "Dashboard.Settings.nav_email" },
+      { href: "marketing", titleKey: "MarketingSettings.title" },
       { href: "whatsapp", titleKey: "Dashboard.Settings.nav_whatsapp" },
     ],
   },

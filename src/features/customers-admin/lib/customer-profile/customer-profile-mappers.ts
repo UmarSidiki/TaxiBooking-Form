@@ -10,6 +10,7 @@ import {
   toMinor,
 } from "@/features/customers-admin/lib/customer-profile/customer-profile-payments";
 import { iso } from "@/features/customers-admin/lib/customer-profile/customer-profile-time";
+import { marketingStatusFromProfile } from "@/features/marketing/lib/consent/marketing-consent.types";
 import type {
   CustomerBookingRow,
   CustomerProfileHeader,
@@ -85,7 +86,8 @@ export function headerFor(
     firstRideAt: iso(stats?.firstRideAt),
     lastRideAt: iso(stats?.lastRideAt),
     hasUpcoming: stats?.hasUpcoming ?? false,
-    emailConsent: stats?.emailConsent ?? "none",
-    whatsappConsent: stats?.whatsappConsent ?? "none",
+    emailConsent: stats?.emailConsent ?? marketingStatusFromProfile(profile, "email"),
+    whatsappConsent:
+      stats?.whatsappConsent ?? marketingStatusFromProfile(profile, "whatsapp"),
   };
 }

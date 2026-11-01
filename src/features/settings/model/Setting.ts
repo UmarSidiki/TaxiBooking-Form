@@ -44,6 +44,10 @@ export interface ISetting {
   smtpTestEmail?: string;
   smtpFrom?: string;
   smtpSenderName?: string;
+  /** Marketing sender identity; falls back to the transactional sender. */
+  marketingSenderName?: string;
+  marketingSenderEmail?: string;
+  marketingReplyTo?: string;
   companyName?: string;
   companyLogoUrl?: string;
   companyAddress?: string;
@@ -235,6 +239,18 @@ const SettingSchema = new Schema<ISetting>(
       default: "",
     },
     smtpSenderName: {
+      type: String,
+      default: "",
+    },
+    marketingSenderName: {
+      type: String,
+      default: "",
+    },
+    marketingSenderEmail: {
+      type: String,
+      default: "",
+    },
+    marketingReplyTo: {
       type: String,
       default: "",
     },

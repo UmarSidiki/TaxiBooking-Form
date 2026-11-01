@@ -3,6 +3,7 @@ import { Booking } from "@/features/booking/model";
 import CustomerProfile from "@/features/customers/model/CustomerProfile";
 import CustomerStats from "@/features/customers-admin/model/CustomerStats";
 import type { CustomerConsentValue } from "@/features/customers-admin/lib/customer-list/customer-list.types";
+import type { MarketingProfileDoc } from "@/features/marketing/lib/consent/marketing-consent.types";
 
 export const PROFILE_BOOKINGS_LIMIT = 100;
 
@@ -30,6 +31,7 @@ export type ProfileCustomerDoc = {
   verifiedPhone?: string | null;
   verifiedPhoneAt?: Date | null;
   language?: string | null;
+  marketing?: MarketingProfileDoc["marketing"];
 };
 
 export type ProfileBookingDoc = {
@@ -78,7 +80,7 @@ export async function findCustomerProfile(
   await connectDB();
   return CustomerProfile.findOne({ email: emailLower })
     .collation({ locale: "en", strength: 2 })
-    .select("email name phone verifiedPhone verifiedPhoneAt language")
+    .select("email name phone verifiedPhone verifiedPhoneAt language marketing")
     .lean<ProfileCustomerDoc | null>();
 }
 

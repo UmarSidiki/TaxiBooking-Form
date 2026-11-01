@@ -39,6 +39,9 @@ export interface IBooking extends Document {
   email: string;
   phone: string;
   whatsappOptIn?: boolean;
+  /** Unticked marketing opt-ins captured at checkout (opt-in only). */
+  marketingEmailOptIn?: boolean;
+  marketingWhatsappOptIn?: boolean;
   locale?: string;
   paymentMethod?: string;
   paymentStatus: "pending" | "completed" | "failed" | "refunded";
@@ -165,6 +168,8 @@ const BookingSchema: Schema = new Schema({
   email: { type: String, required: true },
   phone: { type: String, required: true },
   whatsappOptIn: { type: Boolean, default: false },
+  marketingEmailOptIn: { type: Boolean, default: false },
+  marketingWhatsappOptIn: { type: Boolean, default: false },
   locale: { type: String },
   paymentMethod: { type: String, default: "stripe" },
   paymentStatus: {

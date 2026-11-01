@@ -76,6 +76,27 @@ export const settingsWriteSchema = z.object({
   marketingSenderName: z.string().trim().max(120).optional(),
   marketingSenderEmail: z.string().trim().max(254).optional(),
   marketingReplyTo: z.string().trim().max(254).optional(),
+  marketingTestRecipients: z
+    .array(
+      z
+        .string()
+        .trim()
+        .min(3)
+        .max(254)
+        .refine(
+          (value) =>
+            value.includes("@") ||
+            value.replace(/[^0-9]/g, "").length >= 6,
+          { message: "Invalid test recipient" },
+        ),
+    )
+    .max(100)
+    .optional(),
+  marketingWhatsappDailyCap: z.number().int().min(1).max(1000).optional(),
+  marketingQuietHoursStart: z.number().int().min(0).max(23).optional(),
+  marketingQuietHoursEnd: z.number().int().min(0).max(23).optional(),
+  marketingTrackOpens: z.boolean().optional(),
+  marketingTrackClicks: z.boolean().optional(),
   enablePartners: z.boolean().optional(),
   enableDrivers: z.boolean().optional(),
   enableAppointmentRequest: z.boolean().optional(),

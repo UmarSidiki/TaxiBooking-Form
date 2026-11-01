@@ -31,6 +31,8 @@ import {
 import NotificationSetting from "@/features/notifications/model/NotificationSetting";
 import MarketingConsent from "@/features/marketing/model/MarketingConsent";
 import Suppression from "@/features/marketing/model/Suppression";
+import Segment from "@/features/marketing/model/Segment";
+import CampaignTemplate from "@/features/marketing/model/CampaignTemplate";
 
 export async function resetTestDb() {
   await connectDB();
@@ -62,6 +64,8 @@ export async function resetTestDb() {
     NotificationSetting.deleteMany({}),
     MarketingConsent.deleteMany({}),
     Suppression.deleteMany({}),
+    Segment.deleteMany({}),
+    CampaignTemplate.deleteMany({}),
     WhatsAppConfig.deleteMany({}),
     WhatsAppTemplate.deleteMany({}),
     WhatsAppDelivery.deleteMany({}),

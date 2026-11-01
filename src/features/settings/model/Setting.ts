@@ -48,6 +48,16 @@ export interface ISetting {
   marketingSenderName?: string;
   marketingSenderEmail?: string;
   marketingReplyTo?: string;
+  /** Staff-only allowlist for campaign test sends (emails and phone numbers). */
+  marketingTestRecipients?: string[];
+  /** Marketing WhatsApp cap sits on top of the global sender cap. */
+  marketingWhatsappDailyCap?: number;
+  /** Operator-local quiet hours; marketing WhatsApp never sends inside them. */
+  marketingQuietHoursStart?: number;
+  marketingQuietHoursEnd?: number;
+  /** Privacy defaults: both off. */
+  marketingTrackOpens?: boolean;
+  marketingTrackClicks?: boolean;
   companyName?: string;
   companyLogoUrl?: string;
   companyAddress?: string;
@@ -253,6 +263,36 @@ const SettingSchema = new Schema<ISetting>(
     marketingReplyTo: {
       type: String,
       default: "",
+    },
+    marketingTestRecipients: {
+      type: [String],
+      default: [],
+    },
+    marketingWhatsappDailyCap: {
+      type: Number,
+      default: 100,
+      min: 1,
+      max: 1000,
+    },
+    marketingQuietHoursStart: {
+      type: Number,
+      default: 20,
+      min: 0,
+      max: 23,
+    },
+    marketingQuietHoursEnd: {
+      type: Number,
+      default: 9,
+      min: 0,
+      max: 23,
+    },
+    marketingTrackOpens: {
+      type: Boolean,
+      default: false,
+    },
+    marketingTrackClicks: {
+      type: Boolean,
+      default: false,
     },
     companyName: {
       type: String,

@@ -195,26 +195,3 @@ export async function getCampaignStats(id: string): Promise<Record<string, unkno
   const campaign = await getCampaign(id);
   return campaign ? campaign.stats : null;
 }
-
-export async function listCampaignRecipients(
-  campaignId: string,
-  limit = 100,
-): Promise<Array<Record<string, unknown>>> {
-  if (!isObjectIdString(campaignId)) return [];
-  await connectDB();
-  const rows = await CampaignRecipient.find({ campaignId })
-    .sort({ createdAt: 1 })
-    .limit(Math.min(limit, 500))
-    .lean<Array<Record<string, unknown>>>();
-  return rows;
-}
-
-export async function getCampaignReport(id: string): Promise<{
-  campaign: CampaignView | null;
-  recipients: Array<Record<string, unknown>>;
-} | null> {
-  const campaign = await getCampaign(id);
-  if (!campaign) return null;
-  const recipients = await listCampaignRecipients(id, 500);
-  return { campaign, recipients };
-}

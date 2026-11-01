@@ -3432,11 +3432,11 @@
     "recipient-skipped_consent": "Skipped: no consent",
     "recipient-skipped_cap": "Skipped: daily cap",
     "recipient-skipped_suppressed": "Skipped: suppressed",
-    "show-more": "Show {count} more",
     "cancel-title": "Cancel this campaign?",
     "cancel-description": "Messages not sent yet will never be sent. This can't be undone.",
     "cancel-keep": "Keep campaign",
     "cancel-confirm": "Cancel campaign",
-    "send-at-local": "That's {time} on this device."
+    "send-at-local": "That's {time} on this device.",
+    "show-more-page": "Load more ({shown} shown)"
   }
 }

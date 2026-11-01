@@ -1,23 +1,32 @@
 import { describe, expect, it } from "vitest";
 
 import {
-  tallyRecipients,
+  bucketStatusFilter,
+  tallyStatusCounts,
   toRecipientRow,
 } from "@/features/marketing/lib/campaigns/campaign-report-summary";
 
-describe("tallyRecipients", () => {
-  it("groups recipient statuses into report buckets", () => {
-    const out = tallyRecipients([
-      { status: "sent" },
-      { status: "sent" },
-      { status: "failed" },
-      { status: "skipped_consent" },
-      { status: "skipped_cap" },
-      { status: "pending" },
-      { status: "sending" },
-      {},
-    ]);
-    expect(out).toEqual({ targeted: 8, sent: 2, failed: 1, skipped: 2, pending: 3 });
+describe("tallyStatusCounts", () => {
+  it("folds raw status counts into report buckets", () => {
+    expect(
+      tallyStatusCounts({
+        sent: 1200,
+        failed: 3,
+        skipped_consent: 4,
+        skipped_cap: 5,
+        pending: 600,
+        sending: 2,
+      }),
+    ).toEqual({ targeted: 1814, sent: 1200, failed: 3, skipped: 9, pending: 602 });
+  });
+});
+
+describe("bucketStatusFilter", () => {
+  it("maps buckets to Mongo filters", () => {
+    expect(bucketStatusFilter("all")).toEqual({});
+    expect(bucketStatusFilter("sent")).toEqual({ status: "sent" });
+    expect(bucketStatusFilter("pending")).toEqual({ status: { $in: ["pending", "sending"] } });
+    expect(bucketStatusFilter("skipped")).toEqual({ status: { $regex: "^skipped" } });
   });
 });
 

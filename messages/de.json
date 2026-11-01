@@ -3432,11 +3432,11 @@
     "recipient-skipped_consent": "Übersprungen: keine Zustimmung",
     "recipient-skipped_cap": "Übersprungen: Tageslimit",
     "recipient-skipped_suppressed": "Übersprungen: gesperrt",
-    "show-more": "{count} weitere anzeigen",
     "cancel-title": "Kampagne abbrechen?",
     "cancel-description": "Noch nicht gesendete Nachrichten werden nie gesendet. Dies kann nicht rückgängig gemacht werden.",
     "cancel-keep": "Kampagne behalten",
     "cancel-confirm": "Kampagne abbrechen",
-    "send-at-local": "Das ist {time} auf diesem Gerät."
+    "send-at-local": "Das ist {time} auf diesem Gerät.",
+    "show-more-page": "Mehr laden ({shown} angezeigt)"
   }
 }

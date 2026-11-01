@@ -2,10 +2,10 @@ import { NextResponse } from "next/server";
 
 import { requireAdmin } from "@/features/auth/lib/require-role";
 import { jsonError } from "@/shared/http/json-error";
-import { getCampaignReport } from "@/features/marketing/lib/campaigns/campaign.repo";
+import { getCampaign } from "@/features/marketing/lib/campaigns/campaign.repo";
 import {
   buildCampaignReportSummary,
-  toRecipientRow,
+  listRecipientPage,
 } from "@/features/marketing/lib/campaigns/campaign-report-summary";
 
 export const dynamic = "force-dynamic";
@@ -20,14 +20,18 @@ export async function GET(
     if (!access.ok) return access.response;
 
     const { id } = await context.params;
-    const report = await getCampaignReport(id);
-    if (!report || !report.campaign) return jsonError("not_found", 404);
-    const summary = await buildCampaignReportSummary(report.campaign, report.recipients);
+    const campaign = await getCampaign(id);
+    if (!campaign) return jsonError("not_found", 404);
+    const [summary, page] = await Promise.all([
+      buildCampaignReportSummary(campaign),
+      listRecipientPage(id, { limit: 50 }),
+    ]);
     return NextResponse.json({
       success: true,
-      campaign: report.campaign,
+      campaign,
       summary,
-      recipients: report.recipients.map(toRecipientRow),
+      recipients: page.rows,
+      nextCursor: page.nextCursor,
     });
   } catch (error) {
     console.error("Marketing campaign report failed:", error);

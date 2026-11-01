@@ -3432,11 +3432,11 @@
     "recipient-skipped_consent": "Saltato: nessun consenso",
     "recipient-skipped_cap": "Saltato: limite giornaliero",
     "recipient-skipped_suppressed": "Saltato: bloccato",
-    "show-more": "Mostra altri {count}",
     "cancel-title": "Annullare questa campagna?",
     "cancel-description": "I messaggi non ancora inviati non partiranno mai. Non si può annullare.",
     "cancel-keep": "Mantieni campagna",
     "cancel-confirm": "Annulla campagna",
-    "send-at-local": "Sono le {time} su questo dispositivo."
+    "send-at-local": "Sono le {time} su questo dispositivo.",
+    "show-more-page": "Carica altri ({shown} mostrati)"
   }
 }

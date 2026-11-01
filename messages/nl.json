@@ -3432,11 +3432,11 @@
     "recipient-skipped_consent": "Overgeslagen: geen toestemming",
     "recipient-skipped_cap": "Overgeslagen: daglimiet",
     "recipient-skipped_suppressed": "Overgeslagen: geblokkeerd",
-    "show-more": "Toon {count} meer",
     "cancel-title": "Deze campagne annuleren?",
     "cancel-description": "Nog niet verzonden berichten worden nooit verzonden. Dit kan niet ongedaan worden.",
     "cancel-keep": "Campagne houden",
     "cancel-confirm": "Campagne annuleren",
-    "send-at-local": "Dat is {time} op dit apparaat."
+    "send-at-local": "Dat is {time} op dit apparaat.",
+    "show-more-page": "Meer laden ({shown} getoond)"
   }
 }

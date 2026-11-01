@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { ArrowLeft, Ban, Pause, Play, RefreshCw, SearchX } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
@@ -42,7 +42,6 @@ import {
 type Report = {
   campaign: CampaignView;
   summary: CampaignReportSummary;
-  recipients: CampaignRecipientRow[];
 };
 type Action = "pause" | "resume" | "cancel";
 const FILTERS = ["all", "sent", "failed", "skipped", "pending"] as const;
@@ -70,7 +69,10 @@ export function CampaignReportPage({ id }: { id: string }) {
   const [state, setState] = useState<"loading" | "ready" | "error" | "missing">("loading");
   const [refreshing, setRefreshing] = useState(false);
   const [filter, setFilter] = useState<Filter>("all");
-  const [visible, setVisible] = useState(PAGE);
+  const [rows, setRows] = useState<CampaignRecipientRow[]>([]);
+  const [nextCursor, setNextCursor] = useState<string | null>(null);
+  const [rowsState, setRowsState] = useState<"loading" | "ready" | "error" | "more">("loading");
+  const [rowsKey, setRowsKey] = useState(0);
   const [pendingAction, setPendingAction] = useState<Action | null>(null);
   const [confirmCancel, setConfirmCancel] = useState(false);
   const [actionError, setActionError] = useState(false);
@@ -84,7 +86,8 @@ export function CampaignReportPage({ id }: { id: string }) {
         const data = await apiGet<{ success: true } & Report>(
           `/api/admin/marketing/campaigns/${id}/report`,
         );
-        setReport({ campaign: data.campaign, summary: data.summary, recipients: data.recipients });
+        setReport({ campaign: data.campaign, summary: data.summary });
+        setRowsKey((k) => k + 1);
         setState("ready");
       } catch (error) {
         if (error instanceof ApiError && error.status === 404) setState("missing");
@@ -121,10 +124,46 @@ export function CampaignReportPage({ id }: { id: string }) {
     }
   }
 
-  const rows = useMemo(() => {
-    const all = report?.recipients ?? [];
-    return filter === "all" ? all : all.filter((r) => bucket(r.status) === filter);
-  }, [report, filter]);
+  const fetchRows = useCallback(
+    (f: Filter, cursor: string | null) =>
+      apiGet<{ success: true; recipients: CampaignRecipientRow[]; nextCursor: string | null }>(
+        `/api/admin/marketing/campaigns/${id}/recipients?status=${f}&limit=${PAGE}` +
+          (cursor ? `&cursor=${encodeURIComponent(cursor)}` : ""),
+      ),
+    [id],
+  );
+
+  useEffect(() => {
+    if (rowsKey === 0) return;
+    let cancelled = false;
+    setRowsState((prev) => (prev === "ready" ? "ready" : "loading"));
+    fetchRows(filter, null)
+      .then((data) => {
+        if (cancelled) return;
+        setRows(data.recipients);
+        setNextCursor(data.nextCursor);
+        setRowsState("ready");
+      })
+      .catch(() => {
+        if (!cancelled) setRowsState("error");
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [fetchRows, filter, rowsKey]);
+
+  async function loadMore() {
+    if (!nextCursor) return;
+    setRowsState("more");
+    try {
+      const data = await fetchRows(filter, nextCursor);
+      setRows((prev) => [...prev, ...data.recipients]);
+      setNextCursor(data.nextCursor);
+      setRowsState("ready");
+    } catch {
+      setRowsState("error");
+    }
+  }
 
   const listHref = `/${locale}/dashboard/marketing/campaigns`;
   const back = (
@@ -310,8 +349,11 @@ export function CampaignReportPage({ id }: { id: string }) {
                   role="tab"
                   aria-selected={filter === f}
                   onClick={() => {
+                    if (f === filter) return;
                     setFilter(f);
-                    setVisible(PAGE);
+                    setRows([]);
+                    setNextCursor(null);
+                    setRowsState("loading");
                   }}
                   className={cn(
                     "min-h-11 shrink-0 whitespace-nowrap rounded-chip px-3 text-sm transition-colors",
@@ -325,7 +367,18 @@ export function CampaignReportPage({ id }: { id: string }) {
           </div>
         </div>
 
-        {rows.length === 0 ? (
+        {rowsState === "loading" ? (
+          <div className="flex flex-col gap-2 rounded border border-border/60 bg-card p-3" aria-busy="true">
+            <span className="sr-only">{t("report-loading")}</span>
+            {Array.from({ length: 3 }).map((_, i) => (
+              <Skeleton key={i} className="h-10 w-full" />
+            ))}
+          </div>
+        ) : rowsState === "error" && rows.length === 0 ? (
+          <DeskNotice variant="error" onRetry={() => setRowsKey((k) => k + 1)} retryLabel={t("retry")}>
+            {t("report-failed")}
+          </DeskNotice>
+        ) : rows.length === 0 ? (
           <p className="rounded border border-border/60 bg-card p-6 text-center text-sm text-muted-foreground">
             {summary.targeted === 0 ? t("recipients-none") : t("recipients-filter-empty")}
           </p>
@@ -342,7 +395,7 @@ export function CampaignReportPage({ id }: { id: string }) {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {rows.slice(0, visible).map((r) => (
+                  {rows.map((r) => (
                     <TableRow key={r.id} data-testid="recipient-row">
                       <TableCell className="max-w-72 truncate" dir="ltr">{r.email}</TableCell>
                       <TableCell className={RECIPIENT_TONE[bucket(r.status)]}>{t(`recipient-${r.status}`)}</TableCell>
@@ -354,7 +407,7 @@ export function CampaignReportPage({ id }: { id: string }) {
               </Table>
             </div>
             <ul className="flex flex-col divide-y divide-border/60 rounded border border-border/60 bg-card md:hidden">
-              {rows.slice(0, visible).map((r) => (
+              {rows.map((r) => (
                 <li key={r.id} className="flex flex-col gap-1 p-3 text-sm">
                   <div className="flex items-start justify-between gap-3">
                     <span className="min-w-0 break-all" dir="ltr">{r.email}</span>
@@ -367,9 +420,16 @@ export function CampaignReportPage({ id }: { id: string }) {
                 </li>
               ))}
             </ul>
-            {rows.length > visible ? (
-              <Button type="button" variant="outline" className="min-h-11 self-center" onClick={() => setVisible((v) => v + PAGE)}>
-                {t("show-more", { count: Math.min(PAGE, rows.length - visible) })}
+            {nextCursor ? (
+              <Button
+                type="button"
+                variant="outline"
+                className="min-h-11 self-center"
+                disabled={rowsState === "more"}
+                onClick={() => void loadMore()}
+                data-testid="recipients-more"
+              >
+                {t("show-more-page", { shown: rows.length })}
               </Button>
             ) : null}
           </>

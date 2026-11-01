@@ -3432,11 +3432,11 @@
     "recipient-skipped_consent": "Ignoré : sans consentement",
     "recipient-skipped_cap": "Ignoré : limite quotidienne",
     "recipient-skipped_suppressed": "Ignoré : bloqué",
-    "show-more": "Afficher {count} de plus",
     "cancel-title": "Annuler cette campagne ?",
     "cancel-description": "Les messages non encore envoyés ne partiront jamais. Action irréversible.",
     "cancel-keep": "Garder la campagne",
     "cancel-confirm": "Annuler la campagne",
-    "send-at-local": "Soit {time} sur cet appareil."
+    "send-at-local": "Soit {time} sur cet appareil.",
+    "show-more-page": "Charger plus ({shown} affichés)"
   }
 }

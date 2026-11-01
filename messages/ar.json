@@ -3432,11 +3432,11 @@
     "recipient-skipped_consent": "تخطٍّ: لا موافقة",
     "recipient-skipped_cap": "تخطٍّ: الحد اليومي",
     "recipient-skipped_suppressed": "تخطٍّ: محظور",
-    "show-more": "عرض {count} إضافية",
     "cancel-title": "إلغاء هذه الحملة؟",
     "cancel-description": "الرسائل غير المرسلة لن تُرسل أبدًا. لا يمكن التراجع.",
     "cancel-keep": "الإبقاء على الحملة",
     "cancel-confirm": "إلغاء الحملة",
-    "send-at-local": "أي {time} على هذا الجهاز."
+    "send-at-local": "أي {time} على هذا الجهاز.",
+    "show-more-page": "تحميل المزيد (معروض {shown})"
   }
 }

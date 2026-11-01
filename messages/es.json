@@ -3338,7 +3338,7 @@
     "channel-email": "Email",
     "channel-whatsapp": "WhatsApp",
     "channel-email-hint": "Clientes que aceptaron ofertas por email.",
-    "channel-whatsapp-hint": "Clientes con consentimiento y número verificado. Máx. 100 al día.",
+    "channel-whatsapp-hint": "Clientes con consentimiento y número verificado. Máx. {cap} al día.",
     "new-title": "Nueva campaña",
     "new-description": "Elige audiencia, mensaje y cuándo enviar.",
     "back-to-list": "Todas las campañas",

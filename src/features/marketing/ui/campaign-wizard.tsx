@@ -27,6 +27,7 @@ import {
   type MarketingChannel,
 } from "@/features/marketing/lib/marketing.constants";
 import { useMarketingDesk } from "@/features/marketing/hooks/use-marketing-desk";
+import { estimateSendDays } from "@/features/marketing/lib/campaigns/estimate-send-days";
 import { useMarketingOperator } from "@/features/marketing/hooks/use-marketing-operator";
 import { utcToZonedWallTime, zonedWallTimeToUtc } from "@/features/marketing/lib/zoned-time";
 import { MarketingPreviewResult } from "@/features/marketing/ui/marketing-preview-result";
@@ -41,10 +42,6 @@ type Step = (typeof STEPS)[number];
 export const LARGE_SEND_THRESHOLD = 500;
 const CONFIRM_WORD = "SEND";
 
-export function estimateSendDays(recipients: number, channel: MarketingChannel) {
-  if (channel !== "whatsapp" || recipients <= 0) return recipients > 0 ? 1 : 0;
-  return Math.ceil(recipients / WHATSAPP_MARKETING_DAILY_CAP);
-}
 
 function hourLabel(hour: number, locale: string) {
   const d = new Date(2000, 0, 1, hour, 0);
@@ -75,6 +72,7 @@ export function CampaignWizard() {
 
   const { operator } = useMarketingOperator();
   const timeZone = operator?.timeZone ?? "UTC";
+  const dailyCap = operator?.whatsappDailyCap ?? WHATSAPP_MARKETING_DAILY_CAP;
   const deviceTimeZone = useMemo(
     () => Intl.DateTimeFormat().resolvedOptions().timeZone || "UTC",
     [],
@@ -301,7 +299,7 @@ export function CampaignWizard() {
                         <span className="flex flex-col">
                           <span className="font-medium">{t(`channel-${value}`)}</span>
                           <span className="text-sm text-muted-foreground">
-                            {t(`channel-${value}-hint`)}
+                            {t(`channel-${value}-hint`, { cap: dailyCap })}
                           </span>
                         </span>
                       </label>
@@ -497,8 +495,8 @@ export function CampaignWizard() {
                 {channel === "whatsapp" && recipients > 0 ? (
                   <p className="mt-1 text-sm text-muted-foreground">
                     {t("review-whatsapp-cap", {
-                      cap: WHATSAPP_MARKETING_DAILY_CAP,
-                      days: estimateSendDays(recipients, channel),
+                      cap: dailyCap,
+                      days: estimateSendDays(recipients, channel, dailyCap),
                     })}
                   </p>
                 ) : null}

@@ -3338,7 +3338,7 @@
     "channel-email": "E-mail",
     "channel-whatsapp": "WhatsApp",
     "channel-email-hint": "Klanten die e-mailaanbiedingen willen ontvangen.",
-    "channel-whatsapp-hint": "Klanten met toestemming en geverifieerd nummer. Max. 100 per dag.",
+    "channel-whatsapp-hint": "Klanten met toestemming en geverifieerd nummer. Max. {cap} per dag.",
     "new-title": "Nieuwe campagne",
     "new-description": "Kies doelgroep, bericht en verzendmoment.",
     "back-to-list": "Alle campagnes",

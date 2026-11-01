@@ -3338,7 +3338,7 @@
     "channel-email": "Email",
     "channel-whatsapp": "WhatsApp",
     "channel-email-hint": "Клиенты, согласившиеся на email-предложения.",
-    "channel-whatsapp-hint": "Клиенты с согласием и подтверждённым номером. До 100 в день.",
+    "channel-whatsapp-hint": "Клиенты с согласием и подтверждённым номером. До {cap} в день.",
     "new-title": "Новая кампания",
     "new-description": "Выберите аудиторию, сообщение и время отправки.",
     "back-to-list": "Все кампании",

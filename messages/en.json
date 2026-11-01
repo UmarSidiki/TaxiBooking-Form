@@ -3338,7 +3338,7 @@
     "channel-email": "Email",
     "channel-whatsapp": "WhatsApp",
     "channel-email-hint": "Customers who opted in to email offers.",
-    "channel-whatsapp-hint": "Opted-in customers with a verified number. Max 100 a day.",
+    "channel-whatsapp-hint": "Opted-in customers with a verified number. Max {cap} a day.",
     "new-title": "New campaign",
     "new-description": "Pick an audience, a message and when to send.",
     "back-to-list": "All campaigns",

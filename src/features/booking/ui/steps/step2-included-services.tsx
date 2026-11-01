@@ -8,7 +8,7 @@ type TFn = ReturnType<typeof useTranslations>;
 export function Step2IncludedServices({ t }: { t: TFn }) {
   return (
           <div className="border-t pt-3 space-y-2">
-            <h4 className="font-semibold text-sm mb-2">
+            <h4 className="font-semibold text-sm">
               {t("Step2.included-services")}
             </h4>
             <div className="space-y-2 text-xs text-[color:var(--ink)]">

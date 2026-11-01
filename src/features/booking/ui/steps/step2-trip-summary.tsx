@@ -59,7 +59,7 @@ export function Step2TripSummary({
 
   return (
       <div className="lg:col-span-1">
-        <Card className="sticky top-4 p-5 space-y-4">
+        <Card className="sticky top-4 gap-4 p-5">
           <TripStrip />
 
           {/* Selected Vehicle Price */}

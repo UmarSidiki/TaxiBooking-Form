@@ -19,8 +19,8 @@ export function Step3PaymentMethods(props: Step3PaymentMethodsProps) {
   return (
     <>
         {/* Payment Details */}
-        <Card className="p-5">
-          <h3 className="font-semibold mb-4 text-lg flex items-center gap-2">
+        <Card className="gap-4 p-5">
+          <h3 className="font-semibold text-lg flex items-center gap-2">
             {t('Step3.payment-method')} </h3>
 
           {/* Payment Method Selection */}

@@ -72,7 +72,7 @@ export function Step3BookingSummary({
     <>
       {/* Sidebar - Booking Summary */}
       <div className="lg:col-span-1">
-        <Card className="sticky top-4 p-5 space-y-4">
+        <Card className="sticky top-4 gap-4 p-5">
           <h3 className="font-semibold text-lg border-b pb-2">{t('Step3.booking-summary')}</h3>
 
           {/* Map */}
@@ -236,7 +236,7 @@ export function Step3BookingSummary({
 
           {/* Benefits */}
           <div className="border-t pt-3 space-y-2">
-            <h4 className="font-semibold text-sm mb-2">{t('Step3.what-and-apos-s-included')}</h4>
+            <h4 className="font-semibold text-sm">{t('Step3.what-and-apos-s-included')}</h4>
             <div className="space-y-2 text-xs text-[color:var(--ink)]">
               <div className="flex items-center gap-2">
                 <CheckCircle2 className="h-4 w-4 text-[color:var(--ink2)]" />
@@ -262,8 +262,8 @@ export function Step3BookingSummary({
           </div>
 
           {/* Support */}
-          <div className="border-t pt-3 space-y-2 text-xs">
-            <div className="flex items-center gap-2 font-semibold">
+          <div className="border-t pt-3 text-xs">
+            <div className="mb-1 flex items-center gap-2 font-semibold">
               <CreditCard className="h-4 w-4 text-[color:var(--ink2)]" />
               <span>{t('Step3.24-7-customer-support')}</span>
             </div>
@@ -272,7 +272,7 @@ export function Step3BookingSummary({
                 <Mail className="h-4 w-4 text-muted-foreground" />
                 <a
                   href={`mailto:${process.env.NEXT_PUBLIC_SUPPORT_EMAIL}`}
-                  className="inline-flex min-h-11 items-center hover:text-primary"
+                  className="inline-flex min-h-9 items-center hover:text-primary"
                 >
                   {process.env.NEXT_PUBLIC_SUPPORT_EMAIL}
                 </a>
@@ -283,7 +283,7 @@ export function Step3BookingSummary({
                 <Phone className="h-4 w-4 text-muted-foreground" />
                 <a
                   href={`tel:${process.env.NEXT_PUBLIC_PHONE_NUMBER}`}
-                  className="inline-flex min-h-11 items-center hover:text-primary"
+                  className="inline-flex min-h-9 items-center hover:text-primary"
                 >
                   {process.env.NEXT_PUBLIC_PHONE_NUMBER}
                 </a>

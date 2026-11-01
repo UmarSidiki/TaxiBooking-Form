@@ -39,12 +39,12 @@ export function Step3PersonalDetails({
   return (
     <>
         {/* Personal Details */}
-        <Card className="p-5">
-          <h3 className="font-semibold mb-4 text-lg">{t('Step3.personal-details')}</h3>
+        <Card className="gap-4 p-5">
+          <h3 className="font-semibold text-lg">{t('Step3.personal-details')}</h3>
           <div className="space-y-4">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="text-sm font-medium block mb-2">
+                <label className="text-sm font-medium block mb-1.5">
                   {t('Step3.first-name')} </label>
                 <Input
                   placeholder={t('Step3.john')}
@@ -66,7 +66,7 @@ export function Step3PersonalDetails({
                 )}
               </div>
               <div>
-                <label className="text-sm font-medium block mb-2">
+                <label className="text-sm font-medium block mb-1.5">
                   {t('Step3.last-name')} </label>
                 <Input
                   placeholder={t('Step3.doe')}
@@ -87,7 +87,7 @@ export function Step3PersonalDetails({
               </div>
             </div>
             <div>
-              <div className="flex items-center justify-between gap-2 mb-2">
+              <div className="flex items-center justify-between gap-2 mb-1.5">
                 <label className="text-sm font-medium">
                   {t('Step3.email-address')} </label>
                 {emailLocked && (
@@ -125,7 +125,7 @@ export function Step3PersonalDetails({
               )}
             </div>
             <div>
-              <label className="text-sm font-medium block mb-2">
+              <label className="text-sm font-medium block mb-1.5">
                 {t('Step3.phone-number')} </label>
               <Input
                 type="tel"

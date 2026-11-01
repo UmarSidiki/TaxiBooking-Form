@@ -8,6 +8,7 @@ export function isDeskNavFlagOn(
   if (!flag) return true;
   if (flag === "drivers") return settings.enableDrivers ?? false;
   if (flag === "partners") return settings.enablePartners ?? false;
+  if (flag === "marketing") return settings.enableMarketing !== false;
   if (flag === "formBuilder") return settings.enableFormBuilder !== false;
   return settings.enableEmbeddableForm !== false;
 }

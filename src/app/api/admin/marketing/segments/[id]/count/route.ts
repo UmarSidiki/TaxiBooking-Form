@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 
-import { requireAdmin } from "@/features/auth/lib/require-role";
+import { requireMarketingAdmin } from "@/features/marketing/lib/marketing-module";
 import { jsonError } from "@/shared/http/json-error";
 import { isObjectIdString } from "@/features/customers-admin/lib/object-id";
 import { getSegment } from "@/features/marketing/lib/segments/segment.repo";
@@ -17,7 +17,7 @@ type Context = { params: Promise<{ id: string }> };
 
 export async function GET(request: Request, context: Context) {
   try {
-    const access = await requireAdmin();
+    const access = await requireMarketingAdmin();
     if (!access.ok) return access.response;
 
     const { id } = await context.params;

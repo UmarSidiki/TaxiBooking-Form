@@ -1011,7 +1011,9 @@
       "desk-booking-module": "Operator-Buchung",
       "enable-desk-booking": "Mitarbeiter können Buchungen im Namen eines Kunden erstellen, optional mit manuellem Preis.",
       "promos-module": "Aktionscodes",
-      "enable-promo-codes": "Das Feld für den Aktionscode im Buchungsformular anzeigen, wenn ein aktiver Aktionscode vorhanden ist."
+      "enable-promo-codes": "Das Feld für den Aktionscode im Buchungsformular anzeigen, wenn ein aktiver Aktionscode vorhanden ist.",
+      "marketing-module": "Marketing",
+      "enable-marketing": "E-Mail- und WhatsApp-Kampagnen sowie die Marketing-Einwilligung im Kundenkonto. Wenn deaktiviert, wird das Marketing-Menü ausgeblendet, Kampagnen werden nicht mehr versendet und Kunden sehen keine Marketing-Schalter mehr. Bestehende Einwilligungen und Kampagnendaten bleiben erhalten."
     },
     "Fleet": {
       "failed-to-fetch-vehicles": "Fahrzeuge konnten nicht abgerufen werden",

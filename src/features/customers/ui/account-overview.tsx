@@ -28,6 +28,7 @@ export function AccountOverview({
   currency,
   companyPhone,
   cancelPolicy,
+  marketingEnabled = true,
   onChange,
   onCancel,
 }: {
@@ -38,6 +39,7 @@ export function AccountOverview({
   rides: AccountRides;
   locale: string;
   currency: string;
+  marketingEnabled?: boolean;
   companyPhone: string;
   cancelPolicy: CancelPolicyTier[] | null;
   onChange: (ride: Ride) => void;
@@ -46,7 +48,9 @@ export function AccountOverview({
   const nextRide = nextUpcomingRide(rides.upcoming);
   const pastRides = mergePastRides(rides.past, rides.canceled);
   const lastRide: Ride | null = pastRides[0] ?? null;
-  const subscribed =
+  // With the Marketing module off there is nothing to promote: show the concierge.
+  const showConcierge =
+    !marketingEnabled ||
     profile?.marketing?.email?.status === "granted" ||
     profile?.marketing?.whatsapp?.status === "granted";
 
@@ -86,7 +90,7 @@ export function AccountOverview({
             hasLastRide={Boolean(lastRide)}
             savedPlaces={savedPlaceCount(profile)}
           />
-          {subscribed ? (
+          {showConcierge ? (
             <AccountConcierge t={t} companyPhone={companyPhone} />
           ) : (
             <Link

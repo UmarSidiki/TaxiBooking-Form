@@ -16,6 +16,7 @@ import { materialiseCampaignRecipients } from "@/features/marketing/lib/campaign
 import { claimRecipient, reclaimStaleRecipients } from "@/features/marketing/lib/campaigns/claim-recipient";
 import { processWhatsAppCampaign } from "@/features/marketing/lib/campaigns/process-whatsapp-campaign";
 import CronMarker from "@/features/cron/model/CronMarker";
+import { isMarketingEnabled } from "@/features/marketing/lib/marketing-module";
 
 export type RunCampaignTickOptions = {
   now?: Date;
@@ -29,6 +30,8 @@ export type RunCampaignTickOptions = {
 
 export type RunCampaignTickResult = {
   locked: boolean;
+  /** True when the Marketing module is off: nothing was claimed or sent. */
+  disabled?: boolean;
   campaigns?: number;
   sent?: number;
   failed?: number;
@@ -85,6 +88,8 @@ export async function runCampaignTick(
       ? now.getTime() + options.maxDurationSeconds * 1000 - 10_000
       : now.getTime() + DEFAULT_MAX_DURATION_MS);
   const leaseMs = options.recipientLeaseMs ?? RECIPIENT_LEASE_MS;
+
+  if (!(await isMarketingEnabled())) return { locked: false, disabled: true };
 
   const locked = await acquireLock(now);
   if (!locked) return { locked: false };

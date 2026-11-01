@@ -31,6 +31,7 @@ export function AccountHome({
   currency,
   companyPhone,
   cancelPolicy,
+  marketingEnabled = true,
   brandName,
   logoUrl,
   onRefresh,
@@ -47,6 +48,7 @@ export function AccountHome({
   currency: string;
   companyPhone: string;
   cancelPolicy: CancelPolicyTier[] | null;
+  marketingEnabled?: boolean;
   brandName: string;
   logoUrl: string;
   onRefresh: () => Promise<boolean>;
@@ -100,6 +102,7 @@ export function AccountHome({
               greeting={greeting}
               profile={profile}
               companyPhone={companyPhone}
+              marketingEnabled={marketingEnabled}
             />
           ) : null}
           {section === "rides" ? <AccountRidesPage {...rideProps} /> : null}
@@ -117,6 +120,7 @@ export function AccountHome({
               t={t}
               locale={locale}
               profile={profile}
+              marketingEnabled={marketingEnabled}
               onSaved={onProfileSaved}
             />
           ) : null}

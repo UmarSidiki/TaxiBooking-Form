@@ -7,6 +7,7 @@ import {
   readCustomerSession,
 } from "@/features/customers/lib/customer-session";
 import { applyMarketingConsent } from "@/features/marketing/lib/consent/apply-marketing-consent";
+import { isMarketingEnabled } from "@/features/marketing/lib/marketing-module";
 import { auditIpPrefix } from "@/features/customers-admin/lib/audit/record-admin-audit";
 
 const profileSchema = z.object({
@@ -40,6 +41,12 @@ export async function PATCH(request: Request) {
   if (!session) return NextResponse.json({ error: "unauthorized" }, { status: 401 });
   const parsed = profileSchema.safeParse(await request.json().catch(() => null));
   if (!parsed.success) return NextResponse.json({ error: "invalid_body" }, { status: 400 });
+  const grantsMarketing =
+    parsed.data.marketingEmailOptIn === true || parsed.data.marketingWhatsappOptIn === true;
+  // Withdrawing consent always works; new opt-ins need the Marketing module on.
+  if (grantsMarketing && !(await isMarketingEnabled())) {
+    return NextResponse.json({ error: "module_disabled" }, { status: 403 });
+  }
   await connectDB();
   const update: Record<string, unknown> = {};
   if (parsed.data.name !== undefined) update.name = parsed.data.name;

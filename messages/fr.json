@@ -1011,7 +1011,9 @@
       "desk-booking-module": "Réservation opérateur",
       "enable-desk-booking": "Le personnel peut créer des réservations pour un client, avec un prix manuel facultatif.",
       "promos-module": "Codes promotionnels",
-      "enable-promo-codes": "Afficher le champ de code promo sur le formulaire de réservation lorsqu'un code promo actif existe."
+      "enable-promo-codes": "Afficher le champ de code promo sur le formulaire de réservation lorsqu'un code promo actif existe.",
+      "marketing-module": "Marketing",
+      "enable-marketing": "Campagnes e-mail et WhatsApp, ainsi que le consentement marketing dans le compte client. Une fois désactivé, le menu Marketing est masqué, les campagnes ne sont plus envoyées et les clients ne voient plus les options marketing. Les consentements et données de campagne existants sont conservés."
     },
     "Fleet": {
       "failed-to-fetch-vehicles": "Échec de la récupération des véhicules",

@@ -110,6 +110,7 @@ export const settingsWriteSchema = z.object({
   enableAppointmentRequest: z.boolean().optional(),
   enableEmbeddableForm: z.boolean().optional(),
   enableFormBuilder: z.boolean().optional(),
+  enableMarketing: z.boolean().optional(),
   enableDeskBooking: z.boolean().optional(),
   promoCodesEnabled: z.boolean().optional(),
   enableTax: z.boolean().optional(),

@@ -1011,7 +1011,9 @@
       "desk-booking-module": "Desk booking",
       "enable-desk-booking": "Staff can create bookings on a customer's behalf, with an optional manual price.",
       "promos-module": "Promo codes",
-      "enable-promo-codes": "Show the promo code field on the booking form when an active promo code exists."
+      "enable-promo-codes": "Show the promo code field on the booking form when an active promo code exists.",
+      "marketing-module": "Marketing",
+      "enable-marketing": "Email and WhatsApp campaigns, plus the marketing opt-in on customer accounts. When disabled, the Marketing menu is hidden, campaigns stop sending, and customers no longer see marketing toggles. Existing consent and campaign data are kept."
     },
     "Fleet": {
       "failed-to-fetch-vehicles": "Failed to fetch vehicles",

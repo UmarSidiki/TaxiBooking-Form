@@ -24,6 +24,7 @@ type SettingsLean = {
   stripeCurrency?: string;
   timezone?: string;
   cancelPolicy?: CancelPolicyTier[];
+  enableMarketing?: boolean;
 };
 
 type ProfileLean = {
@@ -75,7 +76,7 @@ export async function renderAccountPage(
   const [settings, rides, profileRow] = await Promise.all([
     Setting.findOne()
       .select(
-        "companyName smtpSenderName companyLogoUrl companyPhone stripeCurrency timezone cancelPolicy",
+        "companyName smtpSenderName companyLogoUrl companyPhone stripeCurrency timezone cancelPolicy enableMarketing",
       )
       .lean<SettingsLean | null>(),
     session ? ridesForEmail(session.email) : Promise.resolve(null),
@@ -104,6 +105,7 @@ export async function renderAccountPage(
       timezone={timezone}
       companyPhone={settings?.companyPhone ?? ""}
       cancelPolicy={settings?.cancelPolicy ?? null}
+      marketingEnabled={settings?.enableMarketing !== false}
     />
   );
 }

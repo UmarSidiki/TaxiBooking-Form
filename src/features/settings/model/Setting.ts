@@ -78,6 +78,8 @@ export interface ISetting {
   enableAppointmentRequest?: boolean;
   enableEmbeddableForm?: boolean;
   enableFormBuilder?: boolean;
+  /** Marketing module (campaigns, consent toggles). Missing means on. */
+  enableMarketing?: boolean;
   /** When true: the desk can create bookings on a Customer's behalf. */
   enableDeskBooking?: boolean;
   /** When true: the promo code field shows on the booking form (if a usable code exists). */
@@ -388,6 +390,10 @@ const SettingSchema = new Schema<ISetting>(
     enableFormBuilder: {
       type: Boolean,
       default: false,
+    },
+    enableMarketing: {
+      type: Boolean,
+      default: true,
     },
     enableDeskBooking: {
       type: Boolean,

@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-import { requireAdmin } from "@/features/auth/lib/require-role";
+import { requireMarketingAdmin } from "@/features/marketing/lib/marketing-module";
 import { parseJsonBody } from "@/shared/http/parse-json-body";
 import { jsonError } from "@/shared/http/json-error";
 import {
@@ -17,7 +17,7 @@ export const runtime = "nodejs";
 
 export async function GET(request: Request) {
   try {
-    const access = await requireAdmin();
+    const access = await requireMarketingAdmin();
     if (!access.ok) return access.response;
 
     const url = new URL(request.url);
@@ -39,7 +39,7 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
   try {
-    const access = await requireAdmin();
+    const access = await requireMarketingAdmin();
     if (!access.ok) return access.response;
 
     const parsed = await parseJsonBody(request, campaignWriteSchema);

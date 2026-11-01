@@ -34,11 +34,14 @@ export function AccountNotifications({
   t,
   locale,
   profile,
+  marketingEnabled = true,
   onSaved,
 }: {
   t: AccountT;
   locale: string;
   profile: CustomerProfile | null;
+  /** Marketing module switch: off hides the offers opt-in (consent is kept). */
+  marketingEnabled?: boolean;
   onSaved: (profile: CustomerProfile) => void;
 }) {
   const marketingT = useTranslations("Marketing");
@@ -135,116 +138,118 @@ export function AccountNotifications({
           </ul>
         </AccountCard>
 
-        <section
-          id="offers"
-          aria-labelledby="offers-title"
-          className="scroll-mt-24 overflow-hidden rounded-[var(--radius)] border border-[var(--rule)] bg-[var(--sheet)]"
-        >
-          <div
-            className={`p-4 md:p-6 ${
-              anyGranted ? "" : "bg-[linear-gradient(135deg,var(--well),var(--sheet)_70%)]"
-            }`}
+        {marketingEnabled ? (
+          <section
+            id="offers"
+            aria-labelledby="offers-title"
+            className="scroll-mt-24 overflow-hidden rounded-[var(--radius)] border border-[var(--rule)] bg-[var(--sheet)]"
           >
-            <div className="flex items-start gap-3">
-              <span className="grid size-10 shrink-0 place-items-center rounded-full border border-[var(--rule)] bg-[var(--sheet)] text-[var(--ink)]">
-                {anyGranted ? (
-                  <BellRing className="size-[18px]" strokeWidth={1.7} aria-hidden="true" />
-                ) : (
-                  <Sparkles className="size-[18px]" strokeWidth={1.7} aria-hidden="true" />
-                )}
-              </span>
-              <div className="min-w-0">
-                <h2 id="offers-title" className="m-0 text-[15px] font-semibold md:text-[17px]">
-                  {anyGranted ? t("offers-title-subscribed") : t("offers-title")}
-                </h2>
-                <p className="mt-1 text-xs leading-[1.6] text-[var(--ink2)] md:text-[13px]">
-                  {anyGranted ? t("offers-copy-subscribed") : t("offers-copy")}
-                </p>
+            <div
+              className={`p-4 md:p-6 ${
+                anyGranted ? "" : "bg-[linear-gradient(135deg,var(--well),var(--sheet)_70%)]"
+              }`}
+            >
+              <div className="flex items-start gap-3">
+                <span className="grid size-10 shrink-0 place-items-center rounded-full border border-[var(--rule)] bg-[var(--sheet)] text-[var(--ink)]">
+                  {anyGranted ? (
+                    <BellRing className="size-[18px]" strokeWidth={1.7} aria-hidden="true" />
+                  ) : (
+                    <Sparkles className="size-[18px]" strokeWidth={1.7} aria-hidden="true" />
+                  )}
+                </span>
+                <div className="min-w-0">
+                  <h2 id="offers-title" className="m-0 text-[15px] font-semibold md:text-[17px]">
+                    {anyGranted ? t("offers-title-subscribed") : t("offers-title")}
+                  </h2>
+                  <p className="mt-1 text-xs leading-[1.6] text-[var(--ink2)] md:text-[13px]">
+                    {anyGranted ? t("offers-copy-subscribed") : t("offers-copy")}
+                  </p>
+                </div>
               </div>
+
+              {anyGranted ? null : (
+                <>
+                  <ul className="m-0 mt-4 grid list-none gap-2 p-0 sm:grid-cols-3">
+                    {BENEFIT_KEYS.map((key) => (
+                      <li
+                        key={key}
+                        className="flex items-start gap-2 rounded-[var(--radius)] border border-[var(--rule)] bg-[var(--sheet)] p-3 text-xs leading-[1.5]"
+                      >
+                        <Check className="mt-px size-3.5 shrink-0 text-[var(--ok)]" aria-hidden="true" />
+                        {t(key)}
+                      </li>
+                    ))}
+                  </ul>
+                  <div className="mt-4 flex flex-wrap items-center gap-3">
+                    <AccountButton
+                      type="button"
+                      variant="primary"
+                      disabled={busy !== null}
+                      onClick={() => void setMarketing("email", true)}
+                    >
+                      <Mail className="size-4" aria-hidden="true" />
+                      {t("offers-cta-email")}
+                    </AccountButton>
+                    <span className="text-[11px] text-[var(--ink2)]">{t("offers-fineprint")}</span>
+                  </div>
+                </>
+              )}
             </div>
 
-            {anyGranted ? null : (
-              <>
-                <ul className="m-0 mt-4 grid list-none gap-2 p-0 sm:grid-cols-3">
-                  {BENEFIT_KEYS.map((key) => (
-                    <li
-                      key={key}
-                      className="flex items-start gap-2 rounded-[var(--radius)] border border-[var(--rule)] bg-[var(--sheet)] p-3 text-xs leading-[1.5]"
-                    >
-                      <Check className="mt-px size-3.5 shrink-0 text-[var(--ok)]" aria-hidden="true" />
-                      {t(key)}
-                    </li>
-                  ))}
-                </ul>
-                <div className="mt-4 flex flex-wrap items-center gap-3">
-                  <AccountButton
-                    type="button"
-                    variant="primary"
+            <ul className="m-0 grid list-none gap-0 border-t border-[var(--rule)] p-0 px-4 md:px-6">
+              <ChannelRow
+                icon={<Mail className="size-[18px]" strokeWidth={1.7} />}
+                title={marketingT("account-email")}
+                titleId="offers-email-label"
+                hint={
+                  granted.email
+                    ? t("subscribed-since", {
+                        date: formatSince(profile?.marketing?.email?.at, locale),
+                      })
+                    : marketingT("account-note")
+                }
+                control={
+                  <Switch
+                    checked={granted.email}
                     disabled={busy !== null}
-                    onClick={() => void setMarketing("email", true)}
-                  >
-                    <Mail className="size-4" aria-hidden="true" />
-                    {t("offers-cta-email")}
-                  </AccountButton>
-                  <span className="text-[11px] text-[var(--ink2)]">{t("offers-fineprint")}</span>
-                </div>
-              </>
-            )}
-          </div>
-
-          <ul className="m-0 grid list-none gap-0 border-t border-[var(--rule)] p-0 px-4 md:px-6">
-            <ChannelRow
-              icon={<Mail className="size-[18px]" strokeWidth={1.7} />}
-              title={marketingT("account-email")}
-              titleId="offers-email-label"
-              hint={
-                granted.email
-                  ? t("subscribed-since", {
-                      date: formatSince(profile?.marketing?.email?.at, locale),
-                    })
-                  : marketingT("account-note")
-              }
-              control={
-                <Switch
-                  checked={granted.email}
-                  disabled={busy !== null}
-                  aria-labelledby="offers-email-label"
-                  onCheckedChange={(on) => toggleMarketing("email", on)}
-                />
-              }
-            />
-            <ChannelRow
-              icon={<MessageCircle className="size-[18px]" strokeWidth={1.7} />}
-              title={marketingT("account-whatsapp")}
-              titleId="offers-whatsapp-label"
-              hint={
-                granted.whatsapp
-                  ? t("subscribed-since", {
-                      date: formatSince(profile?.marketing?.whatsapp?.at, locale),
-                    })
-                  : marketingT("account-whatsapp-hint")
-              }
-              extra={
-                !phone ? (
-                  <Link
-                    href={accountHref(locale, "profile", "phone")}
-                    className="mt-1 inline-block text-[11.5px] text-[var(--link)] hover:underline"
-                  >
-                    {t("add-whatsapp-number")}
-                  </Link>
-                ) : null
-              }
-              control={
-                <Switch
-                  checked={granted.whatsapp}
-                  disabled={busy !== null}
-                  aria-labelledby="offers-whatsapp-label"
-                  onCheckedChange={(on) => toggleMarketing("whatsapp", on)}
-                />
-              }
-            />
-          </ul>
-        </section>
+                    aria-labelledby="offers-email-label"
+                    onCheckedChange={(on) => toggleMarketing("email", on)}
+                  />
+                }
+              />
+              <ChannelRow
+                icon={<MessageCircle className="size-[18px]" strokeWidth={1.7} />}
+                title={marketingT("account-whatsapp")}
+                titleId="offers-whatsapp-label"
+                hint={
+                  granted.whatsapp
+                    ? t("subscribed-since", {
+                        date: formatSince(profile?.marketing?.whatsapp?.at, locale),
+                      })
+                    : marketingT("account-whatsapp-hint")
+                }
+                extra={
+                  !phone ? (
+                    <Link
+                      href={accountHref(locale, "profile", "phone")}
+                      className="mt-1 inline-block text-[11.5px] text-[var(--link)] hover:underline"
+                    >
+                      {t("add-whatsapp-number")}
+                    </Link>
+                  ) : null
+                }
+                control={
+                  <Switch
+                    checked={granted.whatsapp}
+                    disabled={busy !== null}
+                    aria-labelledby="offers-whatsapp-label"
+                    onCheckedChange={(on) => toggleMarketing("whatsapp", on)}
+                  />
+                }
+              />
+            </ul>
+          </section>
+        ) : null}
       </div>
 
       <Dialog open={confirmOff !== null} onOpenChange={(open) => !open && setConfirmOff(null)}>

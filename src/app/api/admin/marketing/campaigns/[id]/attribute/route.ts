@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-import { requireAdmin } from "@/features/auth/lib/require-role";
+import { requireMarketingAdmin } from "@/features/marketing/lib/marketing-module";
 import { jsonError } from "@/shared/http/json-error";
 import { attributeBookingToCampaign } from "@/features/marketing/lib/attribution/attribute-booking";
 
@@ -12,7 +12,7 @@ export async function POST(
   context: { params: Promise<{ id: string }> },
 ) {
   try {
-    const access = await requireAdmin();
+    const access = await requireMarketingAdmin();
     if (!access.ok) return access.response;
 
     const { id } = await context.params;

@@ -18,7 +18,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 
-export type DeskNavFlag = "drivers" | "partners" | "formBuilder" | "embed";
+export type DeskNavFlag = "drivers" | "partners" | "formBuilder" | "embed" | "marketing";
 
 export type DeskNavItem = {
   titleKey: string;
@@ -68,9 +68,9 @@ export const deskNavGroups: DeskNavGroup[] = [
     id: "marketing",
     labelKey: "Sidebar.marketing",
     items: [
-      { titleKey: "Sidebar.marketing_overview", href: (locale) => `/${locale}/dashboard/marketing`, icon: Megaphone, },
-      { titleKey: "Sidebar.campaigns", href: (locale) => `/${locale}/dashboard/marketing/campaigns`, icon: Send, matchNested: true, },
-      { titleKey: "Sidebar.marketing_settings", href: (locale) => `/${locale}/dashboard/settings/marketing`, icon: SlidersHorizontal, },
+      { titleKey: "Sidebar.marketing_overview", href: (locale) => `/${locale}/dashboard/marketing`, icon: Megaphone, flag: "marketing", },
+      { titleKey: "Sidebar.campaigns", href: (locale) => `/${locale}/dashboard/marketing/campaigns`, icon: Send, matchNested: true, flag: "marketing", },
+      { titleKey: "Sidebar.marketing_settings", href: (locale) => `/${locale}/dashboard/settings/marketing`, icon: SlidersHorizontal, flag: "marketing", },
     ],
   },
   {

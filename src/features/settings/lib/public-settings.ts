@@ -31,6 +31,7 @@ export const PUBLIC_SETTING_FIELDS = [
   "enableAppointmentRequest",
   "enableEmbeddableForm",
   "enableFormBuilder",
+  "enableMarketing",
   "enableDeskBooking",
   "promoCodesEnabled",
   "enableTax",

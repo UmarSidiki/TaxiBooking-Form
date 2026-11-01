@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 
-import { requireAdmin } from "@/features/auth/lib/require-role";
+import { requireMarketingAdmin } from "@/features/marketing/lib/marketing-module";
 import { parseJsonBody } from "@/shared/http/parse-json-body";
 import { jsonError } from "@/shared/http/json-error";
 import { isObjectIdString } from "@/features/customers-admin/lib/object-id";
@@ -21,7 +21,7 @@ type Context = { params: Promise<{ id: string }> };
 
 export async function POST(request: Request, context: Context) {
   try {
-    const access = await requireAdmin();
+    const access = await requireMarketingAdmin();
     if (!access.ok) return access.response;
 
     const { id } = await context.params;

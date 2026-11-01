@@ -1011,7 +1011,9 @@
       "desk-booking-module": "Operatorboeking",
       "enable-desk-booking": "Medewerkers kunnen boekingen voor een klant aanmaken, met een optionele handmatige prijs.",
       "promos-module": "Kortingscodes",
-      "enable-promo-codes": "Toon het veld voor de kortingscode in het boekingsformulier wanneer er een actieve kortingscode bestaat."
+      "enable-promo-codes": "Toon het veld voor de kortingscode in het boekingsformulier wanneer er een actieve kortingscode bestaat.",
+      "marketing-module": "Marketing",
+      "enable-marketing": "E-mail- en WhatsApp-campagnes en de marketingtoestemming in het klantaccount. Indien uitgeschakeld wordt het Marketing-menu verborgen, worden campagnes niet meer verzonden en zien klanten geen marketingschakelaars meer. Bestaande toestemmingen en campagnegegevens blijven bewaard."
     },
     "Fleet": {
       "failed-to-fetch-vehicles": "Ophalen voertuigen mislukt",

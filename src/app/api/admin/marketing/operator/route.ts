@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-import { requireAdmin } from "@/features/auth/lib/require-role";
+import { requireMarketingAdmin } from "@/features/marketing/lib/marketing-module";
 import { jsonError } from "@/shared/http/json-error";
 import { getMarketingOperatorSettings } from "@/features/marketing/lib/operator-settings";
 
@@ -9,7 +9,7 @@ export const runtime = "nodejs";
 
 export async function GET() {
   try {
-    const access = await requireAdmin();
+    const access = await requireMarketingAdmin();
     if (!access.ok) return access.response;
     const operator = await getMarketingOperatorSettings();
     return NextResponse.json({ success: true, operator });

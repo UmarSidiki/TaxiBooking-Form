@@ -28,6 +28,7 @@ export function AccountDesk({
   timezone = "Europe/Zurich",
   companyPhone = "",
   cancelPolicy = null,
+  marketingEnabled = true,
 }: {
   section?: AccountSection;
   expiredLink?: boolean;
@@ -42,6 +43,7 @@ export function AccountDesk({
   timezone?: string;
   companyPhone?: string;
   cancelPolicy?: CancelPolicyTier[] | null;
+  marketingEnabled?: boolean;
 }) {
   const desk = useAccountDesk({
     expiredLink,
@@ -89,6 +91,7 @@ export function AccountDesk({
       currency={currency}
       companyPhone={companyPhone}
       cancelPolicy={cancelPolicy}
+      marketingEnabled={marketingEnabled}
       brandName={brandName}
       logoUrl={logoUrl}
       onRefresh={desk.refresh}

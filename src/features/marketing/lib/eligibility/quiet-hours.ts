@@ -13,7 +13,7 @@ function hourInTimeZone(date: Date, timeZone: string): number {
 export function isMarketingQuietHours(
   date: Date,
   timeZone: string,
-  window = MARKETING_QUIET_HOURS,
+  window: { startHour: number; endHour: number } = MARKETING_QUIET_HOURS,
 ): boolean {
   const hour = hourInTimeZone(date, timeZone);
   if (window.startHour > window.endHour) {

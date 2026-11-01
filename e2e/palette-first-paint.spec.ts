@@ -9,7 +9,7 @@ import { signInAdmin } from "./helpers/sign-in";
 
 /** Selected palette primaries, light mode (riviera-palettes.css). */
 const SLATE_SIG = "#4652d6";
-const SLATE_PAPER = "rgb(246, 247, 249)";
+const SLATE_PAPER = "rgb(239, 241, 245)";
 
 /** Selected palette primaries, dark mode (riviera-palettes.css, slate dark block). */
 const SLATE_DARK_SIG = "#8b93f5";

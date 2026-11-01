@@ -148,3 +148,15 @@
   background: var(--paper);
   color: var(--ink);
 }
+/* Surface ladder: page (--paper) < cards (--sheet, soft elevation) < inputs (--field).
+   Shared by the booking form, account portal, admin desk, drawers and embeds. */
+:is(.riviera, .riviera-embed, .riviera-drawer) :is([data-slot="input"], [data-slot="textarea"], [data-slot="select-trigger"], textarea, select):not([data-surface="inherit"]) {
+  background-color: var(--field);
+}
+:is(.riviera, .riviera-embed, .riviera-drawer) :is([data-slot="card"], .desk-card) {
+  background-color: var(--sheet);
+  box-shadow: var(--elev);
+}
+:is(.riviera, .riviera-embed, .riviera-drawer) :is([data-slot="popover-content"], [data-slot="select-content"], [data-slot="dropdown-menu-content"], [data-slot="dialog-content"]) {
+  background-color: var(--sheet);
+}

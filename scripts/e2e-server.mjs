@@ -242,7 +242,10 @@ await db.collection("bookings").insertMany([
   {
     tripId: "e2e-driver",
     pickup: "Lugano Station",
+    pickupLatLng: { lat: 46.0054621, lng: 8.9469873 },
     dropoff: "Paradiso",
+    dropoffLatLng: { lat: 45.9883, lng: 8.9461 },
+    stops: [{ location: "Piazza della Riforma", order: 1, duration: 0, latLng: { lat: 46.0037, lng: 8.9511 } }],
     tripType: "oneway",
     date: "2026-12-21",
     time: "11:00",
@@ -268,6 +271,7 @@ await db.collection("bookings").insertMany([
   {
     tripId: "e2e-upcoming",
     pickup: "Geneva Airport",
+    pickupLatLng: { lat: 46.2380651, lng: 6.1089563 },
     dropoff: "Lausanne Station",
     tripType: "oneway",
     date: "2026-12-20",

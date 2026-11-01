@@ -157,7 +157,7 @@ test("partner dashboard loads one marketplace poll and batches history reviews",
 test("driver ride card offers navigate and call", async ({ page }, testInfo) => {
   await signIn(page, "/en/drivers/login", "driver@e2e.example", "e2e-password");
   await openPath(page, "/en/drivers/dashboard");
-  await expect(page.getByText("Lugano Station")).toBeVisible();
+  await expect(page.getByText("Lugano Station").first()).toBeVisible();
   await expect(page.getByRole("link", { name: "Call" })).toHaveAttribute("href", "tel:+41790000000");
   await expect(page.getByRole("link", { name: "Apple Maps" })).toBeVisible();
   const shotDir = "/tmp/screenshots";

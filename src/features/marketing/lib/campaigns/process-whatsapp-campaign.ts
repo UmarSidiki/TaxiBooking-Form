@@ -193,6 +193,7 @@ export async function processWhatsAppCampaign(
       email: recipient.emailLower,
       channel: "whatsapp",
       locale,
+      campaignId: String(campaign._id),
     });
     const unsubscribeUrl = unsubscribeToken
       ? `${baseUrl.replace(/\/+$/, "")}/${locale}/u/${encodeURIComponent(

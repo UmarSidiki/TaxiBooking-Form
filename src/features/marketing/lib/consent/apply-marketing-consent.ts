@@ -22,6 +22,8 @@ export type ApplyMarketingConsentInput = {
   /** Verified WhatsApp number when the caller already has it. */
   phoneDigits?: string;
   at?: Date;
+  /** Campaign that prompted an unsubscribe/STOP, when known. */
+  campaignId?: string;
 };
 
 function digitsOf(value: string | null | undefined): string {
@@ -80,6 +82,7 @@ export async function applyMarketingConsent(
       ipPrefix: input.ipPrefix ?? "",
       reason,
       actorId: input.actorId ?? "",
+      campaignId: input.campaignId ?? "",
       at,
     }),
     CustomerProfile.findOneAndUpdate(

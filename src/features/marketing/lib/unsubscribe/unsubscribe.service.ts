@@ -43,6 +43,7 @@ export async function unsubscribeWithToken(
     source: "unsubscribe_link",
     ipPrefix: options.ipPrefix ?? "",
     reason: options.resubscribe ? "Link opt-in" : "Unsubscribe link",
+    campaignId: options.resubscribe ? undefined : claims.campaignId,
   });
 
   return {

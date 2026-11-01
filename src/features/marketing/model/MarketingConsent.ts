@@ -21,6 +21,8 @@ const MarketingConsentSchema = new Schema(
     /** Documented reason for admin offline consent or withdrawal. */
     reason: { type: String, default: "" },
     actorId: { type: String, default: "" },
+    /** Campaign behind an unsubscribe link or STOP reply; "" when unknown. */
+    campaignId: { type: String, default: "" },
     at: { type: Date, default: Date.now },
   },
   { timestamps: false },
@@ -28,6 +30,10 @@ const MarketingConsentSchema = new Schema(
 
 MarketingConsentSchema.index({ emailLower: 1, at: -1 });
 MarketingConsentSchema.index({ emailLower: 1, channel: 1, at: -1 });
+MarketingConsentSchema.index(
+  { campaignId: 1, status: 1 },
+  { partialFilterExpression: { campaignId: { $gt: "" } } },
+);
 
 const MarketingConsent =
   mongoose.models.MarketingConsent ||

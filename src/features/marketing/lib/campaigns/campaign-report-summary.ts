@@ -98,45 +98,58 @@ export async function listRecipientPage(
   };
 }
 
+/**
+ * Unsubscribes for this campaign. Events tagged with the campaign (links and
+ * STOP replies since tagging shipped) count directly; untagged older events
+ * fall back to "recipient withdrew on this channel after the send".
+ */
 async function countUnsubscribes(campaign: CampaignView): Promise<number> {
+  const tagged: string[] = await MarketingConsent.distinct("emailLower", {
+    campaignId: campaign.id,
+    status: "withdrawn",
+  });
+  const emails = new Set(tagged);
+
   const since = new Date(campaign.scheduledAt ?? campaign.createdAt);
-  if (Number.isNaN(since.getTime())) return 0;
-  // Withdrawals by people this campaign reached, after it went out. Runs in Mongo, no row cap.
-  const rows = await MarketingConsent.aggregate<{ n: number }>([
-    {
-      $match: {
-        channel: campaign.channel,
-        status: "withdrawn",
-        source: { $in: UNSUBSCRIBE_SOURCES },
-        at: { $gte: since },
+  if (!Number.isNaN(since.getTime())) {
+    const rows = await MarketingConsent.aggregate<{ _id: string }>([
+      {
+        $match: {
+          channel: campaign.channel,
+          status: "withdrawn",
+          source: { $in: UNSUBSCRIBE_SOURCES },
+          at: { $gte: since },
+          $or: [{ campaignId: { $exists: false } }, { campaignId: "" }],
+        },
       },
-    },
-    { $group: { _id: "$emailLower" } },
-    {
-      $lookup: {
-        from: CampaignRecipient.collection.name,
-        let: { email: "$_id" },
-        pipeline: [
-          {
-            $match: {
-              $expr: {
-                $and: [
-                  { $eq: ["$campaignId", oid(campaign.id)] },
-                  { $eq: ["$emailLower", "$$email"] },
-                  { $eq: ["$status", "sent"] },
-                ],
+      { $group: { _id: "$emailLower" } },
+      {
+        $lookup: {
+          from: CampaignRecipient.collection.name,
+          let: { email: "$_id" },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $and: [
+                    { $eq: ["$campaignId", oid(campaign.id)] },
+                    { $eq: ["$emailLower", "$$email"] },
+                    { $eq: ["$status", "sent"] },
+                  ],
+                },
               },
             },
-          },
-          { $limit: 1 },
-        ],
-        as: "hit",
+            { $limit: 1 },
+          ],
+          as: "hit",
+        },
       },
-    },
-    { $match: { "hit.0": { $exists: true } } },
-    { $count: "n" },
-  ]);
-  return rows[0]?.n ?? 0;
+      { $match: { "hit.0": { $exists: true } } },
+      { $project: { _id: 1 } },
+    ]);
+    for (const row of rows) emails.add(row._id);
+  }
+  return emails.size;
 }
 
 function statNumber(stats: Record<string, unknown>, key: string) {

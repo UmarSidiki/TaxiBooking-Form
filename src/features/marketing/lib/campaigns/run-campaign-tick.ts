@@ -222,6 +222,7 @@ export async function runCampaignTick(
           email: recipient.emailLower,
           channel: "email",
           locale,
+          campaignId: String(campaign._id),
         });
         const unsubscribeUrl = unsubscribeToken
           ? `${baseUrl.replace(/\/+$/, "")}/${locale}/u/${encodeURIComponent(unsubscribeToken)}`

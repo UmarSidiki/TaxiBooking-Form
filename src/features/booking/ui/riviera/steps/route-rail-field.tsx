@@ -1,13 +1,14 @@
 "use client";
 
 import { X } from "lucide-react";
-import type { Ref } from "react";
+import type { ReactNode, Ref } from "react";
 
 import { addressInputProps } from "@/features/booking/lib/maps/place-autocomplete";
 import { PickupCurrentLocationButton } from "@/features/booking/ui/steps/pickup-current-location-button";
 
 type Props = {
   id: string;
+  marker?: ReactNode;
   label: string;
   value: string;
   placeholder: string;
@@ -23,6 +24,7 @@ type Props = {
 
 export function RouteRailField({
   id,
+  marker,
   label,
   value,
   placeholder,
@@ -43,6 +45,7 @@ export function RouteRailField({
 
   return (
     <div className={`route-rail__field${modifier}`}>
+      {marker}
       <label className="route-rail__label" htmlFor={id}>
         {label}
       </label>

@@ -58,9 +58,9 @@ export function RouteRailFields({
         ) : null}
 
         <div className="route-rail__row">
-          <RouteMarker kind="pickup" />
           <RouteRailField
             id="booking-pickup"
+            marker={<RouteMarker kind="pickup" />}
             label={t("Riviera.pickup")}
             placeholder={t("Step1.PickupPlaceholder")}
             value={formData.pickup}
@@ -91,10 +91,10 @@ export function RouteRailFields({
         {hasRoute
           ? formData.stops.map((stop, index) => (
               <div className="route-rail__row" key={index}>
-                <RouteMarker kind="stop" number={index + 1} />
                 <div className="route-rail__stop">
                   <RouteRailField
                     id={`booking-stop-${index}`}
+                    marker={<RouteMarker kind="stop" number={index + 1} />}
                     label={t("embeddable.stop-index-1-location", {
                       0: index + 1,
                     })}
@@ -143,9 +143,9 @@ export function RouteRailFields({
 
         {hasRoute ? (
           <div className="route-rail__row">
-            <RouteMarker kind="dropoff" />
             <RouteRailField
               id="booking-dropoff"
+              marker={<RouteMarker kind="dropoff" />}
               label={t("Riviera.dropoff")}
               placeholder={t("Step1.DropoffPlaceholder")}
               value={formData.dropoff}

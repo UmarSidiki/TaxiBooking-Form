@@ -5,7 +5,7 @@ import { signInAdmin } from "./helpers/sign-in";
 
 const SHOTS = "/workspace/shots";
 
-const WIDTHS = [390, 1440] as const;
+const WIDTHS = [320, 390, 768, 1440, 1920] as const;
 const MODES = ["light", "dark"] as const;
 const LOCALES = [
   { path: "/en", suffix: "" },
@@ -142,6 +142,30 @@ for (const width of WIDTHS) {
               expect(Math.abs(marker.centerX - rail.centerX)).toBeLessThanOrEqual(2);
             }
             expect(geometry.overflow).toBeLessThanOrEqual(1);
+
+            // Markers sit inside their field; pickup/drop-off fields span the full rail width.
+            const inside = await page.evaluate(() => {
+              const railBox = document.querySelector(".route-rail")!.getBoundingClientRect();
+              return {
+                railWidth: railBox.width,
+                markers: Array.from(document.querySelectorAll<HTMLElement>("[data-route-marker]")).map((marker) => {
+                  const field = marker.closest(".route-rail__field");
+                  const m = marker.getBoundingClientRect();
+                  const f = field?.getBoundingClientRect();
+                  return {
+                    type: marker.dataset.routeMarker ?? "",
+                    inField: Boolean(f && m.left >= f.left - 0.5 && m.right <= f.right + 0.5 && m.top >= f.top - 0.5 && m.bottom <= f.bottom + 0.5),
+                    fieldWidth: f?.width ?? 0,
+                  };
+                }),
+              };
+            });
+            for (const marker of inside.markers) {
+              expect(marker.inField).toBe(true);
+              if (marker.type !== "stop") {
+                expect(Math.abs(marker.fieldWidth - inside.railWidth)).toBeLessThanOrEqual(1);
+              }
+            }
 
             const addBox = await page.getByTestId("route-add-stop").boundingBox();
             expect(addBox?.width ?? 0).toBeGreaterThanOrEqual(44);

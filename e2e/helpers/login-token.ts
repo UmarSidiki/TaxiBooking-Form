@@ -1,6 +1,7 @@
 import { existsSync, readFileSync } from "node:fs";
 
-const URI_FILE = "/tmp/e2e-mongo-uri.txt";
+const PORT = process.env.E2E_PORT ?? "3000";
+const URI_FILE = PORT === "3000" ? "/tmp/e2e-mongo-uri.txt" : `/tmp/e2e-mongo-uri-${PORT}.txt`;
 
 /** Always use the in-memory server the e2e harness started, never an ambient real URI. */
 export function configureE2eDatabase() {

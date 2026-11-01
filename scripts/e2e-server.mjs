@@ -7,9 +7,11 @@ import mongoose from "mongoose";
 const PASSWORD = "e2e-password";
 const FILE_SENTINEL = `data:application/pdf;base64,${"E2EFILEDATA".repeat(800)}`;
 
+const PORT = process.env.E2E_PORT ?? "3000";
+const URI_FILE = PORT === "3000" ? "/tmp/e2e-mongo-uri.txt" : `/tmp/e2e-mongo-uri-${PORT}.txt`;
 const mongod = await MongoMemoryServer.create();
 const uri = mongod.getUri();
-writeFileSync("/tmp/e2e-mongo-uri.txt", uri);
+writeFileSync(URI_FILE, uri);
 await mongoose.connect(uri);
 const db = mongoose.connection.db;
 if (!db) throw new Error("Memory database did not connect");
@@ -383,15 +385,15 @@ await db.collection("reviews").insertOne({
 
 await mongoose.disconnect();
 
-const child = spawn("npx", ["next", "dev", "-H", "127.0.0.1", "-p", "3000"], {
+const child = spawn("npx", ["next", "dev", "-H", "127.0.0.1", "-p", PORT], {
   stdio: "inherit",
   env: {
     ...process.env,
     MONGODB_URI: uri,
     MONGODB_DB: "test",
     NEXTAUTH_SECRET: "e2e-secret-not-for-production",
-    NEXTAUTH_URL: "http://127.0.0.1:3000",
-    NEXT_PUBLIC_BASE_URL: "http://127.0.0.1:3000",
+    NEXTAUTH_URL: `http://127.0.0.1:${PORT}`,
+    NEXT_PUBLIC_BASE_URL: `http://127.0.0.1:${PORT}`,
     DISTANCE_MOCK: "1",
     QA_MOCK_EMAIL: "1",
     QA_MOCK_WHATSAPP: "1",

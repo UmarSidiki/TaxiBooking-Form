@@ -171,7 +171,13 @@ async function auditLayout(page: Page, step: number, width: number): Promise<str
       const inlineTextLink = el.tagName === "A" && style.display.startsWith("inline");
       const bigEnough = rect.width >= 44 && rect.height >= 44;
       const linkEnough = inlineTextLink && rect.width >= 44 && rect.height >= 24;
-      if (!bigEnough && !linkEnough) {
+      // A checkbox's target is its wrapping label; the 16px glyph itself is fine
+      // when the label it toggles is at least 44px.
+      const isCheckbox = el.getAttribute("role") === "checkbox" || (el as HTMLInputElement).type === "checkbox";
+      const label = isCheckbox ? el.closest("label") : null;
+      const labelBox = label?.getBoundingClientRect();
+      const labelEnough = Boolean(labelBox && labelBox.width >= 44 && labelBox.height >= 44);
+      if (!bigEnough && !linkEnough && !labelEnough) {
         issues.push(`tap-target: ${Math.round(rect.width)}x${Math.round(rect.height)} ${describe(el)}`);
       }
     }

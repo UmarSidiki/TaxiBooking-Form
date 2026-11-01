@@ -404,6 +404,11 @@ for (const width of VISUAL_WIDTHS) {
         await page.screenshot({
           path: join(SHOTS, `step1-built-dock-${width}-${mode}.png`),
         });
+        if (mode === "light" && (width === 390 || width === 1440)) {
+          await page.screenshot({
+            path: join(SHOTS, `step1-built-brand-${width}-light.png`),
+          });
+        }
 
         await goToVehicles(page);
         await auditDockItems(page);
@@ -443,17 +448,125 @@ for (const width of RTL_WIDTHS) {
       const dock = await page.locator(".riviera .dock").boundingBox();
       const logo = await page.getByTestId("dock-logo").boundingBox();
       const controls = await page.locator(".dock-controls").boundingBox();
+      const map = await page.locator(".riviera .map").boundingBox();
       if (dock && logo && controls) {
         // RTL mirrors the dock: the plate sits at the right edge, controls at the left.
         expect(Math.abs(logo.x + logo.width - (dock.x + dock.width - 7))).toBeLessThanOrEqual(2);
         expect(Math.abs(controls.x - (dock.x + 7))).toBeLessThanOrEqual(2);
-        expect(logo.width).toBeLessThanOrEqual(140);
+        // Text plates size to their content; the 44-140px cap is for image logos.
+        expect(logo.width).toBeGreaterThanOrEqual(44);
+      }
+      if (width >= 1024 && dock && map) {
+        // The dock stays centred inside the map panel in RTL as well.
+        const dockCentre = dock.x + dock.width / 2;
+        const mapCentre = map.x + map.width / 2;
+        expect(Math.abs(dockCentre - mapCentre)).toBeLessThanOrEqual(2);
       }
 
       await goToVehicles(page);
       await auditDock(page, 2, width);
       await goToPayment(page);
       await auditDock(page, 3, width);
+    } finally {
+      await context.close();
+    }
+  });
+}
+
+/* ------------------------------------------------------------------ */
+/* Brand text plate: full company name from tablet up, dock inside its   */
+/* panel, and no horizontal overflow at any target width.                */
+/* ------------------------------------------------------------------ */
+
+const BRAND_WIDTHS = [768, 1024, 1280, 1440, 1920] as const;
+
+type BrandSnapshot = {
+  dock: Box;
+  plate: Box;
+  map: Box | null;
+  viewport: { width: number; height: number };
+  name: { text: string; scrollWidth: number; clientWidth: number };
+  overflowX: number;
+};
+
+function readBrand(page: Page): Promise<BrandSnapshot | null> {
+  return page.evaluate(() => {
+    const toBox = (rect: DOMRect) => ({
+      left: rect.left,
+      top: rect.top,
+      right: rect.right,
+      bottom: rect.bottom,
+      width: rect.width,
+      height: rect.height,
+    });
+    const dock = document.querySelector<HTMLElement>(".riviera .dock");
+    const plate = document.querySelector<HTMLElement>(".riviera .dock-logo--text");
+    const name = plate?.querySelector<HTMLElement>(".dock-logo__name");
+    if (!dock || !plate || !name) return null;
+    const map = document.querySelector<HTMLElement>(".riviera .map");
+    return {
+      dock: toBox(dock.getBoundingClientRect()),
+      plate: toBox(plate.getBoundingClientRect()),
+      map: map ? toBox(map.getBoundingClientRect()) : null,
+      viewport: { width: window.innerWidth, height: window.innerHeight },
+      name: {
+        text: (name.textContent ?? "").trim(),
+        scrollWidth: name.scrollWidth,
+        clientWidth: name.clientWidth,
+      },
+      overflowX: document.documentElement.scrollWidth - window.innerWidth,
+    };
+  });
+}
+
+for (const width of BRAND_WIDTHS) {
+  test(`brand text plate shows the full name at ${width}px`, async ({ browser }) => {
+    test.setTimeout(300_000);
+    const { context, page } = await newPage(browser, {
+      width,
+      height: 900,
+      mode: "light",
+    });
+    try {
+      await openForm(page);
+      const brand = await readBrand(page);
+      expect(brand, "brand text plate is not rendered").not.toBeNull();
+      if (!brand) throw new Error("brand text plate is not rendered");
+
+      expect(brand.name.text.length).toBeGreaterThan(0);
+      expect(
+        brand.name.scrollWidth,
+        `brand "${brand.name.text}" is truncated at ${width}px`
+      ).toBeLessThanOrEqual(brand.name.clientWidth + 1);
+      expect(brand.plate.width).toBeGreaterThanOrEqual(44);
+
+      // No horizontal overflow, and the dock stays inside the viewport.
+      expect(brand.overflowX).toBeLessThanOrEqual(1);
+      expect(brand.dock.left).toBeGreaterThanOrEqual(0);
+      expect(brand.dock.right).toBeLessThanOrEqual(brand.viewport.width + 1);
+
+      if (width >= 1024) {
+        expect(brand.map, "desktop step 1 has no map panel").not.toBeNull();
+        if (brand.map) {
+          expect(brand.dock.left).toBeGreaterThanOrEqual(brand.map.left - 1);
+          expect(brand.dock.right).toBeLessThanOrEqual(brand.map.right + 1);
+          expect(brand.dock.top).toBeGreaterThanOrEqual(brand.map.top - 1);
+          expect(brand.dock.bottom).toBeLessThanOrEqual(brand.map.bottom + 1);
+          expect(Math.abs(brand.map.bottom - brand.dock.bottom - 28)).toBeLessThanOrEqual(1);
+        }
+      } else {
+        // Tablet keeps the phone-style full-width dock glued to the bottom.
+        expect(Math.abs(brand.dock.left - 12)).toBeLessThanOrEqual(1);
+        expect(Math.abs(brand.dock.right - (width - 12))).toBeLessThanOrEqual(1);
+        expect(Math.abs(brand.viewport.height - brand.dock.bottom - 12)).toBeLessThanOrEqual(1);
+      }
+
+      if (width === 1440) {
+        mkdirSync(SHOTS, { recursive: true });
+        await page.screenshot({
+          path: join(SHOTS, "step1-built-brand-1440-light.png"),
+        });
+      }
     } finally {
       await context.close();
     }

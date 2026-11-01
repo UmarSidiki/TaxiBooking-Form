@@ -113,7 +113,7 @@ async function openCustomers(page: Page) {
     await page.getByRole("button", { name: "Toggle Sidebar" }).click();
     await page.waitForTimeout(500);
   }
-  await page.getByRole("link", { name: "Customers" }).click();
+  await page.getByRole("link", { name: "All customers" }).click();
   await page.waitForURL(/\/dashboard\/customers/, { timeout: 30000 });
   await page.waitForTimeout(1000);
   await expect(page.getByPlaceholder("Search email, name or phone")).toBeVisible();

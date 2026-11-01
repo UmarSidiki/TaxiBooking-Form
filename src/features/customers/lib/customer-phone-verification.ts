@@ -97,7 +97,7 @@ export async function confirmPhoneVerification(
   await CustomerPhoneOtp.updateOne({ _id: row._id }, { $set: { consumedAt: new Date() } });
   await CustomerProfile.findOneAndUpdate(
     { email },
-    { $set: { email, verifiedPhone: row.phone } },
+    { $set: { email, verifiedPhone: row.phone, verifiedPhoneAt: new Date() } },
     { upsert: true, new: true },
   );
   return { ok: true, phone: row.phone };
@@ -105,5 +105,8 @@ export async function confirmPhoneVerification(
 
 export async function removeVerifiedPhone(emailRaw: string) {
   await connectDB();
-  await CustomerProfile.updateOne({ email: emailKey(emailRaw) }, { $set: { verifiedPhone: "" } });
+  await CustomerProfile.updateOne(
+    { email: emailKey(emailRaw) },
+    { $set: { verifiedPhone: "", verifiedPhoneAt: null } },
+  );
 }

@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
 import { CustomerConsentChips } from "@/features/customers-admin/ui/customer-consent-chips";
 import { CustomerPhone } from "@/features/customers-admin/ui/customer-phone";
@@ -28,7 +29,12 @@ export function CustomerCardList({ rows }: { rows: CustomerListRow[] }) {
           })}
         >
           <div className="min-w-0">
-            <p className="truncate font-medium">{customerDisplayName(row)}</p>
+            <Link
+              href={`/${locale}/dashboard/customers/${encodeURIComponent(row.id)}`}
+              className="inline-flex min-h-11 max-w-full items-center truncate rounded font-medium underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
+            >
+              {customerDisplayName(row)}
+            </Link>
             <p className="truncate text-sm text-muted-foreground">{row.email}</p>
             <p className="mt-1 text-sm">
               <CustomerPhone row={row} />

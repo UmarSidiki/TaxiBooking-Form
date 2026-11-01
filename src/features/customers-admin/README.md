@@ -53,3 +53,42 @@ rides; `hasUpcoming` tracks `upcoming`.
 - The dashboard page `/dashboard/customers` renders a desktop table, mobile
   cards, and a filter drawer. All list strings live in `Dashboard.Customers`
   and `Sidebar.customers` across the 8 locales.
+- Customer names link to `/dashboard/customers/[id]`, where `id` is the
+  lowercased email from `CustomerStats`.
+
+## Customer profile (C3)
+
+`GET /api/admin/customers/[id]` — admin-only. `id` is the lowercased email.
+The payload (`lib/customer-profile/load-customer-profile.ts`) combines:
+
+- header: `CustomerStats` (rides, spend, first/last ride, consent) with the
+  `CustomerProfile` name, verified phone and locale as fallbacks.
+- bookings: at most `PROFILE_BOOKINGS_LIMIT` (100) bookings matched by email
+  with a case-insensitive collation. No regex, no unbounded query.
+- payments: captured/refunded money from `Booking` plus `RideCharge` rows for
+  the customer's trips. `RideCharge.amount` is major units and is converted to
+  integer minor units in the payload.
+- sessions: the customer's `CustomerSession` rows (latest 50, including
+  revoked/expired) with device family, IP prefix and timestamps.
+- whatsapp: `CustomerProfile.verifiedPhone`/`verifiedPhoneAt`, the cached
+  `CustomerStats.whatsappConsent`, and the latest `WhatsAppSendLog` for the
+  verified JID.
+
+`DELETE /api/admin/customers/[id]/sessions` revokes every active session using
+`revokeAllCustomerSessions`. `DELETE .../sessions/[sessionId]` revokes one row
+through `revokeCustomerSessionById`; the helper matches `emailLower` too, so a
+session that belongs to another customer returns 404 and stays active.
+
+Consent is never inferred from the legacy `Booking.whatsappOptIn` flag: the
+header and WhatsApp tab read the `CustomerStats` consent cache, which defaults
+to `none` (opt-in only). Marketing, notes and activity tabs are placeholders
+until C4/C6.
+
+`verifiedPhoneAt` was added to `CustomerProfile` for this milestone. It is
+written when a phone verification completes and cleared when the phone is
+removed; older profiles show "never" until they verify again.
+
+The profile page lives in `ui/customer-profile-*.tsx` and strings in
+`Dashboard.CustomerProfile` across the 8 locales. The whole feature remains
+single-tenant: email is the only scoping key because the deployment owns all
+data.

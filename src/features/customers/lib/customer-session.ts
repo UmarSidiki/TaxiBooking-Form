@@ -151,12 +151,26 @@ export async function revokeCustomerSession(request?: Request) {
   await CustomerSession.updateOne({ idHash: hashId(id) }, { $set: { revokedAt: new Date() } });
 }
 
-export async function revokeAllCustomerSessions(email: string) {
+export async function revokeAllCustomerSessions(email: string): Promise<number> {
   await connectDB();
-  await CustomerSession.updateMany(
+  const result = await CustomerSession.updateMany(
     { emailLower: email.trim().toLowerCase(), revokedAt: null },
     { $set: { revokedAt: new Date() } },
   );
+  return result.modifiedCount ?? 0;
+}
+
+/** Revoke one session only when it belongs to this customer. */
+export async function revokeCustomerSessionById(
+  email: string,
+  sessionId: string,
+): Promise<boolean> {
+  await connectDB();
+  const result = await CustomerSession.updateOne(
+    { _id: sessionId, emailLower: email.trim().toLowerCase(), revokedAt: null },
+    { $set: { revokedAt: new Date() } },
+  );
+  return (result.modifiedCount ?? 0) > 0;
 }
 
 export function clearCustomerSessionCookie(response: NextResponse) {

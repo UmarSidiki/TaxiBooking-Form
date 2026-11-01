@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
 import {
   Table,
@@ -71,7 +72,12 @@ export function CustomersTable({
           {rows.map((row) => (
             <TableRow key={row.id}>
               <TableCell className="font-medium">
-                {customerDisplayName(row)}
+                <Link
+                  href={`/${locale}/dashboard/customers/${encodeURIComponent(row.id)}`}
+                  className="inline-flex min-h-11 items-center rounded underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
+                >
+                  {customerDisplayName(row)}
+                </Link>
               </TableCell>
               <TableCell className="max-w-56 truncate text-muted-foreground">
                 {row.email}

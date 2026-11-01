@@ -1,3 +1,4 @@
+import { OVERRIDE_KEYS, type OverrideKey } from "@/features/settings/lib/palette-tokens";
 import { z } from "zod";
 import { COLOR_PALETTES } from "@/features/settings/lib/color-palettes";
 
@@ -24,6 +25,11 @@ export const companyLogoUrlSchema = z
   .max(400_000)
   .refine(isCompanyLogoUrl, { message: "Invalid company logo URL" });
 
+const strictHex = z.string().regex(/^#[0-9a-fA-F]{6}$/);
+const paletteOverridesSchema = z
+  .object(Object.fromEntries(OVERRIDE_KEYS.map((k) => [k, strictHex.optional()])) as Record<OverrideKey, z.ZodOptional<typeof strictHex>>)
+  .strict();
+
 export const settingsWriteSchema = z.object({
   primaryColor: hexOrRgb.optional(),
   secondaryColor: hexOrRgb.optional(),
@@ -34,6 +40,8 @@ export const settingsWriteSchema = z.object({
     .object({
       brand: z.string().regex(/^#[0-9a-fA-F]{6}$/),
       accent: z.string().regex(/^#[0-9a-fA-F]{6}$/),
+      light: paletteOverridesSchema.optional(),
+      dark: paletteOverridesSchema.optional(),
     })
     .strict()
     .optional(),

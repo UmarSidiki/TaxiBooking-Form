@@ -7,7 +7,7 @@ export interface ISetting {
   secondaryColor: string;
   borderRadius: number;
   colorPalette?: ColorPalette;
-  customPalette?: { brand: string; accent: string };
+  customPalette?: { brand: string; accent: string; light?: Record<string, string>; dark?: Record<string, string> };
   redirectUrl?: string;
   thankYouStaySeconds?: number;
   redirectImmediatelyAfterBooking?: boolean;
@@ -126,6 +126,9 @@ const SettingSchema = new Schema<ISetting>(
         {
           brand: { type: String, match: /^#[0-9a-fA-F]{6}$/ },
           accent: { type: String, match: /^#[0-9a-fA-F]{6}$/ },
+          // Hand-pinned tokens; validated by settingsWriteSchema, re-cleaned on every read.
+          light: { type: Schema.Types.Mixed, default: undefined },
+          dark: { type: Schema.Types.Mixed, default: undefined },
         },
         { _id: false },
       ),

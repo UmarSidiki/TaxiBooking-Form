@@ -93,13 +93,32 @@ export function completeTokens(
   };
 }
 
+/** Tokens an operator may pin by hand in the custom palette (background, surfaces, text, border). */
+export const OVERRIDE_KEYS = ["paper", "sheet", "field", "well", "ink", "ink2", "rule"] as const;
+export type OverrideKey = (typeof OVERRIDE_KEYS)[number];
+export type ModeOverrides = Partial<Record<OverrideKey, string>>;
+export type PaletteOverrides = { light?: ModeOverrides; dark?: ModeOverrides };
+
+/** Keeps only known keys with strict #RRGGBB values, upper-cased. */
+export function cleanOverrides(value: unknown): ModeOverrides {
+  const v = (value && typeof value === "object" ? value : {}) as Record<string, unknown>;
+  const out: ModeOverrides = {};
+  for (const k of OVERRIDE_KEYS) {
+    const hex = v[k];
+    if (isStrictHex(hex)) out[k] = hex.toUpperCase();
+  }
+  return out;
+}
+
 export type DerivedPalette = PaletteSet & {
   /** Present when the picked colour had to move to reach WCAG AA. */
   adjusted: { brand?: { from: string; to: string; ratio: number }; accent?: { from: string; to: string; ratio: number } };
 };
 
 /** Builds a full light + dark token set from a brand (action) colour and an accent (link) colour. */
-export function derivePalette(brandIn: string, accentIn: string): DerivedPalette {
+export function derivePalette(brandIn: string, accentIn: string, overrides: PaletteOverrides = {}): DerivedPalette {
+  const lo = cleanOverrides(overrides.light);
+  const dO = cleanOverrides(overrides.dark);
   const brand = (isStrictHex(brandIn) ? brandIn : "#171717").toUpperCase();
   const accent = (isStrictHex(accentIn) ? accentIn : "#1D4ED8").toUpperCase();
   const [h, s] = toHsl(brand);
@@ -107,18 +126,18 @@ export function derivePalette(brandIn: string, accentIn: string): DerivedPalette
 
   // Light: tinted page, slightly dimmed cards, white inputs.
   const L = {} as PaletteTokens;
-  L.paper = hsl(h, ts * 0.4, 0.955);
-  L.sheet = hsl(h, ts * 0.35, 0.986);
-  L.field = "#FFFFFF";
-  L.well = hsl(h, ts * 0.4, 0.93);
-  L.rule = hsl(h, ts * 0.3, 0.87);
+  L.paper = lo.paper ?? hsl(h, ts * 0.4, 0.955);
+  L.sheet = lo.sheet ?? hsl(h, ts * 0.35, 0.986);
+  L.field = lo.field ?? "#FFFFFF";
+  L.well = lo.well ?? hsl(h, ts * 0.4, 0.93);
+  L.rule = lo.rule ?? hsl(h, ts * 0.3, 0.87);
   L.rule2 = ensureContrast(hsl(h, ts * 0.25, 0.56), [L.paper, L.sheet, L.field], 3);
-  L.ink = ensureContrast(hsl(h, ts * 0.5, 0.12), [L.paper, L.sheet, L.well, L.field], 7);
+  L.ink = lo.ink ?? ensureContrast(hsl(h, ts * 0.5, 0.12), [L.paper, L.sheet, L.well, L.field], 7);
   L.sig = ensureContrast(brand, ["#FFFFFF", L.paper, L.sheet], 4.5);
   L["sig-on"] = "#FFFFFF";
   const [sh, ss] = toHsl(L.sig);
   L["sig-tint"] = hsl(sh, Math.min(ss, 0.7), 0.95);
-  L.ink2 = ensureContrast(hsl(h, ts * 0.3, 0.38), [L.paper, L.sheet, L.well, L.field, L["sig-tint"]], 4.5);
+  L.ink2 = lo.ink2 ?? ensureContrast(hsl(h, ts * 0.3, 0.38), [L.paper, L.sheet, L.well, L.field, L["sig-tint"]], 4.5);
   L.link = ensureContrast(accent, [L.paper, L.sheet, L.well, L.field], 4.5);
   L.info = ensureContrast("#1D4ED8", [L.paper, L.sheet, L.field], 4.5);
   for (const [tone, base, tint] of [["ok", "#15803D", "#EEF8F1"], ["warn", "#A14A06", "#FDF4EA"], ["err", "#B91C1C", "#FDF0F0"], ["info-x", "", "#EFF4FD"]] as const) {
@@ -134,19 +153,19 @@ export function derivePalette(brandIn: string, accentIn: string): DerivedPalette
 
   // Dark: deep tinted page, raised cards, recessed inputs.
   const D = {} as PaletteTokens;
-  D.paper = hsl(h, ts * 0.45, 0.07);
-  D.sheet = hsl(h, ts * 0.4, 0.11);
-  D.field = hsl(h, ts * 0.45, 0.085);
-  D.well = hsl(h, ts * 0.4, 0.155);
-  D.rule = hsl(h, ts * 0.3, 0.2);
+  D.paper = dO.paper ?? hsl(h, ts * 0.45, 0.07);
+  D.sheet = dO.sheet ?? hsl(h, ts * 0.4, 0.11);
+  D.field = dO.field ?? hsl(h, ts * 0.45, 0.085);
+  D.well = dO.well ?? hsl(h, ts * 0.4, 0.155);
+  D.rule = dO.rule ?? hsl(h, ts * 0.3, 0.2);
   D.rule2 = ensureContrast(hsl(h, ts * 0.25, 0.45), [D.paper, D.sheet, D.field], 3);
-  D.ink = ensureContrast(hsl(h, ts * 0.3, 0.93), [D.paper, D.sheet, D.well, D.field], 7);
+  D.ink = dO.ink ?? ensureContrast(hsl(h, ts * 0.3, 0.93), [D.paper, D.sheet, D.well, D.field], 7);
   const [bh, bs, bl] = toHsl(brand);
   D.sig = ensureContrast(hsl(bh, Math.min(bs, 0.8), Math.max(bl, 0.68)), [D.paper, D.sheet], 4.5);
   D["sig-on"] = D.paper;
   D["sig-tint"] = hsl(bh, Math.min(bs, 0.4), 0.2);
-  D.ink2 = ensureContrast(hsl(h, ts * 0.25, 0.68), [D.paper, D.sheet, D.well, D.field, D["sig-tint"]], 4.5);
-  D.ink = ensureContrast(D.ink, [D["sig-tint"]], 4.5);
+  D.ink2 = dO.ink2 ?? ensureContrast(hsl(h, ts * 0.25, 0.68), [D.paper, D.sheet, D.well, D.field, D["sig-tint"]], 4.5);
+  if (!dO.ink) D.ink = ensureContrast(D.ink, [D["sig-tint"]], 4.5);
   D.link = ensureContrast(accent, [D.paper, D.sheet, D.well, D.field], 4.5);
   for (const [tone, base, tint] of [["ok", "#5FD68E", "#14261B"], ["warn", "#F5B94A", "#2A2112"], ["err", "#F88A8A", "#2C1717"], ["info", "#7DB4FB", "#15203A"]] as const) {
     D[`${tone}-tint`] = tint;

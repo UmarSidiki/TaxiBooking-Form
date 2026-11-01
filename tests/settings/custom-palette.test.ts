@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { customPaletteCss, resolveCustomPalette } from "@/features/settings/lib/custom-palette";
-import { contrastFailures, derivePalette, luminance } from "@/features/settings/lib/palette-tokens";
+import { contrast, contrastFailures, derivePalette, luminance } from "@/features/settings/lib/palette-tokens";
 import { settingsWriteSchema } from "@/features/settings/schema/settings-write.schema";
 
 const SAMPLES = ["#FFFFFF", "#000000", "#FFFF00", "#00FF00", "#FF0000", "#0000FF", "#F5F5DC", "#7FFFD4", "#1E3A8A", "#B45309", "#FFC0CB", "#808080", "#C0FFEE", "#123456", "#FACADE"];
@@ -42,5 +42,49 @@ describe("custom palette CSS is injection-safe", () => {
       expect(settingsWriteSchema.safeParse({ customPalette: bad }).success).toBe(false);
     }
     expect(settingsWriteSchema.safeParse({ colorPalette: "custom" }).success).toBe(true);
+  });
+});
+
+describe("custom palette surface overrides", () => {
+  it("pins background, surface and text per mode and leaves the rest derived", () => {
+    const base = derivePalette("#1E3A8A", "#0F766E");
+    const d = derivePalette("#1E3A8A", "#0F766E", { light: { paper: "#F0EAD6", sheet: "#FFFDF7", ink: "#222222" }, dark: { paper: "#101418" } });
+    expect(d.light.paper).toBe("#F0EAD6");
+    expect(d.light.sheet).toBe("#FFFDF7");
+    expect(d.light.sidebar).toBe("#FFFDF7");
+    expect(d.light.ink).toBe("#222222");
+    expect(d.light.field).toBe(base.light.field);
+    expect(d.dark.paper).toBe("#101418");
+    expect(d.dark.sheet).toBe(base.dark.sheet);
+  });
+
+  it("keeps derived muted text readable on a pinned background", () => {
+    const d = derivePalette("#1E3A8A", "#0F766E", { light: { paper: "#C8C8C8" } });
+    expect(contrast(d.light.ink2, d.light.paper)).toBeGreaterThanOrEqual(4.5);
+  });
+
+  it("drops unknown keys and non-hex values on read", () => {
+    const p = resolveCustomPalette({ brand: "#123456", accent: "#654321", light: { paper: "#abcdef", sheet: "red", evil: "#000000" }, dark: { ink: "url(x)" } });
+    expect(p).toEqual({ brand: "#123456", accent: "#654321", light: { paper: "#ABCDEF" } });
+  });
+
+  it("renders pinned colours in the first-paint CSS", () => {
+    const css = customPaletteCss({ brand: "#1E3A8A", accent: "#0F766E", light: { paper: "#F0EAD6" }, dark: { sheet: "#202830" } });
+    expect(css).toContain("--paper: #F0EAD6;");
+    expect(css).toContain("--sheet: #202830;");
+  });
+
+  it("existing brand/accent-only palettes render exactly as before", () => {
+    expect(customPaletteCss({ brand: "#1E3A8A", accent: "#0F766E" })).toBe(
+      customPaletteCss({ brand: "#1E3A8A", accent: "#0F766E", light: {}, dark: {} }),
+    );
+  });
+
+  it("write schema accepts strict hex overrides and rejects anything else", () => {
+    const ok = settingsWriteSchema.safeParse({ customPalette: { brand: "#111111", accent: "#222222", light: { paper: "#FFFFFF" }, dark: { ink: "#EEEEEE" } } });
+    expect(ok.success).toBe(true);
+    for (const bad of [{ paper: "#FFF" }, { paper: "white" }, { elev: "#000000" }, { paper: "#FFFFFF;}" }]) {
+      expect(settingsWriteSchema.safeParse({ customPalette: { brand: "#111111", accent: "#222222", light: bad } }).success).toBe(false);
+    }
   });
 });

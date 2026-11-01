@@ -3374,7 +3374,7 @@
     "timing-now-hint": "Start bij de volgende planner-run.",
     "timing-later": "Inplannen",
     "timing-later-hint": "Kies datum en tijd.",
-    "timezone-note": "Tijdzone: {tz}",
+    "timezone-note": "Tijdzone: {tz} (bedrijfstijdzone uit Instellingen)",
     "send-at-past": "Kies een tijd in de toekomst.",
     "quiet-hours-note": "WhatsApp-berichten worden nooit verzonden tussen {start} en {end}. Wachtende berichten gaan de volgende ochtend.",
     "review-recipients": "Ontvangers",
@@ -3436,6 +3436,7 @@
     "cancel-title": "Deze campagne annuleren?",
     "cancel-description": "Nog niet verzonden berichten worden nooit verzonden. Dit kan niet ongedaan worden.",
     "cancel-keep": "Campagne houden",
-    "cancel-confirm": "Campagne annuleren"
+    "cancel-confirm": "Campagne annuleren",
+    "send-at-local": "Dat is {time} op dit apparaat."
   }
 }

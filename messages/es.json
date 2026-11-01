@@ -3374,7 +3374,7 @@
     "timing-now-hint": "Empieza en la próxima ejecución del programador.",
     "timing-later": "Programar",
     "timing-later-hint": "Elige fecha y hora.",
-    "timezone-note": "Zona horaria: {tz}",
+    "timezone-note": "Zona horaria: {tz} (la de tu empresa en Ajustes)",
     "send-at-past": "Elige una hora futura.",
     "quiet-hours-note": "Los mensajes de WhatsApp nunca se envían entre {start} y {end}. Los pendientes salen a la mañana siguiente.",
     "review-recipients": "Destinatarios",
@@ -3436,6 +3436,7 @@
     "cancel-title": "¿Cancelar esta campaña?",
     "cancel-description": "Los mensajes aún no enviados nunca se enviarán. No se puede deshacer.",
     "cancel-keep": "Mantener campaña",
-    "cancel-confirm": "Cancelar campaña"
+    "cancel-confirm": "Cancelar campaña",
+    "send-at-local": "Son las {time} en este dispositivo."
   }
 }

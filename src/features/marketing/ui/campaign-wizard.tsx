@@ -27,6 +27,8 @@ import {
   type MarketingChannel,
 } from "@/features/marketing/lib/marketing.constants";
 import { useMarketingDesk } from "@/features/marketing/hooks/use-marketing-desk";
+import { useMarketingOperator } from "@/features/marketing/hooks/use-marketing-operator";
+import { utcToZonedWallTime, zonedWallTimeToUtc } from "@/features/marketing/lib/zoned-time";
 import { MarketingPreviewResult } from "@/features/marketing/ui/marketing-preview-result";
 import type {
   SegmentCountView,
@@ -71,10 +73,13 @@ export function CampaignWizard() {
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState(false);
 
-  const timeZone = useMemo(
+  const { operator } = useMarketingOperator();
+  const timeZone = operator?.timeZone ?? "UTC";
+  const deviceTimeZone = useMemo(
     () => Intl.DateTimeFormat().resolvedOptions().timeZone || "UTC",
     [],
   );
+  const minSendAt = useMemo(() => utcToZonedWallTime(new Date(), timeZone), [timeZone]);
 
   const templates = useMemo(
     () => desk.templates.filter((tpl) => tpl.channel === channel),
@@ -141,7 +146,8 @@ export function CampaignWizard() {
 
   const recipients = count?.eligible ?? 0;
   const needsConfirm = recipients > LARGE_SEND_THRESHOLD;
-  const scheduledDate = timing === "later" && sendAt ? new Date(sendAt) : null;
+  const scheduledDate =
+    timing === "later" && sendAt ? zonedWallTimeToUtc(sendAt, timeZone) : null;
   const scheduleValid =
     timing === "now" ||
     (scheduledDate !== null &&
@@ -430,12 +436,20 @@ export function CampaignWizard() {
                     type="datetime-local"
                     value={sendAt}
                     onChange={(e) => setSendAt(e.target.value)}
+                    min={minSendAt}
                     className="h-11"
                     aria-describedby="campaign-tz"
                   />
-                  <p id="campaign-tz" className="text-xs text-muted-foreground">
+                  <p id="campaign-tz" className="text-xs text-muted-foreground" data-testid="operator-tz">
                     {t("timezone-note", { tz: timeZone })}
                   </p>
+                  {scheduledDate && scheduleValid && deviceTimeZone !== timeZone ? (
+                    <p className="text-xs text-muted-foreground">
+                      {t("send-at-local", {
+                        time: formatCampaignDate(scheduledDate.toISOString(), locale),
+                      })}
+                    </p>
+                  ) : null}
                   {sendAt && !scheduleValid ? (
                     <p role="alert" className="text-sm text-destructive">{t("send-at-past")}</p>
                   ) : null}
@@ -467,7 +481,7 @@ export function CampaignWizard() {
                     "field-send-at",
                     timing === "now"
                       ? t("timing-now")
-                      : formatCampaignDate(scheduledDate?.toISOString(), locale),
+                      : `${formatCampaignDate(scheduledDate?.toISOString(), locale, timeZone)} (${timeZone})`,
                   ],
                 ] as const).map(([key, value]) => (
                   <div key={key} className="flex flex-col gap-0.5 border-b border-border/60 pb-2">

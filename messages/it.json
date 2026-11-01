@@ -3374,7 +3374,7 @@
     "timing-now-hint": "Parte alla prossima esecuzione dello scheduler.",
     "timing-later": "Pianifica",
     "timing-later-hint": "Scegli data e ora.",
-    "timezone-note": "Fuso orario: {tz}",
+    "timezone-note": "Fuso orario: {tz} (quello aziendale nelle Impostazioni)",
     "send-at-past": "Scegli un orario futuro.",
     "quiet-hours-note": "I messaggi WhatsApp non vengono mai inviati tra {start} e {end}. Quelli in attesa partono la mattina dopo.",
     "review-recipients": "Destinatari",
@@ -3436,6 +3436,7 @@
     "cancel-title": "Annullare questa campagna?",
     "cancel-description": "I messaggi non ancora inviati non partiranno mai. Non si può annullare.",
     "cancel-keep": "Mantieni campagna",
-    "cancel-confirm": "Annulla campagna"
+    "cancel-confirm": "Annulla campagna",
+    "send-at-local": "Sono le {time} su questo dispositivo."
   }
 }

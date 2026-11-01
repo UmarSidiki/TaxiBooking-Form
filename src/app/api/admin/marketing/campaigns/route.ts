@@ -7,6 +7,8 @@ import {
   createCampaign,
   listCampaigns,
 } from "@/features/marketing/lib/campaigns/campaign.repo";
+import { getMarketingOperatorSettings } from "@/features/marketing/lib/operator-settings";
+import { MARKETING_QUIET_HOURS } from "@/features/marketing/lib/marketing.constants";
 import { campaignWriteSchema } from "@/features/marketing/schema/campaign.schema";
 import { recordAdminAudit } from "@/features/customers-admin/lib/audit/record-admin-audit";
 
@@ -21,11 +23,14 @@ export async function GET(request: Request) {
     const url = new URL(request.url);
     const status = url.searchParams.get("status") ?? undefined;
     const channel = url.searchParams.get("channel") ?? undefined;
-    const campaigns = await listCampaigns({
-      status,
-      channel: channel as "email" | "whatsapp" | undefined,
-    });
-    return NextResponse.json({ success: true, campaigns });
+    const [campaigns, operator] = await Promise.all([
+      listCampaigns({
+        status,
+        channel: channel as "email" | "whatsapp" | undefined,
+      }),
+      getMarketingOperatorSettings(),
+    ]);
+    return NextResponse.json({ success: true, campaigns, operator });
   } catch (error) {
     console.error("Marketing campaigns list failed:", error);
     return jsonError("internal_error", 500);
@@ -40,8 +45,15 @@ export async function POST(request: Request) {
     const parsed = await parseJsonBody(request, campaignWriteSchema);
     if (!parsed.ok) return parsed.response;
 
+    // Quiet hours follow the operator's clock unless the caller set them explicitly.
+    const operator = await getMarketingOperatorSettings();
+    const quietHours = parsed.data.quietHours ?? {
+      ...MARKETING_QUIET_HOURS,
+      timeZone: operator.timeZone,
+    };
     const campaign = await createCampaign({
       ...parsed.data,
+      quietHours,
       createdBy: access.session.user.email ?? access.session.user.id,
     });
 

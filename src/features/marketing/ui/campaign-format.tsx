@@ -48,12 +48,17 @@ export function statNumber(stats: Record<string, unknown> | undefined, key: stri
   return typeof value === "number" && Number.isFinite(value) ? value : 0;
 }
 
-export function formatCampaignDate(value: string | null | undefined, locale: string) {
+export function formatCampaignDate(
+  value: string | null | undefined,
+  locale: string,
+  timeZone?: string,
+) {
   if (!value) return "—";
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) return "—";
   return new Intl.DateTimeFormat(locale, {
     dateStyle: "medium",
     timeStyle: "short",
+    ...(timeZone ? { timeZone } : {}),
   }).format(date);
 }

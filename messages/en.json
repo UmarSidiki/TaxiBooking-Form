@@ -3374,7 +3374,7 @@
     "timing-now-hint": "Starts on the next scheduler run.",
     "timing-later": "Schedule",
     "timing-later-hint": "Pick a date and time.",
-    "timezone-note": "Time zone: {tz}",
+    "timezone-note": "Time zone: {tz} (your business time zone from Settings)",
     "send-at-past": "Pick a time in the future.",
     "quiet-hours-note": "WhatsApp messages are never sent between {start} and {end}. Messages waiting in that window go out the next morning.",
     "review-recipients": "Recipients",
@@ -3436,6 +3436,7 @@
     "cancel-title": "Cancel this campaign?",
     "cancel-description": "Messages not sent yet will never be sent. This can't be undone.",
     "cancel-keep": "Keep campaign",
-    "cancel-confirm": "Cancel campaign"
+    "cancel-confirm": "Cancel campaign",
+    "send-at-local": "That's {time} on this device."
   }
 }

@@ -27,6 +27,7 @@ import { cn } from "@/shared/lib/utils";
 import { ApiError, apiGet, apiPost } from "@/shared/http/api";
 import { DeskPageMeta } from "@/features/dashboard/ui/desk-page-chrome";
 import { DeskNotice } from "@/features/dashboard/ui/desk-notice";
+import { useMarketingOperator } from "@/features/marketing/hooks/use-marketing-operator";
 import type { CampaignView } from "@/features/marketing/lib/campaigns/campaign.repo";
 import type {
   CampaignRecipientRow,
@@ -73,6 +74,7 @@ export function CampaignReportPage({ id }: { id: string }) {
   const [pendingAction, setPendingAction] = useState<Action | null>(null);
   const [confirmCancel, setConfirmCancel] = useState(false);
   const [actionError, setActionError] = useState(false);
+  const timeZone = useMarketingOperator().operator?.timeZone;
 
   const load = useCallback(
     async (quiet = false) => {
@@ -220,11 +222,11 @@ export function CampaignReportPage({ id }: { id: string }) {
               </div>
               <div className="flex gap-1.5">
                 <dt>{t("col-scheduled")}:</dt>
-                <dd>{formatCampaignDate(campaign.scheduledAt, locale)}</dd>
+                <dd>{formatCampaignDate(campaign.scheduledAt, locale, timeZone)}{timeZone ? ` (${timeZone})` : ""}</dd>
               </div>
               <div className="flex gap-1.5">
                 <dt>{t("report-created")}:</dt>
-                <dd>{formatCampaignDate(campaign.createdAt, locale)}</dd>
+                <dd>{formatCampaignDate(campaign.createdAt, locale, timeZone)}</dd>
               </div>
             </dl>
           </div>
@@ -344,7 +346,7 @@ export function CampaignReportPage({ id }: { id: string }) {
                     <TableRow key={r.id} data-testid="recipient-row">
                       <TableCell className="max-w-72 truncate" dir="ltr">{r.email}</TableCell>
                       <TableCell className={RECIPIENT_TONE[bucket(r.status)]}>{t(`recipient-${r.status}`)}</TableCell>
-                      <TableCell className="whitespace-nowrap text-muted-foreground">{formatCampaignDate(r.sentAt, locale)}</TableCell>
+                      <TableCell className="whitespace-nowrap text-muted-foreground">{formatCampaignDate(r.sentAt, locale, timeZone)}</TableCell>
                       <TableCell className="max-w-80 truncate text-muted-foreground" title={r.error || undefined}>{r.error || "—"}</TableCell>
                     </TableRow>
                   ))}
@@ -360,7 +362,7 @@ export function CampaignReportPage({ id }: { id: string }) {
                       {t(`recipient-${r.status}`)}
                     </span>
                   </div>
-                  <span className="text-xs text-muted-foreground">{formatCampaignDate(r.sentAt, locale)}</span>
+                  <span className="text-xs text-muted-foreground">{formatCampaignDate(r.sentAt, locale, timeZone)}</span>
                   {r.error ? <span className="break-words text-xs text-destructive">{r.error}</span> : null}
                 </li>
               ))}

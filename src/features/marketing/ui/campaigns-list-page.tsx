@@ -32,15 +32,19 @@ export function CampaignsListPage() {
   const [rows, setRows] = useState<CampaignView[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
+  const [timeZone, setTimeZone] = useState<string | undefined>(undefined);
 
   const load = useCallback(async () => {
     setLoading(true);
     setError(false);
     try {
-      const data = await apiGet<{ success: true; campaigns: CampaignView[] }>(
-        "/api/admin/marketing/campaigns",
-      );
+      const data = await apiGet<{
+        success: true;
+        campaigns: CampaignView[];
+        operator?: { timeZone: string };
+      }>("/api/admin/marketing/campaigns");
       setRows(data.campaigns);
+      setTimeZone(data.operator?.timeZone);
     } catch {
       setError(true);
     } finally {
@@ -132,7 +136,7 @@ export function CampaignsListPage() {
                       <CampaignStatusBadge status={row.status} />
                     </TableCell>
                     <TableCell className="whitespace-nowrap text-muted-foreground">
-                      {formatCampaignDate(row.scheduledAt, locale)}
+                      {formatCampaignDate(row.scheduledAt, locale, timeZone)}
                     </TableCell>
                     <TableCell className="text-end tabular-nums">
                       {statNumber(row.stats, "sent")}
@@ -171,7 +175,7 @@ export function CampaignsListPage() {
                   </div>
                   <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-muted-foreground">
                     <CampaignChannelLabel channel={row.channel} />
-                    <span>{formatCampaignDate(row.scheduledAt, locale)}</span>
+                    <span>{formatCampaignDate(row.scheduledAt, locale, timeZone)}</span>
                   </div>
                   <dl className="grid grid-cols-3 gap-2 text-sm">
                     {(["sent", "failed", "skipped"] as const).map((key) => (

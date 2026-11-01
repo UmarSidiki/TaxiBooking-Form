@@ -3374,7 +3374,7 @@
     "timing-now-hint": "Startet beim nächsten Planerlauf.",
     "timing-later": "Planen",
     "timing-later-hint": "Datum und Uhrzeit wählen.",
-    "timezone-note": "Zeitzone: {tz}",
+    "timezone-note": "Zeitzone: {tz} (Geschäftszeitzone aus den Einstellungen)",
     "send-at-past": "Wählen Sie einen Zeitpunkt in der Zukunft.",
     "quiet-hours-note": "WhatsApp-Nachrichten werden nie zwischen {start} und {end} gesendet. Wartende Nachrichten gehen am nächsten Morgen raus.",
     "review-recipients": "Empfänger",
@@ -3436,6 +3436,7 @@
     "cancel-title": "Kampagne abbrechen?",
     "cancel-description": "Noch nicht gesendete Nachrichten werden nie gesendet. Dies kann nicht rückgängig gemacht werden.",
     "cancel-keep": "Kampagne behalten",
-    "cancel-confirm": "Kampagne abbrechen"
+    "cancel-confirm": "Kampagne abbrechen",
+    "send-at-local": "Das ist {time} auf diesem Gerät."
   }
 }

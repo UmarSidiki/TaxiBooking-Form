@@ -339,7 +339,8 @@ export function CampaignReportPage({ id }: { id: string }) {
       <section className="flex flex-col gap-3">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <h2 className="text-lg font-semibold tracking-tight">{t("recipients-title")}</h2>
-          <div role="tablist" aria-label={t("recipients-filter")} className="flex gap-1 overflow-x-auto rounded border border-border/60 bg-card p-1">
+          <div role="tablist" aria-label={t("recipients-filter")} className="grid grid-cols-2 gap-1 rounded border border-border/60 bg-card p-1 sm:flex sm:flex-wrap"
+            data-testid="recipient-filters">
             {FILTERS.map((f) => {
               const n = f === "all" ? summary.targeted : summary[f];
               return (
@@ -356,7 +357,8 @@ export function CampaignReportPage({ id }: { id: string }) {
                     setRowsState("loading");
                   }}
                   className={cn(
-                    "min-h-11 shrink-0 whitespace-nowrap rounded-chip px-3 text-sm transition-colors",
+                    "flex min-h-11 items-center justify-center gap-1.5 whitespace-nowrap rounded-chip px-3 text-sm transition-colors",
+                    f === "all" && "col-span-2 sm:col-span-1",
                     filter === f ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:bg-muted",
                   )}
                 >

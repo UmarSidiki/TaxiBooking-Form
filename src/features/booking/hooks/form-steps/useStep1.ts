@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useRef } from "react";
+import { applyBookingTypeChange } from "@/features/booking/lib/apply-booking-type-change";
 import { useBookingForm } from "@/features/booking/context/booking-form-context";
 import { useTheme } from "@/features/settings/context/theme-context";
 import { useTranslations } from "next-intl";
@@ -121,11 +122,7 @@ export function useStep1() {
   };
 
   const handleBookingTypeChange = (bookingType: "destination" | "hourly") => {
-    setFormData((prev) => ({
-      ...prev,
-      bookingType,
-      dropoff: bookingType === "hourly" ? "" : prev.dropoff,
-    }));
+    setFormData((prev) => applyBookingTypeChange(prev, bookingType));
   };
 
   const handleTripTypeChange = (tripType: "oneway" | "roundtrip") => {

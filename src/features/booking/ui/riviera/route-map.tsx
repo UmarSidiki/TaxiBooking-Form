@@ -78,6 +78,22 @@ export function RivieraMap() {
     };
     clear();
 
+    // Hourly rides have no route: show only where the driver picks up.
+    if (formData.bookingType === "hourly") {
+      if (formData.pickupLatLng) {
+        const marker = new google.maps.Marker({
+          map,
+          position: formData.pickupLatLng,
+          clickable: false,
+          zIndex: 20,
+          icon: markerIcon(mapTokens(el), "pickup"),
+        });
+        markersRef.current.push({ marker, kind: "pickup" });
+        map.panTo(formData.pickupLatLng);
+      }
+      return;
+    }
+
     const origin = routeEnd(formData.pickup, formData.pickupLatLng);
     const destination = routeEnd(formData.dropoff, formData.dropoffLatLng);
     if (!origin || !destination) return;
@@ -126,7 +142,7 @@ export function RivieraMap() {
     return () => {
       stale = true;
     };
-  }, [ready, formData.pickup, formData.dropoff, formData.pickupLatLng, formData.dropoffLatLng, formData.stops]);
+  }, [ready, formData.bookingType, formData.pickup, formData.dropoff, formData.pickupLatLng, formData.dropoffLatLng, formData.stops]);
 
   // Follow the Riviera light/dark toggle and palette swaps: repaint the map,
   // the route stroke and the marker icons from the new tokens.
@@ -153,16 +169,20 @@ export function RivieraMap() {
 
   if (failed) {
     return (
-      <div className="map-fallback" role="status">
+      <div className="map-fallback" role="status" data-map-mode={formData.bookingType}>
         <b>{formData.pickup || t("pickup")}</b>
-        <span aria-hidden="true"> → </span>
-        <b>{formData.dropoff || t("dropoff")}</b>
-        {distanceData ? (
+        {formData.bookingType === "hourly" ? null : (
+          <>
+            <span aria-hidden="true"> → </span>
+            <b data-testid="map-fallback-dropoff">{formData.dropoff || t("dropoff")}</b>
+          </>
+        )}
+        {formData.bookingType === "destination" && distanceData ? (
           <span className="num"> · {distanceData.distance.text} · {distanceData.duration.text}</span>
         ) : null}
       </div>
     );
   }
 
-  return <div ref={ref} className="h-full w-full" aria-label={t("mapLabel")} role="img" />;
+  return <div ref={ref} data-map-mode={formData.bookingType} className="h-full w-full" aria-label={t("mapLabel")} role="img" />;
 }

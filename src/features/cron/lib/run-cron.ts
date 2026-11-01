@@ -16,6 +16,7 @@ export type CronBody =
         statsRebuilt: number;
       };
       daily: DailyRun["state"];
+  campaigns?: unknown;
     };
 
 /** Nightly read-model rebuild, exposed so the /api/cron daily pass can call it. */
@@ -81,6 +82,7 @@ export async function runCron(): Promise<CronBody> {
       sweepAbandonedPendingBookings().catch(() => ({ success: false, count: 0 })),
     ]);
     const daily = await runDaily();
+    const campaigns = await (await import("@/features/marketing/lib/campaigns/run-campaign-tick")).runCampaignTick();
     return {
       ok: reminders.success !== false && notifications.success !== false && daily.state !== "failed",
       hourly: {
@@ -91,6 +93,7 @@ export async function runCron(): Promise<CronBody> {
         statsRebuilt: daily.statsRebuilt,
       },
       daily: daily.state,
+      campaigns,
     };
   });
   if (!held.locked) return { ok: true, skipped: "locked" };

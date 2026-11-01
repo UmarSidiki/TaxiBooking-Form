@@ -33,6 +33,8 @@ import MarketingConsent from "@/features/marketing/model/MarketingConsent";
 import Suppression from "@/features/marketing/model/Suppression";
 import Segment from "@/features/marketing/model/Segment";
 import CampaignTemplate from "@/features/marketing/model/CampaignTemplate";
+import Campaign from "@/features/marketing/model/Campaign";
+import CampaignRecipient from "@/features/marketing/model/CampaignRecipient";
 
 export async function resetTestDb() {
   await connectDB();
@@ -66,6 +68,8 @@ export async function resetTestDb() {
     Suppression.deleteMany({}),
     Segment.deleteMany({}),
     CampaignTemplate.deleteMany({}),
+    Campaign.deleteMany({}),
+    CampaignRecipient.deleteMany({}),
     WhatsAppConfig.deleteMany({}),
     WhatsAppTemplate.deleteMany({}),
     WhatsAppDelivery.deleteMany({}),

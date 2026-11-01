@@ -22,6 +22,8 @@ import { apiGet, apiPost } from "@/shared/http/api";
 import { DeskPageMeta } from "@/features/dashboard/ui/desk-page-chrome";
 import { DeskNotice } from "@/features/dashboard/ui/desk-notice";
 import {
+  CAMPAIGN_CONFIRM_THRESHOLD,
+  CAMPAIGN_CONFIRM_WORD,
   MARKETING_QUIET_HOURS,
   WHATSAPP_MARKETING_DAILY_CAP,
   type MarketingChannel,
@@ -39,8 +41,8 @@ import { formatCampaignDate } from "@/features/marketing/ui/campaign-format";
 
 const STEPS = ["audience", "message", "schedule", "review"] as const;
 type Step = (typeof STEPS)[number];
-export const LARGE_SEND_THRESHOLD = 500;
-const CONFIRM_WORD = "SEND";
+const LARGE_SEND_THRESHOLD = CAMPAIGN_CONFIRM_THRESHOLD;
+const CONFIRM_WORD = CAMPAIGN_CONFIRM_WORD;
 
 
 function hourLabel(hour: number, locale: string) {
@@ -187,7 +189,7 @@ export function CampaignWizard() {
       const id = created.campaign.id;
       await apiPost(`/api/admin/marketing/campaigns/${id}/schedule`, {
         scheduledAt: (scheduledDate ?? new Date()).toISOString(),
-        confirmationText: needsConfirm ? CONFIRM_WORD : undefined,
+        confirmationText: needsConfirm ? confirmText.trim().toUpperCase() : undefined,
       });
       router.push(`/${locale}/dashboard/marketing/campaigns/${id}`);
     } catch {

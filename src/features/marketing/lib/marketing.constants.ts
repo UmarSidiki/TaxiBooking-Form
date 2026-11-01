@@ -32,3 +32,7 @@ export const MARKETING_QUIET_HOURS = { startHour: 20, endHour: 9 } as const;
 
 /** Privacy default: no open pixel, no click redirect until an operator opts in. */
 export const MARKETING_OPEN_CLICK_TRACKING = false;
+
+/** Campaigns above this many recipients need the typed confirmation word. */
+export const CAMPAIGN_CONFIRM_THRESHOLD = 500;
+export const CAMPAIGN_CONFIRM_WORD = "SEND";

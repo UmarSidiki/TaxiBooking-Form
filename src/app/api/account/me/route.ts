@@ -32,7 +32,7 @@ export async function GET(request: Request) {
     verifiedPhone: profile?.verifiedPhone ?? "",
     language: profile?.language ?? "en",
     preferences: {
-      whatsappOptIn: profile?.whatsappOptIn ?? false,
+      whatsappOptIn: profile?.whatsappOptIn ?? true,
       savedAddresses: {
         home: profile?.savedAddresses?.home ?? "",
         work: profile?.savedAddresses?.work ?? "",

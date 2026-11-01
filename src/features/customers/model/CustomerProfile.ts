@@ -7,7 +7,8 @@ const CustomerProfileSchema = new Schema(
     phone: { type: String, default: "" },
     verifiedPhone: { type: String, default: "" },
     verifiedPhoneAt: { type: Date, default: null },
-    whatsappOptIn: { type: Boolean, default: false },
+    /** Transactional ride updates on WhatsApp (not marketing); on by default. */
+    whatsappOptIn: { type: Boolean, default: true },
     /**
      * Marketing consent cache. Events live in MarketingConsent; this field is
      * only the latest state per channel. Default "none": past customers are

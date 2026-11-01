@@ -120,3 +120,28 @@ describe("marketing campaigns", () => {
     expect(readQaMail()).toHaveLength(1);
   });
 });
+describe("Marketing module switch", () => {
+  it("sends nothing and keeps the campaign scheduled while the module is off", async () => {
+    const { campaign } = await seedCampaign();
+    await Setting.updateOne({}, { $set: { enableMarketing: false } });
+
+    const tick = await runCampaignTick({ now: new Date(), deadlineMs: Date.now() + 50_000 });
+    expect(tick).toEqual({ locked: false, disabled: true });
+    expect(readQaMail()).toHaveLength(0);
+    const after = await Campaign.findById(campaign._id).lean<{ status: string }>();
+    expect(after?.status).toBe("scheduled");
+
+    await Setting.updateOne({}, { $set: { enableMarketing: true } });
+    const resumed = await runCampaignTick({ now: new Date(), deadlineMs: Date.now() + 50_000 });
+    expect(resumed.locked).toBe(true);
+    expect(readQaMail()).toHaveLength(1);
+  });
+
+  it("treats a missing enableMarketing field as on", async () => {
+    await seedCampaign();
+    await Setting.collection.updateOne({}, { $unset: { enableMarketing: "" } });
+    const tick = await runCampaignTick({ now: new Date(), deadlineMs: Date.now() + 50_000 });
+    expect(tick.locked).toBe(true);
+    expect(readQaMail()).toHaveLength(1);
+  });
+});

@@ -162,7 +162,7 @@ test("custom editor: hex input, live preview, AA warning and auto-adjust", async
   const editor = page.getByTestId("custom-palette-editor");
   await expect(editor).toBeVisible({ timeout: 120_000 });
   await expect(page.getByTestId("custom-palette-warning")).toHaveCount(0);
-  const preview = page.getByTestId("custom-palette-preview");
+  const preview = page.getByTestId("custom-palette-preview-light");
   const sig = () => preview.evaluate((el) => getComputedStyle(el).getPropertyValue("--sig").trim().toUpperCase());
   expect(await sig()).toBe("#1E3A8A");
 

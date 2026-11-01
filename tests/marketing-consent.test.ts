@@ -102,27 +102,19 @@ async function seedProfile(input: {
 }
 
 describe("marketing consent", () => {
-  it("keeps past customers unconsented and records checkout opt-ins separately", async () => {
+  it("keeps past customers unconsented until they book, then auto-grants both channels", async () => {
     const email = await seedProfile();
 
     const before = await checkMarketingEligibility({ email, channel: "email" });
     expect(before).toMatchObject({ eligible: false, reason: "no_consent", status: "none" });
 
-    // Unticked boxes send nothing and never infer consent.
+    // A booking auto-grants both channels.
     await recordCheckoutMarketingConsent({ email, phone: PHONE });
-    expect(await MarketingConsent.countDocuments({ emailLower: email })).toBe(0);
-
-    await recordCheckoutMarketingConsent({
-      email,
-      phone: PHONE,
-      marketingEmailOptIn: true,
-      marketingWhatsappOptIn: true,
-    });
 
     const events = await MarketingConsent.find({ emailLower: email }).lean();
     expect(events).toHaveLength(2);
     expect(events.map((event) => event.channel).sort()).toEqual(["email", "whatsapp"]);
-    expect(events.every((event) => event.source === "booking_checkbox")).toBe(true);
+    expect(events.every((event) => event.source === "checkout_auto")).toBe(true);
     expect(events.every((event) => event.textVersion === MARKETING_CONSENT_TEXT_VERSION)).toBe(
       true,
     );
@@ -443,5 +435,48 @@ describe("unsubscribe service", () => {
       ok: false,
       error: "invalid_token",
     });
+  });
+});
+
+describe("checkout auto opt-in", () => {
+  it("records nothing while the Marketing module is off, and grants once on", async () => {
+    const email = "module-off@example.com";
+    await Setting.updateOne({}, { $set: { enableMarketing: false } }, { upsert: true });
+    await recordCheckoutMarketingConsent({ email, phone: "41791234567" });
+    expect(await MarketingConsent.countDocuments({ emailLower: email })).toBe(0);
+    expect(await CustomerProfile.countDocuments({ email })).toBe(0);
+
+    await Setting.updateOne({}, { $set: { enableMarketing: true } });
+    await recordCheckoutMarketingConsent({ email, phone: "41791234567" });
+    expect(await MarketingConsent.countDocuments({ emailLower: email, status: "granted" })).toBe(2);
+  });
+
+  it("never re-subscribes a customer who opted out or unsubscribed", async () => {
+    const email = "optedout@example.com";
+    await applyMarketingConsent({ email, channel: "email", status: "granted", source: "account" });
+    await applyMarketingConsent({ email, channel: "email", status: "withdrawn", source: "unsubscribe_link" });
+    await applyMarketingConsent({
+      email,
+      channel: "whatsapp",
+      status: "withdrawn",
+      source: "whatsapp_stop",
+      phoneDigits: "41790000001",
+    });
+    // Cache cleared by hand: the withdrawn event and suppression still protect them.
+    await CustomerProfile.updateOne({ email }, { $set: { "marketing.email.status": "none", "marketing.whatsapp.status": "none" } });
+
+    await recordCheckoutMarketingConsent({ email, phone: "+41 79 000 00 01" });
+
+    expect(await MarketingConsent.countDocuments({ emailLower: email, source: "checkout_auto" })).toBe(0);
+    expect(await Suppression.countDocuments({ channel: "email", key: email })).toBe(1);
+    expect(await Suppression.countDocuments({ channel: "whatsapp", key: "41790000001" })).toBe(1);
+  });
+
+  it("does not add a second grant for an already subscribed customer", async () => {
+    const email = "already@example.com";
+    await applyMarketingConsent({ email, channel: "email", status: "granted", source: "account" });
+    await recordCheckoutMarketingConsent({ email });
+    expect(await MarketingConsent.countDocuments({ emailLower: email, channel: "email" })).toBe(1);
+    expect(await MarketingConsent.countDocuments({ emailLower: email, channel: "whatsapp" })).toBe(1);
   });
 });

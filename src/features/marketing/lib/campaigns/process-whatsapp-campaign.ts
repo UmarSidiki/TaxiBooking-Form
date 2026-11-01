@@ -251,8 +251,8 @@ export async function processWhatsAppCampaign(
     idempotencyKeys: keys,
     sleep: options.sleep,
     rng: options.rng,
-    jitterMinMs: 3000,
-    jitterMaxMs: 8000,
+    jitterMinMs: process.env.QA_MOCK_WHATSAPP === "1" ? 0 : 3000,
+    jitterMaxMs: process.env.QA_MOCK_WHATSAPP === "1" ? 0 : 8000,
     handleStops: true,
     deadlineMs: options.deadlineMs,
   });

@@ -50,5 +50,12 @@ export default defineConfig({
         hasTouch: true,
       },
     },
+    {
+      name: "webkit",
+      use: {
+        browserName: "webkit",
+        viewport: { width: 1280, height: 800 },
+      },
+    },
   ],
 });

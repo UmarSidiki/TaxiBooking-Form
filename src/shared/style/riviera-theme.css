@@ -160,3 +160,36 @@
 :is(.riviera, .riviera-embed, .riviera-drawer) :is([data-slot="popover-content"], [data-slot="select-content"], [data-slot="dropdown-menu-content"], [data-slot="dialog-content"]) {
   background-color: var(--sheet);
 }
+
+/* Mobile sidebar sheet (admin, partner, driver). Radix portals it to <body>,
+   outside .riviera, so it used to pick up the shadcn :root defaults — dark
+   palette background with near-black --sidebar-foreground. Bridge the palette
+   tokens on the sheet itself so every preset and the custom palette apply. */
+[data-slot="sidebar"][data-mobile="true"] {
+  --background: var(--paper);
+  --foreground: var(--ink);
+  --card: var(--sheet);
+  --card-foreground: var(--ink);
+  --popover: var(--sheet);
+  --popover-foreground: var(--ink);
+  --primary: var(--sig);
+  --primary-foreground: var(--sig-on);
+  --secondary: var(--well);
+  --secondary-foreground: var(--ink);
+  --muted: var(--well);
+  --muted-foreground: var(--ink2);
+  --accent: var(--well);
+  --accent-foreground: var(--ink);
+  --border: var(--rule);
+  --input: var(--rule2);
+  --ring: var(--sig);
+  --destructive: var(--err);
+  --sidebar-foreground: var(--ink);
+  --sidebar-border: var(--rule);
+  --sidebar-accent: var(--well);
+  --sidebar-accent-foreground: var(--ink);
+  --sidebar-primary: var(--sig);
+  --sidebar-primary-foreground: var(--sig-on);
+  --sidebar-ring: var(--sig);
+  color: var(--ink);
+}

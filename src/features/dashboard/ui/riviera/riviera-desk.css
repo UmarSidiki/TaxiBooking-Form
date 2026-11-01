@@ -342,6 +342,7 @@
 .riviera .custom-palette__row { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
 .riviera .custom-palette__mock-btn { padding: 8px 14px; border-radius: var(--radius-sm); background: var(--sig); color: var(--sig-on); font-size: 13px; font-weight: 500; }
 .riviera .custom-palette__mock-link { color: var(--link); font-size: 13px; text-decoration: underline; }
+.riviera [data-palette-scope^="draft"] { --operator-accent: initial; }
 .riviera .custom-palette__mock-muted { color: var(--ink2); font-size: 13px; }
 .riviera .custom-palette__reset { flex: none; min-height: 44px; padding: 0 10px; border: 1px solid var(--rule2); border-radius: var(--radius); background: var(--field); color: var(--ink2); font-size: 12px; cursor: pointer; }
 .riviera .custom-palette__surfaces { display: flex; flex-direction: column; gap: 16px; padding-top: 16px; border-top: 1px solid var(--rule); }

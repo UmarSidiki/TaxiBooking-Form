@@ -19,13 +19,17 @@ type Mode = "light" | "dark";
 /** Declarations for one mode; every value comes from derivePalette, never from raw input. */
 const tokenBlock = (t: PaletteTokens) => TOKEN_KEYS.map((k) => `--${k}: ${t[k]};`).join(" ");
 
-/** Paints the two editor previews (data-palette-scope="draft-light" / "draft-dark") with the unsaved custom colours. */
+/** Paints every draft scope (picker swatch, live preview, light/dark editor previews) with the unsaved custom colours. */
 export function DraftPaletteStyle({ value }: { value: unknown }) {
   const p = resolveCustomPalette(value);
   const key = JSON.stringify(p);
   const css = useMemo(() => {
     const d = derivePalette(p.brand, p.accent, p);
-    return `.riviera [data-palette-scope="draft-light"] { ${tokenBlock(d.light)} }\n.riviera [data-palette-scope="draft-dark"] { ${tokenBlock(d.dark)} }`;
+    // "draft" follows the desk theme (picker swatch, sidebar preview); the editor previews pin one mode each.
+    return [
+      `:root:not([data-riviera-theme="dark"]) .riviera [data-palette-scope="draft"], .riviera [data-palette-scope="draft-light"] { ${tokenBlock(d.light)} }`,
+      `:root[data-riviera-theme="dark"] .riviera [data-palette-scope="draft"], .riviera [data-palette-scope="draft-dark"] { ${tokenBlock(d.dark)} }`,
+    ].join("\n");
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [key]);
   return <style data-draft-palette="" dangerouslySetInnerHTML={{ __html: css }} />;

@@ -22,7 +22,7 @@ export async function POST(
 
     await recordAdminAudit({
       actor: { id: access.session.user.id, email: access.session.user.email, role: access.session.user.role },
-      action: "campaign.cancel",
+      action: "campaign.pause",
       targetType: "campaign",
       targetId: id,
       metadata: { action: "pause" },

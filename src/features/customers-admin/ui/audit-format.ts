@@ -14,6 +14,8 @@ const ACTION_KEYS: Record<AdminAuditAction, string> = {
   "campaign.schedule": "action-campaign-schedule",
   "campaign.send": "action-campaign-send",
   "campaign.cancel": "action-campaign-cancel",
+  "campaign.pause": "action-campaign-pause",
+  "campaign.resume": "action-campaign-resume",
   "csv.export": "action-csv-export",
 };
 

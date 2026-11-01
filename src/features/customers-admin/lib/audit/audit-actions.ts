@@ -15,6 +15,8 @@ export const ADMIN_AUDIT_ACTIONS = [
   "campaign.schedule",
   "campaign.send",
   "campaign.cancel",
+  "campaign.pause",
+  "campaign.resume",
   "csv.export",
 ] as const;
 

@@ -11,3 +11,6 @@ export type { CampaignStatus } from "./Campaign";
 export { default as CampaignRecipient } from "./CampaignRecipient";
 export { CAMPAIGN_RECIPIENT_STATUSES } from "./CampaignRecipient";
 export type { CampaignRecipientStatus } from "./CampaignRecipient";
+export { default as ClickEvent } from "./ClickEvent";
+export { CLICK_EVENT_TYPES } from "./ClickEvent";
+export type { ClickEventType } from "./ClickEvent";

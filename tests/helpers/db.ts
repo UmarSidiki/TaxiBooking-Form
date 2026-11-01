@@ -35,6 +35,7 @@ import Segment from "@/features/marketing/model/Segment";
 import CampaignTemplate from "@/features/marketing/model/CampaignTemplate";
 import Campaign from "@/features/marketing/model/Campaign";
 import CampaignRecipient from "@/features/marketing/model/CampaignRecipient";
+import ClickEvent from "@/features/marketing/model/ClickEvent";
 
 export async function resetTestDb() {
   await connectDB();
@@ -70,6 +71,7 @@ export async function resetTestDb() {
     CampaignTemplate.deleteMany({}),
     Campaign.deleteMany({}),
     CampaignRecipient.deleteMany({}),
+    ClickEvent.deleteMany({}),
     WhatsAppConfig.deleteMany({}),
     WhatsAppTemplate.deleteMany({}),
     WhatsAppDelivery.deleteMany({}),

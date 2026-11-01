@@ -64,7 +64,7 @@ export async function processWhatsAppCampaign(
     _id: unknown;
     channel: string;
     status: string;
-    quietHours?: { timeZone?: string };
+    quietHours?: { timeZone?: string; startHour?: number; endHour?: number };
     templateId?: unknown;
   } | null>();
   if (!campaign) return result;
@@ -76,7 +76,10 @@ export async function processWhatsAppCampaign(
     } | null>();
 
   const tz = campaign.quietHours?.timeZone || settings?.timezone || "UTC";
-  if (isMarketingQuietHours(options.now, tz)) {
+  const quietWindow = campaign.quietHours
+    ? { startHour: campaign.quietHours.startHour ?? 20, endHour: campaign.quietHours.endHour ?? 9 }
+    : undefined;
+  if (isMarketingQuietHours(options.now, tz, quietWindow)) {
     return result;
   }
 

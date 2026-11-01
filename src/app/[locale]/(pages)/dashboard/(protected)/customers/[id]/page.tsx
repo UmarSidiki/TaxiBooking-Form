@@ -6,5 +6,5 @@ export default async function DashboardCustomerProfilePage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  return <CustomerProfilePage id={id} />;
+  return <CustomerProfilePage id={decodeURIComponent(id)} />;
 }

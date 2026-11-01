@@ -14,7 +14,7 @@ export type CampaignRecipientStatus =
 
 const CampaignRecipientSchema = new Schema(
   {
-    campaignId: { type: Schema.Types.Mixed, required: true, index: true },
+    campaignId: { type: Schema.Types.ObjectId, required: true, index: true },
     emailLower: { type: String, required: true, trim: true, lowercase: true },
     locale: { type: String, default: "en" },
     status: {

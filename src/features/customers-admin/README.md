@@ -121,3 +121,27 @@ data.
 Every API route uses `requireAdmin()` (admin/superadmin only; other roles get
 `403`). The audit list uses index ranges for actor prefixes and never a regex
 scan.
+
+## CSV export (C5)
+
+- `GET /api/admin/customers/export` — admin/superadmin only (`403` for every
+  other role). It accepts the C2 list filters and sort, but no cursor: the
+  export always starts at the first row. The dashboard toolbar's **Export CSV**
+  link passes the filters currently on screen and lets the browser stream the
+  download.
+- `lib/customer-export/customer-export-rows.ts` — key-set pages the same
+  `CustomerStats` filter as the list in batches of 500 and stops at
+  `CUSTOMER_EXPORT_MAX_ROWS` (50,000). No regex, no skip, no unbounded query.
+- `lib/customer-export/customer-export-row.ts` — columns are the list columns
+  plus consent: name, email, phone, phone verification, rides, completed rides,
+  total spend (major units), currency, first/last ride, upcoming, locale,
+  email/WhatsApp consent, created.
+- `lib/customer-export/csv-cell.ts` — RFC 4180 quoting and formula-injection
+  guard: a cell starting with `=` `+` `-` `@` (or tab/CR) gets a leading `'`, so
+  Excel never executes `=cmd`.
+- `lib/customer-export/stream-customer-export.ts` — `ReadableStream` response
+  starting with a UTF-8 BOM (Excel), chunked rows, and `csv.export` audit
+  metadata (`rowCount`, compact filter JSON). The audit is written from the
+  stream finaliser, so an aborted download is still recorded.
+- Single-tenant: the export reads every `CustomerStats` row because the
+  deployment owns all customer data; there is no tenant id to add here.

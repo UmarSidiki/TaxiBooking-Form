@@ -1670,7 +1670,9 @@
       "locale-nl": "الهولندية",
       "locale-it": "الإيطالية",
       "locale-ru": "الروسية",
-      "locale-ar": "العربية"
+      "locale-ar": "العربية",
+      "export-csv": "تصدير CSV",
+      "export-aria": "تنزيل العملاء المصفّين كملف CSV"
     },
     "CustomerProfile": {
       "back": "العودة إلى العملاء",

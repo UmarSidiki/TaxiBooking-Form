@@ -1670,7 +1670,9 @@
       "locale-nl": "Neerlandés",
       "locale-it": "Italiano",
       "locale-ru": "Ruso",
-      "locale-ar": "Árabe"
+      "locale-ar": "Árabe",
+      "export-csv": "Exportar CSV",
+      "export-aria": "Descargar los clientes filtrados en formato CSV"
     },
     "CustomerProfile": {
       "back": "Volver a clientes",

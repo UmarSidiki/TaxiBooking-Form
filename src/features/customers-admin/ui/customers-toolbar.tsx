@@ -13,6 +13,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/shared/ui/select";
+import { CustomersExportButton } from "@/features/customers-admin/ui/customers-export-button";
 import { CustomersFilterDrawer } from "@/features/customers-admin/ui/customers-filter-drawer";
 import type { CustomerListParams } from "@/features/customers-admin/schema/customer-list.schema";
 
@@ -72,6 +73,8 @@ export function CustomersToolbar({
             </Badge>
           ) : null}
         </Button>
+
+        <CustomersExportButton params={params} />
 
         <Select
           value={params.sort}

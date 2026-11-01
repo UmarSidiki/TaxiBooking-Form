@@ -2,18 +2,11 @@ import { NextResponse } from "next/server";
 import { requireAdmin } from "@/features/auth/lib/require-role";
 import { listCustomers } from "@/features/customers-admin/lib/customer-list/list-customers";
 import { customerListQuerySchema } from "@/features/customers-admin/schema/customer-list.schema";
+import { queryObjectFromSearchParams } from "@/features/customers-admin/lib/query-object";
 import { jsonError } from "@/shared/http/json-error";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
-
-function toQueryObject(searchParams: URLSearchParams): Record<string, string> {
-  const query: Record<string, string> = {};
-  for (const [key, value] of searchParams) {
-    if (value !== "") query[key] = value;
-  }
-  return query;
-}
 
 export async function GET(request: Request) {
   try {
@@ -22,7 +15,7 @@ export async function GET(request: Request) {
 
     const url = new URL(request.url);
     const parsed = customerListQuerySchema.safeParse(
-      toQueryObject(url.searchParams),
+      queryObjectFromSearchParams(url.searchParams),
     );
     if (!parsed.success) return jsonError("invalid_query", 400);
 

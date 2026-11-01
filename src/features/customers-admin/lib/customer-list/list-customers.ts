@@ -6,6 +6,7 @@ import {
   customerListSortSpec,
 } from "@/features/customers-admin/lib/customer-list/customer-list-filter";
 import { encodeCustomerListCursor } from "@/features/customers-admin/lib/customer-list/customer-list-cursor";
+import { customerListSortValue } from "@/features/customers-admin/lib/customer-list/customer-list-sort-value";
 import type {
   CustomerListDoc,
   CustomerListResult,
@@ -85,23 +86,10 @@ export async function listCustomers(
     hasMore && last
       ? encodeCustomerListCursor(
           spec,
-          sortValue(last, spec.field),
+          customerListSortValue(last, spec.field),
           last.emailLower,
         )
       : null;
 
   return { ok: true, rows: page.map(toRow), nextCursor };
-}
-
-function sortValue(
-  doc: CustomerListDoc,
-  field: string,
-): string | number | Date | null {
-  if (field === "createdAt") return doc.createdAt;
-  if (field === "lastRideAt") return doc.lastRideAt;
-  if (field === "nameLower") return doc.nameLower ?? doc.name.toLowerCase();
-  if (field === "emailLower") return doc.emailLower;
-  if (field === "rideCount") return doc.rideCount;
-  if (field === "totalSpendMinor") return doc.totalSpendMinor;
-  return null;
 }

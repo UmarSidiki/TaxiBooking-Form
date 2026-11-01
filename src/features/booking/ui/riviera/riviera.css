@@ -205,12 +205,27 @@ html:has(.riviera), body:has(.riviera) { background-color: var(--paper); }
   flex: 1 1 auto; width: 100%; min-width: 0; height: 46px; padding-block: 0; padding-inline: 2px 4px;
   border: 0; background: transparent; color: var(--ink);
   font-size: 16px; font-weight: 500; cursor: pointer;
+  /* Same flat look on Safari and Chrome, light and dark: no native grey bevel. */
+  -webkit-appearance: none; appearance: none; border-radius: 0;
+  padding-inline-end: 18px;
+  background-image: linear-gradient(45deg, transparent 50%, var(--ink2) 50%), linear-gradient(135deg, var(--ink2) 50%, transparent 50%);
+  background-position: calc(100% - 10px) 50%, calc(100% - 5px) 50%;
+  background-size: 5px 5px; background-repeat: no-repeat;
 }
+[dir="rtl"] .riviera .route-rail__wait-select, .riviera[dir="rtl"] .route-rail__wait-select { background-position: 5px 50%, 10px 50%; }
+.riviera .route-rail__wait-select option { background: var(--field); color: var(--ink); }
 .riviera .route-rail__remove { position: absolute; inset-block-start: 50%; inset-inline-end: 2px; display: grid; place-items: center; width: 44px; height: 44px; border: 0; border-radius: var(--radius-sm); background: transparent; color: var(--ink2); cursor: pointer; transform: translateY(-50%); }
 .riviera .route-rail__remove:hover { background: var(--well); color: var(--ink); }
-.riviera .route-rail__add { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; margin-block-start: 12px; margin-inline-start: 11px; padding: 0; border: 0; background: none; color: var(--ink); font-size: 14px; font-weight: 500; cursor: pointer; }
-.riviera .route-rail__add-icon { display: grid; place-items: center; width: 20px; height: 20px; border: 1.5px dashed var(--rule2); border-radius: 50%; }
-.riviera .route-rail__add:hover .route-rail__add-icon { border-color: var(--ink); }
+/* Add stop sits on the route rail itself, between the last stop and drop-off:
+   a ringed "+" centred on the line, with a ghost pill label beside it. The
+   button keeps a 44px hit box; negative block margins stop it adding height. */
+.riviera .route-rail__insert { position: relative; z-index: 2; display: flex; min-width: 0; margin-block: -6px; }
+.riviera .route-rail__add { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; min-width: 44px; max-width: 100%; padding: 0; padding-inline-end: 4px; margin-inline-start: 7px; border: 0; border-radius: 999px; background: none; color: var(--ink); font-size: 13.5px; font-weight: 600; line-height: 1.2; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.riviera .route-rail__add-icon { display: grid; flex: none; place-items: center; width: 28px; height: 28px; border: 1.5px solid var(--ink); border-radius: 50%; background: var(--field); color: var(--ink); box-shadow: 0 0 0 3px var(--paper); transition: background-color .15s, color .15s; }
+.riviera .route-rail__add-label { min-width: 0; padding: 6px 12px; border: 1px dashed var(--rule2); border-radius: 999px; background: var(--sheet); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; transition: background-color .15s, border-color .15s; }
+.riviera .route-rail__add:hover .route-rail__add-icon, .riviera .route-rail__add:active .route-rail__add-icon { background: var(--ink); color: var(--field); }
+.riviera .route-rail__add:hover .route-rail__add-label { border-color: var(--ink2); background: var(--well); }
+.riviera .route-rail__add:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
 .riviera .route-rail__error { margin-inline-start: 0; color: var(--err); font-size: 12px; }
 .riviera .route-rail__error--after { margin-block-start: 8px; }
 
@@ -237,4 +252,31 @@ html:has(.riviera), body:has(.riviera) { background-color: var(--paper); }
      keeps its full name while the account button stays a 44px icon. */
   .riviera .map .dock .dock-account { padding-inline: 0; }
   .riviera .map .dock .dock-account__label { display: none; }
+}
+
+/* ---------- Compact step 1 on phones (<768px) ----------
+   Smaller map, tighter rhythm and 44px fields so pickup, stops, drop-off,
+   date/time and Continue fit a 390x844 phone with minimal scrolling. */
+@media (max-width: 767px) {
+  .riviera .map { height: 18dvh; min-height: 136px; }
+  .riviera .sheet { padding-block-start: 14px; padding-inline: 14px; }
+  .riviera .step-count { margin-bottom: 2px; font-size: 12px; }
+  .riviera .step1__title { margin-bottom: 2px; font-size: 19px; }
+  .riviera .step1__lede { display: none; }
+  .riviera .step1__stack > * + * { margin-block-start: 12px; }
+  .riviera .step1 label.mb-1\.5, .riviera .step1 label.block { margin-bottom: 4px; font-size: 13px; }
+  .riviera .step1__seg-label { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+  .riviera .step1 .seg { padding: 2px; }
+  .riviera .step1 .seg + p { margin-top: 3px; font-size: 11.5px; }
+  .riviera .route-rail { gap: 8px; }
+  .riviera .route-rail__field { height: 46px; }
+  .riviera .route-rail__mark { height: 44px; }
+  .riviera .route-rail__line { inset-block: 23px; }
+  .riviera .route-rail__label { inset-block-start: 3px; font-size: 10.5px; }
+  .riviera .route-rail__input { padding-top: 13px; font-size: 16px; }
+  .riviera .route-rail__wait { height: 46px; }
+  .riviera .route-rail__wait-select { height: 44px; }
+  .riviera .route-rail__insert { margin-block: -4px; }
+  .riviera .step1__cta { min-height: 48px; padding-block: 12px; }
+  .riviera .step1 .btn-primary ~ * { padding-top: 4px; }
 }

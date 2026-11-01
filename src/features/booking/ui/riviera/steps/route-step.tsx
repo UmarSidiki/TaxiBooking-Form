@@ -82,11 +82,11 @@ function Step1TripDetails() {
   } = useBookingStops(formData, setFormData);
 
   return (
-    <div className="space-y-4">
-      <div className="space-y-4">
+    <div className="step1 space-y-4">
+      <div className="step1__stack space-y-4">
           <div>
-            <h2 className="text-xl font-semibold mb-2">{t("Step1.Title")}</h2>
-            <p className="text-sm text-[color:var(--ink2)]">{t("Step1.Description")}</p>
+            <h2 className="step1__title text-xl font-semibold mb-2">{t("Step1.Title")}</h2>
+            <p className="step1__lede text-sm text-[color:var(--ink2)]">{t("Step1.Description")}</p>
           </div>
 
           <Step1BookingTypeFields

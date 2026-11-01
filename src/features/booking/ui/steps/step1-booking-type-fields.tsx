@@ -17,7 +17,7 @@ export function Step1BookingTypeFields({
 }) {
   return (
           <div>
-            <label className="block text-sm font-medium mb-1.5 text-[color:var(--ink)]">
+            <label className="step1__seg-label block text-sm font-medium mb-1.5 text-[color:var(--ink)]">
               {t("Step1.BookingType")}
             </label>
             <Segmented

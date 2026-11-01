@@ -27,7 +27,7 @@ export function Step1Footer({
     <>
           {/* Next Button */}
           <Button
-            className="btn-primary w-full py-6 text-base"
+            className="btn-primary step1__cta w-full py-6 text-base"
             onClick={handleNext}
             disabled={isLoading || calculatingDistance}
           >

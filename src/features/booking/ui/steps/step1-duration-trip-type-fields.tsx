@@ -48,7 +48,7 @@ export function Step1DurationTripTypeFields({
           {/* Trip Type - Only for destination-based bookings */}
           {formData.bookingType === "destination" && (
             <div>
-              <label className="block text-sm font-medium mb-1.5 text-[color:var(--ink)]">
+              <label className="step1__seg-label block text-sm font-medium mb-1.5 text-[color:var(--ink)]">
                 {t("Step1.TripType")}
               </label>
               <Segmented

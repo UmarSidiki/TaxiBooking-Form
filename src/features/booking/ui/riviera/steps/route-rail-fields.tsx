@@ -142,6 +142,24 @@ export function RouteRailFields({
         ) : null}
 
         {hasRoute ? (
+          <div className="route-rail__insert">
+            <button
+              type="button"
+              className="route-rail__add"
+              data-testid="route-add-stop"
+              onClick={handleAddStop}
+            >
+              <span className="route-rail__add-icon" aria-hidden="true">
+                <Plus className="size-3.5" strokeWidth={2.5} />
+              </span>
+              <span className="route-rail__add-label">
+                {t("embeddable.add-a-stop")}
+              </span>
+            </button>
+          </div>
+        ) : null}
+
+        {hasRoute ? (
           <div className="route-rail__row">
             <RouteRailField
               id="booking-dropoff"
@@ -179,19 +197,6 @@ export function RouteRailFields({
         ) : null}
       </div>
 
-      {hasRoute ? (
-        <button
-          type="button"
-          className="route-rail__add"
-          data-testid="route-add-stop"
-          onClick={handleAddStop}
-        >
-          <span className="route-rail__add-icon" aria-hidden="true">
-            <Plus className="size-3" />
-          </span>
-          {t("embeddable.add-a-stop")}
-        </button>
-      ) : null}
     </>
   );
 }

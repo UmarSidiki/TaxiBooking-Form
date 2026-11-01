@@ -40,6 +40,7 @@ export const PUBLIC_SETTING_FIELDS = [
   "defaultPartnerMarginPercentage",
   "timezone",
   "companyName",
+  "companyLogoUrl",
   "companyPhone",
   "adminEmail",
 ] as const;

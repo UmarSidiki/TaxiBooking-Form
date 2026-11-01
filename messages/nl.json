@@ -2884,6 +2884,7 @@
     "brandFallback": "RideNow",
     "mapLabel": "Routekaart",
     "account": "Je account",
+    "accountShort": "Account",
     "siteControls": "Site-instellingen",
     "lightMode": "Lichte modus",
     "darkMode": "Donkere modus",

@@ -2884,6 +2884,7 @@
     "brandFallback": "RideNow",
     "mapLabel": "Mapa de la ruta",
     "account": "Tu cuenta",
+    "accountShort": "Cuenta",
     "siteControls": "Controles del sitio",
     "lightMode": "Modo claro",
     "darkMode": "Modo oscuro",

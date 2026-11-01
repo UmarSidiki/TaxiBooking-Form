@@ -2,26 +2,69 @@
 html:has(.riviera), body:has(.riviera) { background-color: var(--paper); }
 
 /* ---------- Floating control dock ---------- */
+/* Fallback reserve until the dock reports its real height (ResizeObserver). */
+.riviera { --dock-reserve: calc(58px + 20px + env(safe-area-inset-bottom)); }
 .riviera .dock {
   position: fixed; z-index: 40;
-  inset-inline-start: 50%; transform: translateX(-50%);
-  bottom: calc(12px + env(safe-area-inset-bottom));
-  display: flex; align-items: center; gap: 2px; padding: 4px;
-  border: 1px solid var(--rule); border-radius: var(--radius-dock);
+  inset-inline: 12px;
+  inset-block-end: max(12px, env(safe-area-inset-bottom));
+  display: flex; align-items: center; gap: 4px; padding: 6px;
+  border: 1px solid color-mix(in oklab, var(--ink) 12%, transparent);
+  border-radius: var(--radius-dock);
   background: var(--dock);
-  -webkit-backdrop-filter: blur(12px) saturate(1.4); backdrop-filter: blur(12px) saturate(1.4);
+  -webkit-backdrop-filter: blur(20px) saturate(1.5); backdrop-filter: blur(20px) saturate(1.5);
   box-shadow: var(--dock-shadow);
 }
-[dir="rtl"] .riviera .dock { transform: translateX(50%); }
 @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
   .riviera .dock { background: var(--sheet); }
 }
-.riviera .dock-brand {
-  width: 32px; height: 32px; margin: 2px; display: grid; place-items: center;
-  border-radius: var(--radius); background: var(--ink); color: var(--paper);
-  font-size: 14px; font-weight: 600;
+.riviera .dock-logo {
+  box-sizing: border-box; flex: none;
+  block-size: 44px; min-inline-size: 44px; max-inline-size: 140px;
+  display: inline-flex; align-items: center; justify-content: center;
+  overflow: hidden;
+  border: 1px solid var(--rule); border-radius: 10px;
+  background: var(--logo-plate); color: var(--logo-ink);
 }
-.riviera .dock-sep { width: 1px; align-self: stretch; margin: 6px 2px; background: var(--rule); }
+.riviera .dock-logo__img {
+  display: block; block-size: 100%; inline-size: auto; max-inline-size: 100%;
+  object-fit: contain;
+}
+.riviera .dock-logo--text {
+  padding-inline: 14px;
+  color: var(--logo-ink); font-size: 15px; font-weight: 800; letter-spacing: .02em; line-height: 1;
+}
+/* dir="auto" on the name keeps the start of the brand visible when it is
+   truncated, whichever script it is written in. */
+.riviera .dock-logo__name {
+  min-inline-size: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  unicode-bidi: isolate;
+}
+.riviera .dock-sep {
+  flex: none; inline-size: 1px; block-size: 24px; margin-inline: 6px;
+  background: color-mix(in oklab, var(--ink) 16%, transparent);
+}
+.riviera .dock-controls {
+  display: flex; align-items: center; gap: 2px;
+  margin-inline-start: auto;
+}
+.riviera .dock .dock-btn {
+  block-size: 44px; min-inline-size: 44px; padding-inline: 8px;
+  border-radius: 10px;
+}
+.riviera .dock .dock-btn svg { width: 18px; height: 18px; }
+.riviera .dock .dock-account {
+  gap: 8px; padding-inline: 16px;
+  background: var(--ink); color: var(--paper);
+}
+.riviera .dock .dock-account:hover { background: var(--ink); opacity: .9; }
+.riviera .dock-account__label { line-height: 1; }
+@media (max-width: 479px) {
+  /* Narrow phones drop the Account label and let the plate shrink with the viewport. */
+  .riviera .dock-logo { max-inline-size: clamp(44px, calc(100vw - 218px), 140px); }
+  .riviera .dock .dock-account { padding-inline: 0; }
+  .riviera .dock-account__label { display: none; }
+}
 
 /* ---------- Signed-in chip ---------- */
 .riviera .signed-in {
@@ -55,7 +98,7 @@ html:has(.riviera), body:has(.riviera) { background-color: var(--paper); }
 .riviera .map { position: relative; height: 34dvh; min-height: 220px; overflow: hidden; background: var(--well); border-bottom: 1px solid var(--rule); }
 .riviera .attr { position: absolute; inset-inline-end: 6px; bottom: 22px; font-size: 11px; background: var(--sheet); color: var(--ink2); padding: 2px 6px; border-radius: var(--radius-sm); z-index: 5; }
 .riviera .attr a { color: inherit; }
-.riviera .sheet { background: var(--paper); padding: 20px 16px calc(88px + env(safe-area-inset-bottom)); }
+.riviera .sheet { background: var(--paper); padding: 20px 16px var(--dock-reserve); }
 .riviera .step-count { font-size: 13px; color: var(--ink2); margin-bottom: 6px; }
 .riviera h1, .riviera h2 { font-size: var(--text-xl); font-weight: 600; letter-spacing: -.01em; line-height: 1.2; }
 .riviera h3 { font-weight: 600; }
@@ -171,9 +214,15 @@ html:has(.riviera), body:has(.riviera) { background-color: var(--paper); }
 @media (min-width: 1024px) {
   .riviera:not(.no-map) { display: grid; grid-template-columns: minmax(480px, 560px) 1fr; }
   .riviera:not(.no-map) .map { grid-column: 2; grid-row: 1; position: sticky; top: 0; height: 100dvh; border-bottom: 0; border-inline-start: 1px solid var(--rule); }
-  .riviera:not(.no-map) .sheet { grid-column: 1; grid-row: 1; padding: 32px 40px 48px; }
-  /* On step 1 the dock sits at the bottom of the map panel instead of the viewport. */
-  .riviera .map .dock { position: absolute; bottom: 16px; }
-  .riviera.no-map .sheet { max-width: 1180px; margin-inline: auto; padding: 32px 32px 96px; }
-  .riviera .dock { bottom: 16px; }
+  .riviera:not(.no-map) .sheet { grid-column: 1; grid-row: 1; padding: 32px 40px var(--dock-reserve); }
+  .riviera.no-map .sheet { max-width: 1180px; margin-inline: auto; padding: 32px 32px; padding-block-end: calc(var(--dock-reserve) + 16px); }
+  /* Desktop: float centred at the bottom of the map panel, or of the viewport on map-less steps. */
+  .riviera .dock {
+    inset-inline: auto; inset-inline-start: 50%;
+    inset-block-end: 28px;
+    transform: translateX(-50%);
+  }
+  [dir="rtl"] .riviera .dock { transform: translateX(50%); }
+  .riviera .dock-controls { margin-inline-start: 20px; }
+  .riviera .map .dock { position: absolute; }
 }

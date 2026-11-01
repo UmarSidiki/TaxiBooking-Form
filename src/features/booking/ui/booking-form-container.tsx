@@ -52,7 +52,12 @@ export default function BookingFormContainer() {
 
 
   const withMap = currentStep === 1 && HAS_MAP;
-  const dock = <ControlDock brand={brandName(settings) || t("Riviera.brandFallback")} />;
+  const dock = (
+    <ControlDock
+      brand={brandName(settings) || t("Riviera.brandFallback")}
+      logoUrl={settings?.companyLogoUrl?.trim() ?? ""}
+    />
+  );
 
   return (
     <div className={`riviera min-h-screen ${withMap ? "" : "no-map"}`}>

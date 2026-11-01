@@ -18,6 +18,7 @@ export default defineConfig({
   testDir: "./e2e",
   testMatch: [
     "qa-matrix.spec.ts",
+    "dock.spec.ts",
     "drawer-matrix.spec.ts",
     "sidebar-brand.spec.ts",
     "palette-first-paint.spec.ts",

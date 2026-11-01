@@ -17,11 +17,14 @@ PAL={
 }
 # Logo plate behind uploaded brand images. Light surfaces match the sheet; dark
 # mode keeps a light plate so dark wordmarks stay readable without hardcoding a
-# colour in the component.
+# colour in the component. The text plate uses --logo-ink: the palette ink on a
+# light plate in both modes, so the brand name stays legible on dark surfaces.
 LOGO_PLATE_DARK={"neutral":"#F4F4F4","slate":"#F3F4F7","heritage":"#F6F1EA","navy":"#EEF3F8"}
 for _pid,_pal in PAL.items():
     _pal["light"]["logo_plate"]=_pal["light"]["sheet"]
     _pal["dark"]["logo_plate"]=LOGO_PLATE_DARK[_pid]
+    _pal["light"]["logo_ink"]=_pal["light"]["ink"]
+    _pal["dark"]["logo_ink"]=_pal["light"]["ink"]
 def lum(h):
   c=[int(h[i:i+2],16)/255 for i in (1,3,5)]
   c=[x/12.92 if x<=.03928 else ((x+.055)/1.055)**2.4 for x in c]

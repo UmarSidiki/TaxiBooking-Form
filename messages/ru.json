@@ -1575,7 +1575,19 @@
       "palette-heritage": "Слоновая кость и бордо",
       "palette-heritage-note": "Тёплая слоновая кость, глубокий красный",
       "palette-navy": "Тёмно-синий и фиолетовый",
-      "palette-navy-note": "Глубокий тёмно-синий, фиолетовые кнопки"
+      "palette-navy-note": "Глубокий тёмно-синий, фиолетовые кнопки",
+      "palette-forest": "Лес и шалфей",
+      "palette-forest-note": "Шалфейный фон, тёмно-зелёные действия",
+      "palette-ocean": "Океан и бирюза",
+      "palette-ocean-note": "Прохладная дымка, бирюзовые действия",
+      "palette-amber": "Графит и янтарь",
+      "palette-amber-note": "Тёплый камень, янтарные действия",
+      "palette-plum": "Слива и орхидея",
+      "palette-plum-note": "Сиреневая дымка, сливовые действия",
+      "palette-terracotta": "Песок и терракота",
+      "palette-terracotta-note": "Тёплый песок, терракотовые действия",
+      "palette-steel": "Сталь и кобальт",
+      "palette-steel-note": "Стальной серый, кобальтовые ссылки"
     },
     "Refunds": {
       "title": "Refund Requests",

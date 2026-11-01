@@ -2,7 +2,7 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 
 /** Palette ids an operator can pick (kept in step with src/features/settings/lib/color-palettes.ts). */
-export const PALETTE_IDS = ["neutral", "slate", "heritage", "navy"] as const;
+export const PALETTE_IDS = ["neutral", "slate", "heritage", "navy", "forest", "ocean", "amber", "plum", "terracotta", "steel"] as const;
 export type PaletteId = (typeof PALETTE_IDS)[number];
 export type PaletteMode = "light" | "dark";
 

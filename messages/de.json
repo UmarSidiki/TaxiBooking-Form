@@ -1575,7 +1575,19 @@
       "palette-heritage": "Elfenbein & Ochsenblut",
       "palette-heritage-note": "Warmes Elfenbein, tiefes Rot",
       "palette-navy": "Navy & Violett",
-      "palette-navy-note": "Tiefes Marineblau, violette Aktionen"
+      "palette-navy-note": "Tiefes Marineblau, violette Aktionen",
+      "palette-forest": "Wald & Salbei",
+      "palette-forest-note": "Salbeigrund, tiefgrüne Aktionen",
+      "palette-ocean": "Ozean & Petrol",
+      "palette-ocean-note": "Kühler Nebel, Petrol-Aktionen",
+      "palette-amber": "Anthrazit & Bernstein",
+      "palette-amber-note": "Warmer Stein, Bernstein-Aktionen",
+      "palette-plum": "Pflaume & Orchidee",
+      "palette-plum-note": "Fliederhauch, Pflaumen-Aktionen",
+      "palette-terracotta": "Sand & Terrakotta",
+      "palette-terracotta-note": "Warmer Sand, Terrakotta-Aktionen",
+      "palette-steel": "Stahl & Kobalt",
+      "palette-steel-note": "Stahlgrau, Kobalt-Links"
     },
     "Refunds": {
       "title": "Refund Requests",

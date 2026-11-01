@@ -1575,7 +1575,19 @@
       "palette-heritage": "Avorio e rosso sangue",
       "palette-heritage-note": "Avorio caldo, rosso profondo",
       "palette-navy": "Blu navy e viola",
-      "palette-navy-note": "Blu navy, azioni viola"
+      "palette-navy-note": "Blu navy, azioni viola",
+      "palette-forest": "Foresta e Salvia",
+      "palette-forest-note": "Fondo salvia, azioni verde intenso",
+      "palette-ocean": "Oceano e Ottanio",
+      "palette-ocean-note": "Nebbia fresca, azioni ottanio",
+      "palette-amber": "Antracite e Ambra",
+      "palette-amber-note": "Pietra calda, azioni ambra",
+      "palette-plum": "Prugna e Orchidea",
+      "palette-plum-note": "Nebbia lilla, azioni prugna",
+      "palette-terracotta": "Sabbia e Terracotta",
+      "palette-terracotta-note": "Sabbia calda, azioni terracotta",
+      "palette-steel": "Acciaio e Cobalto",
+      "palette-steel-note": "Grigi acciaio, link cobalto"
     },
     "Refunds": {
       "title": "Refund Requests",

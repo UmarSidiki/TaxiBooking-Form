@@ -9,7 +9,7 @@ import {
 } from "@/features/settings/lib/color-palettes";
 
 /** Swatch roles shown per palette; colours come from that palette's CSS tokens. */
-const SWATCH_TOKENS = ["--paper", "--ink", "--sig", "--link"] as const;
+const SWATCH_TOKENS = ["--paper", "--sheet", "--ink", "--sig", "--link"] as const;
 
 export function PalettePicker({
   value,

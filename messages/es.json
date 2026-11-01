@@ -1575,7 +1575,19 @@
       "palette-heritage": "Marfil y burdeos",
       "palette-heritage-note": "Marfil cálido, rojo intenso",
       "palette-navy": "Marino y violeta",
-      "palette-navy-note": "Azul marino, acciones violeta"
+      "palette-navy-note": "Azul marino, acciones violeta",
+      "palette-forest": "Bosque y Salvia",
+      "palette-forest-note": "Fondo salvia, acciones verde intenso",
+      "palette-ocean": "Océano y Turquesa",
+      "palette-ocean-note": "Bruma fría, acciones turquesa",
+      "palette-amber": "Carbón y Ámbar",
+      "palette-amber-note": "Piedra cálida, acciones ámbar",
+      "palette-plum": "Ciruela y Orquídea",
+      "palette-plum-note": "Bruma lila, acciones ciruela",
+      "palette-terracotta": "Arena y Terracota",
+      "palette-terracotta-note": "Arena cálida, acciones terracota",
+      "palette-steel": "Acero y Cobalto",
+      "palette-steel-note": "Grises acero, enlaces cobalto"
     },
     "Refunds": {
       "title": "Refund Requests",

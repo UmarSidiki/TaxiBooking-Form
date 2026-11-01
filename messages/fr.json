@@ -1575,7 +1575,19 @@
       "palette-heritage": "Ivoire et sang-de-bœuf",
       "palette-heritage-note": "Ivoire chaud, rouge profond",
       "palette-navy": "Marine et violet",
-      "palette-navy-note": "Bleu marine, actions violettes"
+      "palette-navy-note": "Bleu marine, actions violettes",
+      "palette-forest": "Forêt & Sauge",
+      "palette-forest-note": "Fond sauge, actions vert profond",
+      "palette-ocean": "Océan & Sarcelle",
+      "palette-ocean-note": "Brume fraîche, actions sarcelle",
+      "palette-amber": "Anthracite & Ambre",
+      "palette-amber-note": "Pierre chaude, actions ambre",
+      "palette-plum": "Prune & Orchidée",
+      "palette-plum-note": "Brume lilas, actions prune",
+      "palette-terracotta": "Sable & Terracotta",
+      "palette-terracotta-note": "Sable chaud, actions terracotta",
+      "palette-steel": "Acier & Cobalt",
+      "palette-steel-note": "Gris acier, liens cobalt"
     },
     "Refunds": {
       "title": "Refund Requests",

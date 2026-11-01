@@ -1,5 +1,5 @@
 /** Colour palettes the operator can pick. Token values live in shared/style/riviera-palettes.css. */
-export const COLOR_PALETTES = ["neutral", "slate", "heritage", "navy"] as const;
+export const COLOR_PALETTES = ["neutral", "slate", "heritage", "navy", "forest", "ocean", "amber", "plum", "terracotta", "steel"] as const;
 
 export type ColorPalette = (typeof COLOR_PALETTES)[number];
 

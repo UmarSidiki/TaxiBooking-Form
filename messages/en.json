@@ -1575,7 +1575,19 @@
       "palette-heritage": "Ivory & Oxblood",
       "palette-heritage-note": "Warm ivory, deep red",
       "palette-navy": "Navy & Blurple",
-      "palette-navy-note": "Deep navy, violet actions"
+      "palette-navy-note": "Deep navy, violet actions",
+      "palette-forest": "Forest & Sage",
+      "palette-forest-note": "Sage paper, deep green actions",
+      "palette-ocean": "Ocean & Teal",
+      "palette-ocean-note": "Cool mist, teal actions",
+      "palette-amber": "Charcoal & Amber",
+      "palette-amber-note": "Warm stone, amber actions",
+      "palette-plum": "Plum & Orchid",
+      "palette-plum-note": "Lilac mist, plum actions",
+      "palette-terracotta": "Sand & Terracotta",
+      "palette-terracotta-note": "Warm sand, terracotta actions",
+      "palette-steel": "Steel & Cobalt",
+      "palette-steel-note": "Steel greys, cobalt links"
     },
     "Refunds": {
       "title": "Refund requests",

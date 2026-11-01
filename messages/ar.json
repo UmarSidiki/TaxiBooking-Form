@@ -1575,7 +1575,19 @@
       "palette-heritage": "عاجي وعنابي",
       "palette-heritage-note": "عاجي دافئ وأحمر داكن",
       "palette-navy": "كحلي وبنفسجي",
-      "palette-navy-note": "كحلي داكن وأزرار بنفسجية"
+      "palette-navy-note": "كحلي داكن وأزرار بنفسجية",
+      "palette-forest": "غابة ومريمية",
+      "palette-forest-note": "خلفية مريمية وأزرار خضراء داكنة",
+      "palette-ocean": "محيط وفيروزي",
+      "palette-ocean-note": "ضباب بارد وأزرار فيروزية",
+      "palette-amber": "فحمي وكهرماني",
+      "palette-amber-note": "حجر دافئ وأزرار كهرمانية",
+      "palette-plum": "برقوقي وأوركيد",
+      "palette-plum-note": "ضباب ليلكي وأزرار برقوقية",
+      "palette-terracotta": "رمل وتيراكوتا",
+      "palette-terracotta-note": "رمل دافئ وأزرار تيراكوتا",
+      "palette-steel": "فولاذي وكوبالت",
+      "palette-steel-note": "رمادي فولاذي وروابط كوبالتية"
     },
     "Refunds": {
       "title": "Refund Requests",

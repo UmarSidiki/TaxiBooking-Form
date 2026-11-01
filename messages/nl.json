@@ -1575,7 +1575,19 @@
       "palette-heritage": "Ivoor & ossenbloed",
       "palette-heritage-note": "Warm ivoor, diep rood",
       "palette-navy": "Marine & violet",
-      "palette-navy-note": "Diep marineblauw, violette acties"
+      "palette-navy-note": "Diep marineblauw, violette acties",
+      "palette-forest": "Woud & Salie",
+      "palette-forest-note": "Saliegrond, diepgroene acties",
+      "palette-ocean": "Oceaan & Petrol",
+      "palette-ocean-note": "Koele nevel, petrol acties",
+      "palette-amber": "Antraciet & Amber",
+      "palette-amber-note": "Warme steen, amber acties",
+      "palette-plum": "Pruim & Orchidee",
+      "palette-plum-note": "Lila nevel, pruimkleurige acties",
+      "palette-terracotta": "Zand & Terracotta",
+      "palette-terracotta-note": "Warm zand, terracotta acties",
+      "palette-steel": "Staal & Kobalt",
+      "palette-steel-note": "Staalgrijs, kobalt links"
     },
     "Refunds": {
       "title": "Refund Requests",

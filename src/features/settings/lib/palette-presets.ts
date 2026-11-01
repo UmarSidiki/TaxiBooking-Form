@@ -1,4 +1,4 @@
-import { completeTokens, type PaletteSet } from "./palette-tokens";
+import { completeTokens, derivePalette, type PaletteSet } from "./palette-tokens";
 
 /**
  * Source of truth for preset palettes. scripts/gen-riviera-palettes.ts writes
@@ -27,4 +27,14 @@ export const PALETTE_PRESETS: Record<string, PaletteSet> = {
     { paper: "#071A2F", sheet: "#0E2540", field: "#0A1F37", well: "#15304F", ink: "#EAF1F8", ink2: "#A4B6CC", rule: "#1F3A5A", rule2: "#5C7898", sig: "#9A8CFF", "sig-on": "#071A2F", "sig-tint": "#24305E", link: "#6CB8FF", info: "#6CB8FF", ok: "#3FD39A", warn: "#F2B553", err: "#FF8AA6", "ok-tint": "#0D3036", "warn-tint": "#2A2E2C", "err-tint": "#2E2440", "info-tint": "#133556", sidebar: "#0E2540" },
     "#EEF3F8",
   ),
+  forest: pick(derivePalette("#1E6B47", "#0F6E63")),
+  ocean: pick(derivePalette("#0B6E8A", "#0559A0")),
+  amber: pick(derivePalette("#A84A08", "#1D4ED8")),
+  plum: pick(derivePalette("#7A2A8C", "#5B36C4")),
+  terracotta: pick(derivePalette("#B1431C", "#8A4B12")),
+  steel: pick(derivePalette("#334155", "#1D5FD0")),
 };
+
+function pick({ light, dark }: PaletteSet): PaletteSet {
+  return { light, dark };
+}

@@ -5,6 +5,7 @@ export type WhatsAppSendKind =
   | "notification"
   | "test"
   | "verification"
+  | "campaign"
   | "other";
 
 export type WhatsAppSendStatus =
@@ -33,7 +34,7 @@ const WhatsAppSendLogSchema = new Schema<IWhatsAppSendLog>({
   jid: { type: String, required: true },
   kind: {
     type: String,
-    enum: ["otp", "notification", "test", "verification", "other"],
+    enum: ["otp", "notification", "test", "verification", "campaign", "other"],
     required: true,
   },
   status: {

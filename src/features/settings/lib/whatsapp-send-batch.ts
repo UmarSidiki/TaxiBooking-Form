@@ -19,11 +19,11 @@ import type {
   WhatsAppSendResult,
 } from "@/features/settings/lib/whatsapp-send";
 
-const JITTER_MIN_MS = 400;
-const JITTER_MAX_MS = 1_500;
+const DEFAULT_JITTER_MIN_MS = 400;
+const DEFAULT_JITTER_MAX_MS = 1_500;
 
-function jitterDelay(rng: () => number) {
-  return JITTER_MIN_MS + Math.floor(rng() * (JITTER_MAX_MS - JITTER_MIN_MS + 1));
+function jitterDelay(rng: () => number, minMs: number, maxMs: number) {
+  return minMs + Math.floor(rng() * (maxMs - minMs + 1));
 }
 
 function failure(jid: string, error: string, aliases: string[] = [jid]): WhatsAppSendResult {
@@ -89,9 +89,11 @@ export async function runWhatsAppBatch(input: {
       continue;
     }
 
+    const minMs = options.jitterMinMs ?? DEFAULT_JITTER_MIN_MS;
+    const maxMs = options.jitterMaxMs ?? DEFAULT_JITTER_MAX_MS;
     const skipJitter = kind === "otp" && index === 0;
     if (!skipJitter) {
-      const delay = jitterDelay(options.rng ?? Math.random);
+      const delay = jitterDelay(options.rng ?? Math.random, minMs, maxMs);
       if (Date.now() + delay < deadline) await sleep(delay);
     }
     if (Date.now() >= deadline) {

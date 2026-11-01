@@ -13,6 +13,8 @@ import { resolvePublicUrl } from "@/features/settings/lib/public-url";
 import { sendMarketingEmail } from "@/features/marketing/lib/email/send-marketing-email";
 import { signUnsubscribeToken } from "@/features/marketing/lib/unsubscribe/unsubscribe-token";
 import { materialiseCampaignRecipients } from "@/features/marketing/lib/campaigns/materialise-recipients";
+import { claimRecipient, reclaimStaleRecipients } from "@/features/marketing/lib/campaigns/claim-recipient";
+import { processWhatsAppCampaign } from "@/features/marketing/lib/campaigns/process-whatsapp-campaign";
 import CronMarker from "@/features/cron/model/CronMarker";
 
 export type RunCampaignTickOptions = {
@@ -20,6 +22,9 @@ export type RunCampaignTickOptions = {
   deadlineMs?: number;
   maxDurationSeconds?: number;
   recipientLeaseMs?: number;
+  sleep?: (ms: number) => Promise<void>;
+  rng?: () => number;
+  sendWhatsApp?: typeof import("@/features/settings/lib/whatsapp-send").sendWhatsAppTexts;
 };
 
 export type RunCampaignTickResult = {
@@ -58,42 +63,6 @@ async function releaseLock() {
   ).catch(() => undefined);
 }
 
-async function claimRecipient(
-  recipientId: unknown,
-  leaseMs: number,
-  now: Date,
-): Promise<boolean> {
-  const pendingClaim = await CampaignRecipient.findOneAndUpdate(
-    { _id: recipientId, status: "pending" },
-    { $set: { status: "sending", leaseExpiresAt: new Date(now.getTime() + leaseMs) }, $inc: { attempts: 1 } },
-  );
-  if (pendingClaim) return true;
-
-  const reclaimed = await CampaignRecipient.findOneAndUpdate(
-    {
-      _id: recipientId,
-      status: "sending",
-      leaseExpiresAt: { $lte: now },
-    },
-    {
-      $set: { status: "sending", leaseExpiresAt: new Date(now.getTime() + leaseMs) },
-      $inc: { attempts: 1 },
-    },
-  );
-  return Boolean(reclaimed);
-}
-
-async function reclaimStaleRecipients(campaignId: unknown, now: Date) {
-  await CampaignRecipient.updateMany(
-    {
-      campaignId,
-      status: "sending",
-      leaseExpiresAt: { $lte: now },
-    },
-    { $set: { status: "pending", leaseExpiresAt: null } },
-  );
-}
-
 async function incStats(campaignId: unknown, patch: Record<string, number>) {
   const inc: Record<string, number> = {};
   for (const [key, value] of Object.entries(patch)) {
@@ -124,6 +93,7 @@ export async function runCampaignTick(
   let totalFailed = 0;
   let totalSkipped = 0;
   let campaignsProcessed = 0;
+  let whatsappTickRemaining = 20;
 
   try {
     const campaigns = await Campaign.find({
@@ -165,6 +135,27 @@ export async function runCampaignTick(
       await reclaimStaleRecipients(campaign._id, now);
 
       campaignsProcessed += 1;
+
+      if (campaign.channel === "whatsapp") {
+        const wa = await processWhatsAppCampaign(String(campaign._id), {
+          now,
+          clock,
+          deadlineMs,
+          leaseMs,
+          sleep: options.sleep,
+          rng: options.rng,
+          sendWhatsApp: options.sendWhatsApp,
+          tickBudget: whatsappTickRemaining,
+        });
+        totalSent += wa.sent;
+        totalFailed += wa.failed;
+        totalSkipped += wa.skipped;
+        whatsappTickRemaining = Math.max(
+          0,
+          whatsappTickRemaining - wa.attempted,
+        );
+        continue;
+      }
 
       const template = campaign.templateId && isObjectIdString(String(campaign.templateId))
         ? await CampaignTemplate.findById(String(campaign.templateId)).lean<{

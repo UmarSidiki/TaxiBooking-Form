@@ -34,12 +34,19 @@ function isDuplicateKey(error: unknown) {
   );
 }
 
-export async function countWhatsAppSendsToday(now = new Date()) {
+export async function countWhatsAppSendsToday(
+  nowOrKind?: Date | string,
+  kind?: WhatsAppSendKind,
+) {
   await connectDB();
-  return WhatsAppSendLog.countDocuments({
+  const now = nowOrKind instanceof Date ? nowOrKind : new Date();
+  const resolvedKind = typeof nowOrKind === "string" ? nowOrKind : kind;
+  const filter: Record<string, unknown> = {
     status: "sent",
     createdAt: { $gte: startOfUtcDay(now) },
-  });
+  };
+  if (resolvedKind) filter.kind = resolvedKind;
+  return WhatsAppSendLog.countDocuments(filter);
 }
 
 /**

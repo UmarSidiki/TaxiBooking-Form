@@ -51,6 +51,11 @@ export type WhatsAppSendOptions = {
   idempotencyKeys?: Array<string | undefined>;
   rng?: () => number;
   sleep?: (ms: number) => Promise<void>;
+  /** Override the default jitter range (ms). */
+  jitterMinMs?: number;
+  jitterMaxMs?: number;
+  /** Best-effort inbound STOP handling while the socket is open. */
+  handleStops?: boolean;
 };
 
 export type WhatsAppSendOutcome =
@@ -82,6 +87,34 @@ export function sendWhatsAppTexts(
       return { ok: false, reason: "needs_scan" };
     }
 
+    let stopHandler: ((payload: unknown) => void) | null = null;
+    if (options.handleStops) {
+      stopHandler = (payload: unknown) => {
+        void (async () => {
+          try {
+            const { handleWhatsAppStop } = await import(
+              "@/features/marketing/lib/consent/handle-whatsapp-stop"
+            );
+            const messages = (payload as { messages?: unknown[] })?.messages ?? [];
+            for (const entry of messages as Array<Record<string, unknown>>) {
+              const key = entry?.key as { fromMe?: boolean; remoteJid?: string } | undefined;
+              if (key?.fromMe) continue;
+              const message = entry?.message as Record<string, unknown> | undefined;
+              const text =
+                (message?.conversation as string | undefined) ||
+                ((message?.extendedTextMessage as { text?: string } | undefined)?.text) ||
+                "";
+              if (!/^\s*stop\s*$/i.test(text)) continue;
+              if (key?.remoteJid) await handleWhatsAppStop(String(key.remoteJid));
+            }
+          } catch {
+            // best-effort
+          }
+        })();
+      };
+      sock.ev.on("messages.upsert", stopHandler);
+    }
+
     try {
       const remaining = Math.max(1_000, Math.min(WHATSAPP_OPEN_TIMEOUT_MS, deadline - Date.now()));
       await waitForOpen(sock, remaining);
@@ -109,6 +142,7 @@ export function sendWhatsAppTexts(
       }
       return { ok: false, reason: isLoggedOut(error) ? "needs_scan" : "failed" };
     } finally {
+      if (stopHandler) sock.ev.off("messages.upsert", stopHandler);
       await flushCreds().catch(() => undefined);
       await sock.end(undefined).catch(() => undefined);
     }

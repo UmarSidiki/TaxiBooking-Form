@@ -295,9 +295,9 @@ export function CampaignWizard() {
                           value={value}
                           checked={active}
                           onChange={() => setChannel(value)}
-                          className="mt-1 size-4 accent-primary"
+                          className="mt-1 size-4 shrink-0 accent-primary"
                         />
-                        <Icon className="mt-0.5 size-5 text-muted-foreground" aria-hidden="true" />
+                        <Icon className="mt-0.5 size-5 shrink-0 text-muted-foreground" aria-hidden="true" />
                         <span className="flex flex-col">
                           <span className="font-medium">{t(`channel-${value}`)}</span>
                           <span className="text-sm text-muted-foreground">
@@ -419,7 +419,7 @@ export function CampaignWizard() {
                       name="timing"
                       checked={timing === value}
                       onChange={() => setTiming(value)}
-                      className="mt-1 size-4 accent-primary"
+                      className="mt-1 size-4 shrink-0 accent-primary"
                     />
                     <span className="flex flex-col">
                       <span className="font-medium">{t(`timing-${value}`)}</span>

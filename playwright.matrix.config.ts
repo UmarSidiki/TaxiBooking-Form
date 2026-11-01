@@ -23,6 +23,7 @@ export default defineConfig({
     "sidebar-brand.spec.ts",
     "palette-first-paint.spec.ts",
     "route-line.spec.ts",
+    "route-map-markers.spec.ts",
     "step1-location-behaviour.spec.ts",
   ],
   fullyParallel: false,

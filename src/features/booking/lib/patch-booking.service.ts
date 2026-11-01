@@ -15,6 +15,7 @@ import { sendAppointmentPatchEmails } from '@/features/booking/lib/send-appointm
 import { absoluteHttpBase } from '@/features/booking/lib/booking-mail-url';
 import { quotePayUrl } from '@/features/booking/lib/quote-pay-url';
 import { notePatchActivity } from '@/features/booking/lib/note-patch-activity';
+import { refreshCustomerStatsForEmail } from '@/features/customers-admin/lib/customer-stats/refresh-customer-stats';
 import { resolvePublicUrl } from '@/features/settings/lib/public-url';
 import {
   parseBookingPatchBody,
@@ -99,6 +100,8 @@ export async function patchBooking(
   if (!updatedBooking) {
     return { ok: false, status: 500, message: 'Failed to update booking' };
   }
+
+  await refreshCustomerStatsForEmail(updatedBooking.email);
 
   queueBookingWhatsApp({
     action: parsed.data.action,

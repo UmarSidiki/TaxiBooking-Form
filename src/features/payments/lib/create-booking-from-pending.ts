@@ -1,4 +1,5 @@
 import { Booking, PendingBooking } from '@/features/booking/model';
+import { createBookingDocument } from '@/features/booking/lib/booking.repo';
 import { Vehicle } from '@/features/fleet/model';
 import { buildBookingEmailData } from '@/features/payments/lib/booking-email-data';
 import { buildPaidBookingRecord } from '@/features/payments/lib/build-paid-booking-record';
@@ -61,7 +62,7 @@ export async function createBookingFromPending(
   });
 
   try {
-    const newBooking = await Booking.create(bookingPayload);
+    const newBooking = await createBookingDocument(bookingPayload);
     const baseUrl = input.baseUrl || (await resolvePublicUrl()) || undefined;
 
     const emailData = buildBookingEmailData(orderId, pendingBooking, vehicle, {

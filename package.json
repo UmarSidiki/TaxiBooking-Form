@@ -14,6 +14,7 @@
     "test:e2e": "playwright test",
     "migrate:partner-balance": "vite-node scripts/migrate-partner-balance.ts",
     "migrate:partner-access": "vite-node scripts/migrate-partner-access.ts",
+    "stats:backfill": "vite-node --config vitest.config.ts scripts/backfill-customer-stats.ts",
     "render:emails": "vite-node --config vitest.config.ts scripts/render-emails.ts"
   },
   "dependencies": {

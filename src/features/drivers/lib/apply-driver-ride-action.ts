@@ -1,4 +1,5 @@
 import { Booking } from "@/features/booking/model";
+import { queueCustomerStatsRefresh } from "@/features/customers-admin/lib/customer-stats/refresh-customer-stats";
 import { recordRideActivity } from "@/features/rides/lib/record-ride-activity";
 import type { DriverRideAction } from "@/features/drivers/schema/driver-ride-action.schema";
 
@@ -28,6 +29,7 @@ export async function applyDriverRideAction(
   );
   if (updated) {
     if (action.action === "completed") {
+      queueCustomerStatsRefresh(updated.email);
       void import("@/features/invoices/lib/send-invoice-notice")
         .then((mod) => mod.sendInvoiceNotice(updated.tripId))
         .catch(() => undefined);

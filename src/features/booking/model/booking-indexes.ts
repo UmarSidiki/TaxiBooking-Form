@@ -3,6 +3,7 @@ import type { Schema } from "mongoose";
 /** Indexes for the queries the desk, driver portal, and overflow marketplace actually run. */
 export function registerBookingIndexes(schema: Schema) {
   schema.index({ createdAt: -1 });
+  schema.index({ email: 1 }, { collation: { locale: "en", strength: 2 } });
   schema.index({ status: 1, date: 1 });
   schema.index({ status: 1, pickupReminderSent: 1, date: 1 });
   schema.index({ "assignedDriver._id": 1, status: 1, date: 1, time: 1 });

@@ -5,6 +5,7 @@ import {
   updateBookingFields,
 } from "@/features/booking/lib/booking.repo";
 import { initCashBookingPartners } from "@/features/booking/lib/init-cash-booking-partners";
+import { queueCustomerStatsRefresh } from "@/features/customers-admin/lib/customer-stats/refresh-customer-stats";
 import { buildBookingEmailDataFromBooking } from "@/features/payments/lib/booking-email-data";
 import { refundQuotePaymentIntent } from "@/features/payments/lib/quote-payment-intent";
 import { sendBookingEmails } from "@/features/payments/lib/send-booking-emails";
@@ -74,6 +75,7 @@ export async function finalizeQuoteBooking(input: {
       },
       $unset: { pendingChange: 1, paymentTokenHash: 1, quotedAmount: 1 },
     });
+    queueCustomerStatsRefresh(booking.email);
     return {
       success: true,
       tripId: booking.tripId,
@@ -141,6 +143,7 @@ export async function finalizeQuoteBooking(input: {
       ? { multisafepayTransactionId: input.multisafepayTransactionId }
       : {}),
   });
+  queueCustomerStatsRefresh(booking.email);
 
   const plain =
     typeof booking.toObject === "function"

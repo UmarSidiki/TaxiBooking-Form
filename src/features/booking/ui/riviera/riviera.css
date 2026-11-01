@@ -180,6 +180,7 @@ html:has(.riviera), body:has(.riviera) { background-color: var(--paper); }
 .riviera .map-fallback b { color: var(--ink); font-weight: 500; }
 
 /* ---------- Route rail (step 1) ---------- */
+@media (max-width: 479px) { .riviera .route-rail__wait-icon { display: none; } .riviera .route-rail__wait { padding-inline-start: 4px; } }
 .riviera .route-rail { position: relative; display: flex; flex-direction: column; gap: 12px; }
 .riviera .route-rail__line { position: absolute; z-index: 1; pointer-events: none; inset-block-start: 24px; inset-block-end: 24px; inset-inline-start: 20px; width: 2px; border-radius: 2px; background: var(--ink); }
 .riviera .route-rail__row { display: block; min-width: 0; }
@@ -193,15 +194,15 @@ html:has(.riviera), body:has(.riviera) { background-color: var(--paper); }
 .riviera .route-rail__input::placeholder { color: var(--ink2); opacity: 1; }
 .riviera .route-rail__field--locate { padding-inline-end: 48px; }
 .riviera .route-rail__field--stop { padding-inline-end: 52px; }
-.riviera .route-rail__stop { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.riviera .route-rail__stop { display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 1fr); gap: 8px; align-items: stretch; min-width: 0; }
 .riviera .route-rail__wait {
-  display: inline-flex; align-items: center; gap: 6px; align-self: flex-start;
-  min-height: 44px; padding-inline-start: 10px;
+  display: flex; align-items: center; gap: 4px; min-width: 0;
+  height: 48px; padding-inline-start: 8px;
   border: 1px solid var(--rule2); border-radius: var(--radius); background: var(--sheet);
 }
 .riviera .route-rail__wait-icon { width: 14px; height: 14px; flex: none; color: var(--ink2); }
 .riviera .route-rail__wait-select {
-  min-height: 44px; max-width: 8.5rem; padding: 0 10px;
+  flex: 1 1 auto; width: 100%; min-width: 0; height: 46px; padding-block: 0; padding-inline: 2px 4px;
   border: 0; background: transparent; color: var(--ink);
   font-size: 16px; font-weight: 500; cursor: pointer;
 }

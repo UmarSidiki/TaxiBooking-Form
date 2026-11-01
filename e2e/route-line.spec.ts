@@ -184,6 +184,15 @@ for (const width of WIDTHS) {
             for (let index = 0; index < stops; index += 1) {
               const wait = waits.nth(index);
               const box = await wait.boundingBox();
+              // Stop row: address 75% / wait 25% on one line.
+              const row = await wait.evaluate((select) => {
+                const stop = select.closest(".route-rail__stop")!;
+                const field = stop.querySelector(".route-rail__field")!.getBoundingClientRect();
+                const waitBox = stop.querySelector(".route-rail__wait")!.getBoundingClientRect();
+                return { ratio: field.width / (field.width + waitBox.width), sameLine: Math.abs(field.top - waitBox.top) <= 1 };
+              });
+              expect(row.sameLine).toBe(true);
+              expect(Math.abs(row.ratio - 0.75)).toBeLessThanOrEqual(0.02);
               expect(box?.height ?? 0).toBeGreaterThanOrEqual(44);
               await expect(wait).toHaveValue("0");
               await wait.selectOption("15");

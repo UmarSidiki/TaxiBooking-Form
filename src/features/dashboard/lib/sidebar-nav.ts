@@ -23,6 +23,8 @@ export type DeskNavItem = {
   icon: LucideIcon;
   flag?: DeskNavFlag;
   showWhen?: "approved";
+  /** Also active on child routes (e.g. /campaigns/new, /campaigns/[id]). */
+  matchNested?: boolean;
 };
 
 export type DeskNavGroup = {
@@ -65,6 +67,7 @@ export const deskNavGroups: DeskNavGroup[] = [
         titleKey: "Sidebar.campaigns",
         href: (locale) => `/${locale}/dashboard/marketing/campaigns`,
         icon: Send,
+        matchNested: true,
       },
     ],
   },
@@ -132,3 +135,12 @@ export const deskNavGroups: DeskNavGroup[] = [
     ],
   },
 ];
+
+export function isDeskNavItemActive(
+  pathname: string,
+  href: string,
+  matchNested = false,
+): boolean {
+  if (pathname === href) return true;
+  return matchNested && pathname.startsWith(`${href}/`);
+}

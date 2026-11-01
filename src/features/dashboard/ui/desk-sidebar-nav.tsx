@@ -17,6 +17,7 @@ import {
   deskNavGroups,
   type DeskNavGroup,
   type DeskNavItem,
+  isDeskNavItemActive,
 } from "@/features/dashboard/lib/sidebar-nav";
 import { isDeskNavFlagOn } from "@/features/dashboard/lib/is-desk-nav-flag-on";
 import { isSettingsDeskPath } from "@/features/settings/lib/settings-desk-nav";
@@ -52,8 +53,8 @@ export function DeskSidebarNav({
   );
 }
 
-function isDeskNavActive(pathname: string, href: string) {
-  if (pathname === href) return true;
+function isDeskNavActive(pathname: string, href: string, matchNested?: boolean) {
+  if (isDeskNavItemActive(pathname, href, matchNested)) return true;
   return href.endsWith("/settings") && isSettingsDeskPath(pathname);
 }
 
@@ -95,7 +96,7 @@ function DeskNavGroupBlock({
               <SidebarMenuItem key={item.titleKey}>
                 <SidebarMenuButton
                   asChild
-                  isActive={isDeskNavActive(pathname, href)}
+                  isActive={isDeskNavActive(pathname, href, item.matchNested)}
                   tooltip={t(item.titleKey)}
                 >
                   <Link href={href} className="min-h-11 text-sidebar-foreground">

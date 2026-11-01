@@ -92,3 +92,32 @@ The profile page lives in `ui/customer-profile-*.tsx` and strings in
 `Dashboard.CustomerProfile` across the 8 locales. The whole feature remains
 single-tenant: email is the only scoping key because the deployment owns all
 data.
+
+## Admin notes and audit log (C4)
+
+- `model/AdminNote.ts` — soft-deleted notes keyed by `emailLower`. Text is
+  capped at 2,000 characters, stored verbatim and rendered as a React text
+  node (`ui/admin-note-text.tsx`), so pasted HTML stays inert. Only the note
+  author may edit or delete it; other admins get `403`.
+- `model/AdminAuditLog.ts` — append-only, TTL index expires rows after two
+  years (63,072,000 s). It records actor id/email/name/role, action, target,
+  safe metadata (counts and ids only), IP prefix and time. Metadata never
+  contains note bodies, OTP codes or message content.
+- `lib/audit/record-admin-audit.ts` — the single write helper. Notes
+  (`customer.note.create|update|delete`), the C3 session revokes
+  (`customer.sessions.revoke|revoke_all`) and future exports/campaign actions
+  all call it.
+- `GET/POST /api/admin/customers/[id]/notes` and
+  `PATCH/DELETE /api/admin/customers/[id]/notes/[noteId]` — admin-only. The
+  list response includes a server-computed `canEdit` flag so the client never
+  needs the viewer id.
+- `GET /api/admin/customers/[id]/activity` — the profile **Activity** tab,
+  newest first, capped at 50 entries.
+- `GET /api/admin/audit` and `/dashboard/customers/audit` — filter by action,
+  actor email prefix, target id and date range. Cursor pagination (50/page,
+  max 100) sorts by `at` then `_id`; malformed cursors return
+  `400 invalid_cursor`. The audit page is linked from the Dispatch nav group.
+
+Every API route uses `requireAdmin()` (admin/superadmin only; other roles get
+`403`). The audit list uses index ranges for actor prefixes and never a regex
+scan.

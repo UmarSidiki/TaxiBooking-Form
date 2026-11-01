@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { requireAdmin } from "@/features/auth/lib/require-role";
 import { revokeCustomerSessionById } from "@/features/customers/lib/customer-session";
+import { recordAdminAudit } from "@/features/customers-admin/lib/audit/record-admin-audit";
 import {
   customerProfileParamSchema,
   customerSessionIdParamSchema,
@@ -11,7 +12,7 @@ export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 
 export async function DELETE(
-  _request: Request,
+  request: Request,
   { params }: { params: Promise<{ id: string; sessionId: string }> },
 ) {
   try {
@@ -25,6 +26,15 @@ export async function DELETE(
 
     const revoked = await revokeCustomerSessionById(email.data, session.data);
     if (!revoked) return jsonError("not_found", 404);
+
+    await recordAdminAudit({
+      actor: access.session.user,
+      action: "customer.sessions.revoke",
+      targetType: "customer",
+      targetId: email.data,
+      metadata: { sessionId: session.data },
+      request,
+    });
 
     return NextResponse.json({ success: true, revoked: 1 });
   } catch (error) {

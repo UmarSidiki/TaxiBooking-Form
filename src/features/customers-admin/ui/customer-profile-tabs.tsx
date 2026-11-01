@@ -3,7 +3,9 @@
 import { useTranslations } from "next-intl";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs";
+import { CustomerActivityTab } from "@/features/customers-admin/ui/customer-activity-tab";
 import { CustomerBookingsTab } from "@/features/customers-admin/ui/customer-bookings-tab";
+import { CustomerNotesTab } from "@/features/customers-admin/ui/customer-notes-tab";
 import { CustomerPaymentsTab } from "@/features/customers-admin/ui/customer-payments-tab";
 import { CustomerPlaceholderTab } from "@/features/customers-admin/ui/customer-placeholder-tab";
 import { CustomerSessionsTab } from "@/features/customers-admin/ui/customer-sessions-tab";
@@ -59,10 +61,10 @@ export function CustomerProfileTabs({
         <CustomerPlaceholderTab message={t("marketing-placeholder")} />
       </TabsContent>
       <TabsContent value="notes">
-        <CustomerPlaceholderTab message={t("notes-placeholder")} />
+        <CustomerNotesTab email={data.header.email} />
       </TabsContent>
       <TabsContent value="activity">
-        <CustomerPlaceholderTab message={t("activity-placeholder")} />
+        <CustomerActivityTab email={data.header.email} />
       </TabsContent>
     </Tabs>
   );

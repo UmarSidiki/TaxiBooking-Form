@@ -16,6 +16,8 @@ import CustomerProfile from "@/features/customers/model/CustomerProfile";
 import CustomerSession from "@/features/customers/model/CustomerSession";
 import CustomerLoginToken from "@/features/customers/model/CustomerLoginToken";
 import { CustomerStats } from "@/features/customers-admin/model";
+import AdminNote from "@/features/customers-admin/model/AdminNote";
+import AdminAuditLog from "@/features/customers-admin/model/AdminAuditLog";
 import CorporateAccount from "@/features/corporate/model/CorporateAccount";
 import RecurringRide from "@/features/corporate/model/RecurringRide";
 import RideCharge from "@/features/invoices/model/RideCharge";
@@ -50,6 +52,8 @@ export async function resetTestDb() {
     CustomerSession.deleteMany({}),
     CustomerLoginToken.deleteMany({}),
     CustomerStats.deleteMany({}),
+    AdminNote.deleteMany({}),
+    AdminAuditLog.deleteMany({}),
     CorporateAccount.deleteMany({}),
     RecurringRide.deleteMany({}),
     RideCharge.deleteMany({}),

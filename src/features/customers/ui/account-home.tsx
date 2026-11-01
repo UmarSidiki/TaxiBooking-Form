@@ -6,25 +6,23 @@ import type {
   AccountT,
   CancelPolicyTier,
   CustomerProfile,
-  Ride,
 } from "./account-types";
 import { AccountTopBar } from "./account-top-bar";
-import { AccountGreetingHeader } from "./account-greeting-header";
-import { UpcomingRideCard } from "./upcoming-ride-card";
-import { AccountQuickActions } from "./account-quick-actions";
-import { AccountConcierge } from "./account-concierge";
-import { AccountPastRides } from "./account-past-rides";
-import { AccountBottomTabs } from "./account-bottom-tabs";
-import { AccountSettingsSections } from "./account-settings-sections";
+import { AccountSideNav, AccountBottomTabs } from "./account-nav";
+import { AccountOverview } from "./account-overview";
+import { AccountRidesPage } from "./account-rides-page";
+import { AccountProfile } from "./account-profile";
+import { AccountNotifications } from "./account-notifications";
+import { AccountSecurity } from "./account-security";
 import { AccountRideDialogs } from "./account-ride-dialogs";
 import { AccountFooter } from "./account-footer";
-import { displayName, savedPlaceCount } from "./account-format";
-import { mergePastRides, nextUpcomingRide } from "../lib/next-ride";
-import { rebookHref as buildRebookHref } from "../lib/rebook-href";
+import { displayName } from "./account-format";
 import { useAccountRideActions } from "../hooks/use-account-ride-actions";
 import type { GreetingKey } from "../lib/account-greeting";
+import type { AccountSection } from "../lib/account-sections";
 
 export function AccountHome({
+  section = "overview",
   email,
   profile,
   greeting,
@@ -40,6 +38,7 @@ export function AccountHome({
   onLogout,
   onSignOutEverywhere,
 }: {
+  section?: AccountSection;
   email: string;
   profile: CustomerProfile | null;
   greeting: GreetingKey;
@@ -57,11 +56,16 @@ export function AccountHome({
 }) {
   const t = useTranslations("Account") as unknown as AccountT;
   const actions = useAccountRideActions({ t, onRefresh });
-
   const name = displayName(profile?.name, email);
-  const nextRide = nextUpcomingRide(rides.upcoming);
-  const pastRides = mergePastRides(rides.past, rides.canceled);
-  const lastRide: Ride | null = pastRides[0] ?? null;
+  const rideProps = {
+    t,
+    rides,
+    locale,
+    currency,
+    cancelPolicy,
+    onChange: actions.openChange,
+    onCancel: actions.openCancel,
+  };
 
   return (
     <div className="riviera min-h-svh bg-[var(--paper)] text-[var(--ink)]">
@@ -76,70 +80,62 @@ export function AccountHome({
         onSignOutEverywhere={onSignOutEverywhere}
       />
 
-      <main
+      <div
         id="top"
-        className="mx-auto w-full max-w-[1120px] px-4 pb-28 pt-5 md:px-5 md:pb-14 md:pt-[30px]"
+        className="mx-auto grid w-full max-w-[1180px] gap-6 px-4 pb-28 pt-5 md:grid-cols-[200px_minmax(0,1fr)] md:px-5 md:pb-14 md:pt-[30px] lg:grid-cols-[232px_minmax(0,1fr)] lg:gap-8"
       >
-        <AccountGreetingHeader
-          t={t}
-          name={name}
-          greeting={greeting}
-          locale={locale}
-        />
+        <AccountSideNav t={t} locale={locale} section={section} />
 
-        {actions.notice ? (
-          <p role="status" className="mb-3 text-xs text-[var(--ink2)]">
-            {actions.notice}
-          </p>
-        ) : null}
+        <main className="min-w-0" data-account-section={section}>
+          {actions.notice ? (
+            <p role="status" className="mb-3 text-xs text-[var(--ink2)]">
+              {actions.notice}
+            </p>
+          ) : null}
 
-        <div className="grid gap-3 md:gap-5 lg:grid-cols-[minmax(0,1fr)_300px] lg:items-start">
-          <div className="contents lg:flex lg:min-w-0 lg:flex-col lg:gap-5">
-            <div className="min-w-0 lg:order-1">
-              <UpcomingRideCard
-                ride={nextRide}
-                t={t}
-                locale={locale}
-                currency={currency}
-                cancelPolicy={cancelPolicy}
-                onChange={actions.openChange}
-                onCancel={actions.openCancel}
-              />
-            </div>
-            <div className="order-3 min-w-0 lg:order-2">
-              <AccountPastRides
-                rides={pastRides}
-                t={t}
-                locale={locale}
-                currency={currency}
-              />
-            </div>
-          </div>
-
-          <aside className="order-2 grid gap-3 sm:grid-cols-2 lg:order-none lg:grid-cols-1">
-            <AccountQuickActions
-              t={t}
-              rebookHref={
-                lastRide ? buildRebookHref(lastRide, locale) : `/${locale}`
-              }
-              hasLastRide={Boolean(lastRide)}
-              savedPlaces={savedPlaceCount(profile)}
+          {section === "overview" ? (
+            <AccountOverview
+              {...rideProps}
+              name={name}
+              greeting={greeting}
+              profile={profile}
+              companyPhone={companyPhone}
             />
-            <AccountConcierge t={t} companyPhone={companyPhone} />
-          </aside>
-        </div>
+          ) : null}
+          {section === "rides" ? <AccountRidesPage {...rideProps} /> : null}
+          {section === "profile" ? (
+            <AccountProfile
+              t={t}
+              email={email}
+              locale={locale}
+              profile={profile}
+              onSaved={onProfileSaved}
+            />
+          ) : null}
+          {section === "notifications" ? (
+            <AccountNotifications
+              t={t}
+              locale={locale}
+              profile={profile}
+              onSaved={onProfileSaved}
+            />
+          ) : null}
+          {section === "security" ? (
+            <AccountSecurity
+              t={t}
+              email={email}
+              locale={locale}
+              profile={profile}
+              onLogout={onLogout}
+              onSignOutEverywhere={onSignOutEverywhere}
+            />
+          ) : null}
 
-        <AccountSettingsSections
-          t={t}
-          profile={profile}
-          onProfileSaved={onProfileSaved}
-          onSignOutEverywhere={onSignOutEverywhere}
-        />
+          <AccountFooter t={t} brandName={brandName} />
+        </main>
+      </div>
 
-        <AccountFooter t={t} brandName={brandName} />
-      </main>
-
-      <AccountBottomTabs t={t} />
+      <AccountBottomTabs t={t} locale={locale} section={section} />
 
       <AccountRideDialogs t={t} locale={locale} actions={actions} />
     </div>

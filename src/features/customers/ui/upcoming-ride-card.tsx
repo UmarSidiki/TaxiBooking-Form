@@ -37,10 +37,11 @@ export function UpcomingRideCard({
     ride.date >= new Date().toISOString().slice(0, 10);
   const route = routeLabel(t, ride.pickup, ride.dropoff);
   const deadline = freeCancellationWallTime(ride.date, ride.time, cancelPolicy);
+  const headingId = `ride-${ride.tripId.replace(/[^\w-]/g, "")}`;
 
   return (
     <article
-      aria-labelledby="next-ride"
+      aria-labelledby={headingId}
       className="rounded-[var(--radius)] border border-[var(--rule)] bg-[var(--sheet)] p-[18px] md:p-[22px]"
     >
       <div className="flex items-center justify-between gap-3">
@@ -54,7 +55,7 @@ export function UpcomingRideCard({
       </div>
 
       <h2
-        id="next-ride"
+        id={headingId}
         className="mt-[7px] text-[21px] font-semibold leading-[1.2] tracking-[-0.025em] tabular-nums md:text-[23px]"
       >
         <span className="min-[380px]:hidden">{formatRideDay(ride, locale, "short")}</span>

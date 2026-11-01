@@ -8,12 +8,14 @@ import type {
   CustomerProfile,
 } from "./account-types";
 import type { GreetingKey } from "../lib/account-greeting";
+import type { AccountSection } from "../lib/account-sections";
 import {
   EMPTY_ACCOUNT_RIDES,
   useAccountDesk,
 } from "../hooks/use-account-desk";
 
 export function AccountDesk({
+  section = "overview",
   expiredLink = false,
   prefilledEmail = "",
   brandName = "",
@@ -27,6 +29,7 @@ export function AccountDesk({
   companyPhone = "",
   cancelPolicy = null,
 }: {
+  section?: AccountSection;
   expiredLink?: boolean;
   prefilledEmail?: string;
   brandName?: string;
@@ -77,6 +80,7 @@ export function AccountDesk({
 
   return (
     <AccountHome
+      section={section}
       email={desk.email || initialEmail}
       profile={desk.profile}
       greeting={desk.greeting}

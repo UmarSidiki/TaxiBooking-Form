@@ -1,4 +1,3 @@
-import type { ReactNode } from "react";
 import type { AccountT } from "./account-types";
 import { AccountBrandPlate } from "./account-login-brand";
 import { AccountMenu } from "./account-menu";
@@ -32,16 +31,6 @@ export function AccountTopBar({
           className="min-w-0 shrink [max-inline-size:40vw] overflow-hidden md:[max-inline-size:none] max-[399px]:[&_small]:hidden"
         />
 
-        <nav
-          aria-label={t("nav-account")}
-          className="hidden h-full items-center gap-[22px] md:flex"
-        >
-          <TopLink href={`/${locale}/account`} active>
-            {t("nav-home")}
-          </TopLink>
-          <TopLink href="#past">{t("nav-rides")}</TopLink>
-          <TopLink href="#profile">{t("nav-account")}</TopLink>
-        </nav>
 
         <div className="ms-auto flex min-w-0 items-center gap-2 md:gap-3">
           <div className="flex min-w-0 max-w-[33vw] flex-col items-end text-end leading-[1.3] md:max-w-none">
@@ -57,6 +46,7 @@ export function AccountTopBar({
           </div>
           <AccountMenu
             t={t}
+            locale={locale}
             name={name}
             email={email}
             onLogout={onLogout}
@@ -68,26 +58,3 @@ export function AccountTopBar({
   );
 }
 
-function TopLink({
-  href,
-  active = false,
-  children,
-}: {
-  href: string;
-  active?: boolean;
-  children: ReactNode;
-}) {
-  return (
-    <a
-      href={href}
-      aria-current={active ? "page" : undefined}
-      className={`relative flex h-full items-center text-[12.5px] hover:text-[var(--ink)] ${
-        active
-          ? "text-[var(--ink)] after:absolute after:inset-x-0 after:-bottom-px after:h-[1.5px] after:bg-[var(--ink)]"
-          : "text-[var(--ink2)]"
-      }`}
-    >
-      {children}
-    </a>
-  );
-}

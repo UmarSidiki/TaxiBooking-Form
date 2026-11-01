@@ -1,11 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useTranslations } from "next-intl";
-import { Button } from "@/shared/ui/button";
 import { Input } from "@/shared/ui/input";
 import { Label } from "@/shared/ui/label";
-import { Switch } from "@/shared/ui/switch";
 import {
   Select,
   SelectContent,
@@ -13,137 +10,188 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/shared/ui/select";
-import type { CustomerProfile } from "./account-types";
+import type { AccountT, CustomerProfile } from "./account-types";
 import { AccountPhone } from "./account-phone";
+import { AccountButton } from "./account-buttons";
+import { AccountCard, AccountPageHeader } from "./account-page-header";
 
-const LOCALES = ["en", "fr", "es", "de", "nl", "it", "ru", "ar"];
+const LANGUAGES: Array<{ code: string; label: string }> = [
+  { code: "en", label: "English" },
+  { code: "fr", label: "Français" },
+  { code: "es", label: "Español" },
+  { code: "de", label: "Deutsch" },
+  { code: "nl", label: "Nederlands" },
+  { code: "it", label: "Italiano" },
+  { code: "ru", label: "Русский" },
+  { code: "ar", label: "العربية" },
+];
+
+async function patchProfile(body: Record<string, unknown>) {
+  const res = await fetch("/api/account/profile", {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  });
+  if (!res.ok) return null;
+  const data = await res.json();
+  return (data.profile ?? null) as CustomerProfile | null;
+}
 
 export function AccountProfile({
   t,
+  email,
   profile,
   onSaved,
 }: {
-  t: (k: string) => string;
+  t: AccountT;
+  email: string;
+  locale: string;
   profile: CustomerProfile | null;
   onSaved: (p: CustomerProfile) => void;
 }) {
-  const marketingT = useTranslations("Marketing");
   const [name, setName] = useState(profile?.name ?? "");
-  const [whatsappOptIn, setWhatsappOptIn] = useState(profile?.whatsappOptIn ?? false);
-  const [marketingEmail, setMarketingEmail] = useState(
-    profile?.marketing?.email?.status === "granted",
-  );
-  const [marketingWhatsapp, setMarketingWhatsapp] = useState(
-    profile?.marketing?.whatsapp?.status === "granted",
-  );
+  const [language, setLanguage] = useState(profile?.language ?? "en");
   const [home, setHome] = useState(profile?.savedAddresses?.home ?? "");
   const [work, setWork] = useState(profile?.savedAddresses?.work ?? "");
   const [airport, setAirport] = useState(profile?.savedAddresses?.airport ?? "");
-  const [language, setLanguage] = useState(profile?.language ?? "en");
-  const [saving, setSaving] = useState(false);
+  const [saving, setSaving] = useState<"details" | "places" | null>(null);
+  const [notice, setNotice] = useState<{ form: "details" | "places"; text: string } | null>(null);
 
   useEffect(() => {
     setName(profile?.name ?? "");
-    setWhatsappOptIn(profile?.whatsappOptIn ?? false);
-    setMarketingEmail(profile?.marketing?.email?.status === "granted");
-    setMarketingWhatsapp(profile?.marketing?.whatsapp?.status === "granted");
+    setLanguage(profile?.language ?? "en");
     setHome(profile?.savedAddresses?.home ?? "");
     setWork(profile?.savedAddresses?.work ?? "");
     setAirport(profile?.savedAddresses?.airport ?? "");
-    setLanguage(profile?.language ?? "en");
   }, [profile]);
 
-  const save = async () => {
-    setSaving(true);
+  const save = async (form: "details" | "places") => {
+    setSaving(form);
+    setNotice(null);
     try {
-      const body: Record<string, unknown> = {
-        name,
-        whatsappOptIn,
-        savedAddresses: { home, work, airport },
-        language,
-      };
-      // Only send toggles the customer actually changed, so opening and
-      // saving the form never writes a consent event.
-      const originalEmail = profile?.marketing?.email?.status === "granted";
-      if (marketingEmail !== originalEmail) body.marketingEmailOptIn = marketingEmail;
-      const originalWhatsapp = profile?.marketing?.whatsapp?.status === "granted";
-      if (marketingWhatsapp !== originalWhatsapp) {
-        body.marketingWhatsappOptIn = marketingWhatsapp;
-      }
-
-      const res = await fetch("/api/account/profile", {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body),
-      });
-      if (res.ok) {
-        const data = await res.json();
-        onSaved(data.profile);
+      const saved = await patchProfile(
+        form === "details" ? { name, language } : { savedAddresses: { home, work, airport } },
+      );
+      if (saved) {
+        onSaved(saved);
+        setNotice({ form, text: t("saved") });
+      } else {
+        setNotice({ form, text: t("save-failed") });
       }
     } finally {
-      setSaving(false);
+      setSaving(null);
     }
   };
 
+  const status = (form: "details" | "places") =>
+    notice?.form === form ? (
+      <p role="status" className="text-xs text-[var(--ink2)]">
+        {notice.text}
+      </p>
+    ) : null;
+
   return (
-    <div className="space-y-4">
-      <h2 className="text-lg font-semibold">{t("profile")}</h2>
-      <div>
-        <Label htmlFor="profile-name">{t("name")}</Label>
-        <Input id="profile-name" className="h-11 text-base" value={name} onChange={(e) => setName(e.target.value)} />
-      </div>
-      <div id="phone" className="scroll-mt-24">
-        <AccountPhone t={t} phone={profile?.verifiedPhone ?? ""} onSaved={(verifiedPhone) => onSaved({ ...(profile ?? {}), verifiedPhone })} />
-      </div>
-      <label className="flex min-h-11 items-center gap-2 text-sm">
-        <Switch checked={whatsappOptIn} onCheckedChange={setWhatsappOptIn} />
-        {t("whatsapp-opt-in")}
-      </label>
-      <fieldset className="space-y-2 rounded-md border border-[var(--rule)] p-3">
-        <legend className="px-1 text-sm font-medium">{marketingT("account-title")}</legend>
-        <p className="text-xs text-muted-foreground">{marketingT("account-note")}</p>
-        <label className="flex min-h-11 cursor-pointer items-center gap-2 text-sm">
-          <Switch checked={marketingEmail} onCheckedChange={setMarketingEmail} />
-          {marketingT("account-email")}
-        </label>
-        <label className="flex min-h-11 cursor-pointer items-center gap-2 text-sm">
-          <Switch checked={marketingWhatsapp} onCheckedChange={setMarketingWhatsapp} />
-          <span>
-            {marketingT("account-whatsapp")}
-            <span className="mt-0.5 block text-xs text-muted-foreground">
-              {marketingT("account-whatsapp-hint")}
-            </span>
-          </span>
-        </label>
-      </fieldset>
-      <div>
-        <Label htmlFor="addr-home">{t("addr-home")}</Label>
-        <Input id="addr-home" className="h-11 text-base" value={home} onChange={(e) => setHome(e.target.value)} />
-      </div>
-      <div>
-        <Label htmlFor="addr-work">{t("addr-work")}</Label>
-        <Input id="addr-work" className="h-11 text-base" value={work} onChange={(e) => setWork(e.target.value)} />
-      </div>
-      <div>
-        <Label htmlFor="addr-airport">{t("addr-airport")}</Label>
-        <Input id="addr-airport" className="h-11 text-base" value={airport} onChange={(e) => setAirport(e.target.value)} />
-      </div>
-      <div>
-        <Label htmlFor="profile-language">{t("language")}</Label>
-        <Select value={language} onValueChange={setLanguage}>
-          <SelectTrigger id="profile-language" aria-label={t("language")} className="h-11">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            {LOCALES.map((l) => (
-              <SelectItem key={l} value={l}>{l}</SelectItem>
+    <>
+      <AccountPageHeader title={t("profile")} subtitle={t("profile-subtitle")} />
+      <div className="grid gap-4">
+        <AccountCard id="details" title={t("personal-details")} description={t("personal-details-copy")}>
+          <form
+            className="grid gap-4 sm:grid-cols-2"
+            onSubmit={(event) => {
+              event.preventDefault();
+              void save("details");
+            }}
+          >
+            <div className="grid gap-1.5">
+              <Label htmlFor="profile-name">{t("name")}</Label>
+              <Input
+                id="profile-name"
+                autoComplete="name"
+                className="h-11 text-base"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+              />
+            </div>
+            <div className="grid gap-1.5">
+              <Label htmlFor="profile-email">{t("email")}</Label>
+              <Input
+                id="profile-email"
+                className="h-11 bg-[var(--well)] text-base"
+                value={email}
+                readOnly
+                aria-describedby="profile-email-hint"
+                dir="ltr"
+              />
+              <p id="profile-email-hint" className="text-[11px] leading-[1.5] text-[var(--ink2)]">
+                {t("email-primary-hint")}
+              </p>
+            </div>
+            <div className="grid gap-1.5">
+              <Label htmlFor="profile-language">{t("language")}</Label>
+              <Select value={language} onValueChange={setLanguage}>
+                <SelectTrigger id="profile-language" aria-label={t("language")} className="h-11 w-full">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {LANGUAGES.map((l) => (
+                    <SelectItem key={l.code} value={l.code}>
+                      {l.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="flex flex-wrap items-center gap-3 sm:col-span-2">
+              <AccountButton type="submit" variant="primary" disabled={saving !== null}>
+                {saving === "details" ? `${t("saving")}…` : t("save-changes")}
+              </AccountButton>
+              {status("details")}
+            </div>
+          </form>
+        </AccountCard>
+
+        <AccountCard id="phone" title={t("whatsapp")} description={t("whatsapp-card-copy")}>
+          <AccountPhone
+            t={t}
+            phone={profile?.verifiedPhone ?? ""}
+            onSaved={(verifiedPhone) => onSaved({ ...(profile ?? {}), verifiedPhone })}
+          />
+        </AccountCard>
+
+        <AccountCard id="places" title={t("saved-places")} description={t("saved-places-copy")}>
+          <form
+            className="grid gap-4"
+            onSubmit={(event) => {
+              event.preventDefault();
+              void save("places");
+            }}
+          >
+            {(
+              [
+                ["addr-home", home, setHome],
+                ["addr-work", work, setWork],
+                ["addr-airport", airport, setAirport],
+              ] as const
+            ).map(([key, value, set]) => (
+              <div key={key} className="grid gap-1.5">
+                <Label htmlFor={key}>{t(key)}</Label>
+                <Input
+                  id={key}
+                  className="h-11 text-base"
+                  value={value}
+                  onChange={(e) => set(e.target.value)}
+                />
+              </div>
             ))}
-          </SelectContent>
-        </Select>
+            <div className="flex flex-wrap items-center gap-3">
+              <AccountButton type="submit" variant="primary" disabled={saving !== null}>
+                {saving === "places" ? `${t("saving")}…` : t("save-places")}
+              </AccountButton>
+              {status("places")}
+            </div>
+          </form>
+        </AccountCard>
       </div>
-      <Button className="h-11" type="button" onClick={save} disabled={saving}>
-        {saving ? `${t("saving")}…` : t("save-profile")}
-      </Button>
-    </div>
+    </>
   );
 }

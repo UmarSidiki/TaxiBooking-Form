@@ -1,14 +1,17 @@
 import { MapPin, MessageCircle, RotateCcw, ShieldCheck } from "lucide-react";
 import type { ReactNode } from "react";
 import type { AccountT } from "./account-types";
+import { accountHref } from "../lib/account-sections";
 
 export function AccountQuickActions({
   t,
+  locale,
   rebookHref: rebookTarget,
   hasLastRide,
   savedPlaces,
 }: {
   t: AccountT;
+  locale: string;
   rebookHref: string;
   hasLastRide: boolean;
   savedPlaces: number;
@@ -34,19 +37,19 @@ export function AccountQuickActions({
           detail={hasLastRide ? t("rebook-last-route") : t("rebook-new-route")}
         />
         <QuickItem
-          href="#profile"
+          href={accountHref(locale, "profile", "places")}
           icon={<MapPin className="size-[18px]" strokeWidth={1.7} />}
           title={t("saved-places")}
           detail={savedLabel}
         />
         <QuickItem
-          href="#phone"
+          href={accountHref(locale, "profile", "phone")}
           icon={<MessageCircle className="size-[18px]" strokeWidth={1.7} />}
           title={t("whatsapp")}
           detail={t("whatsapp-chat")}
         />
         <QuickItem
-          href="#security"
+          href={accountHref(locale, "security")}
           icon={<ShieldCheck className="size-[18px]" strokeWidth={1.7} />}
           title={t("security")}
           detail={t("security-sessions")}

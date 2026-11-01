@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import type { AccountT, Ride } from "./account-types";
 import { AccountLink } from "./account-buttons";
 import {
@@ -20,14 +21,20 @@ export function AccountPastRides({
   t,
   locale,
   currency,
+  showAll = false,
+  viewAllHref,
 }: {
   rides: Ride[];
   t: AccountT;
   locale: string;
   currency: string;
+  /** Rides page: list every ride with no toggle. */
+  showAll?: boolean;
+  /** Overview: "View all" goes to the rides page instead of expanding. */
+  viewAllHref?: string;
 }) {
   const [expanded, setExpanded] = useState(false);
-  const visible = expanded ? rides : rides.slice(0, PREVIEW_COUNT);
+  const visible = showAll || expanded ? rides : rides.slice(0, PREVIEW_COUNT);
 
   return (
     <section
@@ -39,7 +46,14 @@ export function AccountPastRides({
         <h2 id="past-title" className="m-0 text-[13px] font-semibold">
           {t("past-rides")}
         </h2>
-        {rides.length > PREVIEW_COUNT ? (
+        {showAll ? null : viewAllHref && rides.length > 0 ? (
+          <Link
+            href={viewAllHref}
+            className="inline-flex min-h-11 items-center px-1 text-xs text-[var(--link)] hover:underline hover:underline-offset-2"
+          >
+            {t("view-all")}
+          </Link>
+        ) : rides.length > PREVIEW_COUNT ? (
           <button
             type="button"
             onClick={() => setExpanded((value) => !value)}

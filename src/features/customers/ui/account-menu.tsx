@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import type { KeyboardEvent as ReactKeyboardEvent } from "react";
 import { ChevronDown } from "lucide-react";
 import type { AccountT } from "./account-types";
+import { accountHref } from "../lib/account-sections";
 import { displayName, initials } from "./account-format";
 import {
   AccountMenuAction as MenuAction,
@@ -12,12 +13,14 @@ import {
 
 export function AccountMenu({
   t,
+  locale,
   name,
   email,
   onLogout,
   onSignOutEverywhere,
 }: {
   t: AccountT;
+  locale: string;
   name: string;
   email: string;
   onLogout: () => void;
@@ -105,16 +108,19 @@ export function AccountMenu({
               {email}
             </span>
           </div>
-          <MenuLink href="#profile" onSelect={close}>
+          <MenuLink href={accountHref(locale, "profile")} onSelect={close}>
             {t("menu-profile")}
           </MenuLink>
-          <MenuLink href="#profile" onSelect={close}>
+          <MenuLink href={accountHref(locale, "profile", "places")} onSelect={close}>
             {t("menu-saved-places")}
           </MenuLink>
-          <MenuLink href="#past" onSelect={close}>
+          <MenuLink href={accountHref(locale, "rides")} onSelect={close}>
             {t("menu-rides-receipts")}
           </MenuLink>
-          <MenuLink href="#security" onSelect={close}>
+          <MenuLink href={accountHref(locale, "notifications")} onSelect={close}>
+            {t("nav-notifications")}
+          </MenuLink>
+          <MenuLink href={accountHref(locale, "security")} onSelect={close}>
             {t("menu-security")}
           </MenuLink>
           <div className="my-1 h-px bg-[var(--rule)]" role="separator" />

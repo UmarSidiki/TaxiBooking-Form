@@ -87,10 +87,17 @@ export function AccountPhone({
 
   return (
     <div className="space-y-2">
-      <Label>{t("verified-phone")}</Label>
+      <Label htmlFor="account-phone-input">{t("verified-phone")}</Label>
+      <p className="text-xs leading-[1.55] text-[var(--ink2)]">{t("phone-hint")}</p>
       {verifiedPhone ? (
         <div className="flex flex-wrap items-center gap-3">
-          <span className="text-sm">{verifiedPhone}</span>
+          <span className="inline-flex items-center gap-2 text-sm font-medium tabular-nums" dir="ltr">
+            {verifiedPhone}
+            <span className="status-mark" data-tone="ok">
+              <span className="status-mark__dot" aria-hidden="true" />
+              {t("verified")}
+            </span>
+          </span>
           <Button className="h-11" type="button" variant="outline" onClick={remove} disabled={busy}>
             {t("remove-phone")}
           </Button>
@@ -98,8 +105,11 @@ export function AccountPhone({
       ) : (
         <div className="flex flex-col gap-2 sm:flex-row">
           <Input
+            id="account-phone-input"
             className="h-11 text-base"
             inputMode="tel"
+            autoComplete="tel"
+            dir="ltr"
             placeholder={t("phone")}
             value={input}
             onChange={(event) => setInput(event.target.value)}
@@ -114,6 +124,8 @@ export function AccountPhone({
           <Input
             className="h-11 text-base"
             inputMode="numeric"
+            autoComplete="one-time-code"
+            aria-label={t("code")}
             placeholder={t("code")}
             value={code}
             onChange={(event) => setCode(event.target.value)}

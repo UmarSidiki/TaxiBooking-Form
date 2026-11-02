@@ -91,7 +91,7 @@ function DeskNavGroupBlock({
     <SidebarGroup className="py-1.5" data-nav-group={group.id}>
       <SidebarGroupLabel
         id={labelId}
-        className="h-7 text-[0.68rem] font-semibold uppercase tracking-[0.08em] text-sidebar-foreground/55"
+        className="h-7 text-[0.68rem] font-semibold uppercase tracking-[0.08em] text-[var(--ink2)]"
       >
         {t(group.labelKey)}
       </SidebarGroupLabel>

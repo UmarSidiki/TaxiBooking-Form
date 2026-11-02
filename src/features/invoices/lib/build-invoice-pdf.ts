@@ -5,6 +5,7 @@ import { ridePayUrl } from "@/features/invoices/lib/ride-pay-link";
 import { allocateInvoiceNumber } from "@/features/invoices/lib/allocate-invoice-number";
 import { logoDataUrl } from "@/features/invoices/lib/invoice-logo";
 import { Setting } from "@/features/settings/model";
+import { brandName } from "@/features/settings/lib/brand-name";
 import { resolveBrandColors } from "@/features/settings/lib/brand-colors";
 import { getCurrencySymbol } from "@/shared/lib/utils";
 import { resolvePublicUrl } from "@/features/settings/lib/public-url";
@@ -22,7 +23,7 @@ export async function buildInvoicePdf(tripId: string) {
   const base = await resolvePublicUrl();
   const payUrl = ridePayUrl(base, booking.locale, tripId);
   const qrDataUrl = payUrl ? await QRCode.toDataURL(payUrl, { margin: 1, width: 280 }) : undefined;
-  const pdf = await renderInvoicePdf(booking, symbol, settings?.smtpSenderName || settings?.companyName || "Booking", {
+  const pdf = await renderInvoicePdf(booking, symbol, brandName(settings) || "Booking", {
     invoiceNumber: invoiceNumber ?? tripId,
     qrDataUrl,
     payUrl: payUrl ?? undefined,

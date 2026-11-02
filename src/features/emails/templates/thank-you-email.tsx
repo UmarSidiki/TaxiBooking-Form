@@ -42,7 +42,7 @@ export function ThankYouEmail({
           href={reviewUrl}
           label={t("review_cta")}
           t={t}
-          color={brand.primaryColor}
+          color={brand.accent}
         />
       ) : null}
     </BrandLayout>

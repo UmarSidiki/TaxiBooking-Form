@@ -2,7 +2,6 @@ import { OVERRIDE_KEYS, type OverrideKey } from "@/features/settings/lib/palette
 import { z } from "zod";
 import { COLOR_PALETTES } from "@/features/settings/lib/color-palettes";
 
-const hexOrRgb = z.string().max(64);
 
 const LOGO_DATA_URL = /^data:image\/(png|jpeg|webp|gif|svg\+xml);base64,[A-Za-z0-9+/]+={0,2}$/;
 
@@ -31,8 +30,6 @@ const paletteOverridesSchema = z
   .strict();
 
 export const settingsWriteSchema = z.object({
-  primaryColor: hexOrRgb.optional(),
-  secondaryColor: hexOrRgb.optional(),
   borderRadius: z.number().optional(),
   colorPalette: z.enum(COLOR_PALETTES).optional(),
   // Strict #RRGGBB only: these values are turned into CSS on the server.

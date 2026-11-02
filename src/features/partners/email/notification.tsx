@@ -188,7 +188,7 @@ export async function sendRideNotificationEmail(data: RideNotificationData) {
                 ]
               : []
           }
-          extra={<LocationLinks locations={data.locations} t={prepared.t} color={prepared.brand.primaryColor} />}
+          extra={<LocationLinks locations={data.locations} t={prepared.t} color={prepared.brand.accent} />}
           cta={url ? { url, label: prepared.t("view_ride") } : null}
         />
       ),

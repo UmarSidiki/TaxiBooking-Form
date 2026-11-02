@@ -13,8 +13,6 @@ export type ThemeSettings = PublicSettings;
 function withDefaults(settings: PublicSettings): PublicSettings {
   return {
     ...settings,
-    primaryColor: settings.primaryColor || "#B45309",
-    secondaryColor: settings.secondaryColor || "#111827",
     colorPalette: resolveColorPalette(settings.colorPalette),
     customPalette: resolveCustomPalette(settings.customPalette),
     borderRadius:

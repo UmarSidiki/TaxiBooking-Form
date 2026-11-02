@@ -3,8 +3,6 @@ import { COLOR_PALETTES, DEFAULT_COLOR_PALETTE, type ColorPalette } from "@/feat
 
 export interface ISetting {
   _id?: string;
-  primaryColor: string;
-  secondaryColor: string;
   borderRadius: number;
   colorPalette?: ColorPalette;
   customPalette?: { brand: string; accent: string; light?: Record<string, string>; dark?: Record<string, string> };
@@ -108,14 +106,6 @@ export interface ISetting {
 
 const SettingSchema = new Schema<ISetting>(
   {
-    primaryColor: {
-      type: String,
-      default: "#B45309",
-    },
-    secondaryColor: {
-      type: String,
-      default: "#111827", // Default: gray-900
-    },
     colorPalette: {
       type: String,
       enum: COLOR_PALETTES,

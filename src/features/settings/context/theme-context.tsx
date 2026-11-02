@@ -2,7 +2,6 @@
 
 import { resolveColorPalette } from "@/features/settings/lib/color-palettes";
 import { customPaletteCss } from "@/features/settings/lib/custom-palette";
-import { operatorAccent } from "@/features/settings/lib/operator-accent";
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import { apiFetch } from "@/shared/http/api";
@@ -69,13 +68,9 @@ export function ThemeProvider({ children, initialSettings = null }: ThemeProvide
   useEffect(() => {
     if (settings) {
       const root = document.documentElement;
-      const primary = settings.primaryColor ?? "#B45309";
-      const secondary = settings.secondaryColor ?? "#111827";
       const radius =
         typeof settings.borderRadius === "number" ? settings.borderRadius : 0.5;
 
-      root.style.setProperty("--primary-color", primary);
-      root.style.setProperty("--secondary-color", secondary);
       root.style.setProperty("--border-radius", `${radius}rem`);
       // First paint already carries these from the server; this only follows saves made in this tab.
       const palette = resolveColorPalette(settings.colorPalette);
@@ -89,9 +84,6 @@ export function ThemeProvider({ children, initialSettings = null }: ThemeProvide
         }
         tag.textContent = customPaletteCss(settings.customPalette);
       }
-      const accent = palette === "custom" ? ({ kind: "default" } as const) : operatorAccent(settings.primaryColor);
-      if (accent.kind === "custom") document.body.style.setProperty("--operator-accent", accent.color);
-      else document.body.style.removeProperty("--operator-accent");
       if (isLoading) {
         setIsLoading(false);
       }

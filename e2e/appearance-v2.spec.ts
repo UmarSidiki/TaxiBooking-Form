@@ -45,19 +45,15 @@ test.beforeAll(async ({ browser, baseURL }) => {
 });
 test.afterAll(async () => setSettings({ colorPalette: "neutral", primaryColor: "#B45309" }, { customPalette: "" }));
 
-test("no standalone primary/secondary fields; a legacy primary colour can be folded into Custom", async ({ browser, baseURL }) => {
+test("no standalone primary/secondary fields; a stale legacy primary colour in the DB is ignored", async ({ browser, baseURL }) => {
   test.setTimeout(300_000);
   await setSettings({ colorPalette: "neutral", primaryColor: "#7C2D12" }, { customPalette: "" });
   const { ctx, page } = await open(browser, baseURL, 1440, "light");
   await expect(page.locator("#appearance-primary-color-text, #appearance-secondary-color-text")).toHaveCount(0);
-  // Existing operators look the same: the legacy colour still drives buttons until they act.
-  expect(await page.evaluate(() => getComputedStyle(document.body).getPropertyValue("--operator-accent").trim().toUpperCase())).toBe("#7C2D12");
-  const notice = page.getByTestId("legacy-accent");
-  await expect(notice).toContainText("#7C2D12");
-  await page.getByTestId("legacy-accent-move").click();
-  await expect(page.getByTestId("custom-palette-editor")).toBeVisible();
-  await expect(page.getByTestId("custom-brand-hex")).toHaveValue("#7C2D12");
-  await expect(notice).toHaveCount(0);
+  await expect(page.getByTestId("legacy-accent")).toHaveCount(0);
+  // The palette wins: buttons use the neutral --sig, never the old field.
+  expect(await rootVar(page, "--sig")).toBe("#171717");
+  expect(await rootVar(page, "--primary-color")).toBe("#171717");
   await ctx.close();
 });
 

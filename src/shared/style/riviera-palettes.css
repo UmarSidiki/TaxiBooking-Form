@@ -14,7 +14,7 @@
   --ink2: #555555;
   --rule: #DEDEE0;
   --rule2: #848484;
-  --sig: var(--operator-accent, #171717);
+  --sig: #171717;
   --sig-on: #FFFFFF;
   --sig-tint: #EDEDED;
   --link: #1D4ED8;
@@ -78,7 +78,7 @@
   --ink2: #4E5668;
   --rule: #D8DDE6;
   --rule2: #7F879A;
-  --sig: var(--operator-accent, #4652D6);
+  --sig: #4652D6;
   --sig-on: #FFFFFF;
   --sig-tint: #EEF0FD;
   --link: #3B47C9;
@@ -142,7 +142,7 @@
   --ink2: #5C534B;
   --rule: #E0D7CA;
   --rule2: #8F8478;
-  --sig: var(--operator-accent, #8E1B2B);
+  --sig: #8E1B2B;
   --sig-on: #FFFFFF;
   --sig-tint: #F8ECEC;
   --link: #74551F;
@@ -206,7 +206,7 @@
   --ink2: #45576E;
   --rule: #D4DDE8;
   --rule2: #76869D;
-  --sig: var(--operator-accent, #533AFD);
+  --sig: #533AFD;
   --sig-on: #FFFFFF;
   --sig-tint: #EFECFF;
   --link: #0060C0;
@@ -270,7 +270,7 @@
   --ink2: #576B62;
   --rule: #DAE1DE;
   --rule2: #7D9287;
-  --sig: var(--operator-accent, #1E6B47);
+  --sig: #1E6B47;
   --sig-on: #FFFFFF;
   --sig-tint: #EBF9F3;
   --link: #0F6E63;
@@ -334,7 +334,7 @@
   --ink2: #57676B;
   --rule: #DAE0E1;
   --rule2: #7F8F94;
-  --sig: var(--operator-accent, #0B6E8A);
+  --sig: #0B6E8A;
   --sig-on: #FFFFFF;
   --sig-tint: #E9F7FB;
   --link: #0559A0;
@@ -398,7 +398,7 @@
   --ink2: #6B5F57;
   --rule: #E1DDDA;
   --rule2: #978A82;
-  --sig: var(--operator-accent, #A84A08);
+  --sig: #A84A08;
   --sig-on: #FFFFFF;
   --sig-tint: #FBF1E9;
   --link: #1D4ED8;
@@ -462,7 +462,7 @@
   --ink2: #67576B;
   --rule: #E0DAE1;
   --rule2: #958599;
-  --sig: var(--operator-accent, #7A2A8C);
+  --sig: #7A2A8C;
   --sig-on: #FFFFFF;
   --sig-tint: #F7EBF9;
   --link: #5B36C4;
@@ -526,7 +526,7 @@
   --ink2: #6B5C57;
   --rule: #E1DCDA;
   --rule2: #978782;
-  --sig: var(--operator-accent, #B1431C);
+  --sig: #B1431C;
   --sig-on: #FFFFFF;
   --sig-tint: #FBEEE9;
   --link: #8A4B12;
@@ -590,7 +590,7 @@
   --ink2: #5A6068;
   --rule: #DBDDE0;
   --rule2: #858B94;
-  --sig: var(--operator-accent, #334155);
+  --sig: #334155;
   --sig-on: #FFFFFF;
   --sig-tint: #EFF2F5;
   --link: #1D5FD0;

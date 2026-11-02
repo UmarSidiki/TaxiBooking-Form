@@ -83,7 +83,7 @@ export function BrandLayout({
                   fontSize: 18,
                   fontWeight: 700,
                   lineHeight: "24px",
-                  color: brand.primaryColor,
+                  color: brand.accent,
                 }}
               >
                 {brand.name}
@@ -183,7 +183,7 @@ export function BrandLayout({
                     fontFamily: emailTokens.font,
                     fontSize: 14,
                     fontWeight: 700,
-                    color: brand.primaryColor,
+                    color: brand.accent,
                     textDecoration: "underline",
                   }}
                 >

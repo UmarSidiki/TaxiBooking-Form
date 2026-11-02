@@ -190,9 +190,9 @@ export function paletteCss(id: string, set: PaletteSet, { isDefault = false } = 
   const droot = isDefault ? ':root[data-riviera-theme="dark"]' : `:root[data-palette="${id}"][data-riviera-theme="dark"]`;
   const sel = (root: string, mode: string) =>
     [root, `${root} .riviera`, `${root} .riviera-embed`, `${root} .riviera-drawer`, `:root${mode} .riviera [data-palette-scope="${id}"]`].join(",\n");
-  const body = (t: PaletteTokens, light: boolean) =>
-    TOKEN_KEYS.map((k) => `  --${k}: ${light && k === "sig" ? `var(--operator-accent, ${t[k]})` : t[k]};\n`).join("");
-  return `${sel(lroot, ':not([data-riviera-theme="dark"])')} {\n${body(set.light, true)}}\n\n${sel(droot, '[data-riviera-theme="dark"]')} {\n${body(set.dark, false)}}\n`;
+  const body = (t: PaletteTokens) =>
+    TOKEN_KEYS.map((k) => `  --${k}: ${t[k]};\n`).join("");
+  return `${sel(lroot, ':not([data-riviera-theme="dark"])')} {\n${body(set.light)}}\n\n${sel(droot, '[data-riviera-theme="dark"]')} {\n${body(set.dark)}}\n`;
 }
 
 /** [foreground, background, minimum] pairs every palette must meet (WCAG 1.4.3 / 1.4.11). */

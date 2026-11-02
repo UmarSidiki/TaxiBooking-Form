@@ -1562,7 +1562,6 @@
       "preview-pickup": "Geneva Airport",
       "preview-dropoff": "Hotel beau-Rivage, lausanne",
       "preview-continue": "See vehicles",
-      "accent-too-light": "This colour is too light for white button text, so the booking form keeps its default accent.",
       "corner-sharpness-scope": "Applies to the embeddable widget; the booking form keeps its fine corners.",
       "palette-title": "Colour palette",
       "palette-help": "Applies to the booking form, embeds and this desk. Every palette meets WCAG AA in light and dark.",
@@ -1629,10 +1628,7 @@
       "custom-token-rule-help": "Dividers and card outlines.",
       "custom-text-low": "Some text is below 4.5:1 against its background and will be hard to read. Pick a darker text or lighter background (or the reverse in dark mode).",
       "custom-reset-mode": "Reset this mode to automatic",
-      "custom-reset-one": "Auto",
-      "legacy-accent-text": "Your earlier primary colour {hex} still replaces this palette's button colour.",
-      "legacy-accent-move": "Move it into a custom palette",
-      "legacy-accent-drop": "Use the palette's colour"
+      "custom-reset-one": "Auto"
     },
     "Refunds": {
       "title": "Refund requests",

@@ -1562,7 +1562,6 @@
       "preview-pickup": "Aeropuerto de Ginebra",
       "preview-dropoff": "Hotel Beau-Rivage, Lausana",
       "preview-continue": "Ver vehículos",
-      "accent-too-light": "Este color es demasiado claro para texto blanco, así que el formulario mantiene su acento predeterminado.",
       "corner-sharpness-scope": "Se aplica al widget integrable; el formulario mantiene sus esquinas finas.",
       "palette-title": "Paleta de colores",
       "palette-help": "Se aplica al formulario, los widgets y este panel. Todas cumplen WCAG AA en claro y oscuro.",
@@ -1629,10 +1628,7 @@
       "custom-token-rule-help": "Divisores y contornos de tarjetas.",
       "custom-text-low": "Parte del texto está por debajo de 4,5:1 frente a su fondo y será difícil de leer. Elige un texto más oscuro o un fondo más claro (al revés en modo oscuro).",
       "custom-reset-mode": "Restablecer este modo a automático",
-      "custom-reset-one": "Auto",
-      "legacy-accent-text": "Tu antiguo color principal {hex} sigue sustituyendo el color de los botones de esta paleta.",
-      "legacy-accent-move": "Pasarlo a una paleta personalizada",
-      "legacy-accent-drop": "Usar el color de la paleta"
+      "custom-reset-one": "Auto"
     },
     "Refunds": {
       "title": "Refund Requests",

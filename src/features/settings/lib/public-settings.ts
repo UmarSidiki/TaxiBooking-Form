@@ -5,8 +5,6 @@ import type { ISetting } from "@/features/settings/model";
  * configuration are deliberately absent - use ?scope=full as an admin for those.
  */
 export const PUBLIC_SETTING_FIELDS = [
-  "primaryColor",
-  "secondaryColor",
   "borderRadius",
   "colorPalette",
   "customPalette",

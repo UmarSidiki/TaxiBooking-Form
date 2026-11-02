@@ -5,6 +5,7 @@ import { ridePayUrl } from "@/features/invoices/lib/ride-pay-link";
 import { allocateInvoiceNumber } from "@/features/invoices/lib/allocate-invoice-number";
 import { logoDataUrl } from "@/features/invoices/lib/invoice-logo";
 import { Setting } from "@/features/settings/model";
+import { resolveBrandColors } from "@/features/settings/lib/brand-colors";
 import { getCurrencySymbol } from "@/shared/lib/utils";
 import { resolvePublicUrl } from "@/features/settings/lib/public-url";
 
@@ -25,7 +26,7 @@ export async function buildInvoicePdf(tripId: string) {
     invoiceNumber: invoiceNumber ?? tripId,
     qrDataUrl,
     payUrl: payUrl ?? undefined,
-    brandColor: settings?.primaryColor,
+    brandColor: resolveBrandColors(settings).primary,
     logoDataUrl: logoUrl,
     legalName: settings?.legalName,
     address: settings?.address || settings?.companyAddress,

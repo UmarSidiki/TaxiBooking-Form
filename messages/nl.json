@@ -1562,7 +1562,6 @@
       "preview-pickup": "Luchthaven Genève",
       "preview-dropoff": "Hotel Beau-Rivage, Lausanne",
       "preview-continue": "Voertuigen bekijken",
-      "accent-too-light": "Deze kleur is te licht voor witte tekst, dus het formulier houdt zijn standaardaccent.",
       "corner-sharpness-scope": "Geldt voor de insluitbare widget; het boekingsformulier houdt zijn fijne hoeken.",
       "palette-title": "Kleurenpalet",
       "palette-help": "Geldt voor het boekingsformulier, embeds en dit dashboard. Elk palet voldoet aan WCAG AA in licht en donker.",
@@ -1629,10 +1628,7 @@
       "custom-token-rule-help": "Scheidingslijnen en kaartranden.",
       "custom-text-low": "Een deel van de tekst haalt geen 4,5:1 tegen de achtergrond en is slecht leesbaar. Kies donkerdere tekst of een lichtere achtergrond (andersom in donkere modus).",
       "custom-reset-mode": "Deze modus terugzetten naar automatisch",
-      "custom-reset-one": "Auto",
-      "legacy-accent-text": "Je eerdere primaire kleur {hex} vervangt nog steeds de knopkleur van dit palet.",
-      "legacy-accent-move": "Verplaatsen naar een eigen palet",
-      "legacy-accent-drop": "Kleur van het palet gebruiken"
+      "custom-reset-one": "Auto"
     },
     "Refunds": {
       "title": "Refund Requests",

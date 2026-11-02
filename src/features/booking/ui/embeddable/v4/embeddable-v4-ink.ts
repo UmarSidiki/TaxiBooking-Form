@@ -31,8 +31,8 @@ export function v4ToneVars(input: {
   button?: string;
   radiusRem?: number;
 }): Record<string, string> {
-  const panel = input.panel || "#EAB308";
-  const button = input.button || "#111827";
+  const panel = input.panel || "#171717";
+  const button = input.button || "#171717";
   const radius = typeof input.radiusRem === "number" ? input.radiusRem : 0.5;
   return {
     "--v4-panel": panel,

@@ -8,7 +8,6 @@ import "@/shared/style/riviera-theme.css";
 import "@/shared/style/riviera-palettes.css";
 import { resolveColorPalette } from "@/features/settings/lib/color-palettes";
 import { customPaletteCss } from "@/features/settings/lib/custom-palette";
-import { operatorAccent } from "@/features/settings/lib/operator-accent";
 import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { notFound } from "next/navigation";
 import AuthSessionProvider from "@/features/auth/ui/session-provider";
@@ -104,13 +103,9 @@ export default async function RootLayout({ children, params }: Props) {
   ) as ThemeSettings;
 
   const palette = resolveColorPalette(themeSettings.colorPalette);
-  // The custom palette carries its own brand colour, so the legacy accent override stays off.
-  const accent = palette === "custom" ? ({ kind: "default" } as const) : operatorAccent(themeSettings.primaryColor);
+  // Brand colours come from the palette stylesheet (--sig/--ink); only the radius is set inline.
   const cssVariables = {
-    "--primary-color": themeSettings.primaryColor,
-    "--secondary-color": themeSettings.secondaryColor,
     "--border-radius": `${themeSettings.borderRadius}rem`,
-    ...(accent.kind === "custom" ? { "--operator-accent": accent.color } : {}),
   } as CSSProperties;
 
   return (

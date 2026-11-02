@@ -5,9 +5,6 @@ import { useTranslations } from "next-intl";
 import { CustomPaletteEditor, DraftPaletteStyle } from "@/features/settings/ui/custom-palette-editor";
 import { PalettePicker } from "@/features/settings/ui/palette-picker";
 import AppearanceTab from "@/features/settings/ui/appearance-tab";
-import { LegacyAccentNotice } from "@/features/settings/ui/legacy-accent-notice";
-import { LEGACY_DEFAULT_PRIMARY } from "@/features/settings/lib/operator-accent";
-import { resolveCustomPalette } from "@/features/settings/lib/custom-palette";
 import { AppearancePreview } from "@/features/settings/ui/appearance-preview";
 import { AppearanceTimezoneField } from "@/features/settings/ui/appearance-tab-timezone";
 import { InvoiceLegalCard } from "@/features/settings/ui/invoice-legal-card";
@@ -41,17 +38,6 @@ export function SettingsPageAppearance({
               value={settings.colorPalette}
               onChange={(value) => patch("colorPalette", value)}
             />
-            {settings.colorPalette !== "custom" ? (
-              <LegacyAccentNotice
-                primaryColor={settings.primaryColor}
-                onMoveToCustom={(hex) => {
-                  patch("customPalette", { ...resolveCustomPalette(settings.customPalette), brand: hex });
-                  patch("colorPalette", "custom");
-                  patch("primaryColor", LEGACY_DEFAULT_PRIMARY);
-                }}
-                onDrop={() => patch("primaryColor", LEGACY_DEFAULT_PRIMARY)}
-              />
-            ) : null}
             {settings.colorPalette === "custom" ? (
               <CustomPaletteEditor
                 value={settings.customPalette}

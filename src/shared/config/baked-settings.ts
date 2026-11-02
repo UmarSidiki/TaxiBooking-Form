@@ -3,14 +3,12 @@ import bakedSettings from '@/shared/config/baked-settings.json';
 export interface BakedSettings {
   adminEmail: string | null;
   stripeCurrency: string;
-  primaryColor: string;
   syncedAt: string | null;
 }
 
 const defaults: BakedSettings = {
   adminEmail: null,
   stripeCurrency: 'EUR',
-  primaryColor: '#B45309',
   syncedAt: null,
 };
 

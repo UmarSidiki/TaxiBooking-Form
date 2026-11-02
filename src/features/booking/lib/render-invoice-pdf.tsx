@@ -1,4 +1,5 @@
 import { Document, Image, Page, Text, View, renderToBuffer } from "@react-pdf/renderer";
+import { resolveBrandColors } from "@/features/settings/lib/brand-colors";
 import { invoicePdfStyles as styles } from "@/features/booking/lib/invoice-pdf-styles";
 import { invoiceFontFamily } from "@/features/invoices/lib/invoice-fonts";
 import { invoiceCopy, invoiceLineLabel, invoiceLocale, invoicePaymentMethodLabel } from "@/features/invoices/lib/invoice-labels";
@@ -96,7 +97,7 @@ function InvoiceDocument({
   options: InvoicePdfOptions;
 }) {
   const copy = invoiceCopy(booking.locale);
-  const brand = options.brandColor && /^#[0-9a-f]{6}$/i.test(options.brandColor) ? options.brandColor : "#B45309";
+  const brand = options.brandColor && /^#[0-9a-f]{6}$/i.test(options.brandColor) ? options.brandColor : resolveBrandColors(null).primary;
   const inkOnBrand = onBrand(brand);
   const total = booking.totalAmount ?? 0;
   const paid = booking.paymentStatus === "completed";

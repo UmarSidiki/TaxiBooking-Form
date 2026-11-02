@@ -2,6 +2,7 @@ import { corporateMonth } from "@/features/corporate/lib/monthly-statement";
 import { renderStatementPdf } from "@/features/corporate/lib/render-statement-pdf";
 import { statementCopy } from "@/features/corporate/lib/statement-labels";
 import { Setting } from "@/features/settings/model";
+import { resolveBrandColors } from "@/features/settings/lib/brand-colors";
 import { getCurrencySymbol } from "@/shared/lib/utils";
 import { prepareEventEmail, sendPreparedEmail } from "@/features/emails/lib/send-event-email";
 import { NoticeEmail } from "@/features/emails/templates/notice-email";
@@ -18,6 +19,7 @@ export async function sendCorporateStatement(
   const symbol = getCurrencySymbol(settings?.stripeCurrency?.toUpperCase() || "EUR");
   const company = settings?.smtpSenderName || "Booking";
   const pdf = await renderStatementPdf({
+    brandColor: resolveBrandColors(settings).primary,
     companyName: company,
     accountName: statement.account.name,
     month,

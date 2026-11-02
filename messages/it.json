@@ -1562,7 +1562,6 @@
       "preview-pickup": "Aeroporto di Ginevra",
       "preview-dropoff": "Hotel Beau-Rivage, Losanna",
       "preview-continue": "Vedi i veicoli",
-      "accent-too-light": "Questo colore è troppo chiaro per il testo bianco, quindi il modulo mantiene l'accento predefinito.",
       "corner-sharpness-scope": "Vale per il widget incorporabile; il modulo mantiene i suoi angoli sottili.",
       "palette-title": "Tavolozza colori",
       "palette-help": "Vale per il modulo, i widget e questa dashboard. Ogni tavolozza rispetta WCAG AA in chiaro e scuro.",
@@ -1629,10 +1628,7 @@
       "custom-token-rule-help": "Divisori e contorni delle schede.",
       "custom-text-low": "Parte del testo è sotto 4,5:1 rispetto allo sfondo e sarà difficile da leggere. Scegli un testo più scuro o uno sfondo più chiaro (il contrario in modalità scura).",
       "custom-reset-mode": "Riporta questa modalità su automatico",
-      "custom-reset-one": "Auto",
-      "legacy-accent-text": "Il tuo vecchio colore primario {hex} sostituisce ancora il colore dei pulsanti di questa palette.",
-      "legacy-accent-move": "Spostalo in una palette personalizzata",
-      "legacy-accent-drop": "Usa il colore della palette"
+      "custom-reset-one": "Auto"
     },
     "Refunds": {
       "title": "Refund Requests",

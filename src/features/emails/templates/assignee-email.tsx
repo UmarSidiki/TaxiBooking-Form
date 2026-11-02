@@ -51,11 +51,11 @@ export function AssigneeEmail({
     >
       <StatusBadge label={status.label} tone={status.tone} />
       <TripCard trip={trip} t={t} />
-      <LocationLinks locations={locations} t={t} color={brand.primaryColor} />
+      <LocationLinks locations={locations} t={t} color={brand.accent} />
       {details?.length ? <DetailList rows={details} /> : null}
       {priceRows?.length ? <PriceTable rows={priceRows} t={t} /> : null}
       {cta?.url ? (
-        <CTA href={cta.url} label={cta.label} t={t} color={brand.primaryColor} />
+        <CTA href={cta.url} label={cta.label} t={t} color={brand.accent} />
       ) : null}
     </BrandLayout>
   );

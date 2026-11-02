@@ -1562,7 +1562,6 @@
       "preview-pickup": "Flughafen Genf",
       "preview-dropoff": "Hotel Beau-Rivage, Lausanne",
       "preview-continue": "Fahrzeuge ansehen",
-      "accent-too-light": "Diese Farbe ist zu hell für weiße Schrift, daher behält das Buchungsformular seinen Standardakzent.",
       "corner-sharpness-scope": "Gilt für das einbettbare Widget; das Buchungsformular behält seine feinen Ecken.",
       "palette-title": "Farbpalette",
       "palette-help": "Gilt für Buchungsformular, Einbettungen und dieses Dashboard. Jede Palette erfüllt WCAG AA hell und dunkel.",
@@ -1629,10 +1628,7 @@
       "custom-token-rule-help": "Trennlinien und Kartenränder.",
       "custom-text-low": "Ein Teil des Textes liegt unter 4,5:1 zum Hintergrund und ist schwer lesbar. Wählen Sie dunkleren Text oder einen helleren Hintergrund (im Dunkelmodus umgekehrt).",
       "custom-reset-mode": "Diesen Modus auf automatisch zurücksetzen",
-      "custom-reset-one": "Auto",
-      "legacy-accent-text": "Ihre frühere Primärfarbe {hex} ersetzt weiterhin die Schaltflächenfarbe dieser Palette.",
-      "legacy-accent-move": "In eine eigene Palette übernehmen",
-      "legacy-accent-drop": "Farbe der Palette verwenden"
+      "custom-reset-one": "Auto"
     },
     "Refunds": {
       "title": "Refund Requests",

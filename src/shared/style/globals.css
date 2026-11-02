@@ -45,6 +45,9 @@
 }
 
 :root {
+  /* Brand colours come only from the active palette (riviera-palettes.css). */
+  --primary-color: var(--sig, oklch(0.205 0 0));
+  --secondary-color: var(--well, oklch(0.97 0 0));
   --radius: var(--border-radius, 0.625rem);
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);

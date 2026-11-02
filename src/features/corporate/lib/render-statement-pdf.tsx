@@ -14,7 +14,7 @@ export type StatementRow = {
 
 const styles = StyleSheet.create({
   page: { fontSize: 10, color: "#1c1917" },
-  band: { backgroundColor: "#B45309", color: "#fffaf5", paddingHorizontal: 36, paddingVertical: 22 },
+  band: { color: "#ffffff", paddingHorizontal: 36, paddingVertical: 22 },
   title: { fontSize: 20, fontWeight: 700 },
   body: { padding: 36 },
   meta: { marginBottom: 14, color: "#57534e" },
@@ -36,7 +36,9 @@ function StatementDocument({
   total,
   symbol,
   locale,
+  brandColor,
 }: {
+  brandColor: string;
   companyName: string;
   accountName: string;
   month: string;
@@ -49,7 +51,7 @@ function StatementDocument({
   return (
     <Document>
       <Page size="A4" style={[styles.page, { fontFamily: invoiceFontFamily(locale) }]}>
-        <View style={styles.band}>
+        <View style={[styles.band, { backgroundColor: brandColor }]}>
           <Text style={styles.title}>{copy.title}</Text>
           <Text>{companyName}</Text>
         </View>
@@ -79,6 +81,7 @@ function StatementDocument({
 }
 
 export function renderStatementPdf(input: {
+  brandColor: string;
   companyName: string;
   accountName: string;
   month: string;

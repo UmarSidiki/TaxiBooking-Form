@@ -54,7 +54,7 @@ function LanguageSwitcherComponent({ menuSide = "bottom" }: { menuSide?: "top" |
           type="button"
           disabled={isPending}
           className="dock-btn dock-lang"
-          aria-label={`Language: ${current.name}`}
+          aria-label={`${current.code}, Language: ${current.name}`}
         >
           <Globe aria-hidden="true" />
           <span>{current.code}</span>

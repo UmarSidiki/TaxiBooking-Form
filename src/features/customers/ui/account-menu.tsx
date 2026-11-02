@@ -80,7 +80,7 @@ export function AccountMenu({
         aria-haspopup="menu"
         aria-expanded={open}
         aria-controls="account-menu"
-        aria-label={t("account-menu-label")}
+        aria-label={`${avatar}, ${t("account-menu-label")}`}
         onClick={() => setOpen((value) => !value)}
         className="inline-flex min-h-11 items-center gap-1.5 rounded-full text-[var(--ink2)] md:min-h-0 md:h-[34px]"
       >

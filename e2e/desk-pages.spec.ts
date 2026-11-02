@@ -105,7 +105,7 @@ test("partner dashboard loads one marketplace poll and batches history reviews",
   await signIn(page, "/en/partners/login", PARTNER.email, PARTNER.password);
   await openPath(page, "/en/partners/dashboard");
   await expect(page.getByRole("heading", { name: "Dashboard" })).toBeVisible();
-  await expect(page.getByText("Sion")).toBeVisible();
+  await expect(page.getByText("Sion").first()).toBeVisible();
 
   const availableHits = requests.filter((line) => line.includes("/api/partners/rides/available"));
   expect(availableHits.length).toBe(1);
@@ -178,7 +178,7 @@ test("partner dashboard does not poll while the tab is hidden", async ({ page },
 
   await signIn(page, "/en/partners/login", PARTNER.email, PARTNER.password);
   await openPath(page, "/en/partners/dashboard");
-  await expect(page.getByText("Sion")).toBeVisible();
+  await expect(page.getByText("Sion").first()).toBeVisible();
   await expect.poll(() => hits.length).toBe(1);
 
   await page.evaluate(() => {

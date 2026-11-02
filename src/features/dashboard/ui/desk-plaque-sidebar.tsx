@@ -47,6 +47,12 @@ export function DeskPlaqueSidebar({
     value: number;
   } | null>(null);
   const showLogo = Boolean(logoUrl) && failedLogoUrl !== logoUrl;
+  const measure = (img: HTMLImageElement) => {
+    const { naturalWidth, naturalHeight } = img;
+    if (naturalWidth > 0 && naturalHeight > 0 && (logoRatio?.url !== logoUrl || logoRatio.value !== naturalWidth / naturalHeight)) {
+      setLogoRatio({ url: logoUrl, value: naturalWidth / naturalHeight });
+    }
+  };
   const ratio = logoRatio?.url === logoUrl ? logoRatio.value : null;
   const plateStyle = ratio
     ? ({ "--desk-logo-ratio": ratio } as CSSProperties)
@@ -75,16 +81,11 @@ export function DeskPlaqueSidebar({
                     <img
                       src={logoUrl}
                       alt=""
-                      onLoad={(event) => {
-                        const { naturalWidth, naturalHeight } =
-                          event.currentTarget;
-                        if (naturalWidth > 0 && naturalHeight > 0) {
-                          setLogoRatio({
-                            url: logoUrl,
-                            value: naturalWidth / naturalHeight,
-                          });
-                        }
+                      // Server-rendered logos can finish loading before hydration, so read the size on mount too.
+                      ref={(img) => {
+                        if (img?.complete) measure(img);
                       }}
+                      onLoad={(event) => measure(event.currentTarget)}
                       onError={() => setFailedLogoUrl(logoUrl)}
                     />
                   ) : (

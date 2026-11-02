@@ -9,8 +9,7 @@ import {
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 
-import { brandName } from "@/features/settings/lib/brand-name";
-import { useOptionalSettingsDesk } from "@/features/settings/ui/settings-desk-context";
+import { useBrandIdentity } from "@/features/settings/ui/brand-logo";
 import { DeskNavUser } from "@/features/dashboard/ui/desk-nav-user";
 import {
   Sidebar,
@@ -37,11 +36,11 @@ export function DeskPlaqueSidebar({
   children: ReactNode;
 } & ComponentProps<typeof Sidebar>) {
   const t = useTranslations();
-  const settings = useOptionalSettingsDesk()?.settings;
-  const name = brandName(settings) || t("Auth.Desk.fallback_name");
+  const brand = useBrandIdentity(t("Auth.Desk.fallback_name"));
+  const name = brand.name;
   const subtitle = t(subtitleKey);
   const href = homeHref ?? `/${locale}/dashboard/home`;
-  const logoUrl = settings?.companyLogoUrl?.trim() ?? "";
+  const logoUrl = brand.logoUrl;
   const [failedLogoUrl, setFailedLogoUrl] = useState<string | null>(null);
   const [logoRatio, setLogoRatio] = useState<{
     url: string;
@@ -89,7 +88,7 @@ export function DeskPlaqueSidebar({
                       onError={() => setFailedLogoUrl(logoUrl)}
                     />
                   ) : (
-                    name.trim().charAt(0).toUpperCase()
+                    brand.initial
                   )}
                 </span>
                 <span className="desk-brand__text group-data-[collapsible=icon]:hidden">

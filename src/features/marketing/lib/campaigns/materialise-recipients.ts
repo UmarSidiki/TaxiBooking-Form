@@ -138,7 +138,4 @@ export async function materialiseCampaignRecipients(
   };
 }
 
-export const materializeCampaignRecipients = materialiseCampaignRecipients;
-export const materialiseRecipients = materialiseCampaignRecipients;
-export const materializeRecipients = materialiseCampaignRecipients;
 export const startCampaign = materialiseCampaignRecipients;

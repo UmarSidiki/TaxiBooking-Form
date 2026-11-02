@@ -90,6 +90,4 @@ export async function attributeBookingToCampaign(
   return { attributed: true, campaignId };
 }
 
-export const attributeCampaignBooking = attributeBookingToCampaign;
-export const recordCampaignAttribution = attributeBookingToCampaign;
 export const attributeBooking = attributeBookingToCampaign;

@@ -104,7 +104,7 @@ export async function renderAccountPage(
       currency={settings?.stripeCurrency || "EUR"}
       timezone={timezone}
       companyPhone={settings?.companyPhone ?? ""}
-      cancelPolicy={settings?.cancelPolicy ?? null}
+      cancelPolicy={settings?.cancelPolicy?.map(({ hoursBefore, feePercent }) => ({ hoursBefore, feePercent })) ?? null}
       marketingEnabled={settings?.enableMarketing !== false}
     />
   );

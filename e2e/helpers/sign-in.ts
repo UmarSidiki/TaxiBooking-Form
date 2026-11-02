@@ -1,6 +1,6 @@
 import { expect, type Page } from "@playwright/test";
 
-export const ADMIN = { email: "admin@e2e.example", password: "e2e-password" } as const;
+const ADMIN = { email: "admin@e2e.example", password: "e2e-password" } as const;
 
 type SignInOptions = {
   email?: string;

@@ -4,7 +4,7 @@ export function digitsOnly(raw: string): string {
   return raw.replace(/\D/g, "");
 }
 
-export function otpChars(value: string): string {
+function otpChars(value: string): string {
   return value.padEnd(OTP_LENGTH, " ").slice(0, OTP_LENGTH);
 }
 

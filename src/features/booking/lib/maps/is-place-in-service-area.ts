@@ -4,7 +4,7 @@ import {
   type ServiceAreaSettings,
 } from "@/features/booking/lib/service-area";
 
-export { isPointInPolygon } from "@/features/booking/lib/service-area";
+;
 
 /** True when a picked Places result lies in the configured area (polygon, else rectangle). */
 export function isPlaceInServiceArea(

@@ -3,7 +3,7 @@ import { cashBookingStopSchema, latLngSchema } from "@/features/booking/schema/c
 
 const MAX_SEATS = 10;
 
-export const pendingBookingDataSchema = z.object({
+const pendingBookingDataSchema = z.object({
   firstName: z.string().optional(),
   lastName: z.string().optional(),
   email: z.string().optional(),

@@ -5,7 +5,7 @@ import type {
   EmailTrip,
 } from "@/features/emails/types";
 
-export function isHourlyBooking(data: BookingEmailData) {
+function isHourlyBooking(data: BookingEmailData) {
   return (
     data.bookingType === "hourly" ||
     data.dropoff === "N/A (Hourly booking)"

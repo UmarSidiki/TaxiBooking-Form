@@ -9,7 +9,7 @@ export type ColorPalette = (typeof COLOR_PALETTES)[number];
 
 export const DEFAULT_COLOR_PALETTE: ColorPalette = "neutral";
 
-export function isColorPalette(value: unknown): value is ColorPalette {
+function isColorPalette(value: unknown): value is ColorPalette {
   return typeof value === "string" && (COLOR_PALETTES as readonly string[]).includes(value);
 }
 

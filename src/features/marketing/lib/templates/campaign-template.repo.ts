@@ -35,7 +35,7 @@ type TemplateDoc = {
 
 const TEMPLATE_LIMIT = 100;
 
-export function deriveTemplateVariables(
+function deriveTemplateVariables(
   input: CampaignTemplateWriteInput,
 ): string[] {
   return extractTemplateVariables(

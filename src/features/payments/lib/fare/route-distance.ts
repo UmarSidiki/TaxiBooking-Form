@@ -13,7 +13,7 @@ const CACHE_MS = 60_000;
  * returns the distance plus the geocoded start and end. Never import this from
  * a client component - it belongs to the server fare pipeline.
  */
-export async function fetchRoute(input: RouteInput): Promise<MeasuredRoute | undefined> {
+async function fetchRoute(input: RouteInput): Promise<MeasuredRoute | undefined> {
   if (!input.pickup || !input.dropoff) return undefined;
   if (process.env.DISTANCE_MOCK === "1") return { km: mockRouteKm() };
   const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;

@@ -21,7 +21,7 @@ const SIZES: Record<Size, string> = {
   compact: "h-11 px-2.5 text-[11.5px] lg:h-8",
 };
 
-export function accountButtonClass({
+function accountButtonClass({
   variant = "outline",
   size = "md",
   className,

@@ -19,7 +19,7 @@ const HTML_ESCAPES: Record<string, string> = {
 const VARIABLE_PATTERN = /\{\{\s*([a-zA-Z0-9_]+)\s*\}\}/g;
 
 /** Every interpolated value is untrusted customer data. */
-export function escapeHtml(value: string): string {
+function escapeHtml(value: string): string {
   return value.replace(/[&<>"']/g, (char) => HTML_ESCAPES[char] ?? char);
 }
 

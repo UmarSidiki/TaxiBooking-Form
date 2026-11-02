@@ -5,7 +5,7 @@ import { User } from '@/features/auth/model';
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-export function isValidEmail(email?: string | null): email is string {
+function isValidEmail(email?: string | null): email is string {
   return typeof email === 'string' && EMAIL_REGEX.test(email);
 }
 

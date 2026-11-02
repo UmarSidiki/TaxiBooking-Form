@@ -13,7 +13,7 @@ const LIMITS: Record<string, number> = {
   cronfail: 20,
 };
 
-export function tooMany(retryAfter: number) {
+function tooMany(retryAfter: number) {
   return NextResponse.json(
     { error: "rate_limited" },
     { status: 429, headers: { "Retry-After": String(retryAfter) } },

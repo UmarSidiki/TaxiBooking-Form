@@ -4,7 +4,7 @@ import type { ISetting } from "@/features/settings/model";
  * Fields the browser is allowed to see. Credentials and SMTP/admin
  * configuration are deliberately absent - use ?scope=full as an admin for those.
  */
-export const PUBLIC_SETTING_FIELDS = [
+const PUBLIC_SETTING_FIELDS = [
   "borderRadius",
   "colorPalette",
   "customPalette",

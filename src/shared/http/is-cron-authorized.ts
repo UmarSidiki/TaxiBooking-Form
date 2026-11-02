@@ -1,7 +1,7 @@
 import { timingSafeEqual } from "node:crypto";
 
 /** Fail closed: a missing secret never authorizes the cron route. */
-export function cronSecretMatches(
+function cronSecretMatches(
   presented: string | null | undefined,
   secret: string | undefined,
 ): boolean {

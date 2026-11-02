@@ -5,7 +5,7 @@ import type {
   NotificationRecipient,
 } from "@/features/notifications/notification-types";
 
-export async function deskRecipients(): Promise<NotificationRecipient[]> {
+async function deskRecipients(): Promise<NotificationRecipient[]> {
   const [config, settings] = await Promise.all([
     WhatsAppConfig.findOne().lean(),
     Setting.findOne().select("adminEmail smtpFrom").lean<Partial<ISetting>>(),

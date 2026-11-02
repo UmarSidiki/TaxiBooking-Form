@@ -34,7 +34,7 @@ function paletteOf(selector: string): PaletteId {
  * generated stylesheet, so a regenerated palette never silently drifts from the
  * test constants.
  */
-export function parsePaletteSignatures(css = readFileSync(CSS_FILE, "utf8")): Record<string, string> {
+function parsePaletteSignatures(css = readFileSync(CSS_FILE, "utf8")): Record<string, string> {
   const signatures: Record<string, string> = {};
   for (const [, selectors, body] of css.matchAll(/([^{}]+)\{([^{}]*)\}/g)) {
     const sig = /--sig:\s*([^;]+);/.exec(body)?.[1];

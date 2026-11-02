@@ -17,7 +17,7 @@ import {
   routePadding,
 } from "./route-map-paint";
 
-export const GOOGLE_MAPS_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY ?? "";
+const GOOGLE_MAPS_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY ?? "";
 
 type DrawnMarker = { marker: google.maps.Marker; kind: RouteMarkerKind; label?: number };
 

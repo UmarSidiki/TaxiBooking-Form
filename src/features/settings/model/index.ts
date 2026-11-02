@@ -12,7 +12,7 @@ export type {
   WhatsAppSendKind,
   WhatsAppSendStatus,
 } from './WhatsAppSendLog';
-export { default as WhatsAppAuth } from './WhatsAppAuth';
+;
 export type { IWhatsAppAuth } from './WhatsAppAuth';
-export { default as WhatsAppLink } from './WhatsAppLink';
+;
 export type { IWhatsAppLink, WhatsAppLinkStatus } from './WhatsAppLink';

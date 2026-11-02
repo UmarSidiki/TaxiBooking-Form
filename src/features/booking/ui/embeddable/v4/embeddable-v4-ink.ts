@@ -19,7 +19,7 @@ function contrast(a: number, b: number): number {
 }
 
 /** Picks ink or paper, whichever stays readable on `background`. */
-export function readableOn(background: string | undefined, fallback = INK): string {
+function readableOn(background: string | undefined, fallback = INK): string {
   const level = background ? luminance(background) : null;
   const inkLevel = luminance(INK) ?? 0.01;
   if (level == null) return fallback;

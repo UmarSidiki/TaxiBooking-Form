@@ -1,7 +1,7 @@
 import { normalizeCancelPolicy, type CancelPolicyTier } from "./cancel-policy";
 
 /** Smallest window with no fee; the ride is free to cancel before that many hours. */
-export function freeCancellationHours(
+function freeCancellationHours(
   policy?: CancelPolicyTier[] | null,
 ): number | null {
   const freeTiers = normalizeCancelPolicy(policy).filter(

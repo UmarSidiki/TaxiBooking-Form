@@ -31,7 +31,7 @@ function digitsOf(value: string | null | undefined): string {
   return digits;
 }
 
-export function marketingSuppressionKey(
+function marketingSuppressionKey(
   emailLower: string,
   channel: MarketingChannel,
   profile: MarketingProfileDoc | null,

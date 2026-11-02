@@ -8,7 +8,7 @@ export const adminNoteIdParamSchema = z
   .trim()
   .refine(isObjectIdString);
 
-export const adminNoteTextSchema = z
+const adminNoteTextSchema = z
   .string()
   .trim()
   .min(1)

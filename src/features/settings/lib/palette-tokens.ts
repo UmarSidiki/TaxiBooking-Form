@@ -39,7 +39,7 @@ function toHsl(hex: string): Hsl {
   const h = max === r ? (g - b) / d + (g < b ? 6 : 0) : max === g ? (b - r) / d + 2 : (r - g) / d + 4;
   return [h * 60, s, l];
 }
-export function hsl(h: number, s: number, l: number): string {
+function hsl(h: number, s: number, l: number): string {
   s = Math.min(1, Math.max(0, s));
   l = Math.min(1, Math.max(0, l));
   const k = (n: number) => (n + h / 30) % 12;
@@ -61,7 +61,7 @@ export function contrast(a: string, b: string): number {
 }
 
 /** Moves fg's lightness away from the backgrounds until it reaches `min` against all of them. */
-export function ensureContrast(fg: string, bgs: string[], min: number): string {
+function ensureContrast(fg: string, bgs: string[], min: number): string {
   const ok = (c: string) => bgs.every((bg) => contrast(c, bg) >= min);
   if (ok(fg)) return fg.toUpperCase();
   const [h, s, l0] = toHsl(fg);
@@ -196,7 +196,7 @@ export function paletteCss(id: string, set: PaletteSet, { isDefault = false } = 
 }
 
 /** [foreground, background, minimum] pairs every palette must meet (WCAG 1.4.3 / 1.4.11). */
-export const CONTRAST_PAIRS: Array<[TokenKey, TokenKey, number]> = [
+const CONTRAST_PAIRS: Array<[TokenKey, TokenKey, number]> = [
   ...(["paper", "sheet", "well", "field"] as const).flatMap((bg) => [["ink", bg, 4.5], ["ink2", bg, 4.5]] as Array<[TokenKey, TokenKey, number]>),
   ["sig-on", "sig", 4.5],
   ["ink", "sig-tint", 4.5],

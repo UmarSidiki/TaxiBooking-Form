@@ -1,6 +1,6 @@
 import mongoose, { Schema } from "mongoose";
 
-export const CAMPAIGN_STATUSES = [
+const CAMPAIGN_STATUSES = [
   "draft",
   "scheduled",
   "sending",

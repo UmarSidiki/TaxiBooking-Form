@@ -3,7 +3,7 @@ import {
   type CustomerPrefill,
 } from "@/features/booking/schema/customer-prefill.schema";
 
-export const ACCOUNT_ME_ENDPOINT = "/api/account/me";
+const ACCOUNT_ME_ENDPOINT = "/api/account/me";
 
 /**
  * Read the signed-in customer silently. A 401 (signed out) or any transport

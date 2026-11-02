@@ -85,7 +85,7 @@ function variablesFor(
 type NotifySend = NonNullable<Parameters<typeof notify>[2]>["send"];
 
 /** Appends the map-link block so drivers get it whatever the operator's template says. */
-export function withLocations(ride: RideNotice | undefined, send?: WhatsAppSend | NotifySend): NotifySend {
+function withLocations(ride: RideNotice | undefined, send?: WhatsAppSend | NotifySend): NotifySend {
   const block = ride?.locations?.length ? rideLocationsText(ride.locations) : "";
   if (!block) return send as NotifySend;
   const base = (send ?? sendWhatsAppTexts) as NonNullable<NotifySend>;

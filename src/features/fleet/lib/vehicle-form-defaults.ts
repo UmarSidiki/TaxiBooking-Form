@@ -2,11 +2,11 @@ import type { VehicleForm } from "@/features/fleet/ui/vehicle-form.types";
 
 export const PLACEHOLDER_VEHICLE_IMAGE = "/placeholder-car.jpg";
 
-export const DEFAULT_VEHICLE_PERSONS = 4;
-export const DEFAULT_VEHICLE_BAGGAGES = 2;
-export const DEFAULT_VEHICLE_PRICE_PER_KM = 2;
+const DEFAULT_VEHICLE_PERSONS = 4;
+const DEFAULT_VEHICLE_BAGGAGES = 2;
+const DEFAULT_VEHICLE_PRICE_PER_KM = 2;
 export const DEFAULT_VEHICLE_PRICE_PER_HOUR = 30;
-export const DEFAULT_VEHICLE_MINIMUM_FARE = 20;
+const DEFAULT_VEHICLE_MINIMUM_FARE = 20;
 export const DEFAULT_VEHICLE_MINIMUM_HOURS = 2;
 export const DEFAULT_VEHICLE_RETURN_PRICE_PERCENTAGE = 100;
 

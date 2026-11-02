@@ -4,7 +4,7 @@ import RideCharge from "@/features/invoices/model/RideCharge";
 import WhatsAppSendLog from "@/features/settings/model/WhatsAppSendLog";
 import { PROFILE_BOOKINGS_LIMIT } from "@/features/customers-admin/lib/customer-profile/customer-profile.repo";
 
-export const PROFILE_SESSIONS_LIMIT = 50;
+const PROFILE_SESSIONS_LIMIT = 50;
 
 export type ProfileChargeDoc = {
   _id: unknown;

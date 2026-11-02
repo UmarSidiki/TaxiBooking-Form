@@ -1,5 +1,5 @@
-export const OTP_SEND_MIN_MS = 800;
-export const OTP_SEND_JITTER_MS = 120;
+const OTP_SEND_MIN_MS = 800;
+const OTP_SEND_JITTER_MS = 120;
 
 type TimingOptions = {
   minMs?: number;

@@ -48,7 +48,7 @@ export const whatsappConfigWriteSchema = z.object({
   dailyCap: z.number().int().min(0).max(2000).optional(),
 });
 
-export const customerWhatsAppEvents = [
+const customerWhatsAppEvents = [
   "booking_confirmed",
   "driver_assigned",
   "on_the_way",

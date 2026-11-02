@@ -4,8 +4,8 @@ import {
 } from "@/features/customers/lib/customer-token";
 import type { MarketingChannel } from "@/features/marketing/lib/marketing.constants";
 
-export const UNSUBSCRIBE_TOKEN_PURPOSE = "unsubscribe";
-export const UNSUBSCRIBE_TOKEN_TTL_SECONDS = 365 * 24 * 60 * 60;
+const UNSUBSCRIBE_TOKEN_PURPOSE = "unsubscribe";
+const UNSUBSCRIBE_TOKEN_TTL_SECONDS = 365 * 24 * 60 * 60;
 
 export type UnsubscribeTokenClaims = {
   email: string;

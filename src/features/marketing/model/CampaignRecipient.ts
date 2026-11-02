@@ -1,6 +1,6 @@
 import mongoose, { Schema } from "mongoose";
 
-export const CAMPAIGN_RECIPIENT_STATUSES = [
+const CAMPAIGN_RECIPIENT_STATUSES = [
   "pending",
   "sending",
   "sent",

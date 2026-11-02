@@ -12,7 +12,7 @@ export type ServiceAreaSettings = {
   mapBounds?: Partial<RectBounds> | null;
 } | null | undefined;
 
-export function isPointInPolygon(point: LatLng, polygon: LatLng[]) {
+function isPointInPolygon(point: LatLng, polygon: LatLng[]) {
   let inside = false;
   for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
     const xi = polygon[i].lng;

@@ -5,7 +5,7 @@ import { Font } from "@react-pdf/renderer";
 const dir = join(process.cwd(), "src/features/invoices/fonts");
 let registered = false;
 
-export function registerInvoiceFonts() {
+function registerInvoiceFonts() {
   if (registered) return;
   const regular = join(dir, "DejaVuSans.ttf");
   const bold = join(dir, "DejaVuSans-Bold.ttf");

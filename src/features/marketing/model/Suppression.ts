@@ -1,7 +1,7 @@
 import mongoose, { Schema } from "mongoose";
 import { MARKETING_CHANNELS } from "@/features/marketing/lib/marketing.constants";
 
-export const SUPPRESSION_REASONS = [
+const SUPPRESSION_REASONS = [
   "unsubscribed",
   "bounced",
   "complaint",

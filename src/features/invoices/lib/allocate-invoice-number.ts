@@ -2,7 +2,7 @@ import { connectDB } from "@/shared/db";
 import { Booking } from "@/features/booking/model";
 import InvoiceCounter from "@/features/invoices/model/InvoiceCounter";
 
-export function formatInvoiceNumber(seq: number) {
+function formatInvoiceNumber(seq: number) {
   return `INV-${String(seq).padStart(6, "0")}`;
 }
 

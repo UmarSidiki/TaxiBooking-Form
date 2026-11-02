@@ -2,7 +2,7 @@ import { cleanOverrides, derivePalette, isStrictHex, paletteCss, type ModeOverri
 
 export type CustomPalette = { brand: string; accent: string; light?: ModeOverrides; dark?: ModeOverrides };
 
-export const DEFAULT_CUSTOM_PALETTE: CustomPalette = { brand: "#1E3A8A", accent: "#0F766E" };
+const DEFAULT_CUSTOM_PALETTE: CustomPalette = { brand: "#1E3A8A", accent: "#0F766E" };
 
 /** Keeps only strict #RRGGBB values; anything else falls back to the defaults. */
 export function resolveCustomPalette(value: unknown): CustomPalette {

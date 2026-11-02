@@ -7,7 +7,7 @@ import CampaignRecipient from "@/features/marketing/model/CampaignRecipient";
 const STOP_ATTRIBUTION_WINDOW_MS = 30 * 24 * 60 * 60 * 1000;
 
 /** Latest WhatsApp campaign this person was sent in the last 30 days, if any. */
-export async function latestWhatsAppCampaignFor(
+async function latestWhatsAppCampaignFor(
   emailLower: string,
   now = new Date(),
 ): Promise<string | undefined> {

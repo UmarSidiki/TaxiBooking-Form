@@ -5,7 +5,7 @@ import {
   saveNotificationEnabled,
 } from "@/features/notifications/lib/notification-settings";
 
-export const whatsappToggleKeys = [
+const whatsappToggleKeys = [
   "whatsappTplAssigned",
   "whatsappTplAvailable",
   "whatsappTplChanged",

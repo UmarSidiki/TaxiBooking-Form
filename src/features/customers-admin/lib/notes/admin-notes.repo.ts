@@ -3,7 +3,7 @@ import AdminNote from "@/features/customers-admin/model/AdminNote";
 import type { AdminNoteDoc } from "@/features/customers-admin/lib/notes/admin-note.types";
 
 /** Hard cap so one customer can never produce an unbounded notes query. */
-export const ADMIN_NOTES_LIMIT = 200;
+const ADMIN_NOTES_LIMIT = 200;
 
 export async function listAdminNotes(emailLower: string): Promise<AdminNoteDoc[]> {
   await connectDB();

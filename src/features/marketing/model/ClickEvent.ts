@@ -1,6 +1,6 @@
 import mongoose, { Schema } from "mongoose";
 
-export const CLICK_EVENT_TYPES = ["open", "click"] as const;
+const CLICK_EVENT_TYPES = ["open", "click"] as const;
 export type ClickEventType = (typeof CLICK_EVENT_TYPES)[number];
 
 const ClickEventSchema = new Schema(

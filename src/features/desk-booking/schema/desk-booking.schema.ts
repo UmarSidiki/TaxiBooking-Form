@@ -5,7 +5,7 @@ import {
 } from "@/features/booking/schema/cash-booking.schema";
 
 export const DESK_BOOKING_OUTCOMES = ["confirmed", "quote"] as const;
-export const DESK_PAYMENT_METHODS = ["cash", "card", "bank_transfer"] as const;
+const DESK_PAYMENT_METHODS = ["cash", "card", "bank_transfer"] as const;
 
 /**
  * Operator-authored Booking. Price fields are omitted on purpose: the fare is

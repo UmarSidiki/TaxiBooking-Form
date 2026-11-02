@@ -9,7 +9,7 @@ import {
 export const isDarkTheme = () => document.documentElement.dataset.rivieraTheme === "dark";
 
 /** Reads a Riviera token from the nearest .riviera element so the map follows theme.css. */
-export function token(el: Element, name: string) {
+function token(el: Element, name: string) {
   const scope = el.closest(".riviera") ?? document.documentElement;
   return getComputedStyle(scope).getPropertyValue(name).trim();
 }
@@ -18,7 +18,7 @@ export function mapTokens(el: Element): RouteMarkerTokens {
   return { ink: token(el, "--ink"), sheet: token(el, "--sheet") };
 }
 
-export function googleIcon(icon: RouteMarkerIcon): google.maps.Icon {
+function googleIcon(icon: RouteMarkerIcon): google.maps.Icon {
   return {
     url: icon.url,
     scaledSize: new google.maps.Size(icon.width, icon.height),

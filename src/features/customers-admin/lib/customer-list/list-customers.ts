@@ -14,7 +14,7 @@ import type {
 } from "@/features/customers-admin/lib/customer-list/customer-list.types";
 import type { CustomerListParams } from "@/features/customers-admin/schema/customer-list.schema";
 
-export const CUSTOMER_LIST_PAGE_SIZE = 50;
+const CUSTOMER_LIST_PAGE_SIZE = 50;
 
 const LIST_FIELDS = [
   "emailLower",

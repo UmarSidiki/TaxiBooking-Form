@@ -353,7 +353,7 @@ async function cancelTrip(
 type ChangeInput = { date: string; time: string; pickup?: string; dropoff?: string; selectedVehicle?: string; passengers?: number; childSeats?: number; babySeats?: number; meetAndGreet?: boolean };
 
 /** True when any field that feeds the fare differs from the booking. Omitted fields count as unchanged. */
-export function priceAffectingChange(booking: IBooking, input: ChangeInput): boolean {
+function priceAffectingChange(booking: IBooking, input: ChangeInput): boolean {
   const differs = (next: unknown, current: unknown) => {
     if (next === undefined || next === null || next === "") return false;
     if (typeof next === "boolean" || typeof current === "boolean") return Boolean(next) !== Boolean(current);

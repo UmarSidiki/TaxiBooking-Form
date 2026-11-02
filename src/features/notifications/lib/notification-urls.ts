@@ -11,7 +11,7 @@ export type NotificationUrlInput = {
   customerEmail?: string | null;
 };
 
-export async function notificationBaseUrl(explicit?: string | null): Promise<string | null> {
+async function notificationBaseUrl(explicit?: string | null): Promise<string | null> {
   return absoluteHttpBase(explicit ?? (await resolvePublicUrl()));
 }
 

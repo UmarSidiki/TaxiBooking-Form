@@ -12,7 +12,7 @@ import {
 } from "@/features/settings/lib/whatsapp-deadline";
 import { markWhatsAppFallback } from "@/features/settings/lib/whatsapp-send-log";
 
-export const CUSTOMER_CODE_WHATSAPP_TIMEOUT_MS = whatsappBudgetMs(
+const CUSTOMER_CODE_WHATSAPP_TIMEOUT_MS = whatsappBudgetMs(
   WHATSAPP_OTP_MAX_DURATION_SECONDS,
 );
 

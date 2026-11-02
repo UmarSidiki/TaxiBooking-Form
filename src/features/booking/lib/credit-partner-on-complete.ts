@@ -4,7 +4,7 @@ import { getPartnerDispatchSettings } from "@/features/partners/lib/get-partner-
 import { partnerShareDelta } from "@/features/partners/lib/partner-share-delta";
 import { postPartnerLedger } from "@/features/partners/lib/post-partner-ledger";
 
-export function partnerIsPayee(booking: Pick<IBooking, "assignedPartner" | "responsibleAssignee">) {
+function partnerIsPayee(booking: Pick<IBooking, "assignedPartner" | "responsibleAssignee">) {
   if (!booking.assignedPartner?._id) return false;
   return booking.responsibleAssignee !== "driver";
 }

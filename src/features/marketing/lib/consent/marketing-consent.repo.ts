@@ -10,7 +10,7 @@ import {
 } from "@/features/marketing/lib/consent/marketing-consent.types";
 import type { MarketingChannel } from "@/features/marketing/lib/marketing.constants";
 
-export const MARKETING_HISTORY_LIMIT = 100;
+const MARKETING_HISTORY_LIMIT = 100;
 
 type MarketingEventDoc = {
   _id: unknown;
@@ -44,7 +44,7 @@ export async function loadMarketingProfile(
     .lean<MarketingProfileDoc | null>();
 }
 
-export async function listMarketingConsentEvents(
+async function listMarketingConsentEvents(
   emailLower: string,
 ): Promise<MarketingConsentEventRow[]> {
   await connectDB();

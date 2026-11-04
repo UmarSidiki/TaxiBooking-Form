@@ -30,7 +30,7 @@ export function createEmbedScript(baseUrl: string, path: string) {
   iframe.setAttribute("loading", "lazy");
   iframe.setAttribute("title", "Interactive Booking Widget");
   iframe.setAttribute("scrolling", "no");
-  iframe.setAttribute("allow", "payment *");
+  iframe.setAttribute("allow", "payment *; geolocation");
   const makeSrc = (lang) => CONFIG.base + "/" + sanitizeLang(lang) + ${JSON.stringify(path)};
   iframe.src = makeSrc(CONFIG.initialLang);
   container.appendChild(iframe);

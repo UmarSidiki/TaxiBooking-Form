@@ -1,8 +1,10 @@
+import { brandName } from "@/features/settings/lib/brand-name";
 import { connectDB } from "@/shared/db";
 import { Setting, WhatsAppConfig } from "@/features/settings/model";
 import type { ISetting } from "@/features/settings/model";
 import { resolvePublicUrl } from "@/features/settings/lib/public-url";
 import type { EmailBrand } from "@/features/emails/types";
+import { resolveBrandColors } from "@/features/settings/lib/brand-colors";
 
 function clean(value?: string | null) {
   return (value ?? "").trim();
@@ -13,16 +15,11 @@ export function brandFromSettings(
   companyPhone?: string | null,
   websiteUrl?: string | null,
 ): EmailBrand {
-  const name =
-    clean(settings?.companyName) ||
-    clean(settings?.smtpSenderName) ||
-    clean(process.env.NEXT_PUBLIC_WEBSITE_NAME) ||
-    "Booking";
+  const name = brandName(settings) || "Booking";
   return {
     name,
     logoUrl: clean(settings?.companyLogoUrl) || null,
-    primaryColor: clean(settings?.primaryColor) || "#B45309",
-    secondaryColor: clean(settings?.secondaryColor) || "#111827",
+    accent: resolveBrandColors(settings).primary,
     address: clean(settings?.companyAddress),
     phone:
       clean(settings?.companyPhone) ||

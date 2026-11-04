@@ -86,7 +86,9 @@ export function useStep3CardCheckout({
           description: `Booking from ${formData.pickup || "pickup"} to ${formData.dropoff || "dropoff"}`,
           bookingData: {
             pickup: formData.pickup,
+            pickupLatLng: formData.pickupLatLng,
             dropoff: formData.dropoff,
+            dropoffLatLng: formData.dropoffLatLng,
             stops: formData.stops,
             tripType: formData.tripType,
             bookingType: formData.bookingType,

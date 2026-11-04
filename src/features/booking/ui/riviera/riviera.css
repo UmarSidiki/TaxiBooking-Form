@@ -1,0 +1,282 @@
+/* Public booking form layout. Tokens (colour, type, radius) live in shared/style/riviera-theme.css. */
+html:has(.riviera), body:has(.riviera) { background-color: var(--paper); }
+
+/* ---------- Floating control dock ---------- */
+/* Fallback reserve until the dock reports its real height (ResizeObserver). */
+.riviera { --dock-reserve: calc(58px + 20px + env(safe-area-inset-bottom)); }
+.riviera .dock {
+  position: fixed; z-index: 40;
+  inset-inline: 12px;
+  inset-block-end: max(12px, env(safe-area-inset-bottom));
+  display: flex; align-items: center; gap: 4px; padding: 6px;
+  border: 1px solid color-mix(in oklab, var(--ink) 12%, transparent);
+  border-radius: var(--radius-dock);
+  background: var(--dock);
+  -webkit-backdrop-filter: blur(20px) saturate(1.5); backdrop-filter: blur(20px) saturate(1.5);
+  box-shadow: var(--dock-shadow);
+}
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .riviera .dock { background: var(--sheet); }
+}
+.riviera .dock-logo {
+  box-sizing: border-box; flex: none;
+  block-size: 44px; min-inline-size: 44px; max-inline-size: 140px;
+  display: inline-flex; align-items: center; justify-content: center;
+  overflow: hidden;
+  border: 1px solid var(--rule); border-radius: 10px;
+  background: var(--logo-plate); color: var(--logo-ink);
+}
+.riviera .dock-logo__img {
+  display: block; block-size: 100%; inline-size: auto; max-inline-size: 100%;
+  object-fit: contain;
+}
+/* Brand text plate: sizes to its content at every width. Below 768px it is the
+   only flexible item, so it truncates into the space the 44px controls leave;
+   from 768px up there is always enough room for the full name. */
+.riviera .dock-logo--text {
+  flex: 0 1 auto; max-inline-size: none;
+  padding-inline: 14px;
+  color: var(--logo-ink); font-size: 15px; font-weight: 800; letter-spacing: .02em; line-height: 1;
+}
+/* dir="auto" on the name keeps the start of the brand visible when it is
+   truncated, whichever script it is written in. */
+.riviera .dock-logo__name {
+  min-inline-size: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  unicode-bidi: isolate;
+}
+.riviera .dock-sep {
+  flex: none; inline-size: 1px; block-size: 24px; margin-inline: 6px;
+  background: color-mix(in oklab, var(--ink) 16%, transparent);
+}
+.riviera .dock-controls {
+  display: flex; flex: none; align-items: center; gap: 2px;
+  margin-inline-start: auto;
+}
+.riviera .dock .dock-btn {
+  block-size: 44px; min-inline-size: 44px; padding-inline: 8px;
+  border-radius: 10px;
+}
+.riviera .dock .dock-btn svg { width: 18px; height: 18px; }
+.riviera .dock .dock-account {
+  gap: 8px; padding-inline: 16px;
+  background: var(--ink); color: var(--paper);
+}
+.riviera .dock .dock-account:hover { background: var(--ink); opacity: .9; }
+.riviera .dock-account__label { line-height: 1; }
+@media (max-width: 479px) {
+  /* Narrow phones drop the Account label; the text plate shrinks to the space left. */
+  .riviera .dock .dock-account { padding-inline: 0; }
+  .riviera .dock-account__label { display: none; }
+}
+
+/* ---------- Signed-in chip ---------- */
+.riviera .signed-in {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
+  gap: var(--space-1) var(--space-2);
+  margin-bottom: var(--space-3); padding: 4px; padding-inline-start: var(--space-2);
+  border: 1px solid var(--rule); border-radius: var(--radius); background: var(--sheet);
+  font-size: var(--text-sm); color: var(--ink2);
+}
+.riviera .signed-in__who {
+  display: flex; align-items: baseline; gap: 4px; min-width: 0; flex: 1 1 11rem;
+  margin: 0; overflow: hidden; white-space: nowrap;
+}
+.riviera .signed-in__who b {
+  min-width: 0; overflow: hidden; text-overflow: ellipsis; color: var(--ink); font-weight: 500;
+  direction: ltr; unicode-bidi: isolate;
+}
+.riviera .signed-in__actions { display: flex; align-items: center; gap: 2px; margin-inline-start: auto; }
+.riviera .signed-in__action {
+  display: inline-flex; align-items: center; justify-content: center; min-height: 36px; padding: 0 8px;
+  border: 0; border-radius: var(--radius-sm); background: none; color: var(--ink);
+  font-size: 13px; font-weight: 600; text-decoration: none; white-space: nowrap; cursor: pointer;
+}
+.riviera .signed-in__action:hover { background: var(--well); }
+.riviera .signed-in__action:disabled { opacity: .5; cursor: default; }
+@media (max-width: 639px) {
+  .riviera .signed-in__action { min-height: 44px; }
+}
+
+/* ---------- Page frame ---------- */
+.riviera .map { position: relative; height: 34dvh; min-height: 220px; overflow: hidden; background: var(--well); border-bottom: 1px solid var(--rule); }
+.riviera .attr { position: absolute; inset-inline-end: 6px; bottom: 22px; font-size: 11px; background: var(--sheet); color: var(--ink2); padding: 2px 6px; border-radius: var(--radius-sm); z-index: 5; }
+.riviera .attr a { color: inherit; }
+.riviera .sheet { background: var(--paper); padding: 20px 16px var(--dock-reserve); }
+.riviera .step-count { font-size: 13px; color: var(--ink2); margin-bottom: 6px; }
+.riviera h1, .riviera h2 { font-size: var(--text-xl); font-weight: 600; letter-spacing: -.01em; line-height: 1.2; }
+.riviera h3 { font-weight: 600; }
+.riviera label { font-weight: 500; }
+
+/* ---------- Segmented control ---------- */
+.riviera .seg { display: flex; gap: 2px; padding: 3px; background: var(--well); border-radius: var(--radius); }
+.riviera .seg button {
+  flex: 1; min-height: 44px; padding: 6px 10px; border: 0; border-radius: var(--radius-sm);
+  background: none; color: var(--ink2); font-size: 14px; cursor: pointer;
+}
+.riviera .seg button[aria-checked="true"] { background: var(--seg-on); color: var(--ink); font-weight: 500; box-shadow: 0 0 0 1px var(--rule), 0 1px 2px rgb(0 0 0 / .06); }
+
+/* ---------- Primary button ---------- */
+.riviera .btn-primary, .riviera .btn-primary:hover {
+  background: var(--sig); color: var(--sig-on); border-radius: var(--radius); font-weight: 600; min-height: 48px;
+}
+.riviera .btn-primary:hover { opacity: .9; }
+
+/* ---------- Trip summary strip ---------- */
+.riviera .trip {
+  display: grid; grid-template-columns: 1fr auto; gap: 2px 12px; align-items: baseline;
+  padding: 14px; border: 1px solid var(--rule); border-radius: var(--radius); background: var(--sheet); margin-bottom: 16px;
+}
+.riviera .trip .lbl { grid-column: 1; font-size: 12px; color: var(--ink2); }
+.riviera .trip b { grid-column: 1; font-weight: 500; font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 6px; }
+.riviera .trip .meta { grid-column: 2; grid-row: 1 / span 4; align-self: start; text-align: end; font-size: 13px; color: var(--ink2); line-height: 1.5; }
+.riviera .trip .when { grid-column: 1 / -1; border-top: 1px solid var(--rule); margin-top: 4px; padding-top: 10px; font-size: 13.5px; color: var(--ink2); display: flex; justify-content: space-between; gap: 12px; }
+.riviera .trip .edit { color: var(--link); font-weight: 500; background: none; border: 0; cursor: pointer; padding: 0; min-height: 44px; display: inline-flex; align-items: center; }
+
+/* ---------- Vehicle rows ---------- */
+.riviera .veh-list { display: flex; flex-direction: column; gap: 8px; }
+.riviera .veh {
+  display: grid; grid-template-columns: 88px minmax(0, 1fr) auto; gap: 4px 14px; align-items: center;
+  padding: 12px; border: 1px solid var(--rule2); border-radius: var(--radius); background: var(--sheet); cursor: pointer; text-align: start;
+}
+.riviera .veh:hover { border-color: var(--ink2); }
+.riviera .veh.is-selected { border-color: var(--ink); box-shadow: 0 0 0 1px var(--ink); }
+.riviera .veh .art { width: 88px; height: 56px; display: grid; place-items: center; color: var(--ink); }
+.riviera .veh .art img, .riviera .veh .art svg { max-width: 100%; max-height: 56px; width: auto; height: auto; object-fit: contain; }
+[dir="rtl"] .riviera .veh .art svg { transform: scaleX(-1); }
+.riviera .veh .info { min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.riviera .veh h3 { font-size: 16px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.riviera .veh .mdl { color: var(--ink2); font-size: 13px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.riviera .veh .specs { display: flex; gap: 14px; font-size: 13px; color: var(--ink2); }
+.riviera .veh .specs > span { display: inline-flex; align-items: center; gap: 4px; }
+.riviera .veh .specs svg { width: 14px; height: 14px; stroke-width: 1.5; }
+.riviera .veh .end { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; }
+.riviera .veh .price { font-size: 17px; font-weight: 600; }
+.riviera .veh .was { font-size: 12px; color: var(--ink2); }
+.riviera .veh .pick { height: 44px; padding: 0 12px; font-size: 13px; border-radius: var(--radius); }
+.riviera .veh .pick.is-on { background: var(--sig); color: var(--sig-on); border-color: var(--sig); }
+.riviera .veh .note { grid-column: 1 / -1; font-size: 12px; color: var(--ink2); }
+.riviera .tag { font-size: 12px; font-weight: 500; color: var(--ink2); border: 1px solid var(--rule2); padding: 0 6px; border-radius: var(--radius-sm); line-height: 18px; }
+@media (max-width: 479px) {
+  .riviera .veh { grid-template-columns: 64px minmax(0, 1fr) auto; gap: 4px 10px; }
+  .riviera .veh .art { width: 64px; height: 44px; }
+}
+
+/* ---------- Payment radio rows ---------- */
+.riviera .pay-list { display: flex; flex-direction: column; border: 1px solid var(--rule2); border-radius: var(--radius); overflow: hidden; }
+.riviera .pay-list button {
+  display: flex; align-items: center; gap: 12px; min-height: 56px; padding: 12px 14px; text-align: start;
+  background: var(--sheet); border: 0; border-top: 1px solid var(--rule); cursor: pointer;
+}
+.riviera .pay-list button:first-child { border-top: 0; }
+.riviera .pay-list button:hover { background: var(--well); }
+.riviera .pay-list .dot { width: 16px; height: 16px; flex: none; border-radius: 50%; border: 1px solid var(--rule2); background: var(--sheet); }
+.riviera .pay-list [aria-checked="true"] .dot { border: 5px solid var(--ink); }
+.riviera .pay-list .t { display: flex; flex-direction: column; }
+.riviera .pay-list .t b { font-weight: 500; }
+.riviera .pay-list .t small { font-size: 13px; color: var(--ink2); }
+
+.riviera .fine { font-size: 12.5px; color: var(--ink2); margin-top: 14px; }
+.riviera .map-fallback { height: 100%; display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: var(--space-1); padding: var(--space-4); background: var(--well); color: var(--ink2); font-size: var(--text-sm); text-align: center; }
+.riviera .map-fallback b { color: var(--ink); font-weight: 500; }
+
+/* ---------- Route rail (step 1) ---------- */
+@media (max-width: 479px) { .riviera .route-rail__wait-icon { display: none; } .riviera .route-rail__wait { padding-inline-start: 4px; } }
+.riviera .route-rail { position: relative; display: flex; flex-direction: column; gap: 12px; }
+.riviera .route-rail__line { position: absolute; z-index: 1; pointer-events: none; inset-block-start: 24px; inset-block-end: 24px; inset-inline-start: 20px; width: 2px; border-radius: 2px; background: var(--ink); }
+.riviera .route-rail__row { display: block; min-width: 0; }
+.riviera .route-rail__mark { position: absolute; z-index: 2; inset-block-start: 0; inset-inline-start: 6px; display: grid; place-items: center; width: 28px; height: 46px; pointer-events: none; }
+.riviera .route-rail__dot { width: 14px; height: 14px; border: 3px solid var(--ink); border-radius: 50%; background: var(--field); }
+.riviera .route-rail__num { display: grid; place-items: center; width: 20px; height: 20px; border-radius: 50%; background: var(--ink); color: var(--field); font-size: 11px; font-weight: 700; line-height: 1; box-shadow: 0 0 0 3px var(--field); }
+.riviera .route-rail__pin { width: 14px; height: 14px; border-radius: 3px; background: var(--ink); box-shadow: 0 0 0 3px var(--field); }
+.riviera .route-rail__field { position: relative; height: 48px; min-width: 0; padding-block: 0; padding-inline: 44px 14px; border: 1px solid var(--rule2); border-radius: var(--radius); background: var(--field); }
+.riviera .route-rail__label { position: absolute; inset-block-start: 5px; inset-inline-start: 44px; max-width: calc(100% - 58px); color: var(--ink2); font-size: 11px; line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.riviera .route-rail__input { display: block; width: 100%; height: 100%; min-width: 0; padding: 14px 0 0; border: 0; background: transparent; color: var(--ink); font-size: 16px; line-height: 1.35; text-overflow: ellipsis; }
+.riviera .route-rail__input::placeholder { color: var(--ink2); opacity: 1; }
+.riviera .route-rail__field--locate { padding-inline-end: 48px; }
+.riviera .route-rail__field--stop { padding-inline-end: 52px; }
+.riviera .route-rail__stop { display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 1fr); gap: 8px; align-items: stretch; min-width: 0; }
+.riviera .route-rail__wait {
+  display: flex; align-items: center; gap: 4px; min-width: 0;
+  height: 48px; padding-inline-start: 8px;
+  border: 1px solid var(--rule2); border-radius: var(--radius); background: var(--sheet);
+}
+.riviera .route-rail__wait-icon { width: 14px; height: 14px; flex: none; color: var(--ink2); }
+.riviera .route-rail__wait-select {
+  flex: 1 1 auto; width: 100%; min-width: 0; height: 46px; padding-block: 0; padding-inline: 2px 4px;
+  border: 0; background: transparent; color: var(--ink);
+  font-size: 16px; font-weight: 500; cursor: pointer;
+  /* Same flat look on Safari and Chrome, light and dark: no native grey bevel. */
+  -webkit-appearance: none; appearance: none; border-radius: 0;
+  padding-inline-end: 18px;
+  background-image: linear-gradient(45deg, transparent 50%, var(--ink2) 50%), linear-gradient(135deg, var(--ink2) 50%, transparent 50%);
+  background-position: calc(100% - 10px) 50%, calc(100% - 5px) 50%;
+  background-size: 5px 5px; background-repeat: no-repeat;
+}
+[dir="rtl"] .riviera .route-rail__wait-select, .riviera[dir="rtl"] .route-rail__wait-select { background-position: 5px 50%, 10px 50%; }
+.riviera .route-rail__wait-select option { background: var(--field); color: var(--ink); }
+.riviera .route-rail__remove { position: absolute; inset-block-start: 50%; inset-inline-end: 2px; display: grid; place-items: center; width: 44px; height: 44px; border: 0; border-radius: var(--radius-sm); background: transparent; color: var(--ink2); cursor: pointer; transform: translateY(-50%); }
+.riviera .route-rail__remove:hover { background: var(--well); color: var(--ink); }
+/* Add stop sits on the route rail itself, between the last stop and drop-off:
+   a ringed "+" centred on the line, with a ghost pill label beside it. The
+   button keeps a 44px hit box; negative block margins stop it adding height. */
+.riviera .route-rail__insert { position: relative; z-index: 2; display: flex; min-width: 0; margin-block: -6px; }
+.riviera .route-rail__add { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; min-width: 44px; max-width: 100%; padding: 0; padding-inline-end: 4px; margin-inline-start: 7px; border: 0; border-radius: 999px; background: none; color: var(--ink); font-size: 13.5px; font-weight: 600; line-height: 1.2; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.riviera .route-rail__add-icon { display: grid; flex: none; place-items: center; width: 28px; height: 28px; border: 1.5px solid var(--ink); border-radius: 50%; background: var(--field); color: var(--ink); box-shadow: 0 0 0 3px var(--paper); transition: background-color .15s, color .15s; }
+.riviera .route-rail__add-label { min-width: 0; padding: 6px 12px; border: 1px dashed var(--rule2); border-radius: 999px; background: var(--sheet); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; transition: background-color .15s, border-color .15s; }
+.riviera .route-rail__add:hover .route-rail__add-icon, .riviera .route-rail__add:active .route-rail__add-icon { background: var(--ink); color: var(--field); }
+.riviera .route-rail__add:hover .route-rail__add-label { border-color: var(--ink2); background: var(--well); }
+.riviera .route-rail__add:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+.riviera .route-rail__error { margin-inline-start: 0; color: var(--err); font-size: 12px; }
+.riviera .route-rail__error--after { margin-block-start: 8px; }
+
+/* ---------- Desktop ---------- */
+@media (min-width: 1024px) {
+  .riviera:not(.no-map) { display: grid; grid-template-columns: minmax(480px, 560px) 1fr; }
+  .riviera:not(.no-map) .map { grid-column: 2; grid-row: 1; position: sticky; top: 0; height: 100dvh; border-bottom: 0; border-inline-start: 1px solid var(--rule); }
+  .riviera:not(.no-map) .sheet { grid-column: 1; grid-row: 1; padding: 32px 40px var(--dock-reserve); }
+  .riviera.no-map .sheet { max-width: 1180px; margin-inline: auto; padding: 32px 32px; padding-block-end: calc(var(--dock-reserve) + 16px); }
+  /* Desktop: float centred at the bottom of the map panel, or of the viewport on map-less steps.
+     The dock is as wide as its content (up to the panel) so the brand never truncates. */
+  .riviera .dock {
+    inset-inline: 12px;
+    inset-block-end: 28px;
+    inline-size: max-content;
+    max-inline-size: calc(100% - 24px);
+    margin-inline: auto;
+  }
+  .riviera .dock-controls { margin-inline-start: 20px; }
+  .riviera .map .dock { position: absolute; }
+}
+@media (min-width: 1024px) and (max-width: 1119px) {
+  /* The map panel is narrow here; drop the Account word so the brand plate
+     keeps its full name while the account button stays a 44px icon. */
+  .riviera .map .dock .dock-account { padding-inline: 0; }
+  .riviera .map .dock .dock-account__label { display: none; }
+}
+
+/* ---------- Compact step 1 on phones (<768px) ----------
+   Smaller map, tighter rhythm and 44px fields so pickup, stops, drop-off,
+   date/time and Continue fit a 390x844 phone with minimal scrolling. */
+@media (max-width: 767px) {
+  .riviera .map { height: 18dvh; min-height: 136px; }
+  .riviera .sheet { padding-block-start: 14px; padding-inline: 14px; }
+  .riviera .step-count { margin-bottom: 2px; font-size: 12px; }
+  .riviera .step1__title { margin-bottom: 2px; font-size: 19px; }
+  .riviera .step1__lede { display: none; }
+  .riviera .step1__stack > * + * { margin-block-start: 12px; }
+  .riviera .step1 label.mb-1\.5, .riviera .step1 label.block { margin-bottom: 4px; font-size: 13px; }
+  .riviera .step1__seg-label { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+  .riviera .step1 .seg { padding: 2px; }
+  .riviera .step1 .seg + p { margin-top: 3px; font-size: 11.5px; }
+  .riviera .route-rail { gap: 8px; }
+  .riviera .route-rail__field { height: 46px; }
+  .riviera .route-rail__mark { height: 44px; }
+  .riviera .route-rail__line { inset-block: 23px; }
+  .riviera .route-rail__label { inset-block-start: 3px; font-size: 10.5px; }
+  .riviera .route-rail__input { padding-top: 13px; font-size: 16px; }
+  .riviera .route-rail__wait { height: 46px; }
+  .riviera .route-rail__wait-select { height: 44px; }
+  .riviera .route-rail__insert { margin-block: -4px; }
+  .riviera .step1__cta { min-height: 48px; padding-block: 12px; }
+  .riviera .step1 .btn-primary ~ * { padding-top: 4px; }
+}

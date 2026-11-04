@@ -1,11 +1,10 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { CheckCircle, XCircle } from "lucide-react";
 
 import type { DriverStatus } from "@/features/drivers/model";
 import { driverStatusLabel } from "@/features/drivers/lib/driver-document-label";
-import { Badge } from "@/shared/ui/badge";
+import { StatusMark } from "@/features/dashboard/ui/riviera/status-mark";
 
 export function AdminDriverStatus({
   status,
@@ -16,20 +15,13 @@ export function AdminDriverStatus({
 }) {
   const t = useTranslations("Driver");
 
+  const statusTone = status === "approved" ? "ok" : status === "rejected" ? "err" : "muted";
+
   return (
     <div className="flex flex-wrap gap-2">
-      <Badge variant={status === "approved" ? "default" : "secondary"}>
-        {driverStatusLabel(t, status)}
-      </Badge>
+      <StatusMark tone={statusTone} label={driverStatusLabel(t, status)} />
       {status === "approved" ? (
-        <Badge variant={isActive ? "default" : "secondary"}>
-          {isActive ? (
-            <CheckCircle className="me-1 size-3" aria-hidden="true" />
-          ) : (
-            <XCircle className="me-1 size-3" aria-hidden="true" />
-          )}
-          {isActive ? t("active") : t("turned-off")}
-        </Badge>
+        <StatusMark tone={isActive ? "ok" : "warn"} label={isActive ? t("active") : t("turned-off")} />
       ) : null}
     </div>
   );

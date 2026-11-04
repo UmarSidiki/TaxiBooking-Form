@@ -70,7 +70,7 @@ export function AdminDriversPage() {
         </DeskFilterBar>
 
         <Button
-          className="h-10 w-full shrink-0 rounded-xl px-4 font-semibold xl:w-auto"
+          className="h-10 w-full shrink-0 rounded px-4 font-semibold xl:w-auto"
           onClick={drivers.openCreateForm}
         >
           <Plus className="size-4" aria-hidden="true" />
@@ -120,13 +120,13 @@ export function AdminDriversPage() {
           {[0, 1, 2].map((item) => (
             <div
               key={item}
-              className="desk-card h-36 animate-pulse rounded-2xl border border-border/60 bg-card"
+              className="desk-card h-36 animate-pulse rounded border border-border/60 bg-card"
             />
           ))}
         </div>
       ) : filtered.length === 0 ? (
-        <div className="desk-card flex min-h-64 flex-col items-center justify-center gap-3 rounded-2xl border border-dashed border-border/70 bg-card p-8 text-center">
-          <div className="flex size-12 items-center justify-center rounded-2xl bg-muted">
+        <div className="desk-card flex min-h-64 flex-col items-center justify-center gap-3 rounded border border-dashed border-border/70 bg-card p-8 text-center">
+          <div className="flex size-12 items-center justify-center rounded bg-muted">
             <Users className="size-6 text-muted-foreground" aria-hidden="true" />
           </div>
           <div>
@@ -143,7 +143,7 @@ export function AdminDriversPage() {
           </div>
           {drivers.drivers.length === 0 ? (
             <Button
-              className="mt-1 h-10 rounded-xl"
+              className="mt-1 h-10 rounded"
               onClick={drivers.openCreateForm}
             >
               <Plus className="size-4" aria-hidden="true" />

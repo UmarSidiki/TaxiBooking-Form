@@ -1,26 +1,30 @@
-import { describe, expect, it } from "vitest";
-import { readCustomerToken, signCustomerToken } from "@/features/customers/lib/customer-token";
+import { describe, expect, it, vi } from "vitest";
+import mongoose from "mongoose";
+import { legacyCustomerEmail } from "@/features/customers/lib/legacy-customer-token";
+import { signLegacyToken } from "./helpers/legacy-token";
 import { sendCustomerOtp, verifyCustomerOtp } from "@/features/customers/lib/customer-otp";
 import { changeAllowed } from "@/features/customers/lib/customer-rides";
 import PricingRule from "@/features/pricing/model/PricingRule";
+import { createRide } from "./helpers/fixtures";
+
+vi.mock("@/features/notifications/notify", () => ({
+  notify: vi.fn(async () => ({ ok: true, queued: 0, skipped: null, deliveries: [] })),
+}));
 
 describe("customer portal", () => {
-  it("signs a magic link and rejects a bad token", () => {
+  it("decodes an old link email for prefill only when the signature is valid", () => {
     process.env.NEXTAUTH_SECRET = "test-secret";
-    const token = signCustomerToken("ada@example.com", 60);
-    expect(readCustomerToken(token)).toBe("ada@example.com");
-    expect(readCustomerToken("nope")).toBeNull();
+    expect(legacyCustomerEmail(signLegacyToken("ada@example.com"))).toBe("ada@example.com");
+    expect(legacyCustomerEmail("nope")).toBeNull();
   });
 
-  it("limits OTP sends and accepts the right code", async () => {
+  it("limits OTP sends to five an hour and rejects a wrong code", async () => {
     process.env.NEXTAUTH_SECRET = "test-secret";
-    process.env.QA_MOCK_WHATSAPP = "1";
-    const first = await sendCustomerOtp("ada@example.com", "+14155552671");
-    expect(first.ok).toBe(true);
-    await sendCustomerOtp("ada@example.com", "+14155552671");
-    await sendCustomerOtp("ada@example.com", "+14155552671");
-    const blocked = await sendCustomerOtp("ada@example.com", "+14155552671");
-    expect(blocked.ok).toBe(false);
+    await createRide({ selectedVehicle: new mongoose.Types.ObjectId(), email: "ada@example.com" });
+    for (let send = 0; send < 5; send += 1) {
+      expect((await sendCustomerOtp("ada@example.com")).ok).toBe(true);
+    }
+    expect((await sendCustomerOtp("ada@example.com")).ok).toBe(false);
     const wrong = await verifyCustomerOtp("ada@example.com", "000000");
     expect(wrong.ok).toBe(false);
   });

@@ -12,7 +12,7 @@ const linkClass =
   "underline underline-offset-2 hover:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 rounded-sm";
 
 /** Splits emails and phone numbers out of operator-written text. Plain text stays plain. */
-export function splitContactText(text: string): ContactPart[] {
+function splitContactText(text: string): ContactPart[] {
   const parts: ContactPart[] = [];
   let cursor = 0;
 

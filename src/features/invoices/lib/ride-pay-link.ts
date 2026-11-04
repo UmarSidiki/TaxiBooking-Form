@@ -5,7 +5,7 @@ function secret() {
   return process.env.NEXTAUTH_SECRET || "";
 }
 
-export function signRidePayToken(tripId: string) {
+function signRidePayToken(tripId: string) {
   if (!secret() || !tripId) return null;
   const body = Buffer.from(tripId).toString("base64url");
   const sig = createHmac("sha256", secret()).update(`ride-pay:${body}`).digest("base64url");

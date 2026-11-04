@@ -223,7 +223,7 @@ test("manual QA pass", async ({ page, browser }) => {
     await showUpcoming(page);
     const ride = card(page, "qaedit01");
     await ride.scrollIntoViewIfNeeded();
-    await ride.getByRole("button", { name: "View Details" }).click();
+    await ride.getByRole("button", { name: "View details" }).click();
     const dialog = page.getByRole("dialog").filter({ hasText: "Edit Lane" });
     await dialog.getByRole("button", { name: "Edit ride" }).click();
     await page.locator("#edit-notes").fill("Gate 4");
@@ -237,11 +237,11 @@ test("manual QA pass", async ({ page, browser }) => {
     await shot(page, "admin-activity");
     await page.keyboard.press("Escape");
     await expect(page.getByRole("dialog")).toHaveCount(0);
-    await ride.getByRole("button", { name: "View Details" }).click();
+    await ride.getByRole("button", { name: "View details" }).click();
     await expect(page.getByRole("dialog").getByText("Gate 4")).toBeVisible();
     await page.keyboard.press("Escape");
     await ride.getByRole("button", { name: "Cancel" }).click();
-    await page.getByRole("button", { name: "Confirm Cancellation" }).click();
+    await page.getByRole("button", { name: "Confirm cancellation" }).click();
     await shot(page, "admin-cancel");
   });
 
@@ -282,7 +282,7 @@ test("manual QA pass", async ({ page, browser }) => {
     await page.getByRole("tab", { name: "Applications" }).click();
     await page.getByRole("button", { name: /New Partner/ }).click();
     const sheet = page.locator("[data-slot=sheet-content]");
-    const approve = sheet.getByRole("button", { name: "Approve Partner" });
+    const approve = sheet.getByRole("button", { name: "Approve partner" });
     await expect(approve).toBeInViewport();
     await approve.click();
     await expect(approve).toBeHidden();
@@ -290,11 +290,11 @@ test("manual QA pass", async ({ page, browser }) => {
     await page.keyboard.press("Escape");
     await signIn(page, "/en/partners/login", ALPINE.email, ALPINE.password);
     await gotoPath(page, "/en/partners/fleet");
-    await page.getByRole("button", { name: "Request Fleet" }).nth(1).click();
+    await page.getByRole("button", { name: "Request fleet" }).nth(1).click();
     const requested = page.waitForResponse(
       (response) => response.url().includes("/api/partners/fleet/request") && response.request().method() === "POST",
     );
-    await page.getByRole("dialog").getByRole("button", { name: "Request Fleet" }).click();
+    await page.getByRole("dialog").getByRole("button", { name: "Request fleet" }).click();
     expect((await requested).ok()).toBeTruthy();
     await shot(page, "partner-vehicle-request");
     await signIn(page, "/en/dashboard/signin", ADMIN.email, ADMIN.password);
@@ -303,7 +303,7 @@ test("manual QA pass", async ({ page, browser }) => {
     await page.getByText("Alpine Transfers").first().click();
     const fleetSheet = page.locator("[data-slot=sheet-content]");
     await fleetSheet.getByRole("button", { name: "Fleet" }).click();
-    await fleetSheet.getByRole("button", { name: "Approve Fleet Request" }).click();
+    await fleetSheet.getByRole("button", { name: "Approve fleet request" }).click();
     await shot(page, "admin-approve-vehicle");
   });
 
@@ -319,7 +319,7 @@ test("manual QA pass", async ({ page, browser }) => {
     await expect(a.getByText("Sion Market")).toBeVisible();
     await shot(a, "partner-available");
     const accept = (target: Page) =>
-      target.locator(".desk-card").filter({ hasText: "Sion Market" }).getByRole("button", { name: "Accept Ride" }).click();
+      target.locator(".desk-card").filter({ hasText: "Sion Market" }).getByRole("button", { name: "Accept ride" }).click();
     const [firstResponse, secondResponse] = await Promise.all([
       a.waitForResponse((response) => response.url().includes("/accept") && response.request().method() === "POST"),
       b.waitForResponse((response) => response.url().includes("/accept") && response.request().method() === "POST"),
@@ -377,7 +377,7 @@ test("manual QA pass", async ({ page, browser }) => {
     await page.getByRole("tab", { name: "Completed" }).click();
     const claw = card(page, "qaclaw01");
     await claw.getByRole("button", { name: "Cancel" }).click();
-    await page.getByRole("button", { name: "Confirm Cancellation" }).click();
+    await page.getByRole("button", { name: "Confirm cancellation" }).click();
     await signIn(page, "/en/partners/login", ALPINE.email, ALPINE.password);
     await gotoPath(page, "/en/partners/billing");
     await expect(page.getByText("Clawback")).toBeVisible();

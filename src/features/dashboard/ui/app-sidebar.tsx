@@ -9,6 +9,7 @@ const FALLBACK_SETTINGS: Partial<ISetting> = {
   enablePartners: false,
   enableDrivers: false,
   enableFormBuilder: true,
+  enableMarketing: true,
   enableEmbeddableForm: true,
 };
 

@@ -118,7 +118,7 @@ function ReviewForm() {
 
   if (loadingBooking) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-gray-100">
+      <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="flex flex-col items-center gap-4">
           <Loader2 className="w-12 h-12 animate-spin text-primary" />
           <p className="text-gray-600">{t("loading-booking-details")}</p>
@@ -129,11 +129,11 @@ function ReviewForm() {
 
   if (alreadyReviewed) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-gray-100 p-4">
+      <div className="min-h-screen flex items-center justify-center bg-background p-4">
         <Card className="w-full max-w-md">
           <CardContent className="pt-6 text-center">
-            <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <AlertCircle className="w-10 h-10 text-blue-600" />
+            <div className="w-16 h-16 bg-muted rounded-md flex items-center justify-center mx-auto mb-4">
+              <AlertCircle className="w-10 h-10 text-foreground" />
             </div>
             <h2 className="text-2xl font-bold text-gray-900 mb-2">{t("already-reviewed")}</h2>
             <p className="text-gray-600 mb-6">
@@ -150,11 +150,11 @@ function ReviewForm() {
 
   if (submitted) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-gray-100 p-4">
+      <div className="min-h-screen flex items-center justify-center bg-background p-4">
         <Card className="w-full max-w-md">
           <CardContent className="pt-6 text-center">
-            <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <CheckCircle2 className="w-10 h-10 text-green-600" />
+            <div className="w-16 h-16 bg-muted rounded-md flex items-center justify-center mx-auto mb-4">
+              <CheckCircle2 className="w-10 h-10 text-foreground" />
             </div>
             <h2 className="text-2xl font-bold text-gray-900 mb-2">{t("thank-you")}</h2>
             <p className="text-gray-600 mb-6">
@@ -171,11 +171,11 @@ function ReviewForm() {
 
   if (error && !bookingDetails) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-gray-100 p-4">
+      <div className="min-h-screen flex items-center justify-center bg-background p-4">
         <Card className="w-full max-w-md">
           <CardContent className="pt-6 text-center">
-            <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Star className="w-10 h-10 text-red-600" />
+            <div className="w-16 h-16 bg-muted rounded-md flex items-center justify-center mx-auto mb-4">
+              <Star className="w-10 h-10 text-destructive" />
             </div>
             <h2 className="text-2xl font-bold text-gray-900 mb-2">{t("oops")}</h2>
             <p className="text-gray-600 mb-6">{error}</p>
@@ -189,7 +189,7 @@ function ReviewForm() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-gray-100 p-4">
+    <div className="min-h-screen flex items-center justify-center bg-background p-4">
       <Card className="w-full max-w-2xl">
         <CardHeader>
           <CardTitle className="text-2xl">{t("how-was-your-experience")}</CardTitle>
@@ -294,7 +294,7 @@ function ReviewForm() {
 export default function ReviewPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-gray-100">
+      <div className="min-h-screen flex items-center justify-center bg-background">
         <Loader2 className="w-12 h-12 animate-spin text-primary" />
       </div>
     }>

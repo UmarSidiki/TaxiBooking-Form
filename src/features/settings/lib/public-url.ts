@@ -7,7 +7,7 @@ import {
   type RequestHeadersLike,
 } from "@/shared/lib/resolve-public-url";
 
-export async function getPersistedPublicBaseUrl(): Promise<string | null> {
+async function getPersistedPublicBaseUrl(): Promise<string | null> {
   try {
     await connectDB();
     const settings = await Setting.findOne().select("publicBaseUrl");

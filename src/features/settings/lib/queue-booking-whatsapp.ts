@@ -5,6 +5,7 @@ import {
   queueAssigneeNotice,
   type NoticeRecipient,
 } from "@/features/settings/lib/assignee-whatsapp";
+import { rideLocationsOf } from "@/features/rides/lib/ride-locations";
 
 function rideOf(booking: IBooking) {
   return {
@@ -12,6 +13,7 @@ function rideOf(booking: IBooking) {
     pickup: booking.pickup,
     date: booking.date,
     time: booking.time,
+    locations: rideLocationsOf(booking),
   };
 }
 

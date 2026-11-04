@@ -26,7 +26,7 @@ export function addDays(date: string, days: number) {
 }
 
 /** Wall-clock `YYYY-MM-DDTHH:mm` for `now` in `timeZone` (UTC when missing or invalid). */
-export function localStamp(now: Date, timeZone?: string) {
+function localStamp(now: Date, timeZone?: string) {
   let zone = timeZone || "UTC";
   try {
     new Intl.DateTimeFormat("en", { timeZone: zone });

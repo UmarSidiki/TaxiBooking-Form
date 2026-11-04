@@ -57,7 +57,7 @@ export function FleetVehicleFormTiers({
             variant="outline"
             size="sm"
             onClick={addTier}
-            className="gap-1.5 min-h-9 rounded-xl"
+            className="gap-1.5 min-h-9 rounded"
             id="add-price-tier-btn"
           >
             <Plus className="size-3.5" aria-hidden="true" />

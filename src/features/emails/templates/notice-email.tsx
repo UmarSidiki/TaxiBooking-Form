@@ -83,7 +83,7 @@ export function NoticeEmail({
           href={cta.url}
           label={cta.label}
           t={t}
-          color={brand.primaryColor}
+          color={brand.accent}
         />
       ) : null}
     </BrandLayout>

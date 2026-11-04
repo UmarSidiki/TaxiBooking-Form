@@ -17,9 +17,9 @@ import {
   deskNavGroups,
   type DeskNavGroup,
   type DeskNavItem,
+  activeDeskNavHref,
 } from "@/features/dashboard/lib/sidebar-nav";
 import { isDeskNavFlagOn } from "@/features/dashboard/lib/is-desk-nav-flag-on";
-import { isSettingsDeskPath } from "@/features/settings/lib/settings-desk-nav";
 
 export function DeskSidebarNav({
   locale,
@@ -35,26 +35,36 @@ export function DeskSidebarNav({
   const t = useTranslations();
   const pathname = usePathname();
 
+  const visible = groups
+    .map((group) => ({
+      group,
+      items: group.items.filter(
+        (item) => isDeskNavFlagOn(item.flag, settings) && isVisible(item, approved)
+      ),
+    }))
+    .filter((entry) => entry.items.length > 0);
+
+  const activeHref = activeDeskNavHref(
+    pathname,
+    visible.flatMap(({ items }) =>
+      items.map((item) => ({ href: item.href(locale), matchNested: item.matchNested }))
+    )
+  );
+
   return (
-    <>
-      {groups.map((group) => (
+    <nav aria-label={t("Sidebar.navigation")} className="flex flex-col gap-0.5 py-1">
+      {visible.map(({ group, items }) => (
         <DeskNavGroupBlock
           key={group.id}
           group={group}
+          items={items}
           locale={locale}
-          pathname={pathname}
-          settings={settings}
-          approved={approved}
+          activeHref={activeHref}
           t={t}
         />
       ))}
-    </>
+    </nav>
   );
-}
-
-function isDeskNavActive(pathname: string, href: string) {
-  if (pathname === href) return true;
-  return href.endsWith("/settings") && isSettingsDeskPath(pathname);
 }
 
 function isVisible(item: DeskNavItem, approved: boolean) {
@@ -64,43 +74,47 @@ function isVisible(item: DeskNavItem, approved: boolean) {
 
 function DeskNavGroupBlock({
   group,
+  items,
   locale,
-  pathname,
-  settings,
-  approved,
+  activeHref,
   t,
 }: {
   group: DeskNavGroup;
+  items: DeskNavItem[];
   locale: string;
-  pathname: string;
-  settings: Partial<ISetting>;
-  approved: boolean;
+  activeHref: string | null;
   t: ReturnType<typeof useTranslations>;
 }) {
-  const items = group.items.filter(
-    (item) => isDeskNavFlagOn(item.flag, settings) && isVisible(item, approved)
-  );
-  if (items.length === 0) return null;
+  const labelId = `desk-nav-${group.id}`;
 
   return (
-    <SidebarGroup>
-      <SidebarGroupLabel className="text-sidebar-foreground/80">
+    <SidebarGroup className="py-1.5" data-nav-group={group.id}>
+      <SidebarGroupLabel
+        id={labelId}
+        className="h-7 text-[0.68rem] font-semibold uppercase tracking-[0.08em] text-[var(--ink2)]"
+      >
         {t(group.labelKey)}
       </SidebarGroupLabel>
       <SidebarGroupContent>
-        <SidebarMenu>
+        <SidebarMenu aria-labelledby={labelId} className="gap-0.5">
           {items.map((item) => {
             const href = item.href(locale);
+            const active = href === activeHref;
             return (
               <SidebarMenuItem key={item.titleKey}>
                 <SidebarMenuButton
                   asChild
-                  isActive={isDeskNavActive(pathname, href)}
+                  isActive={active}
                   tooltip={t(item.titleKey)}
+                  className="relative min-h-10 data-[active=true]:font-semibold data-[active=true]:before:absolute data-[active=true]:before:inset-y-2 data-[active=true]:before:start-0 data-[active=true]:before:w-[3px] data-[active=true]:before:rounded-full data-[active=true]:before:bg-primary"
                 >
-                  <Link href={href} className="min-h-11 text-sidebar-foreground">
-                    <item.icon />
-                    <span className="text-sidebar-foreground">{t(item.titleKey)}</span>
+                  <Link
+                    href={href}
+                    aria-current={active ? "page" : undefined}
+                    className="min-h-10 text-sidebar-foreground"
+                  >
+                    <item.icon aria-hidden="true" className={active ? "text-primary" : "opacity-80"} />
+                    <span className="truncate text-sidebar-foreground">{t(item.titleKey)}</span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>

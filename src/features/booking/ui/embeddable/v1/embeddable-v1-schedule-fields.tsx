@@ -47,7 +47,7 @@ export function EmbeddableV1ScheduleFields({
                           ? t("embeddable.departure-date")
                           : t("embeddable.date")
                       }
-                      className={`rounded-lg border bg-white pl-9 md:pl-10 pr-3 py-2 md:py-2.5 text-sm transition-all duration-200 ${
+                      className={`rounded border bg-white pl-9 md:pl-10 pr-3 py-2 md:py-2.5 text-sm transition-all duration-200 ${
                         errors.date
                           ? "border-red-400 focus:border-red-500 focus:ring-red-100"
                           : "border-slate-200 focus:border-primary focus:ring-primary/20"
@@ -72,7 +72,7 @@ export function EmbeddableV1ScheduleFields({
                           ? t("embeddable.departure-time")
                           : t("embeddable.time")
                       }
-                      className={`rounded-lg border bg-white pl-9 md:pl-10 pr-3 py-2 md:py-2.5 text-sm transition-all duration-200 ${
+                      className={`rounded border bg-white pl-9 md:pl-10 pr-3 py-2 md:py-2.5 text-sm transition-all duration-200 ${
                         errors.time
                           ? "border-red-400 focus:border-red-500 focus:ring-red-100"
                           : "border-slate-200 focus:border-primary focus:ring-primary/20"
@@ -99,7 +99,7 @@ export function EmbeddableV1ScheduleFields({
                           handleInputChange("returnDate", e.target.value)
                         }
                         placeholder={t("embeddable.return-date")}
-                        className={`rounded-lg border bg-white pl-9 md:pl-10 pr-3 py-2 md:py-2.5 text-sm transition-all duration-200 ${
+                        className={`rounded border bg-white pl-9 md:pl-10 pr-3 py-2 md:py-2.5 text-sm transition-all duration-200 ${
                           errors.returnDate
                             ? "border-red-400 focus:border-red-500 focus:ring-red-100"
                             : "border-slate-200 focus:border-primary focus:ring-primary/20"
@@ -120,7 +120,7 @@ export function EmbeddableV1ScheduleFields({
                           handleInputChange("returnTime", e.target.value)
                         }
                         placeholder={t("embeddable.return-time")}
-                        className={`rounded-lg border bg-white pl-9 md:pl-10 pr-3 py-2 md:py-2.5 text-sm transition-all duration-200 ${
+                        className={`rounded border bg-white pl-9 md:pl-10 pr-3 py-2 md:py-2.5 text-sm transition-all duration-200 ${
                           errors.returnTime
                             ? "border-red-400 focus:border-red-500 focus:ring-red-100"
                             : "border-slate-200 focus:border-primary focus:ring-primary/20"
@@ -168,7 +168,7 @@ export function EmbeddableV1ScheduleFields({
                       }
                       handleInputBlur("passengers");
                     }}
-                    className={`rounded-lg border bg-white pl-9 md:pl-10 pr-3 py-2 md:py-2.5 text-sm border-slate-200 focus:border-primary focus:ring-primary/20 transition-all duration-200 ${
+                    className={`rounded border bg-white pl-9 md:pl-10 pr-3 py-2 md:py-2.5 text-sm border-slate-200 focus:border-primary focus:ring-primary/20 transition-all duration-200 ${
                       errors.passengers
                         ? "border-red-400 focus:border-red-500 focus:ring-red-100"
                         : "border-slate-200 focus:border-primary focus:ring-primary/20"

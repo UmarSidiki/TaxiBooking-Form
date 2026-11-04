@@ -21,7 +21,7 @@ export function EmbeddableV2Submit({
               {/* Animated Submit Button */}
               <Button
                 type="submit"
-                className="w-full rounded-lg bg-gradient-to-r from-primary via-primary/90 to-primary/70 hover:from-primary/95 hover:via-primary/85 hover:to-primary/65 py-2 sm:py-2.5 text-xs sm:text-sm font-semibold tracking-wide text-white transition-all duration-200 shadow-md hover:shadow-lg disabled:opacity-70 disabled:cursor-not-allowed"
+                className="w-full rounded bg-gradient-to-r from-primary via-primary/90 to-primary/70 hover:from-primary/95 hover:via-primary/85 hover:to-primary/65 py-2 sm:py-2.5 text-xs sm:text-sm font-semibold tracking-wide text-white transition-all duration-200 shadow-md hover:shadow-lg disabled:opacity-70 disabled:cursor-not-allowed"
                 disabled={isLoading || calculatingDistance}
               >
                 {isLoading || calculatingDistance ? (

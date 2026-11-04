@@ -1,4 +1,5 @@
 import { Booking, PendingBooking } from '@/features/booking/model';
+import { createBookingDocument } from '@/features/booking/lib/booking.repo';
 import { Vehicle } from '@/features/fleet/model';
 import { buildBookingEmailData } from '@/features/payments/lib/booking-email-data';
 import { buildPaidBookingRecord } from '@/features/payments/lib/build-paid-booking-record';
@@ -9,6 +10,7 @@ import type {
   FinalizePaidBookingResult,
 } from '@/features/payments/lib/finalize-paid-booking.types';
 import { sendBookingEmails } from '@/features/payments/lib/send-booking-emails';
+import { recordCheckoutMarketingConsent } from '@/features/marketing/lib/checkout/record-checkout-consent';
 
 const PAID_AMOUNT_TOLERANCE = 0.05;
 
@@ -61,8 +63,17 @@ export async function createBookingFromPending(
   });
 
   try {
-    const newBooking = await Booking.create(bookingPayload);
+    const newBooking = await createBookingDocument(bookingPayload);
     const baseUrl = input.baseUrl || (await resolvePublicUrl()) || undefined;
+
+    try {
+      await recordCheckoutMarketingConsent({
+        email: pendingBooking.bookingData.email,
+        phone: pendingBooking.bookingData.phone,
+      });
+    } catch {
+      // Consent capture must never fail a paid booking.
+    }
 
     const emailData = buildBookingEmailData(orderId, pendingBooking, vehicle, {
       bookingId: newBooking._id.toString(),

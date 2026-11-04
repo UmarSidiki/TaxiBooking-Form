@@ -57,9 +57,13 @@ export function AdminPartnerList({
                   key={partner._id}
                   role="button"
                   tabIndex={0}
+                  data-partner-row
                   aria-label={`${t("partner-details")}: ${partner.name}`}
                   className="flex cursor-pointer flex-col gap-3 rounded-md border p-4 transition-colors duration-200 hover:bg-muted/50 focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 sm:flex-row sm:items-center"
-                  onClick={() => openPartner(partner)}
+                  onClick={(event) => {
+                    event.currentTarget.focus();
+                    openPartner(partner);
+                  }}
                   onKeyDown={(event) => {
                     if (event.key === "Enter" || event.key === " ") {
                       event.preventDefault();
@@ -73,8 +77,13 @@ export function AdminPartnerList({
                         <Users className="size-5 text-primary" aria-hidden="true" />
                       </div>
                       <div className="min-w-0 flex-1">
-                        <p className="font-semibold truncate">{partner.name}</p>
-                        <p className="text-sm text-muted-foreground truncate">
+                        <p className="font-semibold truncate" title={partner.name}>
+                          {partner.name}
+                        </p>
+                        <p
+                          className="text-sm text-muted-foreground truncate"
+                          title={partner.email}
+                        >
                           {partner.email}
                         </p>
                         <p className="text-xs text-muted-foreground mt-1">

@@ -1,11 +1,47 @@
+import { OVERRIDE_KEYS, type OverrideKey } from "@/features/settings/lib/palette-tokens";
 import { z } from "zod";
+import { COLOR_PALETTES } from "@/features/settings/lib/color-palettes";
 
-const hexOrRgb = z.string().max(64);
+
+const LOGO_DATA_URL = /^data:image\/(png|jpeg|webp|gif|svg\+xml);base64,[A-Za-z0-9+/]+={0,2}$/;
+
+function isCompanyLogoUrl(value: string) {
+  if (value === "") return true;
+  if (/\s/.test(value)) return false;
+  if (LOGO_DATA_URL.test(value)) return true;
+  if (value.startsWith("/")) return !value.startsWith("//") && !value.startsWith("/\\");
+  try {
+    const protocol = new URL(value).protocol;
+    return protocol === "http:" || protocol === "https:";
+  } catch {
+    return false;
+  }
+}
+
+export const companyLogoUrlSchema = z
+  .string()
+  .trim()
+  .max(400_000)
+  .refine(isCompanyLogoUrl, { message: "Invalid company logo URL" });
+
+const strictHex = z.string().regex(/^#[0-9a-fA-F]{6}$/);
+const paletteOverridesSchema = z
+  .object(Object.fromEntries(OVERRIDE_KEYS.map((k) => [k, strictHex.optional()])) as Record<OverrideKey, z.ZodOptional<typeof strictHex>>)
+  .strict();
 
 export const settingsWriteSchema = z.object({
-  primaryColor: hexOrRgb.optional(),
-  secondaryColor: hexOrRgb.optional(),
   borderRadius: z.number().optional(),
+  colorPalette: z.enum(COLOR_PALETTES).optional(),
+  // Strict #RRGGBB only: these values are turned into CSS on the server.
+  customPalette: z
+    .object({
+      brand: z.string().regex(/^#[0-9a-fA-F]{6}$/),
+      accent: z.string().regex(/^#[0-9a-fA-F]{6}$/),
+      light: paletteOverridesSchema.optional(),
+      dark: paletteOverridesSchema.optional(),
+    })
+    .strict()
+    .optional(),
   redirectUrl: z.string().optional(),
   thankYouStaySeconds: z.number().optional(),
   redirectImmediatelyAfterBooking: z.boolean().optional(),
@@ -21,8 +57,11 @@ export const settingsWriteSchema = z.object({
     })
     .nullable()
     .optional(),
+  // "Clear bounds" sends null; it is stored as an empty list (no service area).
   mapPolygonPoints: z
     .array(z.object({ lat: z.number(), lng: z.number() }))
+    .nullable()
+    .transform((points) => points ?? [])
     .optional(),
   stripePublishableKey: z.string().optional(),
   stripeSecretKey: z.string().optional(),
@@ -47,11 +86,36 @@ export const settingsWriteSchema = z.object({
   smtpTestEmail: z.string().optional(),
   smtpFrom: z.string().optional(),
   smtpSenderName: z.string().optional(),
+  marketingSenderName: z.string().trim().max(120).optional(),
+  marketingSenderEmail: z.string().trim().max(254).optional(),
+  marketingReplyTo: z.string().trim().max(254).optional(),
+  marketingTestRecipients: z
+    .array(
+      z
+        .string()
+        .trim()
+        .min(3)
+        .max(254)
+        .refine(
+          (value) =>
+            value.includes("@") ||
+            value.replace(/[^0-9]/g, "").length >= 6,
+          { message: "Invalid test recipient" },
+        ),
+    )
+    .max(100)
+    .optional(),
+  marketingWhatsappDailyCap: z.number().int().min(1).max(1000).optional(),
+  marketingQuietHoursStart: z.number().int().min(0).max(23).optional(),
+  marketingQuietHoursEnd: z.number().int().min(0).max(23).optional(),
+  marketingTrackOpens: z.boolean().optional(),
+  marketingTrackClicks: z.boolean().optional(),
   enablePartners: z.boolean().optional(),
   enableDrivers: z.boolean().optional(),
   enableAppointmentRequest: z.boolean().optional(),
   enableEmbeddableForm: z.boolean().optional(),
   enableFormBuilder: z.boolean().optional(),
+  enableMarketing: z.boolean().optional(),
   enableDeskBooking: z.boolean().optional(),
   promoCodesEnabled: z.boolean().optional(),
   enableTax: z.boolean().optional(),
@@ -63,6 +127,7 @@ export const settingsWriteSchema = z.object({
   adminEmail: z.string().optional(),
   publicBaseUrl: z.string().trim().max(300).optional(),
   timezone: z.string().optional(),
+  companyLogoUrl: companyLogoUrlSchema.optional(),
   legalName: z.string().optional(),
   address: z.string().optional(),
   taxId: z.string().optional(),

@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
+import { useLocale } from "next-intl";
 import { CreditCard, FileText, Truck, User, X } from "lucide-react";
 
 import { PartnerDetailsTabContent } from "@/features/partners/ui/partner-details-tab-content";
@@ -68,6 +69,8 @@ export function AdminPartnerDetailsDialog(
     setShowSuspendDialog,
   } = props;
   const [activeTab, setActiveTab] = useState<PartnerDrawerTabId>("profile");
+  const returnFocusRef = useRef<HTMLElement | null>(null);
+  const isRtl = useLocale() === "ar";
 
   return (
     <Sheet
@@ -78,17 +81,36 @@ export function AdminPartnerDetailsDialog(
       }}
     >
       <SheetContent
-        side="right"
-        className="flex h-dvh max-h-dvh w-full max-w-[min(100vw,54rem)] flex-col overflow-hidden p-0 [&>button]:hidden"
+        side={isRtl ? "left" : "right"}
+        className="riviera-drawer flex h-dvh max-h-dvh flex-col gap-0 overflow-hidden border-0 p-0 [&>button]:hidden"
+        onOpenAutoFocus={() => {
+          returnFocusRef.current = document.activeElement as HTMLElement | null;
+        }}
+        onCloseAutoFocus={(event) => {
+          const target = returnFocusRef.current;
+          if (target && document.contains(target)) {
+            event.preventDefault();
+            target.focus();
+          }
+        }}
       >
-        <SheetHeader className="flex-none border-b border-border/60 px-4 py-3 sm:px-6 sm:py-4">
+        <SheetHeader
+          data-drawer-header
+          className="riviera-drawer__header flex-none border-b border-border/60"
+        >
           <div className="flex items-center justify-between gap-3">
             <div className="min-w-0">
-              <SheetTitle className="truncate text-sm font-semibold text-foreground sm:text-base">
+              <SheetTitle
+                className="truncate text-sm font-semibold text-foreground sm:text-base"
+                title={selectedPartner?.name}
+              >
                 {t("partner-details")}
               </SheetTitle>
               {selectedPartner ? (
-                <p className="mt-0.5 truncate text-xs font-medium text-muted-foreground">
+                <p
+                  className="mt-0.5 truncate text-xs font-medium text-muted-foreground"
+                  title={selectedPartner.name}
+                >
                   {selectedPartner.name}
                 </p>
               ) : null}
@@ -96,7 +118,7 @@ export function AdminPartnerDetailsDialog(
             <button
               type="button"
               onClick={() => setShowDetailsDialog(false)}
-              className="flex size-8 shrink-0 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              className="flex size-11 shrink-0 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               aria-label={t("close")}
             >
               <X className="size-4" aria-hidden="true" />
@@ -106,7 +128,7 @@ export function AdminPartnerDetailsDialog(
 
         <div className="flex min-h-0 flex-1 flex-col overflow-hidden sm:flex-row">
           <nav
-            className="flex w-full shrink-0 flex-row gap-1 overflow-x-auto border-b border-border/60 bg-muted/30 px-2 py-1.5 scrollbar-none sm:hidden"
+            className="flex w-full shrink-0 flex-row gap-1 overflow-x-auto border-b border-border/60 bg-muted/30 ps-2 pe-2 py-1.5 scrollbar-none sm:hidden"
             aria-label={t("partner-details")}
           >
             {TABS.map(({ id, icon: Icon, labelKey }) => (
@@ -123,7 +145,7 @@ export function AdminPartnerDetailsDialog(
           </nav>
 
           <nav
-            className="hidden w-36 shrink-0 flex-col gap-0.5 border-e border-border/60 bg-muted/30 px-2 py-4 sm:flex"
+            className="hidden w-36 shrink-0 flex-col gap-0.5 border-e border-border/60 bg-muted/30 ps-2 pe-2 py-4 sm:flex"
             aria-label={t("partner-details")}
           >
             {TABS.map(({ id, icon: Icon, labelKey }) => (
@@ -139,7 +161,10 @@ export function AdminPartnerDetailsDialog(
           </nav>
 
           <div className="flex min-w-0 flex-1 flex-col overflow-hidden">
-            <div className="flex-1 overflow-y-auto overscroll-contain px-4 py-4 sm:px-6 sm:py-5">
+            <div
+              data-drawer-body
+              className="riviera-drawer__body min-h-0 flex-1"
+            >
               <PartnerDetailsTabContent activeTab={activeTab} {...props} />
             </div>
 

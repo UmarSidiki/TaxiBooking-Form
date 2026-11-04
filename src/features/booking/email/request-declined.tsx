@@ -1,5 +1,5 @@
 import { absoluteHttpBase } from "@/features/booking/lib/booking-mail-url";
-import { customerPortalUrl } from "@/features/customers/lib/customer-token";
+import { createMagicLink } from "@/features/customers/lib/magic-link";
 import type { BookingEmailData } from "@/features/payments/lib/booking-email-data";
 import { bookingTrip } from "@/features/emails/lib/booking-rows";
 import { prepareEventEmail, sendPreparedEmail } from "@/features/emails/lib/send-event-email";
@@ -27,11 +27,11 @@ export async function sendRequestDeclinedEmail(
     });
     if (!prepared) return false;
 
-    const manageUrl = customerPortalUrl(
-      absoluteHttpBase(data.baseUrl),
-      prepared.locale,
-      data.email,
-    );
+    const manageUrl = await createMagicLink(data.email, {
+      baseUrl: absoluteHttpBase(data.baseUrl),
+      locale: prepared.locale,
+      purpose: "email",
+    });
 
     return sendPreparedEmail({
       prepared,

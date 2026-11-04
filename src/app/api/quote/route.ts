@@ -31,6 +31,7 @@ export async function POST(request: Request) {
         }));
   const { settings } = await loadPaymentSettings();
   const priced = await priceServerBooking({
+    enforceServiceArea: true,
     vehicle,
     booking: parsed.data,
     distanceKm,

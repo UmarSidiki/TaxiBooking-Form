@@ -65,7 +65,7 @@ test("polish: axe on pricing, fleet form, step 3", async ({ page }, info) => {
   await page.reload({ waitUntil: "domcontentloaded" });
   const pickup = page.getByPlaceholder("Enter pickup address");
   await expect(pickup).toHaveAttribute("inputmode", "text");
-  expect(await pickup.evaluate((el) => getComputedStyle(el).fontSize)).toBe(p === "desktop" ? "14px" : "16px");
+  expect(await pickup.evaluate((el) => getComputedStyle(el).fontSize)).toBe("16px");
   await axe(page, `${p} step1`);
   await pickup.fill("Geneva Airport");
   await page.getByPlaceholder("Enter destination address").fill("Lausanne Station");

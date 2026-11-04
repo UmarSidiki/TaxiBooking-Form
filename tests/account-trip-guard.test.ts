@@ -1,26 +1,22 @@
-import { afterAll, describe, expect, it, vi } from "vitest";
+import { describe, expect, it } from "vitest";
 import mongoose from "mongoose";
-import { signCustomerToken } from "@/features/customers/lib/customer-token";
+import {
+  createCustomerSession,
+  customerSessionCookie,
+} from "@/features/customers/lib/customer-session";
 import { Booking } from "@/features/booking/model";
 import { createRide, createVehicle } from "./helpers/fixtures";
-
-vi.mock("next/headers", () => ({ cookies: async () => new Map() }));
-
-afterAll(() => {
-  vi.doUnmock("next/headers");
-  vi.resetModules();
-});
 
 function dayOffset(days: number) {
   return new Date(Date.now() + days * 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
 }
 
 async function act(id: string, email: string, body: unknown) {
-  process.env.NEXTAUTH_SECRET = "test-secret";
   const { POST } = await import("@/app/api/account/trips/[id]/route");
-  const token = signCustomerToken(email);
-  const request = new Request(`http://x/api/account/trips/${id}?token=${token}`, {
+  const session = await createCustomerSession(email);
+  const request = new Request(`http://x/api/account/trips/${id}`, {
     method: "POST",
+    headers: { cookie: `${customerSessionCookie().name}=${session}` },
     body: JSON.stringify(body),
   });
   return POST(request, { params: Promise.resolve({ id }) });

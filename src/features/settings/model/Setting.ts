@@ -1,10 +1,11 @@
 import { Schema, model, models } from "mongoose";
+import { COLOR_PALETTES, DEFAULT_COLOR_PALETTE, type ColorPalette } from "@/features/settings/lib/color-palettes";
 
 export interface ISetting {
   _id?: string;
-  primaryColor: string;
-  secondaryColor: string;
   borderRadius: number;
+  colorPalette?: ColorPalette;
+  customPalette?: { brand: string; accent: string; light?: Record<string, string>; dark?: Record<string, string> };
   redirectUrl?: string;
   thankYouStaySeconds?: number;
   redirectImmediatelyAfterBooking?: boolean;
@@ -42,6 +43,20 @@ export interface ISetting {
   smtpTestEmail?: string;
   smtpFrom?: string;
   smtpSenderName?: string;
+  /** Marketing sender identity; falls back to the transactional sender. */
+  marketingSenderName?: string;
+  marketingSenderEmail?: string;
+  marketingReplyTo?: string;
+  /** Staff-only allowlist for campaign test sends (emails and phone numbers). */
+  marketingTestRecipients?: string[];
+  /** Marketing WhatsApp cap sits on top of the global sender cap. */
+  marketingWhatsappDailyCap?: number;
+  /** Operator-local quiet hours; marketing WhatsApp never sends inside them. */
+  marketingQuietHoursStart?: number;
+  marketingQuietHoursEnd?: number;
+  /** Privacy defaults: both off. */
+  marketingTrackOpens?: boolean;
+  marketingTrackClicks?: boolean;
   companyName?: string;
   companyLogoUrl?: string;
   companyAddress?: string;
@@ -61,6 +76,8 @@ export interface ISetting {
   enableAppointmentRequest?: boolean;
   enableEmbeddableForm?: boolean;
   enableFormBuilder?: boolean;
+  /** Marketing module (campaigns, consent toggles). Missing means on. */
+  enableMarketing?: boolean;
   /** When true: the desk can create bookings on a Customer's behalf. */
   enableDeskBooking?: boolean;
   /** When true: the promo code field shows on the booking form (if a usable code exists). */
@@ -89,13 +106,23 @@ export interface ISetting {
 
 const SettingSchema = new Schema<ISetting>(
   {
-    primaryColor: {
+    colorPalette: {
       type: String,
-      default: "#B45309",
+      enum: COLOR_PALETTES,
+      default: DEFAULT_COLOR_PALETTE,
     },
-    secondaryColor: {
-      type: String,
-      default: "#111827", // Default: gray-900
+    customPalette: {
+      type: new Schema(
+        {
+          brand: { type: String, match: /^#[0-9a-fA-F]{6}$/ },
+          accent: { type: String, match: /^#[0-9a-fA-F]{6}$/ },
+          // Hand-pinned tokens; validated by settingsWriteSchema, re-cleaned on every read.
+          light: { type: Schema.Types.Mixed, default: undefined },
+          dark: { type: Schema.Types.Mixed, default: undefined },
+        },
+        { _id: false },
+      ),
+      default: undefined,
     },
     borderRadius: {
       type: Number,
@@ -231,6 +258,48 @@ const SettingSchema = new Schema<ISetting>(
       type: String,
       default: "",
     },
+    marketingSenderName: {
+      type: String,
+      default: "",
+    },
+    marketingSenderEmail: {
+      type: String,
+      default: "",
+    },
+    marketingReplyTo: {
+      type: String,
+      default: "",
+    },
+    marketingTestRecipients: {
+      type: [String],
+      default: [],
+    },
+    marketingWhatsappDailyCap: {
+      type: Number,
+      default: 100,
+      min: 1,
+      max: 1000,
+    },
+    marketingQuietHoursStart: {
+      type: Number,
+      default: 20,
+      min: 0,
+      max: 23,
+    },
+    marketingQuietHoursEnd: {
+      type: Number,
+      default: 9,
+      min: 0,
+      max: 23,
+    },
+    marketingTrackOpens: {
+      type: Boolean,
+      default: false,
+    },
+    marketingTrackClicks: {
+      type: Boolean,
+      default: false,
+    },
     companyName: {
       type: String,
       default: "",
@@ -314,6 +383,10 @@ const SettingSchema = new Schema<ISetting>(
     enableFormBuilder: {
       type: Boolean,
       default: false,
+    },
+    enableMarketing: {
+      type: Boolean,
+      default: true,
     },
     enableDeskBooking: {
       type: Boolean,

@@ -106,6 +106,7 @@ export async function openCheckoutSession(
   }
 
   const serverPrice = await priceServerBooking({
+    enforceServiceArea: true,
     vehicle,
     booking: bookingData,
     distanceKm,

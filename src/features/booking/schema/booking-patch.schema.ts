@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { mongoIdSchema } from "@/shared/schema/mongo-id";
 
-export const BOOKING_PATCH_ACTIONS = [
+const BOOKING_PATCH_ACTIONS = [
   "cancel",
   "complete",
   "assign",

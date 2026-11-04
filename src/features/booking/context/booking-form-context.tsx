@@ -1,18 +1,26 @@
 "use client";
 
-import React, { createContext, useContext, useState, useEffect, ReactNode, useMemo, useCallback } from 'react';
+import React, { createContext, useContext, useState, useEffect, ReactNode, useMemo, useCallback, useRef } from 'react';
 import { apiGet } from "@/shared/http/api";
+import { fetchCustomerPrefill } from "@/features/booking/lib/fetch-customer-prefill";
+import { mergeCustomerPrefill } from "@/features/booking/lib/merge-customer-prefill";
 import { IVehicle } from '@/features/fleet/model';
 import { IFormLayout } from '@/features/form-builder/model';
 import { useSearchParams } from 'next/navigation';
 import { useBookingVehicles } from "@/features/booking/hooks/use-booking-vehicles";
 
+export type LatLngLiteral = { lat: number; lng: number };
+
 export interface FormData {
   bookingType: "destination" | "hourly";
   pickup: string;
   dropoff: string;
+  /** Coordinates of the picked Places suggestion. null = typed but not picked; undefined = prefilled (URL/session). */
+  pickupLatLng?: LatLngLiteral | null;
+  dropoffLatLng?: LatLngLiteral | null;
   stops: Array<{
     location: string;
+    latLng?: LatLngLiteral | null;
     order: number;
     duration?: number; // Duration in minutes (0-120)
   }>;
@@ -55,6 +63,7 @@ export interface DistanceData {
 
 export interface FormErrors {
   pickup?: string;
+  stops?: string;
   dropoff?: string;
   date?: string;
   time?: string;
@@ -92,6 +101,8 @@ interface BookingFormContextType {
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
   resetForm: () => void;
   activeLayout: IFormLayout | null;
+  /** Email of the signed-in customer whose details were prefilled, if any. */
+  signedInEmail: string;
 }
 
 const BookingFormContext = createContext<BookingFormContextType | undefined>(undefined);
@@ -148,6 +159,8 @@ export function BookingFormProvider({ children }: { children: ReactNode }) {
   const [isLoading, setIsLoading] = useState(false);
   const [isHydrated, setIsHydrated] = useState(false);
   const [activeLayout, setActiveLayout] = useState<IFormLayout | null>(null);
+  const [signedInEmail, setSignedInEmail] = useState("");
+  const prefillCustomerRef = useRef(false);
 
   // Load active layout on mount
   useEffect(() => {
@@ -309,6 +322,24 @@ export function BookingFormProvider({ children }: { children: ReactNode }) {
     setIsHydrated(true);
   }, [isEmbedded, hasDeepLinkParams, searchParams]);
 
+  // Prefill contact details once per visit for signed-in customers. Signed-out
+  // visitors get a silent 401 and an untouched form.
+  useEffect(() => {
+    if (!isHydrated || isEmbedded || prefillCustomerRef.current) return;
+    prefillCustomerRef.current = true;
+
+    let cancelled = false;
+    fetchCustomerPrefill().then((customer) => {
+      if (cancelled || !customer) return;
+      setFormData((prev) => mergeCustomerPrefill(prev, customer));
+      setSignedInEmail(customer.email);
+    });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [isHydrated, isEmbedded, setFormData]);
+
   // Save formData to sessionStorage whenever it changes (only if not embedded)
   useEffect(() => {
     if (isHydrated && !isEmbedded) {
@@ -379,7 +410,8 @@ export function BookingFormProvider({ children }: { children: ReactNode }) {
     isLoading,
     setIsLoading,
     resetForm,
-    activeLayout
+    activeLayout,
+    signedInEmail
   }), [
     currentStep,
     formData,
@@ -392,7 +424,8 @@ export function BookingFormProvider({ children }: { children: ReactNode }) {
     calculatingDistance,
     isLoading,
     resetForm,
-    activeLayout
+    activeLayout,
+    signedInEmail
   ]);
 
   return (

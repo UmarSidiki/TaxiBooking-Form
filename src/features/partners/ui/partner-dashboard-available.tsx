@@ -4,6 +4,7 @@ import { Button } from "@/shared/ui/button";
 import { Card, CardContent } from "@/shared/ui/card";
 import { Badge } from "@/shared/ui/badge";
 import type { PartnerAvailableRide } from "@/features/partners/ui/partner-dashboard.types";
+import { RideLocationList } from "@/features/rides/ui/ride-location-list";
 import { RideMapLine } from "@/features/rides/ui/ride-map-line";
 import { useLocale, type useTranslations } from "next-intl";
 
@@ -48,6 +49,7 @@ export function PartnerDashboardAvailable({
                 </p>
               </div>
               <RideMapLine start={ride.pickup} end={ride.dropoff || "—"} />
+              <RideLocationList ride={ride} compact />
               <div className="grid gap-2 text-sm sm:grid-cols-2">
                 <p>
                   <span className="text-muted-foreground">{t("date-time")}</span>

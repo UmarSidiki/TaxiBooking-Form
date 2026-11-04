@@ -3,6 +3,8 @@ import { requireAdmin } from "@/features/auth/lib/require-role";
 import { buildInvoicePdf } from "@/features/invoices/lib/build-invoice-pdf";
 import { sendInvoiceNotice } from "@/features/invoices/lib/send-invoice-notice";
 
+export const maxDuration = 30;
+
 type Params = { params: Promise<{ tripId: string }> };
 
 export async function GET(_request: Request, { params }: Params) {

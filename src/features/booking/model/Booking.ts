@@ -6,9 +6,13 @@ export interface IBooking extends Document {
   /** Client checkout draft that produced this booking (idempotency key). */
   draftId?: string;
   pickup: string;
+  /** Picked coordinates; absent on older bookings and typed addresses. */
+  pickupLatLng?: { lat: number; lng: number };
   dropoff?: string;
+  dropoffLatLng?: { lat: number; lng: number };
   stops?: Array<{
     location: string;
+    latLng?: { lat: number; lng: number };
     order: number;
     duration?: number;
   }>;
@@ -39,6 +43,9 @@ export interface IBooking extends Document {
   email: string;
   phone: string;
   whatsappOptIn?: boolean;
+  /** Unticked marketing opt-ins captured at checkout (opt-in only). */
+  marketingEmailOptIn?: boolean;
+  marketingWhatsappOptIn?: boolean;
   locale?: string;
   paymentMethod?: string;
   paymentStatus: "pending" | "completed" | "failed" | "refunded";
@@ -122,13 +129,21 @@ export interface IBooking extends Document {
   updatedAt: Date;
 }
 
+const LatLngSchema = new Schema(
+  { lat: { type: Number, required: true }, lng: { type: Number, required: true } },
+  { _id: false }
+);
+
 const BookingSchema: Schema = new Schema({
   tripId: { type: String, required: true, unique: true },
   draftId: { type: String, unique: true, sparse: true },
   pickup: { type: String, required: true },
+  pickupLatLng: { type: LatLngSchema, default: undefined },
   dropoff: { type: String },
+  dropoffLatLng: { type: LatLngSchema, default: undefined },
   stops: [{
     location: { type: String, required: true },
+    latLng: { type: LatLngSchema, default: undefined },
     order: { type: Number, required: true },
     duration: { type: Number, default: 0 }
   }],
@@ -165,6 +180,8 @@ const BookingSchema: Schema = new Schema({
   email: { type: String, required: true },
   phone: { type: String, required: true },
   whatsappOptIn: { type: Boolean, default: false },
+  marketingEmailOptIn: { type: Boolean, default: false },
+  marketingWhatsappOptIn: { type: Boolean, default: false },
   locale: { type: String },
   paymentMethod: { type: String, default: "stripe" },
   paymentStatus: {

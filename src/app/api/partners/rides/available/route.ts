@@ -51,7 +51,7 @@ export async function GET() {
       .sort({ createdAt: -1 })
       .limit(50)
       .select(
-        "tripId pickup dropoff date time passengers vehicleDetails totalAmount partnerPayoutAmount notes firstName lastName",
+        "tripId pickup pickupLatLng dropoff dropoffLatLng stops bookingType date time passengers vehicleDetails totalAmount partnerPayoutAmount notes firstName lastName",
       )
       .lean();
 

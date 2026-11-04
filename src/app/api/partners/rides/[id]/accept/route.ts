@@ -6,11 +6,14 @@ import { requireRole } from "@/features/auth/lib/require-role";
 import { jsonError } from "@/shared/http/json-error";
 import { claimPartnerRide } from "@/features/partners/lib/claim-partner-ride";
 import { recordRideActivity } from "@/features/rides/lib/record-ride-activity";
+import { rideLocationsOf } from "@/features/rides/lib/ride-locations";
 import { queueAssigneeNotice } from "@/features/settings/lib/assignee-whatsapp";
 import {
   partnerApprovedVehicleIds,
   partnerHasApprovedFleet,
 } from "@/features/partners/lib/partner-fleet-eligibility";
+
+export const maxDuration = 30;
 
 export async function POST(
   _request: NextRequest,
@@ -45,6 +48,7 @@ export async function POST(
         pickup: updatedRide.pickup,
         date: updatedRide.date,
         time: updatedRide.time,
+        locations: rideLocationsOf(updatedRide),
       },
     });
     await recordRideActivity({
@@ -62,6 +66,7 @@ export async function POST(
         pickup: updatedRide.pickup,
         dropoff: updatedRide.dropoff || "N/A",
         stops: updatedRide.stops || [],
+        locations: rideLocationsOf(updatedRide),
         tripType: updatedRide.tripType,
         date: updatedRide.date,
         time: updatedRide.time,

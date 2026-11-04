@@ -11,6 +11,7 @@ import { useIframeBodyResize } from "@/features/booking/hooks/useIframeBodyResiz
 import { v4ToneVars } from "@/features/booking/ui/embeddable/v4/embeddable-v4-ink";
 import { EmbeddableV4JourneyFields } from "@/features/booking/ui/embeddable/v4/embeddable-v4-journey-fields";
 import { EmbeddableV4RouteFields } from "@/features/booking/ui/embeddable/v4/embeddable-v4-route-fields";
+import { resolveBrandColors } from "@/features/settings/lib/brand-colors";
 import { useTheme } from "@/features/settings/context/theme-context";
 import "@/features/booking/ui/embeddable/v4/embeddable-v4.css";
 import "@/features/booking/ui/embeddable/v4/embeddable-v4-fields.css";
@@ -28,9 +29,10 @@ export function EmbeddableV4Form() {
 
   const minDate = new Date().toISOString().split("T")[0];
   const busy = step.isLoading || step.calculatingDistance;
+  const brand = resolveBrandColors(settings);
   const tone = v4ToneVars({
-    panel: settings?.primaryColor,
-    button: settings?.secondaryColor,
+    panel: brand.primary,
+    button: brand.ink,
     radiusRem: settings?.borderRadius,
   }) as CSSProperties;
 

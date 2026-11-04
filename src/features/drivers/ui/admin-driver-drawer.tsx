@@ -1,7 +1,7 @@
 "use client";
 
-import type { FormEvent } from "react";
-import { useTranslations } from "next-intl";
+import { useRef, type FormEvent } from "react";
+import { useLocale, useTranslations } from "next-intl";
 import { Loader2, Save, X } from "lucide-react";
 
 import type { DriverFormValues } from "@/features/drivers/hooks/useAdminDrivers";
@@ -37,23 +37,44 @@ export function AdminDriverDrawer({
   editingId,
 }: AdminDriverDrawerProps) {
   const t = useTranslations();
+  const isRtl = useLocale() === "ar";
+  const returnFocusRef = useRef<HTMLElement | null>(null);
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent
-        side="right"
-        className="flex w-full flex-col overflow-hidden p-0 sm:max-w-md [&>button]:hidden"
+        side={isRtl ? "left" : "right"}
+        className="riviera-drawer flex h-dvh max-h-dvh flex-col gap-0 overflow-hidden border-0 p-0 [&>button]:hidden"
+        onOpenAutoFocus={() => {
+          returnFocusRef.current = document.activeElement as HTMLElement | null;
+        }}
+        onCloseAutoFocus={(event) => {
+          const target = returnFocusRef.current;
+          if (target && document.contains(target)) {
+            event.preventDefault();
+            target.focus();
+          }
+        }}
       >
-        <SheetHeader className="flex-none border-b border-border/60 px-4 py-3 sm:px-6 sm:py-4">
+        <SheetHeader
+          data-drawer-header
+          className="riviera-drawer__header flex-none border-b border-border/60"
+        >
           <div className="flex items-center justify-between gap-3">
             <div className="min-w-0">
-              <SheetTitle className="truncate text-sm font-semibold text-foreground sm:text-base">
+              <SheetTitle
+                className="truncate text-sm font-semibold text-foreground sm:text-base"
+                title={formData.name || undefined}
+              >
                 {editingId
                   ? t("Driver.edit-driver")
                   : t("Driver.add-new-driver")}
               </SheetTitle>
               {editingId ? (
-                <p className="mt-0.5 truncate text-xs font-medium text-muted-foreground">
+                <p
+                  className="mt-0.5 truncate text-xs font-medium text-muted-foreground"
+                  title={formData.name}
+                >
                   {formData.name}
                 </p>
               ) : null}
@@ -61,7 +82,7 @@ export function AdminDriverDrawer({
             <button
               type="button"
               onClick={onCancel}
-              className="flex size-8 shrink-0 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              className="flex size-11 shrink-0 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               aria-label={t("Driver.cancel")}
             >
               <X className="size-4" aria-hidden="true" />
@@ -74,7 +95,10 @@ export function AdminDriverDrawer({
           onSubmit={onSubmit}
           className="flex min-h-0 flex-1 flex-col overflow-hidden"
         >
-          <div className="flex-1 overflow-y-auto overscroll-contain px-4 py-4 sm:px-6 sm:py-5">
+          <div
+            data-drawer-body
+            className="riviera-drawer__body min-h-0 flex-1"
+          >
             <AdminDriverFormFields
               formData={formData}
               setFormData={setFormData}
@@ -82,8 +106,11 @@ export function AdminDriverDrawer({
             />
           </div>
 
-          <div className="flex-none border-t border-border/60 bg-card/50 px-4 py-3 sm:px-6 sm:py-4">
-            <div className="mb-3 flex items-center justify-between sm:mb-4">
+          <div
+            data-drawer-footer
+            className="riviera-drawer__footer flex-none border-t border-border/60"
+          >
+            <div className="mb-3 flex min-h-11 items-center justify-between gap-3 sm:mb-4">
               <label
                 htmlFor="driver-isActive"
                 className="cursor-pointer text-sm font-medium text-foreground"
@@ -104,7 +131,7 @@ export function AdminDriverDrawer({
                 type="submit"
                 form="admin-driver-form"
                 disabled={isLoading}
-                className="h-11 w-full gap-1.5 rounded-xl font-semibold sm:h-10 sm:flex-1"
+                className="h-11 w-full gap-1.5 rounded font-semibold sm:flex-1"
               >
                 {isLoading ? (
                   <>
@@ -124,7 +151,7 @@ export function AdminDriverDrawer({
                 type="button"
                 variant="outline"
                 onClick={onCancel}
-                className="h-11 w-full rounded-xl px-4 sm:h-10 sm:w-auto"
+                className="h-11 w-full rounded px-4 sm:w-auto"
               >
                 {t("Driver.cancel")}
               </Button>

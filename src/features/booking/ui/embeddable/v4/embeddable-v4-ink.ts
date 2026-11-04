@@ -19,7 +19,7 @@ function contrast(a: number, b: number): number {
 }
 
 /** Picks ink or paper, whichever stays readable on `background`. */
-export function readableOn(background: string | undefined, fallback = INK): string {
+function readableOn(background: string | undefined, fallback = INK): string {
   const level = background ? luminance(background) : null;
   const inkLevel = luminance(INK) ?? 0.01;
   if (level == null) return fallback;
@@ -31,8 +31,8 @@ export function v4ToneVars(input: {
   button?: string;
   radiusRem?: number;
 }): Record<string, string> {
-  const panel = input.panel || "#EAB308";
-  const button = input.button || "#111827";
+  const panel = input.panel || "#171717";
+  const button = input.button || "#171717";
   const radius = typeof input.radiusRem === "number" ? input.radiusRem : 0.5;
   return {
     "--v4-panel": panel,

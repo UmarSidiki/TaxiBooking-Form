@@ -45,9 +45,10 @@ export const whatsappConfigWriteSchema = z.object({
     .optional(),
   requireOptIn: z.boolean().optional(),
   sendRateLimit: z.number().int().min(0).max(120).optional(),
+  dailyCap: z.number().int().min(0).max(2000).optional(),
 });
 
-export const customerWhatsAppEvents = [
+const customerWhatsAppEvents = [
   "booking_confirmed",
   "driver_assigned",
   "on_the_way",

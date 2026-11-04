@@ -1,4 +1,5 @@
 import { spawn } from "node:child_process";
+import { writeFileSync } from "node:fs";
 import bcrypt from "bcryptjs";
 import { MongoMemoryServer } from "mongodb-memory-server";
 import mongoose from "mongoose";
@@ -6,8 +7,11 @@ import mongoose from "mongoose";
 const PASSWORD = "e2e-password";
 const FILE_SENTINEL = `data:application/pdf;base64,${"E2EFILEDATA".repeat(800)}`;
 
+const PORT = process.env.E2E_PORT ?? "3000";
+const URI_FILE = PORT === "3000" ? "/tmp/e2e-mongo-uri.txt" : `/tmp/e2e-mongo-uri-${PORT}.txt`;
 const mongod = await MongoMemoryServer.create();
 const uri = mongod.getUri();
+writeFileSync(URI_FILE, uri);
 await mongoose.connect(uri);
 const db = mongoose.connection.db;
 if (!db) throw new Error("Memory database did not connect");
@@ -31,6 +35,46 @@ await db.collection("vehicles").insertOne({
   minimumHours: 2,
   returnPricePercentage: 100,
   category: "economy",
+  isActive: true,
+  createdAt: now,
+  updatedAt: now,
+});
+
+const businessVehicleId = new mongoose.Types.ObjectId();
+await db.collection("vehicles").insertOne({
+  _id: businessVehicleId,
+  name: "Business",
+  description: "Business class",
+  image: "/placeholder-car.jpg",
+  persons: 3,
+  baggages: 2,
+  price: 15,
+  pricePerKm: 3,
+  pricePerHour: 40,
+  minimumFare: 20,
+  minimumHours: 2,
+  returnPricePercentage: 100,
+  category: "business",
+  isActive: true,
+  createdAt: now,
+  updatedAt: now,
+});
+
+const vanVehicleId = new mongoose.Types.ObjectId();
+await db.collection("vehicles").insertOne({
+  _id: vanVehicleId,
+  name: "Van",
+  description: "Van",
+  image: "/placeholder-car.jpg",
+  persons: 7,
+  baggages: 6,
+  price: 20,
+  pricePerKm: 3.5,
+  pricePerHour: 45,
+  minimumFare: 20,
+  minimumHours: 2,
+  returnPricePercentage: 100,
+  category: "van",
   isActive: true,
   createdAt: now,
   updatedAt: now,
@@ -89,8 +133,74 @@ await db.collection("partners").insertOne({
   updatedAt: now,
 });
 
+// Long-field records for the drawer layout matrix. They are inserted after the
+// base records with a later createdAt so the admin lists show them first
+// (both APIs sort by createdAt descending); names, emails and phone numbers are
+// deliberately long so wrapping and truncation are exercised.
+const longPartnerId = new mongoose.Types.ObjectId();
+const longPartnerCreatedAt = new Date(now.getTime() + 60_000);
+await db.collection("partners").insertOne({
+  _id: longPartnerId,
+  name: "Aurelia-Montreux-International-Chauffeur-Services-and-Private-Aviation-Transfers-Sàrl",
+  email: "dispatch.operations.lausanne@extremely-long-domain-name-for-wrapping-tests.example",
+  password,
+  phone: "+41 79 123 4567 ext. 987654321 International",
+  address: "Avenue des Alpes 104, 1820 Montreux, Switzerland",
+  city: "Sankt-Gallen-Winkeln-Oberdorf",
+  country: "Swiss Confederation of Helvetic Regions",
+  status: "approved",
+  isActive: true,
+  registeredAt: longPartnerCreatedAt,
+  currentFleet: businessVehicleId,
+  fleetStatus: "none",
+  fleetRequests: [],
+  documents: [
+    {
+      _id: new mongoose.Types.ObjectId(),
+      type: "license",
+      fileName: "international-chauffeur-license-and-aviation-security-clearance.pdf",
+      fileData: FILE_SENTINEL,
+      mimeType: "application/pdf",
+      fileSize: FILE_SENTINEL.length,
+      status: "approved",
+      uploadedAt: longPartnerCreatedAt,
+    },
+    {
+      _id: new mongoose.Types.ObjectId(),
+      type: "insurance",
+      fileName: "fleet-commercial-passenger-liability-insurance-certificate.pdf",
+      fileData: FILE_SENTINEL,
+      mimeType: "application/pdf",
+      fileSize: FILE_SENTINEL.length,
+      status: "approved",
+      uploadedAt: longPartnerCreatedAt,
+    },
+  ],
+  totalEarnings: 123456.78,
+  onlineEarnings: 100000.5,
+  cashEarnings: 23456.28,
+  payoutBalance: 123456.78,
+  balance: 123456.78,
+  createdAt: longPartnerCreatedAt,
+  updatedAt: longPartnerCreatedAt,
+});
+
+const longDriverId = new mongoose.Types.ObjectId();
+const longDriverCreatedAt = new Date(now.getTime() + 60_000);
+await db.collection("drivers").insertOne({
+  _id: longDriverId,
+  name: "Maximiliana-Alexandrina von Bergström-Zimmermann",
+  email: "maximiliana.alexandrina.von.bergstrom-zimmermann.driver@extremely-long-domain-name-for-wrapping-tests.example",
+  password,
+  status: "approved",
+  isActive: true,
+  createdAt: longDriverCreatedAt,
+  updatedAt: longDriverCreatedAt,
+});
+
 await db.collection("promocodes").insertOne({ code: "E2E10", kind: "percent", amount: 10, active: true, expiresAt: null, maxUses: null, maxUsesPerCustomer: null, usedCount: 0, createdAt: now, updatedAt: now });
 await db.collection("settings").insertOne({
+  companyName: "Lakeside Chauffeurs",
   enablePartners: true,
   enableDrivers: true,
   partnerCashSettlement: "keep_cash",
@@ -132,7 +242,10 @@ await db.collection("bookings").insertMany([
   {
     tripId: "e2e-driver",
     pickup: "Lugano Station",
+    pickupLatLng: { lat: 46.0054621, lng: 8.9469873 },
     dropoff: "Paradiso",
+    dropoffLatLng: { lat: 45.9883, lng: 8.9461 },
+    stops: [{ location: "Piazza della Riforma", order: 1, duration: 0, latLng: { lat: 46.0037, lng: 8.9511 } }],
     tripType: "oneway",
     date: "2026-12-21",
     time: "11:00",
@@ -158,6 +271,7 @@ await db.collection("bookings").insertMany([
   {
     tripId: "e2e-upcoming",
     pickup: "Geneva Airport",
+    pickupLatLng: { lat: 46.2380651, lng: 6.1089563 },
     dropoff: "Lausanne Station",
     tripType: "oneway",
     date: "2026-12-20",
@@ -275,16 +389,19 @@ await db.collection("reviews").insertOne({
 
 await mongoose.disconnect();
 
-const child = spawn("npx", ["next", "dev", "-H", "127.0.0.1", "-p", "3000"], {
+const child = spawn("npx", ["next", "dev", "-H", "127.0.0.1", "-p", PORT], {
   stdio: "inherit",
   env: {
     ...process.env,
     MONGODB_URI: uri,
     MONGODB_DB: "test",
     NEXTAUTH_SECRET: "e2e-secret-not-for-production",
-    NEXTAUTH_URL: "http://127.0.0.1:3000",
-    NEXT_PUBLIC_BASE_URL: "http://127.0.0.1:3000",
+    NEXTAUTH_URL: `http://127.0.0.1:${PORT}`,
+    NEXT_PUBLIC_BASE_URL: `http://127.0.0.1:${PORT}`,
     DISTANCE_MOCK: "1",
+    QA_MOCK_EMAIL: "1",
+    QA_MOCK_WHATSAPP: "1",
+    CRON_SECRET: process.env.CRON_SECRET ?? "e2e-cron-secret",
   },
 });
 

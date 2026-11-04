@@ -8,6 +8,8 @@ import { requireRole } from "@/features/auth/lib/require-role";
 import { jsonError } from "@/shared/http/json-error";
 import { creditPartnerAfterPayment } from "@/features/payments/lib/credit-partner-after-payment";
 
+export const maxDuration = 30;
+
 export async function POST(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> },

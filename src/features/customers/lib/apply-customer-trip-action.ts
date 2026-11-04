@@ -10,6 +10,7 @@ import { mintPaymentToken } from "@/features/booking/lib/payment-token";
 import { quotePayUrl } from "@/features/booking/lib/quote-pay-url";
 import { resolvePublicUrl } from "@/features/settings/lib/public-url";
 import { computeCancelFee, normalizeCancelPolicy } from "@/features/customers/lib/cancel-policy";
+import { queueCustomerStatsRefresh } from "@/features/customers-admin/lib/customer-stats/refresh-customer-stats";
 
 export type CustomerTripAction = "cancel" | "change";
 
@@ -286,6 +287,7 @@ async function cancelTrip(
     return { ok: false, status: 409, error: "conflict" };
   }
 
+  queueCustomerStatsRefresh(updated.email);
   booking.status = "canceled";
   booking.canceledAt = updated.canceledAt;
 
@@ -351,7 +353,7 @@ async function cancelTrip(
 type ChangeInput = { date: string; time: string; pickup?: string; dropoff?: string; selectedVehicle?: string; passengers?: number; childSeats?: number; babySeats?: number; meetAndGreet?: boolean };
 
 /** True when any field that feeds the fare differs from the booking. Omitted fields count as unchanged. */
-export function priceAffectingChange(booking: IBooking, input: ChangeInput): boolean {
+function priceAffectingChange(booking: IBooking, input: ChangeInput): boolean {
   const differs = (next: unknown, current: unknown) => {
     if (next === undefined || next === null || next === "") return false;
     if (typeof next === "boolean" || typeof current === "boolean") return Boolean(next) !== Boolean(current);
@@ -524,6 +526,7 @@ async function changeTrip(
       return { ok: false, status: 409, error: "conflict" };
     }
 
+    queueCustomerStatsRefresh(updated.email);
     const payUrl = quotePayUrl(resolvedBase, booking.locale, token);
 
     const ctx = await buildNotifyContext(booking, resolvedBase);
@@ -619,6 +622,7 @@ async function changeTrip(
     return { ok: false, status: 409, error: "conflict" };
   }
 
+  queueCustomerStatsRefresh(updated.email);
   booking.set({ ...setFields });
   if (hadPending) booking.pendingChange = undefined;
   booking.paymentTokenHash = undefined;

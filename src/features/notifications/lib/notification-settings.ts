@@ -10,7 +10,7 @@ import type {
 
 export type NotificationSettingRow = INotificationSetting & { _id: string };
 
-export function templatesOf(value: unknown): Record<string, NotificationTemplate> {
+function templatesOf(value: unknown): Record<string, NotificationTemplate> {
   if (!value) return {};
   if (value instanceof Map) {
     return Object.fromEntries(value.entries()) as Record<string, NotificationTemplate>;
@@ -18,7 +18,7 @@ export function templatesOf(value: unknown): Record<string, NotificationTemplate
   return value as Record<string, NotificationTemplate>;
 }
 
-export function normalizeSetting(row: INotificationSetting | null): NotificationSettingRow | null {
+function normalizeSetting(row: INotificationSetting | null): NotificationSettingRow | null {
   if (!row) return null;
   return {
     ...row,

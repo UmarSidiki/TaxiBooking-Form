@@ -6,10 +6,13 @@ import { usePathname } from "next/navigation";
 
 import { settingsDeskNavGroups } from "@/features/settings/lib/settings-desk-nav";
 import { cn } from "@/shared/lib/utils";
+import { useSettingsDesk } from "@/features/settings/ui/settings-desk-context";
 
 export function SettingsDeskNav() {
   const t = useTranslations();
   const pathname = usePathname();
+  const { settings } = useSettingsDesk();
+  const marketingOn = settings.enableMarketing !== false;
 
   return (
     <nav
@@ -21,7 +24,9 @@ export function SettingsDeskNav() {
           <p className="sr-only px-3 text-xs font-medium text-muted-foreground lg:not-sr-only">
             {t(group.labelKey)}
           </p>
-          {group.items.map((item) => {
+          {group.items
+            .filter((item) => marketingOn || item.href !== "marketing")
+            .map((item) => {
             const href = `/dashboard/settings/${item.href}`;
             const active = pathname.endsWith(`/settings/${item.href}`);
             return (

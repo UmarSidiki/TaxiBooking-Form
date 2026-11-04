@@ -5,7 +5,29 @@ const CustomerProfileSchema = new Schema(
     email: { type: String, required: true, unique: true, index: true },
     name: { type: String, default: "" },
     phone: { type: String, default: "" },
-    whatsappOptIn: { type: Boolean, default: false },
+    verifiedPhone: { type: String, default: "" },
+    verifiedPhoneAt: { type: Date, default: null },
+    /** Transactional ride updates on WhatsApp (not marketing); on by default. */
+    whatsappOptIn: { type: Boolean, default: true },
+    /**
+     * Marketing consent cache. Events live in MarketingConsent; this field is
+     * only the latest state per channel. Default "none": past customers are
+     * not consented and consent is never inferred from a booking.
+     */
+    marketing: {
+      email: {
+        status: { type: String, enum: ["none", "granted", "withdrawn"], default: "none" },
+        at: { type: Date, default: null },
+        source: { type: String, default: "" },
+        textVersion: { type: String, default: "" },
+      },
+      whatsapp: {
+        status: { type: String, enum: ["none", "granted", "withdrawn"], default: "none" },
+        at: { type: Date, default: null },
+        source: { type: String, default: "" },
+        textVersion: { type: String, default: "" },
+      },
+    },
     savedAddresses: {
       home: { type: String, default: "" },
       work: { type: String, default: "" },

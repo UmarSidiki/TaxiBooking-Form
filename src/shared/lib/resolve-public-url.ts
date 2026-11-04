@@ -12,7 +12,7 @@ export type ResolvePublicUrlInput = {
 
 const HTTP_RE = /^https?:\/\//i;
 
-export function normalizeBaseUrl(raw?: string | null): string | null {
+function normalizeBaseUrl(raw?: string | null): string | null {
   const value = raw?.trim();
   if (!value) return null;
   const withProtocol = HTTP_RE.test(value) ? value : `https://${value}`;

@@ -13,7 +13,6 @@ const outputPath = join(__dirname, '../src/shared/config/baked-settings.json');
 const defaults = {
   adminEmail: null,
   stripeCurrency: 'EUR',
-  primaryColor: '#EAB308',
   syncedAt: null,
 };
 
@@ -35,7 +34,6 @@ async function main() {
     const baked = {
       adminEmail: doc?.adminEmail ?? process.env.ADMIN_EMAIL ?? null,
       stripeCurrency: doc?.stripeCurrency ?? 'EUR',
-      primaryColor: doc?.primaryColor ?? '#EAB308',
       syncedAt: new Date().toISOString(),
     };
 

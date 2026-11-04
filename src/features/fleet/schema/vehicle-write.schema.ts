@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const priceTierSchema = z.object({
+const priceTierSchema = z.object({
   upToKm: z.coerce.number().min(0),
   type: z.enum(["flat", "per_km"]),
   price: z.coerce.number().min(0),

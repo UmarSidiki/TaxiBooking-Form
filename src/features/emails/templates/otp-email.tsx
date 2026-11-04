@@ -56,7 +56,7 @@ export function OtpEmail({
             fontWeight: 700,
             letterSpacing: "8px",
             lineHeight: "42px",
-            color: brand.primaryColor,
+            color: brand.accent,
           }}
         >
           {code}

@@ -3,6 +3,7 @@ import { isCronAuthorized } from "@/shared/http/is-cron-authorized";
 import { limitSensitive } from "@/shared/http/sensitive-limit";
 
 export const dynamic = "force-dynamic";
+export const maxDuration = 60;
 
 async function handle(req: Request) {
   if (!isCronAuthorized(req)) {

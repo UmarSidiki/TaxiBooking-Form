@@ -36,4 +36,3 @@ export async function mongoWindowLimit(key: string, limit: number) {
   return { ok: true as const, retryAfter: 0 };
 }
 
-export default RateWindow;

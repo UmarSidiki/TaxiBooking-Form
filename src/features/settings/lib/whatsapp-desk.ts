@@ -12,7 +12,11 @@ import type {
 import { resolveNotificationTemplate } from "@/features/notifications/lib/notification-resolution";
 import { renderWhatsAppTemplate, whatsappSampleValues } from "@/features/settings/lib/whatsapp-template-text";
 import { toWhatsAppDigits, toWhatsAppJid } from "@/features/settings/lib/whatsapp-phone";
-import { sendWhatsAppTexts } from "@/features/settings/lib/whatsapp-session";
+import { findSendResult, sendWhatsAppTexts } from "@/features/settings/lib/whatsapp-send";
+import {
+  whatsappBudgetMs,
+  WHATSAPP_SETTINGS_MAX_DURATION_SECONDS,
+} from "@/features/settings/lib/whatsapp-deadline";
 import {
   deleteNotificationSetting,
   getNotificationSetting,
@@ -56,6 +60,7 @@ export async function loadWhatsAppDesk() {
       quietHours: { enabled: false, startHour: 22, endHour: 7 },
       requireOptIn: true,
       sendRateLimit: 0,
+      dailyCap: 300,
     },
     templates: sortTemplates(templates),
     deliveries,
@@ -128,8 +133,14 @@ export async function sendWhatsAppTest(input: WhatsAppTestSendInput) {
     ...whatsappSampleValues,
     companyPhone: config.companyPhone || whatsappSampleValues.companyPhone,
   });
-  const sent = await sendWhatsAppTexts([{ jid: toWhatsAppJid(digits), text }]);
+  const sent = await sendWhatsAppTexts([{ jid: toWhatsAppJid(digits), text }], {
+    deadlineMs: whatsappBudgetMs(WHATSAPP_SETTINGS_MAX_DURATION_SECONDS),
+    kind: "test",
+    idempotencyKeys: [`test:${digits}:${Date.now()}`],
+  });
   if (!sent.ok) return { ok: false as const, error: sent.reason };
-  if (!sent.results[0]?.ok) return { ok: false as const, error: "failed" as const };
+  if (!findSendResult(sent.results, toWhatsAppJid(digits))?.ok) {
+    return { ok: false as const, error: "failed" as const };
+  }
   return { ok: true as const };
 }

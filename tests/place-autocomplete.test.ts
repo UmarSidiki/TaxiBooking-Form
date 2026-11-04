@@ -37,9 +37,9 @@ describe("Places autocomplete", () => {
   });
 
   it("reads lat/lng from a selected place and checks the service area", () => {
-    expect(isPlaceInServiceArea(place(46.5, 6.5), square)).toBe(true);
-    expect(isPlaceInServiceArea(place(48, 6.5), square)).toBe(false);
-    expect(isPlaceInServiceArea({} as google.maps.places.PlaceResult, square)).toBe(false);
+    expect(isPlaceInServiceArea(place(46.5, 6.5), { mapPolygonPoints: square })).toBe(true);
+    expect(isPlaceInServiceArea(place(48, 6.5), { mapPolygonPoints: square })).toBe(false);
+    expect(isPlaceInServiceArea({} as google.maps.places.PlaceResult, { mapPolygonPoints: square })).toBe(false);
     expect(isPlaceInServiceArea(place(48, 6.5), undefined)).toBe(true);
   });
 

@@ -1,5 +1,8 @@
 "use client";
 
+import { resolveColorPalette } from "@/features/settings/lib/color-palettes";
+import { customPaletteCss } from "@/features/settings/lib/custom-palette";
+
 import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import { apiFetch } from "@/shared/http/api";
 import type { PublicSettings } from "@/features/settings/lib/public-settings";
@@ -65,14 +68,22 @@ export function ThemeProvider({ children, initialSettings = null }: ThemeProvide
   useEffect(() => {
     if (settings) {
       const root = document.documentElement;
-      const primary = settings.primaryColor ?? "#B45309";
-      const secondary = settings.secondaryColor ?? "#111827";
       const radius =
         typeof settings.borderRadius === "number" ? settings.borderRadius : 0.5;
 
-      root.style.setProperty("--primary-color", primary);
-      root.style.setProperty("--secondary-color", secondary);
       root.style.setProperty("--border-radius", `${radius}rem`);
+      // First paint already carries these from the server; this only follows saves made in this tab.
+      const palette = resolveColorPalette(settings.colorPalette);
+      root.dataset.palette = palette;
+      let tag = document.getElementById("custom-palette");
+      if (palette === "custom") {
+        if (!tag) {
+          tag = document.createElement("style");
+          tag.id = "custom-palette";
+          document.head.appendChild(tag);
+        }
+        tag.textContent = customPaletteCss(settings.customPalette);
+      }
       if (isLoading) {
         setIsLoading(false);
       }

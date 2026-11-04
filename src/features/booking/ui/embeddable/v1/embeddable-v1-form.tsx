@@ -101,7 +101,7 @@ export function EmbeddableV1Form() {
       >
         {/* Map container - only show if map is loaded */}
         {mapLoaded && (
-          <div className="mb-3 rounded-lg overflow-hidden h-32 md:h-48">
+          <div className="mb-3 rounded overflow-hidden h-32 md:h-48">
             <div ref={mapRef} className="w-full h-full" />
           </div>
         )}
@@ -110,7 +110,7 @@ export function EmbeddableV1Form() {
         <EmbeddableV1Progress t={t} />
 
         {/* Compact Form Card */}
-        <Card className="rounded-xl bg-white/90 backdrop-blur-md p-3 border-0 h-full flex flex-col shimmer-container">
+        <Card className="rounded bg-white/90 backdrop-blur-md p-3 border-0 h-full flex flex-col shimmer-container">
           <header className="mb-1 text-center">
             <h1 className="text-base md:text-lg font-bold text-slate-800 flex items-center justify-center gap-2">
               {t("embeddable.trip-booking")}

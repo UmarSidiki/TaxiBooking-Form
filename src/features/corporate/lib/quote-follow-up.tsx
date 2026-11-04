@@ -1,6 +1,6 @@
 import { Booking } from "@/features/booking/model";
 import { resolvePublicUrl } from "@/features/settings/lib/public-url";
-import { customerPortalUrl } from "@/features/customers/lib/customer-token";
+import { createMagicLink } from "@/features/customers/lib/magic-link";
 import { prepareEventEmail, sendPreparedEmail } from "@/features/emails/lib/send-event-email";
 import { NoticeEmail } from "@/features/emails/templates/notice-email";
 
@@ -37,7 +37,11 @@ export async function sendQuoteFollowUps(now = new Date()) {
     });
     if (!prepared) continue;
 
-    const manageUrl = customerPortalUrl(base, prepared.locale, ride.email);
+    const manageUrl = await createMagicLink(ride.email, {
+      baseUrl: base,
+      locale: prepared.locale,
+      purpose: "email",
+    });
     await sendPreparedEmail({
       prepared,
       to: ride.email,

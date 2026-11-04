@@ -78,7 +78,7 @@ export function EmbeddableV3Form() {
         isMounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5"
       }`}
     >
-      <Card className="rounded-xl bg-white p-3 sm:p-4 md:p-5 border-0 shadow-sm w-full h-full min-h-0">
+      <Card className="rounded bg-white p-3 sm:p-4 md:p-5 border-0 shadow-sm w-full h-full min-h-0">
         <form onSubmit={handleSubmit} className="flex flex-col h-full space-y-3 sm:space-y-4">
           {/* Booking Type Toggle */}
           <EmbeddableV3TypeFields

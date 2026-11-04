@@ -6,14 +6,14 @@ import { mongoWindowLimit } from "@/shared/http/rate-window";
 const LIMITS: Record<string, number> = {
   booking: 10,
   quote: 30,
-  otp: 5,
+  otp: 20,
   login: 10,
   contact: 5,
   agent: 60,
   cronfail: 20,
 };
 
-export function tooMany(retryAfter: number) {
+function tooMany(retryAfter: number) {
   return NextResponse.json(
     { error: "rate_limited" },
     { status: 429, headers: { "Retry-After": String(retryAfter) } },

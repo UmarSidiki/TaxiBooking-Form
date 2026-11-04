@@ -82,7 +82,7 @@ export function CustomEmbeddableFormShell({
 
       {/* Map container */}
       {mapLoaded && (
-        <div className="mb-3 rounded-lg overflow-hidden h-24 sm:h-32 md:h-48">
+        <div className="mb-3 rounded overflow-hidden h-24 sm:h-32 md:h-48">
           <div ref={mapRef} className="w-full h-full" />
         </div>
       )}

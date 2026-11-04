@@ -14,7 +14,7 @@ export function ThankYouSupport({ t }: { t: TFn }) {
   ].filter((item): item is { href: string; label: string } => Boolean(item));
 
   return (
-    <div className="mb-6 rounded-lg border border-border bg-muted/40 p-4 sm:mb-8 sm:p-6">
+    <div className="mb-6 rounded border border-border bg-muted/40 p-4 sm:mb-8 sm:p-6">
       <div className="flex items-start gap-3">
         <Phone className="mt-0.5 size-5 shrink-0 text-foreground" />
         <div>

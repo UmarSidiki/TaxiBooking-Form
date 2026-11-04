@@ -63,7 +63,7 @@ export function DriverRidesToolbar({
         <Button
           onClick={fetchAssignedRides}
           variant="outline"
-          className="h-11 w-full shrink-0 rounded-xl px-4 font-semibold xl:w-auto"
+          className="h-11 w-full shrink-0 rounded px-4 font-semibold xl:w-auto"
           disabled={isLoading}
         >
           <RefreshCw

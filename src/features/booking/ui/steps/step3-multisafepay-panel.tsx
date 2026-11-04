@@ -15,14 +15,14 @@ export function Step3MultisafepayPanel({
 >) {
   return (
                 <div className="mt-4">
-                  <div className="bg-[#00ABEE]/10 border border-[#00ABEE] rounded-lg p-4 mb-4">
+                  <div className="bg-[var(--brand-multisafepay)]/10 border border-[var(--brand-multisafepay)] rounded p-4 mb-4">
                     <div className="flex items-start gap-3">
-                      <CreditCard className="h-5 w-5 text-[#00ABEE] flex-shrink-0 mt-0.5" />
+                      <CreditCard className="h-5 w-5 text-[var(--brand-multisafepay)] flex-shrink-0 mt-0.5" />
                       <div>
-                        <p className="font-medium text-[#00ABEE] mb-1">
+                        <p className="font-medium text-[var(--brand-multisafepay)] mb-1">
                           MultiSafepay Payment
                         </p>
-                        <p className="text-sm text-[#00ABEE]">
+                        <p className="text-sm text-[var(--brand-multisafepay)]">
                           {t('Step3.confirming.you-will-be-redirected-to-multisafepay-to-complete-your-payment-securely-multiple-payment-methods-available-including-ideal-bancontact-paypal-and-more')} </p>
                       </div>
                     </div>
@@ -31,7 +31,7 @@ export function Step3MultisafepayPanel({
                   <Button
                     onClick={handleMultisafepayBooking}
                     disabled={isLoading || !contactValid}
-                    className="w-full bg-[#00ABEE] hover:bg-[#00ABEE]/80 text-white font-semibold py-6"
+                    className="w-full bg-[var(--brand-multisafepay)] hover:bg-[var(--brand-multisafepay)]/80 text-white font-semibold py-6"
                   >
                     {isLoading ? (
                       <>

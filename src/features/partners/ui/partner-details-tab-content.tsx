@@ -81,7 +81,7 @@ export function PartnerDetailsTabContent({
       ) : null}
       {selectedPartner.status === "rejected" &&
       selectedPartner.rejectionReason ? (
-        <div className="rounded-xl border border-destructive/30 bg-destructive/5 p-3">
+        <div className="rounded border border-destructive/30 bg-destructive/5 p-3">
           <h3 className="mb-1 text-sm font-semibold text-destructive">
             {t("partner-rejection-reason")}
           </h3>

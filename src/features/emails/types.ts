@@ -65,8 +65,8 @@ export type EmailTranslator = (
 export type EmailBrand = {
   name: string;
   logoUrl: string | null;
-  primaryColor: string;
-  secondaryColor: string;
+  /** Light-palette accent from resolveBrandColors; buttons and links. */
+  accent: string;
   address: string;
   phone: string;
   supportEmail: string;

@@ -1,4 +1,5 @@
 import { Booking, type IBooking } from '@/features/booking/model';
+import { refreshCustomerStatsForEmail } from '@/features/customers-admin/lib/customer-stats/refresh-customer-stats';
 
 const DUPLICATE_WINDOW_MS = 2 * 60 * 1000;
 
@@ -58,5 +59,7 @@ export async function findRecentDuplicateBooking(input: {
 }
 
 export async function createBookingDocument(bookingData: object) {
-  return Booking.create(bookingData);
+  const booking = await Booking.create(bookingData);
+  await refreshCustomerStatsForEmail(booking.email);
+  return booking;
 }

@@ -7,8 +7,15 @@ import {
 
 const MAX_SEATS = 10;
 
+/** Coordinates of a picked address; required by the server when a service area is set. */
+export const latLngSchema = z.object({
+  lat: z.number().min(-90).max(90),
+  lng: z.number().min(-180).max(180),
+});
+
 export const cashBookingStopSchema = z.object({
   location: z.string().trim().min(1),
+  latLng: latLngSchema.nullish(),
   order: z.number().int().min(0),
   duration: z.number().nonnegative().optional(),
 });
@@ -18,7 +25,9 @@ export const cashBookingBaseSchema = z.object({
   draftId: z.string().uuid().optional(),
   bookingType: z.enum(["destination", "hourly"]).optional(),
   pickup: z.string().trim().min(1),
+  pickupLatLng: latLngSchema.nullish(),
   dropoff: z.string().optional(),
+  dropoffLatLng: latLngSchema.nullish(),
   stops: z.array(cashBookingStopSchema).optional(),
   tripType: z.enum(["oneway", "roundtrip"]).default("oneway"),
   duration: z.number().positive().optional(),

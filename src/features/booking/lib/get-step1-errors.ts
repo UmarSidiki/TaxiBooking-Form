@@ -1,10 +1,22 @@
+import { checkTripServiceArea, type ServiceArea } from "@/features/booking/lib/service-area";
 import type { FormData, FormErrors } from "@/features/booking/context/booking-form-context";
 import type { useTranslations } from "next-intl";
 
 type TFn = ReturnType<typeof useTranslations>;
 
-export function getStep1Errors(formData: FormData, t: TFn): FormErrors {
+export function getStep1Errors(formData: FormData, t: TFn, area: ServiceArea | null = null): FormErrors {
   const newErrors: FormErrors = {};
+
+  const inArea = checkTripServiceArea(
+    { ...formData, dropoff: formData.bookingType === "hourly" ? "" : formData.dropoff },
+    area,
+  );
+  if (!inArea.ok) {
+    newErrors[inArea.field] =
+      inArea.error === "outside_service_area"
+        ? t("Step1.location-outside-service-area")
+        : t("Step1.pick-address-from-suggestions");
+  }
 
   if (!formData.pickup.trim()) {
     newErrors.pickup = t("Step1.pickup-location-is-required");

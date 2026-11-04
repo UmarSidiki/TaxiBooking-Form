@@ -10,7 +10,7 @@ export interface MultisafepayOrderResponse {
   error_info?: string;
 }
 
-export function getMultisafepayOrdersApiUrl(testMode: boolean, orderId: string): string {
+function getMultisafepayOrdersApiUrl(testMode: boolean, orderId: string): string {
   const host = testMode ? 'testapi.multisafepay.com' : 'api.multisafepay.com';
   return `https://${host}/v1/json/orders/${encodeURIComponent(orderId)}`;
 }

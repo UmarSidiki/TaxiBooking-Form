@@ -86,14 +86,13 @@ export default function ThankYouPage() {
   }, [router, redirectUrl, countdown]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-blue-50 flex items-center justify-center p-4">
-      <Card className="w-full max-w-2xl shadow-2xl border-0">
+    <div className="min-h-screen bg-background flex items-center justify-center p-4">
+      <Card className="w-full max-w-2xl border">
         <CardContent className="p-6 sm:p-8 lg:p-12">
           {/* Success Icon */}
           <div className="flex justify-center mb-6">
             <div className="relative">
-              <div className="absolute inset-0 bg-green-500 rounded-full opacity-20 animate-ping"></div>
-              <div className="relative bg-green-500 rounded-full p-4">
+                            <div className="relative bg-foreground text-background rounded-md p-4">
                 <CheckCircle className="h-16 w-16 text-white" />
               </div>
             </div>
@@ -115,7 +114,7 @@ export default function ThankYouPage() {
 
           {/* Booking Details */}
           {tripId && (
-            <div className="bg-gradient-to-r from-green-50 to-blue-50 rounded-lg p-4 sm:p-6 mb-6 sm:mb-8 border border-green-200">
+            <div className="bg-muted rounded-lg p-4 sm:p-6 mb-6 sm:mb-8 border border-border">
               <div className="space-y-4">
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
                   <span className="text-sm font-medium text-gray-600">{t('ThankYou.trip-id')}</span>
@@ -126,7 +125,7 @@ export default function ThankYouPage() {
                 {amount && (
                   <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
                     <span className="text-sm font-medium text-gray-600">{t('ThankYou.amount')}</span>
-                    <span className="text-lg font-bold text-green-600">{currencySymbol}{amount}</span>
+                    <span className="text-lg font-bold text-foreground">{currencySymbol}{amount}</span>
                   </div>
                 )}
                 {paymentMethod && (

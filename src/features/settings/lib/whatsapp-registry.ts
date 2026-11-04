@@ -33,6 +33,7 @@ const CONFIG_FALLBACK: RegistryConfig = {
   quietHours: { enabled: false, startHour: 22, endHour: 7 },
   requireOptIn: true,
   sendRateLimit: 0,
+  dailyCap: 300,
 };
 
 type LegacyTemplate = {
@@ -57,6 +58,7 @@ function configView(config: IWhatsAppConfig | null): RegistryConfig {
     },
     requireOptIn: config.requireOptIn ?? true,
     sendRateLimit: config.sendRateLimit ?? 0,
+    dailyCap: config.dailyCap ?? CONFIG_FALLBACK.dailyCap,
   };
 }
 

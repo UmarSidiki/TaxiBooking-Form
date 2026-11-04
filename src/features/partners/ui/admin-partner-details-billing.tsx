@@ -65,7 +65,7 @@ export function AdminPartnerDetailsBilling({
             <PiggyBank className="size-5" aria-hidden="true" />
             {t("balance-label")}
           </h3>
-          <p className="mt-1 text-2xl font-semibold tabular-nums">{formatCurrency(balance)}</p>
+          <p className="num mt-1 text-2xl font-semibold">{formatCurrency(balance)}</p>
           <p className="text-xs text-muted-foreground">{t("balance-hint")}</p>
         </div>
         <Button className="h-11" onClick={() => setOpen(true)}>{t("settle-open")}</Button>

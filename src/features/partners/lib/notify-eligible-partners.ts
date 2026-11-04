@@ -3,6 +3,7 @@ import { Partner } from "@/features/partners/model";
 import { sendRideNotificationEmail } from "@/features/partners/email/notification";
 import { getCurrencySymbol } from "@/shared/lib/utils";
 import { Setting } from "@/features/settings/model";
+import { rideLocationsOf } from "@/features/rides/lib/ride-locations";
 import { queueAssigneeNotice } from "@/features/settings/lib/assignee-whatsapp";
 
 interface NotifyEligiblePartnersResult {
@@ -82,6 +83,7 @@ export async function notifyEligiblePartners(
         baseUrl,
         partnerAmount,
         currencySymbol,
+        locations: rideLocationsOf(booking),
       })
     )
   );
@@ -109,6 +111,7 @@ export async function notifyEligiblePartners(
       pickup: booking.pickup,
       date: booking.date,
       time: booking.time,
+      locations: rideLocationsOf(booking),
     },
   });
 

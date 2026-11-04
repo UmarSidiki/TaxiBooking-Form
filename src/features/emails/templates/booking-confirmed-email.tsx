@@ -82,7 +82,7 @@ export function BookingConfirmedEmail({
           href={invoiceUrl}
           label={t("view_invoice")}
           t={t}
-          color={brand.primaryColor}
+          color={brand.accent}
         />
       ) : null}
     </BrandLayout>

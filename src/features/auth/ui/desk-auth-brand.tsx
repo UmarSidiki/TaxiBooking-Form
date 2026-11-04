@@ -3,10 +3,11 @@
 import { useTranslations } from "next-intl";
 
 import { DeskMark } from "@/features/auth/ui/desk-mark";
+import { useBrandIdentity } from "@/features/settings/ui/brand-logo";
 
 export function DeskAuthBrand() {
   const t = useTranslations("Auth.Desk");
-  const name = process.env.NEXT_PUBLIC_WEBSITE_NAME ?? t("fallback_name");
+  const { name } = useBrandIdentity(process.env.NEXT_PUBLIC_WEBSITE_NAME ?? t("fallback_name"));
 
   return (
     <div className="flex items-center gap-3">

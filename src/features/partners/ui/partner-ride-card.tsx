@@ -4,6 +4,7 @@ import { Button } from "@/shared/ui/button";
 import { Card, CardContent } from "@/shared/ui/card";
 import type { PartnerRideBooking } from "@/features/partners/ui/partner-ride.types";
 import { PartnerRideStatusBadge } from "@/features/partners/ui/partner-ride-badges";
+import { RideLocationList } from "@/features/rides/ui/ride-location-list";
 import { RideMapLine } from "@/features/rides/ui/ride-map-line";
 import type { usePartnerRides } from "@/features/rides/hooks/usePartnerRides";
 import { useLocale } from "next-intl";
@@ -66,6 +67,7 @@ export function PartnerRideCard({
           </p>
         </div>
         <RideMapLine start={booking.pickup} end={booking.dropoff || "—"} />
+        <RideLocationList ride={booking} compact />
         <div className="flex flex-col gap-2 sm:flex-row">
           <Button className="h-11 flex-1" onClick={() => setDetailBooking(booking)}>
             {t("view-details")}

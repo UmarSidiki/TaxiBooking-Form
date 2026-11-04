@@ -38,15 +38,15 @@ export function AdminRidesTabPanel({
           {[0, 1, 2, 3].map((item) => (
             <div
               key={item}
-              className="h-36 animate-pulse rounded-2xl border border-border/60 bg-card"
+              className="h-36 animate-pulse rounded border border-[var(--rule)] bg-[var(--sheet)]"
             />
           ))}
         </div>
       ) : isEmpty ? (
-        <div className="flex min-h-64 flex-col items-center justify-center gap-3 rounded-2xl border border-dashed border-border/70 bg-card px-6 py-10 text-center">
-          <div className="flex size-12 items-center justify-center rounded-2xl bg-muted">
+        <div className="flex min-h-64 flex-col items-center justify-center gap-3 rounded border border-dashed border-[var(--rule)] bg-[var(--sheet)] px-6 py-10 text-center">
+          <div className="flex size-12 items-center justify-center rounded bg-[var(--well)]">
             <EmptyIcon
-              className="size-6 text-muted-foreground"
+              className="size-6 text-[var(--ink2)]"
               aria-hidden="true"
             />
           </div>
@@ -54,14 +54,14 @@ export function AdminRidesTabPanel({
             <h3 className="text-base font-semibold text-foreground">
               {emptyTitle}
             </h3>
-            <p className="mx-auto mt-1 max-w-md text-sm text-muted-foreground">
+            <p className="mx-auto mt-1 max-w-md text-sm text-[var(--ink2)]">
               {emptyDescription}
             </p>
           </div>
           <Button
             onClick={fetchBookings}
             variant="outline"
-            className="mt-1 h-11 rounded-xl"
+            className="mt-1 h-11 rounded"
           >
             <RefreshCw className="size-4" aria-hidden="true" />
             {t("Dashboard.Rides.Refresh")}

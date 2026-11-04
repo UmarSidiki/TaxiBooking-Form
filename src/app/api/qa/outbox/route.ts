@@ -16,6 +16,7 @@ export async function GET(request: Request) {
     return {
       to: item.to,
       subject: item.subject,
+      text: typeof item.text === "string" ? item.text : "",
       attachments: attachments.map((file) => {
         const content = "content" in file ? file.content : undefined;
         const bytes = Buffer.isBuffer(content) ? content : Buffer.from([]);
@@ -30,6 +31,8 @@ export async function GET(request: Request) {
   const whatsapp = readWhatsAppOutbox().map((item) => {
     const bytes = item.document ? Buffer.from(item.document.base64, "base64") : Buffer.from([]);
     return {
+      jid: item.jid,
+      text: item.text,
       fileName: item.document?.fileName,
       pdf: bytes.subarray(0, 4).toString() === "%PDF",
     };

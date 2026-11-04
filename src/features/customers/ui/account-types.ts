@@ -28,10 +28,37 @@ export type Ride = {
   whatsappOptIn?: boolean;
 };
 
+export type MarketingConsentStatus = "none" | "granted" | "withdrawn";
+
+export type MarketingConsentCache = {
+  status?: MarketingConsentStatus | null;
+  at?: string | Date | null;
+  source?: string | null;
+  textVersion?: string | null;
+};
+
 export type CustomerProfile = {
   name?: string;
   phone?: string;
+  verifiedPhone?: string;
   whatsappOptIn?: boolean;
+  marketing?: {
+    email?: MarketingConsentCache | null;
+    whatsapp?: MarketingConsentCache | null;
+  } | null;
   savedAddresses?: { home?: string; work?: string; airport?: string };
   language?: string;
+};
+
+export type AccountT = (
+  key: string,
+  values?: Record<string, string | number>,
+) => string;
+
+export type CancelPolicyTier = { hoursBefore: number; feePercent: number };
+
+export type AccountRides = {
+  upcoming: Ride[];
+  past: Ride[];
+  canceled: Ride[];
 };

@@ -1,5 +1,9 @@
 import { WhatsAppDelivery } from "@/features/settings/model";
-import { sendWhatsAppTexts } from "@/features/settings/lib/whatsapp-session";
+import {
+  findSendResult,
+  sendWhatsAppTexts,
+  type WhatsAppSendOptions,
+} from "@/features/settings/lib/whatsapp-send";
 import { readWhatsAppLinked } from "@/features/settings/lib/whatsapp-mongo-auth";
 import { sendEmail } from "@/features/settings/lib/email";
 import { notificationEvent } from "@/features/notifications/notification-events";
@@ -18,8 +22,10 @@ export type NotificationDeps = {
   linked?: () => Promise<boolean>;
   send?: (
     messages: { jid: string; text: string; document?: { base64: string; fileName: string } }[],
+    options?: WhatsAppSendOptions,
   ) => Promise<{ ok: boolean; results?: { jid: string; ok: boolean }[] }>;
   sendMail?: (mail: PlannedEmail) => Promise<boolean>;
+  deadlineMs?: number;
 };
 
 function isDuplicateKey(error: unknown) {
@@ -63,7 +69,7 @@ async function settleDeliveries(
     messages
       .filter((message) => message.audience === "customer" || message.audience === "desk")
       .map((message) => {
-        const perMessage = send.results?.find((item) => item.jid === message.jid);
+        const perMessage = findSendResult(send.results ?? [], message.jid);
         const ok = perMessage ? perMessage.ok : send.ok;
         return WhatsAppDelivery.updateOne(
           { bookingId, audience: message.audience, to: message.to },
@@ -107,8 +113,15 @@ export async function notify(
 
     let ok = true;
     if (whatsapp.length > 0) {
-      const send = deps.send ?? ((messages) => sendWhatsAppTexts(messages));
-      const result = await send(whatsapp.map(({ jid, text, document }) => ({ jid, text, document })));
+      const send =
+        deps.send ?? ((messages, options) => sendWhatsAppTexts(messages, options));
+      const idempotencyKeys = whatsapp.map((message) =>
+        ctx.bookingId ? `${eventKey}:${ctx.bookingId}:${message.jid}` : undefined,
+      );
+      const result = await send(
+        whatsapp.map(({ jid, text, document }) => ({ jid, text, document })),
+        { deadlineMs: deps.deadlineMs, kind: "notification", idempotencyKeys },
+      );
       ok = result.ok;
       if (ctx.bookingId) await settleDeliveries(ctx.bookingId, whatsapp, result);
     }

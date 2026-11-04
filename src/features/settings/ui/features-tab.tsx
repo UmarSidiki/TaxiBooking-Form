@@ -8,6 +8,7 @@ import {
   CalendarClock,
   CalendarPlus,
   Percent,
+  Megaphone,
   type LucideIcon,
 } from "lucide-react";
 import { useTranslations, useLocale } from "next-intl";
@@ -221,6 +222,16 @@ export default function FeaturesTab({
         checked={settings.enableFormBuilder ?? true}
         onCheckedChange={(checked) =>
           onSettingsChange("enableFormBuilder", checked)
+        }
+      />
+      <ModuleRow
+        id="enableMarketing"
+        icon={Megaphone}
+        title={t("marketing-module")}
+        description={t("enable-marketing")}
+        checked={settings.enableMarketing ?? true}
+        onCheckedChange={(checked) =>
+          onSettingsChange("enableMarketing", checked)
         }
       />
       <ModuleRow

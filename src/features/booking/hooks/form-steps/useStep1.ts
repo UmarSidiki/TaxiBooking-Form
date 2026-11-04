@@ -1,10 +1,12 @@
 "use client";
 
 import { useState, useCallback, useRef } from "react";
+import { applyBookingTypeChange } from "@/features/booking/lib/apply-booking-type-change";
 import { useBookingForm } from "@/features/booking/context/booking-form-context";
 import { useTheme } from "@/features/settings/context/theme-context";
 import { useTranslations } from "next-intl";
 import { isPlaceInServiceArea } from "@/features/booking/lib/maps/is-place-in-service-area";
+import { serviceAreaFrom } from "@/features/booking/lib/service-area";
 import { useStep1Distance } from "@/features/booking/hooks/form-steps/useStep1Distance";
 import { useStep1GoogleMaps } from "@/features/booking/hooks/form-steps/useStep1GoogleMaps";
 import { useStep1StopAutocomplete } from "@/features/booking/hooks/form-steps/useStep1StopAutocomplete";
@@ -43,9 +45,9 @@ export function useStep1() {
 
   const validatePlaceInBounds = useCallback(
     (place: google.maps.places.PlaceResult): boolean => {
-      return isPlaceInServiceArea(place, settings?.mapPolygonPoints);
+      return isPlaceInServiceArea(place, settings);
     },
-    [settings?.mapPolygonPoints]
+    [settings]
   );
 
   useStep1StopAutocomplete({
@@ -85,7 +87,7 @@ export function useStep1() {
   });
 
   const validateStep = (): boolean => {
-    const newErrors = getStep1Errors(formData, t);
+    const newErrors = getStep1Errors(formData, t, serviceAreaFrom(settings));
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -120,11 +122,7 @@ export function useStep1() {
   };
 
   const handleBookingTypeChange = (bookingType: "destination" | "hourly") => {
-    setFormData((prev) => ({
-      ...prev,
-      bookingType,
-      dropoff: bookingType === "hourly" ? "" : prev.dropoff,
-    }));
+    setFormData((prev) => applyBookingTypeChange(prev, bookingType));
   };
 
   const handleTripTypeChange = (tripType: "oneway" | "roundtrip") => {

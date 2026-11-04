@@ -47,7 +47,7 @@ export function AdminHomeQuickActions({ t }: { t: TFn }) {
         <Link
           key={action.href}
           href={action.href}
-          className="inline-flex min-h-11 items-center gap-2 rounded-xl border border-border/60 bg-card px-3.5 py-2 text-sm font-medium text-foreground transition-colors hover:border-primary/40 hover:bg-accent/40 focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
+          className="inline-flex min-h-11 items-center gap-2 rounded border border-border/60 bg-card px-3.5 py-2 text-sm font-medium text-foreground transition-colors hover:border-primary/40 hover:bg-accent/40 focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
         >
           <action.icon className="size-4 text-primary" aria-hidden="true" />
           {action.title}

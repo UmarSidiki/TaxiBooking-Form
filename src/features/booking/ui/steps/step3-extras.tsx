@@ -27,14 +27,14 @@ export function Step3Extras({
   return (
     <>
         {/* Optional Extras */}
-        <Card className="p-5">
-          <h3 className="font-semibold mb-4 text-lg">{t('Step3.optional-extras')}</h3>
+        <Card className="gap-4 p-5">
+          <h3 className="font-semibold text-lg">{t('Step3.optional-extras')}</h3>
           <div className="space-y-4">
             {extras.childSeat.enabled ? (
             <div className="flex items-center justify-between">
               <label className="text-sm font-medium">{t('Step3.child-seats')}</label>
               <div className="flex items-center gap-3">
-                <span className="text-sm text-gray-600">
+                <span className="text-sm text-[color:var(--ink2)]">
                   {currencySymbol}{childSeatPrice} {t('Step3.each')}
                 </span>
                 <Input
@@ -75,7 +75,7 @@ export function Step3Extras({
             <div className="flex items-center justify-between">
               <label className="text-sm font-medium">{t('Step3.baby-seats')}</label>
               <div className="flex items-center gap-3">
-                <span className="text-sm text-gray-600">
+                <span className="text-sm text-[color:var(--ink2)]">
                   {currencySymbol}{babySeatPrice} {t('Step3.each')}
                 </span>
                 <Input
@@ -138,7 +138,7 @@ export function Step3Extras({
             ) : null}
             {promoAvailable ? (
               <div>
-                <label className="mb-2 block text-sm font-medium" htmlFor="promo-code">{t("Step3.promo-code")}</label>
+                <label className="mb-1.5 block text-sm font-medium" htmlFor="promo-code">{t("Step3.promo-code")}</label>
                 <Input
                   id="promo-code"
                   className="h-11"
@@ -148,7 +148,7 @@ export function Step3Extras({
               </div>
             ) : null}
             <div>
-              <label className="text-sm font-medium block mb-2">
+              <label className="text-sm font-medium block mb-1.5">
                 {t('Step3.special-requests-optional')} </label>
               <Input
                 placeholder={t('Step3.any-special-requirements-or-notes')}
@@ -159,7 +159,7 @@ export function Step3Extras({
               />
             </div>
             <div>
-              <label className="text-sm font-medium block mb-2">
+              <label className="text-sm font-medium block mb-1.5">
                 {t('Step3.flight-number-optional')} </label>
               <Input
                 placeholder="e.g. LH 1234"

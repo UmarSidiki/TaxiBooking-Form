@@ -1,8 +1,8 @@
 import { copyFileSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { expect, type Browser, type Page } from "@playwright/test";
 
-export const ARTIFACTS = "/opt/cursor/artifacts/qa";
-export const TMP = "/tmp/qa-shots";
+const ARTIFACTS = "/opt/cursor/artifacts/qa";
+const TMP = "/tmp/qa-shots";
 export const ADMIN = { email: "admin@qa.example", password: "qa-password" };
 export const ALPINE = { email: "partner.one@qa.example", password: "qa-password" };
 export const LAKE = { email: "partner.two@qa.example", password: "qa-password" };

@@ -21,6 +21,7 @@ import { loadPaymentSettings } from '@/features/payments/lib/load-payment-settin
 import type { CashBookingInput } from '@/features/booking/schema/cash-booking.schema';
 import { Vehicle } from '@/features/fleet/model';
 import { sendBookingWhatsApp } from '@/features/settings/lib/send-booking-whatsapp';
+import { recordCheckoutMarketingConsent } from '@/features/marketing/lib/checkout/record-checkout-consent';
 
 export type CreateCashBookingResult =
   | {
@@ -97,6 +98,7 @@ export async function createCashBooking(
         });
 
   const serverPrice = await priceServerBooking({
+    enforceServiceArea: true,
     vehicle,
     booking: formData,
     distanceKm,
@@ -137,7 +139,9 @@ export async function createCashBooking(
     tripId,
     draftId,
     pickup: formData.pickup,
+    pickupLatLng: formData.pickupLatLng ?? undefined,
     dropoff: formData.dropoff || '',
+    dropoffLatLng: formData.dropoffLatLng ?? undefined,
     stops: formData.stops || [],
     tripType: formData.tripType,
     bookingType: formData.bookingType,
@@ -197,6 +201,15 @@ export async function createCashBooking(
 
   if (draftId) {
     await PendingBooking.updateOne({ draftId }, { $set: { status: "abandoned" } });
+  }
+
+  try {
+    await recordCheckoutMarketingConsent({
+      email: formData.email,
+      phone: formData.phone,
+    });
+  } catch {
+    // Consent capture must never fail a confirmed booking.
   }
 
   await initCashBookingPartners(

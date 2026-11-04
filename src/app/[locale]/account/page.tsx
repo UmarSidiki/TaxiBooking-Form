@@ -1,10 +1,19 @@
-import { Suspense } from "react";
-import { AccountDesk } from "@/features/customers/ui/account-desk";
+import type { Viewport } from "next";
+import {
+  renderAccountPage,
+  type AccountSearchParams,
+} from "@/features/customers/lib/render-account-page";
 
-export default function AccountPage() {
-  return (
-    <Suspense fallback={<p className="p-4">…</p>}>
-      <AccountDesk />
-    </Suspense>
-  );
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+};
+
+export default function AccountOverviewPage({
+  searchParams,
+}: {
+  searchParams: Promise<AccountSearchParams>;
+}) {
+  return renderAccountPage("overview", searchParams);
 }

@@ -58,16 +58,16 @@ export function Step3StripePanel({
   return (
                   <div className="mt-4">
                     {paymentError ? (
-                      <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+                      <div className="bg-[var(--well)] border border-[var(--rule)] rounded p-4">
                         <div className="flex items-start gap-3">
-                          <CheckCircle2 className="h-5 w-5 text-red-600 flex-shrink-0 mt-0.5" />
+                          <CheckCircle2 className="h-5 w-5 text-[color:var(--err)] flex-shrink-0 mt-0.5" />
                           <div>
-                            <p className="font-medium text-red-900 mb-1">
+                            <p className="font-medium text-[color:var(--ink)] mb-1">
                               {clientSecret
                                 ? t('Step3.payment-error')
                                 : t('Step3.payment-initialization-error')}{" "}
                             </p>
-                            <p className="text-sm text-red-800 mb-3">
+                            <p className="text-sm text-[color:var(--err)] mb-3">
                               {paymentError}
                             </p>
                             <Button
@@ -80,10 +80,10 @@ export function Step3StripePanel({
                         </div>
                       </div>
                     ) : !clientSecret ? (
-                      <div className="flex flex-col items-center justify-center py-8 text-sm text-gray-600">
+                      <div className="flex flex-col items-center justify-center py-8 text-sm text-[color:var(--ink2)]">
                         <Loader2 className="mb-3 h-8 w-8 animate-spin text-primary" />
                         <p>{t('Step3.loading-payment-options')}</p>
-                        <p className="text-xs text-gray-500 mt-2">
+                        <p className="text-xs text-[color:var(--ink2)] mt-2">
                           {t('Step3.this-may-take-a-few-seconds')} </p>
                       </div>
                     ) : (

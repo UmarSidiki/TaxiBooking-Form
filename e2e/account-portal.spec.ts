@@ -1,17 +1,20 @@
-import { createHmac } from "node:crypto";
 import AxeBuilder from "@axe-core/playwright";
-import { expect, test } from "@playwright/test";
+import { expect, test, type Page } from "@playwright/test";
+import { seedMagicLink } from "./helpers/login-token";
 
-const SECRET = process.env.NEXTAUTH_SECRET || "e2e-secret-not-for-production";
+const QA_KEY = process.env.CRON_SECRET ?? "e2e-cron-secret";
+const CLIENT_BASE: Record<string, number> = { desktop: 10, pixel: 30, iphone: 50 };
+let clientSeq = 0;
 
-function signToken(email: string) {
-  const exp = Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 7;
-  const body = Buffer.from(`${email.trim().toLowerCase()}|${exp}`).toString("base64url");
-  const sig = createHmac("sha256", SECRET).update(body).digest("base64url");
-  return `${body}.${sig}`;
-}
+test.beforeEach(async ({ page }, testInfo) => {
+  clientSeq += 1;
+  const octet = (CLIENT_BASE[testInfo.project.name] ?? 70) + clientSeq;
+  await page.context().setExtraHTTPHeaders({
+    "x-forwarded-for": `198.51.100.${octet}`,
+  });
+});
 
-async function go(page: any, path: string) {
+async function go(page: Page, path: string) {
   for (let i = 0; i < 4; i += 1) {
     try {
       await page.goto(path, { waitUntil: "domcontentloaded" });
@@ -23,50 +26,92 @@ async function go(page: any, path: string) {
   }
 }
 
-test("account portal tabs, cancel fee, change price, completed ride", async ({ page }, testInfo) => {
+async function magicLinkSignIn(page: Page, email: string) {
+  await go(page, await seedMagicLink(email));
+  await expect(page).toHaveURL(/\/en\/account$/);
+  await expect(page.getByRole("heading", { name: "Past rides" })).toBeVisible();
+}
+
+async function latestSignInCode(page: Page, email: string) {
+  for (let attempt = 0; attempt < 40; attempt += 1) {
+    const response = await page.request.get("/api/qa/outbox", {
+      headers: { "x-qa-key": QA_KEY },
+    });
+    expect(response.ok(), await response.text()).toBeTruthy();
+    const body = (await response.json()) as {
+      mail: { to?: string | string[]; text?: string }[];
+      whatsapp?: { text?: string }[];
+    };
+    const mail = body.mail.filter((item) => {
+      const to = Array.isArray(item.to) ? item.to : [item.to];
+      return to.includes(email);
+    });
+    const code = (mail.at(-1)?.text ?? "").match(/\b\d{6}\b/)?.[0];
+    if (code) return { code, whatsapp: body.whatsapp ?? [] };
+    await page.waitForTimeout(250);
+  }
+  throw new Error(`Sign-in code for ${email} did not reach the mail outbox`);
+}
+
+test("email-only sign-in code reaches the inbox and opens the portal", async ({ page }) => {
+  await go(page, "/en/account");
+  await page.locator("#account-email").fill("ada@example.com");
+  await page.getByRole("button", { name: "Send code" }).click();
+  await expect(page.locator("#account-code")).toBeVisible();
+  await expect(page.getByRole("status")).toHaveText("Code sent.");
+
+  const { code, whatsapp } = await latestSignInCode(page, "ada@example.com");
+  expect(code).toMatch(/^\d{6}$/);
+  expect(whatsapp.some((message) => message.text?.includes(code))).toBe(false);
+
+  await page.locator("#account-code").pressSequentially(code);
+  await page.getByRole("button", { name: "Verify and sign in" }).click();
+  await expect(page.getByText("Upcoming ride")).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Past rides" })).toBeVisible();
+});
+
+test("magic link opens tabs, cancel fee, change price and completed ride", async ({ page }, testInfo) => {
   test.setTimeout(120_000);
   const shot = (name: string) =>
     process.env.SHOTS_DIR
       ? page.screenshot({ path: `${process.env.SHOTS_DIR}/bf-portal-${name}-${testInfo.project.name}.png`, fullPage: true })
       : Promise.resolve();
 
-  const token = signToken("ada@example.com");
-  await go(page, `/en/account?token=${token}`);
-  await expect(page.getByRole("heading", { name: "Your trips" })).toBeVisible();
-  await expect(page.getByRole("tab", { name: "Upcoming" })).toBeVisible();
-  await expect(page.getByRole("tab", { name: "Past" })).toBeVisible();
-  await expect(page.getByRole("tab", { name: "Cancelled" })).toBeVisible();
+  await magicLinkSignIn(page, "ada@example.com");
+  const upcoming = page.getByRole("article").filter({ hasText: "e2e-upcoming" });
+  await expect(upcoming).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Past rides" })).toBeVisible();
   await shot("list");
 
   // Cancel fee preview shown
-  await page.getByRole("button", { name: "Details" }).first().click();
-  await expect(page.getByRole("dialog")).toBeVisible();
-  await page.getByRole("button", { name: "Cancel" }).click();
-  await expect(page.getByText(/Cancellation fee/)).toBeVisible();
+  await upcoming.getByRole("button", { name: "Cancel" }).click();
+  const cancelDialog = page.getByRole("dialog");
+  await expect(cancelDialog).toBeVisible();
+  await expect(cancelDialog.getByText(/Cancellation fee/)).toBeVisible();
   await shot("cancel");
-  await page.getByRole("button", { name: "Close" }).first().click();
+  await cancelDialog.getByRole("button", { name: "Close" }).first().click();
+  await expect(cancelDialog).toBeHidden();
 
   // Change shows preview summary then confirms
-  await page.getByRole("button", { name: "Details" }).first().click();
-  await expect(page.getByRole("dialog")).toBeVisible();
-  await page.getByRole("button", { name: "Change" }).click();
-  await page.getByRole("button", { name: "Review change" }).click();
-  await expect(page.getByText(/Current total/)).toBeVisible();
-  await expect(page.getByText(/New total/)).toBeVisible();
-  await expect(page.getByText(/Already paid/)).toBeVisible();
+  await upcoming.getByRole("button", { name: "Change" }).click();
+  const changeDialog = page.getByRole("dialog");
+  await expect(changeDialog).toBeVisible();
+  await changeDialog.getByRole("button", { name: "Review change" }).click();
+  await expect(changeDialog.getByText(/Current total/)).toBeVisible();
+  await expect(changeDialog.getByText(/New total/)).toBeVisible();
+  await expect(changeDialog.getByText(/Already paid/)).toBeVisible();
   await shot("change-review");
   const axe = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21aa"]).analyze();
   expect(axe.violations.filter((v) => v.impact === "serious" || v.impact === "critical").map((v) => v.id)).toEqual([]);
-  await page.getByRole("button", { name: "Confirm change" }).click();
+  await changeDialog.getByRole("button", { name: "Confirm change" }).click();
 
-  // Completed ride has no actions
-  const token2 = signToken("grace@example.com");
-  await go(page, `/en/account?token=${token2}`);
-  await page.getByRole("tab", { name: "Past" }).click();
-  await page.getByRole("button", { name: "Details" }).first().click();
-  await expect(page.getByRole("dialog")).toBeVisible();
-  await expect(page.getByRole("button", { name: "Change" })).toHaveCount(0);
-  await expect(page.getByRole("button", { name: "Cancel" })).toHaveCount(0);
+  // Completed rides live in Past rides with no change/cancel actions
+  await magicLinkSignIn(page, "grace@example.com");
+  const pastRides = page.getByRole("region", { name: "Past rides" });
+  await expect(pastRides).toBeVisible();
+  await expect(pastRides.getByText("Trip e2e-history")).toBeVisible();
+  await expect(pastRides.getByRole("button", { name: "Change" })).toHaveCount(0);
+  await expect(pastRides.getByRole("button", { name: "Cancel" })).toHaveCount(0);
 
   // Axe check
   const result = await new AxeBuilder({ page })

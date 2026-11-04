@@ -4,10 +4,10 @@ import type { ISetting } from "@/features/settings/model";
  * Fields the browser is allowed to see. Credentials and SMTP/admin
  * configuration are deliberately absent - use ?scope=full as an admin for those.
  */
-export const PUBLIC_SETTING_FIELDS = [
-  "primaryColor",
-  "secondaryColor",
+const PUBLIC_SETTING_FIELDS = [
   "borderRadius",
+  "colorPalette",
+  "customPalette",
   "redirectUrl",
   "thankYouStaySeconds",
   "redirectImmediatelyAfterBooking",
@@ -29,6 +29,7 @@ export const PUBLIC_SETTING_FIELDS = [
   "enableAppointmentRequest",
   "enableEmbeddableForm",
   "enableFormBuilder",
+  "enableMarketing",
   "enableDeskBooking",
   "promoCodesEnabled",
   "enableTax",
@@ -39,6 +40,7 @@ export const PUBLIC_SETTING_FIELDS = [
   "defaultPartnerMarginPercentage",
   "timezone",
   "companyName",
+  "companyLogoUrl",
   "companyPhone",
   "adminEmail",
 ] as const;

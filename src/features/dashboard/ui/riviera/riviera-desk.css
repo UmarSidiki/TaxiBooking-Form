@@ -1,0 +1,350 @@
+/* Dashboard-only Riviera layout rules. Tokens live in shared/style/riviera-theme.css. */
+
+/* Brand lockup in the sidebar header: logo plate then name over subtitle, all
+   inside the home link. The mobile sheet portals outside .riviera, so this block
+   is intentionally unscoped and reads only root-level palette tokens. */
+.desk-brand {
+  min-inline-size: 0;
+  min-block-size: 44px;
+  gap: 8px;
+  text-align: start;
+}
+.desk-brand__logo {
+  /* Content box so the 32px image height is not eaten by padding/border. The
+     width follows the image ratio (set by the component on load), clamped to
+     the plate scale so an extreme ratio cannot swallow the text column. */
+  box-sizing: content-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  inline-size: clamp(32px, calc(32px * var(--desk-logo-ratio, 1)), 112px);
+  min-inline-size: 32px;
+  max-inline-size: 112px;
+  block-size: 32px;
+  padding: 3px;
+  overflow: hidden;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-sm, 4px);
+  background: var(--logo-plate, var(--sheet));
+  line-height: 1;
+}
+.desk-brand__logo[data-letter] {
+  box-sizing: border-box;
+  inline-size: 32px;
+  min-inline-size: 32px;
+  max-inline-size: 32px;
+  block-size: 32px;
+  padding: 0;
+  border-color: transparent;
+  background: var(--ink);
+  color: var(--paper);
+  font-size: var(--text-sm, 14px);
+  font-weight: 600;
+}
+.desk-brand__logo img {
+  display: block;
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: contain;
+}
+.desk-brand__text {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-inline-size: 0;
+  overflow: hidden;
+  text-align: start;
+}
+.desk-brand__name,
+.desk-brand__sub {
+  max-inline-size: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.desk-brand__name {
+  color: var(--ink);
+  font-size: var(--text-sm, 14px);
+  font-weight: 600;
+  line-height: 1.15;
+}
+.desk-brand__sub {
+  color: var(--ink2);
+  font-size: var(--text-xs, 12px);
+  line-height: 1.2;
+}
+
+/* Rides list: one dense line per booking. Rows are subgrids of one table grid so
+   every column lines up; the actions track sizes to its buttons and never clips,
+   the route column absorbs the squeeze. */
+.riviera .ride-table {
+  display: none;
+  grid-template-columns: 7rem minmax(8rem, 1fr) minmax(6rem, 0.7fr) auto auto max-content;
+  column-gap: var(--sp-4, 16px);
+}
+@media (min-width: 1024px) {
+  .riviera .ride-table { display: grid; }
+}
+.riviera .ride-table > [role="row"] {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: subgrid;
+  align-items: center;
+  border-bottom: 1px solid var(--rule);
+}
+.riviera .ride-table [role="columnheader"] {
+  padding: 8px 0;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--ink2);
+}
+.riviera .ride-table .ride-row {
+  padding: 10px 0;
+  font-size: 14px;
+}
+
+/* Appearance: miniature of booking step 1, drawn with the live Riviera tokens. */
+.riviera .appearance-preview {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px;
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  color: var(--ink);
+}
+.riviera .appearance-preview__brand {
+  font-family: var(--display);
+  font-size: 18px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--rule);
+}
+.riviera .appearance-preview__field {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 8px 10px;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+}
+.riviera .appearance-preview__field span {
+  font-size: 11px;
+  color: var(--ink2);
+}
+.riviera .appearance-preview__go {
+  margin-top: 4px;
+  padding: 10px;
+  text-align: center;
+  font-weight: 500;
+  background: var(--sig);
+  color: var(--sig-on);
+  border-radius: var(--radius-sm);
+}
+
+/* Today: hour grid. Empty hours stay as a thin rule so the day keeps its shape. */
+.riviera .today-timeline {
+  background: var(--sheet);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  padding: 16px;
+}
+.riviera .today-timeline__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+.riviera .today-timeline__head h2 { font-size: 18px; }
+.riviera .today-timeline__head p { font-size: 13px; color: var(--ink2); }
+.riviera .today-timeline ol { list-style: none; margin: 0; padding: 0; }
+.riviera .today-timeline li {
+  display: grid;
+  grid-template-columns: 3.5rem 1fr;
+  gap: 12px;
+  min-height: 28px;
+  border-top: 1px solid var(--rule);
+}
+.riviera .today-timeline__hour {
+  padding-top: 6px;
+  font-size: 12px;
+  color: var(--ink2);
+}
+.riviera .today-timeline li.is-now { border-top: 2px solid var(--sig); }
+.riviera .today-timeline li.is-now .today-timeline__hour { color: var(--ink); font-weight: 600; }
+.riviera .today-timeline__slot {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 6px 0;
+}
+.riviera .today-timeline__now {
+  align-self: flex-start;
+  font-size: 11px;
+  color: var(--ink);
+}
+.riviera .today-timeline__ride {
+  display: grid;
+  grid-template-columns: 3.25rem minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: center;
+  padding: 8px 10px;
+  font-size: 14px;
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-sm);
+}
+.riviera .today-timeline__route { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+@media (max-width: 639px) {
+  .riviera .today-timeline__ride { grid-template-columns: 3.25rem minmax(0, 1fr); }
+  .riviera .today-timeline__ride > :last-child { grid-column: 2; }
+}
+
+/* Side drawers (partners, drivers). Radix portals the panel to <body>, outside
+   .riviera, so the palette tokens are bridged again on the panel itself. Every
+   value comes from riviera-palettes.css — no component-level colours. */
+.riviera-drawer {
+  --background: var(--paper);
+  --foreground: var(--ink);
+  --card: var(--sheet);
+  --card-foreground: var(--ink);
+  --popover: var(--sheet);
+  --popover-foreground: var(--ink);
+  --primary: var(--sig);
+  --primary-foreground: var(--sig-on);
+  --secondary: var(--well);
+  --secondary-foreground: var(--ink);
+  --muted: var(--well);
+  --muted-foreground: var(--ink2);
+  --accent: var(--well);
+  --accent-foreground: var(--ink);
+  --border: var(--rule);
+  --input: var(--rule2);
+  --ring: var(--sig);
+  --destructive: var(--err);
+  --drawer-width: 100%;
+  width: var(--drawer-width);
+  max-width: var(--drawer-width);
+  background: var(--paper);
+  color: var(--ink);
+  container-type: inline-size;
+  overflow-wrap: anywhere;
+}
+@media (min-width: 768px) {
+  .riviera-drawer { --drawer-width: clamp(480px, 40vw, 640px); }
+}
+.riviera-drawer .num {
+  overflow-wrap: normal;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+.riviera-drawer :focus-visible {
+  outline: 2px solid var(--sig);
+  outline-offset: 2px;
+}
+.riviera-drawer__header {
+  padding-block: max(12px, env(safe-area-inset-top)) 12px;
+  padding-inline: max(16px, env(safe-area-inset-left)) max(16px, env(safe-area-inset-right));
+}
+.riviera-drawer__body {
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  padding-block: 16px;
+  padding-inline: max(16px, env(safe-area-inset-left)) max(16px, env(safe-area-inset-right));
+}
+.riviera-drawer__footer {
+  padding-block: 12px max(12px, env(safe-area-inset-bottom));
+  padding-inline: max(16px, env(safe-area-inset-left)) max(16px, env(safe-area-inset-right));
+  background: color-mix(in srgb, var(--sheet) 82%, transparent);
+}
+@media (min-width: 640px) {
+  .riviera-drawer__header { padding-inline: max(24px, env(safe-area-inset-left)) max(24px, env(safe-area-inset-right)); }
+  .riviera-drawer__body { padding-block: 20px; padding-inline: max(24px, env(safe-area-inset-left)) max(24px, env(safe-area-inset-right)); }
+  .riviera-drawer__footer { padding-block: 16px max(16px, env(safe-area-inset-bottom)); padding-inline: max(24px, env(safe-area-inset-left)) max(24px, env(safe-area-inset-right)); }
+}
+
+/* Drawer forms and detail grids: one column in narrow sheets, two from 640px
+   of panel width (not viewport width). */
+.drawer-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 16px;
+}
+@container (min-width: 640px) {
+  .drawer-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .drawer-span-2 { grid-column: 1 / -1; }
+}
+
+.drawer-earnings-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+  gap: 16px;
+}
+
+/* Billing ledger: a stacked card per entry in narrow sheets, the full table
+   only when the panel is wide enough. */
+.drawer-ledger-cards { display: flex; flex-direction: column; gap: 8px; }
+.drawer-ledger-table { display: none; }
+@container (min-width: 640px) {
+  .drawer-ledger-cards { display: none; }
+  .drawer-ledger-table { display: block; }
+}
+
+/* Appearance: palette picker. Each option sets data-palette-scope, so its swatches read that palette's tokens. */
+.riviera .palette-picker { border: 0; padding: 0; margin: 0 0 24px; min-width: 0; }
+.riviera .palette-picker__legend { font-size: 14px; font-weight: 500; color: var(--ink); }
+.riviera .palette-picker__help { margin: 4px 0 12px; font-size: 12px; color: var(--ink2); }
+.riviera .palette-picker__grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(10.5rem, 1fr)); gap: 8px; }
+.riviera .palette-picker__option {
+  position: relative; display: flex; flex-direction: column; gap: 6px; padding: 12px;
+  min-height: 44px; cursor: pointer; border-radius: var(--radius);
+  background: var(--sheet); color: var(--ink); border: 1px solid var(--rule2);
+}
+.riviera .palette-picker__option[data-selected] { outline: 2px solid var(--sig); outline-offset: 1px; }
+.riviera .palette-picker__option:has(:focus-visible) { outline: 2px solid var(--sig); outline-offset: 3px; }
+.riviera .palette-picker__radio { position: absolute; opacity: 0; inset: 0; margin: 0; cursor: pointer; }
+.riviera .palette-picker__swatches { display: flex; gap: 4px; }
+.riviera .palette-picker__swatches span { width: 22px; height: 22px; border-radius: var(--radius-sm); border: 1px solid var(--rule2); }
+.riviera .palette-picker__name { font-size: 14px; font-weight: 600; }
+.riviera .palette-picker__note { font-size: 12px; color: var(--ink2); }
+/* Custom palette editor (Settings > Appearance). */
+.riviera .custom-palette { display: flex; flex-direction: column; gap: 16px; margin: 0 0 24px; padding: 16px; border: 1px solid var(--rule); border-radius: var(--radius); background: var(--well); min-width: 0; }
+.riviera .custom-palette__title { font-size: 15px; font-weight: 600; color: var(--ink); }
+.riviera .custom-palette__help { margin: 4px 0 0; font-size: 12px; color: var(--ink2); }
+.riviera .custom-palette__help[data-invalid] { color: var(--err); }
+.riviera .custom-palette__grid { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr)); }
+.riviera .custom-palette__field { min-width: 0; }
+.riviera .custom-palette__label { display: block; margin-bottom: 6px; font-size: 13px; font-weight: 500; color: var(--ink); }
+.riviera .custom-palette__inputs { display: flex; gap: 8px; align-items: stretch; }
+.riviera .custom-palette__swatch { flex: none; width: 44px; height: 44px; padding: 3px; border: 1px solid var(--rule2); border-radius: var(--radius); background: var(--field); cursor: pointer; }
+.riviera .custom-palette__swatch::-webkit-color-swatch-wrapper { padding: 0; }
+.riviera .custom-palette__swatch::-webkit-color-swatch { border: 0; border-radius: var(--radius-sm); }
+.riviera .custom-palette__swatch::-moz-color-swatch { border: 0; border-radius: var(--radius-sm); }
+.riviera .custom-palette__hex { flex: 1; min-width: 0; height: 44px; padding: 0 12px; border: 1px solid var(--rule2); border-radius: var(--radius); color: var(--ink); text-transform: uppercase; }
+.riviera .custom-palette__hex[aria-invalid] { border-color: var(--err); }
+.riviera .custom-palette__ratios { display: flex; flex-direction: column; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.riviera .custom-palette__ratio { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; font-size: 13px; color: var(--ink); }
+.riviera .custom-palette__warn { padding: 12px; border: 1px solid color-mix(in srgb, var(--warn) 35%, transparent); border-radius: var(--radius); background: var(--warn-tint); color: var(--warn); font-size: 13px; }
+.riviera .custom-palette__fixes { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+.riviera .custom-palette__fix { display: inline-flex; align-items: center; gap: 8px; min-height: 40px; padding: 6px 12px; border: 1px solid var(--rule2); border-radius: var(--radius); background: var(--field); color: var(--ink); font-size: 13px; cursor: pointer; text-align: start; }
+.riviera .custom-palette__fix span { flex: none; width: 16px; height: 16px; border-radius: var(--radius-sm); }
+.riviera .custom-palette__preview { margin: 0; padding: 16px; border: 1px solid var(--rule); border-radius: var(--radius); background: var(--paper); color: var(--ink); }
+.riviera .custom-palette__caption { margin-bottom: 8px; font-size: 12px; color: var(--ink2); }
+.riviera .custom-palette__card { display: flex; flex-direction: column; gap: 10px; padding: 14px; border: 1px solid var(--rule); border-radius: var(--radius); background: var(--sheet); box-shadow: var(--elev); }
+.riviera .custom-palette__mock-input { display: block; padding: 10px 12px; border: 1px solid var(--rule2); border-radius: var(--radius-sm); background: var(--field); color: var(--ink2); font-size: 13px; }
+.riviera .custom-palette__row { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
+.riviera .custom-palette__mock-btn { padding: 8px 14px; border-radius: var(--radius-sm); background: var(--sig); color: var(--sig-on); font-size: 13px; font-weight: 500; }
+.riviera .custom-palette__mock-link { color: var(--link); font-size: 13px; text-decoration: underline; }
+.riviera .custom-palette__mock-muted { color: var(--ink2); font-size: 13px; }
+.riviera .custom-palette__reset { flex: none; min-height: 44px; padding: 0 10px; border: 1px solid var(--rule2); border-radius: var(--radius); background: var(--field); color: var(--ink2); font-size: 12px; cursor: pointer; }
+.riviera .custom-palette__surfaces { display: flex; flex-direction: column; gap: 16px; padding-top: 16px; border-top: 1px solid var(--rule); }
+.riviera .custom-palette__surfaces-head { display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: 12px; }
+.riviera .custom-palette__surfaces > .custom-palette__fix { align-self: flex-start; }
+.riviera .custom-palette__fix:disabled { opacity: 0.5; cursor: not-allowed; }
+.riviera .custom-palette__previews { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr)); }
+.riviera .custom-palette__modes { display: inline-flex; padding: 2px; border: 1px solid var(--rule2); border-radius: var(--radius); background: var(--field); }
+.riviera .custom-palette__modes button { min-height: 40px; padding: 0 14px; border: 0; border-radius: var(--radius-sm); background: transparent; color: var(--ink2); font-size: 13px; cursor: pointer; }
+.riviera .custom-palette__modes button[aria-pressed="true"] { background: var(--sig); color: var(--sig-on); }

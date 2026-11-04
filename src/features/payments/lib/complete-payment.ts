@@ -28,7 +28,7 @@ function storageKey(payload: CompletePaymentPayload): string {
   );
 }
 
-export function markPaymentFinalizedLocally(payload: CompletePaymentPayload) {
+function markPaymentFinalizedLocally(payload: CompletePaymentPayload) {
   if (typeof window === 'undefined') return;
   sessionStorage.setItem(`payment_finalized_${storageKey(payload)}`, '1');
 }
@@ -59,7 +59,7 @@ async function checkPaymentFinalizedOnServer(
   }
 }
 
-export async function completePaymentWithRetry(
+async function completePaymentWithRetry(
   payload: CompletePaymentPayload
 ): Promise<CompletePaymentResponse> {
   let lastResult: CompletePaymentResponse = {

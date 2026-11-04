@@ -19,6 +19,7 @@ import { fetchRouteDistanceKm } from "@/features/payments/lib/fare/route-distanc
 import { loadPaymentSettings } from "@/features/payments/lib/load-payment-settings";
 import type { CashBookingInput } from "@/features/booking/schema/cash-booking.schema";
 import { Vehicle } from "@/features/fleet/model";
+import { recordCheckoutMarketingConsent } from "@/features/marketing/lib/checkout/record-checkout-consent";
 
 export type CreateAppointmentRequestResult =
   | { ok: true; tripId: string; totalAmount: number; message: string }
@@ -82,6 +83,7 @@ export async function createAppointmentRequest(
         });
 
   const serverPrice = await priceServerBooking({
+    enforceServiceArea: true,
     vehicle,
     booking: formData,
     distanceKm,
@@ -114,7 +116,9 @@ export async function createAppointmentRequest(
     tripId,
     draftId,
     pickup: formData.pickup,
+    pickupLatLng: formData.pickupLatLng ?? undefined,
     dropoff: formData.dropoff || "",
+    dropoffLatLng: formData.dropoffLatLng ?? undefined,
     stops: formData.stops || [],
     tripType: formData.tripType,
     bookingType: formData.bookingType,
@@ -176,6 +180,15 @@ export async function createAppointmentRequest(
 
   if (draftId) {
     await PendingBooking.updateOne({ draftId }, { $set: { status: "abandoned" } });
+  }
+
+  try {
+    await recordCheckoutMarketingConsent({
+      email: formData.email,
+      phone: formData.phone,
+    });
+  } catch {
+    // Consent capture must never fail a received request.
   }
 
   const emailData = await createCashBookingEmailData(

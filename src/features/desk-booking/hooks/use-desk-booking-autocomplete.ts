@@ -47,7 +47,7 @@ export function useDeskBookingAutocomplete({
     onAddress,
     onStopAddress,
     onOutsideArea,
-    polygon: settings?.mapPolygonPoints,
+    area: settings,
   });
 
   useEffect(() => {
@@ -55,7 +55,7 @@ export function useDeskBookingAutocomplete({
       onAddress,
       onStopAddress,
       onOutsideArea,
-      polygon: settings?.mapPolygonPoints,
+      area: settings,
     };
   });
 
@@ -80,7 +80,7 @@ export function useDeskBookingAutocomplete({
         const place = autocomplete.getPlace();
         const handlers = handlersRef.current;
 
-        if (!isPlaceInServiceArea(place, handlers.polygon)) {
+        if (!isPlaceInServiceArea(place, handlers.area)) {
           input.value = "";
           handlers.onOutsideArea();
           return;

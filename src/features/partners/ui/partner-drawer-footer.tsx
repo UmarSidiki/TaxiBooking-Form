@@ -31,7 +31,10 @@ export function PartnerDrawerFooter({
   if (!pending && !canSuspend) return null;
 
   return (
-    <div className="flex-none border-t border-border/60 bg-card/50 px-4 py-3 sm:px-6 sm:py-4">
+    <div
+      data-drawer-footer
+      className="riviera-drawer__footer flex-none border-t border-border/60"
+    >
       <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end sm:gap-2.5">
         {pending ? (
           <>
@@ -39,7 +42,7 @@ export function PartnerDrawerFooter({
               variant="destructive"
               onClick={() => setShowRejectDialog(true)}
               disabled={processing}
-              className="h-11 w-full rounded-xl sm:w-auto"
+              className="h-11 w-full rounded sm:w-auto"
             >
               <XCircle className="size-4" aria-hidden="true" />
               {t("reject")}
@@ -49,7 +52,7 @@ export function PartnerDrawerFooter({
                 selectedPartner && handleApprove(selectedPartner._id)
               }
               disabled={processing}
-              className="h-11 w-full rounded-xl font-semibold sm:w-auto"
+              className="h-11 w-full rounded font-semibold sm:w-auto"
             >
               {processing ? (
                 <>
@@ -73,7 +76,7 @@ export function PartnerDrawerFooter({
             variant="destructive"
             onClick={() => setShowSuspendDialog(true)}
             disabled={processing}
-            className="h-11 w-full rounded-xl sm:w-auto"
+            className="h-11 w-full rounded sm:w-auto"
           >
             <XCircle className="size-4" aria-hidden="true" />
             {t("suspend-partner")}

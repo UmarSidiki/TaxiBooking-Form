@@ -5,15 +5,24 @@ import { loadMongoAuthState, whatsAppCredsLinked } from "@/features/settings/lib
 
 const logger = pino({ level: "silent" });
 
+export const WHATSAPP_CONNECT_TIMEOUT_MS = 10_000;
+export const WHATSAPP_OPEN_TIMEOUT_MS = 10_000;
+
 export async function openWhatsAppSocket() {
   const baileys = await import("@whiskeysockets/baileys");
   const { state, saveCreds } = await loadMongoAuthState();
   const sock = baileys.makeWASocket({
-    auth: state,
+    auth: {
+      creds: state.creds,
+      keys: baileys.makeCacheableSignalKeyStore(state.keys, logger),
+    },
     logger,
+    connectTimeoutMs: WHATSAPP_CONNECT_TIMEOUT_MS,
     syncFullHistory: false,
     markOnlineOnConnect: false,
     shouldSyncHistoryMessage: () => false,
+    fireInitQueries: false,
+    generateHighQualityLinkPreview: false,
   });
   let pending = Promise.resolve();
   sock.ev.on("creds.update", () => {
@@ -28,7 +37,7 @@ export async function openWhatsAppSocket() {
   };
 }
 
-export function waitForOpen(sock: WASocket, timeoutMs: number) {
+export function waitForOpen(sock: WASocket, timeoutMs = WHATSAPP_OPEN_TIMEOUT_MS) {
   return new Promise<void>((resolve, reject) => {
     const timer = setTimeout(() => {
       cleanup();

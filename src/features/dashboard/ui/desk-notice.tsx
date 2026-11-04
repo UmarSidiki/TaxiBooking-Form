@@ -31,7 +31,7 @@ export function DeskNotice({
     <div
       role={isError ? "alert" : "status"}
       className={cn(
-        "flex items-center gap-3 rounded-xl border px-4 py-3 text-sm",
+        "flex items-center gap-3 rounded border px-4 py-3 text-sm",
         isError
           ? "border-destructive/30 bg-destructive/5 text-destructive"
           : "border-border/60 bg-card text-foreground",

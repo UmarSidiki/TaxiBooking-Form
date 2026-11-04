@@ -83,7 +83,7 @@ export function RequestEmail({
           href={payUrl}
           label={payLabel ?? t("status_confirmed")}
           t={t}
-          color={brand.primaryColor}
+          color={brand.accent}
         />
       ) : null}
     </BrandLayout>

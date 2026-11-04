@@ -105,7 +105,7 @@ test("partner dashboard loads one marketplace poll and batches history reviews",
   await signIn(page, "/en/partners/login", PARTNER.email, PARTNER.password);
   await openPath(page, "/en/partners/dashboard");
   await expect(page.getByRole("heading", { name: "Dashboard" })).toBeVisible();
-  await expect(page.getByText("Sion")).toBeVisible();
+  await expect(page.getByText("Sion").first()).toBeVisible();
 
   const availableHits = requests.filter((line) => line.includes("/api/partners/rides/available"));
   expect(availableHits.length).toBe(1);
@@ -157,7 +157,7 @@ test("partner dashboard loads one marketplace poll and batches history reviews",
 test("driver ride card offers navigate and call", async ({ page }, testInfo) => {
   await signIn(page, "/en/drivers/login", "driver@e2e.example", "e2e-password");
   await openPath(page, "/en/drivers/dashboard");
-  await expect(page.getByText("Lugano Station")).toBeVisible();
+  await expect(page.getByText("Lugano Station").first()).toBeVisible();
   await expect(page.getByRole("link", { name: "Call" })).toHaveAttribute("href", "tel:+41790000000");
   await expect(page.getByRole("link", { name: "Apple Maps" })).toBeVisible();
   const shotDir = "/tmp/screenshots";
@@ -178,7 +178,7 @@ test("partner dashboard does not poll while the tab is hidden", async ({ page },
 
   await signIn(page, "/en/partners/login", PARTNER.email, PARTNER.password);
   await openPath(page, "/en/partners/dashboard");
-  await expect(page.getByText("Sion")).toBeVisible();
+  await expect(page.getByText("Sion").first()).toBeVisible();
   await expect.poll(() => hits.length).toBe(1);
 
   await page.evaluate(() => {

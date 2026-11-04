@@ -2,7 +2,11 @@
 
 import { useTranslations } from "next-intl";
 
+import { CustomPaletteEditor, DraftPaletteStyle } from "@/features/settings/ui/custom-palette-editor";
+import { PalettePicker } from "@/features/settings/ui/palette-picker";
 import AppearanceTab from "@/features/settings/ui/appearance-tab";
+import { AppearancePreview } from "@/features/settings/ui/appearance-preview";
+import { AppearanceTimezoneField } from "@/features/settings/ui/appearance-tab-timezone";
 import { InvoiceLegalCard } from "@/features/settings/ui/invoice-legal-card";
 import { PublicUrlTab } from "@/features/settings/ui/public-url-tab";
 import { useSettingsDesk } from "@/features/settings/ui/settings-desk-context";
@@ -19,30 +23,57 @@ export function SettingsPageAppearance({
 
   return (
     <div className="flex flex-col gap-6">
+      <DraftPaletteStyle value={settings.customPalette} />
       <SettingsDeskSave
         title={t("Dashboard.Settings.nav_appearance")}
         help={t("Dashboard.Settings.appearance_scope")}
       />
-      <SettingsSection
-        title={t("Dashboard.Settings.theme-and-appearance")}
-      >
-        <AppearanceTab
-          settings={settings}
-          handleColorChange={(key, value) => patch(key, value)}
-          handleBorderRadiusChange={(value) => patch("borderRadius", value)}
-          handleTimezoneChange={(value) => patch("timezone", value)}
-        />
-      </SettingsSection>
-      <SettingsSection title={t("Dashboard.Settings.public-url-title")}>
-        <PublicUrlTab
-          settings={settings}
-          detected={detectedPublicUrl}
-          onChange={(value) => patch("publicBaseUrl", value)}
-        />
-      </SettingsSection>
-      <SettingsSection title={t("Dashboard.Settings.invoice-legal")}>
-        <InvoiceLegalCard settings={settings} patch={patch} />
-      </SettingsSection>
+      <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_18rem] xl:items-start">
+        <div className="flex flex-col gap-6">
+          <SettingsSection
+            title={t("Dashboard.Settings.group-brand")}
+            description={t("Dashboard.Settings.group-brand-help")}
+          >
+            <PalettePicker
+              value={settings.colorPalette}
+              onChange={(value) => patch("colorPalette", value)}
+            />
+            {settings.colorPalette === "custom" ? (
+              <CustomPaletteEditor
+                value={settings.customPalette}
+                onChange={(value) => patch("customPalette", value)}
+              />
+            ) : null}
+            <AppearanceTab
+              settings={settings}
+              handleBorderRadiusChange={(value) => patch("borderRadius", value)}
+            />
+          </SettingsSection>
+          <SettingsSection title={t("Dashboard.Settings.group-region")}>
+            <AppearanceTimezoneField
+              value={settings.timezone || "Europe/Zurich"}
+              onChange={(value) => patch("timezone", value)}
+              label={t("Dashboard.Settings.timezone")}
+              help={t("Dashboard.Settings.timezone_help")}
+            />
+          </SettingsSection>
+          <SettingsSection title={t("Dashboard.Settings.public-url-title")}>
+            <PublicUrlTab
+              settings={settings}
+              detected={detectedPublicUrl}
+              onChange={(value) => patch("publicBaseUrl", value)}
+            />
+          </SettingsSection>
+          <SettingsSection title={t("Dashboard.Settings.invoice-legal")}>
+            <InvoiceLegalCard settings={settings} patch={patch} />
+          </SettingsSection>
+        </div>
+        <aside className="self-start xl:sticky xl:top-4 xl:order-none order-first">
+          <SettingsSection title={t("Dashboard.Settings.preview-title")}>
+            <AppearancePreview settings={settings} />
+          </SettingsSection>
+        </aside>
+      </div>
     </div>
   );
 }

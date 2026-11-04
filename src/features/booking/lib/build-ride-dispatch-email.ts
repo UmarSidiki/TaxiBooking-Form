@@ -1,4 +1,5 @@
 import type { IBooking } from '@/features/booking/model';
+import { rideLocationsOf } from '@/features/rides/lib/ride-locations';
 
 const FALLBACK_VEHICLE_DETAILS = { name: 'N/A', price: '0', seats: '4' };
 
@@ -36,6 +37,7 @@ export function buildRideDispatchEmailPayload(
     driverEmail: assignee.email,
     baseUrl: undefined,
     audience,
+    locations: rideLocationsOf(booking),
   };
 }
 

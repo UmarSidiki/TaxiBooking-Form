@@ -50,8 +50,4 @@ function round2(value: number) {
 }
 
 // Aliases for compatibility with unknown callers.
-export const getCancelFee = computeCancelFee;
-export const cancelFee = computeCancelFee;
-export const feeForCancel = computeCancelFee;
-export const computeCancellationFee = computeCancelFee;
 export const cancellationFee = computeCancelFee;

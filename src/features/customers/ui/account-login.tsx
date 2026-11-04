@@ -1,57 +1,120 @@
 "use client";
 
-import { Input } from "@/shared/ui/input";
-import { Button } from "@/shared/ui/button";
-import type { useTranslations } from "next-intl";
+import { type useTranslations } from "next-intl";
+
+import { AccountBrandPlate, AccountLoginFooter } from "./account-login-brand";
+import { AccountLoginCodeStep } from "./account-login-code-step";
+import { AccountLoginEmailStep } from "./account-login-email-step";
+import { AccountLoginWhatsAppStep } from "./account-login-whatsapp-step";
+import type { WhatsAppLogin } from "../hooks/use-whatsapp-login";
 
 type T = ReturnType<typeof useTranslations>;
 
 export function AccountLogin({
   t,
   email,
-  setEmail,
-  phone,
-  setPhone,
+  onEmailChange,
   code,
   setCode,
   phase,
+  expired,
+  noBooking,
   error,
   notice,
+  brandName,
+  logoUrl,
+  whatsapp,
   onSend,
   onVerify,
+  onUseDifferentEmail,
 }: {
   t: T;
   email: string;
-  setEmail: (v: string) => void;
-  phone: string;
-  setPhone: (v: string) => void;
+  onEmailChange: (value: string) => void;
   code: string;
-  setCode: (v: string) => void;
+  setCode: (value: string) => void;
   phase: "login" | "code";
+  expired: boolean;
+  noBooking: boolean;
   error: string | null;
   notice: string | null;
+  brandName: string;
+  logoUrl: string;
+  whatsapp: WhatsAppLogin;
   onSend: () => void;
   onVerify: () => void;
+  onUseDifferentEmail: () => void;
 }) {
+  const name = brandName.trim() || t("brand-fallback");
+  const year = new Date().getFullYear();
+
   return (
-    <div className="mx-auto flex max-w-md flex-col gap-4 p-4">
-      <h1 className="text-2xl font-semibold">{t("sign-in")}</h1>
-      <p className="text-sm text-muted-foreground">{t("sign-in-help")}</p>
-      {error ? <p role="alert" className="text-sm text-destructive">{error}</p> : null}
-      {notice ? <p role="status" className="text-sm">{notice}</p> : null}
-      <label className="text-sm" htmlFor="account-email">{t("email")}</label>
-      <Input id="account-email" className="h-11 text-base" value={email} onChange={(e) => setEmail(e.target.value)} />
-      <label className="text-sm" htmlFor="account-phone">{t("phone")}</label>
-      <Input id="account-phone" className="h-11 text-base" value={phone} onChange={(e) => setPhone(e.target.value)} />
-      {phase === "code" ? (
-        <>
-          <label className="text-sm" htmlFor="account-code">{t("code")}</label>
-          <Input id="account-code" className="h-11 text-base" value={code} onChange={(e) => setCode(e.target.value)} />
-          <Button className="h-11" type="button" onClick={onVerify}>{t("verify")}</Button>
-        </>
-      ) : (
-        <Button className="h-11" type="button" onClick={onSend}>{t("send-code")}</Button>
-      )}
-    </div>
+    <main className="riviera flex min-h-svh flex-col items-center justify-center bg-[var(--paper)] px-4 py-7 pb-10 text-[var(--ink)] sm:px-6 sm:py-12">
+      <div className="w-full max-w-[420px]">
+        <AccountBrandPlate
+          name={name}
+          tagline={t("brand-tagline")}
+          logoUrl={logoUrl}
+          className="mb-[26px]"
+        />
+
+        <div className="sm:rounded-[var(--radius)] sm:border sm:border-[var(--rule)] sm:bg-[var(--sheet)] sm:p-[30px]">
+          {whatsapp.mode === "code" ? (
+            <AccountLoginCodeStep
+              t={t}
+              recipient={whatsapp.phoneDisplay}
+              channel="whatsapp"
+              code={whatsapp.code}
+              setCode={whatsapp.setCode}
+              error={whatsapp.error}
+              notice={whatsapp.notice}
+              onVerify={whatsapp.verify}
+              onUseDifferentEmail={whatsapp.backToEmail}
+            />
+          ) : whatsapp.mode === "phone" ? (
+            <AccountLoginWhatsAppStep
+              t={t}
+              phone={whatsapp.phone}
+              callingCode={whatsapp.callingCode}
+              onPhoneChange={whatsapp.setPhone}
+              onCallingCodeChange={whatsapp.setCallingCode}
+              onSend={whatsapp.send}
+              notVerified={whatsapp.notVerified}
+              busy={whatsapp.busy}
+              error={whatsapp.error}
+              onBackToEmail={whatsapp.backToEmail}
+            />
+          ) : phase === "code" ? (
+            <AccountLoginCodeStep
+              t={t}
+              recipient={email}
+              channel="email"
+              code={code}
+              setCode={setCode}
+              error={error}
+              notice={notice}
+              onVerify={onVerify}
+              onUseDifferentEmail={onUseDifferentEmail}
+            />
+          ) : (
+            <AccountLoginEmailStep
+              t={t}
+              email={email}
+              onEmailChange={onEmailChange}
+              onSend={onSend}
+              onWhatsApp={whatsapp.open}
+              noBooking={noBooking}
+              expired={expired}
+              error={error}
+              onUseDifferentEmail={onUseDifferentEmail}
+            />
+          )}
+        </div>
+
+        <AccountLoginFooter
+          text={t("copyright", { year, name })}
+        />
+      </div>
+    </main>
   );
 }

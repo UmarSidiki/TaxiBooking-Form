@@ -112,6 +112,32 @@ describe("notification registry", () => {
     expect(readWhatsAppOutbox().at(-1)?.text).toBe("Perso T9");
   });
 
+  it("passes booking-scoped idempotency keys to the sender", async () => {
+    await NotificationSetting.create({
+      event: "booking_confirmed",
+      channel: "whatsapp",
+      audience: "customer",
+      enabled: true,
+      templates: {},
+    });
+    let captured: { idempotencyKeys?: Array<string | undefined> } | undefined;
+    await notify(
+      "booking_confirmed",
+      { ...contextFor("booking_confirmed"), bookingId: "booking-1" },
+      {
+        linked: async () => true,
+        send: async (messages, options) => {
+          captured = options;
+          return {
+            ok: true,
+            results: messages.map((message) => ({ jid: message.jid, ok: true })),
+          };
+        },
+      },
+    );
+    expect(captured?.idempotencyKeys?.[0]).toMatch(/^booking_confirmed:booking-1:/);
+  });
+
   it("does not message a customer who has not opted in to WhatsApp", async () => {
     await NotificationSetting.create({
       event: "booking_cancelled",

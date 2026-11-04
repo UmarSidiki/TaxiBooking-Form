@@ -41,6 +41,7 @@ function withModuleDefaults(data: Partial<ISetting>): Partial<ISetting> {
     enableAppointmentRequest: data.enableAppointmentRequest ?? false,
     enableEmbeddableForm: data.enableEmbeddableForm ?? false,
     enableFormBuilder: data.enableFormBuilder ?? false,
+    enableMarketing: data.enableMarketing ?? true,
     promoCodesEnabled: data.promoCodesEnabled ?? true,
     partnerCashSettlement: data.partnerCashSettlement ?? "keep_cash",
     dispatchAssigneeMode: data.dispatchAssigneeMode ?? "exclusive",
@@ -154,4 +155,9 @@ export function useSettingsDesk() {
     throw new Error("useSettingsDesk must be used inside SettingsDeskProvider");
   }
   return value;
+}
+
+/** Same as useSettingsDesk, but returns null outside the admin desk (driver and partner portals). */
+export function useOptionalSettingsDesk() {
+  return useContext(SettingsDeskContext);
 }

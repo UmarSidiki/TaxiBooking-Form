@@ -7,11 +7,21 @@ export function setPortalMoneyFormat(next: { currency?: string | null; locale?: 
   if (next.locale) locale = next.locale;
 }
 
-export function formatPortalMoney(amount?: number | null): string {
+/** Server-render safe: callers pass the operator currency and active locale. */
+export function formatMoney(
+  amount: number | null | undefined,
+  nextLocale: string,
+  nextCurrency?: string | null,
+): string {
   if (typeof amount !== "number" || !Number.isFinite(amount)) return "—";
+  const code = (nextCurrency || "EUR").toUpperCase();
   try {
-    return new Intl.NumberFormat(locale, { style: "currency", currency }).format(amount);
+    return new Intl.NumberFormat(nextLocale, { style: "currency", currency: code }).format(amount);
   } catch {
-    return `${currency} ${amount.toFixed(2)}`;
+    return `${code} ${amount.toFixed(2)}`;
   }
+}
+
+export function formatPortalMoney(amount?: number | null): string {
+  return formatMoney(amount, locale, currency);
 }

@@ -7,6 +7,8 @@ import {
   writeWhatsAppToggleFlags,
 } from "@/features/notifications/lib/legacy-whatsapp-toggles";
 
+export const maxDuration = 30;
+
 const flag = z.boolean();
 const schema = z.object({
   whatsappTplAssigned: flag,

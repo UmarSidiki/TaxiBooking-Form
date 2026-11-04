@@ -1,9 +1,8 @@
 "use client";
 
-import { Button } from "@/shared/ui/button";
+import { Segmented } from "@/shared/ui/riviera/segmented";
 import { Input } from "@/shared/ui/input";
 import type { FormData } from "@/features/booking/context/booking-form-context";
-import { Clock } from "lucide-react";
 import type { useTranslations } from "next-intl";
 
 type TFn = ReturnType<typeof useTranslations>;
@@ -26,8 +25,7 @@ export function Step1DurationTripTypeFields({
           {/* Duration - Only for hourly bookings */}
           {formData.bookingType === "hourly" && (
             <div>
-              <label className="block text-sm font-medium mb-1.5 text-gray-700">
-                <Clock className="inline h-4 w-4 mr-1" />
+              <label className="block text-sm font-medium mb-1.5 text-[color:var(--ink)]">
                 {t("Step1.Duration")} *
               </label>
               <Input
@@ -35,13 +33,13 @@ export function Step1DurationTripTypeFields({
                 min="1"
                 step="1"
                 placeholder="2"
-                className="focus:border-primary-500 focus:ring-primary-500"
+                className="focus:border-[var(--ink)]-500 focus:ring-primary-500"
                 value={formData.duration}
                 onChange={(e) => {
                   handleInputChange("duration", parseInt(e.target.value) || 1);
                 }}
               />
-              <p className="text-xs text-gray-500 mt-1">
+              <p className="text-xs text-[color:var(--ink2)] mt-1">
                 {t("Step1.DurationDescription")}
               </p>
             </div>
@@ -50,45 +48,23 @@ export function Step1DurationTripTypeFields({
           {/* Trip Type - Only for destination-based bookings */}
           {formData.bookingType === "destination" && (
             <div>
-              <label className="block text-sm font-medium mb-1.5 text-gray-700">
-                Trip Type
+              <label className="step1__seg-label block text-sm font-medium mb-1.5 text-[color:var(--ink)]">
+                {t("Step1.TripType")}
               </label>
-              <div className="grid grid-cols-2 gap-2">
-                <Button
-                  type="button"
-                  onClick={() => {
-                    handleTripTypeChange("oneway");
-                    if (formData.pickup && formData.dropoff) {
-                      handleInputBlur("pickup");
-                    }
-                  }}
-                  variant="outline"
-                  className={`${
-                    formData.tripType === "oneway"
-                      ? "bg-primary text-primary-foreground border-primary hover:bg-primary/90"
-                      : "bg-white hover:bg-gray-50"
-                  }`}
-                >
-                  {t("Step1.OneWay")}
-                </Button>
-                <Button
-                  type="button"
-                  onClick={() => {
-                    handleTripTypeChange("roundtrip");
-                    if (formData.pickup && formData.dropoff) {
-                      handleInputBlur("pickup");
-                    }
-                  }}
-                  variant="outline"
-                  className={`${
-                    formData.tripType === "roundtrip"
-                      ? "bg-primary text-primary-foreground border-primary hover:bg-primary/90"
-                      : "bg-white hover:bg-gray-50"
-                  }`}
-                >
-                  {t("Step1.RoundTrip")}
-                </Button>
-              </div>
+              <Segmented
+                label={t("Step1.TripType")}
+                value={formData.tripType}
+                options={[
+                  { value: "oneway", label: t("Step1.OneWay") },
+                  { value: "roundtrip", label: t("Step1.RoundTrip") },
+                ]}
+                onChange={(type) => {
+                  handleTripTypeChange(type);
+                  if (formData.pickup && formData.dropoff) {
+                    handleInputBlur("pickup");
+                  }
+                }}
+              />
             </div>
           )}
     </>

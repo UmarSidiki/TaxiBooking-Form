@@ -10,6 +10,7 @@ export interface IWhatsAppConfig {
   quietHours: { enabled: boolean; startHour: number; endHour: number };
   requireOptIn: boolean;
   sendRateLimit: number;
+  dailyCap: number;
 }
 
 const WhatsAppConfigSchema = new Schema<IWhatsAppConfig>(
@@ -26,6 +27,7 @@ const WhatsAppConfigSchema = new Schema<IWhatsAppConfig>(
     },
     requireOptIn: { type: Boolean, default: true },
     sendRateLimit: { type: Number, default: 0, min: 0, max: 120 },
+    dailyCap: { type: Number, default: 300, min: 0, max: 2000 },
   },
   { timestamps: true }
 );

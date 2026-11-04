@@ -11,7 +11,7 @@ export function clearPromoAvailabilityCache() {
 }
 
 /** Promos a customer may use right now: active-ish, unexpired, under the cap. */
-export function activePromoFilter(now = new Date()) {
+function activePromoFilter(now = new Date()) {
   return {
     active: { $ne: false },
     $and: [

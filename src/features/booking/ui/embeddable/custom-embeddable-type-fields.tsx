@@ -39,7 +39,7 @@ export function createTypeFieldRenderers(ctx: Ctx) {
     <div key={field.id}>
       {hasBorder ? (
         <div
-          className="flex rounded-lg border p-1 text-xs sm:text-sm font-medium mb-3"
+          className="flex rounded border p-1 text-xs sm:text-sm font-medium mb-3"
           style={{
             backgroundColor: `${style.inputBorderColor}40`,
             borderColor: style.inputBorderColor,
@@ -150,7 +150,7 @@ export function createTypeFieldRenderers(ctx: Ctx) {
     <div key={field.id}>
       {hasBorder ? (
         <div
-          className="flex rounded-lg border p-1 text-xs sm:text-sm font-medium"
+          className="flex rounded border p-1 text-xs sm:text-sm font-medium"
           style={{
             backgroundColor: `${style.inputBorderColor}60`,
             borderColor: style.inputBorderColor,

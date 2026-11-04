@@ -1,11 +1,8 @@
-"use client";
-
+/** Embeds read the operator's palette tokens (riviera-palettes.css) from the first paint. */
 export default function EmbeddableLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  // Embeddable forms are always accessible
-  // Feature flag only controls sidebar visibility
-  return <>{children}</>;
+  return <div className="riviera-embed">{children}</div>;
 }

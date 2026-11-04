@@ -1,4 +1,5 @@
 import { Booking } from "@/features/booking/model";
+import { createBookingDocument } from "@/features/booking/lib/booking.repo";
 import { Vehicle } from "@/features/fleet/model";
 import { priceServerBooking } from "@/features/pricing/lib/price-server-booking";
 import { fetchRouteDistanceKm } from "@/features/payments/lib/fare/route-distance";
@@ -41,7 +42,7 @@ export async function generateDueRecurring(now = new Date()) {
     });
     if (!priced.ok || priced.quote.total <= 0) continue;
     const quote = priced.quote;
-    await Booking.create({
+    await createBookingDocument({
       tripId: generateTripId(),
       pickup: rule.pickup,
       dropoff: rule.dropoff,

@@ -10,6 +10,7 @@ const CONTACT_FIELDS = [
   "lastName",
   "email",
   "phone",
+  "whatsappOptIn",
   "notes",
   "flightNumber",
 ] as const;

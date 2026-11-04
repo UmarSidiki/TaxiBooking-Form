@@ -3,16 +3,19 @@ import mongoose, { Schema } from "mongoose";
 const CustomerOtpSchema = new Schema(
   {
     email: { type: String, required: true, index: true },
+    /** Verified digits for WhatsApp sign-in sends; empty for email-only rows. */
     phone: { type: String, default: "" },
-    codeHash: { type: String, required: true },
+    codeHash: { type: String },
     expiresAt: { type: Date, required: true },
     attempts: { type: Number, default: 0 },
     sentAt: { type: Date, default: Date.now },
+    consumedAt: { type: Date, default: null },
   },
   { timestamps: false },
 );
 
 CustomerOtpSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 });
+CustomerOtpSchema.index({ phone: 1, sentAt: -1 });
 
 const CustomerOtp = mongoose.models.CustomerOtp || mongoose.model("CustomerOtp", CustomerOtpSchema);
 

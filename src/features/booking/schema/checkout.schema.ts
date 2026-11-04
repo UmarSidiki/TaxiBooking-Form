@@ -1,9 +1,9 @@
 import { z } from "zod";
-import { cashBookingStopSchema } from "@/features/booking/schema/cash-booking.schema";
+import { cashBookingStopSchema, latLngSchema } from "@/features/booking/schema/cash-booking.schema";
 
 const MAX_SEATS = 10;
 
-export const pendingBookingDataSchema = z.object({
+const pendingBookingDataSchema = z.object({
   firstName: z.string().optional(),
   lastName: z.string().optional(),
   email: z.string().optional(),
@@ -22,7 +22,9 @@ export const pendingBookingUpdateSchema = z.object({
 export const checkoutBookingDataSchema = z.object({
   bookingType: z.enum(["destination", "hourly"]).optional(),
   pickup: z.string().optional(),
+  pickupLatLng: latLngSchema.nullish(),
   dropoff: z.string().optional(),
+  dropoffLatLng: latLngSchema.nullish(),
   stops: z.array(cashBookingStopSchema).optional(),
   tripType: z.enum(["oneway", "roundtrip"]).optional(),
   duration: z.number().optional(),

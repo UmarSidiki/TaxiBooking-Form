@@ -22,7 +22,7 @@ export async function GET() {
     })
       .sort({ date: 1, time: 1 })
       .select(
-        "tripId pickup dropoff stops date time returnDate returnTime tripType passengers childSeats babySeats flightNumber notes firstName lastName email phone vehicleDetails selectedVehicle totalAmount partnerPayoutAmount status paymentStatus paymentMethod refundAmount refundPercentage canceledAt",
+        "tripId pickup pickupLatLng dropoff dropoffLatLng stops bookingType date time returnDate returnTime tripType passengers childSeats babySeats flightNumber notes firstName lastName email phone vehicleDetails selectedVehicle totalAmount partnerPayoutAmount status paymentStatus paymentMethod refundAmount refundPercentage canceledAt",
       )
       .limit(500)
       .lean();

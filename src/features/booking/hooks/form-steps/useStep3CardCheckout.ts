@@ -2,7 +2,6 @@
 
 import { resolvePostBookingRedirect } from "@/features/payments/lib/resolve-post-booking-redirect";
 import { clearDraftId } from "@/features/booking/lib/draft-id";
-import { shouldOpenCardSession } from "@/features/payments/lib/checkout/should-open-card-session";
 import { apiErrorMessage } from "@/shared/lib/api-error-copy";
 import { ApiError } from "@/shared/http/api";
 import {
@@ -26,7 +25,10 @@ type CardCheckoutOptions = {
   resetForm: () => void;
   setIsLoading: (loading: boolean) => void;
   stripeConfig: { enabled: boolean; publishableKey: string | null };
-  selectedPaymentMethod: string;
+  /** True when this session should collect an online amount for the current method. */
+  openSession: boolean;
+  /** Which deposit rule the session endpoint should price with. */
+  sessionPaymentMethod: "card" | "cash" | "appointment";
   clientSecret: string | null;
   setClientSecret: Dispatch<SetStateAction<string | null>>;
   stripeOrderId: string | null;
@@ -50,7 +52,8 @@ export function useStep3CardCheckout({
   resetForm,
   setIsLoading,
   stripeConfig,
-  selectedPaymentMethod,
+  openSession,
+  sessionPaymentMethod,
   clientSecret,
   setClientSecret,
   stripeOrderId,
@@ -66,6 +69,13 @@ export function useStep3CardCheckout({
 }: CardCheckoutOptions) {
   /** Total baked into the current PaymentIntent — used to detect stale intents. */
   const intentTotalRef = useRef<number | null>(null);
+  /** Latest success handler, kept in a ref to keep createPaymentIntent stable. */
+  const handleSuccessRef = useRef<((id: string) => Promise<void>) | null>(null);
+  /** Retry counter for in-flight (processing) intents. */
+  const processingRetriesRef = useRef(0);
+  const processingTimerRef = useRef<number | null>(null);
+  /** Payment method the current session was created for. */
+  const sessionMethodRef = useRef(sessionPaymentMethod);
 
   const createPaymentIntent = useCallback(async () => {
     if (!stripeConfig.publishableKey || creatingPaymentIntent || !quoteReady || dueNow <= 0) {
@@ -81,6 +91,7 @@ export function useStep3CardCheckout({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           draftId,
+          paymentMethod: sessionPaymentMethod,
           customerEmail: formData.email,
           customerName: `${formData.firstName} ${formData.lastName}`.trim(),
           description: `Booking from ${formData.pickup || "pickup"} to ${formData.dropoff || "dropoff"}`,
@@ -117,7 +128,32 @@ export function useStep3CardCheckout({
 
       const data = await response.json();
 
-      if (data.success && data.clientSecret) {
+      if (data.success && (data.status === "succeeded" || data.status === "processing")) {
+        // Terminal / in-flight intent: never mount Elements against it.
+        intentTotalRef.current = dueNow;
+        setClientSecret(null);
+        setStripeOrderId(data.orderId || null);
+        setPaymentError(null);
+        setPaymentInitialized(true);
+        if (data.status === "succeeded" && data.paymentIntentId) {
+          processingRetriesRef.current = 0;
+          const run = handleSuccessRef.current;
+          if (run) void run(data.paymentIntentId);
+        } else if (data.status === "processing") {
+          // Wait for the webhook/finalization to land, then re-check.
+          if (processingRetriesRef.current < 5) {
+            processingRetriesRef.current += 1;
+            if (processingTimerRef.current) {
+              window.clearTimeout(processingTimerRef.current);
+            }
+            processingTimerRef.current = window.setTimeout(() => {
+              processingTimerRef.current = null;
+              void createPaymentIntent();
+            }, 3000);
+          }
+        }
+      } else if (data.success && data.clientSecret) {
+        processingRetriesRef.current = 0;
         intentTotalRef.current = dueNow;
         setClientSecret(data.clientSecret);
         setStripeOrderId(data.orderId || null);
@@ -142,6 +178,7 @@ export function useStep3CardCheckout({
     locale,
     t,
     draftId,
+    sessionPaymentMethod,
     setClientSecret,
     setStripeOrderId,
     setPaymentError,
@@ -158,24 +195,56 @@ export function useStep3CardCheckout({
     void createPaymentIntent();
   }, [dueNow, creatingPaymentIntent, createPaymentIntent]);
 
-  // No PaymentIntent exists until the visitor explicitly picks the card method.
+  // Changing the method (card ↔ cash ↔ appointment) abandons the old session.
   useEffect(() => {
-    const open = shouldOpenCardSession({
-      method: selectedPaymentMethod,
-      appointmentOnly: Boolean(settings?.enableAppointmentRequest),
-      enabled: stripeConfig.enabled,
-      quoteReady,
-      dueNow,
-      hasSecret: Boolean(clientSecret),
-      creating: creatingPaymentIntent,
-      initialized: paymentInitialized,
-    });
-    if (!open) return;
+    if (sessionMethodRef.current === sessionPaymentMethod) return;
+    sessionMethodRef.current = sessionPaymentMethod;
+    const hadSession = Boolean(clientSecret) || paymentInitialized;
+    intentTotalRef.current = null;
+    processingRetriesRef.current = 0;
+    setPaymentInitialized(false);
+    setClientSecret(null);
+    setStripeOrderId(null);
+    // When the next method also needs a session, the new session overwrites the
+    // pending draft; cancelling would race and could abandon it. Only cancel
+    // when the switch leaves an online session unused.
+    if (hadSession && !openSession) {
+      void fetch("/api/checkout/cancel", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ draftId }),
+        keepalive: true,
+      }).catch(() => undefined);
+    }
+  }, [
+    sessionPaymentMethod,
+    openSession,
+    clientSecret,
+    paymentInitialized,
+    draftId,
+    setClientSecret,
+    setStripeOrderId,
+    setPaymentInitialized,
+  ]);
+
+  useEffect(
+    () => () => {
+      if (processingTimerRef.current) {
+        window.clearTimeout(processingTimerRef.current);
+      }
+    },
+    [],
+  );
+
+  // No PaymentIntent exists until the visitor picks a method that needs one.
+  useEffect(() => {
+    if (!openSession) return;
+    if (clientSecret || creatingPaymentIntent || paymentInitialized) return;
+    if (!stripeConfig.publishableKey || !quoteReady || dueNow <= 0) return;
     void createPaymentIntent();
   }, [
-    settings?.enableAppointmentRequest,
-    selectedPaymentMethod,
-    stripeConfig.enabled,
+    openSession,
+    stripeConfig.publishableKey,
     dueNow,
     quoteReady,
     clientSecret,
@@ -184,9 +253,9 @@ export function useStep3CardCheckout({
     createPaymentIntent,
   ]);
 
-  // Switching away from card abandons the server-side PaymentIntent.
+  // Switching to a method that needs no online session abandons the PI.
   useEffect(() => {
-    if (selectedPaymentMethod === "card") return;
+    if (openSession) return;
     if (!clientSecret && !paymentInitialized) return;
     intentTotalRef.current = null;
     setPaymentInitialized(false);
@@ -199,7 +268,7 @@ export function useStep3CardCheckout({
       keepalive: true,
     }).catch(() => undefined);
   }, [
-    selectedPaymentMethod,
+    openSession,
     clientSecret,
     paymentInitialized,
     draftId,
@@ -223,6 +292,12 @@ export function useStep3CardCheckout({
 
   const handleStripePaymentSuccess = async (paymentIntentId: string) => {
     setIsLoading(true);
+    const thankYouMethod =
+      sessionPaymentMethod === "cash"
+        ? "cash"
+        : sessionPaymentMethod === "appointment"
+          ? "request"
+          : "stripe";
     try {
       const { ensurePaymentFinalized } = await import("@/features/payments/lib/complete-payment");
       await ensurePaymentFinalized({
@@ -231,7 +306,7 @@ export function useStep3CardCheckout({
         orderId: stripeOrderId || undefined,
       });
 
-      const query = new URLSearchParams({ method: "stripe", draftId });
+      const query = new URLSearchParams({ method: thankYouMethod, draftId });
       if (stripeOrderId) query.set("tripId", stripeOrderId);
       const target = resolvePostBookingRedirect(
         settings,
@@ -243,7 +318,7 @@ export function useStep3CardCheckout({
       clearDraftId();
     } catch (error) {
       console.error("Post-payment error:", error);
-      const query = new URLSearchParams({ method: "stripe", draftId });
+      const query = new URLSearchParams({ method: thankYouMethod, draftId });
       const fallback = resolvePostBookingRedirect(
         settings,
         `/${locale}/thank-you?${query.toString()}`
@@ -256,12 +331,15 @@ export function useStep3CardCheckout({
     }
   };
 
+  handleSuccessRef.current = handleStripePaymentSuccess;
+
   const handleStripePaymentError = (error: string) => {
     setPaymentError(t("Step3.payment-failed-error", { 0: error }));
   };
 
   const retryStripePayment = () => {
     intentTotalRef.current = null;
+    processingRetriesRef.current = 0;
     setPaymentError(null);
     setPaymentInitialized(false);
     setClientSecret(null);

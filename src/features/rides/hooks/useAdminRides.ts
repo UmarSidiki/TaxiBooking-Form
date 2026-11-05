@@ -185,6 +185,7 @@ export function useAdminRides() {
       const data = await apiPatch<{
         success: boolean;
         message: string;
+        warning?: string;
         data: IBooking;
       }>(`/api/bookings/${selectedBooking._id}`, {
         action: "cancel",
@@ -202,6 +203,7 @@ export function useAdminRides() {
         );
         setShowCancelDialog(false);
         setSelectedBooking(null);
+        if (data.warning) setNotice(data.warning);
       } else {
         setNotice(`${t("Dashboard.Rides.CancelError")}: ${data.message}`);
       }
@@ -435,6 +437,7 @@ export function useAdminRides() {
       const data = await apiPatch<{
         success: boolean;
         message: string;
+        warning?: string;
         data: IBooking;
       }>(`/api/bookings/${bookingId}`, {
         action: "decline",
@@ -444,7 +447,7 @@ export function useAdminRides() {
         setBookings((prev) =>
           prev.map((b) => (b._id?.toString() === bookingId ? data.data : b))
         );
-        setNotice(t("Dashboard.Rides.request-declined"));
+        setNotice(data.warning ?? t("Dashboard.Rides.request-declined"));
         return true;
       }
       setNotice(data.message || t("Dashboard.Rides.decline-failed"));
@@ -458,11 +461,15 @@ export function useAdminRides() {
   };
 
   const canRefund = (booking: IBooking) => {
+    if (booking.status === "canceled") return false;
+    const refundableDeposit =
+      (Number(booking.depositPaidCents) || 0) -
+      (Number(booking.amountRefundedCents) || 0);
+    if (refundableDeposit > 0) return true;
     return (
       booking.paymentStatus === "completed" &&
-      booking.paymentMethod &&
-      ["stripe", "bank_transfer"].includes(booking.paymentMethod) &&
-      booking.status !== "canceled"
+      Boolean(booking.paymentMethod) &&
+      ["stripe", "bank_transfer"].includes(booking.paymentMethod ?? "")
     );
   };
 

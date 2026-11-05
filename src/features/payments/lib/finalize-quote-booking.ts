@@ -85,7 +85,9 @@ export async function finalizeQuoteBooking(input: {
   }
 
   const quoted = Number(booking.quotedAmount ?? booking.totalAmount ?? 0);
-  if (quoted > 0 && input.paidAmount + 0.05 < quoted) {
+  const depositPaid = Math.max(0, Number(booking.depositPaidCents) || 0) / 100;
+  const payable = Math.max(0, Number((quoted - depositPaid).toFixed(2)));
+  if (payable > 0 && input.paidAmount + 0.05 < payable) {
     if (input.provider === "stripe" && input.stripePaymentIntentId) {
       const refund = await refundQuotePaymentIntent(
         input.stripePaymentIntentId
@@ -108,7 +110,7 @@ export async function finalizeQuoteBooking(input: {
     }
     // No automatic refund path exists for MultiSafepay, so record the shortfall
     // for manual reconciliation rather than leaving taken money invisible.
-    const shortfall = Number((quoted - input.paidAmount).toFixed(2));
+    const shortfall = Number((payable - input.paidAmount).toFixed(2));
     await updateBookingFields(String(booking._id), {
       paymentMismatchAmount: shortfall,
     });
@@ -133,6 +135,10 @@ export async function finalizeQuoteBooking(input: {
     paymentStatus: "completed",
     paymentMethod: input.provider,
     totalAmount: quoted || input.paidAmount,
+    balanceDue: 0,
+    amountPaidCents:
+      (Number(booking.amountPaidCents) || 0) +
+      Math.round(input.paidAmount * 100),
     ...(input.stripePaymentIntentId
       ? { stripePaymentIntentId: input.stripePaymentIntentId }
       : {}),

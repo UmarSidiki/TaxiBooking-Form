@@ -89,11 +89,21 @@ export async function createAppointmentRequest(
     distanceKm,
     tax: settings ?? {},
     redeem: true,
+    paymentMethod: "appointment",
   });
   if (!serverPrice.ok) {
     return { ok: false, status: 400, message: serverPrice.error };
   }
   const priced = serverPrice.quote;
+
+  // A request with a required online deposit must be created by the payment
+  // finalizer, never by this direct (unpaid) path.
+  if (
+    serverPrice.depositConfig.appointment.enabled &&
+    serverPrice.depositConfig.appointment.percent > 0
+  ) {
+    return { ok: false, status: 400, message: "payment_required" };
+  }
 
   // Never store a destination fare that silently ignored the route distance.
   if (

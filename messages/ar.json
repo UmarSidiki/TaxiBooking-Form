@@ -221,7 +221,13 @@
     "promo-code": "رمز ترويجي",
     "due-now": "المستحق الآن",
     "balance-due": "المتبقي",
-    "complete-contact-details-to-continue": "أكمل بيانات الاتصال للمتابعة."
+    "complete-contact-details-to-continue": "أكمل بيانات الاتصال للمتابعة.",
+    "pay-deposit-to-confirm": "ادفع الدفعة المقدمة للتأكيد",
+    "due-now-online": "المستحق الآن عبر الإنترنت",
+    "deposit-rest-cash": "الباقي نقدًا للسائق",
+    "deposit-credited-to-quote": "يُخصم من العرض النهائي",
+    "pay-deposit-online": "ادفع الدفعة المقدمة عبر الإنترنت",
+    "online-payment-not-configured": "الدفع عبر الإنترنت غير مهيأ. تواصل مع المشغّل."
   },
   "booking-failed-data-message": "فشل الحجز: {0}",
   "embeddable": {
@@ -534,7 +540,12 @@
       "col-customer": "العميل",
       "col-price": "السعر",
       "col-status": "الحالة",
-      "col-actions": "الإجراءات"
+      "col-actions": "الإجراءات",
+      "DepositDue": "الدفعة المقدمة المستحقة",
+      "BalanceDue": "الرصيد المستحق",
+      "RefundableDeposit": "دفعة مقدمة قابلة للاسترداد",
+      "OnlineDepositPaid": "تم دفع الدفعة المقدمة عبر الإنترنت",
+      "deposit-refund-on-decline": "ستُسترد الدفعة المقدمة عبر الإنترنت البالغة {amount} تلقائيًا عند الرفض أو الإلغاء."
     },
     "Home": {
       "failed-to-fetch-dashboard-stats": "فشل جلب إحصائيات لوحة التحكم",
@@ -1819,7 +1830,12 @@
       "notes-placeholder": "ستظهر ملاحظات المشرف هنا في إصدار لاحق.",
       "activity-placeholder": "سيظهر سجل التدقيق هنا في إصدار لاحق.",
       "sessions-count": "{count} جلسة",
-      "status-paid": "مدفوعة"
+      "status-paid": "مدفوعة",
+      "balance-due": "الرصيد المستحق",
+      "notify-pay": "تنبيه للدفع",
+      "notified": "تم التنبيه",
+      "notify-failed": "تعذّر التنبيه",
+      "amount-due": "المبلغ المستحق"
     },
     "CustomerNotes": {
       "loading": "جارٍ تحميل الملاحظات…",
@@ -2754,7 +2770,8 @@
     "distance_failed": "تعذر حساب المسار. راجع العناوين.",
     "country_blocked": "الحجوزات غير متاحة من موقعك.",
     "outside_service_area": "هذا العنوان خارج منطقة الخدمة الخاصة بنا.",
-    "location_required": "اختر كل عنوان من الاقتراحات."
+    "location_required": "اختر كل عنوان من الاقتراحات.",
+    "payment_required": "الدفع مطلوب قبل تأكيد هذا الحجز."
   },
   "Pay": {
     "by-appointment": "بالموعد",
@@ -2923,7 +2940,15 @@
     "extra-price-each": "السعر لكل مقعد",
     "payment-title": "الدفع",
     "example-child-seat": "مقعد طفل واحد",
-    "remove": "إزالة"
+    "remove": "إزالة",
+    "cash-deposit": "دفعة نقدية مقدمة",
+    "cash-deposit-percent": "نسبة الدفعة النقدية المقدمة",
+    "cash-deposit-help": "تُحصَّل عبر الإنترنت قبل تأكيد الرحلة؛ ويُدفع الباقي نقدًا للسائق.",
+    "appointment-deposit": "دفعة مقدمة للطلب",
+    "appointment-deposit-percent": "نسبة الدفعة المقدمة للطلب",
+    "appointment-deposit-help": "تُحصَّل عبر الإنترنت مع الطلب وتُخصم من العرض النهائي.",
+    "example-cash-deposit": "رحلات النقد: {percent}% عبر الإنترنت أولًا، والباقي نقدًا للسائق.",
+    "example-appointment-deposit": "طلبات المواعيد: {percent}% عبر الإنترنت، تُخصم من العرض النهائي."
   },
   "Account": {
     "title": "رحلاتك",
@@ -3168,7 +3193,9 @@
     "verified": "موثّق",
     "whatsapp-card-copy": "سجّل الدخول برمز واتساب واستلم إشعارات الرحلات هناك.",
     "whatsapp-code": "رمز واتساب",
-    "whatsapp-code-off": "أضف رقمًا ووثّقه لتسجيل الدخول عبر واتساب."
+    "whatsapp-code-off": "أضف رقمًا ووثّقه لتسجيل الدخول عبر واتساب.",
+    "balance-due": "الرصيد المستحق",
+    "cash-to-driver": "نقدًا للسائق"
   },
   "Emails": {
     "brand_fallback": "الحجز",

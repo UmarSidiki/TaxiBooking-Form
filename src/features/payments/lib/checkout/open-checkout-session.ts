@@ -24,14 +24,22 @@ function intentMetadata(input: {
   draftId: string;
   email?: string;
   name?: string;
+  purpose: string;
 }) {
   return {
     service: "booking",
+    purpose: input.purpose,
     order_id: input.orderId,
     draft_id: input.draftId,
     ...(input.email ? { customer_email: input.email } : {}),
     ...(input.name ? { customer_name: input.name } : {}),
   };
+}
+
+function purposeFor(method: "card" | "cash" | "appointment") {
+  if (method === "cash") return "cash_deposit" as const;
+  if (method === "appointment") return "appointment_deposit" as const;
+  return "booking" as const;
 }
 
 function createParams(input: {
@@ -69,6 +77,10 @@ export async function openCheckoutSession(
   await connectDB();
 
   const { draftId, bookingData } = input;
+  const depositMethod = input.paymentMethod ?? "card";
+  const purpose = purposeFor(depositMethod);
+  const pendingMethod =
+    depositMethod === "cash" ? "cash" : depositMethod === "appointment" ? "unpaid" : "stripe";
   const settings = await Setting.findOne();
   const stripe = await getStripeClient();
   if (!stripe) {
@@ -112,6 +124,7 @@ export async function openCheckoutSession(
     distanceKm,
     tax: settings || {},
     redeem: true,
+    paymentMethod: depositMethod,
   });
   if (!serverPrice.ok) {
     return { ok: false, response: jsonError(serverPrice.error, 400) };
@@ -137,7 +150,7 @@ export async function openCheckoutSession(
   const amountCents = Math.round(priced.chargeAmount * 100);
   const currency = (settings?.stripeCurrency || DEFAULT_STRIPE_CURRENCY).toLowerCase();
   const descriptor = settings?.stripeStatementDescriptor || "BOOKING";
-  const metadata = intentMetadata({ orderId, draftId, email, name });
+  const metadata = intentMetadata({ orderId, draftId, email, name, purpose });
 
   let intent: Stripe.PaymentIntent | null = null;
 
@@ -146,7 +159,17 @@ export async function openCheckoutSession(
       const current = await stripe.paymentIntents.retrieve(
         existing.stripePaymentIntentId
       );
-      if (isReusableIntent(current)) {
+      const samePurpose =
+        !current.metadata?.purpose || current.metadata.purpose === purpose;
+      // Terminal intents (succeeded/processing) must never be handed back to
+      // Elements ("terminal state" error) and must never be replaced by a new
+      // PI (double-charge risk). Return them as-is so the client can finalize
+      // or wait instead of re-collecting.
+      if (!samePurpose) {
+        intent = null;
+      } else if (current.status === "succeeded" || current.status === "processing") {
+        intent = current;
+      } else if (isReusableIntent(current)) {
         if (
           current.status === "requires_payment_method" &&
           current.amount !== amountCents
@@ -168,7 +191,7 @@ export async function openCheckoutSession(
   }
 
   if (!intent) {
-    const key = `pi_${draftId}_${amountCents}`;
+    const key = `pi_${purpose}_${draftId}_${amountCents}`;
     intent = await stripe.paymentIntents.create(
       createParams({
         amountCents,
@@ -206,13 +229,18 @@ export async function openCheckoutSession(
     intent,
     bookingData,
     priced,
+    paymentMethod: pendingMethod,
+    purpose,
   });
 
   void registerPaymentMethodDomain(stripe, request);
 
+  const terminal =
+    intent.status === "succeeded" || intent.status === "processing";
   return {
     ok: true,
-    clientSecret: intent.client_secret ?? "",
+    // Terminal intents must not be used to initialize Elements.
+    clientSecret: terminal ? "" : (intent.client_secret ?? ""),
     paymentIntentId: intent.id,
     orderId,
     amount: intent.amount / 100,

@@ -2,6 +2,8 @@ import { Schema, model, models } from "mongoose";
 
 export type PendingBookingStatus = "open" | "paid" | "abandoned";
 
+export type PendingBookingPurpose = "booking" | "cash_deposit" | "appointment_deposit";
+
 export interface IPendingBooking {
   _id?: string;
   orderId: string;
@@ -48,6 +50,7 @@ export interface IPendingBooking {
     meetAndGreet?: boolean;
   };
   paymentMethod: string;
+  purpose?: PendingBookingPurpose;
   stripePaymentIntentId?: string;
   status: PendingBookingStatus;
   expectedAmount?: number;
@@ -65,6 +68,11 @@ const PendingBookingSchema = new Schema<IPendingBooking>(
       required: true,
     },
     paymentMethod: { type: String, required: true },
+    purpose: {
+      type: String,
+      enum: ["booking", "cash_deposit", "appointment_deposit"],
+      default: "booking",
+    },
     stripePaymentIntentId: { type: String, index: true },
     status: {
       type: String,

@@ -113,6 +113,27 @@ export async function finalizePaidBooking(
   if (existingBooking) {
     const baseUrl = input.baseUrl || (await resolvePublicUrl()) || undefined;
 
+    // A paid deposit is an idempotent success on retries and must never be
+    // mistaken for the quote-balance payment.
+    const depositMatch =
+      (Boolean(input.paymentIntentId) &&
+        existingBooking.depositPaymentIntentId === input.paymentIntentId) ||
+      (Boolean(input.orderId) &&
+        existingBooking.multisafepayOrderId === input.orderId);
+    if (
+      existingBooking.paymentStatus === 'completed' &&
+      Number(existingBooking.depositPaidCents) > 0 &&
+      depositMatch
+    ) {
+      return {
+        success: true,
+        tripId: existingBooking.tripId,
+        bookingId: existingBooking._id.toString(),
+        alreadyExisted: true,
+        emails: { confirmationSent: false, adminSent: false },
+      };
+    }
+
     if (existingBooking.status === 'awaiting_payment') {
       const { finalizeQuoteBooking } = await import(
         '@/features/payments/lib/finalize-quote-booking'
@@ -138,9 +159,23 @@ export async function finalizePaidBooking(
       };
     }
 
+    // A cash booking may legitimately carry an online deposit PaymentIntent.
+    // Matching provider ids mean this is that same deposit, not a second payment.
+    const matchesInputPayment =
+      (Boolean(paymentIds.stripePaymentIntentId) &&
+        existingBooking.stripePaymentIntentId ===
+          paymentIds.stripePaymentIntentId) ||
+      (Boolean(paymentIds.multisafepayOrderId) &&
+        existingBooking.multisafepayOrderId ===
+          paymentIds.multisafepayOrderId) ||
+      (Boolean(paymentIds.multisafepayTransactionId) &&
+        existingBooking.multisafepayTransactionId ===
+          paymentIds.multisafepayTransactionId);
+
     // A provider payment arriving for a ride already settled by another method
     // (e.g. cash) must not be silently treated as an already-finalized booking.
     const settledByOtherMethod =
+      !matchesInputPayment &&
       existingBooking.paymentStatus === 'completed' &&
       Boolean(existingBooking.paymentMethod) &&
       !['stripe', 'multisafepay'].includes(existingBooking.paymentMethod ?? '');

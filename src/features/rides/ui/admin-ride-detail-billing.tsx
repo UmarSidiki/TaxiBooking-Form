@@ -57,6 +57,43 @@ export function AdminRideDetailBilling({
             <RideStatusBadge booking={booking} />
           </dd>
         </div>
+        {booking.depositPaidCents && booking.depositPaidCents > 0 ? (
+          <div>
+            <dt className="text-xs font-medium text-muted-foreground">
+              {t("Dashboard.Rides.OnlineDepositPaid")}
+            </dt>
+            <dd className="font-semibold tabular-nums text-foreground">
+              {currencySymbol}
+              {(booking.depositPaidCents / 100).toFixed(2)}
+            </dd>
+          </div>
+        ) : null}
+        {booking.depositDue &&
+        booking.depositDue > 0 &&
+        booking.paymentStatus !== "completed" ? (
+          <div>
+            <dt className="text-xs font-medium text-muted-foreground">
+              {t("Dashboard.Rides.DepositDue")}
+            </dt>
+            <dd className="font-semibold tabular-nums text-foreground">
+              {currencySymbol}
+              {booking.depositDue.toFixed(2)}
+            </dd>
+          </div>
+        ) : null}
+        {booking.paymentStatus === "completed" &&
+        booking.balanceDue &&
+        booking.balanceDue > 0 ? (
+          <div>
+            <dt className="text-xs font-medium text-muted-foreground">
+              {t("Dashboard.Rides.BalanceDue")}
+            </dt>
+            <dd className="font-semibold tabular-nums text-foreground">
+              {currencySymbol}
+              {booking.balanceDue.toFixed(2)}
+            </dd>
+          </div>
+        ) : null}
       </dl>
       {booking.status === "canceled" || booking.refundAmount ? (
         <div className="space-y-2 border-t border-border pt-3 text-sm">

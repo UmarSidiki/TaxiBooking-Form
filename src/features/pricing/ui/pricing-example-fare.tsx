@@ -23,11 +23,15 @@ export function PricingExampleFare({
   holidays,
   extras,
   depositPercent,
+  cashDeposit,
+  appointmentDeposit,
 }: {
   night: { start: string; end: string; percent: number };
   holidays: HolidayRange[];
   extras: PricingExtras;
   depositPercent: number;
+  cashDeposit?: { enabled: boolean; percent: number };
+  appointmentDeposit?: { enabled: boolean; percent: number };
 }) {
   const t = useTranslations("Pricing");
   const [base, setBase] = useState("50");
@@ -103,6 +107,16 @@ export function PricingExampleFare({
         ) : null}
       </dl>
       {quote.depositDue > 0 ? null : <p className="text-xs text-muted-foreground">{t("example-full")}</p>}
+      {cashDeposit?.enabled && cashDeposit.percent > 0 ? (
+        <p className="text-xs text-muted-foreground">
+          {t("example-cash-deposit", { percent: cashDeposit.percent })}
+        </p>
+      ) : null}
+      {appointmentDeposit?.enabled && appointmentDeposit.percent > 0 ? (
+        <p className="text-xs text-muted-foreground">
+          {t("example-appointment-deposit", { percent: appointmentDeposit.percent })}
+        </p>
+      ) : null}
     </section>
   );
 }

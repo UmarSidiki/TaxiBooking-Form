@@ -97,6 +97,7 @@ export async function createCashBooking(
           stops: formData.stops,
         });
 
+  const isBankTransfer = formData.paymentMethod === "bank_transfer";
   const serverPrice = await priceServerBooking({
     enforceServiceArea: true,
     vehicle,
@@ -104,11 +105,23 @@ export async function createCashBooking(
     distanceKm,
     tax: settings ?? {},
     redeem: true,
+    // Bank transfer keeps the existing online deposit rule, not the cash one.
+    paymentMethod: isBankTransfer ? undefined : "cash",
   });
   if (!serverPrice.ok) {
     return { ok: false, status: 400, message: serverPrice.error };
   }
   const priced = serverPrice.quote;
+
+  // A cash booking with a required online deposit must be created by the
+  // payment finalizer, never by this direct (unpaid) path.
+  if (
+    formData.paymentMethod !== "bank_transfer" &&
+    serverPrice.depositConfig.cash.enabled &&
+    serverPrice.depositConfig.cash.percent > 0
+  ) {
+    return { ok: false, status: 400, message: "payment_required" };
+  }
 
   // Never store a destination fare that silently ignored the route distance.
   if (

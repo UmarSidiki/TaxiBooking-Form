@@ -5,6 +5,7 @@ import { useStep3CardCheckout } from "@/features/booking/hooks/form-steps/useSte
 import { useStep3OfflineBooking } from "@/features/booking/hooks/form-steps/useStep3OfflineBooking";
 import type { FormData, FormErrors } from "@/features/booking/context/booking-form-context";
 import type { ISetting } from "@/features/settings/model";
+import type { DepositConfig } from "@/features/pricing/lib/deposit-percent";
 import type { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 import type { useTranslations } from "next-intl";
 import { useState, type Dispatch, type MutableRefObject, type SetStateAction } from "react";
@@ -34,6 +35,7 @@ export function useStep3Payments({
   totalPrice,
   chargeAmount,
   quoteReady,
+  depositConfig,
 }: {
   formData: FormData;
   setErrors: Dispatch<SetStateAction<FormErrors>>;
@@ -59,9 +61,23 @@ export function useStep3Payments({
   totalPrice: number;
   chargeAmount: number;
   quoteReady: boolean;
+  depositConfig: DepositConfig;
 }) {
   const [draftId] = useState(() => getOrCreateDraftId());
   const dueNow = chargeAmount > 0 ? chargeAmount : totalPrice;
+  const appointmentOnly = Boolean(settings?.enableAppointmentRequest);
+  const sessionPaymentMethod = appointmentOnly
+    ? "appointment"
+    : selectedPaymentMethod === "cash"
+      ? "cash"
+      : "card";
+  const openSession = appointmentOnly
+    ? depositConfig.appointment.enabled && depositConfig.appointment.percent > 0
+    : selectedPaymentMethod === "card"
+      ? stripeConfig.enabled
+      : selectedPaymentMethod === "cash"
+        ? depositConfig.cash.enabled && depositConfig.cash.percent > 0
+        : false;
 
   const card = useStep3CardCheckout({
     formData,
@@ -72,7 +88,8 @@ export function useStep3Payments({
     resetForm,
     setIsLoading,
     stripeConfig,
-    selectedPaymentMethod,
+    openSession,
+    sessionPaymentMethod,
     clientSecret,
     setClientSecret,
     stripeOrderId,

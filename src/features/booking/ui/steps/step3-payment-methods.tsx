@@ -33,6 +33,8 @@ export function Step3PaymentMethods(props: Step3PaymentMethodsProps) {
                 stripeConfig={props.stripeConfig}
                 selectedPaymentMethod={props.selectedPaymentMethod}
                 setSelectedPaymentMethod={props.setSelectedPaymentMethod}
+                depositConfig={props.depositConfig}
+                multisafepayReady={props.multisafepayReady}
               />
 
               {props.selectedPaymentMethod && !props.contactValid && (
@@ -64,16 +66,7 @@ export function Step3PaymentMethods(props: Step3PaymentMethodsProps) {
               )}
 
               {/* Cash Payment Info */}
-              {selectedPaymentMethod === "cash" && (
-                <Step3CashPanel
-                  t={props.t}
-                  currencySymbol={props.currencySymbol}
-                  totalPrice={props.totalPrice}
-                  handleCashBooking={props.handleCashBooking}
-                  isLoading={props.isLoading}
-                  contactValid={props.contactValid}
-                />
-              )}
+              {selectedPaymentMethod === "cash" && <Step3CashPanel {...props} />}
 
               {/* Bank Transfer Info */}
               {selectedPaymentMethod === "bank_transfer" && (

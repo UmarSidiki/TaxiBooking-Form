@@ -2,16 +2,12 @@
 
 import { Card } from "@/shared/ui/card";
 import {
-  Calendar,
   Car,
   CheckCircle2,
-  Clock,
   CreditCard,
   Mail,
-  MapPin,
   Phone,
   Shield,
-  Users,
 } from "lucide-react";
 import { FareDueRows } from "@/features/booking/ui/steps/fare-due-rows";
 import type { useStep3 } from "@/features/booking/hooks/form-steps/useStep3";
@@ -26,14 +22,12 @@ export function Step3BookingSummary({
   mapRef,
   formData,
   selectedVehicle,
-  distanceData,
   vehiclePrice,
   discount,
   discountedVehiclePrice,
   childSeatPrice,
   babySeatPrice,
   stopsTotalPrice,
-  subtotalPrice,
   enableTax,
   taxPercentage,
   taxIncluded,
@@ -73,7 +67,7 @@ export function Step3BookingSummary({
       {/* Sidebar - Booking Summary */}
       <div className="lg:col-span-1">
         <Card className="sticky top-4 gap-4 p-5">
-          <h3 className="font-semibold text-lg border-b pb-2">{t('Step3.booking-summary')}</h3>
+          <h3 className="font-semibold text-lg">{t('Step3.booking-summary')}</h3>
 
           {/* Map */}
           {mapLoaded && (

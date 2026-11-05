@@ -32,6 +32,9 @@ export type CustomerBookingRow = {
   totalMinor: number;
   paidMinor: number;
   refundedMinor: number;
+  depositDueMinor: number;
+  balanceDueMinor: number;
+  amountDueMinor: number;
   createdAt: string | null;
 };
 

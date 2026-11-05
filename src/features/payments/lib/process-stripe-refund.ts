@@ -1,6 +1,70 @@
 import Stripe from 'stripe';
 import type { IBooking } from '@/features/booking/model';
 
+function stripeClient(settings: { stripeSecretKey?: string } | null) {
+  const stripeSecretKey =
+    settings?.stripeSecretKey || process.env.STRIPE_SECRET_KEY;
+  if (!stripeSecretKey) return null;
+  const apiVersion = process.env.STRIPE_API_VERSION as Stripe.LatestApiVersion;
+  return new Stripe(stripeSecretKey, { apiVersion });
+}
+
+/** Refunds an explicit captured amount (e.g. an online deposit). */
+export async function refundStripePaymentIntent(input: {
+  paymentIntentId: string;
+  amountCents: number;
+  metadata?: Record<string, string>;
+  settings: { stripeSecretKey?: string } | null;
+}): Promise<{ success: boolean; refundAmount?: number; error?: string }> {
+  try {
+    const stripe = stripeClient(input.settings);
+    if (!stripe) {
+      return { success: false, error: 'Stripe is not configured. Cannot process refund.' };
+    }
+
+    const paymentIntent = (await stripe.paymentIntents.retrieve(
+      input.paymentIntentId,
+      { expand: ['latest_charge'] }
+    )) as Stripe.PaymentIntent;
+
+    const latestCharge = paymentIntent.latest_charge;
+    const chargeObject =
+      latestCharge && typeof latestCharge !== 'string' ? latestCharge : undefined;
+    const receivedCents =
+      paymentIntent.amount_received ?? chargeObject?.amount ?? paymentIntent.amount ?? 0;
+    const alreadyRefundedCents = chargeObject?.amount_refunded ?? 0;
+    const refundableCents = Math.max(receivedCents - alreadyRefundedCents, 0);
+    const amountToRefundCents = Math.min(
+      Math.max(0, Math.round(input.amountCents)),
+      refundableCents
+    );
+
+    if (amountToRefundCents <= 0) {
+      return { success: false, error: 'No refundable amount remains for this payment' };
+    }
+
+    const refund = await stripe.refunds.create(
+      {
+        payment_intent: input.paymentIntentId,
+        amount: amountToRefundCents,
+        reason: 'requested_by_customer',
+        metadata: input.metadata ?? {},
+      },
+      { idempotencyKey: `refund_deposit_${input.paymentIntentId}_${amountToRefundCents}` }
+    );
+
+    if (refund.status === 'succeeded' || refund.status === 'pending') {
+      return { success: true, refundAmount: amountToRefundCents / 100 };
+    }
+
+    return { success: false, error: `Refund failed with status: ${refund.status}` };
+  } catch (error: unknown) {
+    console.error('Stripe deposit refund error:', error);
+    const message = error instanceof Error ? error.message : 'Unknown error';
+    return { success: false, error: `Failed to process refund: ${message}` };
+  }
+}
+
 export async function processStripeRefund(
   booking: IBooking,
   refundPercentage: number,

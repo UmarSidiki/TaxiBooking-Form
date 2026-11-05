@@ -64,6 +64,13 @@ export function AdminRideRequestActionsDialog({
         </DialogHeader>
 
         <div className="flex flex-col gap-3">
+          {booking.depositPaidCents && booking.depositPaidCents > 0 ? (
+            <p className="rounded border border-border bg-muted/40 p-2 text-xs text-muted-foreground">
+              {t("Dashboard.Rides.deposit-refund-on-decline", {
+                amount: `${currencySymbol}${(booking.depositPaidCents / 100).toFixed(2)}`,
+              })}
+            </p>
+          ) : null}
           <div className="flex flex-col gap-2">
             <Label htmlFor="quotedAmount">
               {t("Dashboard.Rides.quoted-amount-label")} ({currencySymbol})

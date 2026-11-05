@@ -38,6 +38,26 @@ export function AdminRideCancelDialog({
   handleCancelBooking: () => Promise<void>;
   canRefund: (booking: IBooking) => boolean | "" | undefined;
 }) {
+  const refundableDeposit =
+    Math.max(
+      0,
+      (Number(selectedBooking?.depositPaidCents) || 0) -
+        (Number(selectedBooking?.amountRefundedCents) || 0),
+    ) / 100;
+  const hasDeposit = refundableDeposit > 0;
+  const depositOnly =
+    hasDeposit &&
+    ["cash", "unpaid"].includes(selectedBooking?.paymentMethod ?? "");
+  const refundBase = hasDeposit
+    ? depositOnly
+      ? refundableDeposit
+      : Math.max(
+          0,
+          (Number(selectedBooking?.amountPaidCents) || 0) -
+            (Number(selectedBooking?.amountRefundedCents) || 0),
+        ) / 100
+    : selectedBooking?.totalAmount || 0;
+
   return (
     <>
       {/* Cancel/Refund Dialog */}
@@ -82,28 +102,32 @@ export function AdminRideCancelDialog({
 
             {selectedBooking && canRefund(selectedBooking) && (
               <div className="space-y-3 p-4 bg-secondary/10 rounded-lg border border-secondary/20">
-                <label className="text-sm font-semibold text-foreground flex items-center gap-2">
-                  <Percent className="w-4 h-4 text-primary" />
-                  {t("Dashboard.Rides.RefundPercentage")}
-                </label>
-                <div className="flex items-center gap-3">
-                  <Input
-                    type="number"
-                    min="0"
-                    max="100"
-                    value={refundPercentage}
-                    onChange={(e) =>
-                      setRefundPercentage(
-                        Math.min(
-                          100,
-                          Math.max(0, parseInt(e.target.value) || 0)
+                {hasDeposit ? null : (
+                  <label className="text-sm font-semibold text-foreground flex items-center gap-2">
+                    <Percent className="w-4 h-4 text-primary" />
+                    {t("Dashboard.Rides.RefundPercentage")}
+                  </label>
+                )}
+                {hasDeposit ? null : (
+                  <div className="flex items-center gap-3">
+                    <Input
+                      type="number"
+                      min="0"
+                      max="100"
+                      value={refundPercentage}
+                      onChange={(e) =>
+                        setRefundPercentage(
+                          Math.min(
+                            100,
+                            Math.max(0, parseInt(e.target.value) || 0)
+                          )
                         )
-                      )
-                    }
-                    className="h-11 w-24 text-center font-bold text-lg"
-                  />
-                  <span className="text-lg font-semibold text-muted-foreground">%</span>
-                </div>
+                      }
+                      className="h-11 w-24 text-center font-bold text-lg"
+                    />
+                    <span className="text-lg font-semibold text-muted-foreground">%</span>
+                  </div>
+                )}
                 <div className="p-3 bg-secondary/20 rounded-md border border-secondary/30">
                   <div className="flex justify-between items-center text-sm">
                     <span className="text-foreground flex items-center gap-1">
@@ -112,24 +136,28 @@ export function AdminRideCancelDialog({
                     </span>
                     <span className="font-bold text-xl text-foreground">
                       {currencySymbol}
-                      {(
-                        (selectedBooking?.totalAmount || 0) *
-                        (refundPercentage / 100)
+                      {(hasDeposit
+                        ? refundBase
+                        : refundBase * (refundPercentage / 100)
                       ).toFixed(2)}
                     </span>
                   </div>
                   <div className="flex justify-between items-center text-xs text-muted-foreground mt-1">
-                    <span>{t("Dashboard.Rides.TotalAmount")}</span>
+                    <span>
+                      {depositOnly
+                        ? t("Dashboard.Rides.RefundableDeposit")
+                        : t("Dashboard.Rides.TotalAmount")}
+                    </span>
                     <span>
                       {currencySymbol}
-                      {selectedBooking?.totalAmount?.toFixed(2)}
+                      {refundBase.toFixed(2)}
                     </span>
                   </div>
                 </div>
               </div>
             )}
 
-            {selectedBooking?.paymentMethod === "cash" && (
+            {selectedBooking?.paymentMethod === "cash" && !hasDeposit && (
               <div className="rounded-md border border-border bg-card p-4">
                 <p className="text-sm text-foreground flex items-start gap-2">
                   <CreditCard className="w-5 h-5 flex-shrink-0 mt-0.5" />

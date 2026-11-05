@@ -12,6 +12,7 @@ import {
   statusLabel,
   vehicleName,
 } from "./account-ride-format";
+import { formatMoney } from "./portal-money";
 import { rebookHref } from "../lib/rebook-href";
 
 const PREVIEW_COUNT = 3;
@@ -125,6 +126,24 @@ function RideRow({
 
       <div className="order-2 text-end text-[12.5px] font-medium tabular-nums md:order-3">
         {rideMoney(ride, locale, currency)}
+        {ride.paymentStatus === "completed" &&
+        ride.balanceDue &&
+        ride.balanceDue > 0 ? (
+          <span className="mt-0.5 block text-[11px] font-normal text-[var(--ink2)]">
+            {t("balance-due")}:{" "}
+            {formatMoney(ride.balanceDue, locale, currency)}
+            {ride.payUrl ? (
+              <Link
+                href={ride.payUrl}
+                className="ms-1 font-medium text-[var(--link)] underline-offset-2 hover:underline"
+              >
+                {t("pay-now")}
+              </Link>
+            ) : ride.paymentMethod === "cash" ? (
+              <span className="ms-1">{t("cash-to-driver")}</span>
+            ) : null}
+          </span>
+        ) : null}
       </div>
 
       <div className="order-4 col-span-2 flex items-center gap-3.5 md:order-4 md:col-span-1 md:justify-end md:gap-3">

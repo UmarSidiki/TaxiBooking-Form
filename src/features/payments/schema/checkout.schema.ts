@@ -36,6 +36,8 @@ export const multisafepayOrderBodySchema = z.object({
   /** Ignored — orderId is always generated server-side. */
   orderId: z.string().optional(),
   locale: z.string().optional(),
+  /** Selects the deposit rule; "cash"/"appointment" collect only that deposit. */
+  paymentMethod: z.enum(["multisafepay", "cash", "appointment"]).optional(),
   bookingData: checkoutBookingDataSchema,
 });
 

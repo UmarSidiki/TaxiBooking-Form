@@ -10,6 +10,10 @@ export interface IPricingRule {
   extras: PricingExtras;
   customerCutoffHours?: number;
   depositPercent?: number;
+  cashDepositEnabled?: boolean;
+  cashDepositPercent?: number;
+  appointmentDepositEnabled?: boolean;
+  appointmentDepositPercent?: number;
 }
 
 const extra = {
@@ -30,6 +34,10 @@ const PricingRuleSchema = new Schema<IPricingRule>(
     },
     customerCutoffHours: { type: Number, default: 2 },
     depositPercent: { type: Number, default: 0 },
+    cashDepositEnabled: { type: Boolean, default: false },
+    cashDepositPercent: { type: Number, default: 0, min: 0, max: 100 },
+    appointmentDepositEnabled: { type: Boolean, default: false },
+    appointmentDepositPercent: { type: Number, default: 0, min: 0, max: 100 },
   },
   { timestamps: true },
 );

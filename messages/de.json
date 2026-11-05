@@ -221,7 +221,13 @@
     "promo-code": "Aktionscode",
     "due-now": "Jetzt fällig",
     "balance-due": "Restbetrag",
-    "complete-contact-details-to-continue": "Vervollständigen Sie Ihre Kontaktdaten, um fortzufahren."
+    "complete-contact-details-to-continue": "Vervollständigen Sie Ihre Kontaktdaten, um fortzufahren.",
+    "pay-deposit-to-confirm": "Anzahlung zur Bestätigung zahlen",
+    "due-now-online": "Jetzt online fällig",
+    "deposit-rest-cash": "Rest bar beim Fahrer",
+    "deposit-credited-to-quote": "Mit dem finalen Angebot verrechnet",
+    "pay-deposit-online": "Anzahlung online zahlen",
+    "online-payment-not-configured": "Online-Zahlung ist nicht konfiguriert. Kontaktieren Sie den Betreiber."
   },
   "booking-failed-data-message": "Buchung fehlgeschlagen: {0}",
   "embeddable": {
@@ -534,7 +540,12 @@
       "col-customer": "Kunde",
       "col-price": "Preis",
       "col-status": "Status",
-      "col-actions": "Aktionen"
+      "col-actions": "Aktionen",
+      "DepositDue": "Anzahlung fällig",
+      "BalanceDue": "Restbetrag",
+      "RefundableDeposit": "Rückzahlbare Anzahlung",
+      "OnlineDepositPaid": "Online-Anzahlung bezahlt",
+      "deposit-refund-on-decline": "Die Online-Anzahlung von {amount} wird bei Ablehnung oder Stornierung automatisch erstattet."
     },
     "Home": {
       "failed-to-fetch-dashboard-stats": "Dashboard-Statistiken konnten nicht abgerufen werden",
@@ -1819,7 +1830,12 @@
       "notes-placeholder": "Admin-Notizen erscheinen hier in einer späteren Version.",
       "activity-placeholder": "Audit-Aktivität erscheint hier in einer späteren Version.",
       "sessions-count": "{count} Sitzungen",
-      "status-paid": "Bezahlt"
+      "status-paid": "Bezahlt",
+      "balance-due": "Restbetrag",
+      "notify-pay": "Zur Zahlung auffordern",
+      "notified": "Benachrichtigt",
+      "notify-failed": "Benachrichtigung fehlgeschlagen",
+      "amount-due": "Fälliger Betrag"
     },
     "CustomerNotes": {
       "loading": "Notizen werden geladen…",
@@ -2754,7 +2770,8 @@
     "distance_failed": "Die Route konnte nicht berechnet werden. Adressen prüfen.",
     "country_blocked": "Buchungen sind von Ihrem Standort aus nicht möglich.",
     "outside_service_area": "Diese Adresse liegt außerhalb unseres Servicegebiets.",
-    "location_required": "Wählen Sie jede Adresse aus den Vorschlägen."
+    "location_required": "Wählen Sie jede Adresse aus den Vorschlägen.",
+    "payment_required": "Die Zahlung ist erforderlich, bevor diese Buchung bestätigt werden kann."
   },
   "Pay": {
     "by-appointment": "Nach Termin",
@@ -2923,7 +2940,15 @@
     "extra-price-each": "Preis pro Sitz",
     "payment-title": "Zahlung",
     "example-child-seat": "Ein Kindersitz",
-    "remove": "Entfernen"
+    "remove": "Entfernen",
+    "cash-deposit": "Barzahlung Anzahlung",
+    "cash-deposit-percent": "Prozentsatz Baranzahlung",
+    "cash-deposit-help": "Wird online vor der Buchungsbestätigung eingezogen; der Rest wird bar beim Fahrer bezahlt.",
+    "appointment-deposit": "Anzahlung für Anfragen",
+    "appointment-deposit-percent": "Prozentsatz Anfrageanzahlung",
+    "appointment-deposit-help": "Wird online mit der Anfrage eingezogen und mit dem finalen Angebot verrechnet.",
+    "example-cash-deposit": "Barzahlungen: zuerst {percent} % online, der Rest bar beim Fahrer.",
+    "example-appointment-deposit": "Terminanfragen: {percent} % online, mit dem finalen Angebot verrechnet."
   },
   "Account": {
     "title": "Ihre Fahrten",
@@ -3168,7 +3193,9 @@
     "verified": "Bestätigt",
     "whatsapp-card-copy": "Mit einem WhatsApp-Code anmelden und Fahrtinformationen dort erhalten.",
     "whatsapp-code": "WhatsApp-Code",
-    "whatsapp-code-off": "Nummer hinzufügen und bestätigen, um sich per WhatsApp anzumelden."
+    "whatsapp-code-off": "Nummer hinzufügen und bestätigen, um sich per WhatsApp anzumelden.",
+    "balance-due": "Restbetrag",
+    "cash-to-driver": "bar beim Fahrer"
   },
   "Emails": {
     "brand_fallback": "Buchung",

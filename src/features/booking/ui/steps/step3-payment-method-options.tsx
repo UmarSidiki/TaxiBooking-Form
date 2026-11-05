@@ -11,6 +11,8 @@ export function Step3PaymentMethodOptions({
   stripeConfig,
   selectedPaymentMethod,
   setSelectedPaymentMethod,
+  depositConfig,
+  multisafepayReady,
 }: Pick<
   Step3PaymentMethodsProps,
   | "t"
@@ -18,12 +20,16 @@ export function Step3PaymentMethodOptions({
   | "stripeConfig"
   | "selectedPaymentMethod"
   | "setSelectedPaymentMethod"
+  | "depositConfig"
+  | "multisafepayReady"
 >) {
   const accepted = paymentSettings?.acceptedPaymentMethods ?? [];
+  const cashDepositRequired = depositConfig.cash.enabled && depositConfig.cash.percent > 0;
+  const onlineReady = stripeConfig.enabled || multisafepayReady;
   const options: Array<{ id: Method; title: string; hint: string; show: boolean }> = [
     { id: "card", title: t("Step3.credit-debit-card"), hint: "Visa, Mastercard, Amex", show: accepted.includes("card") && stripeConfig.enabled },
     { id: "multisafepay", title: `${t("Step3.pay-online")} ${t("Step3.via-multisafepay")}`, hint: t("Step3.ideal-bancontact-paypal-and-more"), show: accepted.includes("multisafepay") },
-    { id: "cash", title: t("Step3.cash-payment"), hint: t("Step3.pay-in-cash-to-the-driver"), show: accepted.includes("cash") },
+    { id: "cash", title: t("Step3.cash-payment"), hint: t("Step3.pay-in-cash-to-the-driver"), show: accepted.includes("cash") && (!cashDepositRequired || onlineReady) },
     { id: "bank_transfer", title: t("Step3.bank-transfer"), hint: t("Step3.transfer-to-our-bank-account"), show: accepted.includes("bank_transfer") },
   ];
 

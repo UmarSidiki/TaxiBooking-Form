@@ -221,7 +221,13 @@
     "promo-code": "Promocode",
     "due-now": "Nu te betalen",
     "balance-due": "Nog te betalen",
-    "complete-contact-details-to-continue": "Vul uw contactgegevens in om door te gaan."
+    "complete-contact-details-to-continue": "Vul uw contactgegevens in om door te gaan.",
+    "pay-deposit-to-confirm": "Betaal de aanbetaling om te bevestigen",
+    "due-now-online": "Nu online te betalen",
+    "deposit-rest-cash": "Rest contant aan de chauffeur",
+    "deposit-credited-to-quote": "Verrekend met de definitieve prijsopgave",
+    "pay-deposit-online": "Aanbetaling online betalen",
+    "online-payment-not-configured": "Online betalen is niet geconfigureerd. Neem contact op met de exploitant."
   },
   "booking-failed-data-message": "Boeking mislukt: {0}",
   "embeddable": {
@@ -534,7 +540,12 @@
       "col-customer": "Klant",
       "col-price": "Prijs",
       "col-status": "Status",
-      "col-actions": "Acties"
+      "col-actions": "Acties",
+      "DepositDue": "Aanbetaling verschuldigd",
+      "BalanceDue": "Resterend saldo",
+      "RefundableDeposit": "Terugbetaalbare aanbetaling",
+      "OnlineDepositPaid": "Online aanbetaling betaald",
+      "deposit-refund-on-decline": "De online aanbetaling van {amount} wordt automatisch terugbetaald bij afwijzing of annulering."
     },
     "Home": {
       "failed-to-fetch-dashboard-stats": "Ophalen dashboardstatistieken mislukt",
@@ -1819,7 +1830,12 @@
       "notes-placeholder": "Beheerdersnotities verschijnen hier in een latere versie.",
       "activity-placeholder": "Auditactiviteit verschijnt hier in een latere versie.",
       "sessions-count": "{count} sessies",
-      "status-paid": "Betaald"
+      "status-paid": "Betaald",
+      "balance-due": "Resterend saldo",
+      "notify-pay": "Herinner om betaling",
+      "notified": "Op de hoogte gebracht",
+      "notify-failed": "Melden mislukt",
+      "amount-due": "Verschuldigd bedrag"
     },
     "CustomerNotes": {
       "loading": "Notities laden…",
@@ -2754,7 +2770,8 @@
     "distance_failed": "De route kon niet worden berekend. Controleer de adressen.",
     "country_blocked": "Boekingen zijn niet beschikbaar vanaf uw locatie.",
     "outside_service_area": "Dit adres ligt buiten ons servicegebied.",
-    "location_required": "Kies elk adres uit de suggesties."
+    "location_required": "Kies elk adres uit de suggesties.",
+    "payment_required": "Betaling is vereist voordat deze boeking kan worden bevestigd."
   },
   "Pay": {
     "by-appointment": "Op afspraak",
@@ -2923,7 +2940,15 @@
     "extra-price-each": "Prijs per zitje",
     "payment-title": "Betaling",
     "example-child-seat": "Eén kinderzitje",
-    "remove": "Verwijderen"
+    "remove": "Verwijderen",
+    "cash-deposit": "Contante aanbetaling",
+    "cash-deposit-percent": "Percentage contante aanbetaling",
+    "cash-deposit-help": "Wordt online geïnd voordat de rit wordt bevestigd; de rest betaalt u contant aan de chauffeur.",
+    "appointment-deposit": "Aanbetaling aanvraag",
+    "appointment-deposit-percent": "Percentage aanbetaling aanvraag",
+    "appointment-deposit-help": "Wordt online met de aanvraag geïnd en verrekend met de definitieve prijsopgave.",
+    "example-cash-deposit": "Contante ritten: eerst {percent}% online, de rest contant aan de chauffeur.",
+    "example-appointment-deposit": "Afspraakaanvragen: {percent}% online, verrekend met de definitieve prijsopgave."
   },
   "Account": {
     "title": "Uw ritten",
@@ -3168,7 +3193,9 @@
     "verified": "Geverifieerd",
     "whatsapp-card-copy": "Log in met een WhatsApp-code en ontvang daar je ritberichten.",
     "whatsapp-code": "WhatsApp-code",
-    "whatsapp-code-off": "Voeg een nummer toe en verifieer het om met WhatsApp in te loggen."
+    "whatsapp-code-off": "Voeg een nummer toe en verifieer het om met WhatsApp in te loggen.",
+    "balance-due": "Resterend saldo",
+    "cash-to-driver": "contant aan de chauffeur"
   },
   "Emails": {
     "brand_fallback": "Boeking",

@@ -221,7 +221,13 @@
     "promo-code": "Code promo",
     "due-now": "À payer maintenant",
     "balance-due": "Solde restant",
-    "complete-contact-details-to-continue": "Complétez vos coordonnées pour continuer."
+    "complete-contact-details-to-continue": "Complétez vos coordonnées pour continuer.",
+    "pay-deposit-to-confirm": "Payez l'acompte pour confirmer",
+    "due-now-online": "À payer maintenant en ligne",
+    "deposit-rest-cash": "Le reste, en espèces au chauffeur",
+    "deposit-credited-to-quote": "Déduit du devis final",
+    "pay-deposit-online": "Payer l'acompte en ligne",
+    "online-payment-not-configured": "Le paiement en ligne n'est pas configuré. Contactez l'opérateur."
   },
   "booking-failed-data-message": "La réservation a échoué : {0}",
   "embeddable": {
@@ -534,7 +540,12 @@
       "col-customer": "Client",
       "col-price": "Prix",
       "col-status": "Statut",
-      "col-actions": "Actions"
+      "col-actions": "Actions",
+      "DepositDue": "Acompte dû",
+      "BalanceDue": "Solde dû",
+      "RefundableDeposit": "Acompte remboursable",
+      "OnlineDepositPaid": "Acompte en ligne payé",
+      "deposit-refund-on-decline": "L'acompte en ligne de {amount} sera remboursé automatiquement en cas de refus ou d'annulation."
     },
     "Home": {
       "failed-to-fetch-dashboard-stats": "Échec de la récupération des stats",
@@ -1819,7 +1830,12 @@
       "notes-placeholder": "Les notes d'administration apparaîtront ici dans une version ultérieure.",
       "activity-placeholder": "L'activité d'audit apparaîtra ici dans une version ultérieure.",
       "sessions-count": "{count} sessions",
-      "status-paid": "Payé"
+      "status-paid": "Payé",
+      "balance-due": "Solde dû",
+      "notify-pay": "Notifier le paiement",
+      "notified": "Notifié",
+      "notify-failed": "Échec de la notification",
+      "amount-due": "Montant dû"
     },
     "CustomerNotes": {
       "loading": "Chargement des notes…",
@@ -2754,7 +2770,8 @@
     "distance_failed": "Impossible de calculer l’itinéraire. Vérifiez les adresses.",
     "country_blocked": "Les réservations ne sont pas disponibles depuis votre localisation.",
     "outside_service_area": "Cette adresse est en dehors de notre zone de service.",
-    "location_required": "Choisissez chaque adresse dans les suggestions."
+    "location_required": "Choisissez chaque adresse dans les suggestions.",
+    "payment_required": "Le paiement est requis avant de confirmer cette réservation."
   },
   "Pay": {
     "by-appointment": "Sur rendez-vous",
@@ -2923,7 +2940,15 @@
     "extra-price-each": "Prix par siège",
     "payment-title": "Paiement",
     "example-child-seat": "Un siège enfant",
-    "remove": "Supprimer"
+    "remove": "Supprimer",
+    "cash-deposit": "Acompte espèces",
+    "cash-deposit-percent": "Pourcentage d'acompte espèces",
+    "cash-deposit-help": "Encaissé en ligne avant la confirmation de la course ; le reste est payé en espèces au chauffeur.",
+    "appointment-deposit": "Acompte sur demande",
+    "appointment-deposit-percent": "Pourcentage d'acompte sur demande",
+    "appointment-deposit-help": "Encaissé en ligne avec la demande et déduit du devis final.",
+    "example-cash-deposit": "Courses en espèces : {percent} % en ligne d'abord, le reste en espèces au chauffeur.",
+    "example-appointment-deposit": "Demandes de rendez-vous : {percent} % en ligne, déduits du devis final."
   },
   "Account": {
     "title": "Vos trajets",
@@ -3168,7 +3193,9 @@
     "verified": "Vérifié",
     "whatsapp-card-copy": "Connectez-vous avec un code WhatsApp et recevez-y vos infos de trajet.",
     "whatsapp-code": "Code WhatsApp",
-    "whatsapp-code-off": "Ajoutez et vérifiez un numéro pour vous connecter avec WhatsApp."
+    "whatsapp-code-off": "Ajoutez et vérifiez un numéro pour vous connecter avec WhatsApp.",
+    "balance-due": "Solde dû",
+    "cash-to-driver": "en espèces au chauffeur"
   },
   "Emails": {
     "brand_fallback": "Réservation",

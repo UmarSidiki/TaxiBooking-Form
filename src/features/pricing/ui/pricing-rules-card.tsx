@@ -14,14 +14,25 @@ export type Rule = {
   nightEnd: string;
   nightPercent: number;
   depositPercent: number;
+  cashDepositEnabled: boolean;
+  cashDepositPercent: number;
+  appointmentDepositEnabled: boolean;
+  appointmentDepositPercent: number;
   holidays: HolidayRange[];
   extras: PricingExtras;
 };
 
+type MoneyKeys =
+  | "nightPercent"
+  | "depositPercent"
+  | "cashDepositPercent"
+  | "appointmentDepositPercent";
 type ExtraKey = (typeof EXTRA_KEYS)[number];
-type Draft = Omit<Rule, "nightPercent" | "depositPercent" | "extras"> & {
+type Draft = Omit<Rule, MoneyKeys | "extras"> & {
   nightPercent: string;
   depositPercent: string;
+  cashDepositPercent: string;
+  appointmentDepositPercent: string;
   extras: Record<ExtraKey, { enabled: boolean; price: string }>;
 };
 
@@ -29,12 +40,19 @@ const toDraft = (rule: Rule): Draft => ({
   ...rule,
   nightPercent: String(rule.nightPercent),
   depositPercent: String(rule.depositPercent),
+  cashDepositPercent: String(rule.cashDepositPercent),
+  appointmentDepositPercent: String(rule.appointmentDepositPercent),
   extras: Object.fromEntries(
     EXTRA_KEYS.map((key) => [key, { enabled: rule.extras[key].enabled, price: String(rule.extras[key].price) }]),
   ) as Draft["extras"],
 });
 
-const LIMITS = { nightPercent: 200, depositPercent: 100 } as const;
+const LIMITS = {
+  nightPercent: 200,
+  depositPercent: 100,
+  cashDepositPercent: 100,
+  appointmentDepositPercent: 100,
+} as const;
 
 /** Hours until a range is removed (12h after its end day), using this device's clock. */
 function hoursLeft(end: string) {
@@ -113,6 +131,8 @@ export function PricingRulesCard({ initial, onSaved }: { initial: Rule; onSaved:
       ...draft,
       nightPercent: num("nightPercent"),
       depositPercent: num("depositPercent"),
+      cashDepositPercent: num("cashDepositPercent"),
+      appointmentDepositPercent: num("appointmentDepositPercent"),
       extras: extrasNow,
     };
     setSaving(true);
@@ -194,8 +214,44 @@ export function PricingRulesCard({ initial, onSaved }: { initial: Rule; onSaved:
           </ul>
         </Card>
         <Card title={t("payment-title")}>
-          <div className="sm:max-w-xs">
-            <PricingField label={t("deposit")} unit="%" inputMode="decimal" help={t("deposit-help")} value={draft.depositPercent} error={errors.depositPercent} onChange={(v) => set({ depositPercent: v })} />
+          <div className="flex flex-col gap-4">
+            <div className="sm:max-w-xs">
+              <PricingField label={t("deposit")} unit="%" inputMode="decimal" help={t("deposit-help")} value={draft.depositPercent} error={errors.depositPercent} onChange={(v) => set({ depositPercent: v })} />
+            </div>
+            <div className="flex flex-col gap-3 rounded-xl bg-muted/50 p-3">
+              <div className="flex min-h-11 items-center justify-between gap-3">
+                <span id="cash-deposit" className="text-sm font-medium">{t("cash-deposit")}</span>
+                <Switch
+                  checked={draft.cashDepositEnabled}
+                  aria-labelledby="cash-deposit"
+                  onCheckedChange={(enabled) => set({ cashDepositEnabled: enabled })}
+                />
+              </div>
+              {draft.cashDepositEnabled ? (
+                <div className="sm:max-w-xs">
+                  <PricingField label={t("cash-deposit-percent")} unit="%" inputMode="decimal" help={t("cash-deposit-help")} value={draft.cashDepositPercent} error={errors.cashDepositPercent} onChange={(v) => set({ cashDepositPercent: v })} />
+                </div>
+              ) : (
+                <p className="text-xs text-muted-foreground">{t("cash-deposit-help")}</p>
+              )}
+            </div>
+            <div className="flex flex-col gap-3 rounded-xl bg-muted/50 p-3">
+              <div className="flex min-h-11 items-center justify-between gap-3">
+                <span id="appointment-deposit" className="text-sm font-medium">{t("appointment-deposit")}</span>
+                <Switch
+                  checked={draft.appointmentDepositEnabled}
+                  aria-labelledby="appointment-deposit"
+                  onCheckedChange={(enabled) => set({ appointmentDepositEnabled: enabled })}
+                />
+              </div>
+              {draft.appointmentDepositEnabled ? (
+                <div className="sm:max-w-xs">
+                  <PricingField label={t("appointment-deposit-percent")} unit="%" inputMode="decimal" help={t("appointment-deposit-help")} value={draft.appointmentDepositPercent} error={errors.appointmentDepositPercent} onChange={(v) => set({ appointmentDepositPercent: v })} />
+                </div>
+              ) : (
+                <p className="text-xs text-muted-foreground">{t("appointment-deposit-help")}</p>
+              )}
+            </div>
           </div>
         </Card>
       </div>
@@ -205,6 +261,11 @@ export function PricingRulesCard({ initial, onSaved }: { initial: Rule; onSaved:
           holidays={draft.holidays}
           extras={extrasNow}
           depositPercent={num("depositPercent")}
+          cashDeposit={{ enabled: draft.cashDepositEnabled, percent: num("cashDepositPercent") }}
+          appointmentDeposit={{
+            enabled: draft.appointmentDepositEnabled,
+            percent: num("appointmentDepositPercent"),
+          }}
         />
       </div>
       {dirty || notice ? (

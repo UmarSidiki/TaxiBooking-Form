@@ -10,6 +10,7 @@ import { useStep3Map } from "@/features/booking/hooks/form-steps/useStep3Map";
 import { useStep3Payments } from "@/features/booking/hooks/form-steps/useStep3Payments";
 import { useStep3Pricing } from "@/features/booking/hooks/form-steps/useStep3Pricing";
 import { isStep3ContactValid } from "@/features/payments/lib/validate-step3-contact";
+import type { DepositMethod } from "@/features/pricing/lib/deposit-percent";
 
 export function useStep3() {
   const t = useTranslations();
@@ -79,11 +80,20 @@ export function useStep3() {
     (v) => v._id === formData.selectedVehicle
   );
 
+  const depositMethod: DepositMethod | undefined = settings?.enableAppointmentRequest
+    ? "appointment"
+    : selectedPaymentMethod === "cash" ||
+        selectedPaymentMethod === "card" ||
+        selectedPaymentMethod === "multisafepay"
+      ? selectedPaymentMethod
+      : undefined;
+
   const pricing = useStep3Pricing({
     selectedVehicle,
     formData,
     distanceData,
     paymentSettings,
+    paymentMethod: depositMethod,
   });
 
   const payments = useStep3Payments({
@@ -111,6 +121,7 @@ export function useStep3() {
     totalPrice: pricing.totalPrice,
     chargeAmount: pricing.chargeAmount,
     quoteReady: pricing.quoteReady,
+    depositConfig: pricing.depositConfig,
   });
 
   const contactValid = isStep3ContactValid(formData);
@@ -134,6 +145,7 @@ export function useStep3() {
     paymentError,
     retryStripePayment: payments.retryStripePayment,
     contactValid,
+    multisafepayReady: Boolean(settings?.hasMultisafepayApiKey),
 
     // Map state
     mapLoaded,
@@ -157,6 +169,8 @@ export function useStep3() {
     handleCashBooking: payments.handleCashBooking,
     handleBankTransferBooking: payments.handleBankTransferBooking,
     handleMultisafepayBooking: payments.handleMultisafepayBooking,
+    handleCashDepositMultisafepay: payments.handleCashDepositMultisafepay,
+    handleAppointmentDepositMultisafepay: payments.handleAppointmentDepositMultisafepay,
     handleAppointmentRequest: payments.handleAppointmentRequest,
     handleBack,
   };

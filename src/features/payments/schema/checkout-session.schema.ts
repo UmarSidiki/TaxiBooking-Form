@@ -7,6 +7,8 @@ export const checkoutSessionBodySchema = z.object({
   customerEmail: z.string().optional(),
   customerName: z.string().optional(),
   description: z.string().optional(),
+  /** Selects the deposit rule; "cash"/"appointment" collect only that deposit. */
+  paymentMethod: z.enum(["card", "cash", "appointment"]).optional(),
   bookingData: checkoutBookingDataSchema,
 });
 

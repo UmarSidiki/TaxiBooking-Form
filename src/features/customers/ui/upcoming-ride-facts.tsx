@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import Link from "next/link";
 import type { AccountT, Ride } from "./account-types";
 import {
   driverName,
@@ -7,6 +8,7 @@ import {
   vehicleDetail,
   vehicleName,
 } from "./account-ride-format";
+import { formatMoney } from "./portal-money";
 
 export function UpcomingRideFacts({
   ride,
@@ -61,6 +63,27 @@ export function UpcomingRideFacts({
           {payment ? (
             <span className="mt-px block text-[11.5px] font-normal text-[var(--ink2)]">
               {payment}
+            </span>
+          ) : null}
+          {ride.paymentStatus === "completed" &&
+          ride.balanceDue &&
+          ride.balanceDue > 0 ? (
+            <span className="mt-px block text-[11.5px] font-normal text-[var(--ink2)]">
+              {t("balance-due")}:{" "}
+              {formatMoney(ride.balanceDue, locale, currency)}
+              {ride.payUrl ? (
+                <>
+                  {" · "}
+                  <Link
+                    href={ride.payUrl}
+                    className="font-medium text-[var(--link)] underline-offset-2 hover:underline"
+                  >
+                    {t("pay-now")}
+                  </Link>
+                </>
+              ) : ride.paymentMethod === "cash" ? (
+                <>{" · "}{t("cash-to-driver")}</>
+              ) : null}
             </span>
           ) : null}
         </dd>

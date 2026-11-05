@@ -22,7 +22,9 @@ export async function POST(
       return jsonError("not_found", 404);
     }
 
-    const amount = Number(booking.quotedAmount ?? booking.totalAmount ?? 0);
+    const quoted = Number(booking.quotedAmount ?? booking.totalAmount ?? 0);
+    const depositPaid = Math.max(0, Number(booking.depositPaidCents) || 0) / 100;
+    const amount = Math.max(0, Number((quoted - depositPaid).toFixed(2)));
     if (!(amount > 0)) {
       return jsonError("invalid_body", 400);
     }

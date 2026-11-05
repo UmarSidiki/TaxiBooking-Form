@@ -32,7 +32,15 @@ export async function POST(request: NextRequest) {
       description,
       locale,
       bookingData,
+      paymentMethod,
     } = parsed.data;
+    const depositMethod = paymentMethod ?? "multisafepay";
+    const purpose =
+      depositMethod === "cash"
+        ? ("cash_deposit" as const)
+        : depositMethod === "appointment"
+          ? ("appointment_deposit" as const)
+          : ("booking" as const);
 
     await connectDB();
     const settings = await Setting.findOne();
@@ -77,6 +85,7 @@ export async function POST(request: NextRequest) {
       distanceKm,
       tax: settings || {},
       redeem: true,
+      paymentMethod: depositMethod,
     });
     if (!serverPrice.ok) return jsonError(serverPrice.error, 400);
     const priced = serverPrice.quote;
@@ -111,7 +120,8 @@ export async function POST(request: NextRequest) {
         fareLines: priced.lines,
         promoCode: priced.promoCode,
       },
-      paymentMethod: 'multisafepay',
+      paymentMethod: depositMethod === 'cash' ? 'cash' : depositMethod === 'appointment' ? 'unpaid' : 'multisafepay',
+      purpose,
       status: 'open' as const,
       expectedAmount: priced.chargeAmount,
       expiresAt: new Date(Date.now() + 48 * 60 * 60 * 1000),

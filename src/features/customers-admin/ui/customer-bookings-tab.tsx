@@ -11,6 +11,7 @@ import {
   profileStatusKey,
 } from "@/features/customers-admin/ui/customer-profile-format";
 import type { CustomerBookingRow } from "@/features/customers-admin/lib/customer-profile/customer-profile.types";
+import { NotifyBalanceButton } from "@/features/customers-admin/ui/notify-balance-button";
 
 export function CustomerBookingsTab({
   bookings,
@@ -83,15 +84,34 @@ export function CustomerBookingsTab({
                     {formatCustomerMoney(booking.refundedMinor, currency, locale)}
                   </Field>
                 ) : null}
+                {booking.amountDueMinor > 0 ? (
+                  <Field
+                    label={
+                      booking.paymentStatus === "completed"
+                        ? t("balance-due")
+                        : t("amount-due")
+                    }
+                  >
+                    {formatCustomerMoney(booking.amountDueMinor, currency, locale)}
+                  </Field>
+                ) : null}
               </dl>
 
-              <Link
-                href={`/${locale}/dashboard/rides?bookingId=${encodeURIComponent(booking.id)}`}
-                className="inline-flex min-h-11 w-fit items-center rounded text-sm font-medium text-primary underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
-              >
-                {t("open-ride")}
-                <span className="sr-only"> — {booking.tripId}</span>
-              </Link>
+              <div className="flex flex-wrap items-center gap-3">
+                <Link
+                  href={`/${locale}/dashboard/rides?bookingId=${encodeURIComponent(booking.id)}`}
+                  className="inline-flex min-h-11 w-fit items-center rounded text-sm font-medium text-primary underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
+                >
+                  {t("open-ride")}
+                  <span className="sr-only"> — {booking.tripId}</span>
+                </Link>
+                {booking.amountDueMinor > 0 &&
+                booking.paymentMethod !== "cash" &&
+                booking.status !== "requested" &&
+                booking.status !== "awaiting_payment" ? (
+                  <NotifyBalanceButton tripId={booking.tripId} />
+                ) : null}
+              </div>
             </li>
           );
         })}

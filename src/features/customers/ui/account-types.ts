@@ -8,6 +8,10 @@ export type Ride = {
   time: string;
   status?: string;
   totalAmount?: number;
+  depositDue?: number;
+  balanceDue?: number;
+  amountDue?: number;
+  payUrl?: string | null;
   passengers?: number;
   childSeats?: number;
   babySeats?: number;

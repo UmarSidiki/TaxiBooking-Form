@@ -221,7 +221,13 @@
     "promo-code": "Codice promo",
     "due-now": "Da pagare ora",
     "balance-due": "Saldo",
-    "complete-contact-details-to-continue": "Completa i tuoi dati di contatto per continuare."
+    "complete-contact-details-to-continue": "Completa i tuoi dati di contatto per continuare.",
+    "pay-deposit-to-confirm": "Paga l'acconto per confermare",
+    "due-now-online": "Da pagare ora online",
+    "deposit-rest-cash": "Il resto, in contanti all'autista",
+    "deposit-credited-to-quote": "Scalato dal preventivo finale",
+    "pay-deposit-online": "Paga l'acconto online",
+    "online-payment-not-configured": "Il pagamento online non è configurato. Contatta l'operatore."
   },
   "booking-failed-data-message": "Prenotazione fallita: {0}",
   "embeddable": {
@@ -534,7 +540,12 @@
       "col-customer": "Cliente",
       "col-price": "Prezzo",
       "col-status": "Stato",
-      "col-actions": "Azioni"
+      "col-actions": "Azioni",
+      "DepositDue": "Acconto dovuto",
+      "BalanceDue": "Saldo dovuto",
+      "RefundableDeposit": "Acconto rimborsabile",
+      "OnlineDepositPaid": "Acconto online pagato",
+      "deposit-refund-on-decline": "L'acconto online di {amount} verrà rimborsato automaticamente in caso di rifiuto o annullamento."
     },
     "Home": {
       "failed-to-fetch-dashboard-stats": "Impossibile recuperare statistiche dashboard",
@@ -1819,7 +1830,12 @@
       "notes-placeholder": "Le note amministrative appariranno qui in una versione successiva.",
       "activity-placeholder": "L'attività di audit apparirà qui in una versione successiva.",
       "sessions-count": "{count} sessioni",
-      "status-paid": "Pagato"
+      "status-paid": "Pagato",
+      "balance-due": "Saldo dovuto",
+      "notify-pay": "Notifica pagamento",
+      "notified": "Notificato",
+      "notify-failed": "Notifica non riuscita",
+      "amount-due": "Importo dovuto"
     },
     "CustomerNotes": {
       "loading": "Caricamento note…",
@@ -2754,7 +2770,8 @@
     "distance_failed": "Impossibile calcolare il percorso. Controlla gli indirizzi.",
     "country_blocked": "Le prenotazioni non sono disponibili dalla tua posizione.",
     "outside_service_area": "Questo indirizzo è fuori dalla nostra area di servizio.",
-    "location_required": "Scegli ogni indirizzo dai suggerimenti."
+    "location_required": "Scegli ogni indirizzo dai suggerimenti.",
+    "payment_required": "Il pagamento è necessario prima di confermare questa prenotazione."
   },
   "Pay": {
     "by-appointment": "Su appuntamento",
@@ -2923,7 +2940,15 @@
     "extra-price-each": "Prezzo per seggiolino",
     "payment-title": "Pagamento",
     "example-child-seat": "Un seggiolino",
-    "remove": "Rimuovi"
+    "remove": "Rimuovi",
+    "cash-deposit": "Acconto in contanti",
+    "cash-deposit-percent": "Percentuale acconto in contanti",
+    "cash-deposit-help": "Addebitato online prima della conferma della corsa; il resto si paga in contanti all'autista.",
+    "appointment-deposit": "Acconto richiesta",
+    "appointment-deposit-percent": "Percentuale acconto richiesta",
+    "appointment-deposit-help": "Addebitato online con la richiesta e scalato dal preventivo finale.",
+    "example-cash-deposit": "Corse in contanti: prima il {percent}% online, il resto in contanti all'autista.",
+    "example-appointment-deposit": "Richieste di appuntamento: {percent}% online, scalato dal preventivo finale."
   },
   "Account": {
     "title": "I tuoi viaggi",
@@ -3168,7 +3193,9 @@
     "verified": "Verificato",
     "whatsapp-card-copy": "Accedi con un codice WhatsApp e ricevi lì gli avvisi sulle corse.",
     "whatsapp-code": "Codice WhatsApp",
-    "whatsapp-code-off": "Aggiungi e verifica un numero per accedere con WhatsApp."
+    "whatsapp-code-off": "Aggiungi e verifica un numero per accedere con WhatsApp.",
+    "balance-due": "Saldo dovuto",
+    "cash-to-driver": "in contanti all'autista"
   },
   "Emails": {
     "brand_fallback": "Prenotazione",

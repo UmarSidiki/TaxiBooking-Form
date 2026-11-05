@@ -7,17 +7,20 @@ import type { IVehicle } from "@/features/fleet/model";
 import { useMemo } from "react";
 import { useQuotedTotal } from "@/features/pricing/lib/use-quoted-total";
 import { seatPrices, usePricingExtras } from "@/features/pricing/lib/use-pricing-extras";
+import type { DepositMethod } from "@/features/pricing/lib/deposit-percent";
 
 export function useStep3Pricing({
   selectedVehicle,
   formData,
   distanceData,
   paymentSettings,
+  paymentMethod,
 }: {
   selectedVehicle: IVehicle | undefined;
   formData: FormData;
   distanceData: DistanceData | null;
   paymentSettings: ISetting | null;
+  paymentMethod?: DepositMethod;
 }) {
   const enableTax = paymentSettings?.enableTax ?? false;
   const taxPercentage = paymentSettings?.taxPercentage ?? 0;
@@ -63,7 +66,12 @@ export function useStep3Pricing({
     taxIncluded,
   ]);
 
-  const quoted = useQuotedTotal(formData, distanceData?.distance.km, priced?.total ?? 0);
+  const quoted = useQuotedTotal(
+    formData,
+    distanceData?.distance.km,
+    priced?.total ?? 0,
+    paymentMethod,
+  );
 
   const breakdown = priced?.breakdown;
   const subtotalPrice = breakdown
@@ -90,6 +98,7 @@ export function useStep3Pricing({
     chargeAmount: quoted.chargeAmount,
     depositDue: quoted.depositDue,
     balanceDue: quoted.balanceDue,
+    depositConfig: quoted.depositConfig,
     quoteReady: quoted.ready,
     displaySubtotalAmount: priced?.subtotal ?? 0,
   };

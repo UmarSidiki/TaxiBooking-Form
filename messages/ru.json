@@ -221,7 +221,13 @@
     "promo-code": "Промокод",
     "due-now": "К оплате сейчас",
     "balance-due": "Остаток",
-    "complete-contact-details-to-continue": "Заполните контактные данные, чтобы продолжить."
+    "complete-contact-details-to-continue": "Заполните контактные данные, чтобы продолжить.",
+    "pay-deposit-to-confirm": "Оплатите депозит для подтверждения",
+    "due-now-online": "К оплате онлайн сейчас",
+    "deposit-rest-cash": "Остаток — наличными водителю",
+    "deposit-credited-to-quote": "Засчитывается в итоговый расчёт",
+    "pay-deposit-online": "Оплатить депозит онлайн",
+    "online-payment-not-configured": "Онлайн-оплата не настроена. Свяжитесь с оператором."
   },
   "booking-failed-data-message": "Бронирование не удалось: {0}",
   "embeddable": {
@@ -534,7 +540,12 @@
       "col-customer": "Клиент",
       "col-price": "Цена",
       "col-status": "Статус",
-      "col-actions": "Действия"
+      "col-actions": "Действия",
+      "DepositDue": "Депозит к оплате",
+      "BalanceDue": "Остаток к оплате",
+      "RefundableDeposit": "Возвращаемый депозит",
+      "OnlineDepositPaid": "Онлайн-депозит оплачен",
+      "deposit-refund-on-decline": "Онлайн-депозит {amount} будет автоматически возвращён при отказе или отмене."
     },
     "Home": {
       "failed-to-fetch-dashboard-stats": "Не удалось получить статистику дашборда",
@@ -1819,7 +1830,12 @@
       "notes-placeholder": "Заметки администратора появятся здесь в следующей версии.",
       "activity-placeholder": "Активность аудита появится здесь в следующей версии.",
       "sessions-count": "Сеансов: {count}",
-      "status-paid": "Оплачено"
+      "status-paid": "Оплачено",
+      "balance-due": "Остаток к оплате",
+      "notify-pay": "Напомнить об оплате",
+      "notified": "Уведомлён",
+      "notify-failed": "Не удалось уведомить",
+      "amount-due": "Сумма к оплате"
     },
     "CustomerNotes": {
       "loading": "Загрузка заметок…",
@@ -2754,7 +2770,8 @@
     "distance_failed": "Не удалось рассчитать маршрут. Проверьте адреса.",
     "country_blocked": "Бронирование недоступно из вашего местоположения.",
     "outside_service_area": "Этот адрес находится за пределами зоны обслуживания.",
-    "location_required": "Выберите каждый адрес из подсказок."
+    "location_required": "Выберите каждый адрес из подсказок.",
+    "payment_required": "Для подтверждения бронирования необходимо произвести оплату."
   },
   "Pay": {
     "by-appointment": "По записи",
@@ -2923,7 +2940,15 @@
     "extra-price-each": "Цена за кресло",
     "payment-title": "Оплата",
     "example-child-seat": "Одно детское кресло",
-    "remove": "Удалить"
+    "remove": "Удалить",
+    "cash-deposit": "Депозит наличными",
+    "cash-deposit-percent": "Процент депозита наличными",
+    "cash-deposit-help": "Списывается онлайн до подтверждения поездки; остаток оплачивается наличными водителю.",
+    "appointment-deposit": "Депозит по заявке",
+    "appointment-deposit-percent": "Процент депозита по заявке",
+    "appointment-deposit-help": "Списывается онлайн при заявке и засчитывается в итоговую стоимость.",
+    "example-cash-deposit": "Поездки за наличные: сначала {percent}% онлайн, остаток — наличными водителю.",
+    "example-appointment-deposit": "Заявки на встречу: {percent}% онлайн, засчитывается в итоговый расчёт."
   },
   "Account": {
     "title": "Ваши поездки",
@@ -3168,7 +3193,9 @@
     "verified": "Подтверждён",
     "whatsapp-card-copy": "Входите по коду в WhatsApp и получайте там уведомления о поездках.",
     "whatsapp-code": "Код в WhatsApp",
-    "whatsapp-code-off": "Добавьте и подтвердите номер, чтобы входить через WhatsApp."
+    "whatsapp-code-off": "Добавьте и подтвердите номер, чтобы входить через WhatsApp.",
+    "balance-due": "Остаток к оплате",
+    "cash-to-driver": "наличными водителю"
   },
   "Emails": {
     "brand_fallback": "Бронирование",

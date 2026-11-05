@@ -221,7 +221,13 @@
     "promo-code": "Código promocional",
     "due-now": "A pagar ahora",
     "balance-due": "Saldo pendiente",
-    "complete-contact-details-to-continue": "Completa tus datos de contacto para continuar."
+    "complete-contact-details-to-continue": "Completa tus datos de contacto para continuar.",
+    "pay-deposit-to-confirm": "Pague el depósito para confirmar",
+    "due-now-online": "A pagar ahora online",
+    "deposit-rest-cash": "El resto, en efectivo al conductor",
+    "deposit-credited-to-quote": "Se descuenta del presupuesto final",
+    "pay-deposit-online": "Pagar depósito online",
+    "online-payment-not-configured": "El pago online no está configurado. Contacte al operador."
   },
   "booking-failed-data-message": "Reserva fallida: {0}",
   "embeddable": {
@@ -534,7 +540,12 @@
       "col-customer": "Cliente",
       "col-price": "Precio",
       "col-status": "Estado",
-      "col-actions": "Acciones"
+      "col-actions": "Acciones",
+      "DepositDue": "Depósito pendiente",
+      "BalanceDue": "Saldo pendiente",
+      "RefundableDeposit": "Depósito reembolsable",
+      "OnlineDepositPaid": "Depósito online pagado",
+      "deposit-refund-on-decline": "El depósito online de {amount} se reembolsará automáticamente si rechaza o cancela."
     },
     "Home": {
       "failed-to-fetch-dashboard-stats": "Error al obtener estadísticas del tablero",
@@ -1819,7 +1830,12 @@
       "notes-placeholder": "Las notas de administración aparecerán aquí en una versión posterior.",
       "activity-placeholder": "La actividad de auditoría aparecerá aquí en una versión posterior.",
       "sessions-count": "{count} sesiones",
-      "status-paid": "Pagado"
+      "status-paid": "Pagado",
+      "balance-due": "Saldo pendiente",
+      "notify-pay": "Notificar pago",
+      "notified": "Notificado",
+      "notify-failed": "No se pudo notificar",
+      "amount-due": "Importe pendiente"
     },
     "CustomerNotes": {
       "loading": "Cargando notas…",
@@ -2754,7 +2770,8 @@
     "distance_failed": "No pudimos calcular la ruta. Revisa las direcciones.",
     "country_blocked": "Las reservas no están disponibles desde tu ubicación.",
     "outside_service_area": "Esta dirección está fuera de nuestra zona de servicio.",
-    "location_required": "Elija cada dirección de las sugerencias."
+    "location_required": "Elija cada dirección de las sugerencias.",
+    "payment_required": "Se requiere el pago antes de confirmar esta reserva."
   },
   "Pay": {
     "by-appointment": "Con cita",
@@ -2923,7 +2940,15 @@
     "extra-price-each": "Precio por silla",
     "payment-title": "Pago",
     "example-child-seat": "Una silla infantil",
-    "remove": "Quitar"
+    "remove": "Quitar",
+    "cash-deposit": "Depósito en efectivo",
+    "cash-deposit-percent": "Porcentaje de depósito en efectivo",
+    "cash-deposit-help": "Se cobra online antes de confirmar el viaje; el resto se paga en efectivo al conductor.",
+    "appointment-deposit": "Depósito de solicitud",
+    "appointment-deposit-percent": "Porcentaje de depósito de solicitud",
+    "appointment-deposit-help": "Se cobra online con la solicitud y se descuenta del presupuesto final.",
+    "example-cash-deposit": "Reservas en efectivo: {percent} % online primero, el resto en efectivo al conductor.",
+    "example-appointment-deposit": "Solicitudes de cita: {percent} % online, descontado del presupuesto final."
   },
   "Account": {
     "title": "Tus viajes",
@@ -3168,7 +3193,9 @@
     "verified": "Verificado",
     "whatsapp-card-copy": "Entra con un código de WhatsApp y recibe ahí tus avisos de viaje.",
     "whatsapp-code": "Código por WhatsApp",
-    "whatsapp-code-off": "Añade y verifica un número para entrar con WhatsApp."
+    "whatsapp-code-off": "Añade y verifica un número para entrar con WhatsApp.",
+    "balance-due": "Saldo pendiente",
+    "cash-to-driver": "en efectivo al conductor"
   },
   "Emails": {
     "brand_fallback": "Reserva",

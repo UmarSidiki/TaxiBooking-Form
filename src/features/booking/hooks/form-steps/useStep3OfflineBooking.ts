@@ -107,7 +107,9 @@ export function useStep3OfflineBooking({
     await submitOfflineBooking("bank_transfer");
   };
 
-  const handleMultisafepayBooking = async () => {
+  const openMultisafepay = async (
+    paymentMethod: "multisafepay" | "cash" | "appointment" = "multisafepay",
+  ) => {
     if (isSubmittingRef.current) return;
     if (!validateStep3Contact(formData, t, setErrors)) return;
 
@@ -122,6 +124,7 @@ export function useStep3OfflineBooking({
         },
         body: JSON.stringify({
           draftId,
+          paymentMethod,
           currency: paymentSettings?.stripeCurrency || DEFAULT_STRIPE_CURRENCY,
           customerEmail: formData.email,
           customerName: `${formData.firstName} ${formData.lastName}`,
@@ -192,7 +195,9 @@ export function useStep3OfflineBooking({
   return {
     handleCashBooking,
     handleBankTransferBooking,
-    handleMultisafepayBooking,
+    handleMultisafepayBooking: () => openMultisafepay("multisafepay"),
+    handleCashDepositMultisafepay: () => openMultisafepay("cash"),
+    handleAppointmentDepositMultisafepay: () => openMultisafepay("appointment"),
     handleAppointmentRequest,
   };
 }

@@ -26,24 +26,37 @@ export async function applyConfirmCashBooking(
     };
   }
 
-  const detached = await detachIncompleteQuoteIntent(
-    booking.stripePaymentIntentId
+  const depositPaidCents = Math.max(
+    0,
+    Number(booking.depositPaidCents ?? booking.amountPaidCents) || 0,
   );
-  if (!detached.ok) {
-    return { ok: false, status: 409, message: detached.message };
-  }
+  const hasDeposit = depositPaidCents > 0;
 
-  const multisafepay = await assertMultisafepayNotPaid(
-    booking.multisafepayOrderId
-  );
-  if (!multisafepay.ok) {
-    return { ok: false, status: 409, message: multisafepay.message };
+  // A paid deposit is a separate payment from the quote intent; keep it.
+  if (!hasDeposit) {
+    const detached = await detachIncompleteQuoteIntent(
+      booking.stripePaymentIntentId
+    );
+    if (!detached.ok) {
+      return { ok: false, status: 409, message: detached.message };
+    }
+
+    const multisafepay = await assertMultisafepayNotPaid(
+      booking.multisafepayOrderId
+    );
+    if (!multisafepay.ok) {
+      return { ok: false, status: 409, message: multisafepay.message };
+    }
   }
 
   updateData.status = "upcoming";
   updateData.paymentMethod = "cash";
-  updateData.paymentStatus = "pending";
+  updateData.paymentStatus = hasDeposit ? "completed" : "pending";
   updateData.totalAmount = Number(amount.toFixed(2));
+  updateData.balanceDue = Math.max(
+    0,
+    Number((amount - depositPaidCents / 100).toFixed(2))
+  );
   if (typeof booking.quotedAmount !== "number") {
     updateData.quotedAmount = Number(amount.toFixed(2));
     updateData.quotedAt = new Date();
@@ -54,6 +67,8 @@ export async function applyConfirmCashBooking(
   return {
     ok: true,
     updateData,
-    unsetFields: ["paymentTokenHash", "stripePaymentIntentId"],
+    unsetFields: hasDeposit
+      ? ["paymentTokenHash"]
+      : ["paymentTokenHash", "stripePaymentIntentId"],
   };
 }

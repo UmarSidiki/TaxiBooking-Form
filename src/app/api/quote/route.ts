@@ -36,6 +36,7 @@ export async function POST(request: Request) {
     booking: parsed.data,
     distanceKm,
     tax: settings ?? {},
+    paymentMethod: parsed.data.paymentMethod,
   });
   if (!priced.ok) return NextResponse.json({ error: priced.error }, { status: 400 });
   return NextResponse.json({
@@ -48,5 +49,6 @@ export async function POST(request: Request) {
     depositDue: priced.quote.depositDue,
     balanceDue: priced.quote.balanceDue,
     depositPercent: priced.quote.depositPercent,
+    depositConfig: priced.depositConfig,
   });
 }

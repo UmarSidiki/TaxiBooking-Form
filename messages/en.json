@@ -221,7 +221,13 @@
     "promo-code": "Promo code",
     "due-now": "Due now",
     "balance-due": "Balance due",
-    "complete-contact-details-to-continue": "Complete your contact details to continue."
+    "complete-contact-details-to-continue": "Complete your contact details to continue.",
+    "pay-deposit-to-confirm": "Pay the deposit to confirm",
+    "due-now-online": "Due now online",
+    "deposit-rest-cash": "Rest, in cash to the driver",
+    "deposit-credited-to-quote": "Credited toward the final quote",
+    "pay-deposit-online": "Pay deposit online",
+    "online-payment-not-configured": "Online payment is not configured. Contact the operator."
   },
   "booking-failed-data-message": "Booking failed: {0}",
   "embeddable": {
@@ -381,6 +387,8 @@
       "PaymentMethod": "Payment method",
       "PaymentStatus": "Payment status",
       "TripStatus": "Trip status",
+      "DepositDue": "Deposit due",
+      "BalanceDue": "Balance due",
       "CanceledOn": "Canceled on",
       "RefundProcessed": "Refund processed",
       "CancelRideAndProcessRefund": "Cancel ride & process refund",
@@ -534,7 +542,10 @@
       "col-customer": "Customer",
       "col-price": "Price",
       "col-status": "Status",
-      "col-actions": "Actions"
+      "col-actions": "Actions",
+      "RefundableDeposit": "Refundable deposit",
+      "OnlineDepositPaid": "Online deposit paid",
+      "deposit-refund-on-decline": "The online deposit of {amount} will be refunded automatically if you decline or cancel."
     },
     "Home": {
       "failed-to-fetch-dashboard-stats": "Failed to fetch dashboard stats",
@@ -1769,6 +1780,10 @@
       "payments-empty": "No payments yet.",
       "payment": "Payment",
       "refund": "Refund",
+      "balance-due": "Balance due",
+      "notify-pay": "Notify to pay",
+      "notified": "Notified",
+      "notify-failed": "Could not notify",
       "ride-charge": "Ride charge",
       "trip": "Trip",
       "status-pending": "Pending",
@@ -1819,7 +1834,8 @@
       "notes-placeholder": "Admin notes will appear here in a later release.",
       "activity-placeholder": "Audit activity will appear here in a later release.",
       "sessions-count": "{count} sessions",
-      "status-paid": "Paid"
+      "status-paid": "Paid",
+      "amount-due": "Amount due"
     },
     "CustomerNotes": {
       "loading": "Loading notes…",
@@ -2754,7 +2770,8 @@
     "distance_failed": "We could not calculate the route. Check the addresses.",
     "country_blocked": "Bookings aren't available from your location.",
     "outside_service_area": "This address is outside our service area.",
-    "location_required": "Choose each address from the suggestions."
+    "location_required": "Choose each address from the suggestions.",
+    "payment_required": "Payment is required before this booking can be confirmed."
   },
   "Pay": {
     "by-appointment": "By appointment",
@@ -2923,7 +2940,15 @@
     "extra-price-each": "Price per seat",
     "payment-title": "Payment",
     "example-child-seat": "One child seat",
-    "remove": "Remove"
+    "remove": "Remove",
+    "cash-deposit": "Cash deposit",
+    "cash-deposit-percent": "Cash deposit percent",
+    "cash-deposit-help": "Charged online before the ride is confirmed; the rest is paid in cash to the driver.",
+    "appointment-deposit": "Appointment deposit",
+    "appointment-deposit-percent": "Appointment deposit percent",
+    "appointment-deposit-help": "Charged online with the request and credited toward the final quote.",
+    "example-cash-deposit": "Cash bookings: {percent}% online first, the rest in cash to the driver.",
+    "example-appointment-deposit": "Appointment requests: {percent}% online, credited toward the final quote."
   },
   "Account": {
     "title": "Your trips",
@@ -3065,6 +3090,7 @@
     "fare": "Fare",
     "fare-paid": "Paid",
     "fare-awaiting": "Awaiting payment",
+    "balance-due": "Balance due",
     "pay-card": "Card",
     "pay-cash": "Cash",
     "passengers-line": "{count} passengers",
@@ -3168,7 +3194,8 @@
     "verified": "Verified",
     "whatsapp-card-copy": "Sign in with a code on WhatsApp and get ride updates there.",
     "whatsapp-code": "WhatsApp code",
-    "whatsapp-code-off": "Add and verify a number to sign in with WhatsApp."
+    "whatsapp-code-off": "Add and verify a number to sign in with WhatsApp.",
+    "cash-to-driver": "cash to the driver"
   },
   "Emails": {
     "brand_fallback": "Booking",

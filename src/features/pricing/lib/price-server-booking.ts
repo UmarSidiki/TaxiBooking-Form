@@ -11,6 +11,13 @@ import {
   type FareQuote,
   type QuoteInput,
 } from "@/features/pricing/lib/quote-fare";
+import {
+  depositConfigFromRule,
+  depositPercentForMethod,
+  type DepositConfig,
+  type DepositMethod,
+  type RuleLike,
+} from "@/features/pricing/lib/deposit-percent";
 import type { TaxSettings } from "@/features/payments/lib/fare/calculate-booking-price";
 import {
   checkTripServiceArea,
@@ -30,7 +37,11 @@ export async function priceServerBooking(input: {
   /** Customer-facing routes: every address must lie in the configured service area. */
   enforceServiceArea?: boolean;
   now?: Date;
-}): Promise<{ ok: true; quote: FareQuote } | { ok: false; error: PriceFailure }> {
+  /** Selects the deposit percentage that applies to this payment method. */
+  paymentMethod?: DepositMethod;
+}): Promise<
+  { ok: true; quote: FareQuote; depositConfig: DepositConfig } | { ok: false; error: PriceFailure }
+> {
   await connectDB();
   const customerKey = input.booking.email?.trim().toLowerCase() ?? "";
   const [rule, setting, promo] = await Promise.all([
@@ -73,7 +84,10 @@ export async function priceServerBooking(input: {
         : undefined,
       holidays,
       extras,
-      depositPercent: Number(rule?.depositPercent) || 0,
+      depositPercent: depositPercentForMethod(
+        rule as RuleLike | null,
+        input.paymentMethod,
+      ),
     },
     promo.promo,
   );
@@ -81,5 +95,9 @@ export async function priceServerBooking(input: {
     const redeemed = await redeemPromo(promo.promo.id, customerKey);
     if (!redeemed.ok) return redeemed;
   }
-  return { ok: true, quote };
+  return {
+    ok: true,
+    quote,
+    depositConfig: depositConfigFromRule(rule as RuleLike | null),
+  };
 }

@@ -2,17 +2,31 @@
 
 import { useEffect, useState } from "react";
 import type { FormData } from "@/features/booking/context/booking-form-context";
+import type {
+  DepositConfig,
+  DepositMethod,
+} from "@/features/pricing/lib/deposit-percent";
 
 export type QuotedFare = {
   total: number;
   chargeAmount: number;
   depositDue: number;
   balanceDue: number;
+  depositConfig: DepositConfig;
 };
 
-type QuoteResponse = QuotedFare & { total?: number; chargeAmount?: number };
+type QuoteResponse = Omit<QuotedFare, "depositConfig"> & {
+  total?: number;
+  chargeAmount?: number;
+  depositConfig?: DepositConfig;
+};
 
-export function useQuotedTotal(formData: FormData, distanceKm: number | undefined, fallback: number) {
+export function useQuotedTotal(
+  formData: FormData,
+  distanceKm: number | undefined,
+  fallback: number,
+  paymentMethod?: DepositMethod,
+) {
   const [quote, setQuote] = useState<QuotedFare | null>(null);
   const [ready, setReady] = useState(false);
 
@@ -24,7 +38,7 @@ export function useQuotedTotal(formData: FormData, distanceKm: number | undefine
       void fetch("/api/quote", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...formData, distanceKm }),
+        body: JSON.stringify({ ...formData, distanceKm, paymentMethod }),
         signal: controller.signal,
       })
         .then((response) => response.json())
@@ -39,6 +53,10 @@ export function useQuotedTotal(formData: FormData, distanceKm: number | undefine
             chargeAmount,
             depositDue: data.depositDue ?? 0,
             balanceDue: data.balanceDue ?? 0,
+            depositConfig: data.depositConfig ?? {
+              cash: { enabled: false, percent: 0 },
+              appointment: { enabled: false, percent: 0 },
+            },
           });
         })
         .catch(() => setQuote(null))
@@ -67,6 +85,7 @@ export function useQuotedTotal(formData: FormData, distanceKm: number | undefine
     formData.passengers,
     formData.duration,
     distanceKm,
+    paymentMethod,
   ]);
 
   return {
@@ -74,6 +93,10 @@ export function useQuotedTotal(formData: FormData, distanceKm: number | undefine
     chargeAmount: quote?.chargeAmount ?? fallback,
     depositDue: quote?.depositDue ?? 0,
     balanceDue: quote?.balanceDue ?? 0,
+    depositConfig: quote?.depositConfig ?? {
+      cash: { enabled: false, percent: 0 },
+      appointment: { enabled: false, percent: 0 },
+    },
     ready,
   };
 }

@@ -127,19 +127,38 @@ async function handleChargeRefunded(charge: Stripe.Charge) {
 
   if (!paymentIntentId) return;
 
-  const booking = await Booking.findOne({ stripePaymentIntentId: paymentIntentId });
+  const booking = await Booking.findOne({
+    $or: [
+      { stripePaymentIntentId: paymentIntentId },
+      { depositPaymentIntentId: paymentIntentId },
+    ],
+  });
   if (!booking) return;
 
-  const amountRefunded = charge.amount_refunded / 100;
   const totalAmount = booking.totalAmount || 0;
+  // Deposit and balance may be captured on separate PaymentIntents. Keep the
+  // larger cumulative figure so a later per-charge webhook cannot shrink the
+  // combined refund already recorded by the cancellation.
+  const webhookCents = Math.max(0, charge.amount_refunded || 0);
+  const storedCents = Math.max(
+    0,
+    Number(booking.amountRefundedCents) || 0,
+    Math.round((Number(booking.refundAmount) || 0) * 100)
+  );
+  const refundCents = Math.max(webhookCents, storedCents);
+  const amountRefunded = refundCents / 100;
 
   await Booking.updateOne(
-    { stripePaymentIntentId: paymentIntentId },
+    { _id: booking._id },
     {
       $set: {
-        paymentStatus: charge.refunded ? 'refunded' : 'completed',
+        paymentStatus: charge.refunded ? 'refunded' : booking.paymentStatus,
         refundAmount: amountRefunded,
-        refundPercentage: totalAmount > 0 ? (amountRefunded / totalAmount) * 100 : 0,
+        amountRefundedCents: refundCents,
+        refundPercentage:
+          totalAmount > 0
+            ? Math.min(100, (amountRefunded / totalAmount) * 100)
+            : 0,
       },
     }
   );

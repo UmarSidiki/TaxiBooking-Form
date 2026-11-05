@@ -10,6 +10,7 @@ import {
   toMinor,
 } from "@/features/customers-admin/lib/customer-profile/customer-profile-payments";
 import { iso } from "@/features/customers-admin/lib/customer-profile/customer-profile-time";
+import { rideAmountDue } from "@/features/invoices/lib/ride-amount-due";
 import { marketingStatusFromProfile } from "@/features/marketing/lib/consent/marketing-consent.types";
 import type {
   CustomerBookingRow,
@@ -22,6 +23,12 @@ export function digitsOf(value: string | null | undefined): string {
 }
 
 export function toBookingRow(booking: ProfileBookingDoc): CustomerBookingRow {
+  const voided =
+    booking.status === "canceled" || booking.paymentStatus === "refunded";
+  const online =
+    booking.paymentMethod === "stripe" || booking.paymentMethod === "multisafepay";
+  const due = rideAmountDue(booking);
+  const payable = !voided && (due.purpose === "balance" || online);
   return {
     id: String(booking._id),
     tripId: booking.tripId,
@@ -35,6 +42,9 @@ export function toBookingRow(booking: ProfileBookingDoc): CustomerBookingRow {
     totalMinor: toMinor(booking.totalAmount),
     paidMinor: paidMinor(booking),
     refundedMinor: refundedMinor(booking),
+    depositDueMinor: voided ? 0 : toMinor(due.depositDue),
+    balanceDueMinor: voided ? 0 : toMinor(due.balanceDue),
+    amountDueMinor: payable ? toMinor(due.amountDue) : 0,
     createdAt: iso(booking.createdAt),
   };
 }

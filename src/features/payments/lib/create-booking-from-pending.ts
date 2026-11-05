@@ -11,6 +11,11 @@ import type {
 } from '@/features/payments/lib/finalize-paid-booking.types';
 import { sendBookingEmails } from '@/features/payments/lib/send-booking-emails';
 import { recordCheckoutMarketingConsent } from '@/features/marketing/lib/checkout/record-checkout-consent';
+import { createCashBookingEmailData } from '@/features/booking/lib/create-cash-booking-email-data';
+import { updateBookingFields } from '@/features/booking/lib/booking.repo';
+import { sendRequestReceivedEmail } from '@/features/booking/email/request-received';
+import { sendNewAppointmentRequestAdminEmail } from '@/features/booking/email/new-appointment-request-admin';
+import type { CashBookingInput } from '@/features/booking/schema/cash-booking.schema';
 
 const PAID_AMOUNT_TOLERANCE = 0.05;
 
@@ -75,9 +80,35 @@ export async function createBookingFromPending(
       // Consent capture must never fail a paid booking.
     }
 
+    if (pendingBooking.purpose === 'appointment_deposit') {
+      const emailData = await createCashBookingEmailData(
+        pendingBooking.bookingData as unknown as CashBookingInput,
+        vehicle,
+        orderId,
+        newBooking.totalAmount ?? paidAmount,
+        baseUrl,
+        newBooking._id.toString(),
+      );
+      const customerSent = await sendRequestReceivedEmail(emailData);
+      const adminSent = await sendNewAppointmentRequestAdminEmail(emailData);
+      if (customerSent || adminSent) {
+        await updateBookingFields(newBooking._id.toString(), {
+          ...(customerSent ? { requestEmailSent: true } : {}),
+          ...(adminSent ? { adminRequestEmailSent: true } : {}),
+        });
+      }
+      await PendingBooking.deleteOne({ orderId });
+      return {
+        success: true,
+        tripId: orderId,
+        bookingId: newBooking._id.toString(),
+        emails: { confirmationSent: customerSent, adminSent },
+      };
+    }
+
     const emailData = buildBookingEmailData(orderId, pendingBooking, vehicle, {
       bookingId: newBooking._id.toString(),
-      paymentMethod: input.provider,
+      paymentMethod: pendingBooking.paymentMethod || input.provider,
       currency,
       baseUrl,
     });

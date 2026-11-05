@@ -83,6 +83,10 @@ export interface IBooking extends Document {
   refundPercentage?: number;
   /** Sum of captured payments in integer minor units (cents). */
   amountPaidCents?: number;
+  /** Portion of amountPaidCents collected as an online deposit (cents). */
+  depositPaidCents?: number;
+  /** PaymentIntent that captured the online deposit (kept for refunds). */
+  depositPaymentIntentId?: string;
   /** Sum of approved refunds in integer minor units (cents). */
   amountRefundedCents?: number;
   /** Pending change proposal awaiting payment. */
@@ -190,6 +194,7 @@ const BookingSchema: Schema = new Schema({
     default: "pending"
   },
   stripePaymentIntentId: { type: String, unique: true, sparse: true },
+  depositPaymentIntentId: { type: String, index: true },
   multisafepayOrderId: { type: String, unique: true, sparse: true },
   multisafepayTransactionId: { type: String, unique: true, sparse: true },
   status: {
@@ -220,6 +225,7 @@ const BookingSchema: Schema = new Schema({
   refundAmount: { type: Number },
   refundPercentage: { type: Number },
   amountPaidCents: { type: Number },
+  depositPaidCents: { type: Number },
   amountRefundedCents: { type: Number },
   pendingChange: { type: Schema.Types.Mixed },
   canceledAt: { type: Date },

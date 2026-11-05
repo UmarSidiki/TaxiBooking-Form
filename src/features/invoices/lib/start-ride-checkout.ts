@@ -28,6 +28,7 @@ export async function ridePaySummary(tripId: string) {
   const settings = await Setting.findOne().lean();
   return {
     tripId: booking.tripId,
+    status: booking.status,
     pickup: booking.pickup,
     dropoff: booking.dropoff,
     date: booking.date,
@@ -55,6 +56,10 @@ export async function startRideCheckout(
 ) {
   const summary = await ridePaySummary(tripId);
   if (!summary) return { ok: false as const, status: 404, error: "not_found" };
+  // Requests are paid through the quote link, never through the ride balance link.
+  if (["requested", "awaiting_payment", "canceled"].includes(summary.status)) {
+    return { ok: false as const, status: 409, error: "not_payable" };
+  }
   if (summary.amountDue <= 0) return { ok: true as const, state: "paid" as const, summary };
 
   const stripe = stripeClient === undefined ? ((await getStripeClient()) as StripeCheckout | null) : stripeClient;

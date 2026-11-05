@@ -27,6 +27,39 @@ function Step3Payment() {
   const t = useTranslations();
   const { geo } = useGeo();
   const appointFirst = Boolean(paymentSettings?.enableAppointmentRequest);
+  const paymentProps = {
+    t,
+    currencySymbol,
+    stripeConfig: step.stripeConfig,
+    paymentSettings: step.paymentSettings,
+    selectedPaymentMethod: step.selectedPaymentMethod,
+    setSelectedPaymentMethod: step.setSelectedPaymentMethod,
+    contactValid: step.contactValid,
+    clientSecret: step.clientSecret,
+    stripeOrderId: step.stripeOrderId,
+    creatingPaymentIntent: step.creatingPaymentIntent,
+    paymentError: step.paymentError,
+    retryStripePayment: step.retryStripePayment,
+    totalPrice: step.totalPrice,
+    handleStripePaymentSuccess: step.handleStripePaymentSuccess,
+    handleStripePaymentError: step.handleStripePaymentError,
+    handleCashBooking: step.handleCashBooking,
+    handleBankTransferBooking: step.handleBankTransferBooking,
+    handleMultisafepayBooking: step.handleMultisafepayBooking,
+    handleCashDepositMultisafepay: step.handleCashDepositMultisafepay,
+    handleAppointmentDepositMultisafepay: step.handleAppointmentDepositMultisafepay,
+    depositConfig: step.depositConfig,
+    chargeAmount: step.chargeAmount,
+    balanceDue: step.balanceDue,
+    quoteReady: step.quoteReady,
+    multisafepayReady: step.multisafepayReady,
+    isLoading: step.isLoading,
+    formData: step.formData,
+    displaySubtotalAmount: step.displaySubtotalAmount,
+    taxAmount: step.taxAmount,
+    enableTax: step.enableTax,
+    taxPercentage: step.taxPercentage,
+  };
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -54,39 +87,11 @@ function Step3Payment() {
           <Step3CountryBlockedPanel t={t} />
         ) : appointFirst ? (
           <Step3AppointmentRequestPanel
-            t={t}
-            currencySymbol={currencySymbol}
-            totalPrice={step.totalPrice}
-            isLoading={isLoading}
+            {...paymentProps}
             onSubmit={step.handleAppointmentRequest}
           />
         ) : (
-          <Step3PaymentMethods
-            t={t}
-            currencySymbol={currencySymbol}
-            stripeConfig={step.stripeConfig}
-            paymentSettings={step.paymentSettings}
-            selectedPaymentMethod={step.selectedPaymentMethod}
-            setSelectedPaymentMethod={step.setSelectedPaymentMethod}
-            contactValid={step.contactValid}
-            clientSecret={step.clientSecret}
-            stripeOrderId={step.stripeOrderId}
-            creatingPaymentIntent={step.creatingPaymentIntent}
-            paymentError={step.paymentError}
-            retryStripePayment={step.retryStripePayment}
-            totalPrice={step.totalPrice}
-            handleStripePaymentSuccess={step.handleStripePaymentSuccess}
-            handleStripePaymentError={step.handleStripePaymentError}
-            handleCashBooking={step.handleCashBooking}
-            handleBankTransferBooking={step.handleBankTransferBooking}
-            handleMultisafepayBooking={step.handleMultisafepayBooking}
-            isLoading={step.isLoading}
-            formData={step.formData}
-            displaySubtotalAmount={step.displaySubtotalAmount}
-            taxAmount={step.taxAmount}
-            enableTax={step.enableTax}
-            taxPercentage={step.taxPercentage}
-          />
+          <Step3PaymentMethods {...paymentProps} />
         )}
         <div className="flex flex-col sm:flex-row gap-3">
           <Button

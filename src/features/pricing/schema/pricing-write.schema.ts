@@ -26,6 +26,10 @@ export const pricingRuleWriteSchema = z.object({
   holidays: z.array(holiday).max(60),
   extras: z.object({ meetGreet: extra, childSeat: extra, babySeat: extra }),
   depositPercent: z.coerce.number().min(0).max(100).optional(),
+  cashDepositEnabled: z.boolean().optional(),
+  cashDepositPercent: z.coerce.number().min(0).max(100).optional(),
+  appointmentDepositEnabled: z.boolean().optional(),
+  appointmentDepositPercent: z.coerce.number().min(0).max(100).optional(),
 });
 
 export const promoActiveSchema = z.object({

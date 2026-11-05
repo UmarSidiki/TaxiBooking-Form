@@ -2,10 +2,10 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { NextRequest } from "next/server";
 import Stripe from "stripe";
 import { Setting } from "@/features/settings/model";
+import PricingRule from "@/features/pricing/model/PricingRule";
 import { PendingBooking, Booking } from "@/features/booking/model";
 import { createVehicle } from "./helpers/fixtures";
 import { createCashBooking } from "@/features/booking/lib/create-cash-booking.service";
-import { shouldOpenCardSession } from "@/features/payments/lib/checkout/should-open-card-session";
 import type { CashBookingInput } from "@/features/booking/schema/cash-booking.schema";
 import { POST as openSession } from "@/app/api/checkout/session/route";
 import { POST as cancelSession } from "@/app/api/checkout/cancel/route";
@@ -63,12 +63,17 @@ function paymentIntent(amount: number, status = "requires_payment_method") {
   };
 }
 
-async function sessionRequest(draftId: string, overrides: Record<string, unknown> = {}) {
+async function sessionRequest(
+  draftId: string,
+  overrides: Record<string, unknown> = {},
+  paymentMethod?: "card" | "cash" | "appointment",
+) {
   const request = new NextRequest("http://localhost/api/checkout/session", {
     method: "POST",
     headers: { "content-type": "application/json" },
     body: JSON.stringify({
       draftId,
+      paymentMethod,
       customerEmail: "ada@example.com",
       bookingData: { ...BODY, selectedVehicle: vehicleId, ...overrides },
     }),
@@ -89,6 +94,7 @@ async function cancelRequest(draftId: string) {
 
 beforeEach(async () => {
   vi.clearAllMocks();
+  await PricingRule.deleteMany({});
   const vehicle = await createVehicle();
   vehicleId = String(vehicle._id);
   await Setting.create({
@@ -109,34 +115,6 @@ beforeEach(async () => {
 });
 
 describe("card checkout session", () => {
-  it("creates zero PaymentIntents while no payment method is chosen", () => {
-    expect(
-      shouldOpenCardSession({
-        method: "",
-        appointmentOnly: false,
-        enabled: true,
-        quoteReady: true,
-        dueNow: 60,
-        hasSecret: false,
-        creating: false,
-        initialized: false,
-      })
-    ).toBe(false);
-    expect(
-      shouldOpenCardSession({
-        method: "card",
-        appointmentOnly: false,
-        enabled: true,
-        quoteReady: true,
-        dueNow: 60,
-        hasSecret: false,
-        creating: false,
-        initialized: false,
-      })
-    ).toBe(true);
-    expect(mocks.stripe.paymentIntents.create).not.toHaveBeenCalled();
-  });
-
   it("reuses one PaymentIntent when card is selected twice", async () => {
     const draftId = crypto.randomUUID();
     const first = await sessionRequest(draftId);
@@ -176,6 +154,53 @@ describe("card checkout session", () => {
     const pending = await PendingBooking.findOne({ draftId }).lean();
     expect(pending?.status).toBe("abandoned");
   });
+
+  it("charges only the cash deposit and records the pending purpose", async () => {
+    await PricingRule.create({
+      cashDepositEnabled: true,
+      cashDepositPercent: 30,
+      depositPercent: 0,
+    });
+    const draftId = crypto.randomUUID();
+
+    const result = await sessionRequest(draftId, {}, "cash");
+
+    expect(result.status).toBe(200);
+    expect(result.body.amount).toBe(18);
+    const pending = await PendingBooking.findOne({ draftId }).lean();
+    expect(pending?.purpose).toBe("cash_deposit");
+    expect(pending?.paymentMethod).toBe("cash");
+    expect(pending?.expectedAmount).toBe(18);
+    const params = mocks.stripe.paymentIntents.create.mock.calls[0][0] as {
+      amount: number;
+      metadata: { purpose: string };
+    };
+    expect(params.amount).toBe(1800);
+    expect(params.metadata.purpose).toBe("cash_deposit");
+  });
+
+  it("charges only the appointment deposit and records the pending purpose", async () => {
+    await PricingRule.create({
+      appointmentDepositEnabled: true,
+      appointmentDepositPercent: 15,
+      depositPercent: 0,
+    });
+    const draftId = crypto.randomUUID();
+
+    const result = await sessionRequest(draftId, {}, "appointment");
+
+    expect(result.status).toBe(200);
+    expect(result.body.amount).toBe(9);
+    const pending = await PendingBooking.findOne({ draftId }).lean();
+    expect(pending?.purpose).toBe("appointment_deposit");
+    expect(pending?.paymentMethod).toBe("unpaid");
+    const params = mocks.stripe.paymentIntents.create.mock.calls[0][0] as {
+      amount: number;
+      metadata: { purpose: string };
+    };
+    expect(params.amount).toBe(900);
+    expect(params.metadata.purpose).toBe("appointment_deposit");
+  });
 });
 
 describe("offline cash booking", () => {
@@ -197,6 +222,25 @@ describe("offline cash booking", () => {
     if (!first.ok || !second.ok) return;
     expect(second.tripId).toBe(first.tripId);
     expect(await Booking.countDocuments({ draftId })).toBe(1);
+  });
+
+  it("rejects a direct cash booking when a cash deposit is required", async () => {
+    await PricingRule.create({
+      cashDepositEnabled: true,
+      cashDepositPercent: 30,
+    });
+    const cash = {
+      ...BODY,
+      selectedVehicle: vehicleId,
+      paymentMethod: "cash",
+      whatsappOptIn: false,
+      locale: "en",
+    } as CashBookingInput;
+
+    const result = await createCashBooking(cash, undefined, crypto.randomUUID());
+
+    expect(result.ok).toBe(false);
+    if (!result.ok) expect(result.message).toBe("payment_required");
   });
 
   it("dedupes two booking POSTs sharing an Idempotency-Key header", async () => {

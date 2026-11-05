@@ -45,6 +45,8 @@ export type ProfileBookingDoc = {
   paymentStatus?: string | null;
   paymentMethod?: string | null;
   totalAmount?: number | null;
+  depositDue?: number | null;
+  balanceDue?: number | null;
   amountPaidCents?: number | null;
   amountRefundedCents?: number | null;
   refundAmount?: number | null;
@@ -61,6 +63,8 @@ const BOOKING_FIELDS = [
   "paymentStatus",
   "paymentMethod",
   "totalAmount",
+  "depositDue",
+  "balanceDue",
   "amountPaidCents",
   "amountRefundedCents",
   "refundAmount",

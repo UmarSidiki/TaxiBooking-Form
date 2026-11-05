@@ -1,7 +1,10 @@
 import type Stripe from "stripe";
 import type { HydratedDocument } from "mongoose";
 import { PendingBooking } from "@/features/booking/model";
-import type { IPendingBooking } from "@/features/booking/model/PendingBooking";
+import type {
+  IPendingBooking,
+  PendingBookingPurpose,
+} from "@/features/booking/model/PendingBooking";
 import { jsonError } from "@/shared/http/json-error";
 import type { checkoutSessionBodySchema } from "@/features/payments/schema/checkout-session.schema";
 import type { z } from "zod";
@@ -22,13 +25,11 @@ export type OpenCheckoutSessionResult =
 
 const PENDING_TTL_MS = 48 * 60 * 60 * 1000;
 
-/** Stripe statuses we can still hand back to the client for confirmation. */
+/** Stripe statuses where Elements can still collect/confirm payment details. */
 const REUSABLE_STATUSES = new Set([
   "requires_payment_method",
   "requires_confirmation",
   "requires_action",
-  "processing",
-  "succeeded",
 ]);
 
 export function isReusableIntent(intent: Stripe.PaymentIntent) {
@@ -41,6 +42,8 @@ export async function storePendingIntent(input: {
   existing: HydratedDocument<IPendingBooking> | null;
   intent: Stripe.PaymentIntent;
   bookingData: CheckoutSessionInput["bookingData"];
+  paymentMethod: string;
+  purpose: PendingBookingPurpose;
   priced: {
     total: number;
     subtotal: number;
@@ -65,7 +68,8 @@ export async function storePendingIntent(input: {
       fareLines: input.priced.lines,
       promoCode: input.priced.promoCode,
     },
-    paymentMethod: "stripe",
+    paymentMethod: input.paymentMethod,
+    purpose: input.purpose,
     stripePaymentIntentId: input.intent.id,
     status: "open" as const,
     expectedAmount: input.priced.chargeAmount,

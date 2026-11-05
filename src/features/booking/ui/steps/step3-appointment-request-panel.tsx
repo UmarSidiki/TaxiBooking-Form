@@ -3,21 +3,44 @@
 import { Button } from "@/shared/ui/button";
 import { Card } from "@/shared/ui/card";
 import { CalendarClock, Loader2 } from "lucide-react";
-import type { useTranslations } from "next-intl";
+import { Step3DepositPanel } from "@/features/booking/ui/steps/step3-deposit-panel";
+import type { Step3PaymentMethodsProps } from "@/features/booking/ui/steps/step3-payment-methods.types";
 
 export function Step3AppointmentRequestPanel({
-  t,
-  currencySymbol,
-  totalPrice,
-  isLoading,
   onSubmit,
-}: {
-  t: ReturnType<typeof useTranslations>;
-  currencySymbol: string;
-  totalPrice: number;
-  isLoading: boolean;
-  onSubmit: () => void;
-}) {
+  ...props
+}: Step3PaymentMethodsProps & { onSubmit: () => void }) {
+  const {
+    t,
+    currencySymbol,
+    totalPrice,
+    isLoading,
+    depositConfig,
+    chargeAmount,
+    balanceDue,
+    quoteReady,
+    multisafepayReady,
+    handleAppointmentDepositMultisafepay,
+  } = props;
+
+  const appointmentDepositRequired =
+    depositConfig.appointment.enabled &&
+    depositConfig.appointment.percent > 0 &&
+    chargeAmount > 0;
+
+  if (appointmentDepositRequired) {
+    return (
+      <Step3DepositPanel
+        {...props}
+        mode="appointment"
+        depositAmount={chargeAmount}
+        balanceAmount={balanceDue}
+        multisafepayReady={multisafepayReady}
+        handleMultisafepay={handleAppointmentDepositMultisafepay}
+      />
+    );
+  }
+
   return (
     <Card className="p-5 flex flex-col gap-4">
       <div className="flex items-start gap-3">
@@ -41,7 +64,7 @@ export function Step3AppointmentRequestPanel({
       <Button
         type="button"
         className="min-h-11 w-full"
-        disabled={isLoading || totalPrice <= 0}
+        disabled={isLoading || totalPrice <= 0 || !quoteReady}
         onClick={onSubmit}
       >
         {isLoading ? (

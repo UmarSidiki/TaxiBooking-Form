@@ -18,6 +18,11 @@ export function buildPaidBookingRecord(
 ) {
   const currencySymbol = getCurrencySymbol(options.currency);
   const data = pending.bookingData;
+  const purpose = pending.purpose ?? "booking";
+  const isAppointment = purpose === "appointment_deposit";
+  const paymentMethod = isAppointment
+    ? "unpaid"
+    : pending.paymentMethod || options.paymentMethod;
 
   return {
     tripId: orderId,
@@ -51,12 +56,22 @@ export function buildPaidBookingRecord(
     phone: data.phone,
     whatsappOptIn: data.whatsappOptIn ?? false,
     locale: data.locale,
-    paymentMethod: options.paymentMethod,
+    paymentMethod,
     paymentStatus: 'completed' as const,
+    amountPaidCents: Math.round(options.paidAmount * 100),
+    ...(purpose === "booking"
+      ? {}
+      : {
+          depositPaidCents: Math.round(options.paidAmount * 100),
+          ...(options.stripePaymentIntentId
+            ? { depositPaymentIntentId: options.stripePaymentIntentId }
+            : {}),
+        }),
     stripePaymentIntentId: options.stripePaymentIntentId,
     multisafepayOrderId: options.multisafepayOrderId,
     multisafepayTransactionId: options.multisafepayTransactionId,
-    status: 'upcoming' as const,
+    status: isAppointment ? ('requested' as const) : ('upcoming' as const),
+    ...(isAppointment ? { estimatedAmount: data.totalAmount } : {}),
     totalAmount: data.totalAmount,
     subtotalAmount: data.subtotalAmount,
     taxAmount: data.taxAmount,

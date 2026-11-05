@@ -29,7 +29,9 @@ export async function GET(request: NextRequest) {
     if (role === "partner") query["assignedPartner._id"] = session.user.id;
 
     const rides = await Booking.find(query)
-      .select("tripId date time pickup dropoff assignedDriver assignedPartner driverRideStatus")
+      .select(
+        "tripId date time pickup dropoff status bookingType duration passengers flightNumber vehicleDetails assignedDriver assignedPartner driverRideStatus",
+      )
       .sort({ date: 1, time: 1 })
       .limit(300)
       .lean();

@@ -1,16 +1,6 @@
 "use client";
 
-type Ride = {
-  _id: string;
-  date: string;
-  time: string;
-  pickup: string;
-  dropoff?: string;
-  assignedDriver?: { name?: string };
-  assignedPartner?: { name?: string };
-};
-
-type TimeOff = { _id: string; startsAt: string; endsAt: string; note?: string };
+import type { CalendarRide, CalendarTimeOff } from "@/features/calendar/ui/calendar-types";
 
 export function CalendarAgenda({
   rides,
@@ -18,12 +8,14 @@ export function CalendarAgenda({
   emptyLabel,
   timeOffLabel,
   unassignedLabel,
+  onSelectRide,
 }: {
-  rides: Ride[];
-  timeOff: TimeOff[];
+  rides: CalendarRide[];
+  timeOff: CalendarTimeOff[];
   emptyLabel: string;
   timeOffLabel: string;
   unassignedLabel: string;
+  onSelectRide: (ride: CalendarRide) => void;
 }) {
   if (rides.length === 0 && timeOff.length === 0) {
     return <p className="text-sm text-muted-foreground">{emptyLabel}</p>;
@@ -39,12 +31,24 @@ export function CalendarAgenda({
         </li>
       ))}
       {rides.map((ride) => (
-        <li key={ride._id} className="rounded-md border border-border bg-card p-4">
-          <p className="font-medium">{ride.date} {ride.time}</p>
-          <p className="text-sm">{ride.pickup}{ride.dropoff ? ` → ${ride.dropoff}` : ""}</p>
-          <p className="text-sm text-muted-foreground">
-            {ride.assignedDriver?.name || ride.assignedPartner?.name || unassignedLabel}
-          </p>
+        <li key={ride._id}>
+          <button
+            type="button"
+            onClick={() => onSelectRide(ride)}
+            className="w-full rounded-md border border-border bg-card p-4 text-start transition-colors hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            aria-label={`${ride.date} ${ride.time} ${ride.pickup}${ride.dropoff ? ` → ${ride.dropoff}` : ""}`}
+          >
+            <p className="font-medium">
+              {ride.date} {ride.time}
+            </p>
+            <p className="text-sm">
+              {ride.pickup}
+              {ride.dropoff ? ` → ${ride.dropoff}` : ""}
+            </p>
+            <p className="text-sm text-muted-foreground">
+              {ride.assignedDriver?.name || ride.assignedPartner?.name || unassignedLabel}
+            </p>
+          </button>
         </li>
       ))}
     </ul>

@@ -5,19 +5,8 @@ import { useTranslations } from "next-intl";
 import { CalendarAgenda } from "@/features/calendar/ui/calendar-agenda";
 import { CalendarFeedPanel } from "@/features/calendar/ui/calendar-feed-panel";
 import { CalendarMonthGrid, CalendarTimeGrid } from "@/features/calendar/ui/calendar-grids";
-
-type Ride = {
-  _id: string;
-  tripId: string;
-  date: string;
-  time: string;
-  pickup: string;
-  dropoff?: string;
-  assignedDriver?: { name?: string };
-  assignedPartner?: { name?: string };
-};
-
-type TimeOff = { _id: string; startsAt: string; endsAt: string; note?: string };
+import { CalendarRideDialog } from "@/features/calendar/ui/calendar-ride-dialog";
+import type { CalendarRide, CalendarTimeOff } from "@/features/calendar/ui/calendar-types";
 
 function localStamp(date: Date) {
   return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
@@ -26,8 +15,9 @@ function localStamp(date: Date) {
 export function CalendarBoard() {
   const t = useTranslations("Calendar");
   const [view, setView] = useState<"agenda" | "day" | "week" | "month">("month");
-  const [rides, setRides] = useState<Ride[]>([]);
-  const [timeOff, setTimeOff] = useState<TimeOff[]>([]);
+  const [rides, setRides] = useState<CalendarRide[]>([]);
+  const [timeOff, setTimeOff] = useState<CalendarTimeOff[]>([]);
+  const [selectedRide, setSelectedRide] = useState<CalendarRide | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -57,6 +47,7 @@ export function CalendarBoard() {
       emptyLabel={t("empty")}
       timeOffLabel={t("time-off")}
       unassignedLabel={t("unassigned")}
+      onSelectRide={setSelectedRide}
     />
   );
 
@@ -81,11 +72,18 @@ export function CalendarBoard() {
       {error ? <p role="alert">{error}</p> : null}
       <div className="md:hidden">{agenda}</div>
       <div className="hidden md:block">
-        {view === "month" ? <CalendarMonthGrid rides={rides} label={t("month")} /> : null}
-        {view === "week" ? <CalendarTimeGrid rides={rides} label={t("week")} days={7} /> : null}
-        {view === "day" ? <CalendarTimeGrid rides={rides} label={t("day")} days={1} /> : null}
+        {view === "month" ? (
+          <CalendarMonthGrid rides={rides} label={t("month")} onSelectRide={setSelectedRide} />
+        ) : null}
+        {view === "week" ? (
+          <CalendarTimeGrid rides={rides} label={t("week")} days={7} onSelectRide={setSelectedRide} />
+        ) : null}
+        {view === "day" ? (
+          <CalendarTimeGrid rides={rides} label={t("day")} days={1} onSelectRide={setSelectedRide} />
+        ) : null}
         {view === "agenda" ? agenda : null}
       </div>
+      <CalendarRideDialog ride={selectedRide} onClose={() => setSelectedRide(null)} />
     </div>
   );
 }

@@ -1,11 +1,6 @@
 "use client";
 
-type Ride = {
-  _id: string;
-  date: string;
-  time: string;
-  pickup: string;
-};
+import type { CalendarRide } from "@/features/calendar/ui/calendar-types";
 
 function localStamp(year: number, month: number, day: number) {
   return `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
@@ -21,7 +16,18 @@ function startOfWeek(anchor: Date) {
 const WEEKDAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 const HOURS = Array.from({ length: 16 }, (_, index) => index + 6);
 
-export function CalendarMonthGrid({ rides, label }: { rides: Ride[]; label: string }) {
+const rideButtonClass =
+  "block w-full truncate rounded px-1 text-start text-sm font-medium text-foreground hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring";
+
+export function CalendarMonthGrid({
+  rides,
+  label,
+  onSelectRide,
+}: {
+  rides: CalendarRide[];
+  label: string;
+  onSelectRide: (ride: CalendarRide) => void;
+}) {
   const today = new Date();
   const year = today.getFullYear();
   const month = today.getMonth();
@@ -50,9 +56,16 @@ export function CalendarMonthGrid({ rides, label }: { rides: Ride[]; label: stri
               <div key={stamp || `empty-${weekIndex}-${index}`} role="gridcell" className="min-h-24 bg-card p-1">
                 <p className="text-sm text-foreground">{day ?? ""}</p>
                 {items.map((ride) => (
-                  <p key={ride._id} className="truncate text-sm font-medium">
+                  <button
+                    key={ride._id}
+                    type="button"
+                    className={rideButtonClass}
+                    onClick={() => onSelectRide(ride)}
+                    title={`${ride.time} ${ride.pickup}`}
+                    aria-label={`${ride.date} ${ride.time} ${ride.pickup}${ride.dropoff ? ` → ${ride.dropoff}` : ""}`}
+                  >
                     {ride.time} {ride.pickup}
-                  </p>
+                  </button>
                 ))}
               </div>
             );
@@ -67,10 +80,12 @@ export function CalendarTimeGrid({
   rides,
   label,
   days,
+  onSelectRide,
 }: {
-  rides: Ride[];
+  rides: CalendarRide[];
   label: string;
   days: number;
+  onSelectRide: (ride: CalendarRide) => void;
 }) {
   const start = days === 1 ? new Date() : startOfWeek(new Date());
   const columns = Array.from({ length: days }, (_, index) => {
@@ -93,7 +108,7 @@ export function CalendarTimeGrid({
           ))}
         </div>
         {HOURS.map((hour) => (
-          <HourRow key={hour} hour={hour} columns={columns} rides={rides} />
+          <HourRow key={hour} hour={hour} columns={columns} rides={rides} onSelectRide={onSelectRide} />
         ))}
       </div>
     </div>
@@ -104,10 +119,12 @@ function HourRow({
   hour,
   columns,
   rides,
+  onSelectRide,
 }: {
   hour: number;
   columns: string[];
-  rides: Ride[];
+  rides: CalendarRide[];
+  onSelectRide: (ride: CalendarRide) => void;
 }) {
   const label = `${String(hour).padStart(2, "0")}:00`;
   return (
@@ -118,9 +135,16 @@ function HourRow({
         return (
           <div key={`${stamp}-${hour}`} role="gridcell" className="min-h-11 border-s border-t border-border p-1">
             {items.map((ride) => (
-              <p key={ride._id} className="truncate text-sm font-medium">
+              <button
+                key={ride._id}
+                type="button"
+                className={rideButtonClass}
+                onClick={() => onSelectRide(ride)}
+                title={`${ride.time} ${ride.pickup}`}
+                aria-label={`${ride.date} ${ride.time} ${ride.pickup}${ride.dropoff ? ` → ${ride.dropoff}` : ""}`}
+              >
                 {ride.time} {ride.pickup}
-              </p>
+              </button>
             ))}
           </div>
         );

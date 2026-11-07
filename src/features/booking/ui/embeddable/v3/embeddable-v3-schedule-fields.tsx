@@ -2,10 +2,7 @@
 
 import { Input } from "@/shared/ui/input";
 import type { FormData, FormErrors } from "@/features/booking/context/booking-form-context";
-import {
-  MAX_PASSENGERS,
-  MIN_PASSENGERS,
-} from "@/features/booking/lib/passenger-limits";
+import { PassengerStepper } from "@/features/booking/ui/passenger-stepper";
 import { AlertCircle, Calendar, Clock, Users } from "lucide-react";
 import type { useTranslations } from "next-intl";
 
@@ -98,40 +95,20 @@ export function EmbeddableV3ScheduleFields({
               <label htmlFor="v3-passengers" className="mb-1 block text-sm font-medium text-foreground">
                 {t("embeddable.passengers")}
               </label>
-              <div className="relative">
-                <div className="absolute left-2 sm:left-3 top-1/2 -translate-y-1/2 text-primary">
-                  <Users className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-                </div>
-                <Input
-                  id="v3-passengers"
-                  type="number"
-                  placeholder={t("embeddable.passengers")}
-                  value={formData.passengers}
-                  max={String(MAX_PASSENGERS)}
-                  onChange={(e) => {
-                    const value = e.target.value;
-                    if (value === "") {
-                      handleInputChange("passengers", "");
-                      return;
-                    }
-                    const numValue = Number(value);
-                    if (!isNaN(numValue) && numValue >= 0) {
-                      setPassengers(numValue);
-                    }
-                  }}
-                  onBlur={() => {
-                    if (Number(formData.passengers) < MIN_PASSENGERS) {
-                      handleInputChange("passengers", MIN_PASSENGERS);
-                    }
-                    handleInputBlur("passengers");
-                  }}
-                  className={`rounded border bg-white pl-8 sm:pl-10 pr-2 sm:pr-3 py-2 sm:py-2.5 text-xs sm:text-sm transition-all duration-200 ${
-                    errors.passengers
-                      ? "border-red-400 focus:border-red-500 focus:ring-red-100"
-                      : "border-gray-300 focus:border-primary focus:ring-primary/20"
-                  }`}
-                />
-              </div>
+              <PassengerStepper
+                inputId="v3-passengers"
+                inputAriaLabel={t("embeddable.passengers")}
+                value={formData.passengers}
+                onChange={setPassengers}
+                onBlur={() => handleInputBlur("passengers")}
+                decreaseLabel={t("embeddable.decrease-passengers")}
+                increaseLabel={t("embeddable.increase-passengers")}
+                icon={<Users className="h-3.5 w-3.5 sm:h-4 sm:w-4" />}
+                iconClassName="text-primary"
+                inputClassName={
+                  errors.passengers ? "border-red-400 focus-visible:border-red-500" : undefined
+                }
+              />
               {errors.passengers && (
                 <div className="flex items-center gap-1 mt-1 text-xs text-red-500">
                   <AlertCircle className="h-3 w-3" />

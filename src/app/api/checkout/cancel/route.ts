@@ -11,7 +11,10 @@ export async function POST(request: NextRequest) {
     const parsed = await parseJsonBody(request, checkoutCancelBodySchema);
     if (!parsed.ok) return parsed.response;
 
-    const result = await cancelCheckoutSession(parsed.data.draftId);
+    const result = await cancelCheckoutSession(
+      parsed.data.draftId,
+      parsed.data.paymentIntentId
+    );
     return NextResponse.json({ success: true, cancelled: result.cancelled });
   } catch (error) {
     console.error("Error cancelling checkout session:", error);

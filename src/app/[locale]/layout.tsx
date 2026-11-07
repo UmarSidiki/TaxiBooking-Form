@@ -125,7 +125,7 @@ export default async function RootLayout({ children, params }: Props) {
         ) : null}
         <script
           dangerouslySetInnerHTML={{
-            __html: `(function(){try{var s=localStorage.getItem('riviera-theme');var d=s||(window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.dataset.rivieraTheme=d;}catch(e){document.documentElement.dataset.rivieraTheme='light';}})();`,
+            __html: `(function(){try{var p=window.location.pathname;var isEmbed=p.indexOf('/embeddable/')!==-1;var d;if(isEmbed){var q=new URLSearchParams(window.location.search).get('theme');d=q==='dark'?'dark':'light';document.documentElement.classList.add('embeddable-page');}else{var s=localStorage.getItem('riviera-theme');d=s||(window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');}document.documentElement.dataset.rivieraTheme=d;}catch(x){document.documentElement.dataset.rivieraTheme='light';}})();`,
           }}
         />
       </head>

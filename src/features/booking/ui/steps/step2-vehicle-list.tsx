@@ -20,6 +20,8 @@ export function Step2VehicleList({
   calculateOriginalPrice,
   currencySymbol,
   handleVehicleSelect,
+  recommendedVehicleId,
+  showNoFitNotice,
   t,
 }: {
   vehicles: IVehicle[];
@@ -33,6 +35,8 @@ export function Step2VehicleList({
   calculateOriginalPrice: (vehicle: IVehicle) => number;
   currencySymbol: string;
   handleVehicleSelect: (vehicleId: string) => void;
+  recommendedVehicleId?: string | null;
+  showNoFitNotice?: boolean;
   t: TFn;
 }) {
   if (vehiclesLoading) {
@@ -63,30 +67,39 @@ export function Step2VehicleList({
   }
 
   return (
-          <div className="veh-list">
-            {sortedVehicles.map((vehicle, index) => {
-              const calculatedPrice = calculatePrice(vehicle);
-              const originalPrice = calculateOriginalPrice(vehicle);
-              const isSelected = formData.selectedVehicle === vehicle._id;
-              const isBestPrice = index === 0; // First vehicle after sorting is the cheapest
+    <>
+      {showNoFitNotice ? (
+        <p className="mb-3 rounded-md border border-border bg-card px-4 py-3 text-sm">
+          {t("Step2.no-vehicle-fits", { count: formData.passengers })}
+        </p>
+      ) : null}
 
-              return (
-                <VehicleCard
-                  key={vehicle._id}
-                  vehicle={vehicle}
-                  formData={formData}
-                  distanceData={distanceData}
-                  calculatingDistance={calculatingDistance}
-                  calculatedPrice={calculatedPrice}
-                  originalPrice={originalPrice}
-                  isSelected={isSelected}
-                  isBestPrice={isBestPrice}
-                  currencySymbol={currencySymbol}
-                  handleVehicleSelect={handleVehicleSelect}
-                  t={t}
-                />
-              );
-            })}
-          </div>
+      <div className="veh-list">
+        {sortedVehicles.map((vehicle, index) => {
+          const calculatedPrice = calculatePrice(vehicle);
+          const originalPrice = calculateOriginalPrice(vehicle);
+          const isSelected = formData.selectedVehicle === vehicle._id;
+          const isBestPrice = index === 0; // First vehicle after sorting is the cheapest
+
+          return (
+            <VehicleCard
+              key={vehicle._id}
+              vehicle={vehicle}
+              formData={formData}
+              distanceData={distanceData}
+              calculatingDistance={calculatingDistance}
+              calculatedPrice={calculatedPrice}
+              originalPrice={originalPrice}
+              isSelected={isSelected}
+              isBestPrice={isBestPrice}
+              isRecommended={vehicle._id === recommendedVehicleId}
+              currencySymbol={currencySymbol}
+              handleVehicleSelect={handleVehicleSelect}
+              t={t}
+            />
+          );
+        })}
+      </div>
+    </>
   );
 }

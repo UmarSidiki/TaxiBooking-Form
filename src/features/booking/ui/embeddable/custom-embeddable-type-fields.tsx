@@ -34,7 +34,6 @@ export function createTypeFieldRenderers(ctx: Ctx) {
   } = ctx;
   const renderBookingType = (field: IFormField) => {
     const hasBorder = field.showBorder !== false;
-    console.log("Booking Type field:", field.id, "showBorder:", field.showBorder, "hasBorder:", hasBorder);
     return (
     <div key={field.id}>
       {hasBorder ? (
@@ -145,7 +144,6 @@ export function createTypeFieldRenderers(ctx: Ctx) {
 
   const renderTripType = (field: IFormField) => {
     const hasBorder = field.showBorder !== false;
-    console.log("Trip Type field:", field.id, "showBorder:", field.showBorder, "hasBorder:", hasBorder);
     return (
     <div key={field.id}>
       {hasBorder ? (

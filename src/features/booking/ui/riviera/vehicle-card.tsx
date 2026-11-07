@@ -21,6 +21,7 @@ export function VehicleCard({
   originalPrice,
   isSelected,
   isBestPrice,
+  isRecommended,
   currencySymbol,
   handleVehicleSelect,
   t,
@@ -33,6 +34,7 @@ export function VehicleCard({
   originalPrice: number;
   isSelected: boolean;
   isBestPrice: boolean;
+  isRecommended?: boolean;
   currencySymbol: string;
   handleVehicleSelect: (vehicleId: string) => void;
   t: TFn;
@@ -65,6 +67,7 @@ export function VehicleCard({
       <div className="info">
         <h3>
           {vehicle.name}
+          {isRecommended && <span className="tag">{t("Step2.recommended")}</span>}
           {isBestPrice && <span className="tag">{t("Step2.best-price")}</span>}
         </h3>
         {vehicle.description && <span className="mdl">{vehicle.description}</span>}

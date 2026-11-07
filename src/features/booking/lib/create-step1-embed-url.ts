@@ -1,14 +1,19 @@
 import type { FormData } from "@/features/booking/context/booking-form-context";
+import { MAX_PASSENGERS, MIN_PASSENGERS } from "@/features/booking/lib/passenger-limits";
 
 export function createStep1EmbedUrl(formData: FormData): string {
   const locale = window.location.pathname.split("/")[1]; // Extract locale from URL path
+  const passengerCount = Math.min(
+    MAX_PASSENGERS,
+    Math.max(MIN_PASSENGERS, Number(formData.passengers) || MIN_PASSENGERS)
+  );
   const params = new URLSearchParams({
     step: "2",
     bookingType: formData.bookingType,
     pickup: formData.pickup.trim(),
     date: formData.date,
     time: formData.time,
-    passengers: String(formData.passengers),
+    passengers: String(passengerCount),
     source: "embed_v1",
   });
 

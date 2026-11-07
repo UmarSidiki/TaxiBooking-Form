@@ -1,5 +1,67 @@
-:root {
-  --background: oklch(0.7 0.1 22 / 0%);
+html.embeddable-page {
+  --background: transparent;
+}
+
+/* Embedded widgets render inside an iframe: the page canvas (not the form
+   card) must stay transparent so the host page shows through. */
+html.embeddable-page,
+html.embeddable-page body {
+  background: transparent !important;
+  background-color: transparent !important;
+}
+
+/* The preset widgets were written with light utility classes. When the embed
+   is explicitly set to dark, remap those utilities to the palette tokens. */
+html.embeddable-page[data-riviera-theme="dark"] .riviera-embed .bg-white:not(.loading-dot):not([data-slot="input"]):not(select):not(textarea),
+html.embeddable-page[data-riviera-theme="dark"] .riviera-embed .bg-white\/90,
+html.embeddable-page[data-riviera-theme="dark"] .riviera-embed .bg-white\/80 {
+  background-color: var(--sheet) !important;
+}
+html.embeddable-page[data-riviera-theme="dark"] .riviera-embed .bg-slate-50,
+html.embeddable-page[data-riviera-theme="dark"] .riviera-embed .bg-slate-100,
+html.embeddable-page[data-riviera-theme="dark"] .riviera-embed .bg-gray-50,
+html.embeddable-page[data-riviera-theme="dark"] .riviera-embed .bg-gray-100 {
+  background-color: var(--well) !important;
+}
+html.embeddable-page[data-riviera-theme="dark"] .riviera-embed .bg-slate-200,
+html.embeddable-page[data-riviera-theme="dark"] .riviera-embed .bg-gray-200 {
+  background-color: var(--rule) !important;
+}
+html.embeddable-page[data-riviera-theme="dark"] .riviera-embed .text-slate-800,
+html.embeddable-page[data-riviera-theme="dark"] .riviera-embed .text-slate-900,
+html.embeddable-page[data-riviera-theme="dark"] .riviera-embed .text-gray-800,
+html.embeddable-page[data-riviera-theme="dark"] .riviera-embed .text-gray-900 {
+  color: var(--ink) !important;
+}
+html.embeddable-page[data-riviera-theme="dark"] .riviera-embed .text-slate-400,
+html.embeddable-page[data-riviera-theme="dark"] .riviera-embed .text-slate-500,
+html.embeddable-page[data-riviera-theme="dark"] .riviera-embed .text-slate-600,
+html.embeddable-page[data-riviera-theme="dark"] .riviera-embed .text-slate-700,
+html.embeddable-page[data-riviera-theme="dark"] .riviera-embed .text-gray-600,
+html.embeddable-page[data-riviera-theme="dark"] .riviera-embed .text-gray-700,
+html.embeddable-page[data-riviera-theme="dark"] .riviera-embed .text-neutral-500 {
+  color: var(--ink2) !important;
+}
+html.embeddable-page[data-riviera-theme="dark"] .riviera-embed .border-slate-200,
+html.embeddable-page[data-riviera-theme="dark"] .riviera-embed .border-slate-300,
+html.embeddable-page[data-riviera-theme="dark"] .riviera-embed .border-gray-200,
+html.embeddable-page[data-riviera-theme="dark"] .riviera-embed .border-gray-300 {
+  border-color: var(--rule) !important;
+}
+html.embeddable-page[data-riviera-theme="dark"] .riviera-embed .hover\:bg-slate-100:hover,
+html.embeddable-page[data-riviera-theme="dark"] .riviera-embed .hover\:bg-gray-100:hover {
+  background-color: var(--well) !important;
+}
+html.embeddable-page[data-riviera-theme="dark"] .riviera-embed .hover\:bg-red-50:hover {
+  background-color: color-mix(in srgb, var(--err) 14%, transparent) !important;
+}
+html.embeddable-page[data-riviera-theme="dark"] .riviera-embed .hover\:text-slate-800:hover,
+html.embeddable-page[data-riviera-theme="dark"] .riviera-embed .hover\:text-gray-800:hover {
+  color: var(--ink) !important;
+}
+html.embeddable-page[data-riviera-theme="dark"] .riviera-embed .hover\:border-slate-300:hover,
+html.embeddable-page[data-riviera-theme="dark"] .riviera-embed .hover\:border-gray-300:hover {
+  border-color: var(--rule2) !important;
 }
 
 @keyframes taxiDrive {

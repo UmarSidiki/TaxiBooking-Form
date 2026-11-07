@@ -4,6 +4,7 @@ import { memo, useMemo } from "react";
 import { ArrowLeft } from "lucide-react";
 import { Button } from "@/shared/ui/button";
 import { useStep2 } from "@/features/booking/hooks/form-steps/useStep2";
+import { partitionVehiclesByPassengerFit } from "@/features/booking/lib/vehicle-suitability";
 import { useTranslations } from "next-intl";
 import { useCurrency } from "@/shared/context/currency-context";
 import { Step2TripSummary } from "../../steps/step2-trip-summary";
@@ -17,6 +18,7 @@ function Step2VehicleSelection() {
     vehiclesLoading,
     vehiclesError,
     distanceData,
+    recommendedVehicleId,
 
     // Tax settings
     enableTax,
@@ -35,14 +37,20 @@ function Step2VehicleSelection() {
 
   const t = useTranslations();
 
+  // Only show vehicles that can seat the party; fall back to the full fleet.
+  const { vehicles: displayVehicles, hasFittingVehicle } = useMemo(
+    () => partitionVehiclesByPassengerFit(vehicles, formData.passengers),
+    [vehicles, formData.passengers]
+  );
+
   // Sort vehicles by calculated price (lowest first) - memoized for performance
   const sortedVehicles = useMemo(() => {
-    return [...vehicles].sort((a, b) => {
+    return [...displayVehicles].sort((a, b) => {
       const priceA = calculatePrice(a);
       const priceB = calculatePrice(b);
       return priceA - priceB;
     });
-  }, [vehicles, calculatePrice]);
+  }, [displayVehicles, calculatePrice]);
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -58,7 +66,7 @@ function Step2VehicleSelection() {
         </div>
 
         <Step2VehicleList
-          vehicles={vehicles}
+          vehicles={displayVehicles}
           vehiclesLoading={vehiclesLoading}
           vehiclesError={vehiclesError}
           sortedVehicles={sortedVehicles}
@@ -69,6 +77,8 @@ function Step2VehicleSelection() {
           calculateOriginalPrice={calculateOriginalPrice}
           currencySymbol={currencySymbol}
           handleVehicleSelect={handleVehicleSelect}
+          recommendedVehicleId={recommendedVehicleId}
+          showNoFitNotice={!hasFittingVehicle && vehicles.length > 0}
           t={t}
         />
 

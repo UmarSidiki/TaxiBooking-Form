@@ -18,6 +18,10 @@ import {
   type CheckoutSessionInput,
   type OpenCheckoutSessionResult,
 } from "@/features/payments/lib/checkout/pending-intent";
+import {
+  createCheckoutIntent,
+  freshIdempotencyKey,
+} from "@/features/payments/lib/checkout/create-checkout-intent";
 
 function intentMetadata(input: {
   orderId: string;
@@ -161,15 +165,14 @@ export async function openCheckoutSession(
       );
       const samePurpose =
         !current.metadata?.purpose || current.metadata.purpose === purpose;
-      // Terminal intents (succeeded/processing) must never be handed back to
-      // Elements ("terminal state" error) and must never be replaced by a new
-      // PI (double-charge risk). Return them as-is so the client can finalize
-      // or wait instead of re-collecting.
-      if (!samePurpose) {
-        intent = null;
-      } else if (current.status === "succeeded" || current.status === "processing") {
+      // A paid or in-flight intent must never be replaced by a second charge.
+      // Return it as-is so the client finalizes or waits instead of
+      // re-collecting. Terminal intents are also never handed to Elements.
+      if (current.status === "succeeded" || current.status === "processing") {
         intent = current;
-      } else if (isReusableIntent(current)) {
+      } else if (samePurpose && isReusableIntent(current)) {
+        // Reusable means no cancel reached it (a canceled intent is replaced
+        // below), so keeping it also keeps its amount in sync with the quote.
         if (
           current.status === "requires_payment_method" &&
           current.amount !== amountCents
@@ -192,32 +195,23 @@ export async function openCheckoutSession(
 
   if (!intent) {
     const key = `pi_${purpose}_${draftId}_${amountCents}`;
-    intent = await stripe.paymentIntents.create(
-      createParams({
-        amountCents,
-        currency,
-        descriptor,
-        description: input.description,
-        metadata,
-        email,
-        saveCards: settings?.stripeSaveCards,
-      }),
-      { idempotencyKey: key }
-    );
+    const params = createParams({
+      amountCents,
+      currency,
+      descriptor,
+      description: input.description,
+      metadata,
+      email,
+      saveCards: settings?.stripeSaveCards,
+    });
+    intent = await createCheckoutIntent(stripe, params, key);
     // Stripe may replay a canceled intent for a reused key. A canceled intent
     // can never be confirmed, so retry once under a fresh key.
     if (intent.status === "canceled") {
-      intent = await stripe.paymentIntents.create(
-        createParams({
-          amountCents,
-          currency,
-          descriptor,
-          description: input.description,
-          metadata,
-          email,
-          saveCards: settings?.stripeSaveCards,
-        }),
-        { idempotencyKey: `${key}_${Date.now()}` }
+      intent = await createCheckoutIntent(
+        stripe,
+        params,
+        freshIdempotencyKey(key)
       );
     }
   }
@@ -236,7 +230,9 @@ export async function openCheckoutSession(
   void registerPaymentMethodDomain(stripe, request);
 
   const terminal =
-    intent.status === "succeeded" || intent.status === "processing";
+    intent.status === "succeeded" ||
+    intent.status === "processing" ||
+    intent.status === "canceled";
   return {
     ok: true,
     // Terminal intents must not be used to initialize Elements.

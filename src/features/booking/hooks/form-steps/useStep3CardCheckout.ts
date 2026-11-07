@@ -1,6 +1,10 @@
 "use client";
 
 import { resolvePostBookingRedirect } from "@/features/payments/lib/resolve-post-booking-redirect";
+import {
+  createCheckoutCancelQueue,
+  type CheckoutCancelQueue,
+} from "@/features/payments/lib/checkout/cancel-checkout-client";
 import { clearDraftId } from "@/features/booking/lib/draft-id";
 import { apiErrorMessage } from "@/shared/lib/api-error-copy";
 import { ApiError } from "@/shared/http/api";
@@ -76,16 +80,54 @@ export function useStep3CardCheckout({
   const processingTimerRef = useRef<number | null>(null);
   /** Payment method the current session was created for. */
   const sessionMethodRef = useRef(sessionPaymentMethod);
+  /** PaymentIntent behind the client secret this page currently holds. */
+  const intentIdRef = useRef<string | null>(null);
+  /** Sequence of session requests; responses for older requests are dropped. */
+  const requestSeqRef = useRef(0);
+  /** Queued cancels, awaited before a new session so the two never race. */
+  const cancelQueueRef = useRef<CheckoutCancelQueue | null>(null);
+  if (!cancelQueueRef.current) {
+    cancelQueueRef.current = createCheckoutCancelQueue();
+  }
+  /** Session requests in flight, including ones superseded mid-flight. */
+  const inFlightRef = useRef(0);
+
+  /** Stops a pending "processing" re-check; the visitor may have moved on. */
+  const clearProcessingTimer = useCallback(() => {
+    if (processingTimerRef.current) {
+      window.clearTimeout(processingTimerRef.current);
+      processingTimerRef.current = null;
+    }
+  }, []);
+
+  /** Cancels the intent this page last opened, scoped to that exact intent. */
+  const abandonSession = useCallback(() => {
+    const paymentIntentId = intentIdRef.current;
+    // Without a known intent an unscoped cancel could hit a newer one.
+    if (!paymentIntentId) return Promise.resolve();
+    return cancelQueueRef.current!.cancel(draftId, paymentIntentId);
+  }, [draftId]);
 
   const createPaymentIntent = useCallback(async () => {
     if (!stripeConfig.publishableKey || creatingPaymentIntent || !quoteReady || dueNow <= 0) {
       return;
     }
+    // A stale closure (e.g. a processing re-check) must not reopen a session
+    // for a method the visitor already left.
+    if (sessionMethodRef.current !== sessionPaymentMethod) return;
 
+    const requestId = ++requestSeqRef.current;
+    inFlightRef.current += 1;
     setCreatingPaymentIntent(true);
     setPaymentError(null);
 
     try {
+      // A switch away may have queued a cancel. Let it land before the session
+      // endpoint reads the draft, otherwise it can cancel the very intent this
+      // request returns to Elements.
+      await cancelQueueRef.current!.wait();
+      if (requestId !== requestSeqRef.current) return;
+
       const response = await fetch("/api/checkout/session", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -127,9 +169,13 @@ export function useStep3CardCheckout({
       });
 
       const data = await response.json();
+      // The method or total changed while this request was in flight; its
+      // secret belongs to a session this page no longer wants.
+      if (requestId !== requestSeqRef.current) return;
 
       if (data.success && (data.status === "succeeded" || data.status === "processing")) {
         // Terminal / in-flight intent: never mount Elements against it.
+        intentIdRef.current = data.paymentIntentId || null;
         intentTotalRef.current = dueNow;
         setClientSecret(null);
         setStripeOrderId(data.orderId || null);
@@ -154,6 +200,7 @@ export function useStep3CardCheckout({
         }
       } else if (data.success && data.clientSecret) {
         processingRetriesRef.current = 0;
+        intentIdRef.current = data.paymentIntentId || null;
         intentTotalRef.current = dueNow;
         setClientSecret(data.clientSecret);
         setStripeOrderId(data.orderId || null);
@@ -164,10 +211,12 @@ export function useStep3CardCheckout({
         setPaymentError(apiErrorMessage((key) => t(`ApiErrors.${key}`), code));
       }
     } catch (err) {
+      if (requestId !== requestSeqRef.current) return;
       const code = err instanceof ApiError ? err.code : "request_failed";
       setPaymentError(apiErrorMessage((key) => t(`ApiErrors.${key}`), code));
     } finally {
-      setCreatingPaymentIntent(false);
+      inFlightRef.current -= 1;
+      if (inFlightRef.current === 0) setCreatingPaymentIntent(false);
     }
   }, [
     stripeConfig.publishableKey,
@@ -200,41 +249,33 @@ export function useStep3CardCheckout({
     if (sessionMethodRef.current === sessionPaymentMethod) return;
     sessionMethodRef.current = sessionPaymentMethod;
     const hadSession = Boolean(clientSecret) || paymentInitialized;
+    // Drop any session response still in flight for the previous method.
+    requestSeqRef.current += 1;
     intentTotalRef.current = null;
     processingRetriesRef.current = 0;
+    clearProcessingTimer();
     setPaymentInitialized(false);
     setClientSecret(null);
     setStripeOrderId(null);
     // When the next method also needs a session, the new session overwrites the
-    // pending draft; cancelling would race and could abandon it. Only cancel
-    // when the switch leaves an online session unused.
+    // pending draft. Only cancel when the switch leaves an online session unused.
     if (hadSession && !openSession) {
-      void fetch("/api/checkout/cancel", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ draftId }),
-        keepalive: true,
-      }).catch(() => undefined);
+      void abandonSession();
+      intentIdRef.current = null;
     }
   }, [
     sessionPaymentMethod,
     openSession,
     clientSecret,
     paymentInitialized,
-    draftId,
+    abandonSession,
+    clearProcessingTimer,
     setClientSecret,
     setStripeOrderId,
     setPaymentInitialized,
   ]);
 
-  useEffect(
-    () => () => {
-      if (processingTimerRef.current) {
-        window.clearTimeout(processingTimerRef.current);
-      }
-    },
-    [],
-  );
+  useEffect(() => clearProcessingTimer, [clearProcessingTimer]);
 
   // No PaymentIntent exists until the visitor picks a method that needs one.
   useEffect(() => {
@@ -257,38 +298,30 @@ export function useStep3CardCheckout({
   useEffect(() => {
     if (openSession) return;
     if (!clientSecret && !paymentInitialized) return;
+    requestSeqRef.current += 1;
     intentTotalRef.current = null;
+    processingRetriesRef.current = 0;
+    clearProcessingTimer();
     setPaymentInitialized(false);
     setClientSecret(null);
     setStripeOrderId(null);
-    void fetch("/api/checkout/cancel", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ draftId }),
-      keepalive: true,
-    }).catch(() => undefined);
+    void abandonSession();
+    intentIdRef.current = null;
   }, [
     openSession,
     clientSecret,
     paymentInitialized,
-    draftId,
+    abandonSession,
+    clearProcessingTimer,
     setPaymentInitialized,
     setClientSecret,
     setStripeOrderId,
   ]);
 
-  // Closing the tab is an abandon too; the cron sweep is the final safety net.
-  useEffect(() => {
-    const abandon = () => {
-      if (!paymentInitialized) return;
-      const body = new Blob([JSON.stringify({ draftId })], {
-        type: "application/json",
-      });
-      navigator.sendBeacon?.("/api/checkout/cancel", body);
-    };
-    window.addEventListener("pagehide", abandon);
-    return () => window.removeEventListener("pagehide", abandon);
-  }, [draftId, paymentInitialized]);
+  // Closing or reloading the tab deliberately leaves the PaymentIntent open:
+  // an unload-time cancel cannot be ordered against the next page's session and
+  // would cancel the intent that page is about to reuse. The 24h sweep inside
+  // run-cron marks stale drafts abandoned instead.
 
   const handleStripePaymentSuccess = async (paymentIntentId: string) => {
     setIsLoading(true);
@@ -338,8 +371,11 @@ export function useStep3CardCheckout({
   };
 
   const retryStripePayment = () => {
+    // Abandon the failed session so the retry opens a fresh PaymentIntent.
+    requestSeqRef.current += 1;
     intentTotalRef.current = null;
     processingRetriesRef.current = 0;
+    clearProcessingTimer();
     setPaymentError(null);
     setPaymentInitialized(false);
     setClientSecret(null);

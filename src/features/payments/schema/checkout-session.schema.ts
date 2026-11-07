@@ -14,4 +14,6 @@ export const checkoutSessionBodySchema = z.object({
 
 export const checkoutCancelBodySchema = z.object({
   draftId: z.string().uuid(),
+  /** When sent, only this PaymentIntent may be cancelled. */
+  paymentIntentId: z.string().min(1).max(255).optional(),
 });

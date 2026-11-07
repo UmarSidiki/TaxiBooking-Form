@@ -7,7 +7,6 @@ import { Card } from "@/shared/ui/card";
 import { useStep1 } from "@/features/booking/hooks/form-steps/useStep1";
 import { useBookingStops } from "@/features/booking/hooks/useBookingStops";
 import { useIframeBodyResize } from "@/features/booking/hooks/useIframeBodyResize";
-import { MIN_PASSENGERS } from "@/features/booking/lib/passenger-limits";
 import { useTranslations } from "next-intl";
 import { useBookingForm } from "@/features/booking/context/booking-form-context";
 import { EmbeddableV2RouteFields } from "./embeddable-v2-route-fields";
@@ -44,13 +43,6 @@ export function EmbeddableV2Form() {
   // Handle form submission
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-
-    // Update the form data if needed
-    if (formData.passengers < MIN_PASSENGERS) {
-      handleInputChange("passengers", MIN_PASSENGERS);
-    }
-
-    // Use redirectToStep2 instead of handleNext
     redirectToStep2();
   };
 

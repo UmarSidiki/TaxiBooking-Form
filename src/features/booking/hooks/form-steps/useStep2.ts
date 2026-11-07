@@ -1,7 +1,11 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useBookingForm } from "@/features/booking/context/booking-form-context";
+import {
+  pickRecommendedVehicle,
+  vehicleFitsPassengers,
+} from "@/features/booking/lib/vehicle-suitability";
 import { importLibrary, setOptions } from "@googlemaps/js-api-loader";
 import { useTheme } from "@/features/settings/context/theme-context";
 import { seatPrices, usePricingExtras } from "@/features/pricing/lib/use-pricing-extras";
@@ -186,6 +190,31 @@ export function useStep2() {
     fetchVehicles();
   }, [setVehicles]);
 
+  const recommendedVehicle = useMemo(
+    () => pickRecommendedVehicle(vehicles, formData.passengers),
+    [vehicles, formData.passengers]
+  );
+  const recommendedVehicleId = recommendedVehicle?._id ?? null;
+
+  // Suggest (preselect) a suitable vehicle without leaving step 2.
+  useEffect(() => {
+    setFormData((prev) => {
+      const current = vehicles.find((vehicle) => vehicle._id === prev.selectedVehicle);
+
+      if (!recommendedVehicleId) {
+        // Nothing can seat the party: do not keep an unfit vehicle selected.
+        if (current && !vehicleFitsPassengers(current, prev.passengers)) {
+          return { ...prev, selectedVehicle: "" };
+        }
+        return prev;
+      }
+
+      if (current && vehicleFitsPassengers(current, prev.passengers)) return prev;
+      if (prev.selectedVehicle === recommendedVehicleId) return prev;
+      return { ...prev, selectedVehicle: recommendedVehicleId };
+    });
+  }, [recommendedVehicleId, vehicles, setFormData]);
+
   const seats = seatPrices(usePricingExtras());
   const priceFor = (vehicle: (typeof vehicles)[0]) =>
     calculateBookingPrice(
@@ -237,6 +266,7 @@ export function useStep2() {
     vehiclesLoading,
     vehiclesError,
     distanceData,
+    recommendedVehicleId,
 
     // Tax settings
     enableTax: settings?.enableTax ?? false,

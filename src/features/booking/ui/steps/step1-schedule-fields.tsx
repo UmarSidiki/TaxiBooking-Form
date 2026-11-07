@@ -3,8 +3,7 @@
 import { Input } from "@/shared/ui/input";
 import type { FormData, FormErrors } from "@/features/booking/context/booking-form-context";
 import type { useTranslations } from "next-intl";
-import { MAX_PASSENGERS, MIN_PASSENGERS } from "@/features/booking/lib/passenger-limits";
-import type { ChangeEvent } from "react";
+import { PassengerStepper } from "@/features/booking/ui/passenger-stepper";
 
 type TFn = ReturnType<typeof useTranslations>;
 
@@ -14,8 +13,6 @@ export function Step1ScheduleFields({
   errors,
   handleInputChange,
   handleInputBlur,
-  handlePassengerChange,
-  handlePassengerBlur,
   today,
 }: {
   t: TFn;
@@ -23,8 +20,6 @@ export function Step1ScheduleFields({
   errors: FormErrors;
   handleInputChange: (field: string, value: string | number) => void;
   handleInputBlur: (field: string) => void;
-  handlePassengerChange: (e: ChangeEvent<HTMLInputElement>) => void;
-  handlePassengerBlur: () => void;
   today: string;
 }) {
   return (
@@ -127,18 +122,21 @@ export function Step1ScheduleFields({
 
           {/* Passengers */}
           <div>
-            <label className="block text-sm font-medium mb-1.5 text-[color:var(--ink)]">
+            <label
+              htmlFor="step1-passengers"
+              className="block text-sm font-medium mb-1.5 text-[color:var(--ink)]"
+            >
               {t("Step1.Passengers")}
             </label>
-            <Input
-              type="number"
-              min={String(MIN_PASSENGERS)}
-              max={String(MAX_PASSENGERS)}
-              placeholder="1"
-              className="border-[var(--rule2)] focus:border-[var(--ink)]-500 focus:ring-primary-500"
-              value={formData.passengers === 0 ? "" : formData.passengers}
-              onChange={handlePassengerChange}
-              onBlur={handlePassengerBlur}
+            <PassengerStepper
+              inputId="step1-passengers"
+              inputAriaLabel={t("Step1.Passengers")}
+              value={formData.passengers}
+              onChange={(value) => handleInputChange("passengers", value)}
+              onBlur={() => handleInputBlur("passengers")}
+              decreaseLabel={t("embeddable.decrease-passengers")}
+              increaseLabel={t("embeddable.increase-passengers")}
+              showHint={false}
             />
           </div>
 

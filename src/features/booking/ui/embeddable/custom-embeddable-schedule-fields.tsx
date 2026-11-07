@@ -1,19 +1,8 @@
 "use client";
 
-import React from "react";
-import {
-  Clock,
-  MapPin,
-  ArrowRight,
-  RefreshCw,
-  Users,
-  Calendar,
-  AlertCircle,
-  X,
-  Timer,
-} from "lucide-react";
-import { Button } from "@/shared/ui/button";
+import { Clock, Users, Calendar, AlertCircle } from "lucide-react";
 import { Input } from "@/shared/ui/input";
+import { PassengerStepper } from "@/features/booking/ui/passenger-stepper";
 import type { IFormField } from "@/features/form-builder/model";
 import type { CustomEmbeddableFieldCtx } from "@/features/booking/ui/embeddable/custom-embeddable-field-context";
 
@@ -30,7 +19,6 @@ export function createScheduleFieldRenderers(ctx: Ctx) {
     inputStyle,
     iconColor,
     minDate,
-    isHourly,
     FieldLabel,
     errors,
   } = ctx;
@@ -106,37 +94,27 @@ export function createScheduleFieldRenderers(ctx: Ctx) {
   const renderPassengers = (field: IFormField) => (
     <div key={field.id}>
       <FieldLabel field={field} />
-      <div className="relative">
-        <div
-          className="absolute left-2 sm:left-3 top-1/2 -translate-y-1/2"
-          style={{ color: iconColor }}
-        >
-          <Users className="h-3 w-3 sm:h-3.5 sm:w-3.5 md:h-4 md:w-4" />
-        </div>
-        <Input
-        type="number"
-        placeholder={field.placeholder || t("passengers")}
+      <PassengerStepper
+        inputAriaLabel={field.label || t("passengers")}
         value={formData.passengers}
-        max="15"
-        onChange={(e) => {
-          const value = e.target.value;
-          if (value === "") {
-            handleInputChange("passengers", "");
-            return;
-          }
-          const numValue = Number(value);
-          if (!isNaN(numValue) && numValue >= 0) {
-            handleInputChange("passengers", numValue);
-          }
+        onChange={(value) => handleInputChange("passengers", value)}
+        onBlur={() => handleInputBlur("passengers")}
+        decreaseLabel={t("decrease-passengers")}
+        increaseLabel={t("increase-passengers")}
+        icon={
+          <Users
+            className="h-3 w-3 sm:h-3.5 sm:w-3.5 md:h-4 md:w-4"
+            style={{ color: iconColor }}
+          />
+        }
+        inputClassName={`w-full ${getInputClass("passengers")}`}
+        inputStyle={inputStyle}
+        buttonClassName="border"
+        buttonStyle={{
+          backgroundColor: style.inputBackgroundColor,
+          borderColor: style.inputBorderColor,
+          color: style.inputTextColor,
         }}
-        onBlur={() => {
-          if (Number(formData.passengers) < 1) {
-            handleInputChange("passengers", 1);
-          }
-          handleInputBlur("passengers");
-        }}
-        className={`w-full ${getInputClass("passengers")}`}
-        style={inputStyle}
       />
       {errors.passengers && (
         <div className="flex items-center gap-1 mt-1 text-xs text-red-500">
@@ -144,7 +122,6 @@ export function createScheduleFieldRenderers(ctx: Ctx) {
           <span className="truncate">{errors.passengers}</span>
         </div>
       )}
-      </div>
     </div>
   );
 

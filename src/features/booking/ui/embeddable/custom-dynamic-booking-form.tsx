@@ -2,30 +2,12 @@
 
 import React, { useEffect, useState } from "react";
 import "@/shared/style/embeddable-layout.css";
-import Image from "next/image";
-import {
-  Clock,
-  MapPin,
-  ArrowRight,
-  RefreshCw,
-  Users,
-  Calendar,
-  AlertCircle,
-  X,
-  Timer,
-  Car,
-  CheckCircle,
-} from "lucide-react";
-import { Button } from "@/shared/ui/button";
-import { Input } from "@/shared/ui/input";
-import { Card } from "@/shared/ui/card";
 import { useStep1 } from "@/features/booking/hooks/form-steps/useStep1";
 import { useBookingStops } from "@/features/booking/hooks/useBookingStops";
-import { useIframeBodyResize } from "@/features/booking/hooks/useIframeBodyResize";
-import { MIN_PASSENGERS } from "@/features/booking/lib/passenger-limits";
+import { toRgba } from "@/shared/lib/parse-color";
 import { useTranslations } from "next-intl";
 import { useBookingForm } from "@/features/booking/context/booking-form-context";
-import type { IFormLayout, IFormField } from "@/features/form-builder/model";
+import type { IFormLayout } from "@/features/form-builder/model";
 import { CUSTOM_EMBEDDABLE_DEFAULT_STYLE } from "@/features/booking/ui/embeddable/custom-embeddable-default-style";
 import { useCustomEmbeddableFieldRenderers } from "@/features/booking/ui/embeddable/custom-embeddable-field-renderers";
 import { CustomEmbeddableFormShell } from "@/features/booking/ui/embeddable/custom-embeddable-form-shell";
@@ -56,17 +38,12 @@ export function DynamicBookingForm({ layout }: { layout: IFormLayout }) {
     setIsMounted(true);
   }, []);
 
-  useIframeBodyResize();
-
   const today = new Date();
   const minDate = today.toISOString().split("T")[0];
   const isHourly = formData.bookingType === "hourly";
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (formData.passengers < MIN_PASSENGERS) {
-      handleInputChange("passengers", MIN_PASSENGERS);
-    }
     redirectToStep2();
   };
 
@@ -85,16 +62,8 @@ export function DynamicBookingForm({ layout }: { layout: IFormLayout }) {
   // Build a set of enabled field types for quick lookup
   const enabledFieldTypes = new Set(fields.map((f) => f.type));
 
-  // Convert hex to rgba
-  const getRgba = (hex: string, opacity: number) => {
-    const r = parseInt(hex.slice(1, 3), 16);
-    const g = parseInt(hex.slice(3, 5), 16);
-    const b = parseInt(hex.slice(5, 7), 16);
-    return `rgba(${r}, ${g}, ${b}, ${opacity / 100})`;
-  };
-
   const containerStyle: React.CSSProperties = {
-    backgroundColor: getRgba(style.backgroundColor, style.backgroundOpacity),
+    backgroundColor: toRgba(style.backgroundColor, style.backgroundOpacity),
     borderRadius: style.borderRadius,
     backdropFilter: style.glassEffect ? "blur(12px)" : "none",
     WebkitBackdropFilter: style.glassEffect ? "blur(12px)" : "none",

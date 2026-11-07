@@ -3,6 +3,8 @@
 import { useCallback, useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 
+import { Moon, Sun } from "lucide-react";
+
 import { Button } from "@/shared/ui/button";
 import { apiGet } from "@/shared/http/api";
 import type { IFormLayout } from "@/features/form-builder/model";
@@ -15,12 +17,13 @@ import {
 } from "@/features/form-builder/ui/embed-default-variants";
 import { DeskPageMeta } from "@/features/dashboard/ui/desk-page-chrome";
 
-export function EmbedFormsPage() {
+export function EmbedFormsPage({ baseUrl }: { baseUrl?: string | null }) {
   const t = useTranslations("WidgetConfigurator");
   const allT = useTranslations();
   const [copied, setCopied] = useState(false);
   const [selectedVariant, setSelectedVariant] = useState("v1");
   const [showCode, setShowCode] = useState(true);
+  const [theme, setTheme] = useState<"light" | "dark">("light");
   const [customLayouts, setCustomLayouts] = useState<IFormLayout[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -49,13 +52,17 @@ export function EmbedFormsPage() {
     void load();
   }, [load]);
 
-  const baseUrl =
-    typeof window !== "undefined" ? window.location.origin : "http://localhost:3000";
+  const resolvedBaseUrl =
+    baseUrl ||
+    (typeof window !== "undefined"
+      ? window.location.origin
+      : "http://localhost:3000");
   const defaults = defaultEmbedVariants(t);
   const custom = customEmbedVariants(customLayouts, t);
   const all = [...defaults, ...custom];
   const selected = all.find((item) => item.id === selectedVariant) ?? all[0];
-  const snippet = selected ? createEmbedScript(baseUrl, selected.path) : "";
+  const embedPath = selected ? `${selected.path}?theme=${theme}` : "";
+  const snippet = selected ? createEmbedScript(resolvedBaseUrl, embedPath) : "";
 
   const copy = async () => {
     try {
@@ -119,6 +126,40 @@ export function EmbedFormsPage() {
               }
             />
           ) : null}
+          <div className="flex flex-col gap-3">
+            <h3 className="text-xs font-medium text-muted-foreground">
+              {t("theme_label")}
+            </h3>
+            <div
+              className="grid grid-cols-2 gap-2"
+              role="group"
+              aria-label={t("theme_label")}
+            >
+              {(["light", "dark"] as const).map((mode) => {
+                const active = theme === mode;
+                return (
+                  <button
+                    key={mode}
+                    type="button"
+                    onClick={() => setTheme(mode)}
+                    aria-pressed={active}
+                    className={`flex min-h-11 items-center justify-center gap-2 rounded-md border px-3 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 ${
+                      active
+                        ? "border-primary bg-accent text-foreground"
+                        : "border-border bg-card text-muted-foreground hover:bg-muted"
+                    }`}
+                  >
+                    {mode === "light" ? (
+                      <Sun className="size-4" aria-hidden="true" />
+                    ) : (
+                      <Moon className="size-4" aria-hidden="true" />
+                    )}
+                    {mode === "light" ? t("theme_light") : t("theme_dark")}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
           <Button
             variant="outline"
             className="h-11 w-full"
@@ -131,7 +172,7 @@ export function EmbedFormsPage() {
           {selected ? (
             <EmbedFormPreview
               previewLabel={t("preview_named", { name: selected.name })}
-              path={selected.path}
+              path={embedPath}
               showCode={showCode}
               snippet={snippet}
               copied={copied}

@@ -1,11 +1,9 @@
 "use client";
 
 import React, { createContext, useContext, useState, useEffect, ReactNode, useMemo, useCallback, useRef } from 'react';
-import { apiGet } from "@/shared/http/api";
 import { fetchCustomerPrefill } from "@/features/booking/lib/fetch-customer-prefill";
 import { mergeCustomerPrefill } from "@/features/booking/lib/merge-customer-prefill";
 import { IVehicle } from '@/features/fleet/model';
-import { IFormLayout } from '@/features/form-builder/model';
 import { useSearchParams } from 'next/navigation';
 import { useBookingVehicles } from "@/features/booking/hooks/use-booking-vehicles";
 
@@ -100,7 +98,6 @@ interface BookingFormContextType {
   isLoading: boolean;
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
   resetForm: () => void;
-  activeLayout: IFormLayout | null;
   /** Email of the signed-in customer whose details were prefilled, if any. */
   signedInEmail: string;
 }
@@ -158,24 +155,8 @@ export function BookingFormProvider({ children }: { children: ReactNode }) {
   const [calculatingDistance, setCalculatingDistance] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isHydrated, setIsHydrated] = useState(false);
-  const [activeLayout, setActiveLayout] = useState<IFormLayout | null>(null);
   const [signedInEmail, setSignedInEmail] = useState("");
   const prefillCustomerRef = useRef(false);
-
-  // Load active layout on mount
-  useEffect(() => {
-    const fetchLayout = async () => {
-      try {
-        const res = await apiGet<{ success: boolean; data: IFormLayout | null }>("/api/form-layouts/active");
-        if (res.success) {
-          setActiveLayout(res.data);
-        }
-      } catch (err) {
-        console.error("Failed to load active form layout:", err);
-      }
-    };
-    fetchLayout();
-  }, []);
 
   // Check if we're in an iframe (embedded form)
   const isEmbedded = typeof window !== 'undefined' && window.self !== window.top;
@@ -410,7 +391,6 @@ export function BookingFormProvider({ children }: { children: ReactNode }) {
     isLoading,
     setIsLoading,
     resetForm,
-    activeLayout,
     signedInEmail
   }), [
     currentStep,
@@ -424,7 +404,6 @@ export function BookingFormProvider({ children }: { children: ReactNode }) {
     calculatingDistance,
     isLoading,
     resetForm,
-    activeLayout,
     signedInEmail
   ]);
 

@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { isValidObjectId } from "mongoose";
 import { connectDB } from "@/shared/db";
 import { FormLayout } from "@/features/form-builder/model";
 import { FormLayoutUpdateSchema } from "@/features/form-builder/schema/form-layout.schema";
@@ -12,9 +13,13 @@ export async function GET(
 ) {
   try {
     const { id } = await params;
+    if (!isValidObjectId(id)) return jsonError("not_found", 404);
+
     await connectDB();
+    const access = await requireAdmin();
     const layout = await FormLayout.findById(id);
     if (!layout) return jsonError("not_found", 404);
+    if (!layout.isActive && !access.ok) return jsonError("not_found", 404);
     return NextResponse.json({ success: true, data: layout });
   } catch (error) {
     console.error("Error fetching form layout:", error);

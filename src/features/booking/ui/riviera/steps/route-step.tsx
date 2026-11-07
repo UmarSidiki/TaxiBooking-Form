@@ -1,14 +1,9 @@
 "use client";
 
 import { memo } from "react";
-import type { ChangeEvent } from "react";
 import { useBookingStops } from "@/features/booking/hooks/useBookingStops";
 import { useStep1 } from "@/features/booking/hooks/form-steps/useStep1";
 import { useTranslations } from "next-intl";
-import {
-  MAX_PASSENGERS,
-  MIN_PASSENGERS,
-} from "@/features/booking/lib/passenger-limits";
 import { Step1BookingTypeFields } from "../../steps/step1-booking-type-fields";
 import { Step1DurationTripTypeFields } from "../../steps/step1-duration-trip-type-fields";
 import { Step1Footer } from "../../steps/step1-footer";
@@ -44,35 +39,6 @@ function Step1TripDetails() {
   } = useStep1();
 
   const t = useTranslations();
-
-  // Handle passenger input change - simplified logic
-  const handlePassengerChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-
-    // Allow empty string for clearing the field
-    if (value === "") {
-      setFormData((prev) => ({ ...prev, passengers: 0 }));
-      return;
-    }
-
-    // Only update form data if it's a valid number
-    const numValue = parseInt(value, 10);
-    if (!isNaN(numValue) && numValue >= MIN_PASSENGERS && numValue <= MAX_PASSENGERS) {
-      handleInputChange("passengers", numValue);
-    }
-  };
-
-  // Handle passenger input blur - simplified logic
-  const handlePassengerBlur = () => {
-    const currentValue = Number(formData.passengers);
-    if (isNaN(currentValue) || currentValue < MIN_PASSENGERS) {
-      handleInputChange("passengers", MIN_PASSENGERS);
-    } else {
-      // Ensure the value is within bounds
-      const numValue = Math.min(MAX_PASSENGERS, Math.max(MIN_PASSENGERS, currentValue));
-      handleInputChange("passengers", numValue);
-    }
-  };
 
   const {
     handleAddStop,
@@ -125,8 +91,6 @@ function Step1TripDetails() {
             errors={errors}
             handleInputChange={handleInputChange}
             handleInputBlur={handleInputBlur}
-            handlePassengerChange={handlePassengerChange}
-            handlePassengerBlur={handlePassengerBlur}
             today={today}
           />
 

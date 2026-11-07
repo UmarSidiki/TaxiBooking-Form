@@ -23,6 +23,7 @@ import {
   X,
 } from "lucide-react";
 import { LinkifiedText } from "@/shared/ui/linkified-text";
+import { toRgba } from "@/shared/lib/parse-color";
 import { useTranslations } from "next-intl";
 
 export function FormPreview({
@@ -47,15 +48,8 @@ export function FormPreview({
     return true;
   });
 
-  const getRgba = (hex: string, opacity: number) => {
-    const r = parseInt(hex.slice(1, 3), 16);
-    const g = parseInt(hex.slice(3, 5), 16);
-    const b = parseInt(hex.slice(5, 7), 16);
-    return `rgba(${r}, ${g}, ${b}, ${opacity / 100})`;
-  };
-
   const containerStyle: React.CSSProperties = {
-    backgroundColor: getRgba(style.backgroundColor, style.backgroundOpacity),
+    backgroundColor: toRgba(style.backgroundColor, style.backgroundOpacity),
     borderRadius: style.borderRadius,
     backdropFilter: style.glassEffect ? "blur(12px)" : "none",
     WebkitBackdropFilter: style.glassEffect ? "blur(12px)" : "none",

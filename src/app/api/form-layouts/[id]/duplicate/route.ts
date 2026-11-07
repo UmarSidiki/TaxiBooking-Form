@@ -22,6 +22,7 @@ export async function POST(
       name: `${original.name} (Copy)`,
       description: original.description,
       fields: original.fields,
+      style: original.style ?? undefined,
       isDefault: false,
       isActive: false,
     });

@@ -145,8 +145,12 @@
   --destructive: var(--err);
   --primary-color: var(--sig);
   --secondary-color: var(--ink);
-  background: var(--paper);
+  background: transparent;
   color: var(--ink);
+  color-scheme: light;
+}
+:root[data-riviera-theme="dark"] .riviera-embed {
+  color-scheme: dark;
 }
 /* Surface ladder: page (--paper) < cards (--sheet, soft elevation) < inputs (--field).
    Shared by the booking form, account portal, admin desk, drawers and embeds. */

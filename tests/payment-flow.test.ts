@@ -6,6 +6,7 @@ import PricingRule from "@/features/pricing/model/PricingRule";
 import { PendingBooking, Booking } from "@/features/booking/model";
 import { createVehicle } from "./helpers/fixtures";
 import { createCashBooking } from "@/features/booking/lib/create-cash-booking.service";
+import { sweepAbandonedPendingBookings } from "@/features/booking/lib/sweep-abandoned-pending-bookings";
 import type { CashBookingInput } from "@/features/booking/schema/cash-booking.schema";
 import { POST as openSession } from "@/app/api/checkout/session/route";
 import { POST as cancelSession } from "@/app/api/checkout/cancel/route";
@@ -82,11 +83,11 @@ async function sessionRequest(
   return { status: response.status, body: await response.json() };
 }
 
-async function cancelRequest(draftId: string) {
+async function cancelRequest(draftId: string, paymentIntentId?: string) {
   const request = new NextRequest("http://localhost/api/checkout/cancel", {
     method: "POST",
     headers: { "content-type": "application/json" },
-    body: JSON.stringify({ draftId }),
+    body: JSON.stringify({ draftId, paymentIntentId }),
   });
   const response = await cancelSession(request);
   return { status: response.status, body: await response.json() };
@@ -128,6 +129,27 @@ describe("card checkout session", () => {
     expect(mocks.stripe.paymentIntents.retrieve).toHaveBeenCalledTimes(1);
   });
 
+  it("retries with a fresh key when Stripe refuses an idempotency replay", async () => {
+    const draftId = crypto.randomUUID();
+    mocks.stripe.paymentIntents.create.mockRejectedValueOnce(
+      Object.assign(new Error("idempotency key reused"), {
+        type: "StripeIdempotencyError",
+        rawType: "idempotency_error",
+      })
+    );
+
+    const result = await sessionRequest(draftId);
+
+    expect(result.status).toBe(200);
+    expect(result.body.clientSecret).toBe("cs_1");
+    expect(mocks.stripe.paymentIntents.create).toHaveBeenCalledTimes(2);
+    const keys = mocks.stripe.paymentIntents.create.mock.calls.map(
+      (call) => (call[1] as { idempotencyKey: string }).idempotencyKey
+    );
+    expect(keys[0]).not.toBe(keys[1]);
+    expect(keys[1].startsWith(keys[0])).toBe(true);
+  });
+
   it("updates the existing PaymentIntent when the total changes", async () => {
     const draftId = crypto.randomUUID();
     await sessionRequest(draftId);
@@ -153,6 +175,99 @@ describe("card checkout session", () => {
     expect(mocks.stripe.paymentIntents.cancel).toHaveBeenCalledWith("pi_1");
     const pending = await PendingBooking.findOne({ draftId }).lean();
     expect(pending?.status).toBe("abandoned");
+  });
+
+  it("ignores a stale cancel that targets an older PaymentIntent", async () => {
+    const draftId = crypto.randomUUID();
+    await sessionRequest(draftId);
+
+    const stale = await cancelRequest(draftId, "pi_from_an_old_tab");
+
+    expect(stale.status).toBe(200);
+    expect(stale.body.cancelled).toBe(false);
+    expect(mocks.stripe.paymentIntents.cancel).not.toHaveBeenCalled();
+    const pending = await PendingBooking.findOne({ draftId }).lean();
+    expect(pending?.status).toBe("open");
+  });
+
+  it("cancels the PaymentIntent the client names", async () => {
+    const draftId = crypto.randomUUID();
+    await sessionRequest(draftId);
+
+    const cancelled = await cancelRequest(draftId, "pi_1");
+
+    expect(cancelled.body.cancelled).toBe(true);
+    expect(mocks.stripe.paymentIntents.cancel).toHaveBeenCalledWith("pi_1");
+  });
+
+  it("leaves the draft open when Stripe could not cancel", async () => {
+    const draftId = crypto.randomUUID();
+    await sessionRequest(draftId);
+    mocks.stripe.paymentIntents.cancel.mockRejectedValueOnce(
+      new Error("stripe unavailable")
+    );
+
+    const failed = await cancelRequest(draftId, "pi_1");
+
+    expect(failed.status).toBe(200);
+    expect(failed.body.cancelled).toBe(false);
+    // The intent is still collectable, so the next session may reuse it.
+    const pending = await PendingBooking.findOne({ draftId }).lean();
+    expect(pending?.status).toBe("open");
+  });
+
+  it("replaces a canceled PaymentIntent instead of mounting it", async () => {
+    const draftId = crypto.randomUUID();
+    await sessionRequest(draftId);
+    await cancelRequest(draftId, "pi_1");
+    mocks.stripe.paymentIntents.retrieve.mockResolvedValue(
+      paymentIntent(6000, "canceled")
+    );
+    // Stripe replays the canceled intent for the draft's key; the retry must
+    // use a fresh key and return something Elements can mount.
+    mocks.stripe.paymentIntents.create
+      .mockResolvedValueOnce(paymentIntent(6000, "canceled"))
+      .mockResolvedValueOnce(paymentIntent(6000));
+
+    const reopened = await sessionRequest(draftId);
+
+    expect(reopened.status).toBe(200);
+    expect(reopened.body.status).toBe("requires_payment_method");
+    expect(reopened.body.clientSecret).toBe("cs_1");
+    expect(mocks.stripe.paymentIntents.create).toHaveBeenCalledTimes(3);
+  });
+
+  it("never opens a second PaymentIntent when the stored one already succeeded", async () => {
+    const draftId = crypto.randomUUID();
+    await sessionRequest(draftId);
+    await cancelRequest(draftId, "pi_1");
+    mocks.stripe.paymentIntents.retrieve.mockResolvedValue(
+      paymentIntent(6000, "succeeded")
+    );
+
+    const reopened = await sessionRequest(draftId);
+
+    expect(reopened.status).toBe(200);
+    expect(reopened.body.status).toBe("succeeded");
+    expect(reopened.body.clientSecret).toBe("");
+    expect(mocks.stripe.paymentIntents.create).toHaveBeenCalledTimes(1);
+  });
+
+  it("keeps a reusable intent in sync with the quote after a failed-payment abandon", async () => {
+    const draftId = crypto.randomUUID();
+    await sessionRequest(draftId);
+    await PendingBooking.updateOne({ draftId }, { $set: { status: "abandoned" } });
+
+    const changed = await sessionRequest(draftId, { duration: 3 });
+
+    expect(changed.status).toBe(200);
+    expect(changed.body.amount).toBe(90);
+    expect(changed.body.clientSecret).toBe("cs_1");
+    expect(mocks.stripe.paymentIntents.create).toHaveBeenCalledTimes(1);
+    expect(mocks.stripe.paymentIntents.update).toHaveBeenCalledWith(
+      "pi_1",
+      expect.objectContaining({ amount: 9000 })
+    );
   });
 
   it("charges only the cash deposit and records the pending purpose", async () => {
@@ -200,6 +315,43 @@ describe("card checkout session", () => {
     };
     expect(params.amount).toBe(900);
     expect(params.metadata.purpose).toBe("appointment_deposit");
+  });
+});
+
+describe("abandoned draft sweep", () => {
+  it("cancels the PaymentIntent of a stale open draft", async () => {
+    const draftId = crypto.randomUUID();
+    const doc = await PendingBooking.create({
+      orderId: "ord_stale",
+      draftId,
+      bookingData: {
+        ...BODY,
+        selectedVehicle: vehicleId,
+        locale: "en",
+        totalAmount: 60,
+      },
+      paymentMethod: "stripe",
+      stripePaymentIntentId: "pi_stale",
+      status: "open",
+      expectedAmount: 60,
+      expiresAt: new Date(Date.now() + 60 * 60 * 1000),
+    });
+    // createdAt is immutable through the model; set it directly.
+    await PendingBooking.collection.updateOne(
+      { _id: doc._id },
+      { $set: { createdAt: new Date(Date.now() - 25 * 60 * 60 * 1000) } }
+    );
+    mocks.stripe.paymentIntents.retrieve.mockResolvedValue({
+      ...paymentIntent(6000),
+      id: "pi_stale",
+    });
+
+    const result = await sweepAbandonedPendingBookings();
+
+    expect(result.count).toBe(1);
+    expect(mocks.stripe.paymentIntents.cancel).toHaveBeenCalledWith("pi_stale");
+    const pending = await PendingBooking.findOne({ draftId }).lean();
+    expect(pending?.status).toBe("abandoned");
   });
 });
 

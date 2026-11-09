@@ -3276,6 +3276,8 @@
     "otp_expiry": "This code expires in 10 minutes.",
     "otp_security": "Never share this code. Our team will never ask for it.",
     "otp_ignore": "If you did not request this, you can ignore this email.",
+    "otp_copy_hint": "Copy",
+    "otp_copy_cta": "Copy code",
     "review_cta": "Leave a review",
     "pay_cta": "Pay {amount}",
     "view_invoice": "View invoice",

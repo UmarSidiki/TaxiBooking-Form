@@ -20,7 +20,7 @@ export function DeskShell({
   children: ReactNode;
 }) {
   return (
-    <div className="riviera min-h-screen">
+    <div className="riviera no-map min-h-screen">
       <SidebarProvider style={shellStyle}>
         <DeskPageChromeProvider>
           {sidebar}

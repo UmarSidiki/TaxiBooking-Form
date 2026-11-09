@@ -5,7 +5,7 @@ export default async function LocaleLoading() {
   const t = await getTranslations("AppError");
   return (
     <div
-      className="riviera riviera-loading flex min-h-[50vh] flex-col items-center justify-center gap-4 p-6 text-sm text-muted-foreground"
+      className="riviera no-map riviera-loading flex min-h-[50vh] flex-col items-center justify-center gap-4 p-6 text-sm text-muted-foreground"
       role="status"
       aria-busy="true"
     >

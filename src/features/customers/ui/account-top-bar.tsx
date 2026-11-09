@@ -1,3 +1,6 @@
+import Link from "next/link";
+import { ArrowLeft } from "lucide-react";
+
 import type { AccountT } from "./account-types";
 import { AccountBrandPlate } from "./account-login-brand";
 import { AccountMenu } from "./account-menu";
@@ -31,6 +34,14 @@ export function AccountTopBar({
           className="min-w-0 shrink [max-inline-size:40vw] overflow-hidden md:[max-inline-size:none] max-[399px]:[&_small]:hidden"
         />
 
+        <Link
+          href={`/${locale}`}
+          aria-label={t("book-a-ride")}
+          className="ms-1 inline-flex h-9 shrink-0 items-center gap-1.5 rounded-md border border-[var(--rule)] px-2.5 text-xs font-medium text-[var(--ink)] no-underline transition-colors hover:bg-[var(--well)] md:ms-3 md:px-3"
+        >
+          <ArrowLeft className="size-3.5" aria-hidden="true" />
+          <span className="max-[479px]:hidden">{t("book-a-ride")}</span>
+        </Link>
 
         <div className="ms-auto flex min-w-0 items-center gap-2 md:gap-3">
           <div className="flex min-w-0 max-w-[33vw] flex-col items-end text-end leading-[1.3] md:max-w-none">

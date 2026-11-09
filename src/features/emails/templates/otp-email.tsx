@@ -61,18 +61,6 @@ export function OtpEmail({
         >
           {code}
         </Text>
-        <Text
-          style={{
-            margin: "12px 0 0",
-            fontFamily: "Courier New, Courier, monospace",
-            fontSize: 17,
-            fontWeight: 700,
-            lineHeight: "24px",
-            color: emailTokens.text,
-          }}
-        >
-          {code.trim()}
-        </Text>
       </Section>
       <Text
         style={{

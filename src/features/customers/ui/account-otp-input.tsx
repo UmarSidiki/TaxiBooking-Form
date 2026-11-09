@@ -1,10 +1,11 @@
 "use client";
 
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 
 import { Input } from "@/shared/ui/input";
 import {
   OTP_LENGTH,
+  digitsOnly,
   mergeOtpEntry,
   otpDisplayValue,
   otpFocusAfterKey,
@@ -16,17 +17,30 @@ export function AccountOtpInput({
   onChange,
   groupLabel,
   digitLabel,
+  onComplete,
 }: {
   value: string;
   onChange: (value: string) => void;
   groupLabel: string;
   digitLabel: (number: number) => string;
+  onComplete?: () => void;
 }) {
   const inputs = useRef<Array<HTMLInputElement | null>>([]);
+  const lastFired = useRef<string>("");
 
   const focus = (index: number) => {
     inputs.current[index]?.focus();
   };
+
+  useEffect(() => {
+    const digits = digitsOnly(value);
+    if (digits.length === OTP_LENGTH && lastFired.current !== digits) {
+      lastFired.current = digits;
+      onComplete?.();
+    } else if (digits.length !== OTP_LENGTH) {
+      lastFired.current = "";
+    }
+  }, [value, onComplete]);
 
   return (
     <div

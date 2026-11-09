@@ -190,6 +190,7 @@ export async function createCashBooking(
     subtotalAmount: priced.subtotal,
     taxAmount: priced.taxAmount,
     taxPercentage: priced.taxPercentage,
+    taxIncluded: priced.taxIncluded,
     depositDue: priced.depositDue,
     balanceDue: priced.balanceDue,
   };
@@ -239,6 +240,7 @@ export async function createCashBooking(
       subtotalAmount: priced.subtotal,
       taxAmount: priced.taxAmount,
       taxPercentage: priced.taxPercentage,
+      taxIncluded: priced.taxIncluded,
     },
     vehicle,
     tripId,

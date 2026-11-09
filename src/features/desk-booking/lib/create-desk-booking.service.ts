@@ -172,6 +172,7 @@ export async function createDeskBooking(
     subtotalAmount: isManualPrice ? total : priced.subtotal,
     taxAmount: isManualPrice ? 0 : priced.taxAmount,
     taxPercentage: isManualPrice ? 0 : priced.taxPercentage,
+    taxIncluded: isManualPrice ? false : priced.taxIncluded,
     ...(isQuote
       ? {
           quotedAmount: total,

@@ -376,6 +376,28 @@ describe("offline cash booking", () => {
     expect(await Booking.countDocuments({ draftId })).toBe(1);
   });
 
+  it("stores the tax mode that priced the booking", async () => {
+    await Setting.updateOne({}, { $set: { enableTax: true, taxPercentage: 10, taxIncluded: true } });
+    const cash = {
+      ...BODY,
+      selectedVehicle: vehicleId,
+      paymentMethod: "cash",
+      whatsappOptIn: false,
+      locale: "en",
+    } as CashBookingInput;
+
+    const result = await createCashBooking(cash, undefined, crypto.randomUUID());
+    expect(result.ok).toBe(true);
+
+    const booking = await Booking.findOne({}).lean();
+    expect(booking?.taxIncluded).toBe(true);
+    expect(booking?.taxAmount ?? 0).toBeGreaterThan(0);
+    expect((booking?.subtotalAmount ?? 0) + (booking?.taxAmount ?? 0)).toBeCloseTo(
+      booking?.totalAmount ?? 0,
+      2
+    );
+  });
+
   it("rejects a direct cash booking when a cash deposit is required", async () => {
     await PricingRule.create({
       cashDepositEnabled: true,

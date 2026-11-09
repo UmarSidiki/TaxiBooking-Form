@@ -117,6 +117,7 @@ export async function repriceCustomerTrip(
     subtotalAmount: quote.subtotal,
     taxAmount: quote.taxAmount,
     taxPercentage: quote.taxPercentage,
+    taxIncluded: quote.taxIncluded,
     depositDue: quote.depositDue,
     balanceDue: quote.balanceDue,
     fareLines: quote.lines,

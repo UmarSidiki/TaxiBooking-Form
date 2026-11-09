@@ -26,7 +26,6 @@ export function PassengerStepper({
   buttonStyle,
   icon,
   iconClassName,
-  showHint = true,
   hintClassName,
 }: {
   value: number;
@@ -43,7 +42,6 @@ export function PassengerStepper({
   buttonStyle?: CSSProperties;
   icon?: ReactNode;
   iconClassName?: string;
-  showHint?: boolean;
   hintClassName?: string;
 }) {
   const safeValue = clamp(value);
@@ -130,11 +128,6 @@ export function PassengerStepper({
           <Plus className="size-4" aria-hidden="true" />
         </button>
       </div>
-      {showHint ? (
-        <p className={cn("mt-1 text-xs text-muted-foreground", hintClassName)}>
-          {MIN_PASSENGERS}–{MAX_PASSENGERS}
-        </p>
-      ) : null}
     </div>
   );
 }

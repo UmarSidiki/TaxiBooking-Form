@@ -101,8 +101,7 @@
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
-  min-height: 2.75rem;
-  margin-top: 0.2rem;
+  min-height: 2.25rem;
   margin-inline-start: 1.9rem;
   color: var(--v4-ink);
   font-size: 1rem;

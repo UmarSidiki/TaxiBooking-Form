@@ -183,11 +183,11 @@ export function EmbeddableV1RouteFields({
                 {/* Dropoff Location */}
                 {!isHourly && (
                   <div>
-                    <div className="flex justify-end mb-1.5 w-full">
+                    <div className="flex justify-end w-full">
                       <button
                         type="button"
                         onClick={handleAddStop}
-                        className="inline-flex min-h-11 items-center text-sm text-primary underline hover:text-primary/80"
+                        className="inline-flex min-h-8 items-center py-1 text-sm text-primary underline hover:text-primary/80"
                       >
                         {t("embeddable.add-a-stop")}{" "}
                       </button>

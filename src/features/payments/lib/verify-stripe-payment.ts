@@ -20,7 +20,17 @@ export async function verifyStripePayment(
     return { ok: false, message: 'Stripe is not configured' };
   }
 
-  const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
+  const paymentIntent = await stripe.paymentIntents
+    .retrieve(paymentIntentId)
+    .catch((error: { code?: string }) => {
+      // Unknown/foreign ids must read as a failed check, not a 500.
+      if (error?.code === 'resource_missing') return null
+      throw error
+    })
+
+  if (!paymentIntent) {
+    return { ok: false, message: 'Payment intent not found' }
+  }
 
   if (paymentIntent.status !== 'succeeded') {
     return {

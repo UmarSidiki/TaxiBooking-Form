@@ -55,8 +55,8 @@ export function DeskForgotPasswordForm() {
     }
   };
 
-  const handleVerifyOTP = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+  const handleVerifyOTP = async (event?: FormEvent<HTMLFormElement>) => {
+    event?.preventDefault();
     resetMessages();
     setLoading(true);
     try {

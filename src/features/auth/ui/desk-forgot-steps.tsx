@@ -1,6 +1,6 @@
 "use client";
 
-import type { FormEvent } from "react";
+import { useEffect, useRef, type FormEvent } from "react";
 import { useTranslations } from "next-intl";
 
 import { Button } from "@/shared/ui/button";
@@ -28,7 +28,7 @@ type DeskForgotStepsProps = {
   success: string | null;
   loading: boolean;
   onEmail: (event: FormEvent<HTMLFormElement>) => void;
-  onOtp: (event: FormEvent<HTMLFormElement>) => void;
+  onOtp: (event?: FormEvent<HTMLFormElement>) => void;
   onPassword: (event: FormEvent<HTMLFormElement>) => void;
   onBack: () => void;
 };
@@ -109,6 +109,16 @@ function OtpStep({
   onBack,
   t,
 }: DeskForgotStepsProps & { t: ReturnType<typeof useTranslations> }) {
+  const lastFired = useRef("");
+  useEffect(() => {
+    const digits = otp.replace(/\D/g, "");
+    if (digits.length === 6 && lastFired.current !== digits) {
+      lastFired.current = digits;
+      onOtp();
+    } else if (digits.length !== 6) {
+      lastFired.current = "";
+    }
+  }, [otp, onOtp]);
   return (
     <form className="mt-8 space-y-5" onSubmit={onOtp}>
       <div className="space-y-2">

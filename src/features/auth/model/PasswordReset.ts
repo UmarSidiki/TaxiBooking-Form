@@ -5,6 +5,8 @@ export interface IPasswordReset extends Document {
   otp: string;
   expiresAt: Date;
   isUsed: boolean;
+  /** Failed verify attempts for this code. The code dies at MAX_OTP_ATTEMPTS. */
+  attempts: number;
   createdAt: Date;
 }
 
@@ -26,6 +28,11 @@ const PasswordResetSchema: Schema = new Schema({
   isUsed: {
     type: Boolean,
     default: false,
+  },
+  attempts: {
+    type: Number,
+    default: 0,
+    min: 0,
   },
 }, {
   timestamps: true,

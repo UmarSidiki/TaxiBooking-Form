@@ -41,6 +41,17 @@ const nextConfig: NextConfig = {
                     { key: "X-Content-Type-Options", value: "nosniff" },
                     { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
                     { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=(self)" },
+                    // Nothing in this app is meant to be framed, and the ops
+                    // sign-in must not be frameable at all.
+                    { key: "Content-Security-Policy", value: "frame-ancestors 'none'" },
+                ],
+            },
+            {
+                // The embeddable widget is the one page that exists to be
+                // framed by partner sites, so it opts out of the block above.
+                source: "/:locale/embeddable/:path*",
+                headers: [
+                    { key: "Content-Security-Policy", value: "frame-ancestors *" },
                 ],
             },
         ];

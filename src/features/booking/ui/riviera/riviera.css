@@ -63,6 +63,12 @@ html:has(.riviera), body:has(.riviera) { background-color: var(--paper); }
 }
 .riviera .dock .dock-account:hover { background: var(--ink); opacity: .9; }
 .riviera .dock-account__label { line-height: 1; }
+.riviera .dock .dock-btn--icon { padding-inline: 8px; }
+.riviera .dock .dock-account--person { gap: 6px; padding-inline: 10px 14px; }
+.riviera .dock-account__name {
+  line-height: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  max-width: 110px; font-weight: 600; font-size: 13.5px;
+}
 @media (max-width: 479px) {
   /* Narrow phones drop the Account label; the text plate shrinks to the space left. */
   .riviera .dock .dock-account { padding-inline: 0; }

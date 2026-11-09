@@ -3419,10 +3419,7 @@
     "siteControls": "Contrôles du site",
     "lightMode": "Mode clair",
     "darkMode": "Mode sombre",
-    "language": "Langue",
-    "signedInAs": "Connecté en tant que",
-    "switchAccount": "Changer de compte",
-    "signOut": "Se déconnecter"
+    "language": "Langue"
   },
   "MarketingDesk": {
     "title": "Marketing",

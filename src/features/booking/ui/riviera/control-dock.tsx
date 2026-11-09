@@ -3,18 +3,18 @@
 import Link from "next/link";
 import { useLayoutEffect, useRef, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
-import { CircleUserRound, LogOut, RefreshCw } from "lucide-react";
+import { CircleUserRound } from "lucide-react";
 import { LanguageSwitcher } from "@/shared/ui/riviera/language-switcher";
 import { RivieraThemeToggle } from "@/shared/ui/riviera/theme-toggle";
 
-import { displayName } from "@/features/customers/ui/account-format";
+import { compactName, displayName } from "@/features/customers/ui/account-format";
 
 /**
  * Floating control bar that replaces the page header.
  * Placement lives in riviera.css (.dock): bottom of the map panel on desktop,
  * bottom of the viewport everywhere else. When the visitor is signed in, the
- * Account button becomes their name plate and Switch/Sign out sit as icons;
- * when signed out it stays the plain Account shortcut.
+ * Account shortcut becomes their name plate (first two name words, so it never
+ * runs long); when signed out it stays the plain Account shortcut.
  */
 export function ControlDock({ brand, logoUrl = "" }: { brand: string; logoUrl?: string }) {
   const t = useTranslations("Riviera");
@@ -23,7 +23,6 @@ export function ControlDock({ brand, logoUrl = "" }: { brand: string; logoUrl?: 
   const [failedLogoUrl, setFailedLogoUrl] = useState<string | null>(null);
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
-  const [signingOut, setSigningOut] = useState(false);
   const logo = logoUrl.trim();
   const showLogo = Boolean(logo) && failedLogoUrl !== logo;
 
@@ -66,12 +65,6 @@ export function ControlDock({ brand, logoUrl = "" }: { brand: string; logoUrl?: 
     };
   }, []);
 
-  const signOut = async () => {
-    setSigningOut(true);
-    await fetch("/api/account/logout", { method: "POST", credentials: "same-origin" }).catch(() => null);
-    window.location.reload();
-  };
-
   const person = email ? displayName(name, email) : "";
 
   return (
@@ -95,35 +88,17 @@ export function ControlDock({ brand, logoUrl = "" }: { brand: string; logoUrl?: 
         <LanguageSwitcher menuSide="top" />
         <RivieraThemeToggle />
         {person ? (
-          <>
-            <Link
-              href={`/${locale}/account`}
-              className="dock-btn dock-account dock-account--person"
-              aria-label={t("account")}
-              title={email}
-            >
-              <span className="dock-account__avatar" aria-hidden="true">
-                <CircleUserRound />
-              </span>
-              <span className="dock-account__name" dir="auto">{person}</span>
-            </Link>
-            <Link
-              href={`/${locale}/account`}
-              className="dock-btn dock-btn--icon"
-              aria-label={t("switchAccount")}
-            >
-              <RefreshCw aria-hidden="true" />
-            </Link>
-            <button
-              type="button"
-              className="dock-btn dock-btn--icon"
-              aria-label={t("signOut")}
-              onClick={signOut}
-              disabled={signingOut}
-            >
-              <LogOut aria-hidden="true" />
-            </button>
-          </>
+          <Link
+            href={`/${locale}/account`}
+            className="dock-btn dock-account dock-account--person"
+            aria-label={person}
+            title={person}
+          >
+            <span className="dock-account__avatar" aria-hidden="true">
+              <CircleUserRound />
+            </span>
+            <span className="dock-account__name" dir="auto">{compactName(person)}</span>
+          </Link>
         ) : (
           <Link
             href={`/${locale}/account`}

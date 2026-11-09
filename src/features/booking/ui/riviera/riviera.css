@@ -63,59 +63,15 @@ html:has(.riviera), body:has(.riviera) { background-color: var(--paper); }
 }
 .riviera .dock .dock-account:hover { background: var(--ink); opacity: .9; }
 .riviera .dock-account__label { line-height: 1; }
-.riviera .dock .dock-btn--icon { padding-inline: 8px; }
 .riviera .dock .dock-account--person { gap: 6px; padding-inline: 10px 14px; }
 .riviera .dock-account__name {
   line-height: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-  max-width: 110px; font-weight: 600; font-size: 13.5px;
+  max-width: 150px; font-weight: 600; font-size: 13.5px;
 }
 @media (max-width: 479px) {
-  /* Narrow phones drop the Account label; the text plate shrinks to the space left. */
-  .riviera .dock .dock-account { padding-inline: 0; }
+  /* Narrow phones drop the Account label; the person plate keeps its padding. */
+  .riviera .dock .dock-account:not(.dock-account--person) { padding-inline: 0; }
   .riviera .dock-account__label { display: none; }
-}
-
-/* ---------- Signed-in chip ---------- */
-.riviera .signed-in {
-  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
-  gap: var(--space-1) var(--space-2);
-  margin-bottom: var(--space-3); padding: 6px 6px 6px var(--space-2);
-  border: 1px solid var(--rule); border-radius: var(--radius); background: var(--sheet);
-  font-size: var(--text-sm); color: var(--ink2);
-}
-.riviera .signed-in__who {
-  display: flex; align-items: center; gap: 8px; min-width: 0; flex: 1 1 auto;
-  margin: 0; overflow: hidden; white-space: nowrap;
-}
-.riviera .signed-in__avatar {
-  flex: none; display: grid; place-items: center;
-  width: 28px; height: 28px;
-  border-radius: 999px;
-  background: var(--well, color-mix(in oklab, var(--ink) 8%, transparent));
-  color: var(--ink);
-}
-.riviera .signed-in__name {
-  font-weight: 600; color: var(--ink);
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 160px;
-}
-.riviera .signed-in__email {
-  min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-  color: var(--ink2); font-size: 12.5px;
-}
-@media (max-width: 520px) {
-  .riviera .signed-in__email { display: none; }
-}
-.riviera .signed-in__actions { display: flex; align-items: center; gap: 2px; margin-inline-start: auto; }
-.riviera .signed-in__action {
-  display: inline-flex; align-items: center; justify-content: center; gap: 5px;
-  min-height: 36px; padding: 0 10px;
-  border: 0; border-radius: var(--radius-sm); background: none; color: var(--ink);
-  font-size: 13px; font-weight: 600; text-decoration: none; white-space: nowrap; cursor: pointer;
-}
-.riviera .signed-in__action:hover { background: var(--well); }
-.riviera .signed-in__action:disabled { opacity: .5; cursor: default; }
-@media (max-width: 639px) {
-  .riviera .signed-in__action { min-height: 44px; }
 }
 
 /* ---------- Page frame ---------- */
@@ -271,7 +227,7 @@ html:has(.riviera), body:has(.riviera) { background-color: var(--paper); }
 @media (min-width: 1024px) and (max-width: 1119px) {
   /* The map panel is narrow here; drop the Account word so the brand plate
      keeps its full name while the account button stays a 44px icon. */
-  .riviera .map .dock .dock-account { padding-inline: 0; }
+  .riviera .map .dock .dock-account:not(.dock-account--person) { padding-inline: 0; }
   .riviera .map .dock .dock-account__label { display: none; }
 }
 

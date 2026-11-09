@@ -3419,10 +3419,7 @@
     "siteControls": "Управление сайтом",
     "lightMode": "Светлая тема",
     "darkMode": "Тёмная тема",
-    "language": "Язык",
-    "signedInAs": "Вы вошли как",
-    "switchAccount": "Сменить аккаунт",
-    "signOut": "Выйти"
+    "language": "Язык"
   },
   "MarketingDesk": {
     "title": "Маркетинг",

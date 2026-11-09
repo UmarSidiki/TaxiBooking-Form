@@ -13,6 +13,8 @@ import { FareDueRows } from "@/features/booking/ui/steps/fare-due-rows";
 import type { useStep3 } from "@/features/booking/hooks/form-steps/useStep3";
 import type { useTranslations } from "next-intl";
 
+import { useTheme } from "@/features/settings/context/theme-context";
+
 type Step = ReturnType<typeof useStep3>;
 
 export function Step3BookingSummary({
@@ -62,6 +64,9 @@ export function Step3BookingSummary({
   t: ReturnType<typeof useTranslations>;
   currencySymbol: string;
 }) {
+  const { settings } = useTheme();
+  const supportEmail = settings?.adminEmail?.trim();
+  const phoneNumber = settings?.companyPhone?.trim();
   return (
     <>
       {/* Sidebar - Booking Summary */}
@@ -261,25 +266,25 @@ export function Step3BookingSummary({
               <CreditCard className="h-4 w-4 text-[color:var(--ink2)]" />
               <span>{t('Step3.24-7-customer-support')}</span>
             </div>
-            {process.env.NEXT_PUBLIC_SUPPORT_EMAIL ? (
+            {supportEmail ? (
               <div className="flex items-center gap-2 text-foreground">
                 <Mail className="h-4 w-4 text-muted-foreground" />
                 <a
-                  href={`mailto:${process.env.NEXT_PUBLIC_SUPPORT_EMAIL}`}
+                  href={`mailto:${supportEmail}`}
                   className="inline-flex min-h-9 items-center hover:text-primary"
                 >
-                  {process.env.NEXT_PUBLIC_SUPPORT_EMAIL}
+                  {supportEmail}
                 </a>
               </div>
             ) : null}
-            {process.env.NEXT_PUBLIC_PHONE_NUMBER ? (
+            {phoneNumber ? (
               <div className="flex items-center gap-2 text-foreground">
                 <Phone className="h-4 w-4 text-muted-foreground" />
                 <a
-                  href={`tel:${process.env.NEXT_PUBLIC_PHONE_NUMBER}`}
+                  href={`tel:${phoneNumber.replace(/[^\d+]/g, "")}`}
                   className="inline-flex min-h-9 items-center hover:text-primary"
                 >
-                  {process.env.NEXT_PUBLIC_PHONE_NUMBER}
+                  {phoneNumber}
                 </a>
               </div>
             ) : null}

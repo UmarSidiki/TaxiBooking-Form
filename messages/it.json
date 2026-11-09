@@ -1639,7 +1639,18 @@
       "custom-token-rule-help": "Divisori e contorni delle schede.",
       "custom-text-low": "Parte del testo è sotto 4,5:1 rispetto allo sfondo e sarà difficile da leggere. Scegli un testo più scuro o uno sfondo più chiaro (il contrario in modalità scura).",
       "custom-reset-mode": "Riporta questa modalità su automatico",
-      "custom-reset-one": "Auto"
+      "custom-reset-one": "Auto",
+      "brand-identity": "Brand identity",
+      "company-name-help": "Shown on the site header, account area, emails and invoices. Stored in the database.",
+      "company-logo": "Logo",
+      "company-logo-help": "URL or an image file. Used wherever the brand appears, including the favicon.",
+      "company-logo-upload": "Upload an image",
+      "company-logo-remove": "Remove logo",
+      "company-logo-broken": "That image could not be loaded.",
+      "company-logo-too-large": "Keep the image under 400 KB.",
+      "company-phone": "Public phone number",
+      "support-email": "Support email",
+      "support-email-help": "Shown on the thank-you page, booking steps and emails."
     },
     "Refunds": {
       "title": "Refund Requests",

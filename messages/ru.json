@@ -1639,7 +1639,18 @@
       "custom-token-rule-help": "Разделители и контуры карточек.",
       "custom-text-low": "Часть текста имеет контраст ниже 4,5:1 с фоном и будет плохо читаться. Выберите более тёмный текст или более светлый фон (в тёмном режиме наоборот).",
       "custom-reset-mode": "Сбросить этот режим на автоматический",
-      "custom-reset-one": "Авто"
+      "custom-reset-one": "Авто",
+      "brand-identity": "Brand identity",
+      "company-name-help": "Shown on the site header, account area, emails and invoices. Stored in the database.",
+      "company-logo": "Logo",
+      "company-logo-help": "URL or an image file. Used wherever the brand appears, including the favicon.",
+      "company-logo-upload": "Upload an image",
+      "company-logo-remove": "Remove logo",
+      "company-logo-broken": "That image could not be loaded.",
+      "company-logo-too-large": "Keep the image under 400 KB.",
+      "company-phone": "Public phone number",
+      "support-email": "Support email",
+      "support-email-help": "Shown on the thank-you page, booking steps and emails."
     },
     "Refunds": {
       "title": "Refund Requests",

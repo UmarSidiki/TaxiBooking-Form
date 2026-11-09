@@ -40,13 +40,16 @@ const rivieraArabic = IBM_Plex_Sans_Arabic({
   weight: ["400", "500", "600"],
 });
 
-const siteName = process.env.NEXT_PUBLIC_WEBSITE_NAME ?? "Booking Form";
 const siteDescription =
   "Premium booking experiences for riders, partners, and administrators—ready for any brand.";
-const logoPath = "/logo.png";
 
 export async function generateMetadata(): Promise<Metadata> {
   const base = await resolvePublicUrl({ request: await headers() });
+  const theme = await getThemeSettings();
+  const brandName = theme.companyName?.trim() ?? "";
+  const logoUrl = theme.companyLogoUrl?.trim() ?? "";
+  const siteName = brandName;
+  const logoPath = logoUrl || "/logo.png";
 
   return {
     metadataBase: base ? new URL(base) : undefined,

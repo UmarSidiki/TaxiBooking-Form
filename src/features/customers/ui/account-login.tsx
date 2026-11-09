@@ -45,7 +45,7 @@ export function AccountLogin({
   onVerify: () => void;
   onUseDifferentEmail: () => void;
 }) {
-  const name = brandName.trim() || t("brand-fallback");
+  const name = brandName.trim();
   const year = new Date().getFullYear();
 
   return (

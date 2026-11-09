@@ -3,6 +3,7 @@ import { clientIp } from "@/shared/http/client-ip";
 import { memoryLimit, resetMemoryLimits } from "@/shared/http/memory-limit";
 import { mongoWindowLimit } from "@/shared/http/rate-window";
 import { bookingAbuseReason } from "@/shared/http/booking-abuse";
+import { assertLoginAllowed } from "@/features/auth/lib/login-throttle";
 
 describe("rate limits", () => {
   it("reads the client IP from the forwarded chain", () => {
@@ -27,6 +28,19 @@ describe("rate limits", () => {
     expect(bookingAbuseReason({ formStartedAt: Date.now() })).toBe("too_fast");
     expect(bookingAbuseReason({ formStartedAt: Date.now() - 10_000 })).toBeNull();
     expect(bookingAbuseReason({})).toBeNull();
+  });
+
+  it("throttles sign-in when NextAuth passes a plain header record", async () => {
+    resetMemoryLimits();
+    // NextAuth 4 hands `authorize` a plain object, not a Headers instance.
+    const request = { headers: { "x-forwarded-for": "203.0.113.9, 10.0.0.1" } };
+
+    for (let i = 0; i < 10; i++) {
+      await expect(assertLoginAllowed("admin@example.com", request)).resolves.toBeUndefined();
+    }
+    await expect(assertLoginAllowed("admin@example.com", request)).rejects.toThrow(
+      /Too many sign-in attempts/
+    );
   });
 
   it("counts a fixed window in Mongo", async () => {

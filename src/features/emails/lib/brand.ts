@@ -15,19 +15,14 @@ export function brandFromSettings(
   companyPhone?: string | null,
   websiteUrl?: string | null,
 ): EmailBrand {
-  const name = brandName(settings) || "Booking";
+  const name = brandName(settings);
   return {
     name,
     logoUrl: clean(settings?.companyLogoUrl) || null,
     accent: resolveBrandColors(settings).primary,
     address: clean(settings?.companyAddress),
-    phone:
-      clean(settings?.companyPhone) ||
-      clean(companyPhone) ||
-      clean(process.env.NEXT_PUBLIC_PHONE_NUMBER),
-    supportEmail:
-      clean(settings?.adminEmail) ||
-      clean(process.env.NEXT_PUBLIC_SUPPORT_EMAIL),
+    phone: clean(settings?.companyPhone) || clean(companyPhone),
+    supportEmail: clean(settings?.adminEmail),
     websiteUrl: clean(websiteUrl) || null,
   };
 }

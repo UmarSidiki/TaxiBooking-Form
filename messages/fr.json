@@ -1639,7 +1639,18 @@
       "custom-token-rule-help": "Séparateurs et contours des cartes.",
       "custom-text-low": "Une partie du texte est sous 4,5:1 par rapport à son fond et sera difficile à lire. Choisissez un texte plus foncé ou un fond plus clair (l'inverse en mode sombre).",
       "custom-reset-mode": "Remettre ce mode en automatique",
-      "custom-reset-one": "Auto"
+      "custom-reset-one": "Auto",
+      "brand-identity": "Brand identity",
+      "company-name-help": "Shown on the site header, account area, emails and invoices. Stored in the database.",
+      "company-logo": "Logo",
+      "company-logo-help": "URL or an image file. Used wherever the brand appears, including the favicon.",
+      "company-logo-upload": "Upload an image",
+      "company-logo-remove": "Remove logo",
+      "company-logo-broken": "That image could not be loaded.",
+      "company-logo-too-large": "Keep the image under 400 KB.",
+      "company-phone": "Public phone number",
+      "support-email": "Support email",
+      "support-email-help": "Shown on the thank-you page, booking steps and emails."
     },
     "Refunds": {
       "title": "Refund Requests",

@@ -13,7 +13,7 @@ export function AccountFooter({
       <span>
         {t("copyright", {
           year,
-          name: brandName || t("brand-fallback"),
+          name: brandName.trim(),
         })}
       </span>
     </footer>

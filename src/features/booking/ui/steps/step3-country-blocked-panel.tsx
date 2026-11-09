@@ -4,6 +4,7 @@ import { useTranslations } from "next-intl";
 import { Globe2 } from "lucide-react";
 
 import { Card } from "@/shared/ui/card";
+import { useTheme } from "@/features/settings/context/theme-context";
 
 /**
  * Shown in step 3 in place of the payment options when the visitor's country is
@@ -14,7 +15,8 @@ export function Step3CountryBlockedPanel({
 }: {
   t: ReturnType<typeof useTranslations>;
 }) {
-  const supportEmail = process.env.NEXT_PUBLIC_SUPPORT_EMAIL;
+  const { settings } = useTheme();
+  const supportEmail = settings?.adminEmail?.trim();
 
   return (
     <Card className="p-5 flex flex-col gap-3">

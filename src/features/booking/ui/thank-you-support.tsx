@@ -3,11 +3,14 @@
 import { Phone } from "lucide-react";
 import type { useTranslations } from "next-intl";
 
+import { useTheme } from "@/features/settings/context/theme-context";
+
 type TFn = ReturnType<typeof useTranslations>;
 
 export function ThankYouSupport({ t }: { t: TFn }) {
-  const phone = process.env.NEXT_PUBLIC_PHONE_NUMBER?.trim();
-  const email = process.env.NEXT_PUBLIC_SUPPORT_EMAIL?.trim();
+  const { settings } = useTheme();
+  const phone = settings?.companyPhone?.trim();
+  const email = settings?.adminEmail?.trim();
   const contacts = [
     phone ? { href: `tel:${phone.replace(/[^\d+]/g, "")}`, label: phone } : null,
     email ? { href: `mailto:${email}`, label: email } : null,

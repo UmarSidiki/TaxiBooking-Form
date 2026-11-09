@@ -5,6 +5,8 @@ import { Button } from "@/shared/ui/button";
 import { ArrowRight, Loader2 } from "lucide-react";
 import type { useTranslations } from "next-intl";
 
+import { useTheme } from "@/features/settings/context/theme-context";
+
 type TFn = ReturnType<typeof useTranslations>;
 
 export function Step1Footer({
@@ -18,8 +20,9 @@ export function Step1Footer({
   calculatingDistance: boolean;
   handleNext: () => void;
 }) {
-  const phone = process.env.NEXT_PUBLIC_PHONE_NUMBER;
-  const email = process.env.NEXT_PUBLIC_SUPPORT_EMAIL;
+  const { settings } = useTheme();
+  const phone = settings?.companyPhone?.trim();
+  const email = settings?.adminEmail?.trim();
   const linkClass =
     "inline-flex min-h-11 items-center rounded-sm hover:text-primary hover:underline focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50";
 

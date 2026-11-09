@@ -7,6 +7,7 @@ import { PalettePicker } from "@/features/settings/ui/palette-picker";
 import AppearanceTab from "@/features/settings/ui/appearance-tab";
 import { AppearancePreview } from "@/features/settings/ui/appearance-preview";
 import { AppearanceTimezoneField } from "@/features/settings/ui/appearance-tab-timezone";
+import BrandIdentityTab from "@/features/settings/ui/brand-identity-tab";
 import { InvoiceLegalCard } from "@/features/settings/ui/invoice-legal-card";
 import { PublicUrlTab } from "@/features/settings/ui/public-url-tab";
 import { useSettingsDesk } from "@/features/settings/ui/settings-desk-context";
@@ -30,6 +31,7 @@ export function SettingsPageAppearance({
       />
       <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_18rem] xl:items-start">
         <div className="flex flex-col gap-6">
+          <BrandIdentityTab settings={settings} patch={patch} />
           <SettingsSection
             title={t("Dashboard.Settings.group-brand")}
             description={t("Dashboard.Settings.group-brand-help")}

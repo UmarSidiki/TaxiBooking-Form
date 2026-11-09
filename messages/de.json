@@ -1639,7 +1639,18 @@
       "custom-token-rule-help": "Trennlinien und Kartenränder.",
       "custom-text-low": "Ein Teil des Textes liegt unter 4,5:1 zum Hintergrund und ist schwer lesbar. Wählen Sie dunkleren Text oder einen helleren Hintergrund (im Dunkelmodus umgekehrt).",
       "custom-reset-mode": "Diesen Modus auf automatisch zurücksetzen",
-      "custom-reset-one": "Auto"
+      "custom-reset-one": "Auto",
+      "brand-identity": "Brand identity",
+      "company-name-help": "Shown on the site header, account area, emails and invoices. Stored in the database.",
+      "company-logo": "Logo",
+      "company-logo-help": "URL or an image file. Used wherever the brand appears, including the favicon.",
+      "company-logo-upload": "Upload an image",
+      "company-logo-remove": "Remove logo",
+      "company-logo-broken": "That image could not be loaded.",
+      "company-logo-too-large": "Keep the image under 400 KB.",
+      "company-phone": "Public phone number",
+      "support-email": "Support email",
+      "support-email-help": "Shown on the thank-you page, booking steps and emails."
     },
     "Refunds": {
       "title": "Refund Requests",

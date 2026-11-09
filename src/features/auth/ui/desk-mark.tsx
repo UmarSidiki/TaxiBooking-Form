@@ -5,7 +5,7 @@ import { cn } from "@/shared/lib/utils";
 
 /** Operator logo plate on the desk sign-in, register and forgot-password pages; initial when no logo. */
 export function DeskMark({ className }: { className?: string }) {
-  const brand = useBrandIdentity(process.env.NEXT_PUBLIC_WEBSITE_NAME ?? "");
+  const brand = useBrandIdentity("");
   return (
     <div
       className={cn(

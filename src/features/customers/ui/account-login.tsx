@@ -1,6 +1,8 @@
 "use client";
 
-import { type useTranslations } from "next-intl";
+import Link from "next/link";
+import { useLocale, type useTranslations } from "next-intl";
+import { ArrowLeft } from "lucide-react";
 
 import { AccountBrandPlate, AccountLoginFooter } from "./account-login-brand";
 import { AccountLoginCodeStep } from "./account-login-code-step";
@@ -45,12 +47,21 @@ export function AccountLogin({
   onVerify: () => void;
   onUseDifferentEmail: () => void;
 }) {
+  const locale = useLocale();
   const name = brandName.trim();
   const year = new Date().getFullYear();
 
   return (
-    <main className="riviera flex min-h-svh flex-col items-center justify-center bg-[var(--paper)] px-4 py-7 pb-10 text-[var(--ink)] sm:px-6 sm:py-12">
+    <main className="riviera no-map flex min-h-svh flex-col items-center justify-center bg-[var(--paper)] px-4 py-7 pb-10 text-[var(--ink)] sm:px-6 sm:py-12">
       <div className="w-full max-w-[420px]">
+        <Link
+          href={`/${locale}`}
+          className="mb-4 inline-flex items-center gap-1.5 text-xs font-medium text-[var(--ink2)] no-underline transition-colors hover:text-[var(--ink)]"
+        >
+          <ArrowLeft className="size-3.5" aria-hidden="true" />
+          {t("book-a-ride")}
+        </Link>
+
         <AccountBrandPlate
           name={name}
           tagline={t("brand-tagline")}

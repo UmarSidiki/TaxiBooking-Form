@@ -70,7 +70,7 @@ export function AccountHome({
   };
 
   return (
-    <div className="riviera min-h-svh bg-[var(--paper)] text-[var(--ink)]">
+    <div className="riviera no-map min-h-svh bg-[var(--paper)] text-[var(--ink)]">
       <AccountTopBar
         t={t}
         locale={locale}

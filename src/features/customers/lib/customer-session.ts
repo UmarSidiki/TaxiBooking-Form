@@ -26,7 +26,7 @@ export type CustomerSessionHit = {
 };
 
 function usesSecureCookie() {
-  return process.env.NODE_ENV === "production" || (process.env.NEXTAUTH_URL ?? "").startsWith("https://");
+  return process.env.NODE_ENV === "production";
 }
 
 export function customerSessionCookie() {

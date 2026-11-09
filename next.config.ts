@@ -28,6 +28,12 @@ const nextConfig: NextConfig = {
         optimizePackageImports: ['lucide-react', '@radix-ui/react-dialog', '@radix-ui/react-dropdown-menu'],
     },
     serverExternalPackages: ['@whiskeysockets/baileys', 'qrcode', 'pino', '@react-pdf/renderer'],
+    async redirects() {
+        return [
+            // Browsers that ask for /favicon.ico by habit get the saved logo.
+            { source: "/favicon.ico", destination: "/icon", permanent: false },
+        ];
+    },
     async rewrites() {
         return [
             { source: "/api/calendar/:token.ics", destination: "/api/calendar/:token" },

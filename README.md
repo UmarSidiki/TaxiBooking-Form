@@ -30,7 +30,6 @@ Required in `.env.local`:
 |---|---|
 | `MONGODB_URI` | Mongo connection string |
 | `NEXTAUTH_SECRET` | NextAuth JWT secret |
-| `NEXTAUTH_URL` | App origin (local: `http://localhost:3000`) |
 | `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` | Maps / Places / Distance Matrix |
 | `CRON_SECRET` | Shared secret for `/api/cron`. Required before the job will run. |
 | `UPSTASH_REDIS_REST_URL` / `UPSTASH_REDIS_REST_TOKEN` | Optional. When both are set, sensitive-route counters use Upstash before Mongo. |
@@ -71,7 +70,7 @@ npm run build
 
 Any Node host that can run `npm run build` and `npm start` (or a Next.js platform such as Vercel).
 
-1. Set the same env vars as `.env.example` on the host (`MONGODB_URI`, `NEXTAUTH_SECRET`, `NEXTAUTH_URL` must match the public URL).
+1. Set the same env vars as `.env.example` on the host (`MONGODB_URI`, `NEXTAUTH_SECRET`). The app origin is detected per request, so `NEXTAUTH_URL` is not needed.
 2. Configure Stripe / MultiSafepay webhook URLs to `/api/stripe-webhook` and `/api/multisafepay-webhook`.
 3. Schedule `/api/cron` (see below). Vercel’s free plan only allows the daily trigger in `vercel.json`.
 4. After first deploy, sign in as admin and fill Settings (SMTP, payment keys, maps bounds, tax).

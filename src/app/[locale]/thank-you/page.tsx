@@ -44,9 +44,9 @@ export default function ThankYouPage() {
 
   const tripId = paymentInfo?.tripId ?? tripIdParam;
   const amount =
-    typeof paymentInfo?.amount === 'number'
+    typeof paymentInfo?.amount === "number" && Number.isFinite(paymentInfo.amount)
       ? paymentInfo.amount.toFixed(2)
-      : null;
+      : searchParams.get("amount");
   const paymentMethod = paymentInfo?.paymentMethod ?? paymentMethodParam;
 
   useEffect(() => {

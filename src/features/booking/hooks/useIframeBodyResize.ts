@@ -7,14 +7,22 @@ const IFRAME_RESIZE_MESSAGE_TYPE = "meetswiss-resize";
 export function useIframeBodyResize() {
   useEffect(() => {
     if (typeof window === "undefined") return;
+    if (window.parent === window) return;
+
+    let raf = 0;
+    let queued = false;
 
     const postHeight = () => {
-      const height = document.body.scrollHeight;
-
-      window.parent.postMessage(
-        { type: IFRAME_RESIZE_MESSAGE_TYPE, height },
-        "*"
-      );
+      if (queued) return;
+      queued = true;
+      raf = window.requestAnimationFrame(() => {
+        queued = false;
+        const height = document.body.scrollHeight;
+        window.parent.postMessage(
+          { type: IFRAME_RESIZE_MESSAGE_TYPE, height },
+          "*"
+        );
+      });
     };
 
     // Observe size changes of the body only
@@ -37,6 +45,7 @@ export function useIframeBodyResize() {
     postHeight();
 
     return () => {
+      window.cancelAnimationFrame(raf);
       resizeObserver.disconnect();
       mutationObserver.disconnect();
     };

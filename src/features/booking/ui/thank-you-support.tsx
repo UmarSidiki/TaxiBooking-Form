@@ -27,7 +27,12 @@ export function ThankYouSupport({ t }: { t: TFn }) {
                 {contacts.map((contact, index) => (
                   <span key={contact.href}>
                     {index > 0 ? ` ${t("ThankYou.or")} ` : null}
-                    <a href={contact.href} className="font-medium text-primary underline-offset-4 hover:underline">
+                    {/* Inline-block contact links so the tap target is at
+                        least 44px tall on mobile — plain text was 94x14px. */}
+                    <a
+                      href={contact.href}
+                      className="inline-block min-h-11 py-1 align-baseline font-medium text-primary underline-offset-4 hover:underline"
+                    >
                       {contact.label}
                     </a>
                   </span>

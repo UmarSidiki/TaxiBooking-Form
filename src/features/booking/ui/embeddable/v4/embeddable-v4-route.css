@@ -6,6 +6,11 @@
   padding-inline-end: var(--v4-swap-gutter);
 }
 
+/* The Round Trip toggle is the .v4-return row in the journey sheet: a normal
+   in-flow flex row under the departure field, never an absolutely-positioned
+   overlay. It keeps a 44px hit box so it never collides with the route fields
+   above or the passengers stepper below. */
+
 .v4-stop {
   position: relative;
   display: grid;

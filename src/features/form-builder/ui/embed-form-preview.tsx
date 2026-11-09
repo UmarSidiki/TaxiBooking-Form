@@ -3,6 +3,7 @@
 import { Button } from "@/shared/ui/button";
 import { Card, CardContent } from "@/shared/ui/card";
 import { Check, Copy } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 
 export function EmbedFormPreview({
   previewLabel,
@@ -23,6 +24,26 @@ export function EmbedFormPreview({
   copyLabel: string;
   copiedLabel: string;
 }) {
+  const iframeRef = useRef<HTMLIFrameElement | null>(null);
+  const [height, setHeight] = useState(600);
+
+  // The widget posts meetswiss-resize messages; the preview listens so the
+  // admin sees exactly how the form sits on a host page (no clipping).
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const onMessage = (event: MessageEvent) => {
+      if (event.source !== iframeRef.current?.contentWindow) return;
+      const data = event.data as { type?: string; height?: number } | null;
+      if (!data || data.type !== "meetswiss-resize") return;
+      const raw = Number(data.height);
+      if (!Number.isFinite(raw) || raw <= 0) return;
+      // buffer 20 / min 300 / max 2000 — same as the snippet that ships.
+      setHeight(Math.max(300, Math.min(2000, raw + 20)));
+    };
+    window.addEventListener("message", onMessage);
+    return () => window.removeEventListener("message", onMessage);
+  }, []);
+
   return (
     <div className="flex min-w-0 flex-col gap-4">
       <div className="desk-card overflow-hidden rounded-md border border-border bg-card">
@@ -30,9 +51,12 @@ export function EmbedFormPreview({
           {previewLabel}
         </div>
         <iframe
+          ref={iframeRef}
           src={path}
-          className="h-[600px] w-full bg-background"
+          className="w-full bg-background"
+          style={{ height, transition: "height 260ms ease", border: 0, overflow: "hidden" }}
           title={previewLabel}
+          scrolling="no"
           allow="payment *; geolocation"
         />
       </div>

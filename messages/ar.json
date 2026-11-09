@@ -3419,10 +3419,7 @@
     "siteControls": "عناصر التحكم",
     "lightMode": "الوضع الفاتح",
     "darkMode": "الوضع الداكن",
-    "language": "اللغة",
-    "signedInAs": "تم تسجيل الدخول باسم",
-    "switchAccount": "تبديل الحساب",
-    "signOut": "تسجيل الخروج"
+    "language": "اللغة"
   },
   "MarketingDesk": {
     "title": "التسويق",

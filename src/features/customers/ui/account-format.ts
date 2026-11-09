@@ -10,6 +10,15 @@ export function displayName(profileName: string | undefined, email: string): str
     .trim();
 }
 
+/**
+ * Two words at most, so a nav plate never runs long or ends in an ellipsis:
+ * "Muhammad Umar Siddiqui" → "Muhammad Umar", "Muhammad Umar" stays as is.
+ */
+export function compactName(name: string): string {
+  const words = name.trim().split(/\s+/).filter(Boolean);
+  return words.slice(0, 2).join(" ");
+}
+
 export function firstName(name: string, fallback: string): string {
   return name.trim().split(/\s+/)[0] || fallback;
 }

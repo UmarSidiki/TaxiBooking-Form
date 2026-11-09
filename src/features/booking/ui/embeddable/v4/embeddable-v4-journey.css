@@ -93,3 +93,15 @@
   font-variant-numeric: tabular-nums;
   text-align: center;
 }
+
+@media (max-width: 719px) {
+  /* Phones: the stepper fills the card like every other field. */
+  .v4-stepper {
+    display: flex;
+    width: 100%;
+  }
+
+  .v4-stepper output {
+    flex: 1 1 auto;
+  }
+}

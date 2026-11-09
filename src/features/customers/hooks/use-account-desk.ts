@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useReducer, useState } from "react";
+import { useCallback, useEffect, useReducer, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import type {
   AccountRides,
@@ -85,7 +85,7 @@ export function useAccountDesk({
     setProfile(data?.profile ?? null);
   };
 
-  const completeSignIn = async () => {
+  const completeSignIn = useCallback(async () => {
     dispatchFeedback({ type: "signed-in" });
     if (!(await refresh())) {
       dispatchFeedback({ type: "verify-failed", error: t("code-invalid") });
@@ -95,7 +95,7 @@ export function useAccountDesk({
     setGreeting(greetingKeyInTimeZone(new Date(), timezone));
     setPhase("trips");
     return true;
-  };
+  }, [currency, timezone]);
 
   const whatsapp = useWhatsAppLogin({ t, onSignedIn: completeSignIn });
 
@@ -119,7 +119,7 @@ export function useAccountDesk({
     setPhase("code");
   };
 
-  const verify = async () => {
+  const verify = useCallback(async () => {
     const response = await fetch("/api/account/otp", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -130,7 +130,7 @@ export function useAccountDesk({
       return;
     }
     await completeSignIn();
-  };
+  }, [email, code, completeSignIn]);
 
   const editEmail = (value: string) => {
     setEmail(value);

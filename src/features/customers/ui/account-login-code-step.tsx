@@ -69,6 +69,7 @@ export function AccountLoginCodeStep({
           onChange={setCode}
           groupLabel={t("code-group-label")}
           digitLabel={(number) => t("code-digit-label", { number })}
+          onComplete={onVerify}
         />
         <Button type="submit" className="h-11 w-full rounded-[var(--radius)]">
           {t("verify-and-sign-in")}

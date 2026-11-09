@@ -136,7 +136,6 @@ export function Step1ScheduleFields({
               onBlur={() => handleInputBlur("passengers")}
               decreaseLabel={t("embeddable.decrease-passengers")}
               increaseLabel={t("embeddable.increase-passengers")}
-              showHint={false}
             />
           </div>
 

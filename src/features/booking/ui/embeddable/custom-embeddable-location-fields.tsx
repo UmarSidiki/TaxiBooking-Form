@@ -153,11 +153,11 @@ export function createLocationFieldRenderers(ctx: Ctx) {
     <div key={field.id}>
       <FieldLabel field={field} />
       {enabledFieldTypes.has("stops") && (
-        <div className="flex justify-end mb-1.5 w-full">
+        <div className="flex justify-end w-full">
           <button
             type="button"
             onClick={handleAddStop}
-            className="inline-flex min-h-11 items-center px-2 text-sm underline hover:opacity-80"
+            className="inline-flex min-h-8 items-center px-2 py-1 text-sm underline hover:opacity-80"
             style={{ color: iconColor }}
           >
             {t("add-a-stop")}

@@ -7,7 +7,6 @@ import "./riviera/riviera.css";
 import { useTranslations } from "next-intl";
 import dynamic from "next/dynamic";
 import { ControlDock } from "./riviera/control-dock";
-import { SignedInBanner } from "./riviera/signed-in-banner";
 import { useBookingFormContainer } from "@/features/booking/hooks/form-container/useBookingFormContainer";
 import { useBookingForm } from "@/features/booking/context/booking-form-context";
 import { useGeo } from "@/features/geo/context/geo-context";
@@ -71,7 +70,6 @@ export default function BookingFormContainer() {
       )}
 
       <main className="sheet">
-        <SignedInBanner />
         <p className="step-count">{t("FormContainer.StepIndicator", { currentStep })}</p>
 
         <Suspense fallback={<StepLoader />}>

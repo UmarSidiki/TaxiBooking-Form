@@ -3276,6 +3276,8 @@
     "otp_expiry": "Deze code verloopt over 10 minuten.",
     "otp_security": "Deel deze code nooit. Ons team vraagt er nooit naar.",
     "otp_ignore": "Hebt u dit niet aangevraagd? Dan kunt u deze e-mail negeren.",
+    "otp_copy_hint": "Kopiëren",
+    "otp_copy_cta": "Code kopiëren",
     "review_cta": "Beoordeling achterlaten",
     "pay_cta": "{amount} betalen",
     "view_invoice": "Factuur bekijken",

@@ -64,6 +64,7 @@ export async function generateDueRecurring(now = new Date()) {
       subtotalAmount: quote.subtotal,
       taxAmount: quote.taxAmount,
       taxPercentage: quote.taxPercentage,
+      taxIncluded: quote.taxIncluded,
       fareLines: quote.lines,
       depositDue: quote.depositDue,
       balanceDue: quote.balanceDue,

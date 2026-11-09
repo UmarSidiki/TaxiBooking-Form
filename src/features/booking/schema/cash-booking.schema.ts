@@ -58,6 +58,8 @@ export const cashBookingBaseSchema = z.object({
   subtotalAmount: z.number().optional(),
   taxAmount: z.number().optional(),
   taxPercentage: z.number().optional(),
+  /** Echo of the server quote for emails; pricing never reads it from here. */
+  taxIncluded: z.boolean().optional(),
 });
 
 /** A destination booking needs a dropoff or at least one stop. */

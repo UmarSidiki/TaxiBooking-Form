@@ -66,8 +66,6 @@ export interface ISetting {
   address?: string;
   taxId?: string;
   regNo?: string;
-  taxRate?: number;
-  taxInclusive?: boolean;
   invoiceFooter?: string;
   invoiceTerms?: string;
   enablePartners?: boolean;
@@ -331,14 +329,6 @@ const SettingSchema = new Schema<ISetting>(
     regNo: {
       type: String,
       default: "",
-    },
-    taxRate: {
-      type: Number,
-      default: 0,
-    },
-    taxInclusive: {
-      type: Boolean,
-      default: false,
     },
     invoiceFooter: {
       type: String,

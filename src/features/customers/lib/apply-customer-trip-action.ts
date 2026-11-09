@@ -391,6 +391,7 @@ function keepOriginalPrice(booking: IBooking) {
     subtotalAmount: b.subtotalAmount,
     taxAmount: b.taxAmount,
     taxPercentage: b.taxPercentage,
+    taxIncluded: b.taxIncluded,
     depositDue: b.depositDue,
     balanceDue: b.balanceDue,
     fareLines: b.fareLines,

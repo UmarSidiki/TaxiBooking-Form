@@ -1558,8 +1558,6 @@
       "invoice-address": "Address",
       "tax-id": "Tax ID",
       "reg-no": "Registration no.",
-      "tax-rate": "Tax rate",
-      "tax-inclusive": "Tax inclusive",
       "invoice-footer": "Invoice footer",
       "invoice-terms": "Invoice terms",
       "cancel-policy": "Cancel policy",

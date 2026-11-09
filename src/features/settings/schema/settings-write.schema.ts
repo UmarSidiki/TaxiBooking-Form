@@ -132,8 +132,6 @@ export const settingsWriteSchema = z.object({
   address: z.string().optional(),
   taxId: z.string().optional(),
   regNo: z.string().optional(),
-  taxRate: z.number().optional(),
-  taxInclusive: z.boolean().optional(),
   invoiceFooter: z.string().optional(),
   invoiceTerms: z.string().optional(),
 });

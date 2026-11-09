@@ -4,6 +4,7 @@ import { renderInvoicePdf } from "@/features/booking/lib/render-invoice-pdf";
 import { ridePayUrl } from "@/features/invoices/lib/ride-pay-link";
 import { allocateInvoiceNumber } from "@/features/invoices/lib/allocate-invoice-number";
 import { logoDataUrl } from "@/features/invoices/lib/invoice-logo";
+import { invoiceTaxFromSettings } from "@/features/invoices/lib/invoice-tax";
 import { Setting } from "@/features/settings/model";
 import { brandName } from "@/features/settings/lib/brand-name";
 import { resolveBrandColors } from "@/features/settings/lib/brand-colors";
@@ -23,6 +24,7 @@ export async function buildInvoicePdf(tripId: string) {
   const base = await resolvePublicUrl();
   const payUrl = ridePayUrl(base, booking.locale, tripId);
   const qrDataUrl = payUrl ? await QRCode.toDataURL(payUrl, { margin: 1, width: 280 }) : undefined;
+  const tax = invoiceTaxFromSettings(settings);
   const pdf = await renderInvoicePdf(booking, symbol, brandName(settings) || "Booking", {
     invoiceNumber: invoiceNumber ?? tripId,
     qrDataUrl,
@@ -33,8 +35,8 @@ export async function buildInvoicePdf(tripId: string) {
     address: settings?.address || settings?.companyAddress,
     taxId: settings?.taxId,
     regNo: settings?.regNo,
-    taxRate: settings?.taxRate ?? settings?.taxPercentage,
-    taxInclusive: settings?.taxInclusive ?? settings?.taxIncluded,
+    taxRate: tax.taxRate,
+    taxInclusive: tax.taxInclusive,
     invoiceFooter: settings?.invoiceFooter,
     invoiceTerms: settings?.invoiceTerms,
     bankName: settings?.bankName,

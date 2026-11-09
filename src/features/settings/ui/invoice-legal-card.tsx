@@ -1,7 +1,6 @@
 "use client";
 
 import { Input } from "@/shared/ui/input";
-import { Switch } from "@/shared/ui/switch";
 import type { ISetting } from "@/features/settings/model";
 import type { SettingsDeskPatch } from "@/features/settings/ui/settings-desk-props";
 import { useTranslations } from "next-intl";
@@ -33,14 +32,6 @@ export function InvoiceLegalCard({
           <label htmlFor="invoice-reg-no" className="mb-1 block text-sm font-medium">{t("Dashboard.Settings.reg-no")}</label>
           <Input id="invoice-reg-no" className="h-11 text-base" value={settings.regNo ?? ""} onChange={(e) => patch("regNo", e.target.value)} />
         </div>
-        <div>
-          <label htmlFor="invoice-tax-rate" className="mb-1 block text-sm font-medium">{t("Dashboard.Settings.tax-rate")}</label>
-          <Input id="invoice-tax-rate" className="h-11 text-base" type="number" value={settings.taxRate ?? 0} onChange={(e) => patch("taxRate", Number(e.target.value) || 0)} />
-        </div>
-      </div>
-      <div className="flex items-center gap-3">
-        <Switch id="invoice-tax-inclusive" checked={settings.taxInclusive ?? false} onCheckedChange={(v) => patch("taxInclusive", v)} />
-        <label htmlFor="invoice-tax-inclusive" className="text-sm">{t("Dashboard.Settings.tax-inclusive")}</label>
       </div>
       <div>
         <label htmlFor="invoice-invoice-footer" className="mb-1 block text-sm font-medium">{t("Dashboard.Settings.invoice-footer")}</label>

@@ -115,6 +115,7 @@ export async function POST(request: NextRequest) {
         subtotalAmount: priced.subtotal,
         taxAmount: priced.taxAmount,
         taxPercentage: priced.taxPercentage,
+        taxIncluded: priced.taxIncluded,
         depositDue: priced.depositDue,
         balanceDue: priced.balanceDue,
         fareLines: priced.lines,

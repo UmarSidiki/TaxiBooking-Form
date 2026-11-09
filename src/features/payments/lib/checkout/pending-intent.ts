@@ -49,6 +49,7 @@ export async function storePendingIntent(input: {
     subtotal: number;
     taxAmount: number;
     taxPercentage: number;
+    taxIncluded: boolean;
     depositDue: number;
     balanceDue: number;
     lines: { code: string; amount: number }[];
@@ -63,6 +64,7 @@ export async function storePendingIntent(input: {
       subtotalAmount: input.priced.subtotal,
       taxAmount: input.priced.taxAmount,
       taxPercentage: input.priced.taxPercentage,
+      taxIncluded: input.priced.taxIncluded,
       depositDue: input.priced.depositDue,
       balanceDue: input.priced.balanceDue,
       fareLines: input.priced.lines,

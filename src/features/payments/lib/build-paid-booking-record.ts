@@ -76,6 +76,7 @@ export function buildPaidBookingRecord(
     subtotalAmount: data.subtotalAmount,
     taxAmount: data.taxAmount,
     taxPercentage: data.taxPercentage,
+    taxIncluded: data.taxIncluded,
     depositDue: data.depositDue,
     balanceDue: data.balanceDue,
     fareLines: data.fareLines,

@@ -88,6 +88,7 @@ export function buildBookingEmailData(
     subtotalAmount: pending.bookingData.subtotalAmount,
     taxAmount: pending.bookingData.taxAmount,
     taxPercentage: pending.bookingData.taxPercentage,
+    taxIncluded: pending.bookingData.taxIncluded,
     paymentMethod: options.paymentMethod,
     paymentStatus: 'completed',
     baseUrl: options.baseUrl,

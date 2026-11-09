@@ -35,7 +35,7 @@ After payments, auth, schema, or routing changes, also `npm run build` when feas
 
 ## Env gotchas
 
-- Copy `.env.example` → `.env.local`. Required: `MONGODB_URI`, `NEXTAUTH_SECRET`, `NEXTAUTH_URL`.
+- Copy `.env.example` → `.env.local`. Required: `MONGODB_URI`, `NEXTAUTH_SECRET`. The app origin is detected per request; `NEXTAUTH_URL` is not needed.
 - Maps key: `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY`.
 - Stripe / MultiSafepay / SMTP live primarily in the **Settings** document in MongoDB (admin UI), not only in env. Do not assume `.env` holds payment secrets.
 - Never commit secrets. Never log passwords, OTP codes, or raw card data.

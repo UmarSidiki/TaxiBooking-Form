@@ -2,8 +2,15 @@ import { MetadataRoute } from 'next'
 import fs from 'fs'
 import path from 'path'
 
-export default function manifest(): MetadataRoute.Manifest {
-  const siteName = process.env.NEXT_PUBLIC_WEBSITE_NAME ?? "Booking Service";
+import { getThemeSettings } from '@/features/settings/lib/theme-settings'
+
+export const dynamic = 'force-dynamic'
+
+export default async function manifest(): Promise<MetadataRoute.Manifest> {
+  const theme = await getThemeSettings()
+  // The saved brand is the app's name and icon; the database is the only
+  // source, so an empty name stays empty rather than inventing one.
+  const siteName = theme.companyName?.trim() ?? "";
   const siteDescription = "Premium booking experiences for riders, partners, and administrators.";
 
   // Auto-detect shortcuts from (pages) directory
@@ -21,7 +28,7 @@ export default function manifest(): MetadataRoute.Manifest {
         short_name: page.charAt(0).toUpperCase() + page.slice(1),
         description: `Access ${page} portal`,
         url: `/${page}`,
-        icons: [{ src: '/icon.png', sizes: '192x192' }],
+        icons: [{ src: '/icon', sizes: 'any' }],
       }));
     }
   } catch (error) {
@@ -39,16 +46,9 @@ export default function manifest(): MetadataRoute.Manifest {
     orientation: 'portrait',
     icons: [
       {
-        src: '/icon.png',
-        sizes: '192x192',
-        type: 'image/png',
-        purpose: 'maskable',
-      },
-      {
-        src: '/icon.png',
-        sizes: '512x512',
-        type: 'image/png',
-        purpose: 'maskable',
+        src: '/icon',
+        sizes: 'any',
+        purpose: 'any',
       },
     ],
     shortcuts: shortcuts.length > 0 ? shortcuts : undefined,

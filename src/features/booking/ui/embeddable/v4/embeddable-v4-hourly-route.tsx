@@ -28,7 +28,7 @@ export function EmbeddableV4HourlyRoute({
 }) {
   return (
     <div className="v4-journey">
-      <div className="v4-stops v4-stops-plain">
+      <div className="v4-stops">
         <EmbeddableV4RouteRow
           id="v4-pickup"
           prefix={t("embeddable.from-prefix")}
